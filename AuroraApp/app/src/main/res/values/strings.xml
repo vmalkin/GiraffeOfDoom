@@ -1,8 +1,0 @@
-<resources>
-    <string name="app_name">AuroraApp</string>
-
-    <string name="hello_world">Hello world!</string>
-    <string name="action_settings">Settings</string>
-    <string name="title_activity_weather">Weather</string>
-    <string name="title_activity_aurora">Aurora</string>
-</resources>

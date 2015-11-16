@@ -1,0 +1,10 @@
+L:\1_Poly\BIT\Year3\Project\VaughnsMagnetometer\SerialDataExample v0.91\SerialDataExample\bin\Release\SerialDataExample.exe.config
+L:\1_Poly\BIT\Year3\Project\VaughnsMagnetometer\SerialDataExample v0.91\SerialDataExample\bin\Release\SerialDataExample.exe
+L:\1_Poly\BIT\Year3\Project\VaughnsMagnetometer\SerialDataExample v0.91\SerialDataExample\bin\Release\SerialDataExample.pdb
+L:\1_Poly\BIT\Year3\Project\VaughnsMagnetometer\SerialDataExample v0.91\SerialDataExample\obj\Release\SerialDataExample.Form1.resources
+L:\1_Poly\BIT\Year3\Project\VaughnsMagnetometer\SerialDataExample v0.91\SerialDataExample\obj\Release\SerialDataExample.Properties.Resources.resources
+L:\1_Poly\BIT\Year3\Project\VaughnsMagnetometer\SerialDataExample v0.91\SerialDataExample\obj\Release\SerialSucker.csproj.GenerateResource.Cache
+L:\1_Poly\BIT\Year3\Project\VaughnsMagnetometer\SerialDataExample v0.91\SerialDataExample\obj\Release\SerialDataExample.exe
+L:\1_Poly\BIT\Year3\Project\VaughnsMagnetometer\SerialDataExample v0.91\SerialDataExample\obj\Release\SerialDataExample.pdb
+L:\1_Poly\BIT\Year3\Project\VaughnsMagnetometer\SerialDataExample v0.91\SerialDataExample\bin\Release\SerialDataExample.exe.CodeAnalysisLog.xml
+L:\1_Poly\BIT\Year3\Project\VaughnsMagnetometer\SerialDataExample v0.91\SerialDataExample\bin\Release\SerialDataExample.exe.lastcodeanalysissucceeded
