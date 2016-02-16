@@ -1,0 +1,71 @@
+2015-12-13 16:17:44,668 CRITICAL ERROR: Unable to open com port. Please check com port parameters and/or hardware!!
+2015-12-13 16:19:44,354 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2015-12-13 16:19:44,447 WARNING: File IO Exception raised - could not delete: graphing/24hr.csv
+2015-12-13 16:19:44,468 WARNING: File IO Exception raised - could not delete: graphing/24hr.csv
+2015-12-13 16:33:00,005 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2015-12-13 16:33:00,006 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2015-12-13 16:33:16,144 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2015-12-13 16:33:16,145 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2015-12-13 16:33:32,268 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2015-12-13 16:33:32,269 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2015-12-13 16:33:48,407 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2015-12-13 16:33:48,407 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2015-12-13 16:34:04,535 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2015-12-13 16:34:04,535 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2015-12-13 16:34:20,663 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2015-12-13 16:34:20,663 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2015-12-13 16:34:36,774 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2015-12-13 16:34:36,774 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2015-12-13 16:34:52,920 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2015-12-13 16:34:52,920 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2015-12-13 16:46:35,065 WARNING: File IO Exception raised whilst accessing file: logs/2015-12-13.csv
+2015-12-13 16:50:01,236 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2015-12-13 16:50:01,236 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2015-12-13 16:50:17,380 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2015-12-13 16:50:17,381 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2015-12-13 16:51:29,946 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2015-12-13 16:51:29,947 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2015-12-13 16:51:46,071 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2015-12-13 16:51:46,072 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2015-12-13 16:52:02,191 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2015-12-13 16:52:02,191 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2015-12-13 16:58:36,276 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2015-12-13 16:58:36,276 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2015-12-13 17:04:07,149 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2015-12-13 17:04:07,150 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2015-12-13 17:04:23,310 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2015-12-13 17:04:23,310 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2015-12-13 17:04:39,429 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2015-12-13 17:04:39,429 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2015-12-13 17:04:55,577 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2015-12-13 17:04:55,578 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2015-12-13 17:05:11,688 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2015-12-13 17:05:11,688 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2015-12-13 17:05:27,830 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2015-12-13 17:05:27,830 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2015-12-13 17:06:41,200 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2015-12-13 17:06:41,200 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2015-12-13 17:07:45,869 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2015-12-13 17:07:45,869 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2015-12-13 17:16:10,498 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2015-12-13 17:16:10,498 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2015-12-13 17:16:26,634 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2015-12-13 17:16:26,635 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2015-12-13 18:25:40,062 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2015-12-13 18:25:40,062 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2015-12-13 18:25:56,191 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2015-12-13 18:25:56,192 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2015-12-13 18:27:00,718 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2015-12-13 18:27:00,719 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2015-12-13 18:27:16,833 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2015-12-13 18:27:16,833 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2015-12-13 18:27:32,993 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2015-12-13 18:27:32,993 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2015-12-14 15:53:11,155 WARNING: File IO Exception raised - could not delete: graphing/24hr.csv
+2015-12-21 18:16:29,652 WARNING: File IO Exception raised whilst accessing file: logs/2015-12-21.csv
+2015-12-21 18:16:45,747 WARNING: File IO Exception raised whilst accessing file: logs/2015-12-21.csv
+2015-12-21 18:17:01,919 WARNING: File IO Exception raised whilst accessing file: logs/2015-12-21.csv
+2015-12-21 18:17:18,059 WARNING: File IO Exception raised whilst accessing file: logs/2015-12-21.csv
+2016-02-15 22:45:23,219 WARNING: File IO Exception raised whilst accessing file: logs/2016-02-15.csv
+2016-02-15 22:45:38,555 WARNING: File IO Exception raised whilst accessing file: logs/2016-02-15.csv
+2016-02-15 22:45:53,823 WARNING: File IO Exception raised whilst accessing file: logs/2016-02-15.csv

@@ -1,1 +1,0 @@
-copy 24HourLog.header + CurrentUTC.csv log.csv
