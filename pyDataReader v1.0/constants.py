@@ -2,7 +2,7 @@ __author__ = 'vaughn'
 
 # Constants
 MAG_READ_FREQ = 4           # how often the magnetometer sends data per minute
-MAG_RUNNINGAVG_COUNT = 8   # for running averages
+MAG_RUNNINGAVG_COUNT = 2   # The time in MINUTES that we want to average on. ONLY an even number
 MAG3110_FLIP = 200          # Sensor chip flips at this reading
 FIELD_CORRECTION = 1        # if the field is increasing in strength, the values should go up, and vica versa
 
@@ -16,8 +16,8 @@ FILE_4DIFFS = "graphing/diffs.csv"
 FILE_ERRORLOG = "Errors.log"
 
 # Comm port parameters
-portName = 'Com4'
-# portName = '/dev/tty.usbserial-A702O0K9'
+# portName = 'Com4'
+portName = '/dev/tty.usbserial-A702O0K9'
 baudrate = 9600
 bytesize = 8
 parity = 'N'
