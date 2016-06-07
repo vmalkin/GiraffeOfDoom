@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html
+
+
+<head>
+	<title>PyDataReader</title>
+	<LINK REL="SHORTCUT ICON" HREF="../vaughnicon.png">
+	<link href="skyDiary.css" rel="stylesheet" type="text/css">
+	
+</head>
+
+<body>
+
+<div id="pgWrapper">
+	<div id="head" >
+		<div class="table">
+			<div class="tr">
+				<div class="td_LeftImage"> <!-- Cell to hold dynamic moon clock -->
+
+				</div>
+				
+				<div class="td_RightTitle">
+				<span class="bannerHeading">PyDataReader</span>
+				<br><span class="bannerHeading">Ver 1</span>
+
+				</div>
+			</div>
+		</div>
+	</div>
+	<hr>
+	<div id="pgContent">
+		<h1>About</h1>
+		<p>This python script is designed to work with a Christie-Type H-Magnetometers where the position of the sense-magnet is read by a cheap 3-axis magnetometer chip like a MAG3110 or similar. Data is logged to a variety of daily log files and special files for outputting to graphs.
+		
+		<h1>Installation instructions</h1>
+		<p><a href="https://github.com/vmalkin/GiraffeOfDoom/">Download here</a> and save to your computer. Run the script MAIN.PY or START.BAT. 
+		
+		<h1>Fair usage and Copyright</h1>
+			<br><a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons Licence" style="border-width:0" src="https://i.creativecommons.org/l/by-sa/4.0/88x31.png" /></a><br /><span xmlns:dct="http://purl.org/dc/terms/" href="http://purl.org/dc/dcmitype/Text" property="dct:title" rel="dct:type">PyDataReader</span> by <a xmlns:cc="http://creativecommons.org/ns#" href="https://github.com/vmalkin/GiraffeOfDoom/" property="cc:attributionName" rel="cc:attributionURL">Vaughn Malkin</a> is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>.<br />Based on a work at <a xmlns:dct="http://purl.org/dc/terms/" href="https://github.com/vmalkin/GiraffeOfDoom/" rel="dct:source">https://github.com/vmalkin/GiraffeOfDoom/</a>.<br />Permissions beyond the scope of this license may be available at <a xmlns:cc="http://creativecommons.org/ns#" href="https://github.com/vmalkin/GiraffeOfDoom/" rel="cc:morePermissions">https://github.com/vmalkin/GiraffeOfDoom/</a>.
+	<br>
+	<br>
+	<pre>
+	This work is licensed under the Creative Commons Attribution-ShareAlike 4.0 International License. <br>To view a copy of this license, visit <a href="http://creativecommons.org/licenses/by-sa/4.0/.">http://creativecommons.org/licenses/by-sa/4.0/.</a>
+	</pre>
+		
+		<h1>Requirements</h1>
+		<ul>
+			<li>Device that produces data in the correct format attached to a SERIAL CONNECTION</li>
+			<li>Python ver 3 (May work on Python v2, but YMMV)</li>
+			<li>Disc space to store logs</li>
+		</ul>
+		
+		<h1>How it works</h1>
+		<p>PyDataReader takes serial data in the format of three comma-delimited values in a plain ASCII string that represent X, Y and Z magnetometer data. For the Christie-Type magnetometer, the X axis represents the readings of the sense-magnet position.
+		
+		<p>The code can be modified for a single value of ASCII data received from the com-port. 
+		
+		<p>An internal list/array is used as a buffer to store the data from the com-port. Each time the com-port recieved data, this is manipulated and written out to a variety of log and plotting files. On startup, the internal array is populated by the file ARRAYSAVE.CSV. If this file is corrupted and you do not want to wait to rebuild the file, then the latest LOG FILE can be copied over to arraysave.csv to give you a head-start.
+		
+		<h1>Customising settings</h1>
+		<p>Variables to be customised are stored in CONSTANTS.PY. You can copy and paste the following text in if you muck things up:
+		<br>
+		<pre>
+		__author__ = 'vaughn'
+
+		# Constants
+		MAG_READ_FREQ = 4           # how often the magnetometer sends data per minute
+		MAG_RUNNINGAVG_COUNT = 2   # The time in MINUTES that we want to average on. ONLY an even number
+		MAG3110_FLIP = 200          # Sensor chip flips at this reading
+		FIELD_CORRECTION = 1        # if the field is increasing in strength, the values should go up, and vica versa
+
+		# Files
+		PATH_LOGS = 'logs/'
+		PATH_GRAPHING = 'graphing/'
+		FILE_ROLLING = 'ArraySave.csv'
+		FILE_24HR = 'graphing/24hr.csv'
+		FILE_4HR = "graphing/04hr.csv"
+		FILE_4DIFFS = "graphing/diffs.csv"
+		FILE_ERRORLOG = "Errors.log"
+
+		# Comm port parameters - uncomment and change one of the portNames depending on your OS
+		portName = 'Com4' # Windows
+		# portName = '/dev/tty.usbserial-A702O0K9' #MacOS
+		baudrate = 9600
+		bytesize = 8
+		parity = 'N'
+		stopbits = 1
+		timeout = 60
+		xonxoff = False
+		rtscts = True
+		writeTimeout = None
+		dsrdtr = False
+		interCharTimeout = None
+		</pre>
+		
+		<p>PyDataReader will create the logging files and sub directories if they are not present. 
+		
+		
+		<h1>FAQ</h1>
+		<h2>"My device produces data in a different format..."</h2>
+		<p>You can of course adjust the code.
+		
+		<h2>"Your code sucks, this would be better if..."</h2>
+		<p>Yes, it probably would! However I'm something of a weekend coder and dont care. Adjust and attribute to your heart's content!
+		
+		<h2></h2>
+		<h2></h2>
+		
+		<h1>Revisions</h1>
+		<dl>
+			<dt>1.1.3</dt>
+			<dd>Reworked the smoothing algorithm so that data on each side of the datapoint is averaged, rather than data behind the datapoint.</dd>
+		</dl>
+
+	</div>
+		
+	<div id="footer">
+	
+
+	</div>
+</div>
+
+	
+</body>
+
+</html>

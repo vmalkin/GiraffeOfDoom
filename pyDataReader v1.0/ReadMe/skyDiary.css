@@ -1,0 +1,277 @@
+/* *********************************************** */
+/* G E N E R A L   H T M L   A N D   C L A S S E S */
+/* *********************************************** */
+
+*
+{
+	margin: 0;
+	font-family: verdana, ubuntu, sans-serif;
+	color: #1f1f1f; /* Put the default font colour up here. */
+
+}
+
+body
+{
+	background-color: #999999;
+}
+
+html
+{
+	
+}
+
+hr
+{
+	color: #bb2020;
+	border-width: 2px;
+	border-style: solid;
+}
+
+h1, h2, h3, h4, h5, h6
+{
+	font-family: walkwaySB;
+	color: #bb2020;
+	margin-top: 0.5em;
+	letter-spacing: 1px;
+}
+
+p
+{
+	margin-top: 1em;
+}
+
+
+a
+{
+	padding-left: 2px;
+	padding-right: 2px;
+	border-style: solid;
+	border-radius: 3px;
+	border-color: #bb2020;
+	border-width: 2px;
+	text-decoration: none;
+	background-color: #e0e0e0;
+	
+}
+
+/* a
+{
+	padding-left: 2px;
+	padding-right: 2px;
+	color: #a0a0a0;
+	background: linear-gradient(180deg, #002525, #001919); /* Standard syntax */ 
+	background-color: #001919; /* or default to this.*/
+} */
+
+a:link
+{
+	text-decoration: none;
+}
+
+a:visited
+{
+/* text-decoration: none; */
+} 
+
+a:hover 
+{
+	background: linear-gradient(180deg, #fafafa,#909090); /* Standard syntax */ 
+	background-color: #ffffff; /* or default to this.*/
+	color: #000000;
+	text-decoration: none;
+}
+
+dt
+{
+	font-weight: bold;
+}
+
+dd
+{
+	margin-left: 3em;
+	margin-bottom: 1em;
+}
+
+@font-face
+{
+	font-family: 'walkwaySB';
+	src: url('fonts/Walkway_SemiBold.ttf');
+}
+
+@font-face
+{
+	font-family: 'walkwayBL';
+	src: url('fonts/Walkway_Bold.ttf');
+}
+
+.white{color: #ffffff;}
+.yellow{color: #ffff00;}
+.warmText{color: #ffffdd;}
+.orange{color: #ff9900;}
+
+.flexiImg
+{
+	display: block; /* You need this bit to make it scale */
+	width: 100%;
+	height: 100%;
+	margin-top: 1em;
+}
+
+.imgHalfSz
+{
+	display: block; /* You need this bit to make it scale */
+	width: 50%;
+	height: 50%;
+	margin-top: 1em;
+}
+
+
+/* **************************************** */
+/* B A N N E R   O B J E C T S   B E G I N  */
+/* **************************************** */
+.table
+{display: table; width: 100%; border-collapse: collapse;}
+
+.td_LeftImage
+{display: table-cell; vertical-align: middle; text-align: left;}
+
+.td_MiddleImage
+{display: table-cell; vertical-align: middle; text-align: left;}
+
+.td_RightTitle
+{
+	display: table-cell; 
+	vertical-align: middle; 
+	text-align: right;
+	/* background-image: url('headerImg3.png'); */
+	background-repeat:repeat-x;
+	background-position: center right;
+	height:258px;
+	width:100%;
+}
+
+.tr
+{display: table-row;}
+
+
+.bannerFontWhite
+{
+	color: #ffffff;
+	font-size:400%;
+	font-family: walkwaySB;
+}
+
+.bannerHeading
+{
+	color: #bb2020;
+	font-size:350%;
+	font-family: walkwayBL;
+}
+
+.moonClock
+{
+	width: 170px; /* Probably the ONLY time i'd specify pixels, but might change to em*/
+}
+
+/* ************************************ */
+/* B A N N E R   O B J E C T S   E N D  */
+/* ************************************ */
+
+
+
+
+/* ***************************************** */
+/* N A V I G A T I O N   M E N U   B E G I N */
+/* ***************************************** */
+.ulNav
+{
+	list-style-type: none;
+    margin: 0;
+    padding: 0;
+	margin-left: 2em;
+}
+
+.navButton
+{
+	display: block;
+	margin: 0.2em;
+	width: 98%;
+	font-size: 0.8em;
+}
+/* ***************************************** */
+/* N A V I G A T I O N   M E N U   E N D     */
+/* ***************************************** */
+
+
+
+
+
+/* ***************************************** */
+/* P A G E   I D s                           */
+/* ***************************************** */
+#head
+{
+}
+
+#pgWrapper  /* the entire page, header and contents */
+{
+	/* background-color: #ffffee; */
+	background-color: white;
+	width: 90%;
+	margin-top: 1em;
+	margin-left: auto;
+	margin-right: auto;
+	margin-bottom: 1em;
+	padding: 1em;
+	border-radius: 3px;
+}
+
+#pgContent
+{
+	/* background-image: url('pageContentHeader.png'); */
+	/* background-repeat: repeat-y; */
+	background-position: top;
+
+	overflow: hidden; /* We need this otherwise parent div will not stretch around child divs */
+}
+
+#pageSideBar /* inside the pagewrapper, contains the menu bar */
+{
+	position: relative;
+	float: left;
+	width: 25%;
+	line-height: 1.5em;
+}
+
+#pgContentText   /* inside the pagewrapper, contains the the ticker bar and main text of the site */
+{
+	position: static;
+	float: right;
+	width: 70%;
+	/* background-color: #001111; */
+/*	opacity: 0.05;
+    filter: alpha(opacity=5); /* For IE8 and earlier */ */
+}
+
+#ticker  /* inside the pgContentText, contains the ticker */
+{
+	display: block;
+	width: 100%;
+}	
+#textContents  /* inside the pgContentText, contains the actual text */
+{
+	margin-top: 1em;
+	display: block;
+	width: 100%;
+	line-height: 1.5em;
+
+}
+
+#footer
+{
+	padding-top: 1em;
+	clear: both;
+	margin: auto;
+	width: 100%;
+	text-align: center;
+}

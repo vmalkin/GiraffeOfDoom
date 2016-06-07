@@ -103,35 +103,40 @@ def create_cumulative(input_array):
 # #################################################################################
 def ultra_smooth_array(imput_array):
     getcontext().prec = 5
-    MAG_RUNNINGAVG_COUNT = 40
+
+    # This figure MUST be an even number. Check your constants.
+    AVERAGING_TIME = int(k.MAG_RUNNINGAVG_COUNT * k.MAG_READ_FREQ * 2)
+    AVERAGING_TIME_HALF = int(AVERAGING_TIME / 2)
 
     # NOW average the cumulative array, smooth out the blips
-    if len(imput_array) > MAG_RUNNINGAVG_COUNT:
+    if len(imput_array) > AVERAGING_TIME:
 
         displayarray = []
 
-        for i in range(len(imput_array)-1, MAG_RUNNINGAVG_COUNT, -1):
+        for i in range(AVERAGING_TIME_HALF, len(imput_array) - AVERAGING_TIME_HALF):
             xvalue = 0
             yvalue = 0
             zvalue = 0
 
-            for j in range(0, MAG_RUNNINGAVG_COUNT):
-                xvalue = xvalue + imput_array[i-j].raw_x
-                yvalue = yvalue + imput_array[i-j].raw_y
-                zvalue = zvalue + imput_array[i-j].raw_z
+            # This is where we average for the time i before and after i.
+            for j in range(0, AVERAGING_TIME):
+                xvalue = xvalue + imput_array[(i - AVERAGING_TIME_HALF) + j].raw_x
+                yvalue = yvalue + imput_array[(i - AVERAGING_TIME_HALF) + j].raw_y
+                zvalue = zvalue + imput_array[(i - AVERAGING_TIME_HALF) + j].raw_z
 
-            xvalue = Decimal(xvalue / MAG_RUNNINGAVG_COUNT)
-            yvalue = Decimal(yvalue / MAG_RUNNINGAVG_COUNT)
-            zvalue = Decimal(zvalue / MAG_RUNNINGAVG_COUNT)
+            xvalue = Decimal(xvalue / AVERAGING_TIME)
+            yvalue = Decimal(yvalue / AVERAGING_TIME)
+            zvalue = Decimal(zvalue / AVERAGING_TIME)
 
             displaypoint = DataPoint.DataPoint(imput_array[i].dateTime, xvalue, yvalue, zvalue)
             displayarray.append(displaypoint)
 
-        displayarray.reverse()
+        # displayarray.reverse()
     else:
         displayarray = imput_array
 
     return displayarray
+
 
 
 # #################################################################################
@@ -161,9 +166,9 @@ def smooth_array(imput_array):
 
             # This is where we average for the time i before and after i.
             for j in range(0, AVERAGING_TIME):
-                xvalue = xvalue + imput_array[(i - AVERAGING_TIME_HALF) - j].raw_x
-                yvalue = yvalue + imput_array[(i - AVERAGING_TIME_HALF)- j].raw_y
-                zvalue = zvalue + imput_array[(i - AVERAGING_TIME_HALF)- j].raw_z
+                xvalue = xvalue + imput_array[(i - AVERAGING_TIME_HALF) + j].raw_x
+                yvalue = yvalue + imput_array[(i - AVERAGING_TIME_HALF) + j].raw_y
+                zvalue = zvalue + imput_array[(i - AVERAGING_TIME_HALF) + j].raw_z
 
             xvalue = Decimal(xvalue / AVERAGING_TIME)
             yvalue = Decimal(yvalue / AVERAGING_TIME)

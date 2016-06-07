@@ -15,9 +15,9 @@ FILE_4HR = "graphing/04hr.csv"
 FILE_4DIFFS = "graphing/diffs.csv"
 FILE_ERRORLOG = "Errors.log"
 
-# Comm port parameters
-# portName = 'Com4'
-portName = '/dev/tty.usbserial-A702O0K9'
+# Comm port parameters - uncomment and change one of the portNames depending on your OS
+portName = 'Com4' # Windows
+# portName = '/dev/tty.usbserial-A702O0K9' #MacOS
 baudrate = 9600
 bytesize = 8
 parity = 'N'
