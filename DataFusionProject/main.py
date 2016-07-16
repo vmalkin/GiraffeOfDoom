@@ -1,17 +1,16 @@
 import Station
+import os
+from decimal import Decimal, getcontext
+
+getcontext().prec = 5
 
 # create the magnetometer stations for this run
-dalmore = Station.Station("Dalmore", "Dalmore.1minbins.csv")
-corstorphine = Station.Station("Corstorphine", "Corstorphine.1minbins.csv")
-
+dalmore02 = Station.Station("Dalmore 02", "DalmoreTest.1minbins.csv")
+dalmore01 = Station.Station("Dalmore 01", "Dalmore01.1minbins.csv")
 # init the array of stations and append
 stationlist = []
-stationlist.append(dalmore)
-stationlist.append(corstorphine)
-
-# print(stationlist[0].datapointarray[0].dateTime)
-# print(stationlist[0].output_f[1])
-# print(stationlist[1].output_f[1])
+stationlist.append(dalmore01)
+stationlist.append(dalmore02)
 
 # create a list of unique timestamps based on all available times from all stations, for this run.
 # make a list of all dates, duplicates and all...
@@ -30,44 +29,81 @@ date_data = []
 # Go thru the temp data and write out unique datetimes only, to the final merged list.
 for dateitem in temp_data:
     while dateitem != olddate:
+        # print(dateitem)
         date_data.append(dateitem)
         olddate = dateitem
 
+
 merged_data = []
+print("Calculated date range...")
+# Now, for each dateitem in date_data...
+for dateitem in date_data:
+    #  Set up a datastring.
+    datastring = ""
+    # Go thru each magnetometer station in the station list.
+    for magstation in stationlist:
+        # go thru each mag stations output list, find matching date and append the value to datastring
+        tempstring = datastring
+        for info in magstation.output_f:
+            info = info.split(",")
+            if info[0] == dateitem:
+                datastring = datastring + info[1] + ","
+
+        # we went thru the list of stations and there was no entry for this date/time
+        if tempstring == datastring:
+            datastring = datastring + "0,"
+
+    merged_data.append(dateitem + "," + datastring)
+
+# for item in merged_data:
+#     print(item)
+
+print("Identified data...")
+
+temp_data= []
+# remove final trailing comma
+for item in merged_data:
+    item = item[:-1]
+    temp_data.append(item)
+merged_data = temp_data
+
+
+# One final task - re-write the final merged data for values that do NOT have a zero in them.
+temp_data = []
+for i in range(0, len(merged_data)):
+    writeflag = 1
+    datasplit = merged_data[i].split(",")
+    for dataitems in datasplit:
+        if dataitems == str(0):
+            writeflag = 0 # we cannot write this line...
+    if writeflag == 1:
+        temp_data.append(merged_data[i])
+merged_data = temp_data
+
 
 # insert the headings as the first element of the merged_data[]
 merged_header = "Date/Time UTC, "
 for magstation in stationlist:
     merged_header = merged_header + magstation.station_name + ","
-
 # strip off the last comma
 merged_header = merged_header[:-1]
 # add to merged_data array
+merged_data.reverse()
 merged_data.append(merged_header)
+merged_data.reverse()
 
-# Now, for each dateitem in date_data...
-for dateitem in date_data:
-    #  Set up a datastring. Append the date to it.
-    datastring = ""
-    # Go thru each magnetometer station in the station list.
-    for magstation in stationlist:
-        k = 0
-        # check the datetime component of each entry in the output_f list
-        for i in range(0, len(magstation.output_f)):
-            testsplit = magstation.output_f[i].split(",")
-            # if the date matches, then append the reading component to the datastring
-            if dateitem == testsplit[0]:
-                datastring = datastring + testsplit[1] + ","
-                k = k + 1
+# write out to logfile
+logfile = "mergedoutput.csv"
+try:
+    os.remove(logfile)
+except OSError:
+    print("WARNING: could not delete " + logfile)
 
-        if k == 0:
-            datastring = datastring + "0,"
-
-    merged_data.append(dateitem + "," + datastring)
-    datastring = ""
-
-# remove final traling comma
-for item in merged_data:
-    item = item[:-1]
-
-print(merged_data)
+for readings in merged_data:
+    try:
+        with open(logfile, 'a') as f:
+            f.write(readings + '\n')
+            # print("Data logged ok. Array Size: " + str(len(readings)))
+    except IOError:
+        print("WARNING: There was a problem accessing the current logfile: " + logfile)
+print("Data merge COMPLETED")
