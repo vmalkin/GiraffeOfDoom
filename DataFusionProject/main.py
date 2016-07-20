@@ -50,8 +50,9 @@ for dateitem in date_data:
                 datastring = datastring + info[1] + ","
 
         # we went thru the list of stations and there was no entry for this date/time
+        # CUSTOMISE the N/A string according to your graphing software so that N/A is not plotted
         if tempstring == datastring:
-            datastring = datastring + "0,"
+            datastring = datastring + "#N/A,"
 
     merged_data.append(dateitem + "," + datastring)
 
@@ -68,17 +69,17 @@ for item in merged_data:
 merged_data = temp_data
 
 
-# One final task - re-write the final merged data for values that do NOT have a zero in them.
-temp_data = []
-for i in range(0, len(merged_data)):
-    writeflag = 1
-    datasplit = merged_data[i].split(",")
-    for dataitems in datasplit:
-        if dataitems == str(0):
-            writeflag = 0 # we cannot write this line...
-    if writeflag == 1:
-        temp_data.append(merged_data[i])
-merged_data = temp_data
+# # One final task - re-write the final merged data for values that do NOT have a zero in them.
+# temp_data = []
+# for i in range(0, len(merged_data)):
+#     writeflag = 1
+#     datasplit = merged_data[i].split(",")
+#     for dataitems in datasplit:
+#         if dataitems == str(0):
+#             writeflag = 0 # we cannot write this line...
+#     if writeflag == 1:
+#         temp_data.append(merged_data[i])
+# merged_data = temp_data
 
 
 # insert the headings as the first element of the merged_data[]
