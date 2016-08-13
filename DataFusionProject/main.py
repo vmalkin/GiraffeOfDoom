@@ -18,6 +18,7 @@ while True:
     # make a list of all dates, duplicates and all...
     temp_data = []
     for magstation in stationlist:
+<<<<<<< HEAD
         for i in range(0, len(magstation.output_f)):
             datasplit = magstation.output_f[i].split(",")
             testdate = datasplit[0]
@@ -97,6 +98,67 @@ while True:
 
     # write out to logfile
     logfile = "D:\Transfer\My Documents\Magnetometer\pyDataReader\publish\merged.csv"
+=======
+        # go thru each mag stations output list, find matching date and append the value to datastring
+        tempstring = datastring
+        for info in magstation.output_f:
+            info = info.split(",")
+            if info[0] == dateitem:
+                datastring = datastring + info[1] + ","
+
+        # we went thru the list of stations and there was no entry for this date/time
+        # CUSTOMISE the N/A string according to your graphing software so that N/A is not plotted
+        if tempstring == datastring:
+            datastring = datastring + "#N/A,"
+
+    merged_data.append(dateitem + "," + datastring)
+
+# for item in merged_data:
+#     print(item)
+
+print("Identified data...")
+
+temp_data= []
+# remove final trailing comma
+for item in merged_data:
+    item = item[:-1]
+    temp_data.append(item)
+merged_data = temp_data
+
+
+# # One final task - re-write the final merged data for values that do NOT have a zero in them.
+# temp_data = []
+# for i in range(0, len(merged_data)):
+#     writeflag = 1
+#     datasplit = merged_data[i].split(",")
+#     for dataitems in datasplit:
+#         if dataitems == str(0):
+#             writeflag = 0 # we cannot write this line...
+#     if writeflag == 1:
+#         temp_data.append(merged_data[i])
+# merged_data = temp_data
+
+
+# insert the headings as the first element of the merged_data[]
+merged_header = "Date/Time UTC, "
+for magstation in stationlist:
+    merged_header = merged_header + magstation.station_name + ","
+# strip off the last comma
+merged_header = merged_header[:-1]
+# add to merged_data array
+merged_data.reverse()
+merged_data.append(merged_header)
+merged_data.reverse()
+
+# write out to logfile
+logfile = "mergedoutput.csv"
+try:
+    os.remove(logfile)
+except OSError:
+    print("WARNING: could not delete " + logfile)
+
+for readings in merged_data:
+>>>>>>> origin/master
     try:
         os.remove(logfile)
     except OSError:
