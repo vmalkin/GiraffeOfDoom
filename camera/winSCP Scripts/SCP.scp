@@ -1,6 +1,0 @@
-open scp://meepo:"rigel five colonies"@188.166.235.64
-option batch continue
-# synchronize remote "D:\Transfer\My Documents\Magnetometer\pyDataReader\publish" /var/www/html
-keepuptodate "c:\temp" /var/www/html
-exit
-close
