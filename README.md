@@ -15,5 +15,5 @@ SerialCatcher_Honeywell_5883/HCM5883 - Modified Arduino code for Honeywell 5883 
 
 camera v0.1 - SharpCap python scripts to automate camera imaging and download
 
-pyDataReader v1.7 - Magnetometer logging software. Also generates CSV files for magnetogram display using Highcharts web graphing API, incl 4 hr, 24 hr, dH/dt for past 24 hr. 
+pyDataReader v1.7 - Magnetometer logging software. Also generates CSV files for magnetogram display using Highcharts web graphing API, incl 4 hr, 24 hr, dH/dt for past 24 hr, and 1 minute binned values for the past 24 hours to be used in DataFusionProject.
 
