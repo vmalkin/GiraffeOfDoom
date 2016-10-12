@@ -1,7 +1,7 @@
 # GiraffeOfDoom
 Vaughn's public repository
 
-Mostly python, and mostly about my home magnetometer/sky-camera project. This is a spinoff and testbed for our work at http://DunedinAurora.NZ
+Mostly python, and mostly about my home magnetometer/sky-camera project (http://homepages.vodafone.co.nz/~Svmalkin/). This is a spinoff and testbed for our work at http://DunedinAurora.NZ
 
 ANNet v0.1 	- play and exploration of artificial neural nets.
 
