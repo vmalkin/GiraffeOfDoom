@@ -1,5 +1,7 @@
 import datetime
 
+
+
 dt = datetime.datetime.now()
 weeknum =  (dt.strftime('%W'))
 
