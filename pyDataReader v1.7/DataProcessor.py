@@ -12,9 +12,9 @@ __author__ = 'vaughn'
 # #################################################################################
 # Calculate the differences
 # #################################################################################
-def process_data(data_array):
+def process_data(input_data_array):
     # If necessary, invert the data so that trends up mean increasing field strength
-    data_array = invert_data_array(data_array)
+    data_array = invert_data_array(input_data_array)
 
     # ###########################################################################
     # Initial filter of data: smoothing, remove transients, etc
