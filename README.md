@@ -17,3 +17,5 @@ camera v0.1 - SharpCap python scripts to automate camera imaging and download
 
 pyDataReader v1.7 - Magnetometer logging software. Also generates CSV files for magnetogram display using Highcharts web graphing API, incl 4 hr, 24 hr, dH/dt for past 24 hr, and 1 minute binned values for the past 24 hours to be used in DataFusionProject.
 
+HeatMapper - script to create a heatmap of auroral activity over extended periods of time.
+
