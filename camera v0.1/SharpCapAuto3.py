@@ -77,9 +77,8 @@ while True:
 
    if nowhour <= tlr or nowhour >= tls:
       # Nighttime
-      SharpCap.SelectedCamera.Controls.Exposure.Automatic = False 
-      SharpCap.SelectedCamera.Controls.Exposure.Value = 20  # Set the exposure to 1000ms (1s)  
-      print("exposure is " + str(SharpCap.SelectedCamera.Controls.Exposure.Value))
+      # load dark frame profile
+
    else:
       # Daytime
       print("Daytime: " + str(nowhour))
