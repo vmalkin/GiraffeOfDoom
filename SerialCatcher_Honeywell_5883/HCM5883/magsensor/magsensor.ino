@@ -113,5 +113,5 @@ void loop(void)
   magY = 0;
   magZ = 0;
   
-  delay(15000);
+  delay(10000);
 }

@@ -46,3 +46,4 @@
 2016-05-21 15:44:14,297 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
 2016-05-21 15:44:14,297 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
 2016-05-27 09:50:29,113 CRITICAL ERROR: Unable to open com port. Please check com port parameters and/or hardware!!
+2016-10-11 10:54:02,784 CRITICAL ERROR: Unable to open com port. Please check com port parameters and/or hardware!!
