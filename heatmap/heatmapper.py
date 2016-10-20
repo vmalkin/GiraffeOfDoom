@@ -1,4 +1,5 @@
 import os
+import re
 from decimal import Decimal, getcontext
 
 # Raw Data Format:
@@ -9,19 +10,20 @@ from decimal import Decimal, getcontext
 # We might need some method to parse a datafile to see that the data 
 # is valid, not noisy, has no blips, etc.
 
-
+dataplaceindex = 2
 magrate = 4   # How many readings per minute from the magnetometer
-rawdatafile = "C:/Users/vaughnm.OPNET/Desktop/GitHub/GiraffeOfDoom/heatmap/test.csv"
+rawdatafile = "test.csv"
 rawdataarray = []
 
 # ##################################################
-# Prune Data - we only need Datetime and Raw X value.
+# Prune Data - we only need Date, time and Raw X value.
 # ##################################################
 def prune_data(arraydata):
     outputarray = []
     for item in arraydata:
-        dataline = item.split(",")
-        newdata = dataline[0] + "," + dataline[1]
+        # dataline = item.split(",")
+        dataline = re.split(r'[\s,,]', item)
+        newdata = dataline[0] + "," + dataline[1] + "," + dataline[dataplaceindex]
         outputarray.append(newdata)
 
     return outputarray
@@ -39,9 +41,9 @@ def diffs_data(arraydata):
         nowdata = arraydata[i].split(",")
         olddata = arraydata[i - 1].split(",")
 
-        datetime = nowdata[0]
+        datetime = nowdata[0] + "," + nowdata[1]
         # calculate the differences
-        diff = Decimal(nowdata[1]) - Decimal(olddata[1])
+        diff = Decimal(nowdata[dataplaceindex]) - Decimal(olddata[dataplaceindex])
 
         # create the string to be appended
         outputline = datetime + "," + str(diff)
@@ -71,12 +73,12 @@ def running_avg(arraydata):
 
         # get the datetime
         datetime = arraydata[i].split(",")
-        datetime = datetime[0]
+        datetime = datetime[0] + "," + datetime[1]
 
         # calculate the avg either side of this time interval
         for j in range(0, window):
             diff = arraydata[i - half_window + j].split(",")
-            diff = diff[1]
+            diff = diff[dataplaceindex]
             avgdiff = avgdiff + Decimal(diff)
 
         avgdiff = Decimal(avgdiff / window)
@@ -93,6 +95,7 @@ def running_avg(arraydata):
 # Hourly Activity - create activity readings for the hour
 # ###################################################
 def hourly_readings(arraydata):
+    getcontext().prec = 5
     outputarray = []
 
     # reverse the data array so that we start from now, and going back, we get activity for the last 60 mins
@@ -101,26 +104,50 @@ def hourly_readings(arraydata):
     # this is an hour's worth of readings in our array
     interval = 60 * magrate
     for i in range(0, len(arraydata), interval):
-        maxvalue = 100
-        minvalue = -100
-
+        maxvalue = 0
+        minvalue = 0
         # get the datetime for the hour
         datetime = arraydata[i].split(",")
-        datetime = datetime[0]
+        datetime = datetime[0] + "," + datetime[1]
 
-        for j in range (0, interval):
-            # determin the max and min values
+        if i + interval < len(arraydata):
+            for j in range(0, interval):
+                k = i + j
+                hvalue = arraydata[k].split(",")
+                # print(str(k))
+                hvalue = Decimal(hvalue[dataplaceindex])
+                if hvalue >= minvalue and hvalue <= maxvalue:
+                    pass # everything is ok
 
+                if hvalue >= maxvalue and hvalue >= minvalue:
+                    maxvalue = hvalue # this reading is largest
 
+                if hvalue <= maxvalue and hvalue <=  minvalue:
+                    minvalue = hvalue # this reading is smallest
+
+        diff = maxvalue - minvalue
+
+        differencevalues = datetime + "," + str(diff)
+        outputarray.append(differencevalues)
 
     # Revert the output array so it plots conventionally, oldest to most recent
     outputarray.reverse()
+    return outputarray
 
 # ##################################################
 # Write out values to file.
 # ##################################################
-def save_csv(arraydata):
-    pass
+def save_csv(arraydata, savefile):
+    try:
+        os.remove(savefile)
+    except:
+        print("Error deleting old file")
+    for line in arraydata:
+        try:
+            with open(savefile, 'a') as f:
+                f.write(line + "\n")
+        except IOError:
+            print("WARNING: There was a problem accessing heatmap file")
 
 # ##################################################
 # Median Filter
@@ -142,7 +169,45 @@ def median_filter_3values(arraydata):
     return outputarray
 
 # ##################################################
-# MAIN CODE STARTS HERE
+# Normalise data
+# ##################################################
+def normalise(arraydata):
+    # Normalise single value data
+    temp_array = []
+
+    datamin = Decimal(1000)
+    # first find the smallest value...
+    for item in arraydata:
+        item = item.split(",")
+        # this is now the actual value figure...
+        item = Decimal(item[dataplaceindex])
+        if item <= datamin:
+            datamin = item
+
+    datamax = Decimal(datamin)
+    # now find the largets value...
+    for item in arraydata:
+        item = item.split(",")
+        # this is now the actual value figure...
+        item = Decimal(item[dataplaceindex])
+        if item > datamax:
+            datamax = item
+
+    temp_array = []
+
+    print("max/min values: " + str(datamax) + "/" + str(datamin))
+
+    diffvalue = datamax - datamin
+    for i in range(0, len(arraydata)):
+        datastring = arraydata[i].split(",")
+        datavalue = (Decimal(datastring[dataplaceindex]) - datamin) / diffvalue
+        newdatastring = datastring[0] + "," + datastring[1] + "," + str(datavalue)
+        temp_array.append(newdatastring)
+
+    return temp_array
+
+# ##################################################
+# M A I N   C O D E   S T A R T S  H E R E
 # ##################################################
 
 # Load in CSV data
@@ -169,6 +234,9 @@ rawdataarray = running_avg(rawdataarray)
 # create the hourly readings
 rawdataarray = hourly_readings(rawdataarray)
 
+# normalise the data for consistent display
+rawdataarray = normalise(rawdataarray)
+
 # save the file
-save_csv(rawdataarray)
+save_csv(rawdataarray, "heatmap.csv")
 
