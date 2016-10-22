@@ -132,16 +132,20 @@ def save_csv(arraydata, savefile):
 def normalise(arraydata):
     getcontext().prec = 5
 
-    datamin = (1000)
+    datamin = Decimal(1000)
 
     # first find the smallest value...
     for item in arraydata:
+        item = item.split(",")
+        item = item[1]
         if Decimal(item) <= Decimal(datamin):
             datamin = item
 
     # now find the largets value...
     datamax = Decimal(datamin)
     for item in arraydata:
+        item = item.split(",")
+        item = item[1]
         if Decimal(item) > Decimal(datamax):
             datamax = item
 
@@ -151,8 +155,11 @@ def normalise(arraydata):
 
     diffvalue = Decimal(datamax) - Decimal(datamin)
     for i in range(0, len(arraydata)):
-        datavalue = (Decimal(arraydata[i]) - Decimal(datamin)) / Decimal(diffvalue)
-        newdatastring = str(datavalue)
+        item = arraydata[i].split(",")
+        datetime = item[0]
+        item = item[1]
+        datavalue = (Decimal(item) - Decimal(datamin)) / Decimal(diffvalue)
+        newdatastring = datetime + "," +str(datavalue)
         temp_array.append(newdatastring)
 
     return temp_array
