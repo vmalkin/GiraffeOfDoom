@@ -1,5 +1,6 @@
 import os
-import re
+import matplotlib.pyplot as plt
+import matplotsave as pltsave
 from decimal import Decimal, getcontext
 
 # Raw Data Format:
@@ -222,6 +223,26 @@ for items in CSVFilenames:
     finaldata = filename + "," + reading
     finaldataarray.append(finaldata)
 
-finaldataarray = normalise(finaldataarray)
+# If necessary, normalise the data
+# finaldataarray = normalise(finaldataarray)
+
 save_csv(finaldataarray,"heatmap.csv")
-print(finaldataarray)
+
+# Create the heatmap plot of the data.
+labelslist = []
+datalist = []
+
+for item in finaldataarray:
+    data = item.split(",")
+    labelslist.append(data[0])
+    datavalue = Decimal(data[1])
+    datalist.append(datavalue)
+
+print(datalist)
+
+plt.bar(range(len(datalist)), datalist, align='center')
+plt.ylabel("dH/dt relative")
+plt.xlabel("Date")
+plt.title("Geomagnetic activity from " + labelslist[0] + " to " + labelslist[len(labelslist) - 1] + "\n")
+plt.xticks(range(len(datalist)), labelslist, size='small', rotation='vertical')
+plt.show()
