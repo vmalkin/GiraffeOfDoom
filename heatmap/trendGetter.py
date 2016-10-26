@@ -47,7 +47,7 @@ def running_avg(arraydata, interval):
 
         # create the data string to be written to list
         datastring = datetime + "," + str(avgdiff)
-
+        print("Smoothing " + str(i) + " of " + str(len(arraydata)) + " records.")
         outputarray.append(datastring)
 
     # print("Array is " + str(len(arraydata)) + " records long")
@@ -78,6 +78,7 @@ def diffs_data(arraydata):
         outputline = datetime + "," + str(diff)
 
         outputarray.append(outputline)
+        print("Differencing " + str(i) + " of " + str(len(arraydata)) + " records.")
 
     # return array of differences
     # print("Array is " + str(len(arraydata)) + " records long")
@@ -91,10 +92,11 @@ def prune_data(arraydata):
     # we want to avoid the first line that contains a header text
     for i in range(0,len(arraydata)):
         dataline = arraydata[i].split(",")
-        print(dataline)
+        # print(dataline)
         datetime = dataline[0]
         datavalue = dataline[1]
         newdata = datetime + "," + datavalue
+        print("Pruning " + str(i) + " of " + str(len(arraydata)) + " records.")
         outputarray.append(newdata)
 
     return outputarray
@@ -128,7 +130,8 @@ def maxmin_readings(arraydata):
 
         # if the current date is the same as the old date, and the current hour is the same as the old hour
         # then do the comparison
-        if olddate == currentdate and oldhour == currenthour:
+        # if olddate == currentdate and oldhour == currenthour:
+        if olddate == currentdate:
             datavalue = Decimal(datavalue)
             if datavalue >= minvalue and datavalue <= maxvalue:
                 pass  # everything is ok
@@ -150,7 +153,7 @@ def maxmin_readings(arraydata):
             returndata.append(outputstring)
 
             olddate = currentdate
-            oldhour = currenthour
+            # oldhour = currenthour
             maxvalue = 0
             minvalue = 0
 
@@ -171,7 +174,7 @@ def save_csv(arraydata, savefile):
                 f.write(line + "\n")
         except IOError:
             print("WARNING: There was a problem accessing heatmap file")
-
+    print("File Saved")
 
 # ##################################################
 # M A I N   C O D E   S T A R T S  H E R E
@@ -210,48 +213,52 @@ for item in CSVFilenames:
         print("File appears to be present, but cannot be accessed at this time. ")
 
 # Prune the raw data list down to a date and value only
+# for item in rawdatalist:
+#     print(item)
+
 print("Reducing data...\n")
 rawdatalist = prune_data(rawdatalist)
 
 
 
-# # Convert the absolute readings into differences
-# print("Converting to differences...\n")
-# rawdatalist = diffs_data(rawdatalist)
-#
-# # Smooth the diffs twice.
-# print("Smoothing data...\n")
-# rawdatalist = running_avg(rawdatalist, 10*magrate)
-# rawdatalist = running_avg(rawdatalist, 10*magrate)
-#
-# # Convert the diffs into hourly max/mins
-# print("Finding hourly max/mins...\n")
-# rawdatalist = maxmin_readings(rawdatalist)
-#
-# # Save
-# print("Saving datafile...\n")
-# save_csv(rawdatalist, "trend.csv")
-#
-# # #################
-# # Matplotlib graph
-# # #################
-# print("Creating graph...\n")
-# labelslist = []
-# datalist = []
-#
+# Convert the absolute readings into differences
+print("Converting to differences...\n")
+rawdatalist = diffs_data(rawdatalist)
+
+# Smooth the diffs twice.
+print("Smoothing data...\n")
+rawdatalist = running_avg(rawdatalist, 10*magrate)
+rawdatalist = running_avg(rawdatalist, 10*magrate)
+
+# Convert the diffs into hourly max/mins
+print("Finding Daily max/mins...\n")
+rawdatalist = maxmin_readings(rawdatalist)
+
+# Save
+print("Saving datafile...\n")
+save_csv(rawdatalist, "trend.csv")
+
+
+# #################
+# Matplotlib graph
+# #################
+print("Creating graph...\n")
+labelslist = []
+datalist = []
+
 # smoothedlist = running_avg(rawdatalist, 120)
-#
-# for item in smoothedlist:
-#     data = item.split(",")
-#     labelslist.append(data[0])
-#     datavalue = Decimal(data[1])
-#     datalist.append(datavalue)
-#
-# plt.plot(datalist, color='#00f000')
-#
-# plt.ylabel("Relative Activity")
-# plt.xlabel("Date")
-# plt.legend(["Hourly Activity"])
-# plt.title("Geomagnetic activity from " + labelslist[0] + " to " + labelslist[len(labelslist) - 1] + "\n")
-# plt.xticks(range(len(datalist)), labelslist, size='small', rotation='vertical')
-# plt.show()
+
+for item in rawdatalist:
+    data = item.split(",")
+    labelslist.append(data[0])
+    datavalue = Decimal(data[1])
+    datalist.append(datavalue)
+
+plt.plot(datalist, color='#00f000')
+
+plt.ylabel("Relative Activity")
+plt.xlabel("Date")
+plt.legend(["Daily Activity"])
+plt.title("Geomagnetic activity from " + labelslist[0] + " to " + labelslist[len(labelslist) - 1] + "\n")
+plt.xticks(range(len(datalist)), labelslist, size='small', rotation='vertical')
+plt.show()
