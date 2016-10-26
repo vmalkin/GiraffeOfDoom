@@ -160,21 +160,25 @@ def maxmin_readings(arraydata):
     # return the new hourly array
     return returndata
 
+def correct_days(rawdatalist):
+    pass
+
 # ##################################################
 # Write out values to file.
 # ##################################################
 def save_csv(arraydata, savefile):
     try:
         os.remove(savefile)
+        for line in arraydata:
+            try:
+                with open(savefile, 'a') as f:
+                    f.write(line + "\n")
+            except IOError:
+                print("WARNING: There was a problem accessing heatmap file")
+        print("File Saved")
     except:
         print("Error deleting old file")
-    for line in arraydata:
-        try:
-            with open(savefile, 'a') as f:
-                f.write(line + "\n")
-        except IOError:
-            print("WARNING: There was a problem accessing heatmap file")
-    print("File Saved")
+
 
 # ##################################################
 # M A I N   C O D E   S T A R T S  H E R E
@@ -219,7 +223,9 @@ for item in CSVFilenames:
 print("Reducing data...\n")
 rawdatalist = prune_data(rawdatalist)
 
-
+# At this point - verify that we have the full number of consecutive dayes between starts and end dates in the list
+# Parse thru and create corrected list as necessary
+rawdatalist = correct_days(rawdatalist)
 
 # Convert the absolute readings into differences
 print("Converting to differences...\n")
@@ -234,6 +240,11 @@ rawdatalist = running_avg(rawdatalist, 10*magrate)
 print("Finding Daily max/mins...\n")
 rawdatalist = maxmin_readings(rawdatalist)
 
+
+
+
+smoothedlist = running_avg(rawdatalist, 120)
+
 # Save
 print("Saving datafile...\n")
 save_csv(rawdatalist, "trend.csv")
@@ -246,7 +257,7 @@ print("Creating graph...\n")
 labelslist = []
 datalist = []
 
-# smoothedlist = running_avg(rawdatalist, 120)
+
 
 for item in rawdatalist:
     data = item.split(",")

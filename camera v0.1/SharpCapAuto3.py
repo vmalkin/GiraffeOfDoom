@@ -78,6 +78,7 @@ while True:
    if nowhour <= tlr or nowhour >= tls:
       # Nighttime
       # load dark frame profile
+      SharpCap.SelectedCamera.Controls.Exposure.Value = 30000  # Set the exposure to 30sec
 
    else:
       # Daytime
@@ -89,7 +90,7 @@ while True:
    bm = System.Drawing.Bitmap(capturedir + "capture.png")
    g = System.Drawing.Graphics.FromImage(bm)
    f = System.Drawing.Font("Arial", 14)
-   stamp = "http://DunedinAurora.NZ \nSkyCam No 2\n" + System.DateTime.Now.ToString() + " NZST"
+   stamp = "http://DunedinAurora.NZ \nSkyCam No 2 \nFOV ~70deg, approx South Celestial Pole \n" + System.DateTime.Now.ToString() + " NZST"
    g.DrawString(stamp, f, System.Drawing.Brushes.Red, System.Drawing.Point(0,0))
    g.Dispose()
    f.Dispose()
