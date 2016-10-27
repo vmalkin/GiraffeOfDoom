@@ -47,7 +47,7 @@ def running_avg(arraydata, interval):
 
         # create the data string to be written to list
         datastring = datetime + "," + str(avgdiff)
-        print("Smoothing " + str(i) + " of " + str(len(arraydata)) + " records.")
+        # print("Smoothing " + str(i) + " of " + str(len(arraydata)) + " records.")
         outputarray.append(datastring)
 
     # print("Array is " + str(len(arraydata)) + " records long")
@@ -78,7 +78,7 @@ def diffs_data(arraydata):
         outputline = datetime + "," + str(diff)
 
         outputarray.append(outputline)
-        print("Differencing " + str(i) + " of " + str(len(arraydata)) + " records.")
+        # print("Differencing " + str(i) + " of " + str(len(arraydata)) + " records.")
 
     # return array of differences
     # print("Array is " + str(len(arraydata)) + " records long")
@@ -96,7 +96,7 @@ def prune_data(arraydata):
         datetime = dataline[0]
         datavalue = dataline[1]
         newdata = datetime + "," + datavalue
-        print("Pruning " + str(i) + " of " + str(len(arraydata)) + " records.")
+        # print("Pruning " + str(i) + " of " + str(len(arraydata)) + " records.")
         outputarray.append(newdata)
 
     return outputarray
@@ -161,7 +161,7 @@ def maxmin_readings(arraydata):
     return returndata
 
 def correct_days(rawdatalist):
-    pass
+    return rawdatalist
 
 # ##################################################
 # Write out values to file.
@@ -169,15 +169,18 @@ def correct_days(rawdatalist):
 def save_csv(arraydata, savefile):
     try:
         os.remove(savefile)
-        for line in arraydata:
-            try:
-                with open(savefile, 'a') as f:
-                    f.write(line + "\n")
-            except IOError:
-                print("WARNING: There was a problem accessing heatmap file")
-        print("File Saved")
     except:
         print("Error deleting old file")
+
+    for line in arraydata:
+        try:
+            with open(savefile, 'a') as f:
+                f.write(line + "\n")
+
+        except IOError:
+            print("WARNING: There was a problem accessing heatmap file")
+
+
 
 
 # ##################################################
@@ -223,7 +226,7 @@ for item in CSVFilenames:
 print("Reducing data...\n")
 rawdatalist = prune_data(rawdatalist)
 
-# At this point - verify that we have the full number of consecutive dayes between starts and end dates in the list
+# At this point - verify that we have the full number of consecutive days between starts and end dates in the list
 # Parse thru and create corrected list as necessary
 rawdatalist = correct_days(rawdatalist)
 
@@ -232,44 +235,40 @@ print("Converting to differences...\n")
 rawdatalist = diffs_data(rawdatalist)
 
 # Smooth the diffs twice.
-print("Smoothing data...\n")
-rawdatalist = running_avg(rawdatalist, 10*magrate)
-rawdatalist = running_avg(rawdatalist, 10*magrate)
+print("Smoothing, pass 1...")
+rawdatalist = running_avg(rawdatalist, 10 * magrate)
+print("Smoothing, pass 2...")
+rawdatalist = running_avg(rawdatalist, 10 * magrate)
 
 # Convert the diffs into hourly max/mins
 print("Finding Daily max/mins...\n")
 rawdatalist = maxmin_readings(rawdatalist)
 
-
-
-
-smoothedlist = running_avg(rawdatalist, 120)
-
 # Save
 print("Saving datafile...\n")
-save_csv(rawdatalist, "trend.csv")
+save_csv(rawdatalist, "trenddata.csv")
 
 
 # #################
 # Matplotlib graph
 # #################
-print("Creating graph...\n")
-labelslist = []
-datalist = []
-
-
-
-for item in rawdatalist:
-    data = item.split(",")
-    labelslist.append(data[0])
-    datavalue = Decimal(data[1])
-    datalist.append(datavalue)
-
-plt.plot(datalist, color='#00f000')
-
-plt.ylabel("Relative Activity")
-plt.xlabel("Date")
-plt.legend(["Daily Activity"])
-plt.title("Geomagnetic activity from " + labelslist[0] + " to " + labelslist[len(labelslist) - 1] + "\n")
-plt.xticks(range(len(datalist)), labelslist, size='small', rotation='vertical')
-plt.show()
+# print("Creating graph...\n")
+# labelslist = []
+# datalist = []
+#
+#
+#
+# for item in rawdatalist:
+#     data = item.split(",")
+#     labelslist.append(data[0])
+#     datavalue = Decimal(data[1])
+#     datalist.append(datavalue)
+#
+# plt.plot(datalist, color='#00f000')
+#
+# plt.ylabel("Relative Activity")
+# plt.xlabel("Date")
+# plt.legend(["Daily Activity"])
+# plt.title("Geomagnetic activity from " + labelslist[0] + " to " + labelslist[len(labelslist) - 1] + "\n")
+# plt.xticks(range(len(datalist)), labelslist, size='small', rotation='vertical')
+# plt.show()
