@@ -160,6 +160,13 @@ def maxmin_readings(arraydata):
     # return the new hourly array
     return returndata
 
+
+# ##################################################
+# This function is designed to pad out the data array
+# to the correct length in case we're missing data
+# from any of the log files, or missing comlete logfiles.
+# missing data will be zeros.
+# ##################################################
 def correct_days(rawdatalist):
     return rawdatalist
 
@@ -222,12 +229,16 @@ for item in CSVFilenames:
 # Prune the raw data list down to a date and value only
 # for item in rawdatalist:
 #     print(item)
-
 print("Reducing data...\n")
 rawdatalist = prune_data(rawdatalist)
 
 # At this point - verify that we have the full number of consecutive days between starts and end dates in the list
 # Parse thru and create corrected list as necessary
+#
+# The best way to do this is to reduce the magnetomter data down to whole minutes, pad out empty mins with zeros
+# then procede to calculate the differences as usual
+#
+
 rawdatalist = correct_days(rawdatalist)
 
 # Convert the absolute readings into differences
