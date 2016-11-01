@@ -112,7 +112,7 @@ def maxmin_readings(arraydata):
     maxvalue = 0
     minvalue = 0
 
-    datalist = re.split(r'[\s,:,]', arraydata[0])
+    datalist = re.split(r'[\s,:]', arraydata[0])
     olddate = datalist[0]
     oldhour = datalist[1]
 
@@ -167,8 +167,19 @@ def maxmin_readings(arraydata):
 # from any of the log files, or missing comlete logfiles.
 # missing data will be zeros.
 # ##################################################
-def correct_days(rawdatalist):
-    return rawdatalist
+def correct_days(arraydata):
+    # Get the start and finish datetimes
+    datalist = arraydata[0]
+    datalist = datalist.split(",")
+    startdate = datalist[0]
+
+    datalist = rawdatalist[len(arraydata) - 1]
+    datalist = datalist.split(",")
+    enddate = datalist[0]
+
+    print(startdate + " " + enddate)
+
+    return arraydata
 
 # ##################################################
 # Write out values to file.
@@ -186,7 +197,6 @@ def save_csv(arraydata, savefile):
 
         except IOError:
             print("WARNING: There was a problem accessing heatmap file")
-
 
 
 
@@ -237,8 +247,6 @@ rawdatalist = prune_data(rawdatalist)
 #
 # The best way to do this is to reduce the magnetomter data down to whole minutes, pad out empty mins with zeros
 # then procede to calculate the differences as usual
-#
-
 rawdatalist = correct_days(rawdatalist)
 
 # Convert the absolute readings into differences
@@ -251,7 +259,7 @@ rawdatalist = running_avg(rawdatalist, 10 * magrate)
 print("Smoothing, pass 2...")
 rawdatalist = running_avg(rawdatalist, 10 * magrate)
 
-# Convert the diffs into hourly max/mins
+# Convert the diffs into Daaily max/mins
 # this will work on the timestamps in the array
 print("Finding Daily max/mins...\n")
 rawdatalist = maxmin_readings(rawdatalist)
