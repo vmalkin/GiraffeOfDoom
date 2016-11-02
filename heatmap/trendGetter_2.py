@@ -2,6 +2,8 @@ import os
 import re
 import matplotlib.pyplot as plt
 from decimal import Decimal, getcontext
+from datetime import datetime
+from time import mktime
 
 # Raw Data Format:
 # Date/Time (UTC), Raw X, Raw Y, Raw Z
@@ -171,13 +173,23 @@ def correct_days(arraydata):
     # Get the start and finish datetimes
     datalist = arraydata[0]
     datalist = datalist.split(",")
-    startdate = datalist[0]
+    # as a datetime string
+    startdate = datetime.strptime(datalist[0],"%Y-%m-%d %H:%M:%S.%f")
 
     datalist = rawdatalist[len(arraydata) - 1]
     datalist = datalist.split(",")
-    enddate = datalist[0]
+    # as a datetime string
+    enddate = datetime.strptime(datalist[0],"%Y-%m-%d %H:%M:%S.%f")
 
-    print(startdate + " " + enddate)
+    duration = mktime(enddate.timetuple()) - mktime(startdate.timetuple())
+
+    print(duration)
+
+    # Convert the datetime strings into unix time. This should be easier to calculate how much time should
+    # be accounted for in the array
+    # 2016-10-10 00:00:26.19
+
+
 
     return arraydata
 
