@@ -180,6 +180,33 @@ def correct_days(arraydata):
     datalist = datalist.split(",")
     # as a datetime string
     enddate = datetime.strptime(datalist[0],"%Y-%m-%d %H:%M:%S.%f")
+    # the start dates and end dates are now UNIX style datestamps (Seconds)
+    # there are 3600 seconds in an hour and 86400 sec in a day
+
+    # from array A, assume A[n] and A[n-1]. Assume working array W
+    # if A[n].time - A[n-1].time <= magnetometer reporting interval (Do we need to add 10% to this??)
+    # then append the difference and A[n].time to working array W
+    # next A
+
+    # Next, init an array of complete timesteps between A[0].time and A[len(A)].time
+    # the timesteps will be the magnetometer reportig intervals.
+
+    # Map W to this new array X
+
+    # If necessary, X[] may need to be smoothed a couple of times
+
+    # Calculate (max - min) for each day in this array. Save out to create a new array of daily
+    # activity
+
+    # For this array, add a new series. This will be the runnng average of readings for 3 to 5 days.
+
+    # For this array, add a new series. This will be where the running average has peaked. The
+    # date needs to be stored.
+
+    # from the stored dates, calculate the average Carrington Rotation number.
+
+    # Calulate next coronal hole dates.
+
 
     duration = mktime(enddate.timetuple()) - mktime(startdate.timetuple())
 
