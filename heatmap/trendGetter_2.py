@@ -17,7 +17,8 @@ from time import mktime
 # We might need some method to parse a datafile to see that the data 
 # is valid, not noisy, has no blips, etc.
 
-magrate = 4  # How many readings per minute from the magnetometer
+maginterval = 15 # how many seconds between each reading
+magrate = int(60 / maginterval)
 eventthreshold = 1.6
 
 
@@ -180,6 +181,7 @@ def correct_days(arraydata):
     datalist = datalist.split(",")
     # as a datetime string
     enddate = datetime.strptime(datalist[0],"%Y-%m-%d %H:%M:%S.%f")
+
     # the start dates and end dates are now UNIX style datestamps (Seconds)
     # there are 3600 seconds in an hour and 86400 sec in a day
 
