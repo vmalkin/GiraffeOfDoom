@@ -171,27 +171,30 @@ def maxmin_readings(arraydata):
 # missing data will be zeros.
 # ##################################################
 def correct_days(arraydata):
+    # set date time format for strptime()
+    dateformat = "%Y-%m-%d %H:%M:%S.%f"
+
     # Get the start and finish datetimes
     datalist = arraydata[0]
     datalist = datalist.split(",")
     # as a datetime string
-    startdate = datetime.strptime(datalist[0],"%Y-%m-%d %H:%M:%S.%f")
+    startdate = datetime.strptime(datalist[0],dateformat)
 
     datalist = rawdatalist[len(arraydata) - 1]
     datalist = datalist.split(",")
     # as a datetime string
-    enddate = datetime.strptime(datalist[0],"%Y-%m-%d %H:%M:%S.%f")
+    enddate = datetime.strptime(datalist[0],dateformat)
 
     # the start dates and end dates are now UNIX style datestamps (Seconds)
     # there are 3600 seconds in an hour and 86400 sec in a day
 
-    # from array A, assume A[n] and A[n-1]. Assume working array W
-    # if A[n].time - A[n-1].time <= magnetometer reporting interval (Do we need to add 10% to this??)
-    # then append the difference and A[n].time to working array W
-    # next A
+    # from array arraydata, assume arraydata[n] and arraydata[n-1]. Assume working array W
+    # if arraydata[n].time - arraydata[n-1].time <= magnetometer reporting interval (Do we need to add 10% to this??)
+    # then append the difference and arraydata[n].time to working array W
+    # next arraydata
 
-    # Next, init an array of complete timesteps between A[0].time and A[len(A)].time
-    # the timesteps will be the magnetometer reportig intervals.
+    # Next, init an array of complete timesteps between arraydata[0].time and arraydata[len(A)].time
+    # the timesteps will be the magnetometer reporting intervals.
 
     # Map W to this new array X
 
@@ -209,16 +212,9 @@ def correct_days(arraydata):
 
     # Calulate next coronal hole dates.
 
-
     duration = mktime(enddate.timetuple()) - mktime(startdate.timetuple())
 
     print(duration)
-
-    # Convert the datetime strings into unix time. This should be easier to calculate how much time should
-    # be accounted for in the array
-    # 2016-10-10 00:00:26.19
-
-
 
     return arraydata
 
