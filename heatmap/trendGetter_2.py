@@ -188,34 +188,25 @@ def correct_days(arraydata):
     # the start dates and end dates are now UNIX style datestamps (Seconds)
     # there are 3600 seconds in an hour and 86400 sec in a day
 
-    # from array arraydata, assume arraydata[n] and arraydata[n-1]. Assume working array W
-    # if arraydata[n].time - arraydata[n-1].time <= magnetometer reporting interval (Do we need to add 10% to this??)
-    # then append the difference and arraydata[n].time to working array W
-    # next arraydata
+    # convert array data times to unix time
+    workingarray = []
 
-    # Next, init an array of complete timesteps between arraydata[0].time and arraydata[len(A)].time
-    # the timesteps will be the magnetometer reporting intervals.
+    for i in range(0, len(arraydata)):
+        datasplit = arraydata[i].split(",")
+        newdatetime = datetime.strptime(datalist[0],dateformat)
+        datastring = newdatetime + "," + datasplit[1]
+        workingarray.append(datastring)
 
-    # Map W to this new array X
-
-    # If necessary, X[] may need to be smoothed a couple of times
-
-    # Calculate (max - min) for each day in this array. Save out to create a new array of daily
-    # activity
-
-    # For this array, add a new series. This will be the runnng average of readings for 3 to 5 days.
-
-    # For this array, add a new series. This will be where the running average has peaked. The
-    # date needs to be stored.
-
-    # from the stored dates, calculate the average Carrington Rotation number.
-
-    # Calulate next coronal hole dates.
-
+    # Determine the real length of time between the start date and end date. Diovide this into magnetometer read intervals
+    # this will become the new array with gaps where there is zero data.
     duration = mktime(enddate.timetuple()) - mktime(startdate.timetuple())
+    magreadingscount = int(duration / maginterval)
 
-    print(duration)
+    correctedarray = []
 
+
+
+    # return the date string to the format of: 2016-10-10 00:00:26.19
     return arraydata
 
 # ##################################################
