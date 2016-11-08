@@ -178,28 +178,33 @@ def correct_days(arraydata):
     datalist = arraydata[0]
     datalist = datalist.split(",")
     # as a datetime string
-    startdate = (datetime.strptime(datalist[0],dateformat))
+    startdate = datetime.strptime(datalist[0],dateformat)
+    startdate = int(mktime(startdate.timetuple()))
 
     datalist = rawdatalist[len(arraydata) - 1]
     datalist = datalist.split(",")
     # as a datetime string
-    enddate = (datetime.strptime(datalist[0],dateformat))
+    enddate = datetime.strptime(datalist[0],dateformat)
+    enddate = int(mktime(enddate.timetuple()))
 
     # the start dates and end dates are now UNIX style datestamps (Seconds)
     # there are 3600 seconds in an hour and 86400 sec in a day
 
     # convert array data times to unix time
     workingarray = []
+    for item in arraydata:
+        datasplit = item.split(",")
 
-    for i in range(0, len(arraydata)):
-        datasplit = arraydata[i].split(",")
-        newdatetime = datetime.strptime(datalist[0],dateformat)
+        newdatetime = datetime.strptime(datasplit[0],dateformat)
+        # convert to Unix time (Seconds)
+        newdatetime = mktime(newdatetime.timetuple())
+
         datastring = str(newdatetime) + "," + datasplit[1]
         workingarray.append(datastring)
 
     # Determine the real length of time between the start date and end date. Divide this into magnetometer read intervals
     # this will become the new array with gaps where there is zero data.
-    duration = mktime(enddate.timetuple()) - mktime(startdate.timetuple())
+    duration = enddate - startdate
     magreadingscount = int(duration / maginterval)
 
     correctedarray = []
@@ -215,14 +220,14 @@ def correct_days(arraydata):
         if appendflag == 0:
             appendstring = i + ", null"
             correctedarray.append(appendstring)
-
-    # return the date string to the format of: 2016-10-10 00:00:26.19
-    returnarray = []
-
-    for item in correctedarray:
-        datasplit = item.split(",")
-        datetimethang = datetime.strftime(dateformat, datasplit[0])
-        print(datetimethang)
+    #
+    # # return the date string to the format of: 2016-10-10 00:00:26.19
+    # returnarray = []
+    #
+    # for item in correctedarray:
+    #     datasplit = item.split(",")
+    #     datetimethang = datetime.strftime(dateformat, datasplit[0])
+    #     print(datetimethang)
 
     return returnarray
 
