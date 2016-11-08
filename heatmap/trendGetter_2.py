@@ -178,12 +178,12 @@ def correct_days(arraydata):
     datalist = arraydata[0]
     datalist = datalist.split(",")
     # as a datetime string
-    startdate = datetime.strptime(datalist[0],dateformat)
+    startdate = (datetime.strptime(datalist[0],dateformat))
 
     datalist = rawdatalist[len(arraydata) - 1]
     datalist = datalist.split(",")
     # as a datetime string
-    enddate = datetime.strptime(datalist[0],dateformat)
+    enddate = (datetime.strptime(datalist[0],dateformat))
 
     # the start dates and end dates are now UNIX style datestamps (Seconds)
     # there are 3600 seconds in an hour and 86400 sec in a day
@@ -194,20 +194,37 @@ def correct_days(arraydata):
     for i in range(0, len(arraydata)):
         datasplit = arraydata[i].split(",")
         newdatetime = datetime.strptime(datalist[0],dateformat)
-        datastring = newdatetime + "," + datasplit[1]
+        datastring = str(newdatetime) + "," + datasplit[1]
         workingarray.append(datastring)
 
-    # Determine the real length of time between the start date and end date. Diovide this into magnetometer read intervals
+    # Determine the real length of time between the start date and end date. Divide this into magnetometer read intervals
     # this will become the new array with gaps where there is zero data.
     duration = mktime(enddate.timetuple()) - mktime(startdate.timetuple())
     magreadingscount = int(duration / maginterval)
 
     correctedarray = []
 
+    for i in range(startdate, enddate, magreadingscount):
+        appendflag = 0
+        for j in range(0, len(workingarray)):
+            datasplit = workingarray[j].split(",")
+            if datasplit[0] >= i and datasplit[0] < i + magreadingscount:
+                correctedarray.append(workingarray[j])
+                appendflag = 1
 
+        if appendflag == 0:
+            appendstring = i + ", null"
+            correctedarray.append(appendstring)
 
     # return the date string to the format of: 2016-10-10 00:00:26.19
-    return arraydata
+    returnarray = []
+
+    for item in correctedarray:
+        datasplit = item.split(",")
+        datetimethang = datetime.strftime(dateformat, datasplit[0])
+        print(datetimethang)
+
+    return returnarray
 
 # ##################################################
 # Write out values to file.
