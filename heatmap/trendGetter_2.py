@@ -213,7 +213,7 @@ def correct_days(arraydata):
         appendflag = 0
         for j in range(0, len(workingarray)):
             datasplit = workingarray[j].split(",")
-            if datasplit[0] >= i and datasplit[0] < i + magreadingscount:
+            if int(datasplit[0]) >= i and int(datasplit[0]) < i + magreadingscount:
                 correctedarray.append(workingarray[j])
                 appendflag = 1
 
