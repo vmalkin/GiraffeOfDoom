@@ -213,21 +213,26 @@ def correct_days(arraydata):
         appendflag = 0
         for j in range(0, len(workingarray)):
             datasplit = workingarray[j].split(",")
-            if int(datasplit[0]) >= i and int(datasplit[0]) < i + magreadingscount:
+
+            # if there is an entry in the raw data that matches a slot in the corrected array...
+            if float(datasplit[0]) >= i and float(datasplit[0]) < i + magreadingscount:
                 correctedarray.append(workingarray[j])
                 appendflag = 1
 
+        # Otherwise there is no entry that maps to ne timeslot. So this will be a zero entry for this timeslot
         if appendflag == 0:
             appendstring = i + ", null"
             correctedarray.append(appendstring)
-    #
-    # # return the date string to the format of: 2016-10-10 00:00:26.19
-    # returnarray = []
-    #
-    # for item in correctedarray:
-    #     datasplit = item.split(",")
-    #     datetimethang = datetime.strftime(dateformat, datasplit[0])
-    #     print(datetimethang)
+
+
+    # return the date string to the format of: 2016-10-10 00:00:26.19
+    returnarray = []
+
+    for item in correctedarray:
+        datasplit = item.split(",")
+
+        datetimethang = datetime.strftime(dateformat, datasplit[0])
+        print(datetimethang)
 
     return returnarray
 
