@@ -4,19 +4,22 @@ clr.AddReference("System.Drawing")
 import System.Drawing
 
 capturedir = "c:\\temp\\"
+pausebit = 3
+exposetime = 30
+defaultcam = 0
 
-sundata = ((0,0,0,0),
+sundata = ((0,0),
 (5,22),
 (5,22),
-(5,22),
-(5,22),
-(5,22),
-(6,20),
-(6,20),
+(5,21),
+(5,20),
+(5,20),
+(6,19),
+(6,19),
 (6,20),
 (6,21),
-(5,22),
-(5,22),
+(5,21),
+(5,21),
 (5,22))
 
 # Choose the ZWO camera. 
@@ -32,7 +35,7 @@ while True:
    monthnum = int(dt.strftime('%m'))
    tlr = sundata[int(monthnum)][0]   # Morning twilight starts
    tls = sundata[int(monthnum)][1]   # Evening twilight ends
-   print("Month num: " + str(monthnum) + ". Dawn: " + str(tlr) + ". Dusk: " + str(tls))
+   print("\nMonth num: " + str(monthnum) + ". Dawn: " + str(tlr) + ". Dusk: " + str(tls))
 
    if nowhour >= tlr and nowhour <= tls:
       # Daytime
@@ -44,11 +47,18 @@ while True:
    else:
       # Nighttime
       capturemode = "Night-time, Fixed Exposure"
-      print("Night-time " + nowhour)
-      SharpCap.SelectedCamera.Controls.Exposure.Automatic = False 
-      SharpCap.SelectedCamera.Controls.Exposure.Value = 20  # Set the exposure to 1000ms (1s)  
+      
+      print("Night-time " + str(nowhour))
+      
+      SharpCap.SelectedCamera.Controls.Exposure.Automatic = False
+      time.sleep(pausebit)
+      SharpCap.SelectedCamera = SharpCap.Cameras[defaultcam]
+      time.sleep(pausebit)
+      SharpCap.SelectedCamera.Controls.Exposure.Value = exposetime
+      # SharpCap.SelectedCamera.Controls.Exposure.ExposureMs = exposetime
+      
       print("exposure is " + str(SharpCap.SelectedCamera.Controls.Exposure.Value))
-
+        
    SharpCap.SelectedCamera.CaptureSingleFrameTo(capturedir + "capture.png")
    time.sleep(1)
    bm = System.Drawing.Bitmap(capturedir + "capture.png")
