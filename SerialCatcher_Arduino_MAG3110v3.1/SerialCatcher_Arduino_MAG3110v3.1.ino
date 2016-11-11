@@ -37,13 +37,13 @@
 
 #define MAG_ADDR  0x0E //7-bit address for the MAG3110, doesn't change#
 
-const float AvgCount = 100; //size for running average arrays
+const float AvgCount = 2100; //size for running average arrays
 
 float xValue; // GLOBAL reported values
 float yValue;
 float zValue;
 
-const int waitTimer = 15000; // wait timer for printing results to serial.  
+const int waitTimer = 1; // wait timer for printing results to serial.  
 
 void setup()
 {

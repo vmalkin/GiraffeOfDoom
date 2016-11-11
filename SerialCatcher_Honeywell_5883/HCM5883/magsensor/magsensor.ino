@@ -40,7 +40,7 @@
 /* Assign a unique ID to this sensor at the same time */
 Adafruit_HMC5883_Unified mag = Adafruit_HMC5883_Unified(12345);
 
-int AVERAGE_ITERATIONS = 100;
+int AVERAGE_ITERATIONS = 5000; /* Approx 1000 iterations per second */
 
 
 void displaySensorDetails(void)
@@ -113,5 +113,5 @@ void loop(void)
   magY = 0;
   magZ = 0;
   
-  delay(10000);
+  delay(1);
 }
