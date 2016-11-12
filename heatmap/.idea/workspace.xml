@@ -2,7 +2,330 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="3d9dd58d-c268-4993-bf1a-fa7bd63c18b1" name="Default" comment="">
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2015-12-17.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2015-12-18.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2015-12-19.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2015-12-20.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2015-12-21.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2015-12-22.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2015-12-23.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2015-12-24.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2015-12-25.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2015-12-26.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2015-12-27.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2015-12-28.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2015-12-29.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2015-12-30.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2015-12-31.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-01-01.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-01-02.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-01-03.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-01-04.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-01-05.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-01-06.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-01-07.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-01-08.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-01-09.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-01-10.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-01-11.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-01-12.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-01-13.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-01-14.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-01-15.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-01-16.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-01-17.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-01-18.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-01-19.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-01-20.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-01-21.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-01-22.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-01-23.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-01-24.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-01-25.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-01-26.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-01-27.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-01-28.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-01-29.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-01-30.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-01-31.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-02-01.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-02-02.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-02-03.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-02-04.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-02-05a.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-02-06.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-02-07.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-02-07a.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-02-08.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-02-09.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-02-10.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-02-11.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-02-12.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-02-13.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-02-14.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-02-15.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-02-16.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-02-17.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-02-18.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-02-19.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-02-20.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-02-21.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-02-22.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-02-23.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-02-24.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-02-25.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-02-26.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-02-27.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-02-28.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-02-29.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-03-01.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-03-02.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-03-03.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-03-04.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-03-05.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-03-05a.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-03-06.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-03-07.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-03-08.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-03-09.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-03-10.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-03-11.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-03-12.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-03-13.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-03-14.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-03-15.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-03-16.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-03-17.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-03-18.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-03-19.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-03-20.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-03-21.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-03-22.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-03-23.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-03-24.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-03-25.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-03-26.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-03-27.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-03-28.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-03-29.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-03-30.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-03-31.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-04-01.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-04-02.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-04-03.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-04-04.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-04-05.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-04-06.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-04-07.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-04-08.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-04-09.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-04-10.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-04-11.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-04-12.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-04-13.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-04-14.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-04-15.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-04-16.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-04-17.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-04-17a.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-04-18.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-04-19.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-04-20.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-04-21.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-04-22.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-04-23.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-04-24.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-04-25.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-04-26.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-04-27.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-04-28.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-04-29.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-04-30.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-05-01.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-05-02.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-05-03.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-05-04.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-05-05.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-05-06.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-05-07.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-05-07a.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-05-08.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-05-08a.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-05-08b.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-05-09.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-05-10.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-05-11.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-05-12.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-05-13.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-05-14.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-05-15.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-05-16.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-05-17.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-05-18.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-05-19.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-05-20.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-05-21.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-05-22.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-05-23.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-05-24.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-05-25.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-05-26.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-05-27.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-05-28.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-05-29.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-05-30.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-05-31.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-06-01.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-06-02.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-06-03.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-06-04.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-06-05.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-06-06.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-06-07.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-06-08.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-06-09.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-06-10.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-06-11.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-06-12.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-06-13.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-06-14.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-06-15.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-06-16.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-06-17.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-06-18.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-06-19.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-06-20.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-06-21.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-06-22.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-06-23.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-06-24.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-06-25.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-06-26.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-06-27.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-06-28.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-06-29.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-06-30.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-07-01.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-07-02.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-07-03.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-07-04.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-07-05.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-07-06.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-07-07.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-07-08.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-07-09.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-07-10.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-07-11.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-07-12.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-07-13.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-07-14.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-07-15.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-07-16.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-07-17.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-07-18.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-07-19.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-07-20.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-07-21.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-07-22.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-07-23.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-07-24.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-07-25.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-07-26.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-07-27.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-07-28.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-07-29.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-07-30.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-07-31.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-08-01.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-08-02.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-08-03.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-08-04.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-08-05.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-08-06.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-08-07.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-08-08.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-08-09.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-08-10.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-08-11.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-08-12.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-08-13.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-08-14.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-08-15.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-08-16.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-08-17.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-08-18.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-08-19.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-08-20.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-08-21.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-08-22.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-08-23.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-08-24.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-08-25.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-08-26.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-08-27.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-08-28.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-08-29.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-08-30.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-08-31.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-09-01.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-09-02.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-09-03.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-09-04.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-09-05.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-09-06.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-09-07.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-09-08.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-09-09.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-09-10.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-09-11.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-09-12.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-09-13.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-09-14.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-09-15.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-09-16.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-09-17.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-09-18.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-09-19.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-09-20.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-09-21.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-09-22.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-09-23.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-09-24.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-09-25.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-09-26.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-09-27.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-09-28.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-09-29.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-09-30.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-10-01.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-10-02.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-10-03.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-10-04.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-10-05.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-10-06.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-10-07.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-10-08.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-10-09.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-10-10.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-10-11.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-10-12.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-10-13.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-10-14.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-10-15.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-10-16.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-10-17.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-10-18.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-10-19.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-10-20.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-10-21.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-10-22.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-10-23.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/2016-10-24.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/trend.csv" afterPath="" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/files.txt" afterPath="$PROJECT_DIR$/files.txt" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/trendGetter_2.py" afterPath="$PROJECT_DIR$/trendGetter_2.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/trenddata.csv" afterPath="$PROJECT_DIR$/trenddata.csv" />
     </list>
     <ignored path="heatmap.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -25,8 +348,8 @@
       <file leaf-file-name="trendGetter_2.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/trendGetter_2.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="282">
-              <caret line="232" column="0" selection-start-line="232" selection-start-column="0" selection-end-line="232" selection-end-column="0" />
+            <state relative-caret-position="91">
+              <caret line="227" column="13" selection-start-line="227" selection-start-column="13" selection-end-line="227" selection-end-column="13" />
               <folding />
             </state>
           </provider>
@@ -76,6 +399,8 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
+      <pane id="Scratches" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -96,8 +421,6 @@
           </PATH>
         </subPane>
       </pane>
-      <pane id="Scope" />
-      <pane id="Scratches" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -341,14 +664,14 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="42" y="23" width="1324" height="745" extended-state="6" />
-    <editor active="false" />
+    <editor active="true" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.24865694" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3298292" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.41653904" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2618683" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
@@ -438,6 +761,14 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/trendGetter_2.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/2016-10-12.csv">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="345">
@@ -447,8 +778,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/trendGetter_2.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="282">
-          <caret line="232" column="0" selection-start-line="232" selection-start-column="0" selection-end-line="232" selection-end-column="0" />
+        <state relative-caret-position="91">
+          <caret line="227" column="13" selection-start-line="227" selection-start-column="13" selection-end-line="227" selection-end-column="13" />
           <folding />
         </state>
       </provider>

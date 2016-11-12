@@ -225,14 +225,19 @@ def correct_days(arraydata):
             correctedarray.append(appendstring)
 
 
-    # return the date string to the format of: 2016-10-10 00:00:26.19
+    # Convert the date string to the format of: 2016-10-10 00:00:26.19
     returnarray = []
 
     for item in correctedarray:
         datasplit = item.split(",")
 
-        datetimethang = datetime.strftime(dateformat, datasplit[0])
-        print(datetimethang)
+        # Convert the UNix timestamp, inot a UTC string
+        datetimethang = datetime.fromtimestamp(float(datasplit[0])).strftime(dateformat)
+
+        # Create the dataline to be appended
+        dataline = datetimethang + "," + datasplit[1]
+
+        returnarray.append(dataline)
 
     return returnarray
 
