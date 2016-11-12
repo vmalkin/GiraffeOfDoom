@@ -221,7 +221,7 @@ def correct_days(arraydata):
 
         # Otherwise there is no entry that maps to ne timeslot. So this will be a zero entry for this timeslot
         if appendflag == 0:
-            appendstring = i + ", null"
+            appendstring = str(i) + ",0"
             correctedarray.append(appendstring)
 
 
@@ -319,7 +319,7 @@ rawdatalist = running_avg(rawdatalist, 10 * magrate)
 print("Smoothing, pass 2...")
 rawdatalist = running_avg(rawdatalist, 10 * magrate)
 
-# Convert the diffs into Daaily max/mins
+# Convert the diffs into Daily max/mins
 # this will work on the timestamps in the array
 print("Finding Daily max/mins...\n")
 rawdatalist = maxmin_readings(rawdatalist)
