@@ -4,9 +4,10 @@ clr.AddReference("System.Drawing")
 import System.Drawing
 
 capturedir = "c:\\temp\\"
-pausebit = 3
+pausebit = 10
 exposetime = 30
 defaultcam = 0
+capturemode = ""
 
 sundata = ((0,0),
 (5,22),
@@ -26,6 +27,40 @@ sundata = ((0,0),
 def selectcam():
    pass
 
+def daytime():
+   # Daytime
+   capturemode = "Daytime, Autoexposure"
+   print("Daytime: " + str(nowhour))
+   SharpCap.SelectedCamera = SharpCap.Cameras[defaultcam]
+   time.sleep(pausebit)
+   SharpCap.SelectedCamera.Controls.Exposure.Automatic = True
+   print("exposure is " + str(SharpCap.SelectedCamera.Controls.Exposure.Value))
+   
+def nighttime():
+   # Nighttime
+   capturemode = "Night-time, Fixed Exposure"
+   
+   print("Night-time " + str(nowhour))
+   # there is an issue with trying to force th camera into a set, timed, exposure
+   # It seems that the camera keeps wanting to pick up the last automatic exposure value
+   # and use that. SO, lets see if we can force it to pick up a longer valaue anyway
+   SharpCap.SelectedCamera = SharpCap.Cameras[defaultcam]
+   SharpCap.SelectedCamera.Controls.Exposure.Automatic = True
+   time.sleep(pausebit)
+   
+   # Set autoexposure to false
+   SharpCap.SelectedCamera.Controls.Exposure.Automatic = False
+   time.sleep(pausebit)
+   
+   # TRY and set a manual exposure time
+   SharpCap.SelectedCamera.Controls.Exposure.Value = exposetime
+   
+   print("exposure is " + str(SharpCap.SelectedCamera.Controls.Exposure.Value))
+
+
+# #####################################
+# P R O G R A M   S T A R T S   H E R E
+# #####################################
 SharpCap.SelectedCamera.Controls.OutputFormat.Value = 'PNG files (*.png)'
 capturemode = ""
 
@@ -33,32 +68,17 @@ while True:
    dt = datetime.datetime.now()
    nowhour = int(dt.strftime('%H'))
    monthnum = int(dt.strftime('%m'))
-   tlr = sundata[int(monthnum)][0]   # Morning twilight starts
-   tls = sundata[int(monthnum)][1]   # Evening twilight ends
+   sunrise = sundata[int(monthnum)][0]   # Morning twilight starts
+   sunset = sundata[int(monthnum)][1]   # Evening twilight ends
    print("\nMonth num: " + str(monthnum) + ". Dawn: " + str(tlr) + ". Dusk: " + str(tls))
 
-   if nowhour >= tlr and nowhour <= tls:
-      # Daytime
-      capturemode = "Daytime, Autoexposure"
-      print("Daytime: " + str(nowhour))
-      SharpCap.SelectedCamera.Controls.Exposure.Automatic = True
-      print("exposure is " + str(SharpCap.SelectedCamera.Controls.Exposure.Value))
+   if nowhour >= sunrise and nowhour <= sunset:
+      daytime()
       
    else:
-      # Nighttime
-      capturemode = "Night-time, Fixed Exposure"
-      
-      print("Night-time " + str(nowhour))
-      
-      SharpCap.SelectedCamera.Controls.Exposure.Automatic = False
-      time.sleep(pausebit)
-      SharpCap.SelectedCamera = SharpCap.Cameras[defaultcam]
-      time.sleep(pausebit)
-      SharpCap.SelectedCamera.Controls.Exposure.Value = exposetime
-      # SharpCap.SelectedCamera.Controls.Exposure.ExposureMs = exposetime
-      
-      print("exposure is " + str(SharpCap.SelectedCamera.Controls.Exposure.Value))
-        
+      nightime()
+
+   # Take the snap, save out, append information to image stamp
    SharpCap.SelectedCamera.CaptureSingleFrameTo(capturedir + "capture.png")
    time.sleep(1)
    bm = System.Drawing.Bitmap(capturedir + "capture.png")
