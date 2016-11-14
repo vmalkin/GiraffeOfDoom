@@ -258,6 +258,65 @@ def save_csv(arraydata, savefile):
         except IOError:
             print("WARNING: There was a problem accessing heatmap file")
 
+# ##################################################
+# Normalise the data
+# ##################################################
+def normalise(arraydata):
+    minvalue = Decimal(10000)
+
+    # find the max and min values
+    for item in arraydata:
+        datasplit = item.split(",")
+        # If the current item value is less than the current minimum value, make the appropriate change
+        if Decimal(datasplit[1]) < Decimal(minvalue):
+            minvalue = Decimal(datasplit[1])
+
+    # now find the max value
+    maxvalue = minvalue
+    for item in arraydata:
+        datasplit = item.split(",")
+        if Decimal(datasplit[1]) > Decimal(maxvalue):
+            maxvalue = datasplit[1]
+
+    # formula for normalising data is (x - min) / (max - min)
+    temparray =[]
+    for item in arraydata:
+        datasplit = item.split(",")
+        timestamp = datasplit[0]
+        reading = Decimal(datasplit[1])
+
+        nrmlview = (reading - minvalue) / (Decimal(maxvalue) - Decimal(minvalue))
+
+        datastring = timestamp + "," + str(nrmlview)
+        temparray.append(datastring)
+
+    return temparray
+
+# ##################################################
+# Display Carrington Cycle
+# the data should have the format of datetime, normalised_data
+# ##################################################
+def carrington_cycle(arraydata):
+    temparray = []
+    # we are using an average figure of 2 days either side, so 5 days inclusive
+    window = 5
+    interval = (window - 1) / 2
+
+    if len(arraydata) > window:
+        for i in range(interval, len(arraydata) - interval):
+            avgdata = 0
+
+            for j in range(0, window):
+                datasplit = arraydata[i + j].split(",")
+                avgdata = avgdata + Decimal(datasplit[1])
+
+            avgdata = Decimal(avgdata/window)
+            tempdatastring = arraydata[i] + "," + avgdata
+            temparray.append(tempdatastring)
+
+        return temparray
+    else:
+        return arraydata
 
 
 # ##################################################
@@ -324,23 +383,36 @@ rawdatalist = running_avg(rawdatalist, 10 * magrate)
 print("Finding Daily max/mins...\n")
 rawdatalist = maxmin_readings(rawdatalist)
 
+# Normalise the readings
+print("Normalising data...")
+rawdatalist = normalise(rawdatalist)
+
+# Create the 5 day average of readings, and append this to the correct date
+# this displays the carrington cycle
+print("Creating Carrington Cycle data...")
+rawdatalist = carrington_cycle(rawdatalist)
+
+
 # Save
 print("Saving datafile...\n")
 save_csv(rawdatalist, "trenddata.csv")
 
 
-# #################
+#################
 # Matplotlib graph
-# #################
-# print("Creating graph...\n")
+#################
+print("Creating graph...\n")
 labelslist = []
 datalist = []
 
-
-
 for item in rawdatalist:
     data = item.split(",")
-    labelslist.append(data[0])
+    # we need to truncate the label on the space in the datetime string
+    label = str(data[0]).split(" ")
+    label = label[0]
+    labelslist.append(str(label))
+
+    # append data to the data array
     datavalue = Decimal(data[1])
     datalist.append(datavalue)
 
