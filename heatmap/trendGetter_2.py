@@ -300,18 +300,18 @@ def carrington_cycle(arraydata):
     temparray = []
     # we are using an average figure of 2 days either side, so 5 days inclusive
     window = 5
-    interval = (window - 1) / 2
+    interval = int((window - 1) / 2)
 
     if len(arraydata) > window:
         for i in range(interval, len(arraydata) - interval):
             avgdata = 0
 
-            for j in range(0, window):
-                datasplit = arraydata[i + j].split(",")
+            for j in range(i - interval, i + interval):
+                datasplit = arraydata[j].split(",")
                 avgdata = avgdata + Decimal(datasplit[1])
 
             avgdata = Decimal(avgdata/window)
-            tempdatastring = arraydata[i] + "," + avgdata
+            tempdatastring = arraydata[i] + "," + str(avgdata)
             temparray.append(tempdatastring)
 
         return temparray
@@ -401,26 +401,26 @@ save_csv(rawdatalist, "trenddata.csv")
 #################
 # Matplotlib graph
 #################
-print("Creating graph...\n")
-labelslist = []
-datalist = []
-
-for item in rawdatalist:
-    data = item.split(",")
-    # we need to truncate the label on the space in the datetime string
-    label = str(data[0]).split(" ")
-    label = label[0]
-    labelslist.append(str(label))
-
-    # append data to the data array
-    datavalue = Decimal(data[1])
-    datalist.append(datavalue)
-
-plt.plot(datalist, color='#00f000')
-
-plt.ylabel("Relative Activity")
-plt.xlabel("Date")
-plt.legend(["Daily Activity"])
-plt.title("Geomagnetic activity from " + labelslist[0] + " to " + labelslist[len(labelslist) - 1] + "\n")
-plt.xticks(range(len(datalist)), labelslist, size='small', rotation='vertical')
-plt.show()
+# print("Creating graph...\n")
+# labelslist = []
+# datalist = []
+#
+# for item in rawdatalist:
+#     data = item.split(",")
+#     # we need to truncate the label on the space in the datetime string
+#     label = str(data[0]).split(" ")
+#     label = label[0]
+#     labelslist.append(str(label))
+#
+#     # append data to the data array
+#     datavalue = Decimal(data[1]) + Decimal(data[2])
+#     datalist.append(datavalue)
+#
+# plt.plot(datalist, color='#00f000')
+#
+# plt.ylabel("Relative Activity")
+# plt.xlabel("Date")
+# plt.legend(["Daily Activity"])
+# plt.title("Geomagnetic activity from " + labelslist[0] + " to " + labelslist[len(labelslist) - 1] + "\n")
+# plt.xticks(range(len(datalist)), labelslist, size='small', rotation='vertical')
+# plt.show()
