@@ -19,26 +19,9 @@ sundata = ((0,0),
 (6,20),
 (6,21),
 (5,21),
-(5,21),
+(5,22),
 (5,22))
-
-# Choose the ZWO camera. 
-def selectcam():
-   pass
-
-def daytime():
-   # Daytime
-   print("Daytime: " + str(nowhour))
-   shutteropen = 0.0001
-   return shutteropen
-   
-   
-def nighttime():
-   # Nighttime
-   print("Night-time " + str(nowhour))
-   shutteropen = 30
-   return shutteropen
-  
+ 
 
 
 # #####################################
@@ -60,15 +43,18 @@ while True:
    print("\nMonth num: " + str(monthnum) + ". Dawn: " + str(sunrise) + ". Dusk: " + str(sunset))
 
    if nowhour > sunrise and nowhour < sunset:
-      capturemode = "Daytime. Manual exposure"
-      exposetime = daytime()
-      
+      # PUt the camera into automatic mode
+      capturemode = "Daytime. Automatic exposure"
+      SharpCap.SelectedCamera.Controls.Exposure.Automatic = True
+       
    else:
+      # PUt the camera into manual mode, set the exposure time to 30 seconds.
+      SharpCap.SelectedCamera.Controls.Exposure.Automatic = False
       capturemode = "Night-time. Manual exposure"
-      exposetime = nighttime()
+      exposetime = 30
+      SharpCap.SelectedCamera.Controls.Exposure.Value = exposetime
    
-   # SharpCap.SelectedCamera.Controls.Exposure.ExposureMs = exposetime
-   SharpCap.SelectedCamera.Controls.Exposure.Value = exposetime
+   print("Hour is " + nowhour)
    print("exposure is " + str(SharpCap.SelectedCamera.Controls.Exposure.Value))
 
    # Take the snap, save out, append information to image stamp
