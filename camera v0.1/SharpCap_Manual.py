@@ -44,17 +44,25 @@ while True:
 
    if nowhour > sunrise and nowhour < sunset:
       # PUt the camera into automatic mode
-      capturemode = "Daytime. Automatic exposure"
-      SharpCap.SelectedCamera.Controls.Exposure.Automatic = True
+      # capturemode = "Daytime. Automatic exposure"
+      # SharpCap.SelectedCamera.Controls.Exposure.Automatic = True
+      
+      # SharpCap.SelectedCamera.Controls.Exposure.Automatic = False
+      capturemode = "Day-time. Manual exposure"
+      if sunset - nowhour == 1:
+         exposetime = 0.1
+      else:
+         exposetime = 0.0001
        
    else:
       # PUt the camera into manual mode, set the exposure time to 30 seconds.
-      SharpCap.SelectedCamera.Controls.Exposure.Automatic = False
+      # SharpCap.SelectedCamera.Controls.Exposure.Automatic = False
       capturemode = "Night-time. Manual exposure"
       exposetime = 30
-      SharpCap.SelectedCamera.Controls.Exposure.Value = exposetime
    
-   print("Hour is " + nowhour)
+   SharpCap.SelectedCamera.Controls.Exposure.Value = exposetime
+   
+   print("Hour is " + str(nowhour))
    print("exposure is " + str(SharpCap.SelectedCamera.Controls.Exposure.Value))
 
    # Take the snap, save out, append information to image stamp
