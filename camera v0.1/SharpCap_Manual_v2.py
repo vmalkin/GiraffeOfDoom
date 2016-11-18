@@ -68,4 +68,6 @@ while True:
    bm.Dispose()
    # do more with png file here
    print("IMage captured at " + System.DateTime.Now.ToString())
+   
+   # The camera has a problem with not reading the exposure correctly, we need some reset solution
    time.sleep(180)
