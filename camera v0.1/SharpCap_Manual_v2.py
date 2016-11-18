@@ -22,8 +22,6 @@ sundata = ((0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),
 (30,30,30,30,30,0.1,0.00008,0.00008,0.00008,0.00008,0.00008,0.00008,0.00008,0.00008,0.00008,0.00008,0.00008,0.00008,0.00008,0.00008,0.00008,0.00008,0.1,30),
 (30,30,30,30,0.1,0.1,0.1,0.00008,0.00008,0.00008,0.00008,0.00008,0.00008,0.00008,0.00008,0.00008,0.00008,0.00008,0.00008,0.00008,0.00008,0.00008,0.1,0.1))
 
- 
-
 
 # #####################################
 # P R O G R A M   S T A R T S   H E R E
@@ -39,22 +37,15 @@ while True:
    dt = datetime.datetime.now()
    nowhour = int(dt.strftime('%H'))
    monthnum = int(dt.strftime('%m'))
-   sunrise = sundata[int(monthnum)][0]   # Morning twilight starts
-   sunset = sundata[int(monthnum)][1]   # Evening twilight ends
-   print("\nMonth num: " + str(monthnum) + ". Dawn: " + str(sunrise) + ". Dusk: " + str(sunset))
 
-   if nowhour > sunrise and nowhour < sunset:
-      # PUt the camera into automatic mode
-      capturemode = "Daytime. Automatic exposure"
-      SharpCap.SelectedCamera.Controls.Exposure.Automatic = True
-       
-   else:
-      # PUt the camera into manual mode, set the exposure time to 30 seconds.
-      SharpCap.SelectedCamera.Controls.Exposure.Automatic = False
-      capturemode = "Night-time. Manual exposure"
-      exposetime = 30
-      SharpCap.SelectedCamera.Controls.Exposure.Value = exposetime
-   
+   # Get the exposure from the lookuptable for the month and hour
+   exposetime = sundata[monthnum][nowhour]
+
+   # Set the exposure for the camera
+   SharpCap.SelectedCamera.Controls.Exposure.Value = exposetime
+   capturemode = "Manual exposure."
+
+   print("\nMonth num: " + str(monthnum))
    print("Hour is " + nowhour)
    print("exposure is " + str(SharpCap.SelectedCamera.Controls.Exposure.Value))
 
@@ -75,6 +66,6 @@ while True:
       print("Unable to save image")
    
    bm.Dispose()
-# do more with png file here
+   # do more with png file here
    print("IMage captured at " + System.DateTime.Now.ToString())
    time.sleep(180)
