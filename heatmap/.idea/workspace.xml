@@ -3,6 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="3d9dd58d-c268-4993-bf1a-fa7bd63c18b1" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/trendGetter_3.py" afterPath="$PROJECT_DIR$/trendGetter_3.py" />
     </list>
     <ignored path="heatmap.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -25,8 +26,8 @@
       <file leaf-file-name="trendGetter_3.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/trendGetter_3.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="194">
-              <caret line="418" column="32" selection-start-line="418" selection-start-column="32" selection-end-line="418" selection-end-column="32" />
+            <state relative-caret-position="299">
+              <caret line="357" column="52" selection-start-line="357" selection-start-column="52" selection-end-line="357" selection-end-column="52" />
               <folding>
                 <element signature="e#0#9#0" expanded="true" />
               </folding>
@@ -413,7 +414,14 @@
       <option name="project" value="LOCAL" />
       <updated>1479595478739</updated>
     </task>
-    <option name="localTasksCounter" value="16" />
+    <task id="LOCAL-00016" summary="Version 3 Trendgetter - Begin work on Carrington Cycle prediction">
+      <created>1479595821424</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1479595821424</updated>
+    </task>
+    <option name="localTasksCounter" value="17" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -460,7 +468,7 @@
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/trendGetter_3.py</url>
-          <line>414</line>
+          <line>429</line>
         </line-breakpoint>
       </breakpoints>
       <option name="time" value="1" />
@@ -591,8 +599,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/trendGetter_3.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="194">
-          <caret line="418" column="32" selection-start-line="418" selection-start-column="32" selection-end-line="418" selection-end-column="32" />
+        <state relative-caret-position="299">
+          <caret line="357" column="52" selection-start-line="357" selection-start-column="52" selection-end-line="357" selection-end-column="52" />
           <folding>
             <element signature="e#0#9#0" expanded="true" />
           </folding>

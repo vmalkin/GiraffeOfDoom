@@ -341,6 +341,21 @@ def carrington_cycle(arraydata):
 
 
 # ##################################################
+# Peak detecting function. This function will
+# identify peaks in data and append a new column.
+# Peaks will have a value of 1, otherwise 0.
+# ##################################################
+def peek_a_chu(arraydata):
+    pass
+
+# ##################################################
+# this function will forcast future dates for max
+# carrington cycle. We should show
+# ##################################################
+def predict_cycle(arraydata):
+    pass
+
+# ##################################################
 # M A I N   C O D E   S T A R T S  H E R E
 # ##################################################
 CSVlist = "files.txt"
@@ -421,6 +436,7 @@ print("Creating Carrington Cycle data...")
 rawdatalist = carrington_cycle(rawdatalist)
 
 # USe a peak finding algorythm. Write peak dates out to somewhere else and predict new dates
+rawdatalist = peek_a_chu(rawdatalist)
 
 # Save
 print("Saving datafile...\n")
