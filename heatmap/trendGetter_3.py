@@ -169,38 +169,24 @@ def maxmin_readings(arraydata):
 # to the correct length in case we're missing data
 # from any of the log files, or missing comlete logfiles.
 # missing data will be zeros.
+#
+# The array timestamps will be in UNIX time.
 # ##################################################
 def correct_days(arraydata):
     # set date time format for strptime()
-    dateformat = "%Y-%m-%d %H:%M:%S.%f"
+    # dateformat = "%Y-%m-%d %H:%M:%S.%f"
 
     # Get the start and finish datetimes
-    datalist = arraydata[0]
-    datalist = datalist.split(",")
-    # as a datetime string
-    startdate = datetime.strptime(datalist[0],dateformat)
-    startdate = int(mktime(startdate.timetuple()))
+    startdate = arraydata[0].split(",")
+    enddate = arraydata[len(arraydata) - 1].split(",")
 
-    datalist = rawdatalist[len(arraydata) - 1]
-    datalist = datalist.split(",")
-    # as a datetime string
-    enddate = datetime.strptime(datalist[0],dateformat)
-    enddate = int(mktime(enddate.timetuple()))
+    startdate = int(float(startdate[0]))
+    enddate = int(float(enddate[0]))
 
     # the start dates and end dates are now UNIX style datestamps (Seconds)
     # there are 3600 seconds in an hour and 86400 sec in a day
 
-    # convert array data times to unix time
     workingarray = []
-    for item in arraydata:
-        datasplit = item.split(",")
-
-        newdatetime = datetime.strptime(datasplit[0],dateformat)
-        # convert to Unix time (Seconds)
-        newdatetime = mktime(newdatetime.timetuple())
-
-        datastring = str(newdatetime) + "," + datasplit[1]
-        workingarray.append(datastring)
 
     # Determine the real length of time between the start date and end date. Divide this into magnetometer read intervals
     # this will become the new array with gaps where there is zero data.
@@ -224,23 +210,56 @@ def correct_days(arraydata):
             appendstring = str(i) + ",0"
             correctedarray.append(appendstring)
 
+    return arraydata
+
+
+# ##################################################
+# Convert timestamps in array to Unix time
+# ##################################################
+def array_days_to_unix(arraylist):
+    print("Converting time to UNIX time...")
+    # set date time format for strptime()
+    dateformat = "%Y-%m-%d %H:%M:%S.%f"
+    workingarray = []
+
+    # convert array data times to unix time
+    workingarray = []
+    for item in arraylist:
+        datasplit = item.split(",")
+
+        newdatetime = datetime.strptime(datasplit[0],dateformat)
+        # convert to Unix time (Seconds)
+        newdatetime = mktime(newdatetime.timetuple())
+
+        datastring = str(newdatetime) + "," + datasplit[1]
+        workingarray.append(datastring)
+
+    return workingarray
+
+# ##################################################
+# Convert timestamps in array to UTC time
+# ##################################################
+def array_days_to_utc(arraylist):
+    print("Converting time to UTC time...")
+    # set date time format for strptime()
+    dateformat = "%Y-%m-%d %H:%M:%S.%f"
 
     # Convert the date string to the format of: 2016-10-10 00:00:26.19
     returnarray = []
 
-    for item in correctedarray:
+    for item in arraylist:
         datasplit = item.split(",")
+        unixdate = int(float(datasplit[0]))
 
         # Convert the UNix timestamp, inot a UTC string
-        datetimethang = datetime.fromtimestamp(float(datasplit[0])).strftime(dateformat)
+        utcdate = datetime.fromtimestamp(unixdate)
 
         # Create the dataline to be appended
-        dataline = datetimethang + "," + datasplit[1]
-
+        dataline = str(utcdate) + "," + datasplit[1]
+        print(dataline)
         returnarray.append(dataline)
 
     return returnarray
-
 
 
 # ##################################################
@@ -365,9 +384,13 @@ rawdatalist = prune_data(rawdatalist)
 
 # At this point - verify that we have the full number of consecutive days between starts and end dates in the list
 # Parse thru and create corrected list as necessary
-#
 # The best way to do this is to reduce the magnetomter data down to whole minutes, pad out empty mins with zeros
 # then procede to calculate the differences as usual
+
+# COnvert the timestamps to UNIX time
+rawdatalist = array_days_to_unix(rawdatalist)
+
+# Correct for missing days
 rawdatalist = correct_days(rawdatalist)
 
 # Convert the absolute readings into differences
@@ -379,6 +402,9 @@ print("Smoothing, pass 1...")
 rawdatalist = running_avg(rawdatalist, 10 * magrate)
 print("Smoothing, pass 2...")
 rawdatalist = running_avg(rawdatalist, 10 * magrate)
+
+# COnvert the array back to UTC time
+rawdatalist = array_days_to_utc(rawdatalist)
 
 # Convert the diffs into Daily max/mins
 # this will work on the timestamps in the array
@@ -395,7 +421,6 @@ print("Creating Carrington Cycle data...")
 rawdatalist = carrington_cycle(rawdatalist)
 
 # USe a peak finding algorythm. Write peak dates out to somewhere else and predict new dates
-
 
 # Save
 print("Saving datafile...\n")
