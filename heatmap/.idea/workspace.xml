@@ -2,12 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="3d9dd58d-c268-4993-bf1a-fa7bd63c18b1" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/trendGetter_3.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/heatmap.iml" afterPath="$PROJECT_DIR$/.idea/heatmap.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/trendGetter_2.py" afterPath="$PROJECT_DIR$/trendGetter_2.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/trenddata.csv" afterPath="$PROJECT_DIR$/trenddata.csv" />
     </list>
     <ignored path="heatmap.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -30,8 +25,8 @@
       <file leaf-file-name="trendGetter_3.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/trendGetter_3.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="284">
-              <caret line="415" column="36" selection-start-line="415" selection-start-column="36" selection-end-line="415" selection-end-column="36" />
+            <state relative-caret-position="194">
+              <caret line="418" column="32" selection-start-line="418" selection-start-column="32" selection-end-line="418" selection-end-column="32" />
               <folding>
                 <element signature="e#0#9#0" expanded="true" />
               </folding>
@@ -411,7 +406,14 @@
       <option name="project" value="LOCAL" />
       <updated>1479118123934</updated>
     </task>
-    <option name="localTasksCounter" value="15" />
+    <task id="LOCAL-00015" summary="Version 3 Trendgetter - Begin work on Carrington Cycle prediction">
+      <created>1479595478739</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1479595478739</updated>
+    </task>
+    <option name="localTasksCounter" value="16" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -450,7 +452,8 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="begin updates to v2 trendgetter" />
-    <option name="LAST_COMMIT_MESSAGE" value="begin updates to v2 trendgetter" />
+    <MESSAGE value="Version 3 Trendgetter - Begin work on Carrington Cycle prediction" />
+    <option name="LAST_COMMIT_MESSAGE" value="Version 3 Trendgetter - Begin work on Carrington Cycle prediction" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -588,8 +591,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/trendGetter_3.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="284">
-          <caret line="415" column="36" selection-start-line="415" selection-start-column="36" selection-end-line="415" selection-end-column="36" />
+        <state relative-caret-position="194">
+          <caret line="418" column="32" selection-start-line="418" selection-start-column="32" selection-end-line="418" selection-end-column="32" />
           <folding>
             <element signature="e#0#9#0" expanded="true" />
           </folding>
