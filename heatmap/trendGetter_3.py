@@ -352,23 +352,19 @@ def peek_a_chu(arraydata):
         print("Array too small to compute peak dates")
     else:
         for i in range(halfwindow, len(arraydata) - halfwindow):
-            preindex = arraydata[i - halfwindow]
-            nowindex = arraydata[i]
-            postindex = arraydata[i + halfwindow]
+            preindex = arraydata[i - halfwindow].split(",")
+            nowindex = arraydata[i].split(",")
+            postindex = arraydata[i + halfwindow].split(",")
 
-            preindex = preindex.split(",")
-            nowindex = nowindex.split(",")
-            postindex = postindex.split(",")
-
+            nowdate = nowindex[0]
             # The smoothed curve is the second index in the split
             preindex = preindex[2]
             nowindex = nowindex[2]
             postindex = postindex[2]
 
-            nowdate = nowindex[0]
-
             # If we are at the "top of the hill"
             if preindex <= nowindex and postindex <= nowindex:
+                print(nowdate)
                 peakdates.append((nowdate))
 
     if len(peakdates) > 0:
@@ -462,6 +458,7 @@ rawdatalist = normalise(rawdatalist)
 # this displays the carrington cycle
 print("Creating Carrington Cycle data...")
 rawdatalist = carrington_cycle(rawdatalist)
+
 
 # Use a peak finding algorythm. Write peak dates out to somewhere else and predict new dates
 peakdata = peek_a_chu(rawdatalist)
