@@ -256,7 +256,6 @@ def array_days_to_utc(arraylist):
 
         # Create the dataline to be appended
         dataline = str(utcdate) + "," + datasplit[1]
-        print(dataline)
         returnarray.append(dataline)
 
     return returnarray
@@ -346,7 +345,36 @@ def carrington_cycle(arraydata):
 # Peaks will have a value of 1, otherwise 0.
 # ##################################################
 def peek_a_chu(arraydata):
-    pass
+    peakdates = []
+    halfwindow = 3   # our window is +/- days either side of the date we are checking
+
+    if len(arraydata) <= (halfwindow * 2):
+        print("Array too small to compute peak dates")
+    else:
+        for i in range(halfwindow, len(arraydata) - halfwindow):
+            preindex = arraydata[i - halfwindow]
+            nowindex = arraydata[i]
+            postindex = arraydata[i + halfwindow]
+
+            preindex = preindex.split(",")
+            nowindex = nowindex.split(",")
+            postindex = postindex.split(",")
+
+            # The smoothed curve is the second index in the split
+            preindex = preindex[2]
+            nowindex = nowindex[2]
+            postindex = postindex[2]
+
+            nowdate = nowindex[0]
+
+            # If we are at the "top of the hill"
+            if preindex <= nowindex and postindex <= nowindex:
+                peakdates.append((nowdate))
+
+    if len(peakdates) > 0:
+        return peakdates
+    else:
+        return "No peak dates found"
 
 # ##################################################
 # this function will forcast future dates for max
@@ -436,11 +464,12 @@ print("Creating Carrington Cycle data...")
 rawdatalist = carrington_cycle(rawdatalist)
 
 # USe a peak finding algorythm. Write peak dates out to somewhere else and predict new dates
-rawdatalist = peek_a_chu(rawdatalist)
+peakdata = peek_a_chu(rawdatalist)
 
 # Save
 print("Saving datafile...\n")
 save_csv(rawdatalist, "trenddata.csv")
+save_csv(peakdata, "peakdata.txt")
 
 
 #################
