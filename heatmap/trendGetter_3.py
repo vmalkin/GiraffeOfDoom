@@ -463,7 +463,7 @@ rawdatalist = normalise(rawdatalist)
 print("Creating Carrington Cycle data...")
 rawdatalist = carrington_cycle(rawdatalist)
 
-# USe a peak finding algorythm. Write peak dates out to somewhere else and predict new dates
+# Use a peak finding algorythm. Write peak dates out to somewhere else and predict new dates
 peakdata = peek_a_chu(rawdatalist)
 
 # Save
