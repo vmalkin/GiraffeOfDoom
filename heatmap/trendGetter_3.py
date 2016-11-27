@@ -346,7 +346,7 @@ def carrington_cycle(arraydata):
 # ##################################################
 def peek_a_chu(arraydata):
     peakdates = []
-    halfwindow = 3   # our window is +/- days either side of the date we are checking
+    halfwindow = 1   # our window is +/- days either side of the date we are checking
 
     if len(arraydata) <= (halfwindow * 2):
         print("Array too small to compute peak dates")
@@ -466,7 +466,7 @@ peakdata = peek_a_chu(rawdatalist)
 # Save
 print("Saving datafile...\n")
 save_csv(rawdatalist, "trenddata.csv")
-save_csv(peakdata, "peakdata.txt")
+save_csv(peakdata, "peakdata.csv")
 
 
 #################

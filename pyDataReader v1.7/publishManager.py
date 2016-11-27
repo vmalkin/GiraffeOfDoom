@@ -35,12 +35,25 @@ def try_publish(filename):
 while True:
     timedelay = DELAY_SHORT_INTERVAL + randint(0,RANDOM_SECS)
     time.sleep(timedelay)
-    try_publish("04hr.csv")
+    try:
+        try_publish("04hr.csv")
+    except:
+        print("04hr publish function did not call correctly")
+        logging.critical("CRITICAL ERROR: 04hr publish function did not call correctly")
 
     delay_interval = delay_interval + 1
     if delay_interval >= 5:
-        try_publish("24hr.csv")
-        try_publish("diffs.csv")
+        try:
+            try_publish("24hr.csv")
+        except:
+            print("24hr publish function did not call correctly")
+            logging.critical("CRITICAL ERROR: 24hr publish function did not call correctly")
+        try:
+            try_publish("diffs.csv")
+        except:
+            print("diffs publish function did not call correctly")
+            logging.critical("CRITICAL ERROR: diffs publish function did not call correctly")
+
         delay_interval = 0
 	
     print("Interval: " + str(timedelay) + " seconds")
