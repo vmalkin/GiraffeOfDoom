@@ -52,6 +52,7 @@ while True:
         outputlist = []
         datestring = importarray[0].dateTime
 
+        # we are going to parse thru the data, dealing with chunks of 60 mins at a time
         for i in range(0, len(importarray), windowinterval):
             maxv = Decimal(0)
             minv = Decimal(0)
@@ -73,7 +74,7 @@ while True:
                     spancolour = k.COLOUR_N
                 elif fieldstrength > Decimal(k.MAG_THRESHOLD_NORMAL) and fieldstrength <= Decimal(k.MAG_THRESHOLD_MEDIUM):
                     spancolour = k.COLOUR_N_M
-                elif fieldstrength > Decimal(k.MAG_THRESHOLD_NORMAL) and fieldstrength <= Decimal(k.MAG_THRESHOLD_HIGH):
+                elif fieldstrength > Decimal(k.MAG_THRESHOLD_MEDIUM) and fieldstrength <= Decimal(k.MAG_THRESHOLD_HIGH):
                     spancolour = k.COLOUR_M_H
                     # this is an alert condition
                 elif fieldstrength > Decimal(k.MAG_THRESHOLD_HIGH):
