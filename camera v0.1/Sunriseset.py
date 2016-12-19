@@ -20,7 +20,7 @@ def sunriseset(day_number):
    solstice_offset = 11
 
    # twStart, sunrise, sunset, twEnd
-   summer_values = (3.0, 5.7167, 21.4833, 24.1667)
+   summer_values = (3.0, 4.7167, 21.4833, 23.1667)
    winter_diffs = (3.5167, 2.6167, -4.4833, -5.3667)
 
    # Daylight Savings, SHOULD be last Sunday of Sept, first Sunday of April
@@ -88,25 +88,24 @@ def set_exposure():
    datetime_array = sunriseset(day_of_year)
    print(datetime_array)
 
-   # is it daytime?
    # Morning twilight period?
    if nowtime > float(datetime_array[0]) and nowtime <= float(datetime_array[1]):
-      print("Morning twilight exposure")
-      cent_time_interval = (datetime_array[1] - datetime_array[0]) / 100
-      return_exposure = ((nowtime - datetime_array[0]) / cent_time_interval) * CENT_EXPOSURE_INTERVAL
-
+       print("Morning twilight exposure")
+       cent_time_interval = (datetime_array[1] - datetime_array[0]) / 100
+       return_exposure = ((nowtime - datetime_array[1]) / cent_time_interval) * CENT_EXPOSURE_INTERVAL
+   # is it daytime?
    if nowtime > float(datetime_array[1]) and nowtime <= float(datetime_array[2]):
        print("Daytime exposure")
        return_exposure = EXPOSURE_DAY
 
    # Finally, evening twilight period?
-   if nowtime > float(datetime_array[2]) and nowtime <= (float(datetime_array[3]) + 24):
+   if nowtime > float(datetime_array[2]) and nowtime <= (float(datetime_array[3])):
        print("Evening twilight exposure")
        cent_time_interval = (datetime_array[3] - datetime_array[2]) / 100
        return_exposure = ((nowtime - datetime_array[2]) / cent_time_interval) * CENT_EXPOSURE_INTERVAL
 
    # is it nighttime?
-   if nowtime <= float(datetime_array[3]):
+   if (nowtime > 0 and nowtime < datetime_array[0]) or (nowtime > datetime_array[0] and nowtime >= datetime_array[3]):
        print("Nighttime exposure")
        return_exposure = EXPOSURE_NIGHT
 
