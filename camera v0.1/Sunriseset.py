@@ -1,5 +1,5 @@
 import math
-from datetime import datetime
+import datetime
 
 
 
@@ -37,12 +37,15 @@ def sunriseset(day_number):
    t_riseset_array = []
 
    # The year number is converted into a format for the sin function. The curve of sunrise/set follows this sine curve
-   yearpoint = math.sin((1 / 365) * day_number * math.pi)
+   yearpoint = (1.0 / 365.0) * day_number * math.pi
+   yearpoint = math.sin(yearpoint)
+   print("yearpoint is " + str(yearpoint))
 
    # we are using half curve of a sin wave function to approximate the curve of rising and setting for the year
    for i in range (0,4):
        t_winter = yearpoint * winter_diffs[i]
        hourvalue = summer_values[i] + t_winter
+       print("hourvalue is " + str(hourvalue))
        t_riseset_array.append(hourvalue)
 
    # if it's daylight savings, we need to add an hour.
@@ -62,18 +65,18 @@ def sunriseset(day_number):
        temparray.append(hour)
 
    t_riseset_array = temparray
-   print(t_riseset_array)
+
    return t_riseset_array
 
 
 def set_exposure():
-   dt = datetime.now()
-   day_of_year = datetime.now().timetuple().tm_yday
-   nowhour = int(dt.strftime('%H'))
-   nowmin = int(dt.strftime('%M'))
-   nowtime = nowhour + (nowmin/60)
+   dt = datetime.datetime.now()
+   day_of_year = datetime.datetime.now().timetuple().tm_yday
+   nowhour = float(dt.strftime('%H'))
+   nowmin = float(dt.strftime('%M'))
+   nowtime = float(nowhour + (nowmin/60))
 
-   # print(nowtime)
+   print("time is " + str(nowtime))
 
    EXPOSURE_DAY = 0.00008
    EXPOSURE_NIGHT = 30
@@ -83,28 +86,33 @@ def set_exposure():
 
    # get datetime array for sunrise and sunset values
    datetime_array = sunriseset(day_of_year)
+   print(datetime_array)
 
    # is it daytime?
-   if nowtime >= datetime_array[1] and nowtime <= datetime_array[2]:
+   # Morning twilight period?
+   if nowtime > float(datetime_array[0]) and nowtime <= float(datetime_array[1]):
+      print("Morning twilight exposure")
+      cent_time_interval = (datetime_array[1] - datetime_array[0]) / 100
+      return_exposure = ((nowtime - datetime_array[0]) / cent_time_interval) * CENT_EXPOSURE_INTERVAL
+
+   if nowtime > float(datetime_array[1]) and nowtime <= float(datetime_array[2]):
        print("Daytime exposure")
        return_exposure = EXPOSURE_DAY
-   # is it nighttime?
-   elif nowtime <= datetime_array[0] or nowtime >= datetime_array[3]:
-       print("Nighttime exposure")
-       return_exposure = EXPOSURE_NIGHT
-   # Morning twilight period?
-   elif nowtime > datetime_array[0] and nowtime < datetime_array[1]:
-       print("Morning twilight exposure")
-       cent_time_interval = (datetime_array[1] - datetime_array[0]) / 100
-       return_exposure = ((nowtime - datetime_array[0]) / cent_time_interval) * CENT_EXPOSURE_INTERVAL
+
    # Finally, evening twilight period?
-   elif nowtime > datetime_array[2] and nowtime < datetime_array[3]:
+   if nowtime > float(datetime_array[2]) and nowtime <= (float(datetime_array[3]) + 24):
        print("Evening twilight exposure")
        cent_time_interval = (datetime_array[3] - datetime_array[2]) / 100
-       return_exposure = ((datetime_array[2] - nowtime) / cent_time_interval) * CENT_EXPOSURE_INTERVAL
+       return_exposure = ((nowtime - datetime_array[2]) / cent_time_interval) * CENT_EXPOSURE_INTERVAL
+
+   # is it nighttime?
+   if nowtime <= float(datetime_array[3]):
+       print("Nighttime exposure")
+       return_exposure = EXPOSURE_NIGHT
 
    return return_exposure
 
 # #################################################
 # M a i n   P r o g r a m   s t a r t s   h e r e
 # #################################################
+print(set_exposure())
