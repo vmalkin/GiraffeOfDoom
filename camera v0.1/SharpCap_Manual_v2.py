@@ -35,6 +35,7 @@ SharpCap.SelectedCamera.Controls.Exposure.Automatic = False
 while True:
    capturemode = ""
    dt = datetime.datetime.now()
+   day_of_year = datetime.now().timetuple().tm_yday
    nowhour = int(dt.strftime('%H'))
    monthnum = int(dt.strftime('%m'))
 

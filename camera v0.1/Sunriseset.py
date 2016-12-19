@@ -1,6 +1,11 @@
 import math
+from datetime import datetime
 
-# This function returns the rising and setting times of the sun
+
+
+
+# This function returns an array in the format
+# (twilight_start, sunrise, sunset, twilight_end)
 # based on the day number in question, time of summer rise/set, and the offset of winter rise/set
 # these values (and decimal equivs) are:
 # 0300 (3), 0543 (5.72), 2149 (21.48), 2410 (24.17) - twilight, sunrise, sunset, twilight, SUMMER
@@ -10,30 +15,96 @@ import math
 # from datetime import datetime
 # day_of_year = datetime.now().timetuple().tm_yday
 
-def sunriseset(day_number, riseset_value, t_summer_asdecimal, t_winter_diff_asdecimal):
-    # This function starts at the summer solstice, so correct the day number as supplied to deal with this
-    solstice_offset = 11
-    if day_number < 11:
-        day_number = 365 - day_number
-    else:
-        day_number = day_number - solstice_offset
+def sunriseset(day_number):
+   # This function starts at the summer solstice, so correct the day number as supplied to deal with this
+   solstice_offset = 11
 
-    if riseset_value == "rise":
-        signcorrection = 1
-    else:
-        signcorrection = -1
+   # twStart, sunrise, sunset, twEnd
+   summer_values = (3.0, 5.7167, 21.4833, 24.1667)
+   winter_diffs = (3.5167, 2.6167, -4.4833, -5.3667)
 
-    # we are using half curve of a sin wave function to approximate the curve of rising and setting for the year
-    yearpoint = math.sin((1/365)*day_number*math.pi)
-    t_winter_asdecimal = (t_winter_diff_asdecimal + yearpoint) * signcorrection
-    t_riseset = t_summer_asdecimal + t_winter_asdecimal
+   # Daylight Savings, SHOULD be last Sunday of Sept, first Sunday of April
+   dst_start = 237 + solstice_offset
+   dst_end = 91 + solstice_offset
+
+   # Correct the day number, as this function works on a solar year from summer solstice, to summer solstice
+   if day_number < 11:
+       day_number = 365 - day_number
+   else:
+       day_number = day_number - solstice_offset
+
+   # Prepare return array.
+   t_riseset_array = []
+
+   # The year number is converted into a format for the sin function. The curve of sunrise/set follows this sine curve
+   yearpoint = math.sin((1 / 365) * day_number * math.pi)
+
+   # we are using half curve of a sin wave function to approximate the curve of rising and setting for the year
+   for i in range (0,4):
+       t_winter = yearpoint * winter_diffs[i]
+       hourvalue = summer_values[i] + t_winter
+       t_riseset_array.append(hourvalue)
+
+   # if it's daylight savings, we need to add an hour.
+   if day_number > dst_start or day_number < dst_end:
+       temparray = []
+       for item in t_riseset_array:
+           datavalue = item + 1
+           temparray.append(datavalue)
+
+       t_riseset_array = temparray
+
+   # We need to correct any hour values that have gone beyond 24
+   temparray = []
+   for hour in t_riseset_array:
+       if hour > 24:
+           hour = hour - 24
+       temparray.append(hour)
+
+   t_riseset_array = temparray
+   print(t_riseset_array)
+   return t_riseset_array
 
 
+def set_exposure():
+   dt = datetime.now()
+   day_of_year = datetime.now().timetuple().tm_yday
+   nowhour = int(dt.strftime('%H'))
+   nowmin = int(dt.strftime('%M'))
+   nowtime = nowhour + (nowmin/60)
 
+   # print(nowtime)
 
+   EXPOSURE_DAY = 0.00008
+   EXPOSURE_NIGHT = 30
+   CENT_EXPOSURE_INTERVAL = (EXPOSURE_DAY - EXPOSURE_NIGHT) / 100
 
+   return_exposure = 0
 
+   # get datetime array for sunrise and sunset values
+   datetime_array = sunriseset(day_of_year)
 
+   # is it daytime?
+   if nowtime >= datetime_array[1] and nowtime <= datetime_array[2]:
+       print("Daytime exposure")
+       return_exposure = EXPOSURE_DAY
+   # is it nighttime?
+   elif nowtime <= datetime_array[0] or nowtime >= datetime_array[3]:
+       print("Nighttime exposure")
+       return_exposure = EXPOSURE_NIGHT
+   # Morning twilight period?
+   elif nowtime > datetime_array[0] and nowtime < datetime_array[1]:
+       print("Morning twilight exposure")
+       cent_time_interval = (datetime_array[1] - datetime_array[0]) / 100
+       return_exposure = ((nowtime - datetime_array[0]) / cent_time_interval) * CENT_EXPOSURE_INTERVAL
+   # Finally, evening twilight period?
+   elif nowtime > datetime_array[2] and nowtime < datetime_array[3]:
+       print("Evening twilight exposure")
+       cent_time_interval = (datetime_array[3] - datetime_array[2]) / 100
+       return_exposure = ((datetime_array[2] - nowtime) / cent_time_interval) * CENT_EXPOSURE_INTERVAL
 
+   return return_exposure
 
-
+# #################################################
+# M a i n   P r o g r a m   s t a r t s   h e r e
+# #################################################
