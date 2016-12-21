@@ -45,13 +45,13 @@ def sunriseset(day_number):
    # The year number is converted into a format for the sin function. The curve of sunrise/set follows this sine curve
    yearpoint = (1.0 / 365.0) * day_number * math.pi
    yearpoint = math.sin(yearpoint)
-   print("yearpoint is " + str(yearpoint))
+   # print("yearpoint is " + str(yearpoint))
 
    # we are using half curve of a sin wave function to approximate the curve of rising and setting for the year
    for i in range (0,4):
        t_winter = yearpoint * winter_diffs[i]
        hourvalue = summer_values[i] + t_winter
-       print("hourvalue is " + str(hourvalue))
+       # print("hourvalue is " + str(hourvalue))
        t_riseset_array.append(hourvalue)
 
    # if it's daylight savings, we need to add an hour.
@@ -111,11 +111,11 @@ def set_exposure():
        return_exposure = ((nowtime - datetime_array[2]) / cent_time_interval) * CENT_EXPOSURE_INTERVAL
 
    # is it nighttime?
-   if (nowtime > 0 and nowtime < datetime_array[0]) or (nowtime > datetime_array[0] and nowtime >= datetime_array[3]):
+   if (nowtime > 0 and nowtime <= float(datetime_array[0])) or (nowtime > float(datetime_array[0]) and nowtime >= float(datetime_array[3])):
        print("Nighttime exposure")
        return_exposure = EXPOSURE_NIGHT
 
-   return return_exposure
+   return float(return_exposure)
 
 
 
@@ -129,11 +129,20 @@ SharpCap.SelectedCamera.Controls.Exposure.Automatic = False
 
 while True:
    capturemode = ""
+
+   # Manually set the camera exposure
    exposetime = set_exposure()
 
    # Set the exposure for the camera
    SharpCap.SelectedCamera.Controls.Exposure.Value = exposetime
    capturemode = "Manual exposure."
+
+   # There is a chance that the camera will no longer accept a new manual value for the exposure. when this happens
+   # we need to Do Somthing...
+   # Get value the camera thinks it has
+   reported_exposure = float(SharpCap.SelectedCamera.Controls.Exposure.Value)
+   if reported_exposure != exposetime:
+       print("\nERROR: The camera did NOT accept new exposure value.\n")
 
    print("exposure is " + str(SharpCap.SelectedCamera.Controls.Exposure.Value))
 
