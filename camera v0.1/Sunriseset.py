@@ -102,7 +102,7 @@ def set_exposure():
    if nowtime > float(datetime_array[2]) and nowtime <= (float(datetime_array[3])):
        print("Evening twilight exposure")
        cent_time_interval = (datetime_array[3] - datetime_array[2]) / 100
-       return_exposure = ((nowtime - datetime_array[2]) / cent_time_interval) * CENT_EXPOSURE_INTERVAL
+       return_exposure = ((datetime_array[2] - nowtime) / cent_time_interval) * CENT_EXPOSURE_INTERVAL
 
    # is it nighttime?
    if (nowtime > 0 and nowtime < datetime_array[0]) or (nowtime > datetime_array[0] and nowtime >= datetime_array[3]):
