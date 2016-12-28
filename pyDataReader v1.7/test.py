@@ -26,4 +26,13 @@ testdata = [
 Dataarray = []
 
 for item in testdata:
-    print(item)
+    datapoint = dp.DataPoint(item[0], item[1], item[2], item[3])
+    Dataarray.append(datapoint)
+
+# for item in Dataarray:
+#     print(item.print_values())
+
+Dataarray = df.median_filter_3values(Dataarray)
+
+for item in Dataarray:
+    print(item.print_values())
