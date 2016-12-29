@@ -1,9 +1,33 @@
 import constants as k
 import os.path
 import logging
+import DataPoint as dp
 
 __author__ = 'Meepo'
 
+# This function is used to build up an array of readings from the diffs file. We might do this if for
+# some reason the median filter is not catching spikes, or we have consecutive readings (2 - 5) of spiking.
+# The createDiffs function, should have rejected these values.
+def readings_from_diffs(diffsarray):
+    # set up the return array and x,y, and z storage values
+    outputarray = []
+    x_value = 0.0
+    y_value = 0.0
+    z_value = 0.0
+
+    # for each datapoint in the diffs array...
+    for datapoints in diffsarray:
+        # create cumulative values that will become our "readings"
+        x_value = x_value + float(datapoints.raw_x)
+        y_value = y_value + float(datapoints.raw_y)
+        z_value = z_value + float(datapoints.raw_z)
+
+        # create a datapoint with the new values. Append to return array
+        appenddata = dp.DataPoint(datapoints.dateTime, x_value, y_value, z_value)
+        outputarray.append(appenddata)
+
+    # return array
+    return outputarray
 
 
 def CreateDiffs(diffsArray):
