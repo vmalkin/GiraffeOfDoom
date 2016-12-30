@@ -1,0 +1,3 @@
+2016-12-30 19:23:47,493 WARNING: File IO Exception raised - could not delete: graphing/24hr.csv
+2016-12-30 19:23:47,494 WARNING: File IO Exception raised - could not delete: graphing/24hr.csv
+2016-12-30 19:23:47,494 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv

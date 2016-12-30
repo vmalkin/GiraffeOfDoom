@@ -8,13 +8,13 @@ void loop() {
   Serial.println("100,100,100");
   delay(5000);
 
-  Serial.println("100,100,100");
+  Serial.println("150,150,150");
   delay(5000);
 
   Serial.println("100,100,100");
   delay(5000);
 
-  Serial.println("100,100,100");
+  Serial.println("50,50,50");
   delay(5000);
 
   Serial.println("1000,1000,1000");

@@ -10,7 +10,7 @@ import re
 import time
 
 __author__ = 'Vaughn Malkin'
-__version__ = "1.7.0"
+__version__ = "1.7.1"
 
 
 # *****************************************************************************************
@@ -101,7 +101,7 @@ def LogRawMagnetometerData(logDataToAdd):
 # *****************************************************************************************
 
 print("Pything Data Logger")
-print("(c) Vaughn Malkin 2015, 2016")
+print("(c) Vaughn Malkin 2015, 2016, 2017")
 print("Version " + __version__)
 print(" ")
 print("YOU MUST USE PYTHON VER 3 FOR THIS CODE")
