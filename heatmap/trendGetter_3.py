@@ -94,13 +94,19 @@ def prune_data(arraydata):
     outputarray = []
     # we want to avoid the first line that contains a header text
     for i in range(0,len(arraydata)):
-        dataline = arraydata[i].split(",")
-        # print(dataline)
-        datetime = dataline[0]
-        datavalue = dataline[1]
-        newdata = datetime + "," + datavalue
-        # print("Pruning " + str(i) + " of " + str(len(arraydata)) + " records.")
-        outputarray.append(newdata)
+        try:
+            dataline = arraydata[i].split(",")
+            # print(dataline)
+            datetime = dataline[0]
+            datavalue = dataline[1]
+            newdata = datetime + "," + datavalue
+            # print("Pruning " + str(i) + " of " + str(len(arraydata)) + " records.")
+            outputarray.append(newdata)
+        except:
+            print("There is a problem with this data value - isolate the log file it belongs to and check: ")
+            print("--> " + str(arraydata[i-1]))
+            print("--> " + str(arraydata[i]))
+            print("--> " + str(arraydata[i + 1]))
 
     return outputarray
 
@@ -225,14 +231,17 @@ def array_days_to_unix(arraylist):
     # convert array data times to unix time
     workingarray = []
     for item in arraylist:
-        datasplit = item.split(",")
+        try:
+            datasplit = item.split(",")
 
-        newdatetime = datetime.strptime(datasplit[0],dateformat)
-        # convert to Unix time (Seconds)
-        newdatetime = mktime(newdatetime.timetuple())
+            newdatetime = datetime.strptime(datasplit[0],dateformat)
+            # convert to Unix time (Seconds)
+            newdatetime = mktime(newdatetime.timetuple())
 
-        datastring = str(newdatetime) + "," + datasplit[1]
-        workingarray.append(datastring)
+            datastring = str(newdatetime) + "," + datasplit[1]
+            workingarray.append(datastring)
+        except:
+            print("Problem with this entry: " + item)
 
     return workingarray
 
