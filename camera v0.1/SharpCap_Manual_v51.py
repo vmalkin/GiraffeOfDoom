@@ -96,26 +96,23 @@ def set_exposure():
 
    # Morning twilight period?
    if nowtime > float(datetime_array[0]) and nowtime <= float(datetime_array[1]):
-      print("Morning twilight exposure")
-      cent_time_interval = (datetime_array[1] - datetime_array[0]) / 100
-      return_exposure = ((nowtime - datetime_array[1]) / cent_time_interval) * CENT_EXPOSURE_INTERVAL
+       print("Morning twilight exposure")
+       cent_time_interval = (datetime_array[1] - datetime_array[0]) / 100
+       return_exposure = ((nowtime - datetime_array[1]) / cent_time_interval) * CENT_EXPOSURE_INTERVAL
+
    # is it daytime?
    if nowtime > float(datetime_array[1]) and nowtime <= float(datetime_array[2]):
-      print("Daytime exposure")
-      return_exposure = EXPOSURE_DAY
+       print("Daytime exposure")
+       return_exposure = EXPOSURE_DAY
 
    # Finally, evening twilight period?
    if nowtime > float(datetime_array[2]) and nowtime <= (float(datetime_array[3])):
-      print("Evening twilight exposure")
-      cent_time_interval = (datetime_array[3] - datetime_array[2]) / 100
-      return_exposure = ((datetime_array[2] - nowtime) / cent_time_interval) * CENT_EXPOSURE_INTERVAL
+       print("Evening twilight exposure")
+       cent_time_interval = (datetime_array[3] - datetime_array[2]) / 100
+       return_exposure = ((datetime_array[2] - nowtime) / cent_time_interval) * CENT_EXPOSURE_INTERVAL
 
-   # is it nighttime?
-   if nowtime > 0 and nowtime <= float(datetime_array[0]):
-      print("Nighttime exposure - after midnight")
-      return_exposure = EXPOSURE_NIGHT
-   if (nowtime > float(datetime_array[3]) and nowtime <= 0):
-      print("Nighttime exposure - before midnight")
+   if ((nowtime > float(datetime_array[3]) and nowtime <= 24) or (nowtime > 0 and nowtime < datetime_array[0])):
+      print("Nighttime exposure ")
       return_exposure = EXPOSURE_NIGHT
 
    return float(return_exposure)
