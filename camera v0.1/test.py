@@ -63,11 +63,11 @@ def set_exposure():
    nowmin = float(dt.strftime('%M'))
    nowtime = float(nowhour + (nowmin/60))
 
-   nowtime = 5
+   nowtime = 23.982
 
    print("time is " + str(nowtime))
 
-   EXPOSURE_DAY = 0.00008
+   EXPOSURE_DAY = 0.00006
    EXPOSURE_NIGHT = 30
    CENT_EXPOSURE_INTERVAL = (EXPOSURE_DAY - EXPOSURE_NIGHT) / 100
 
@@ -94,13 +94,9 @@ def set_exposure():
        cent_time_interval = (datetime_array[3] - datetime_array[2]) / 100
        return_exposure = ((datetime_array[2] - nowtime) / cent_time_interval) * CENT_EXPOSURE_INTERVAL
 
-   # is it nighttime?
-   if nowtime > 0 and nowtime <= float(datetime_array[0]):
-       print("Nighttime exposure - after midnight")
-       return_exposure = EXPOSURE_NIGHT
-   if (nowtime > float(datetime_array[3]) and nowtime <= 0):
-       print("Nighttime exposure - before midnight")
-       return_exposure = EXPOSURE_NIGHT
+   if ((nowtime > float(datetime_array[3]) and nowtime <= 24) or (nowtime > 0 and nowtime < datetime_array[0])):
+      print("Nighttime exposure ")
+      return_exposure = EXPOSURE_NIGHT
 
    return float(return_exposure)
 
