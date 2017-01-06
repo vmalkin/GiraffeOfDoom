@@ -1,7 +1,7 @@
 #!usr/bin/python
 import DataProcessor_library as dp
 import datafilters_library
-import OutputFileManager_library as ofm
+import filemanager_library as ofm
 import time
 
 
@@ -51,7 +51,7 @@ def process_data(input_data_array):
     # # use this if we are having major problems with spikes
     # # in final display files
     # # ########################################################
-    # smoothed_data_array = ofm.readings_from_diffs(output_diffs)
+    # smoothed_data_array = dp.readings_from_diffs(output_diffs)
     # ofm.Create24(smoothed_data_array)
     # ofm.Create4(smoothed_data_array)
     # ofm.CreateDiffs(output_diffs) # use output_diffs data
@@ -59,6 +59,7 @@ def process_data(input_data_array):
 
 
 while True:
+    # we might want to have some means of publishing different files at different rates
     readings = []
 
     dp.CreateRawArray(readings)

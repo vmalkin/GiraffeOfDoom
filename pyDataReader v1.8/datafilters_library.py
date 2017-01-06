@@ -4,6 +4,13 @@ import DataPoint
 import re
 import logging
 
+
+# #################################################################################
+# Datafilters
+# THis script may just be merged into the dataprocessor script
+#
+# #################################################################################
+
 # #################################################################################
 # Median filter based on 3 values
 #

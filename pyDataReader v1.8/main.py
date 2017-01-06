@@ -2,6 +2,7 @@
 import DataPoint
 import constants as k
 import DataProcessor_library
+import filemanager_library
 import serial
 import datetime
 import logging
@@ -54,10 +55,10 @@ def LogRawMagnetometerData(logDataToAdd):
     dp = DataPoint.DataPoint(str(logdate), lg[0], lg[1], lg[2])
 
     # DP is added to array.
-    DataProcessor_library.AppendDataPoint(dp, readings)
+    filemanager_library.AppendDataPoint(dp, readings)
 
     # Save the array to the ArraySave.csv file loaded at the beginning
-    DataProcessor_library.SaveRawArray(readings)
+    filemanager_library.SaveRawArray(readings)
 
     ###############################################
     # Logdata to be appended to current 24 hr file
@@ -91,8 +92,7 @@ def LogRawMagnetometerData(logDataToAdd):
             print("WARNING: There was a problem accessing the current logfile: " + RawlogName)
             logging.warning("WARNING: File IO Exception raised whilst accessing file: " + RawlogName)
 
-    # We have all the data - create all the output files for display
-    DataProcessor_library.process_data(readings)
+    # We have all the data - create all the output files for display by running the publishmanager script
 
 
 # *****************************************************************************************
@@ -144,7 +144,7 @@ except serial.SerialException:
 print("Port is: ", com.name)
 
 # Initialise array from savefile if possible, otherwise new array
-DataProcessor_library.CreateRawArray(readings)
+filemanager_library.CreateRawArray(readings)
 
 # *****************************************************************************************
 # MAIN LOOP. Only the End of Days will stop this program.

@@ -5,15 +5,41 @@ import logging
 import math
 from decimal import Decimal, getcontext
 import datafilters_library
-import OutputFileManager_library as ofm
+import filemanager_library as ofm
 
 __author__ = 'vaughn'
 
 # #################################################################################
 # Data processing script
+# this script is for anything that crunches and manipulates data
 #
 # #################################################################################
 
+# #################################################################################
+# This function is used to build up an array of readings from the diffs file. We might do this if for
+# some reason the median filter is not catching spikes, or we have consecutive readings (2 - 5) of spiking.
+# The createDiffs function, should have rejected these values.
+# #################################################################################
+def readings_from_diffs(diffsarray):
+    # set up the return array and x,y, and z storage values
+    outputarray = []
+    x_value = 0.0
+    y_value = 0.0
+    z_value = 0.0
+
+    # for each datapoint in the diffs array...
+    for datapoints in diffsarray:
+        # create cumulative values that will become our "readings"
+        x_value = x_value + float(datapoints.raw_x)
+        y_value = y_value + float(datapoints.raw_y)
+        z_value = z_value + float(datapoints.raw_z)
+
+        # create a datapoint with the new values. Append to return array
+        appenddata = dp.DataPoint(datapoints.dateTime, x_value, y_value, z_value)
+        outputarray.append(appenddata)
+
+    # return array
+    return outputarray
 
 # #################################################################################
 # data inverter
@@ -62,45 +88,5 @@ def create_diffs_array(readings_array):
     return diffsarray
 
 
-# #################################################################################
-# Create the raw datapoint array from the save file
-# #################################################################################
-def CreateRawArray(readings):
-    # Check if exists CurrentUTC file. If exists, load up Datapoint Array.
-    if os.path.isfile(k.FILE_ROLLING):
-        with open(k.FILE_ROLLING) as e:
-            for line in e:
-                line = line.strip() # remove any trailing whitespace chars like CR and NL
-                values = line.split(",")
-                # See the datapoint object/constructor for the current values it holds.
-                dp = DataPoint.DataPoint(values[0], values[1], values[2], values[3])
-                readings.append(dp)
-        print("Array loaded from file. Size: " + str(len(readings)) + " records")
-    else:
-        print("No save file loaded. Using new array.")
-
-# #################################################################################
-# Save the raw datapoint array to the save file
-# #################################################################################
-def SaveRawArray(readings):
-    # export array to array-save file
-        try:
-            with open (k.FILE_ROLLING, 'w') as w:
-                for dataObjects in readings:
-                    w.write(dataObjects.print_values() + '\n')
-        except IOError:
-            print("WARNING: There was a problem accessing " + k.FILE_ROLLING)
-            logging.warning("WARNING: File IO Exception raised whilst accessing file: " + k.FILE_ROLLING)
-
-# #################################################################################
-#  Append a new datapoint
-# #################################################################################
-def AppendDataPoint(datapoint, readingsArray):
-    # Append the datapoint to the array. Prune off the old datapoint if the array is 24hr long
-    if(len(readingsArray) < k.MAG_READ_FREQ * 60 * 24):
-        readingsArray.append(datapoint)
-    else:
-        readingsArray.pop(0)
-        readingsArray.append(datapoint)
 
 

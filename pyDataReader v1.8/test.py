@@ -3,7 +3,7 @@ from decimal import Decimal, getcontext
 import math
 import constants as k
 import datafilters_library as df
-import OutputFileManager_library as ofm
+import filemanager_library as ofm
 
 testdata = [
 ("27/12/2016 9:15",167.9,-2990.08,174.47),
