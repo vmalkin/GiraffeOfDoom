@@ -1,7 +1,6 @@
 #!/usr/bin/python
 import DataPoint
 import constants as k
-import DataProcessor_library
 import filemanager_library
 import serial
 import datetime

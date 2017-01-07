@@ -5,11 +5,11 @@ import DataPoint as dp
 
 __author__ = 'Meepo'
 
+# ###################################################################
 # FileManager
-# This script is for reading from and writing to files
-
-
-
+# This library is for reading from and writing to files
+#
+# ###################################################################
 
 def CreateDiffs(diffsArray):
     try:
@@ -29,7 +29,7 @@ def CreateDiffs(diffsArray):
         logging.warning("WARNING: File IO Exception raised whilst accessing file: " + k.FILE_4DIFFS)
 
 def Create24(readingsArray):
-	# Remove the first segment as it will be not fully averaged
+    # Remove the first segment as it will be not fully averaged
     readingsArray = readingsArray[k.MAG_RUNNINGAVG_COUNT:]
 
     try:
