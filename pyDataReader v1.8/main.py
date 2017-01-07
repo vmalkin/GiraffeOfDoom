@@ -92,8 +92,6 @@ def LogRawMagnetometerData(logDataToAdd):
             print("WARNING: There was a problem accessing the current logfile: " + RawlogName)
             logging.warning("WARNING: File IO Exception raised whilst accessing file: " + RawlogName)
 
-    # We have all the data - create all the output files for display by running the publishmanager script
-
 
 # *****************************************************************************************
 # E N D   F U N C T I O N   D E F I N I T I O N S
