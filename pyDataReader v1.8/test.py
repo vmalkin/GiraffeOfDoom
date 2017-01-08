@@ -320,15 +320,15 @@ def create_diffs_array(readings_array):
             # DIRECTLY set up the difference values for the main reading array datapoints. This is stored to the raw logfiles
             # APPLY field correction - increasing readings should be increasing field strength
             diff_x = (Decimal(readings_array[i].raw_x) - Decimal(readings_array[i-1].raw_x))
-            if math.sqrt(math.pow(diff_x,2)) > k.MAG3110_FLIP:
+            if math.sqrt(math.pow(diff_x,2)) > k.NOISE_SPIKE:
                 diff_x = 0
 
             diff_y = (Decimal(readings_array[i].raw_y) - Decimal(readings_array[i-1].raw_y))
-            if math.sqrt(math.pow(diff_y,2)) > k.MAG3110_FLIP:
+            if math.sqrt(math.pow(diff_y,2)) > k.NOISE_SPIKE:
                 diff_y = 0
 
             diff_z = (Decimal(readings_array[i].raw_z) - Decimal(readings_array[i-1].raw_z))
-            if math.sqrt(math.pow(diff_z,2)) > k.MAG3110_FLIP:
+            if math.sqrt(math.pow(diff_z,2)) > k.NOISE_SPIKE:
                 diff_z = 0
 
             dapt = dp.DataPoint(readings_array[i].dateTime,diff_x, diff_y, diff_z)

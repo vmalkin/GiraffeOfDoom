@@ -2,6 +2,7 @@
 import dataprocessor_library as dp
 import filemanager_library as ofm
 import time
+import constants as k
 
 # #################################################################################
 # Publisher script
@@ -30,7 +31,7 @@ def process_data(input_data_array):
     # COMMENT OUT THESE LINES IF WE'RE USING THE DIFFS.CSV FILE TO CREATE OUR DISPLAY FILES
     #
     # ###################################### #####################################
-    data_array = dp.datafilters_library.median_filter_3values(data_array) # Median filter to remove blips
+    data_array = dp.median_filter_3values(data_array)
     smoothed_data_array = dp.running_average(data_array) # smooth the array
 
     # ###########################################################################
@@ -40,9 +41,11 @@ def process_data(input_data_array):
     # This differences data is used to display rates of change, and minimises the effect
     # of diurnal variation, allowing us to see rapid onsets/changes in the magnetic field.
     # ###########################################################################
-    output_diffs = dp.create_diffs_array(data_array)
-    for i in range(0,2):
-        output_diffs = dp.diffs_running_average(output_diffs)
+    # output_diffs = dp.create_diffs_array(data_array)
+    # for i in range(0,2):
+    #     output_diffs = dp.diffs_running_average(output_diffs)
+    # ofm.CreateDiffs(output_diffs)  # use output_diffs data
+
 
     # ###########################################################
     # create the display files for graphing, using ArraySave.CSV
@@ -50,9 +53,15 @@ def process_data(input_data_array):
     # COMMENT OUT THESE LINES IF WE'RE USING THE DIFFS.CSV FILE TO CREATE OUR DISPLAY FILES
     #
     # ###########################################################
-    ofm.Create24(smoothed_data_array)
-    ofm.Create4(smoothed_data_array)
-    ofm.CreateDiffs(output_diffs) # use output_diffs data
+
+    # to get the last 4 hours the split value is mag read frequency * 60 * 4
+    splitvalue = k.MAG_READ_FREQ * 60 * 3
+    ofm.create_hichart_datafile(smoothed_data_array, splitvalue, k.FILE_4HR)
+
+    # to get the last 24 hours the split value is mag read frequency * 60 * 23
+    splitvalue = k.MAG_READ_FREQ * 60 * 23
+    ofm.create_hichart_datafile(smoothed_data_array, splitvalue, k.FILE_24HR)
+
     dp.binnedaverages(data_array) # use original data
 
     # # ########################################################
@@ -72,11 +81,18 @@ def process_data(input_data_array):
 # file to minimise r/w conflicts
 # #################################################################################
 while True:
-    # we might want to have some means of publishing different files at different rates
-    readings = []
+    # how long to perform all the operations
+    starttime = time.time()
 
-    dp.CreateRawArray(readings)
+    readings = []
+    readings = ofm.CreateRawArray()
 
     process_data(readings)
 
-    time.sleep(300)
+    # Calculate the processing time
+    endtime = time.time()
+    processingtime = endtime - starttime
+    processingtime = str(processingtime)[:5]
+    print("Processing complete. Elapsed time: " + processingtime + " seconds.\n")
+
+    time.sleep(180)

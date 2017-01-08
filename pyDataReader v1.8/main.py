@@ -141,7 +141,7 @@ except serial.SerialException:
 print("Port is: ", com.name)
 
 # Initialise array from savefile if possible, otherwise new array
-filemanager_library.CreateRawArray(readings)
+readings = filemanager_library.CreateRawArray()
 
 # *****************************************************************************************
 # MAIN LOOP. Only the End of Days will stop this program.

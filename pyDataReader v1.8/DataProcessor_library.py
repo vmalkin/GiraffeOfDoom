@@ -35,7 +35,7 @@ def readings_from_diffs(diffsarray):
         z_value = z_value + float(datapoints.raw_z)
 
         # create a datapoint with the new values. Append to return array
-        appenddata = dp.DataPoint(datapoints.dateTime, x_value, y_value, z_value)
+        appenddata = DataPoint.DataPoint(datapoints.dateTime, x_value, y_value, z_value)
         outputarray.append(appenddata)
 
     # return array
@@ -59,28 +59,41 @@ def invert_data_array(data_array):
 # #################################################################################
 # Calculate the differences
 # This function will create an array of differences
+# this can be used to create a new display array of relative readings, that do
+# not have nose spikes in them
 # #################################################################################
 def create_diffs_array(readings_array):
+    spike_counter = 0
     diffsarray = []
+    counterbit = 0
+
     if len(readings_array) > 2:
         for i in range (1, len(readings_array)):
-            # here we deal with flipping. differences should be in the order of 10s. It we're seeing 100s, there's an issue.
-            # DIRECTLY set up the difference values for the main reading array datapoints. This is stored to the raw logfiles
-            # APPLY field correction - increasing readings should be increasing field strength
+            counterbit = 0
             diff_x = (Decimal(readings_array[i].raw_x) - Decimal(readings_array[i-1].raw_x))
-            if math.sqrt(math.pow(diff_x,2)) > k.MAG3110_FLIP:
+            # Each IF statement checks to see if reading exceeds the spike value. If it does
+            # then we change the reading to zero. We trip the counterbit and at the end of the
+            # data read incr the spike counter
+            if math.sqrt(math.pow(diff_x,2)) > k.NOISE_SPIKE:
                 diff_x = 0
+                counterbit = 1
 
             diff_y = (Decimal(readings_array[i].raw_y) - Decimal(readings_array[i-1].raw_y))
-            if math.sqrt(math.pow(diff_y,2)) > k.MAG3110_FLIP:
+            if math.sqrt(math.pow(diff_y,2)) > k.NOISE_SPIKE:
                 diff_y = 0
+                counterbit = 1
 
             diff_z = (Decimal(readings_array[i].raw_z) - Decimal(readings_array[i-1].raw_z))
-            if math.sqrt(math.pow(diff_z,2)) > k.MAG3110_FLIP:
+            if math.sqrt(math.pow(diff_z,2)) > k.NOISE_SPIKE:
                 diff_z = 0
+                counterbit = 1
 
             dp = DataPoint.DataPoint(readings_array[i].dateTime,diff_x, diff_y, diff_z)
             diffsarray.append(dp)
+
+            if counterbit == 1:
+                spike_counter = spike_counter + 1
+                counterbit = 0
     else:
         dp = DataPoint.DataPoint("0000-00-00 00:00:00",0,0,0)
         diffsarray.append(dp)
@@ -177,7 +190,7 @@ def running_average(input_array):
     displayarray = []
 
     # This figure MUST be an even number. Check your constants.
-    AVERAGING_TIME = int(k.MAG_RUNNINGAVG_COUNT * k.MAG_READ_FREQ)
+    AVERAGING_TIME = int(k.MAG_RUNNINGAVG_COUNT)
     AVERAGING_TIME_HALF = int(AVERAGING_TIME / 2)
 
     # NOW average the cumulative array, smooth out the blips
@@ -238,7 +251,7 @@ def binnedaverages(readings):
 
         # we have added up all the values for the minute and done the correct num of iterations
         # based on the frequency of the magnetometers output
-        elif nowminute != nextminute and counter == k.MAG_READ_FREQ - 1:
+        elif nowminute != nextminute and counter == k.MAG_READ_FREQ - 2:
             xAvg = xAvg + Decimal(dpvalues[4])
             yAvg = yAvg + Decimal(dpvalues[5])
             zAvg = zAvg + Decimal(dpvalues[6])

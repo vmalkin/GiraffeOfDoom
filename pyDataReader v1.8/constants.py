@@ -1,10 +1,10 @@
 __author__ = 'vaughn'
 
 # Constants
-MAG_READ_FREQ = 12           # how often the magnetometer sends data per minute
-MAG_RUNNINGAVG_COUNT = 12   # The time in MINUTES that we want to average on. ONLY an even number
-MAG3110_FLIP = 200          # Sensor chip flips at this reading
-FIELD_CORRECTION = 1        # if the field is increasing in strength, the values should go up, and vica versa
+MAG_READ_FREQ = 30           # how often the magnetometer sends data per minute
+MAG_RUNNINGAVG_COUNT = 6   # The number of readings "wide" the averaging window is. EVEN NUMBER
+NOISE_SPIKE = 200          # Sensor chip flips at this reading
+FIELD_CORRECTION = -1        # if the field is increasing in strength, the values should go up, and vica versa
 STATION_ID = "Dalmore01."
 
 # Files
