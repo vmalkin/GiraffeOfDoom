@@ -243,7 +243,7 @@ def binnedaverages(readings):
         nextminute = dpvalues1[2]
 
         # We are still summing values...
-        if nowminute == nextminute and counter < k.MAG_READ_FREQ - 1:
+        if nowminute == nextminute and counter < k.MAG_READ_FREQ:
             xAvg = xAvg + Decimal(dpvalues[4])
             yAvg = yAvg + Decimal(dpvalues[5])
             zAvg = zAvg + Decimal(dpvalues[6])
