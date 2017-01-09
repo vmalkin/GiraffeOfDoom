@@ -12,7 +12,8 @@ import constants as k
 # logging script. Managing concurrent python scripts is easily done thru
 # appropriate batch/bash scripting
 # #################################################################################
-
+RANDOM_SECS = 10                # To randomise the minutes delay
+DELAY_SHORT_INTERVAL = 180       # THE DELAY INTERVAL FOR FILE COPYING
 
 # #################################################################################
 # FUNCTION DEFINITIONS
@@ -100,4 +101,5 @@ while True:
     processingtime = str(processingtime)[:5]
     print("Processing complete. Elapsed time: " + processingtime + " seconds.\n")
 
-    time.sleep(180)
+    timedelay = DELAY_SHORT_INTERVAL + randint(0,RANDOM_SECS)
+    time.sleep(timedelay)
