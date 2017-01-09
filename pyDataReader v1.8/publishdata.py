@@ -34,17 +34,17 @@ def process_data(input_data_array):
     data_array = dp.median_filter_3values(data_array)
     smoothed_data_array = dp.running_average(data_array) # smooth the array
 
-    # # ###########################################################################
-    # # CReate the differences array and smooth.
-    # # Do Not Use the smoothed data from previous step. Use original data
-    # # do several iterations to ensure best appearance.
-    # # This differences data is used to display rates of change, and minimises the effect
-    # # of diurnal variation, allowing us to see rapid onsets/changes in the magnetic field.
-    # # ###########################################################################
-    # output_diffs = dp.create_diffs_array(data_array)
-    # for i in range(0,2):
-    #     output_diffs = dp.diffs_running_average(output_diffs)
-    # ofm.CreateDiffs(output_diffs)  # use output_diffs data
+    # ###########################################################################
+    # CReate the differences array and smooth.
+    # Do Not Use the smoothed data from previous step. Use original data
+    # do several iterations to ensure best appearance.
+    # This differences data is used to display rates of change, and minimises the effect
+    # of diurnal variation, allowing us to see rapid onsets/changes in the magnetic field.
+    # ###########################################################################
+    output_diffs = dp.create_diffs_array(data_array)
+    for i in range(0,2):
+        output_diffs = dp.diffs_running_average(output_diffs)
+    ofm.CreateDiffs(output_diffs)  # use output_diffs data
 
 
     # ###########################################################

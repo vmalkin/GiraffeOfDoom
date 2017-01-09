@@ -147,7 +147,7 @@ def median_filter_3values(arraydata):
 def diffs_running_average(input_array):
     getcontext().prec = 5
     displayarray = []
-    timeinterval = 6 # minutes
+    timeinterval = 4 # minutes
 
     # This figure MUST be an even number. Check your constants.
     AVERAGING_TIME = int(timeinterval * k.MAG_READ_FREQ)
@@ -229,6 +229,7 @@ def binnedaverages(readings):
     yAvg = Decimal(0)
     zAvg = Decimal(0)
     binnedvalues = []
+    counter = Decimal(0)
 
     # Open the readings array
     for j in range(0, len(readings)-1):
@@ -245,12 +246,13 @@ def binnedaverages(readings):
             xAvg = xAvg + Decimal(dpvalues[4])
             yAvg = yAvg + Decimal(dpvalues[5])
             zAvg = zAvg + Decimal(dpvalues[6])
+            counter = counter + 1
 
             # print(nowminute + " " + str(xAvg))
-        elif nowminute != nextminute:
-            xAvg = xAvg / Decimal(k.MAG_READ_FREQ)
-            yAvg = yAvg / Decimal(k.MAG_READ_FREQ)
-            zAvg = zAvg / Decimal(k.MAG_READ_FREQ)
+        elif nowminute != nextminute and counter > 1:
+            xAvg = xAvg / counter
+            yAvg = yAvg / counter
+            zAvg = zAvg / counter
 
             dp = DataPoint.DataPoint(datetime, xAvg, yAvg, zAvg)
             binnedvalues.append(dp)
@@ -258,6 +260,9 @@ def binnedaverages(readings):
             xAvg = 0
             yAvg = 0
             zAvg = 0
+            counter = 0
+        else:
+            counter = 0
 
     # WRITE OUT to binned file.
     try:
