@@ -3,6 +3,9 @@ import dataprocessor_library as dp
 import filemanager_library as ofm
 import time
 import constants as k
+import random
+import logging
+# from constants import mag_readings
 
 # #################################################################################
 # Publisher script
@@ -14,6 +17,9 @@ import constants as k
 # #################################################################################
 RANDOM_SECS = 10                # To randomise the minutes delay
 DELAY_SHORT_INTERVAL = 180       # THE DELAY INTERVAL FOR FILE COPYING
+
+# Setup error/bug logging
+logging.basicConfig(filename="publisherrors.log", format='%(asctime)s %(message)s')
 
 # #################################################################################
 # FUNCTION DEFINITIONS
@@ -90,16 +96,20 @@ while True:
     # how long to perform all the operations
     starttime = time.time()
 
-    readings = []
-    readings = ofm.CreateRawArray()
+    mag_readings = []
+    try:
+        mag_readings = ofm.CreateRawArray()
+        # Calculate the processing time
+        endtime = time.time()
+        processingtime = endtime - starttime
+        processingtime = str(processingtime)[:5]
+        print("Processing complete. Elapsed time: " + processingtime + " seconds.\n")
+        print(str(len(mag_readings)) + " records loaded")
+        process_data(mag_readings)
+    except:
+        print("ERROR: Problem opening file")
+        logging.critical(" ERROR: Problem opening file. Unable to create display files")
 
-    process_data(readings)
 
-    # Calculate the processing time
-    endtime = time.time()
-    processingtime = endtime - starttime
-    processingtime = str(processingtime)[:5]
-    print("Processing complete. Elapsed time: " + processingtime + " seconds.\n")
-
-    timedelay = DELAY_SHORT_INTERVAL + randint(0,RANDOM_SECS)
+    timedelay = DELAY_SHORT_INTERVAL + random.randint(0,RANDOM_SECS)
     time.sleep(timedelay)

@@ -8,6 +8,7 @@ import logging
 import os
 import re
 import time
+# from constants import mag_readings
 
 __author__ = 'Vaughn Malkin'
 __version__ = "1.8.0"
@@ -54,17 +55,17 @@ def LogRawMagnetometerData(logDataToAdd):
     dp = DataPoint.DataPoint(str(logdate), lg[0], lg[1], lg[2])
 
     # DP is added to array.
-    filemanager_library.AppendDataPoint(dp, readings)
+    filemanager_library.AppendDataPoint(dp, mag_readings)
 
     # Save the array to the ArraySave.csv file loaded at the beginning
-    filemanager_library.SaveRawArray(readings)
+    filemanager_library.SaveRawArray(mag_readings)
 
     ###############################################
     # Logdata to be appended to current 24 hr file
     ###############################################
     # Grab the latest entry from th readings array with calculated values.
     # By this point readings will have the differences added.
-    logData = readings[len(readings) - 1].print_values()
+    logData = mag_readings[len(mag_readings) - 1].print_values()
 
     # RAW log file name is created now. Get the date part of dt, add file suffix
     RawlogName = str(dt.date())
@@ -129,7 +130,7 @@ except:
         logging.critical("CRITICAL ERROR: Unable to create Graphing file directory")
 
 # setup array for datapoints
-readings = []
+mag_readings = []
 
 # Set up the infernal com port. Add a TRY-CATCH to deal with possible com port problems
 try:
@@ -142,7 +143,7 @@ except serial.SerialException:
 print("Port is: ", com.name)
 
 # Initialise array from savefile if possible, otherwise new array
-readings = filemanager_library.CreateRawArray()
+mag_readings = filemanager_library.CreateRawArray()
 
 # *****************************************************************************************
 # MAIN LOOP. Only the End of Days will stop this program.
@@ -164,5 +165,5 @@ while True:
     processingtime = str(processingtime)[:5]
 
     # User output displayed on console
-    if len(readings) > 1:
-        print("Time to process: " + processingtime + "\t\t" + " Magnetometer Data: " + readings[len(readings)-1].print_values())
+    if len(mag_readings) > 1:
+        print("Time to process : " + processingtime + "\t\t" + " Magnetometer Data: " + mag_readings[len(mag_readings)-1].print_values() + "\t\t" + str(len(mag_readings)) + " records")
