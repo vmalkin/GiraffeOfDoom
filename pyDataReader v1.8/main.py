@@ -91,6 +91,7 @@ def LogRawMagnetometerData(logDataToAdd):
             print("WARNING: There was a problem accessing the current logfile: " + RawlogName)
             logging.warning("WARNING: File IO Exception raised whilst accessing file: " + RawlogName)
 
+    # If applicable, pass the datapoint to the MYSQL database routine.
 
 # *****************************************************************************************
 # E N D   F U N C T I O N   D E F I N I T I O N S

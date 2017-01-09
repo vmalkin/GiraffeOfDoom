@@ -228,7 +228,6 @@ def binnedaverages(readings):
     xAvg = Decimal(0)
     yAvg = Decimal(0)
     zAvg = Decimal(0)
-    counter = 0
     binnedvalues = []
 
     # Open the readings array
@@ -242,23 +241,13 @@ def binnedaverages(readings):
         dpvalues1 = re.split(r'[\s,:]', readings[j + 1].print_values())
         nextminute = dpvalues1[2]
 
-        # We are still summing values...
-        # if nowminute == nextminute and counter < k.MAG_READ_FREQ:
         if nowminute == nextminute:
-            xAvg = xAvg + Decimal(dpvalues[4])
-            yAvg = yAvg + Decimal(dpvalues[5])
-            zAvg = zAvg + Decimal(dpvalues[6])
-            counter = counter + 1
-
-        # we have added up all the values for the minute and done the correct num of iterations
-        # based on the frequency of the magnetometers output
-        elif nowminute != nextminute and counter > int(k.MAG_READ_FREQ / 4)*3:
             xAvg = xAvg + Decimal(dpvalues[4])
             yAvg = yAvg + Decimal(dpvalues[5])
             zAvg = zAvg + Decimal(dpvalues[6])
 
             # print(nowminute + " " + str(xAvg))
-
+        elif nowminute != nextminute:
             xAvg = xAvg / Decimal(k.MAG_READ_FREQ)
             yAvg = yAvg / Decimal(k.MAG_READ_FREQ)
             zAvg = zAvg / Decimal(k.MAG_READ_FREQ)
@@ -269,14 +258,6 @@ def binnedaverages(readings):
             xAvg = 0
             yAvg = 0
             zAvg = 0
-            counter = 0
-
-        # # Otherwise we do not have the correct number of iterations for the minute, ignore this.
-        # else:
-        #     xAvg = 0
-        #     yAvg = 0
-        #     zAvg = 0
-        #     counter = 0
 
     # WRITE OUT to binned file.
     try:
