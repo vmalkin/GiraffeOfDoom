@@ -8,17 +8,17 @@ getcontext().prec = 5
 while True:
     # create the magnetometer stations for this run
     try:
-        corstorphine01 = Station.Station("Corstorphine 01", "D:\Transfer\My Documents\Magnetometer\DataFusionProject\Corstorphine01.1minbins.csv")
+        corstorphine01 = Station.Station("Corstorphine 01", "Corstorphine01.1minbins.csv")
     except:
         print("Unable to create station")
 
     try:
-        dalmore02 = Station.Station("Dalmore 02", "Z:/temp\pyDataReader v1.7/graphing/Dalmore02.1minbins.csv")
+        dalmore02 = Station.Station("Dalmore 02", "Dalmore_Rapid.1minbins.csv")
     except:
         print("Unable to create station")
 
     try:
-        dalmore01 = Station.Station("Dalmore 01", "D:\Transfer\My Documents\Magnetometer\pyDataReader\graphing\Dalmore01.1minbins.csv")
+        dalmore01 = Station.Station("Dalmore 01", "Dalmore01.1minbins.csv")
     except:
         print("Unable to create station")
 
@@ -131,7 +131,7 @@ while True:
     merged_data.reverse()
 
     # write out to logfile
-    logfile = "D:\Transfer\My Documents\Magnetometer\pyDataReader\publish\merged.csv"
+    logfile = "merged.csv"
     try:
         os.remove(logfile)
     except OSError:
