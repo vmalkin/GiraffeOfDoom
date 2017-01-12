@@ -131,7 +131,8 @@ while True:
     merged_data.reverse()
 
     # write out to logfile
-    logfile = "merged.csv"
+    logfile = "merged1.csv"
+    try:
     try:
         os.remove(logfile)
     except OSError:
