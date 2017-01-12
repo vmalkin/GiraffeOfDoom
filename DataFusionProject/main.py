@@ -9,6 +9,20 @@ getcontext().prec = 5
 # ####################################################################################
 # converts the UTC timestamp to unix time. returns converted array.
 # ####################################################################################
+def addheader(dataarray, stationlist):
+    header = "date/time UTC"
+    for magstation in stationlist:
+        header = header + "," + magstation.station_name
+
+    dataarray.reverse()
+    dataarray.append(header)
+    dataarray.reverse()
+
+    return dataarray
+
+# ####################################################################################
+# converts the UTC timestamp to unix time. returns converted array.
+# ####################################################################################
 def unix2utc(dataarray):
     temparray = []
     for item in dataarray:
@@ -25,6 +39,9 @@ def unix2utc(dataarray):
         temparray.append(appenddata)
     return temparray
 
+# ####################################################################################
+# Saves array to display file
+# ####################################################################################
 def savedata(csvdata):
     # save data to CSV display file
     logfile = "merged.csv"
@@ -41,12 +58,17 @@ def savedata(csvdata):
         except IOError:
             print("WARNING: There was a problem accessing the current logfile: " + logfile)
 
-
+# ####################################################################################
+# shrinks array to the last 24 hours only
+# ####################################################################################
 def current24hour(array):
     chopvalue = len(array) - 1440
     array = array[chopvalue:]
     return array
 
+# ####################################################################################
+# creates the final merged data
+# ####################################################################################
 def createmerge(datelist, stationlist):
     # Next, we want to check each station in our station list. If it has a datavalue that falls in between the current
     # stamp, and the next one, we need to append it's data. If it does not, then we need to append a null reading.
@@ -145,6 +167,9 @@ while True:
 
     # Convert the times back to UTC.
     mergeddataarray = unix2utc(mergeddataarray)
+
+    # add header to file
+    mergeddataarray = addheader(mergeddataarray, stations)
 
     # save this array
     savedata(mergeddataarray)
