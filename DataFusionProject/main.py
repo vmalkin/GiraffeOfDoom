@@ -2,9 +2,84 @@ import Station
 import os
 from decimal import Decimal, getcontext
 import time
+import datetime
 
 getcontext().prec = 5
 
+# ####################################################################################
+# converts the UTC timestamp to unix time. returns converted array.
+# ####################################################################################
+def unix2utc(dataarray):
+    temparray = []
+    for item in dataarray:
+        data = item.split(",")
+        unixdate = data[0]
+        datavalue = ""
+
+        for i in range(1, len(data)):
+            datavalue = datavalue + "," + data[i]
+
+        utctime = datetime.datetime.fromtimestamp(int(unixdate)).strftime('%Y-%m-%d %H:%M:%S')
+
+        appenddata = str(utctime) + datavalue
+        temparray.append(appenddata)
+    return temparray
+
+def savedata(csvdata):
+    # save data to CSV display file
+    logfile = "merged.csv"
+    try:
+        os.remove(logfile)
+    except OSError:
+        print("WARNING: could not delete " + logfile)
+
+    for readings in csvdata:
+        try:
+            with open(logfile, 'a') as f:
+                f.write(readings + '\n')
+                # print("Data logged ok. Array Size: " + str(len(readings)))
+        except IOError:
+            print("WARNING: There was a problem accessing the current logfile: " + logfile)
+
+
+def current24hour(array):
+    chopvalue = len(array) - 1440
+    array = array[chopvalue:]
+    return array
+
+def createmerge(datelist, stationlist):
+    # Next, we want to check each station in our station list. If it has a datavalue that falls in between the current
+    # stamp, and the next one, we need to append it's data. If it does not, then we need to append a null reading.
+    nulldatavalue = ""  # this may have to be "NULL", "0", etc, depending on our charting API
+    mergeddataarray = []
+
+    for j in range(0, len(datelist) - 1):
+        appenddata = ""
+        d1 = datelist[j]
+        d2 = datelist[j + 1]
+
+        # for each station
+        for j in range(0, len(stationlist)):
+            tempdata = ","
+            for i in range(0, len(stationlist[j].stationdata)):
+                datasplit = stationlist[j].stationdata[i].split(",")
+                if datasplit[0] >= str(d1) and datasplit[0] < str(d2):
+                    tempdata = "," + datasplit[1]
+
+            appenddata = appenddata + tempdata
+
+        appenddata = str(d1) + appenddata
+        # print(appenddata)
+        mergeddataarray.append(appenddata)
+
+
+
+    return mergeddataarray
+
+
+# #########################################
+# M a i n   p r o g r a m   h e r e
+# #########################################
 while True:
     # create the magnetometer stations for this run
     try:
@@ -23,128 +98,57 @@ while True:
         print("Unable to create station")
 
     # init the array of stations and append
-    stationlist = []
+    stations = []
     try:
-        stationlist.append(dalmore01)
+        stations.append(dalmore01)
     except:
         print("Unable to create station")
 
     try:
-        stationlist.append(dalmore02)
+        stations.append(dalmore02)
     except:
         print("Unable to create station")
 
     try:
-        stationlist.append(corstorphine01)
+        stations.append(corstorphine01)
     except:
         print("Unable to create station")
 
-    # create a list of unique timestamps based on all available times from all stations, for this run.
-    # make a list of all dates, duplicates and all...
-    temp_data = []
-    for magstation in stationlist:
-        for i in range(0, len(magstation.output_f)):
-            datasplit = magstation.output_f[i].split(",")
-            testdate = datasplit[0]
-            temp_data.append(testdate)
+    # By this point station timestamps are in UNix time. Prime the earliest and latest time holders
+    starttime = stations[0].begintime
+    endtime = stations[0].endtime
 
-    # sort the list A-Z-wise
-    temp_data.sort()
+    for i in range(1,len(stations)):
+        if stations[i].begintime < starttime:
+            starttime = stations[i].begintime
 
-    olddate = "2000-01-01 00:00"
-    date_data = []
-    # Go thru the temp data and write out unique datetimes only, to the final merged list.
-    for dateitem in temp_data:
-        while dateitem != olddate:
-            # print(dateitem)
-            date_data.append(dateitem)
-            olddate = dateitem
+        if stations[i].endtime > endtime:
+            endtime = stations[i].endtime
 
+    # start end end times in UNIX format exist. We can calculate how many minutes this is and create a new array
+    # that has prepopulated timeslot values based on this. Let us calculate this, and to be safe, add an extra minute
+    # in case we have a remainder.
+    totalmins = int((float(endtime) - float(starttime)) / 60)
+    print("There are " + str(totalmins) + " total entries.")
 
-    merged_data = []
-    print("Calculated date range...")
-    # Now, for each dateitem in date_data...
-    for dateitem in date_data:
-        #  Set up a datastring.
-        datastring = ""
-        # Go thru each magnetometer station in the station list.
-        for magstation in stationlist:
-            # go thru each mag stations output list, find matching date and append the value to datastring
-            tempstring = datastring
-            for info in magstation.output_f:
-                info = info.split(",")
-                if info[0] == dateitem:
-                    datastring = datastring + info[1] + ","
+    # Begin to build up the array. First create list of allowable time values.
+    datevalues = []
+    for i in range(int(float(starttime)), int(float(endtime)), 60):
+        datevalues.append(i)
 
-            # we went thru the list of stations and there was no entry for this date/time
-            # CUSTOMISE the N/A string according to your graphing software so that N/A is not plotted
-            if tempstring == datastring:
-                datastring = datastring + ","
+    # but we only weant the last 24 hours. so lets deal with that now
+    datevalues = current24hour(datevalues)
+    print("Array will be " + str(len(datevalues)) + " records long. Begin processing...")
 
-        merged_data.append(dateitem + "," + datastring)
+    # create the merged data using the date and station lists
+    mergeddataarray = createmerge(datevalues, stations)
 
-    # for item in merged_data:
-    #     print(item)
+    # Convert the times back to UTC.
+    mergeddataarray = unix2utc(mergeddataarray)
 
-    print("Identified data...")
-
-    temp_data= []
-    # remove final trailing comma
-    for item in merged_data:
-        item = item[:-1]
-        temp_data.append(item)
-    merged_data = temp_data
+    # save this array
+    savedata(mergeddataarray)
 
 
-    # One final task - re-write the final merged data for values that do NOT have a zero in them.
-    # temp_data = []
-    # for i in range(0, len(merged_data)):
-    #     writeflag = 1
-    #     datasplit = merged_data[i].split(",")
-    #     for dataitems in datasplit:
-    #         if dataitems == str(0):
-    #             writeflag = 0 # we cannot write this line...
-    #     if writeflag == 1:
-    #         temp_data.append(merged_data[i])
-    # merged_data = temp_data
-
-
-    # insert the headings as the first element of the merged_data[]
-    merged_header = "Date/Time UTC, "
-    for magstation in stationlist:
-        merged_header = merged_header + magstation.station_name + ","
-
-    merged_header = merged_header + "Averaged Reading"
-
-    # We only want the most recent 1440 entries
-    if len(merged_data) > 1440:
-        chopvalue = len(merged_data) - 1440
-        try:
-            print("Merged array is " + str(len(merged_data)) + " records long: Trimming array")
-            merged_data = merged_data[chopvalue:]
-            print("Merged array is now " + str(len(merged_data)) + " records long\n")
-        except:
-            print("ERROR: Unable to trim array")
-    # add to merged_data array
-    merged_data.reverse()
-    merged_data.append(merged_header)
-    merged_data.reverse()
-
-    # write out to logfile
-    logfile = "merged1.csv"
-    try:
-    try:
-        os.remove(logfile)
-    except OSError:
-        print("WARNING: could not delete " + logfile)
-
-    for readings in merged_data:
-        try:
-            with open(logfile, 'a') as f:
-                f.write(readings + '\n')
-                # print("Data logged ok. Array Size: " + str(len(readings)))
-        except IOError:
-            print("WARNING: There was a problem accessing the current logfile: " + logfile)
-    print("Data merge COMPLETED")
-
+    print("Finished processing")
     time.sleep(600)
