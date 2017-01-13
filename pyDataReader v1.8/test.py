@@ -2,7 +2,7 @@ import DataPoint as dp
 from decimal import Decimal, getcontext
 import math
 import constants as k
-import datafilters_library as df
+import DataProcessor_library as dl
 import filemanager_library as ofm
 
 testdata = [
@@ -347,10 +347,10 @@ for item in testdata:
     magdata.append(readings)
 
 
-output_diffs = create_diffs_array(magdata)
+smoothed_data_array = dl.median_filter_3values(magdata)
+smoothed_data_array = dl.running_average(smoothed_data_array)
+smoothed_data_array = dl.running_average(smoothed_data_array)
 
-
-smoothed_data_array = ofm.readings_from_diffs(output_diffs)
-ofm.Create24(smoothed_data_array)
-ofm.Create4(smoothed_data_array)
-ofm.CreateDiffs(output_diffs)  # use output_diffs data
+# to get the last 4 hours the split value is mag read frequency * 60 * 4
+splitvalue = k.MAG_READ_FREQ * 60 * 3
+ofm.create_hichart_datafile(smoothed_data_array, splitvalue, k.FILE_4HR)

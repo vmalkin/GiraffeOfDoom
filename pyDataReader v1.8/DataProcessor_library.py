@@ -8,6 +8,7 @@ import re
 import filemanager_library as ofm
 
 __author__ = 'vaughn'
+getcontext().prec = 5
 
 # #################################################################################
 # Data processing script
@@ -196,9 +197,9 @@ def running_average(input_array):
     # NOW average the cumulative array, smooth out the blips
     if len(input_array) > AVERAGING_TIME:
         for i in range(AVERAGING_TIME_HALF, len(input_array) - AVERAGING_TIME_HALF):
-            xvalue = 0
-            yvalue = 0
-            zvalue = 0
+            xvalue = Decimal(0)
+            yvalue = Decimal(0)
+            zvalue = Decimal(0)
 
             # This is where we average for the time i before and after i.
             for j in range(0, AVERAGING_TIME):
