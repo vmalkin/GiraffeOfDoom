@@ -40,7 +40,7 @@
 /* Assign a unique ID to this sensor at the same time */
 Adafruit_HMC5883_Unified mag = Adafruit_HMC5883_Unified(12345);
 
-float AVERAGE_ITERATIONS = 1000; /* Approx 1000 iterations per second */
+double AVERAGE_ITERATIONS = 1000.0; /* Approx 1000 iterations per second */
 
 
 void displaySensorDetails(void)
@@ -81,9 +81,9 @@ void loop(void)
   /* Get a new sensor event */ 
   // sensors_event_t event; 
   // mag.getEvent(&event);
-  float magX = 0;
-  float magY = 0; 
-  float magZ = 0;
+  double magX = 0;
+  double magY = 0; 
+  double magZ = 0;
   
   /* Display the results (magnetic vector values are in micro-Tesla (uT)) */
   //Serial.print("X: "); Serial.print(event.magnetic.x); Serial.print("  ");
@@ -94,20 +94,20 @@ void loop(void)
   {
     sensors_event_t event; 
     mag.getEvent(&event);
-    magX = magX + (float)event.magnetic.x;
-    magY = magY + (float)event.magnetic.y;
-    magZ = magZ + (float)event.magnetic.z;
+    magX = magX + (double)event.magnetic.x;
+    magY = magY + (double)event.magnetic.y;
+    magZ = magZ + (double)event.magnetic.z;
   }
   
   magX = magX/AVERAGE_ITERATIONS;  
   magY = magY/AVERAGE_ITERATIONS; 
   magZ = magZ/AVERAGE_ITERATIONS; 
-  
-  Serial.print(magX);
+
+  Serial.print(magX,3);
   Serial.print(",");
-  Serial.print(magY);
+  Serial.print(magY,3);
   Serial.print(",");
-  Serial.println(magZ);
+  Serial.println(magZ,3);
   
   magX = 0;
   magY = 0;

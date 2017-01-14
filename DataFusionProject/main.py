@@ -63,7 +63,10 @@ def savedata(csvdata):
 # ####################################################################################
 def current24hour(array):
     chopvalue = len(array) - 1440
-    array = array[chopvalue:]
+	
+	if len(array) > 1440:
+		array = array[chopvalue:]
+	
     return array
 
 # ####################################################################################
