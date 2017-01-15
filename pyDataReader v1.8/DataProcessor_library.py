@@ -235,9 +235,11 @@ def binnedaverages(readings):
     # Open the readings array
     for j in range(0, len(readings)-1):
         # Get the first datapoint from the array, so we get the current minute...
+        # dpvalues = re.split(r'[\s,:]', readings[j].dateTime)
         dpvalues = re.split(r'[\s,:]', readings[j].print_values())
         nowminute = dpvalues[2]
         datetime = dpvalues[0] + " " + dpvalues[1] + ":" + nowminute
+        print(str(datetime))
 
         # get the value for the next minute
         dpvalues1 = re.split(r'[\s,:]', readings[j + 1].print_values())
@@ -250,7 +252,7 @@ def binnedaverages(readings):
             counter = counter + 1
 
             # print(nowminute + " " + str(xAvg))
-        elif nowminute != nextminute and counter > 1:
+        elif nowminute != nextminute:
             xAvg = xAvg / counter
             yAvg = yAvg / counter
             zAvg = zAvg / counter
