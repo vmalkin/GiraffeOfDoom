@@ -84,6 +84,7 @@ class Station:
                 newdatastring = datastring[0] + "," + str(datavalue)
                 temp_array.append(newdatastring)
 
+            print("Data normalised. " + str(len(temp_array)) + " records long")
             return temp_array
 
         # ####################################################################################
@@ -102,20 +103,40 @@ class Station:
 
                 appenddata = str(unixtime) + "," + datavalue
                 temparray.append(appenddata)
+
+            print("Timestamps converted. " + str(len(temparray)) + " records long")
             return temparray
 
-        # ####################################################################################
-        # Smooth data
-        # ####################################################################################
-        def smoothdata(h_values):
-            pass
 
         # #################################################################################
         # Median filter based on 3 values
-        #
+        # Array is datetime,value
         # #################################################################################
         def median_filter_3values(arraydata):
-            pass
+            # set up the return array
+            returnarray = []
+
+            # Parse thru the arraydata
+            for i in range(1,len(arraydata) - 1):
+                hsort = []
+
+                # get the unix timestamp
+                datasplit = arraydata[i].split(",")
+                datestamp = datasplit[0]
+
+                # for each i, grab the data before, i, and data after, append the the sort array
+                for j in range(-1,2):
+                    datasplit = arraydata[i + j].split(",")
+                    hsort.append(datasplit[1])
+                # sort
+                hsort.sort()
+
+                #grab the middlemost data and append to the return array
+                datastring = datestamp + "," + hsort[1]
+                returnarray.append(datastring)
+
+            print("Median filter applied. " + str(len(returnarray)) + " records long")
+            return returnarray
 
         # #################################################################################
         # Create the smoothed data array and write out the files for plotting.
@@ -126,19 +147,115 @@ class Station:
         # readings.
         # #################################################################################
         def running_average(input_array):
-            pass
+            # set up the return array
+            returnarray = []
+
+            # Parse thru the arraydata
+            for i in range(2, len(input_array) - 2):
+                # get the unix timestamp
+                datasplit = input_array[i].split(",")
+                datestamp = datasplit[0]
+
+                hvalue = 0
+                # for each i, grab the data before, i, and data after, append the the sort array
+                for j in range(-2, 3):
+                    datasplit = input_array[i + j].split(",")
+                    hvalue = float(hvalue) + float(datasplit[1])
+
+                hvalue = hvalue / 5
+
+                # grab data and append to the return array
+                datastring = datestamp + "," + str(hvalue)
+                returnarray.append(datastring)
+
+            print("Running average applied. " + str(len(returnarray)) + " records long")
+            return returnarray
 
         # ####################################################################################
         # Calculate diffs - dH/dt
         # ####################################################################################
         def calc_dHdt(h_values):
-            pass
+            returnarray = []
+
+            for i in range(1, len(h_values)):
+                # get previous values
+                prev_split = h_values[i - 1].split(",")
+                h_prev = prev_split[1]
+
+                # get current values and date
+                current_split = h_values[i].split(",")
+                datestamp = current_split[0]
+                h_current = current_split[1]
+
+                # calculate dH/dt
+                h_diff = float(h_prev) - float(h_current)
+
+                datastring = datestamp + "," + str(h_diff)
+                returnarray.append(datastring)
+
+            print("Converted to dH/dt. " + str(len(returnarray)) + " records long")
+            return returnarray
 
         # ####################################################################################
         # Create array of dH/dt binned by hours
         # ####################################################################################
-        def hourbins(h_values):
-            pass
+        def hourbins(h_diffs):
+            returnarray = []
+            # calculate how many hours are in the present data array. Create a new readings array
+            # prepopulated with corresponding timestamps
+            starttime = h_diffs[0].split(",")
+            endtime = h_diffs[len(h_diffs) - 1].split(",")
+            starttime = int(float((starttime[0])))
+            endtime = int(float(endtime[0]))
+
+
+            # Is our incoming array big enough? AT least one hour of data to start with
+            if (endtime - starttime) > 3660:
+
+                # We are going to count backwards, so that we go back in whole hours. Add the timestamps
+                timestamps = []
+                i = endtime
+
+                while i > starttime:
+                    timestamps.append(i)
+                    i = i - 3660
+
+                timestamps.append(starttime)
+
+                # flip them back around the right way
+                timestamps.reverse()
+
+                # What we want to do now is to use the values stored in timestamps to find the max/min values
+                # in our data and calculate the differences accordingly
+
+                # Use the timestamps array to calculate the limits for the hour
+                for i in range(1, len(timestamps)):
+                    beginhour = timestamps[i - 1]
+                    endhour = timestamps[i]
+                    maxh = float(-10000)
+                    minh = float(10000)
+                    diffdata = 0
+
+                    # now parse thru the h_diffs data, using the timestamp limits to find dH/dt for each hour
+                    for j in range(0, len(h_diffs)):
+                        datasplit = h_diffs[j].split(",")
+                        h_diffs_date = datasplit[0]
+                        h_diffs_info = datasplit[1]
+
+                        # if we're inside the hour
+                        if int(float(h_diffs_date)) >= beginhour and int(float(h_diffs_date)) < endhour:
+                            if float(h_diffs_info) <= float(minh):
+                                minh = h_diffs_info
+                            elif float(h_diffs_info) > float(maxh):
+                                maxh = h_diffs_info
+
+                    diffdata = float(maxh) - float(minh)
+                    # print(str(endhour) + " " + str(maxh) + " " + str(minh))
+                    appenddata = str(endhour) + "," + str(diffdata)
+
+                    returnarray.append(appenddata)
+
+            return returnarray
 
         # #################################################################################
         # data inverter
@@ -156,7 +273,7 @@ class Station:
                 dp = datetime + "," + x + "," + y + "," + z
 
                 returnarray.append(dp)
-
+            print("Array values inverted. " + str(len(returnarray)) + " records long")
             return returnarray
 
 # ####################################################################################
@@ -179,11 +296,14 @@ class Station:
         stationdata = utc2unix(stationdata)
 
         # Take the raw H values. SMooth them
+        stationdata = running_average(stationdata)
 
         # Take the smoothes H values. Calculate dH/dt. Return this diffs array
+        stationdata = calc_dHdt(stationdata)
 
         # Take the diffs array. Calculate the max differences between biggest and smallest value for each hour. Return
         # this binned data (Array of 24 values, for each of the last 24 hours)
+        stationdata = hourbins(stationdata)
 
         # Make available
         self.stationdata = stationdata
@@ -196,6 +316,3 @@ class Station:
         endtime = self.stationdata[len(stationdata) - 1]
         endtime = endtime.split(",")
         self.endtime = endtime[0]
-
-
-

@@ -107,76 +107,8 @@ def createmerge(datelist, stationlist):
 # #########################################
 while True:
     # create the magnetometer stations for this run
-    try:
-        corstorphine01 = Station.Station("Corstorphine 01", "Corstorphine01.1minbins.csv")
-    except:
-        print("Unable to create station")
 
-    try:
-        dalmore02 = Station.Station("Dalmore 02", "Dalmore_Rapid.1minbins.csv")
-    except:
-        print("Unable to create station")
-
-    try:
-        dalmore01 = Station.Station("Dalmore 01", "Dalmore01.1minbins.csv")
-    except:
-        print("Unable to create station")
-
-    # init the array of stations and append
-    stations = []
-    try:
-        stations.append(dalmore01)
-    except:
-        print("Unable to create station")
-
-    try:
-        stations.append(dalmore02)
-    except:
-        print("Unable to create station")
-
-    try:
-        stations.append(corstorphine01)
-    except:
-        print("Unable to create station")
-
-    # By this point station timestamps are in UNix time. Prime the earliest and latest time holders
-    starttime = stations[0].begintime
-    endtime = stations[0].endtime
-
-    for i in range(1,len(stations)):
-        if stations[i].begintime < starttime:
-            starttime = stations[i].begintime
-
-        if stations[i].endtime > endtime:
-            endtime = stations[i].endtime
-
-    # start end end times in UNIX format exist. We can calculate how many minutes this is and create a new array
-    # that has prepopulated timeslot values based on this. Let us calculate this, and to be safe, add an extra minute
-    # in case we have a remainder.
-    totalmins = int((float(endtime) - float(starttime)) / 60)
-    print("There are " + str(totalmins) + " total entries.")
-
-    # Begin to build up the array. First create list of allowable time values.
-    datevalues = []
-    for i in range(int(float(starttime)), int(float(endtime)), 60):
-        datevalues.append(i)
-
-    # but we only weant the last 24 hours. so lets deal with that now
-    datevalues = current24hour(datevalues)
-    print("Array will be " + str(len(datevalues)) + " records long. Begin processing...")
-
-    # create the merged data using the date and station lists
-    mergeddataarray = createmerge(datevalues, stations)
-
-    # Convert the times back to UTC.
-    mergeddataarray = unix2utc(mergeddataarray)
-
-    # add header to file
-    mergeddataarray = addheader(mergeddataarray, stations)
-
-    # save this array
-    savedata(mergeddataarray)
+    Dalmore1 = Station.Station("Dalmore01", "Dalmore01.1minbins.csv")
 
 
-    print("Finished processing")
     time.sleep(600)
