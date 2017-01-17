@@ -107,6 +107,27 @@ class Station:
             print("Timestamps converted. " + str(len(temparray)) + " records long")
             return temparray
 
+        # ####################################################################################
+        # converts the UTC timestamp to unix time. returns converted array.
+        # ####################################################################################
+        def unix2utc(dataarray):
+            temparray = []
+
+            # For each item in the submitted array...
+            for item in dataarray:
+                # Split and get the unix date from the actual data
+                item = item.split(",")
+                unixdate = item[0]
+                arraydata = item[1]
+
+                # Convert the unix date to UTC time
+                utctime = datetime.datetime.fromtimestamp(int(unixdate)).strftime("%Y-%m-%d %H:%M")
+
+                # Recombine with the data and append to the array to be returned. Voila!
+                appenddata = str(utctime) + "," + arraydata
+                temparray.append(appenddata)
+
+            return temparray
 
         # #################################################################################
         # Median filter based on 3 values
@@ -255,6 +276,7 @@ class Station:
 
                     returnarray.append(appenddata)
 
+            print("Binned dH/dt. " + str(len(returnarray)) + " records long")
             return returnarray
 
         # #################################################################################
@@ -304,6 +326,9 @@ class Station:
         # Take the diffs array. Calculate the max differences between biggest and smallest value for each hour. Return
         # this binned data (Array of 24 values, for each of the last 24 hours)
         stationdata = hourbins(stationdata)
+
+        #FInally, revert unix time back to UTC
+        stationdata = unix2utc(stationdata)
 
         # Make available
         self.stationdata = stationdata
