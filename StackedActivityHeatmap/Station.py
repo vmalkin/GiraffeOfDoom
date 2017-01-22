@@ -298,14 +298,40 @@ class Station:
             print("Array values inverted. " + str(len(returnarray)) + " records long")
             return returnarray
 
+        # #################################################################################
+        # Check dates
+        # make sure the station dates fall inside the correct values.
+        # #################################################################################
+        def checkdates(data_array, nowtimevalue):
+            returnarray = []
+
+            return returnarray
+
+        # #################################################################################
+        # what is time?
+        # returns the time as a unix timestamp.
+        # #################################################################################
+        def whatistime():
+            dt = datetime.datetime.utcnow()
+            unixtime = time.mktime(dt.timetuple())
+            return unixtime
+
 # ####################################################################################
 # Instantiation starts here...
 # ####################################################################################
         self.csvfile = csvfile
         self.station_name = station_name
 
+        nowtimevalue = whatistime()
+
         # process in the station datafile
         stationdata = loadcsvfile(self.station_name, self.csvfile)
+
+        # COnvert data timestamps to Unix time. Make accessible self.
+        stationdata = utc2unix(stationdata)
+
+        #Check that the stationdata falls inside the correct daterange: now() minus 24 hours
+        stationdata = checkdates(stationdata, nowtimevalue)
 
         # COnvert to H values ie: we only want the first data value a datapoint may have in this instance.
         # Datapoints that have 3 values may need to be converted to a single value here
@@ -313,9 +339,6 @@ class Station:
 
         # # Normalise the data between 1 and 0
         # stationdata = normalisehvalues(stationdata)
-
-        # COnvert data timestamps to Unix time. Make accessible self.
-        stationdata = utc2unix(stationdata)
 
         # Take the raw H values. SMooth them
         stationdata = running_average(stationdata)
