@@ -304,6 +304,9 @@ class Station:
         # #################################################################################
         def checkdates(data_array, nowtimevalue):
             returnarray = []
+            starttime = nowtimevalue - 86400
+            for i in range(0, len(data_array)):
+                datasplit = data_array[i]
 
             return returnarray
 
@@ -327,7 +330,7 @@ class Station:
         # process in the station datafile
         stationdata = loadcsvfile(self.station_name, self.csvfile)
 
-        # COnvert data timestamps to Unix time. Make accessible self.
+        # COnvert data timestamps to Unix time.
         stationdata = utc2unix(stationdata)
 
         #Check that the stationdata falls inside the correct daterange: now() minus 24 hours
