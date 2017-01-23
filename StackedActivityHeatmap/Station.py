@@ -305,8 +305,11 @@ class Station:
         def checkdates(data_array, nowtimevalue):
             returnarray = []
             starttime = nowtimevalue - 86400
+
             for i in range(0, len(data_array)):
                 datasplit = data_array[i]
+                if float(datasplit[0]) >= starttime and float(datasplit[0]) < nowtimevalue:
+                    returnarray.append(data_array[i])
 
             return returnarray
 
