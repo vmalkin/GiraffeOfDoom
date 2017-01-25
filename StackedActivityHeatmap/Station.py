@@ -30,6 +30,7 @@ class Station:
                 return datapointarray
             else:
                 print("Unable to create list of observations for station " + self.station_name)
+                return [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
 
         # ####################################################################################
         # create and return a list/array of H values.
