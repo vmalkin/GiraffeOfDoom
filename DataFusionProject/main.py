@@ -107,21 +107,25 @@ def createmerge(datelist, stationlist):
 # #########################################
 while True:
     # create the magnetometer stations for this run
+    print("\n")
     try:
         corstorphine01 = Station.Station("Corstorphine 01", "Corstorphine01.1minbins.csv")
     except:
         print("Unable to create station")
 
+    print("\n")
     try:
         dalmore02 = Station.Station("Dalmore 02", "Dalmore_Rapid.1minbins.csv")
     except:
         print("Unable to create station")
 
+    print("\n")
     try:
         dalmore01 = Station.Station("Dalmore 01", "Dalmore01.1minbins.csv")
     except:
         print("Unable to create station")
 
+    print("\n")
     # init the array of stations and append
     stations = []
     try:
