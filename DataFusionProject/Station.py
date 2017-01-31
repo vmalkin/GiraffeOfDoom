@@ -48,13 +48,14 @@ class Station:
 
             return output_h
 
+
         # ####################################################################################
         # Normalises and returns H values between 1 and 0
         # ####################################################################################
         def normalisehvalues(output_f):
             # Normalise single value data
             temp_array = []
-            datamin = Decimal(0)
+            datamin = Decimal(10000)
 
             # first find the smallest value...
             for item in output_f:
@@ -83,6 +84,7 @@ class Station:
                 datavalue = (Decimal(datastring[1]) - datamin) / diffvalue
                 newdatastring = datastring[0] + "," + str(datavalue)
                 temp_array.append(newdatastring)
+
 
             return temp_array
 
