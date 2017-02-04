@@ -107,6 +107,17 @@ class Station:
             return temparray
 
         # ####################################################################################
+        # Trim array to the last 24 hours only
+        # ####################################################################################
+        def trim24hour(array):
+            chopvalue = len(array) - 1440
+
+            if len(array) > 1440:
+                array = array[chopvalue:]
+
+            return array
+
+        # ####################################################################################
         # Instantiation starts here...
         # ####################################################################################
         self.csvfile = csvfile
@@ -117,10 +128,13 @@ class Station:
 
         # COnvert to H values ie: we only want the first data value a datapoint may have in this instance.
         # Datapoints that have 3 values may need to be converted to a single value here
+        # trim the array to the last 24 hours
         stationdata = producehvalues(stationdata)
+        stationdata = trim24hour(stationdata)
 
         # Normalise the data between 1 and 0
         stationdata = normalisehvalues(stationdata)
+        print("Datetime range for " + self.station_name + " is: " + str(stationdata[0]) + " " + str(stationdata[len(stationdata) - 1]))
 
         # COnvert data timestamps to Unix time. Make accessible self.
         self.stationdata = utc2unix(stationdata)
@@ -133,6 +147,7 @@ class Station:
         endtime = self.stationdata[len(stationdata) - 1]
         endtime = endtime.split(",")
         self.endtime = endtime[0]
+
 
 
 
