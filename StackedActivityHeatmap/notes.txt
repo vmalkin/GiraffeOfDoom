@@ -1,0 +1,17 @@
+the idea is to separate the functions of the entire app across several concurrent scripts. The reason being that the original process of getting the original data will probably be varied for each data source:
+
+
+STATION - Get data from different stations (DATETIME to be converted to UNIX timestamp)
+STATION - append most recent datapoints to array. If necessary, trim the array by TIMESTAMPS to within the desired period.
+STATION - write data to arraysave LOG FILE (UNIX Timestamped, absolute values, with gaps if present)
+
+STATION - calculate new dF/dt for each station from current array. (dF/dt array to have correct number of slots for the theoretical time period of observation. dF/dt to account for GAPS in observations.)
+STATION - smooth dF/dt as/if necessary
+STATION - calculate if there is new LEGAL maxima/minima (dF/dt will have +ve and -ve values)
+STATION - Normalise data against most current maxima and minima.
+
+STATION - Calculate 1 hour binned values (Essentially dF/dt for the past hour) for each station, for the last 48 hours. IS THERE A MIN NUMBER OF READINGS PER HOUR??
+(If there are gaps or insufficiencies in data, there will be blanks)
+
+
+MANAGER - aggregate and map all station 1hr binned data and create final chart of values for upload.
