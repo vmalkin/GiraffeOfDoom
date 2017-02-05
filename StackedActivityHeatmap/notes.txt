@@ -13,5 +13,5 @@ STATION - Normalise data against most current maxima and minima.
 STATION - Calculate 1 hour binned values (Essentially dF/dt for the past hour) for each station, for the last 48 hours. IS THERE A MIN NUMBER OF READINGS PER HOUR??
 (If there are gaps or insufficiencies in data, there will be blanks)
 
-
-MANAGER - aggregate and map all station 1hr binned data and create final chart of values for upload.
+MANAGER - aggregate and map all station 1hr binned data and create final chart of values for upload. 
+The final chart is colour coded HTML table. This avoids javascript and takes the processing load off the device. I need some model to map colour changes to changes in values. Will this work applied across all normalised data? If we include readings like solar wnd speed, particle density, do they change in the same fashion? ie: linear vs logrythmic??
