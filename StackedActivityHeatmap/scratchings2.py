@@ -558,12 +558,17 @@ testdata = [
 ["2017-01-20 07:14","-1.8449"]
 ]
 
+import math
+from decimal import Decimal, getcontext
+from datetime import datetime
+from time import mktime
+
 # #################################################################################
 # Bindata takes in an array, each element of the form (datetime, datavalue)
 # IT IS ASSUMED that:
-# The array is a complete set of sequential data for the time period specified. (There may be gaps)
+# The array is a complete set of sequential data for the time period specified. (There may be gaps in data)
 # The oldest element is at the top of the list, the youngest at the bottom.
-# a bin has to have at least 0.3 * binsize elements othewise it's value is zero.
+# a bin has to have at least 0.3 * binsize datavalues othewise it's value is zero.
 # the input array is already of the correct length.
 def bindata(rawdata, binsize):
     # init the return array
@@ -608,9 +613,9 @@ def bindata(rawdata, binsize):
 # #################################################################################
 # Calculate the differences
 # This function will create an array of differences. each element is (unixtime, datavalue)
-# Big gaps in time will cause either a BIG jump in datavalues (which will get filtered out)
-# or small gaps, which if the  trend os flat, are to be expected. so should not add
-# significant error.
+# IT IS ASSUMED THAT:
+# The data being fed in has been padded out to account for gaps in readings, by creating the
+# timeslots with empty values for the data values, at the appropriate time intervals.
 # #################################################################################
 def create_diffs(readings):
     diffsarray = []
@@ -642,7 +647,7 @@ def create_diffs(readings):
             diffsarray.append(dp)
 
     else:
-        dp = ("0000-00-00 00:00:00", 0)
+        dp = ("0000-00-00 00:00", 0)
         diffsarray.append(dp)
 
     return diffsarray

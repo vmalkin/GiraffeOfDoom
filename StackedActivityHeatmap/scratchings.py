@@ -594,11 +594,6 @@ def bindata(rawdata, binsizeseconds, mincount):
     return returnarray
 
 
-
-
-
-
-
 # #################################################################################
 # Calculate the differences
 # This function will create an array of differences. each element is (unixtime, datavalue)
