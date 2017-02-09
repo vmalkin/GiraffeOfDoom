@@ -572,6 +572,7 @@ from time import mktime
 def bindata(rawdata, binsizeseconds, mincount):
     # init the return array
     bins = []
+    NULLVALUE = ""
 
     # reverse the raw data so most recent is at the top
     rawdata.reverse()
@@ -588,8 +589,27 @@ def bindata(rawdata, binsizeseconds, mincount):
 
     # We need to check thru the rawdata to find data that will fit in the required bin values
     returnarray = []
-    for item in bins:
-        pass
+    for i in range(0, len(bins) - 1):
+        avgreading = float(0)
+        count = 0
+        for j in range(0, len(rawdata) - 1):
+            datasplit = rawdata[j].split(",")
+            unixdate = datasplit[0]
+            datapoint = datasplit[1]
+
+            if int(float(unixdate)) < bins[i] and int(float(unixdate)) > bins[i] + 1:
+                avgreading = avgreading + datapoint
+                count = count + 1
+
+        if count >= mincount:
+            avgreading = avgreading / count
+            returnarray.append(avgreading)
+        else:
+            avgreading = NULLVALUE
+            returnarray.append(avgreading)
+
+        count = 0
+        avgreading = float(0)
 
     return returnarray
 
@@ -665,4 +685,6 @@ def utc2unix(arraylist):
 
 testdata = utc2unix(testdata)
 testdata = create_diffs(testdata)
-bindata(testdata,3600, 100)
+testdata = bindata(testdata,3600, 1)
+
+print(testdata)
