@@ -8,7 +8,7 @@ STATION - write data to arraysave LOG FILE (UNIX Timestamped, absolute values, w
 STATION - account for gaps in logs before converting to dF/dt
 ** STATION - calculate new dF/dt for each station from current array. (dF/dt array to have correct number of slots for the theoretical time period of observation. dF/dt to account for GAPS in observations.)
 ** STATION - smooth dF/dt as/if necessary
-STATION - calculate if there is new LEGAL maxima/minima (dF/dt will have +ve and -ve values)
+STATION - calculate if there is new LEGAL maxima/minima (dF/dt will have +ve and -ve values) do I want to keep a list of max and mins??
 STATION - Normalise data against most current maxima and minima.
 
 ** STATION - Calculate 1 hour binned values (Essentially dF/dt for the past hour) for each station, for the last 48 hours. IS THERE A MIN NUMBER OF READINGS PER HOUR??

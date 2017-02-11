@@ -563,6 +563,8 @@ from decimal import Decimal, getcontext
 from datetime import datetime
 from time import mktime
 
+
+
 # #################################################################################
 # Bindata takes in an array, each element of the form (datetime, datavalue)
 # IT IS ASSUMED that:
