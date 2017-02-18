@@ -239,7 +239,7 @@ def binnedaverages(readings):
         dpvalues = re.split(r'[\s,:]', readings[j].print_values())
         nowminute = dpvalues[2]
         datetime = dpvalues[0] + " " + dpvalues[1] + ":" + nowminute
-        print(str(datetime))
+        # print(str(datetime))
 
         # get the value for the next minute
         dpvalues1 = re.split(r'[\s,:]', readings[j + 1].print_values())

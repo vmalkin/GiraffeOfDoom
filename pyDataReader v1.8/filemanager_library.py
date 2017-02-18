@@ -22,8 +22,8 @@ def CreateDiffs(diffsArray):
         with open (k.FILE_4DIFFS,'a') as f:
             f.write("Date/Time (UTC), Ultra-smoothed Differences" + "\n")
             for datapoints in diffsArray:
-                f.write(datapoints.dateTime + "," + str(datapoints.raw_x) + "," + str(datapoints.raw_y) + "," + str(datapoints.raw_z) + '\n')
-                #f.write(datapoints.dateTime + "," + str(datapoints.raw_x)  + '\n')
+                # f.write(datapoints.dateTime + "," + str(datapoints.raw_x) + "," + str(datapoints.raw_y) + "," + str(datapoints.raw_z) + '\n')
+                f.write(datapoints.dateTime + "," + str(datapoints.raw_x)  + '\n')
     except IOError:
         print("WARNING: There was a problem accessing " + k.FILE_4DIFFS)
         logging.warning("WARNING: File IO Exception raised whilst accessing file: " + k.FILE_4DIFFS)
@@ -46,8 +46,8 @@ def create_hichart_datafile(readingsArray, splitvalue, filename):
         with open(filename, 'a') as f:
             f.write("Date/Time (UTC), Reading" + "\n")
             for datapoints in displayList:
-                f.write(datapoints.dateTime + "," + str(datapoints.raw_x) + "," + str(datapoints.raw_y) + "," + str(datapoints.raw_z) + '\n')
-                # f.write(datapoints.dateTime + "," + str(datapoints.raw_x) + '\n')
+                # f.write(datapoints.dateTime + "," + str(datapoints.raw_x) + "," + str(datapoints.raw_y) + "," + str(datapoints.raw_z) + '\n')
+                f.write(datapoints.dateTime + "," + str(datapoints.raw_x) + '\n')
     except IOError:
         print("WARNING: There was a problem accessing " + filename)
         logging.warning("WARNING: File IO Exception raised whilst accessing file: " + filename)

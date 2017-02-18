@@ -61,10 +61,10 @@ def process_data(input_data_array):
     #
     # ###########################################################
 
-    # to get the last 4 hours the split value is mag read frequency * 60 * 4
-    splitvalue = k.MAG_READ_FREQ * 60 * 1
-    onehrfile = "graphing/dr_01hr.csv"
-    ofm.create_hichart_datafile(smoothed_data_array, splitvalue, onehrfile)
+    # # to get the last 4 hours the split value is mag read frequency * 60 * 4
+    # splitvalue = k.MAG_READ_FREQ * 60 * 1
+    # onehrfile = "graphing/dr_01hr.csv"
+    # ofm.create_hichart_datafile(smoothed_data_array, splitvalue, onehrfile)
 
     # to get the last 4 hours the split value is mag read frequency * 60 * 4
     splitvalue = k.MAG_READ_FREQ * 60 * 3
@@ -99,7 +99,7 @@ while True:
     mag_readings = []
     try:
         mag_readings = ofm.CreateRawArray()
-		process_data(mag_readings)
+        process_data(mag_readings)
         # Calculate the processing time
         endtime = time.time()
         processingtime = endtime - starttime
