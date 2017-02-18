@@ -507,12 +507,12 @@ from time import mktime
 
 
 # #################################################################################
-# Bindata takes in an array, each element of the form (datetime, datavalue)
+# Bindata takes in an array, each element of the form (UnixDatetime, datavalue)
 # IT IS ASSUMED that:
 # The array is a complete set of sequential data for the time period specified. (There may be gaps in data)
 # The oldest element is at the top of the list, the youngest at the bottom.
 # rawdata is (unixtime, data) and binsize is the size of the bin in minutes
-def bindata(rawdata):
+def bindiffs(rawdata):
     # setup the bin array based on binsize. The bins will start from now and go back 24 hours
     # get current UTC
     currentdt = datetime.utcnow()
@@ -522,6 +522,7 @@ def bindata(rawdata):
     binsteps = 60 * 60 * 24
 
     # set up the timestamps for the bins
+    # most recent time is first
     binneddata = []
     for i in range (0, 24):
         binneddata.append(currentdt)
@@ -534,6 +535,74 @@ def bindata(rawdata):
 
 
     # Parse thru the current data by timestamp
+
+# #################################################################################
+# Rawdata is in the format (UnixDatetime, data)
+# the function will return an array of (UnixDatetime, binned_value))
+def binsimple(rawdata):
+    # setup the bin array based on binsize. The bins will start from now and go back 24 hours
+    # get current UTC
+    currentdt = datetime.utcnow()
+
+    # Convert to UNIX time
+    currentdt = mktime(currentdt.timetuple())
+
+    # binsteps in seconds.
+    binsteps = 60
+
+    # Threshold value for binning. We need more that this number of datapoints per bin, to have a reasonable amount
+    # of data
+    threshold = 1
+
+    # setup the binneddata array timestamps
+    # Most recent time is first
+    timestamps = []
+    for i in range(0, 1440):
+        timestamps.append(currentdt)
+        currentdt = currentdt - binsteps
+
+    # array for final binned values
+    binneddata = []
+    # Now parse thru the rawdata array
+    for i in range(0, len(timestamps) - 1):
+        nowtime = timestamps[i]
+        prevtime = timestamps[i + 1]
+        counter = float(1)
+        datavalue = float(0.0)
+
+        for j in range(0, len(rawdata)):
+            datasplit = rawdata[j].split(",")
+
+            # time value to check
+            split_time = float(datasplit[0])
+
+            # only dealing with a single data value
+            split_data = datasplit[1]
+
+            # If the item from rawdata is inside the bin timestamps then...
+            if split_time < nowtime and split_time > prevtime:
+                datavalue = datavalue + split_data
+                counter = counter + 1
+
+        # Calculate the average reading for the bin. If there is no data, we need to return an empty bin
+        if counter > threshold:
+            datavalue = datavalue / counter
+        else:
+            datavalue = 0
+
+        # Create the datapoint
+        dp = str(nowtime) + "," + str(datavalue)
+
+        # append the datapoint to the binned data array
+        binneddata.append(dp)
+
+    # the returned array has the most recent readings at index[0] Invert the
+    # array so it is like a conventional list
+    binneddata.reverse()
+    return binneddata
+
+
+
 
 
 # #################################################################################
@@ -606,9 +675,6 @@ def utc2unix(arraylist):
 
 
 testdata = utc2unix(testdata)
-testdata = create_diffs(testdata)
-testdata = bindata(testdata)
-
-
+testdata = binsimple(testdata)
 for item in testdata:
     print(item)

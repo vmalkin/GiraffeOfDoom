@@ -230,7 +230,7 @@ def binnedaverages(readings):
     yAvg = Decimal(0)
     zAvg = Decimal(0)
     binnedvalues = []
-    counter = Decimal(0)
+    counter = Decimal(1)
 
     # Open the readings array
     for j in range(0, len(readings)-1):
@@ -263,9 +263,9 @@ def binnedaverages(readings):
             xAvg = 0
             yAvg = 0
             zAvg = 0
-            counter = 0
+            counter = 1
         else:
-            counter = 0
+            counter = 1
 
     # WRITE OUT to binned file.
     try:
