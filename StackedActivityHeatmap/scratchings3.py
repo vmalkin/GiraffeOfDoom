@@ -361,65 +361,6 @@ testdata = [
 ["2017-01-20 03:57","-3.9468"],
 ["2017-01-20 03:58","-4.0362"],
 ["2017-01-20 03:59","-4.0531"],
-["2017-01-20 04:00",""],
-["2017-01-20 04:01",""],
-["2017-01-20 04:02",""],
-["2017-01-20 04:03",""],
-["2017-01-20 04:04",""],
-["2017-01-20 04:05",""],
-["2017-01-20 04:06",""],
-["2017-01-20 04:07",""],
-["2017-01-20 04:08",""],
-["2017-01-20 04:09",""],
-["2017-01-20 04:10",""],
-["2017-01-20 04:11",""],
-["2017-01-20 04:12",""],
-["2017-01-20 04:13",""],
-["2017-01-20 04:14",""],
-["2017-01-20 04:15",""],
-["2017-01-20 04:16",""],
-["2017-01-20 04:17",""],
-["2017-01-20 04:18",""],
-["2017-01-20 04:19",""],
-["2017-01-20 04:20",""],
-["2017-01-20 04:21",""],
-["2017-01-20 04:22",""],
-["2017-01-20 04:23",""],
-["2017-01-20 04:24",""],
-["2017-01-20 04:25",""],
-["2017-01-20 04:26",""],
-["2017-01-20 04:27",""],
-["2017-01-20 04:28",""],
-["2017-01-20 04:29",""],
-["2017-01-20 04:30",""],
-["2017-01-20 04:31",""],
-["2017-01-20 04:32",""],
-["2017-01-20 04:33",""],
-["2017-01-20 04:34",""],
-["2017-01-20 04:35",""],
-["2017-01-20 04:36",""],
-["2017-01-20 04:37",""],
-["2017-01-20 04:38",""],
-["2017-01-20 04:39",""],
-["2017-01-20 04:40",""],
-["2017-01-20 04:41",""],
-["2017-01-20 04:42",""],
-["2017-01-20 04:43",""],
-["2017-01-20 04:44",""],
-["2017-01-20 04:45",""],
-["2017-01-20 04:46",""],
-["2017-01-20 04:47",""],
-["2017-01-20 04:48",""],
-["2017-01-20 04:49",""],
-["2017-01-20 04:50",""],
-["2017-01-20 04:51",""],
-["2017-01-20 04:52",""],
-["2017-01-20 04:53",""],
-["2017-01-20 04:54",""],
-["2017-01-20 04:55",""],
-["2017-01-20 04:56",""],
-["2017-01-20 04:57",""],
-["2017-01-20 04:58",""],
 ["2017-01-20 04:59","-3.5021"],
 ["2017-01-20 05:00","-3.6159"],
 ["2017-01-20 05:01","-3.5982"],
@@ -570,47 +511,30 @@ from time import mktime
 # IT IS ASSUMED that:
 # The array is a complete set of sequential data for the time period specified. (There may be gaps in data)
 # The oldest element is at the top of the list, the youngest at the bottom.
-# a bin has to have at least 0.3 * binsize datavalues othewise it's value is zero.
-# the input array is already of the correct length.
-def bindata(rawdata, binsize):
-    # init the return array
-    bins = []
-    binthreshold = int(binsize * 0.3)
-    NULLVALUE = ""
+# rawdata is (unixtime, data) and binsize is the size of the bin in minutes
+def bindata(rawdata):
+    # setup the bin array based on binsize. The bins will start from now and go back 24 hours
+    # get current UTC
+    currentdt = datetime.utcnow()
 
-    # reverse the array
-    rawdata.reverse()
+    # Convert to UNIX time
+    currentdt = mktime(currentdt.timetuple())
+    binsteps = 60 * 60 * 24
 
-    # Stepping thru the array, in steps of binsize
-    for i in range(0, len(rawdata) - binsize, binsize):
-        data1split = rawdata[i]
-        datetimevalue = data1split[0]
-        datasum = float(0)
-        count = 0
+    # set up the timestamps for the bins
+    binneddata = []
+    for i in range (0, 24):
+        binneddata.append(currentdt)
+        currentdt = currentdt - binsteps
 
-        # Calculate the average reading for the binsize
+    # check thru the rawdata. for each bin determin if there is enough data
+    # and if so, calc df/dt for the bin
 
-        for j in range(0, binsize):
-            data2split = rawdata[i + j]
-            datavalue = data2split[1]
+    return binneddata
 
-            # What if the datavalue for this point is null/empty/zero?
-            if datavalue != NULLVALUE:
-                datasum = datasum + float(datavalue)
-                count = count + 1
 
-        # do we have enough readings? If so calc avg
-        if count >= binthreshold:
-            datasum = datasum / count
-        # else bin value equals zero
-        else:
-            datasum = NULLVALUE
+    # Parse thru the current data by timestamp
 
-        dp = datetimevalue + "," + str(datasum)
-
-        bins.append(dp)
-
-    return bins
 
 # #################################################################################
 # Calculate the differences
@@ -681,8 +605,10 @@ def utc2unix(arraylist):
     return workingarray
 
 
+testdata = utc2unix(testdata)
+testdata = create_diffs(testdata)
+testdata = bindata(testdata)
 
-binneddata = bindata(testdata, 60)
 
-for item in binneddata:
+for item in testdata:
     print(item)
