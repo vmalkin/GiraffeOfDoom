@@ -67,11 +67,11 @@ def process_data(input_data_array):
     # ofm.create_hichart_datafile(smoothed_data_array, splitvalue, onehrfile)
 
     # to get the last 4 hours the split value is mag read frequency * 60 * 4
-    splitvalue = k.MAG_READ_FREQ * 60 * 3
+    splitvalue = k.MAG_READ_FREQ * 60 * 4
     ofm.create_hichart_datafile(smoothed_data_array, splitvalue, k.FILE_4HR)
 
     # to get the last 24 hours the split value is mag read frequency * 60 * 23
-    splitvalue = k.MAG_READ_FREQ * 60 * 23
+    splitvalue = k.MAG_READ_FREQ * 60 * 24
     ofm.create_hichart_datafile(smoothed_data_array, splitvalue, k.FILE_24HR)
 
     dp.binnedaverages(data_array) # use original data
