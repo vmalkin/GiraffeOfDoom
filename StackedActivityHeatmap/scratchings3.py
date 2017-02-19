@@ -539,6 +539,7 @@ def bindiffs(rawdata):
 # #################################################################################
 # Rawdata is in the format (UnixDatetime, data)
 # the function will return an array of (UnixDatetime, binned_value))
+# #################################################################################
 def binsimple(rawdata):
     # setup the bin array based on binsize. The bins will start from now and go back 24 hours
     # get current UTC
@@ -547,8 +548,11 @@ def binsimple(rawdata):
     # Convert to UNIX time
     currentdt = mktime(currentdt.timetuple())
 
-    # binsteps in seconds.
-    binsteps = 60
+    # width of bin in seconds.
+    binwidth = 60
+    # how many bins in a day?
+    binnum = int(86400 / binwidth)
+    print("Bin width is " + str(binwidth) + " seconds. There are " + str(binnum) + " bins in a day")
 
     # Threshold value for binning. We need more that this number of datapoints per bin, to have a reasonable amount
     # of data
@@ -557,9 +561,9 @@ def binsimple(rawdata):
     # setup the binneddata array timestamps
     # Most recent time is first
     timestamps = []
-    for i in range(0, 1440):
+    for i in range(0, binnum):
         timestamps.append(currentdt)
-        currentdt = currentdt - binsteps
+        currentdt = currentdt - binwidth
 
     # array for final binned values
     binneddata = []
