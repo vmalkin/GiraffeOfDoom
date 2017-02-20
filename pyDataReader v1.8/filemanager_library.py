@@ -34,7 +34,13 @@ def CreateDiffs(diffsArray):
 # ############################################################
 def create_hichart_datafile(readingsArray, splitvalue, filename):
 
-    displayList = readingsArray[(len(readingsArray) - splitvalue):]
+    splitvalue = len(readingsArray) - splitvalue
+
+    if splitvalue < 1:
+        splitvalue = 0
+
+    displayList = readingsArray[splitvalue:]
+    print(len(displayList))
 
     try:
         os.remove(filename)

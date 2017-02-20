@@ -1,0 +1,6 @@
+2017-02-20 18:24:42,076 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-02-20 18:24:42,090 WARNING: File IO Exception raised - could not delete: graphing/04hr.csv
+2017-02-20 18:24:42,094 WARNING: File IO Exception raised - could not delete: graphing/24hr.csv
+2017-02-20 18:34:47,029  ERROR: Problem opening file. Unable to create display files
+2017-02-20 18:34:53,402  ERROR: Problem opening file. Unable to create display files
+2017-02-20 18:35:06,250  ERROR: Problem opening file. Unable to create display files
