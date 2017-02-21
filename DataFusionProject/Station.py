@@ -1,4 +1,3 @@
-import DataPoint
 import datetime
 import time
 import os
@@ -21,12 +20,11 @@ class Station:
             if os.path.isfile(csvfile):
                 with open(csvfile) as r:
                     for line in r:
-                        values = line.split(",")
-                        dp = DataPoint.DataPoint(values[0], values[1], values[2], values[3])
+                        datasplit = line.split(",")
+                        dp = datasplit[0] + "," + datasplit[1]
                         datapointarray.append(dp)
                 print("Array for " + station_name + " created, " + str(len(datapointarray)) + " records long")
                 # print(datapointarray[0].raw_x)
-
                 return datapointarray
             else:
                 print("Unable to create list of observations for station " + self.station_name)
@@ -39,9 +37,10 @@ class Station:
             output_h = []
 
             for i in range(0,len(datapointarray)):
-                h = datapointarray[i].raw_x
+                datasplit = datapointarray[i].split(",")
+                h = datasplit[1]
                 # h = self.datapointarray[i].raw_x
-                datetime = datapointarray[i].dateTime
+                datetime = datasplit[0]
                 valuestring = datetime + "," + str(h)
                 # print(valuestring)
                 output_h.append(valuestring)
@@ -55,13 +54,14 @@ class Station:
         def normalisehvalues(output_f):
             # Normalise single value data
             temp_array = []
-            datamin = Decimal(10000)
+            datamin = float(10000)
 
             # first find the smallest value...
-            for item in output_f:
-                item = item.split(",")
+            for i in range(0, len(output_f)):
+                item = output_f[i].split(",")
                 # this is now the actual value figure...
-                item = Decimal(item[1])
+                item = float(item[1])
+
                 if item <= datamin:
                     datamin = item
 
@@ -70,7 +70,7 @@ class Station:
             for item in output_f:
                 item = item.split(",")
                 # this is now the actual value figure...
-                item = Decimal(item[1])
+                item = float(item[1])
                 if item > datamax:
                     datamax = item
 
@@ -81,7 +81,7 @@ class Station:
             diffvalue = datamax - datamin
             for i in range(0, len(output_f)):
                 datastring = output_f[i].split(",")
-                datavalue = (Decimal(datastring[1]) - datamin) / diffvalue
+                datavalue = (float(datastring[1]) - datamin) / diffvalue
                 newdatastring = datastring[0] + "," + str(datavalue)
                 temp_array.append(newdatastring)
 

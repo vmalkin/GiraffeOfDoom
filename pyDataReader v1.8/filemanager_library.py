@@ -40,7 +40,7 @@ def create_hichart_datafile(readingsArray, splitvalue, filename):
         splitvalue = 0
 
     displayList = readingsArray[splitvalue:]
-    print(len(displayList))
+    # print(len(displayList))
 
     try:
         os.remove(filename)
