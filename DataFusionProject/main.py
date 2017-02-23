@@ -114,13 +114,16 @@ while True:
     #     print("Unable to create station")
 
     print("\n")
-
-    dalmore02 = Station.Station("Dalmore 02", "Dalmore_Rapid.1minbins.csv")
-    # print("Unable to create station")
+    try:
+        dalmore02 = Station.Station("Dalmore 02", "Dalmore_Rapid.1minbins.csv")
+    except:
+        print("Unable to create station")
 
     print("\n")
-    dalmore01 = Station.Station("Dalmore 01", "Dalmore_prime.1minbins.csv")
-    print("Unable to create station")
+    try:
+        dalmore01 = Station.Station("Dalmore 01", "Dalmore_prime.1minbins.csv")
+    except:
+        print("Unable to create station")
 
     print("\n")
     # init the array of stations and append

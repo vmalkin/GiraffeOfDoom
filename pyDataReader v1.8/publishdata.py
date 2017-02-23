@@ -75,11 +75,10 @@ def process_data(input_data_array):
     splitvalue = k.MAG_READ_FREQ * 60 * 24
     ofm.create_hichart_datafile(smoothed_data_array, splitvalue, k.FILE_24HR)
 
-    # dp.binnedaverages(data_array) # use original data
-    data_array = binner.utc2unix(data_array)
-    data_array = binner.binsimple(data_array)
-    data_array = binner.unix2utc(data_array)
-    binner.SaveRawArray(data_array)
+    binned_data = binner.utc2unix(smoothed_data_array)
+    binned_data = binner.binsimple(binned_data)
+    binned_data = binner.unix2utc(binned_data)
+    binner.SaveRawArray(binned_data)
 
 
     # # ########################################################

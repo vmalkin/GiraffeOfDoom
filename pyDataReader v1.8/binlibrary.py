@@ -61,11 +61,13 @@ def binsimple(rawdata):
         if counter > threshold:
             datavalue = datavalue / counter
 
-        # Create the datapoint
-        dp = str(nowtime) + "," + str(datavalue)
+            # Create the datapoint
+            dp = str(nowtime) + "," + str(datavalue)
 
-        # append the datapoint to the binned data array
-        binneddata.append(dp)
+            # append the datapoint to the binned data array
+            binneddata.append(dp)
+
+        # If there is no data, then no datapoint will be created.
 
         # the returned array has the most recent readings at index[0] Invert the
         # array so it is like a conventional list
