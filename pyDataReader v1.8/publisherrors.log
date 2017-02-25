@@ -1,0 +1,9 @@
+2017-02-25 14:43:23,435 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-02-25 14:43:23,436 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-02-25 14:43:23,436 WARNING: File IO Exception raised - could not delete: graphing/04hr.csv
+2017-02-25 14:43:23,436 WARNING: File IO Exception raised whilst accessing file: graphing/04hr.csv
+2017-02-25 14:43:23,436 WARNING: File IO Exception raised - could not delete: graphing/24hr.csv
+2017-02-25 14:43:23,436 WARNING: File IO Exception raised whilst accessing file: graphing/24hr.csv
+2017-02-25 14:43:48,026 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-02-25 14:43:48,040 WARNING: File IO Exception raised - could not delete: graphing/04hr.csv
+2017-02-25 14:43:48,048 WARNING: File IO Exception raised - could not delete: graphing/24hr.csv

@@ -27,7 +27,7 @@ def binsimple(rawdata):
     threshold = 1
 
     # setup the binneddata array timestamps
-    # Most recent time is first
+    # Most recent time is first. Count back from current time in binwidths and append the time to the list
     timestamps = []
     for i in range(0, binnum):
         timestamps.append(currentdt)
@@ -40,7 +40,7 @@ def binsimple(rawdata):
     for i in range(0, len(timestamps) - 1):
         nowtime = timestamps[i]
         prevtime = timestamps[i + 1]
-        counter = float(1)
+        counter = float(0)
         datavalue = float(0.0)
 
         for j in range(0, len(rawdata)):
@@ -59,6 +59,7 @@ def binsimple(rawdata):
 
         # Calculate the average reading for the bin. If there is no data, we need to return an empty bin
         if counter > threshold:
+            print(counter)
             datavalue = datavalue / counter
 
             # Create the datapoint
