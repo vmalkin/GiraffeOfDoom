@@ -1,7 +1,5 @@
 import constants as k
 import ArrayManager as am
-from decimal import Decimal, getcontext
-import os
 import time
 import binlibrary as binner
 

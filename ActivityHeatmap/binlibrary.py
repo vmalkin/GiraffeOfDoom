@@ -52,7 +52,7 @@ def bin_dh_dt(rawdata):
             datadate = float(datasplit[0])
             datavalue = float(datasplit[1])
 
-            # if the data falls into the range of the bin, determine if its a max of min value
+            # if the data falls into the range of the bin, determine if its a max or min value
             if datadate < nowtime and datadate > prevtime:
                 # determin max and min values for this window interval
                 if datavalue >= maxv:
