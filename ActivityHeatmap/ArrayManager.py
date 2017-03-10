@@ -1,4 +1,3 @@
-import DataPoint
 import os.path
 
 
@@ -16,7 +15,7 @@ def CreateRawArray(sourcefile):
             for line in e:
                 line = line.strip() # remove any trailing whitespace chars like CR and NL
                 values = line.split(",")
-                dp = DataPoint.DataPoint(values[0], values[1],0,0)
+                dp = values[0] + "," + values[1]
                 readings.append(dp)
         print("Array loaded from file. Size: " + str(len(readings)) + " records")
     else:

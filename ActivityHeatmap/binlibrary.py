@@ -1,6 +1,7 @@
 import constants as k
 from datetime import datetime
 from time import mktime
+import math
 
 
 
@@ -11,13 +12,15 @@ from time import mktime
 def bin_dh_dt(rawdata):
     # setup the bin array based on binsize. The bins will start from now and go back 24 hours
     # get current UTC
+    nullbin = "#n/a"
     currentdt = datetime.utcnow()
 
     # Convert to UNIX time
     currentdt = mktime(currentdt.timetuple())
 
     # width of bin in seconds.
-    binwidth = 60
+    binwidth = 60 * 60
+
     # how many bins in a day?
     binnum = int(86400 / binwidth)
     print("Bin width is " + str(binwidth) + " seconds. There are " + str(binnum) + " bins in a day")
@@ -36,7 +39,39 @@ def bin_dh_dt(rawdata):
     # array for final binned values
     binneddata = []
 
-    # convert the raw data into dh/dt
+    # parse thru the data array, assigning the correct values to the bins
+    for i in range (0, len(timestamps) - 1):
+        nowtime = timestamps[i]
+        prevtime = timestamps[i + 1]
+        maxv = float(-1000)
+        minv = float(1000)
+
+        # GO thru the raw data and check for max-min H readings and calculate the rate of change for the bin
+        for j in range(0, len(rawdata)):
+            datasplit = rawdata[j].split(",")
+            datadate = float(datasplit[0])
+            datavalue = float(datasplit[1])
+
+            # if the data falls into the range of the bin, determine if its a max or min value
+            if datadate < nowtime and datadate > prevtime:
+                # determin max and min values for this window interval
+                if datavalue >= maxv:
+                    maxv = datavalue
+                elif datavalue <= minv:
+                    minv = datavalue
+
+        # determin dH/dt for the bin period append to the bin array
+        # null data will manifest as a large minus value, so we discount it
+        hvalue = maxv - minv
+        if hvalue < -1000:
+            binneddata.append(nullbin)
+        else:
+            binneddata.append(str(hvalue))
+
+    # by default, most recent values are first in the array (ie index 0)
+    # reverse the array so that most recent values are last for conventional display
+    binneddata.reverse()
+    return binneddata
 
 
 
@@ -120,8 +155,8 @@ def binsimple(rawdata):
 def utc2unix(arraylist):
     print("Converting time to UNIX time...")
     # set date time format for strptime()
-    dateformat = "%Y-%m-%d %H:%M:%S.%f"
-    # dateformat = "%Y-%m-%d %H:%M"
+    # dateformat = "%Y-%m-%d %H:%M:%S.%f"
+    dateformat = "%Y-%m-%d %H:%M"
     workingarray = []
 
     # convert array data times to unix time
@@ -129,7 +164,7 @@ def utc2unix(arraylist):
     count = 0
     for i in range(0, len(arraylist)):
         try:
-            itemsplit = arraylist[i].print_values().split(",")
+            itemsplit = arraylist[i].split(",")
             newdatetime = datetime.strptime(itemsplit[0],dateformat)
             # convert to Unix time (Seconds)
             newdatetime = mktime(newdatetime.timetuple())
@@ -138,7 +173,7 @@ def utc2unix(arraylist):
             workingarray.append(datastring)
         except:
             count = count + 1
-            print("Problem with entry " + count)
+            print("Problem with entry " + str(count))
 
     return workingarray
 
@@ -170,9 +205,9 @@ def unix2utc(dataarray):
 def SaveRawArray(readings):
     # export array to array-save file
     try:
-        with open(k.FILE_BINNED_MINS, 'w') as w:
+        with open(k.OUTPUT_FILE, 'w') as w:
             for dataObjects in readings:
-                w.write(dataObjects + '\n')
+                w.write(str(dataObjects) + '\n')
     except IOError:
         print("WARNING: There was a problem accessing " + k.FILE_BINNED_MINS)
 
