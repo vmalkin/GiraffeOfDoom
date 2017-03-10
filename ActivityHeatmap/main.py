@@ -34,10 +34,6 @@ while True:
         importarray = binner.bin_dh_dt(importarray)
         importarray = binner.unix2utc(importarray)
 
-
-
-
-
     except:
         print("The Binning Program has failed for some general reason")
 
