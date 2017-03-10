@@ -13,10 +13,6 @@ while True:
     # print(k.FILE_BINNED_MINS)
     importarray = am.CreateRawArray(k.FILE_BINNED_MINS)
 
-<<<<<<< HEAD
-    except:
-        print("The Binning Program has failed for some general reason")
-=======
     # remove the first line which may contain text header
     importarray.pop(0)
 
@@ -30,6 +26,5 @@ while True:
     importarray.sort()
 
     print(importarray[int(len(importarray) / 2)])
->>>>>>> origin/master
 
     time.sleep(600)
