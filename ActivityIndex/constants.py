@@ -3,7 +3,8 @@ __author__ = 'vaughn'
 # Constants
 # how often the magnetometer sends data per minute
 MAG_READ_FREQ = 4
-# MAG_RUNNINGAVG_COUNT = 12
+NULLBIN = "#n/a"
+STATION_NAME = "Dalmore1"
 
 
 # differences data from magnetometer

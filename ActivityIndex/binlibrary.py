@@ -12,7 +12,6 @@ import math
 def bin_dh_dt(rawdata):
     # setup the bin array based on binsize. The bins will start from now and go back 24 hours
     # get current UTC
-    nullbin = "#n/a"
     currentdt = datetime.utcnow()
 
     # Convert to UNIX time
@@ -30,7 +29,7 @@ def bin_dh_dt(rawdata):
     threshold = 1
 
     # setup the binneddata array timestamps
-    # Most recent time is first. Count back from current time in binwidths and append the time to the list
+    # the array goes from index[now] -> index[time is oldest]
     timestamps = []
     for i in range(0, binnum):
         timestamps.append(currentdt)
@@ -63,14 +62,12 @@ def bin_dh_dt(rawdata):
         # determin dH/dt for the bin period append to the bin array
         # null data will manifest as a large minus value, so we discount it
         hvalue = maxv - minv
-        if hvalue < -1000:
-            binneddata.append(nullbin)
+        if hvalue < -500:
+            binneddata.append(k.NULLBIN)
         else:
-            binneddata.append(str(hvalue))
+            binneddata.append(hvalue)
 
-    # by default, most recent values are first in the array (ie index 0)
-    # reverse the array so that most recent values are last for conventional display
-    binneddata.reverse()
+    # the returned data goes from index[now] -> index[time is oldest]
     return binneddata
 
 

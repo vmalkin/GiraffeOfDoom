@@ -2,6 +2,8 @@ import constants as k
 import ArrayManager as am
 import time
 import binlibrary as binner
+import heatmapconverter as hm
+
 
 # ###############################################
 # Main Parts STarts Here
@@ -17,14 +19,20 @@ while True:
     importarray.pop(0)
 
     # create the bins for dh/dt
-    importarray = binner.utc2unix(importarray)
-    importarray = binner.bin_dh_dt(importarray)
+    dhdt = importarray
+    dhdt = binner.utc2unix(dhdt)
+    dhdt = binner.bin_dh_dt(dhdt)
 
-    binner.SaveRawArray(importarray)
+    # Process the array and return the coded verson that will display as colour or whatever
+    dhdt = hm.main(dhdt)
+    dhdt.reverse()
+
+    binner.SaveRawArray(dhdt)
     print("Binning complete.")
 
-    importarray.sort()
+    for item in dhdt:
+        print(item)
 
-    print(importarray[int(len(importarray) / 2)])
+    print("\n")
 
     time.sleep(600)
