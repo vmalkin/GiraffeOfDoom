@@ -151,7 +151,7 @@ def createcolour(value):
 
     # create hex colour string
     finalhex = str(rd) + str(gr) + str(bl)
-    print(finalhex)
+    # print(finalhex)
     return finalhex
 
 

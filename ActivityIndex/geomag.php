@@ -12,8 +12,8 @@
 <td style="border-radius: 3px; text-align: center; padding: 2px; background-color: #ffc194">
 20 hrs ago<br><b>0.44</b>
 </td>
-<td style="border-radius: 3px; text-align: center; padding: 2px; background-color: #ffbf8f">
-19 hrs ago<br><b>0.46</b>
+<td style="border-radius: 3px; text-align: center; padding: 2px; background-color: #ffcaa3">
+19 hrs ago<br><b>0.38</b>
 </td>
 <td style="border-radius: 3px; text-align: center; padding: 2px; background-color: #ffae73">
 18 hrs ago<br><b>0.58</b>
@@ -24,8 +24,8 @@
 <td style="border-radius: 3px; text-align: center; padding: 2px; background-color: #ffd6b7">
 16 hrs ago<br><b>0.29</b>
 </td>
-<td style="border-radius: 3px; text-align: center; padding: 2px; background-color: #ffe7d6">
-15 hrs ago<br><b>0.17</b>
+<td style="border-radius: 3px; text-align: center; padding: 2px; background-color: #fff6f0">
+15 hrs ago<br><b>0.06</b>
 </td>
 <td style="border-radius: 3px; text-align: center; padding: 2px; background-color: #ffffff">
 14 hrs ago<br><b>#n/a</b>
@@ -71,4 +71,4 @@
 </td>
 </tr>
 </table>
-<p style="font-size: 0.7em;">Last updated at 2017-03-12 23:44:19.073309 UTC.</p>
+<p style="font-size: 0.7em;">Last updated at 2017-03-12 23:46:02.109523 UTC.</p>
