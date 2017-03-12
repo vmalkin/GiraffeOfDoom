@@ -116,29 +116,40 @@ def fileoutput(texttowrite, filename):
 def createcolour(value):
     if value == k.NULLBIN:
         value = 0
-    # The starting
+    # The colour values for the max range - when value = 1
     red = 255
     green = 118
     blue = 17
 
-    gr = (1 - value) * (green)
-    bl = (1 - value) * (blue)
+    # Based on the value (0, quiet; 1 active) adjust the colours so that least activity will be ffffff
+    # and most activity will be the supplied colour.
+    rd = 255 - ((value) * (255 - red))
+    gr = 255 - ((value) * (255 - green))
+    bl = 255 - ((value) * (255 - blue))
 
-    rd = hex(int(red))
-    rd = str(rd[2:])
-    if len(rd) == 1:
-        bl = "0" + rd
+    # Convert decimal values to hex
+    rd = str(hex(int(rd)))
+    rd = rd.split("x")
+    if len(rd[1]) == 1:
+        rd = "0" + str(rd[1])
+    else:
+        rd = str(rd[1])
 
-    gr = hex(int(gr))
-    gr = str(gr[2:])
-    if len(gr) == 1:
-        bl = "0" + gr
+    gr = str(hex(int(gr)))
+    gr = gr.split("x")
+    if len(gr[1]) == 1:
+        gr = "0" + str(gr[1])
+    else:
+        gr = str(gr[1])
 
-    bl = hex(int(bl))
-    bl = str(bl[2:])
-    if len(bl) == 1:
-        bl = "0" + bl
+    bl = str(hex(int(bl)))
+    bl = bl.split("x")
+    if len(bl[1]) == 1:
+        bl = "0" + str(bl[1])
+    else:
+        bl = str(bl[1])
 
+    # create hex colour string
     finalhex = str(rd) + str(gr) + str(bl)
     print(finalhex)
     return finalhex
