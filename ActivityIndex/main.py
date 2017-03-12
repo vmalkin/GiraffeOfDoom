@@ -24,14 +24,14 @@ while True:
     dhdt = binner.bin_dh_dt(dhdt)
 
     # Process the array and return the coded verson that will display as colour or whatever
-    dhdt = hm.main(dhdt)
     dhdt.reverse()
+    dhdt = hm.main(dhdt)
 
     binner.SaveRawArray(dhdt)
     print("Binning complete.")
 
-    for item in dhdt:
-        print(item)
+    # for item in dhdt:
+    #     print(item)
 
     print("\n")
 
