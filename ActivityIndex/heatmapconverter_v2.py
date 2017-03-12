@@ -105,13 +105,6 @@ def heatmapprocess(maxv, minv, array):
 
 # wrapper function to run this library. Called from the main script
 def main(livedata):
-    # # load the historical max and min arrays from file
-    # maxhist = loadpickle("max.pkl")
-    # print("MAX: " + str(maxhist))
-    #
-    # minhist = loadpickle("min.pkl")
-    # print("MIN: " + str(minhist))
-
     # minmax only contains 2 values: [minv, maxv]. These are the highest and lowest recorded results to date. These
     # are appended to the max and min arrays and form the long-term "memory" of highest and lowest values for the
     # device. Outlier data will be appended the should be missed when grabbing the median value
@@ -137,35 +130,10 @@ def main(livedata):
         if livemax >= minmax[1]:
             minmax[1] = livemax
 
-    # # However the new stored values could be outliers for noise, etc.
-    # # append these values to the max and min arrays
-    # maxhist.append(minmax[1])
-    # minhist.append(minmax[0])
-    #
-    # # get the current median max and min values from the saved data
-    # maxvalue = findarraymedian(maxhist)
-    # minvalue = findarraymedian(minhist)
-
-    # create the processed data for display as a heatmap
-    # print("High and low values are " + str(maxvalue) + " " + str(minvalue))
-
     maxvalue = minmax[1]
     minvalue = minmax[0]
     heatmaparray = heatmapprocess(maxvalue, minvalue, livedata)
 
-
-    # # Prune the max/min arrays if too large. Seed new array with the current median values
-    # prunesize = 20
-    # if len(maxhist) > prunesize:
-    #     maxarray = []
-    #     maxarray.append(maxvalue)
-    # if len(minhist) > prunesize:
-    #     minarray = []
-    #     minarray.append(minvalue)
-
-    # # Save the max and min arrays
-    # savepickle(maxhist, "max.pkl")
-    # savepickle(minhist, "min.pkl")
     savepickle(minmax, "minmax.pkl")
 
     return heatmaparray
