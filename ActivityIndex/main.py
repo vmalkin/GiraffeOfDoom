@@ -12,8 +12,8 @@ import heatmapconverter as hm
 while True:
     importarray = []
     # Load up file into array
-    # print(k.FILE_BINNED_MINS)
-    importarray = am.CreateRawArray(k.FILE_BINNED_MINS)
+    # print(k.INPUT_FILE)
+    importarray = am.CreateRawArray(k.INPUT_FILE)
 
     # remove the first line which may contain text header
     importarray.pop(0)
@@ -27,7 +27,6 @@ while True:
     dhdt.reverse()
     dhdt = hm.main(dhdt)
 
-    binner.SaveRawArray(dhdt)
     print("Binning complete.")
 
     # for item in dhdt:

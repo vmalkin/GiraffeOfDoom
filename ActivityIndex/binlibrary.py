@@ -202,11 +202,11 @@ def unix2utc(dataarray):
 def SaveRawArray(readings):
     # export array to array-save file
     try:
-        with open(k.OUTPUT_FILE, 'w') as w:
+        with open(k.OUTPUTFILE, 'w') as w:
             for dataObjects in readings:
                 w.write(str(dataObjects) + '\n')
     except IOError:
-        print("WARNING: There was a problem accessing " + k.FILE_BINNED_MINS)
+        print("WARNING: There was a problem accessing " + k.OUTPUTFILE)
 
 # typically we would have
 # array = utc2unix(array)

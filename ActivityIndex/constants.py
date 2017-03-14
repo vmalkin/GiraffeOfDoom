@@ -8,8 +8,9 @@ STATION_NAME = "<h4>Dalmore <br> No 1</h4>"
 
 
 # differences data from magnetometer
-PATH_DATA = ""
-FILE_BINNED_MINS = PATH_DATA + "Dalmore_Prime.1minbins.csv"
+# INPUT_FILE = "/home/vmalkin/Magnetometer/dalmoreP/pyDataReader/graphing/Dalmore_Prime.1minbins.csv"
+INPUT_FILE = "Dalmore_Prime.1minbins.csv"
 
 # text output file
-OUTPUTFILE = "../pyDataReader/publish/geomag.php"
+# OUTPUTFILE = "../pyDataReader/publish/geomag.php"
+OUTPUTFILE = "geomag.php"
