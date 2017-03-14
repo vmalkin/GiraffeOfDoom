@@ -116,17 +116,28 @@ def fileoutput(texttowrite, filename):
 def createcolour(value):
     if value == k.NULLBIN:
         value = 0
-    # The colour values for the max range - when value = 1
-    red = 255
-    green = 118
-    blue = 17
 
-    # Based on the value (0, quiet; 1 active) adjust the colours so that least activity will be ffffff
-    # and most activity will be the supplied colour.
+    if value < 0.65:
+        red = 24
+        green = 171
+        blue = 28
+
+    if value >= 0.65 and value < 0.9:
+        red = 255
+        green = 118
+        blue = 17
+
+    if value >= 0.9:
+        red = 255
+        green = 0
+        blue = 0
+
     rd = 255 - ((value) * (255 - red))
     gr = 255 - ((value) * (255 - green))
     bl = 255 - ((value) * (255 - blue))
 
+    # Based on the value (0, quiet; 1 active) adjust the colours so that least activity will be ffffff
+    # and most activity will be the supplied colour.
     # Convert decimal values to hex
     rd = str(hex(int(rd)))
     rd = rd.split("x")
@@ -156,16 +167,17 @@ def createcolour(value):
 
 
 def htmlcreate(array):
-    # htmlfile = "../pyDataReader/publish/geomag.php"
-    htmlfile = "geomag.php"
+    htmlfile = k.OUTPUTFILE
     try:
         os.remove(htmlfile)
     except OSError:
         print("WARNING: could not delete " + htmlfile)
 
-    fileoutput('<table style=" width: 95%; font-size: 0.7em;">', htmlfile)
+    fileoutput('<table style=" width: 95%; font-size: 0.5em;">', htmlfile)
 
     fileoutput("<tr>", htmlfile)
+
+
     for i in range(0, len(array)):
         c1 = '<td style="border-radius: 3px; text-align: center; padding: 2px; background-color: #'
         c2 = '">'
@@ -181,12 +193,18 @@ def htmlcreate(array):
         fileoutput(str(cellstring), htmlfile)
 
         fileoutput("</td>", htmlfile)
+
+    c1 = '<td style="border-radius: 3px; text-align: center; padding: 2px;">'
+    c2 = '</td>'
+    c3 = c1 + k.STATION_NAME + c2
+    fileoutput(c3, htmlfile)
+
     fileoutput("</tr>", htmlfile)
 
     fileoutput("</table>", htmlfile)
     currentdt = datetime.utcnow()
-    stringtxt = '<p style="font-size: 0.7em;">Last updated at ' + str(currentdt) + " UTC.</p>"
-    fileoutput(stringtxt, htmlfile)
+    # stringtxt = '<p style="font-size: 0.7em;">Last updated at ' + str(currentdt) + " UTC.</p>"
+    # fileoutput(stringtxt, htmlfile)
 
 # wrapper function to run this library. Called from the main script
 def main(livedata):
