@@ -4,7 +4,6 @@ from time import mktime
 import math
 
 
-
 # #################################################################################
 # Rawdata is in the format (UnixDatetime, data)
 # the function will return an array of (UnixDatetime, binned_value))

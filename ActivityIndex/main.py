@@ -20,13 +20,17 @@ while True:
 
     # create the bins for dh/dt
     dhdt = importarray
+
+    # Convert the timestamps to UNIX
     dhdt = binner.utc2unix(dhdt)
+
+    # Calculate dH/dt from the absolute readings of the magnetometer
     dhdt = binner.bin_dh_dt(dhdt)
 
-    # for item in dhdt:
-    #     print(item)
+    for item in dhdt:
+        print(item)
 
-    # Process the array and return the coded verson that will display as colour or whatever
+    # Convert the binned data into colour-coded chart thing
     dhdt.reverse()
     dhdt = hm.main(dhdt)
 
