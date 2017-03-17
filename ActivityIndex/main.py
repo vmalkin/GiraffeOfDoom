@@ -23,14 +23,16 @@ while True:
     dhdt = binner.utc2unix(dhdt)
     dhdt = binner.bin_dh_dt(dhdt)
 
+    # for item in dhdt:
+    #     print(item)
+
     # Process the array and return the coded verson that will display as colour or whatever
     dhdt.reverse()
     dhdt = hm.main(dhdt)
 
     print("Binning complete.")
 
-    # for item in dhdt:
-    #     print(item)
+
 
     print("\n")
 

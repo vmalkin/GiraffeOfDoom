@@ -173,7 +173,7 @@ def htmlcreate(array):
     except OSError:
         print("WARNING: could not delete " + htmlfile)
 
-    fileoutput('<table style=" width: 95%; font-size: 0.5em;">', htmlfile)
+    fileoutput('<table style=" width: 95%; font-size: 0.6em;">', htmlfile)
 
     fileoutput("<tr>", htmlfile)
 
@@ -189,7 +189,12 @@ def htmlcreate(array):
         dp = str(array[i])
         dp = dp[:4]
         hr = 23 - i
-        cellstring = str(hr) + " hrs ago<br><b>" + str(dp) + "</b>"
+
+        if hr == 1:
+            hr = "now<br><b>"
+        else:
+            hr = str(hr) + " hr ago<br><b>"
+        cellstring = str(hr) + str(dp) + "</b>"
         fileoutput(str(cellstring), htmlfile)
 
         fileoutput("</td>", htmlfile)

@@ -22,9 +22,9 @@ FIELD_CORRECTION = 1
 MAG3110_FLIP = 200
 
 # differences data from magnetometer
-PATH_DATA = "../pyDataReader/graphing/"
+PATH_DATA = ""
 FILE_BINNED_MINS = PATH_DATA + "diffs.csv"
 
 # text output file
-OUTPUT_PATH = "../pyDataReader/publish/"
+OUTPUT_PATH = ""
 OUTPUT_FILE = OUTPUT_PATH + "geomag.php"
