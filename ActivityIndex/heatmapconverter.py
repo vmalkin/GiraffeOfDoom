@@ -114,20 +114,22 @@ def fileoutput(texttowrite, filename):
         print("WARNING: There was a problem")
 
 def createcolour(value):
+    A_MDRT = 0.65
+    A_ACTV = 0.79
     if value == k.NULLBIN:
         value = 0
 
-    if value < 0.65:
+    if value < A_MDRT:
         red = 24
         green = 171
         blue = 28
 
-    if value >= 0.65 and value < 0.9:
+    if value >= A_MDRT and value < A_ACTV:
         red = 255
         green = 118
         blue = 17
 
-    if value >= 0.9:
+    if value >= A_ACTV:
         red = 255
         green = 0
         blue = 0
@@ -193,8 +195,9 @@ def htmlcreate(array):
         if hr == 1:
             hr = "now<br><b>"
         else:
-            hr = str(hr) + " hr ago<br><b>"
-        cellstring = str(hr) + str(dp) + "</b>"
+            hr = str(hr) + " <br>hr<b>"
+        # cellstring = str(dp) + "</b>"
+        cellstring = str(hr) + "</b>"
         fileoutput(str(cellstring), htmlfile)
 
         fileoutput("</td>", htmlfile)
@@ -208,8 +211,8 @@ def htmlcreate(array):
 
     fileoutput("</table>", htmlfile)
     currentdt = datetime.utcnow()
-    # stringtxt = '<p style="font-size: 0.7em;">Last updated at ' + str(currentdt) + " UTC.</p>"
-    # fileoutput(stringtxt, htmlfile)
+    stringtxt = '<div style="font-size: 0.7em;">Last updated at ' + str(currentdt) + " UTC.<br><div>"
+    fileoutput(stringtxt, htmlfile)
 
 # wrapper function to run this library. Called from the main script
 def main(livedata):

@@ -35,9 +35,6 @@ while True:
     dhdt = hm.main(dhdt)
 
     print("Binning complete.")
-
-
-
     print("\n")
 
     time.sleep(600)
