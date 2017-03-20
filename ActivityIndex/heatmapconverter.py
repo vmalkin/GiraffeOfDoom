@@ -168,7 +168,7 @@ def createcolour(value):
     return finalhex
 
 
-def htmlcreate(array):
+def htmlcreate(array, dateminmaxvalues):
     htmlfile = k.OUTPUTFILE
     try:
         os.remove(htmlfile)
@@ -193,11 +193,11 @@ def htmlcreate(array):
         hr = 23 - i
 
         if hr == 1:
-            hr = "now<br><b>"
+            hr = "now<b>"
         else:
-            hr = str(hr) + " <br>hr<b>"
+            hr = str(hr) + " hr<b>"
         # cellstring = str(dp) + "</b>"
-        cellstring = str(hr) + "</b>"
+        cellstring = str(hr) + "<br>" + str(dp) + "</b>"
         fileoutput(str(cellstring), htmlfile)
 
         fileoutput("</td>", htmlfile)
@@ -210,8 +210,12 @@ def htmlcreate(array):
     fileoutput("</tr>", htmlfile)
 
     fileoutput("</table>", htmlfile)
-    currentdt = datetime.utcnow()
-    stringtxt = '<div style="font-size: 0.7em;">Last updated at ' + str(currentdt) + " UTC.<br><div>"
+    currentdt = datetime.utcnow().strftime('%B %d %Y - %H:%M:%S')
+    bestmin = dateminmaxvalues[0].strftime('%B %d %Y - %H:%M:%S')
+    bestmax = dateminmaxvalues[1].strftime('%B %d %Y - %H:%M:%S')
+    info = "<i> <br>Best min: " + str(bestmin) + " UTC. <br>Best max: " + str(bestmax) +" UTC. </i>  "
+    stringtxt = 'Last updated at ' + str(currentdt) + " UTC.   "
+    stringtxt = '<div style="font-size: 0.7em;">' + stringtxt + info + '<div>'
     fileoutput(stringtxt, htmlfile)
 
 # wrapper function to run this library. Called from the main script
@@ -250,7 +254,7 @@ def main(livedata):
     maxvalue = minmax[1]
     minvalue = minmax[0]
     heatmaparray = heatmapprocess(maxvalue, minvalue, livedata)
-    htmlcreate(heatmaparray)
+    htmlcreate(heatmaparray, dateminmax)
 
     print("Low value of " + str(minmax[0]) + " recorded at " + str(dateminmax[0]))
     print("High value of " + str(minmax[1]) + " recorded at " + str(dateminmax[1]))
