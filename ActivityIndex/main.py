@@ -11,24 +11,27 @@ import heatmapconverter as hm
 
 while True:
     importarray = []
-    # Load up file into array
+    # Load up file into array. file is 1 minute bins.
     # print(k.INPUT_FILE)
     importarray = am.CreateRawArray(k.INPUT_FILE)
 
     # remove the first line which may contain text header
     importarray.pop(0)
 
-    # create the bins for dh/dt
+    # import the readings and convert to dH/dt
     dhdt = importarray
+    dhdt = binner.make_dhdt(dhdt)
+
+    # smooth data if necessary
+    dhdt = binner.running_average(dhdt)
+    dhdt = binner.running_average(dhdt)
 
     # Convert the timestamps to UNIX
     dhdt = binner.utc2unix(dhdt)
 
-    # Calculate dH/dt from the absolute readings of the magnetometer
+    # Bin the data into appropriate intervals
     dhdt = binner.bin_dh_dt(dhdt)
-
-    for item in dhdt:
-        print(item)
+    binner.SaveRawArray(dhdt,"output.csv")
 
     # Convert the binned data into colour-coded chart thing
     dhdt.reverse()

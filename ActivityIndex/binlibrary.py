@@ -3,6 +3,55 @@ from datetime import datetime
 from time import mktime
 import math
 
+def running_average(input_array):
+    displayarray = []
+    minutes = 10
+
+
+    # NOW average the cumulative array, smooth out the blips
+    if len(input_array) > minutes:
+        for i in range(minutes, len(input_array)):
+            datasplit = input_array[i].split(",")
+            nowtime = datasplit[0]
+            count = 0
+            nowdata = float(0)
+
+            for j in range(0, minutes):
+                datasplit = input_array[i - j].split(",")
+                datavalue = datasplit[1]
+                nowdata = nowdata + float(datavalue)
+                count = count + 1
+
+            nowdata = nowdata / count
+
+            dp = nowtime + "," + str(nowdata)
+            displayarray.append(dp)
+
+    else:
+        displayarray = input_array
+
+    return displayarray
+
+
+# #################################################################################
+# Rawdata is in the format (UnixDatetime, data)
+# the function will return an array of (UnixDatetime, dH/dt)
+# #################################################################################
+def make_dhdt(rawdata):
+    returnarray = []
+
+    for i in range(1, len(rawdata)):
+        olddata = rawdata[i - 1].split(",")
+        nowdata = rawdata[i].split(",")
+
+        nowtime = nowdata[0]
+        dhdt = float(nowdata[1]) - float(olddata[1])
+        dp = nowtime + "," + str(dhdt)
+
+        returnarray.append(dp)
+
+    return returnarray
+
 
 # #################################################################################
 # Rawdata is in the format (UnixDatetime, data)
@@ -198,14 +247,14 @@ def unix2utc(dataarray):
 # #################################################################################
 # Save the raw datapoint array to the save file
 # #################################################################################
-def SaveRawArray(readings):
+def SaveRawArray(readings, filename):
     # export array to array-save file
     try:
-        with open(k.OUTPUTFILE, 'w') as w:
+        with open(filename, 'w') as w:
             for dataObjects in readings:
                 w.write(str(dataObjects) + '\n')
     except IOError:
-        print("WARNING: There was a problem accessing " + k.OUTPUTFILE)
+        print("WARNING: There was a problem accessing " + filename)
 
 # typically we would have
 # array = utc2unix(array)

@@ -114,8 +114,8 @@ def fileoutput(texttowrite, filename):
         print("WARNING: There was a problem")
 
 def createcolour(value):
-    A_MDRT = 0.65
-    A_ACTV = 0.79
+    A_MDRT = 0.35
+    A_ACTV = 0.70
     if value == k.NULLBIN:
         value = 0
 
@@ -130,7 +130,7 @@ def createcolour(value):
         blue = 17
 
     if value >= A_ACTV:
-        red = 255
+        red = 250
         green = 0
         blue = 0
 
@@ -210,9 +210,9 @@ def htmlcreate(array, dateminmaxvalues):
     fileoutput("</tr>", htmlfile)
 
     fileoutput("</table>", htmlfile)
-    currentdt = datetime.utcnow().strftime('%B %d %Y - %H:%M:%S')
-    bestmin = dateminmaxvalues[0].strftime('%B %d %Y - %H:%M:%S')
-    bestmax = dateminmaxvalues[1].strftime('%B %d %Y - %H:%M:%S')
+    currentdt = datetime.utcnow().strftime('%B %d %Y - %H:%M')
+    bestmin = dateminmaxvalues[0].strftime('%B %d %Y - %H:%M')
+    bestmax = dateminmaxvalues[1].strftime('%B %d %Y - %H:%M')
     info = "<i> <br>Best min: " + str(bestmin) + " UTC. <br>Best max: " + str(bestmax) +" UTC. </i>  "
     stringtxt = 'Last updated at ' + str(currentdt) + " UTC.   "
     stringtxt = '<div style="font-size: 0.7em;">' + stringtxt + info + '<div>'
