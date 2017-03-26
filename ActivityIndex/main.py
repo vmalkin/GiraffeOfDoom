@@ -25,13 +25,14 @@ while True:
     # smooth data if necessary
     dhdt = binner.running_average(dhdt)
     dhdt = binner.running_average(dhdt)
+    binner.SaveRawArray(dhdt,"output.csv")
 
     # Convert the timestamps to UNIX
     dhdt = binner.utc2unix(dhdt)
 
     # Bin the data into appropriate intervals
     dhdt = binner.bin_dh_dt(dhdt)
-    binner.SaveRawArray(dhdt,"output.csv")
+
 
     # Convert the binned data into colour-coded chart thing
     dhdt.reverse()
