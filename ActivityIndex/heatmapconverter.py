@@ -114,7 +114,7 @@ def fileoutput(texttowrite, filename):
         print("WARNING: There was a problem")
 
 def createcolour(value):
-    A_MDRT = 0.35
+    A_MDRT = 0.21
     A_ACTV = 0.70
     if value == k.NULLBIN:
         value = 0
