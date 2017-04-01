@@ -201,7 +201,7 @@ def utc2unix(arraylist):
     print("Converting time to UNIX time...")
     # set date time format for strptime()
     # dateformat = "%Y-%m-%d %H:%M:%S.%f"
-    dateformat = "%Y-%m-%d %H:%M:%S"
+    dateformat = '"%Y-%m-%d %H:%M:%S"'
     workingarray = []
 
     # convert array data times to unix time

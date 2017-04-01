@@ -119,16 +119,19 @@ def createcolour(value):
     if value == k.NULLBIN:
         value = 0
 
+    # quiet - Blue
     if value < A_MDRT:
-        red = 24
-        green = 171
-        blue = 28
+        red = 0
+        green = 0
+        blue = 255
 
+    # moderate - Orange
     if value >= A_MDRT and value < A_ACTV:
         red = 255
         green = 118
         blue = 17
 
+    # Red Alert!
     if value >= A_ACTV:
         red = 250
         green = 0
@@ -175,7 +178,7 @@ def htmlcreate(array, dateminmaxvalues):
     except OSError:
         print("WARNING: could not delete " + htmlfile)
 
-    fileoutput('<table style=" width: 95%; font-size: 0.6em;">', htmlfile)
+    fileoutput('<table style="border-radius: 3px; width: 95%; font-size: 0.6em; background-color: #e0f0e0">', htmlfile)
 
     fileoutput("<tr>", htmlfile)
 
@@ -196,8 +199,8 @@ def htmlcreate(array, dateminmaxvalues):
             hr = "now<b>"
         else:
             hr = str(hr) + " hr<b>"
-        # cellstring = str(dp) + "</b>"
-        cellstring = str(hr) + "<br>" + str(dp) + "</b>"
+        cellstring = str(hr) + "</b>"
+        # cellstring = str(hr) + '<br>' + str(dp) + '</b>'
         fileoutput(str(cellstring), htmlfile)
 
         fileoutput("</td>", htmlfile)
@@ -213,7 +216,8 @@ def htmlcreate(array, dateminmaxvalues):
     currentdt = datetime.utcnow().strftime('%B %d %Y - %H:%M')
     bestmin = dateminmaxvalues[0].strftime('%B %d %Y - %H:%M')
     bestmax = dateminmaxvalues[1].strftime('%B %d %Y - %H:%M')
-    info = "<i>Best min: " + str(bestmin) + " UTC. Best max: " + str(bestmax) +" UTC. </i>  "
+	# info = "<i>Best min: " + str(bestmin) + " UTC. Best max: " + str(bestmax) +" UTC. </i>  "
+    info = ""
     stringtxt = 'Last updated at ' + str(currentdt) + " UTC.   "
     stringtxt = '<div style="font-size: 0.7em;">' + stringtxt + info + '<div>'
     fileoutput(stringtxt, htmlfile)

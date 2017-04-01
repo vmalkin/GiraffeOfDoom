@@ -3,20 +3,15 @@ import ArrayManager as am
 import time
 import binlibrary as binner
 import heatmapconverter as hm
-import urllib.request as webreader
+
+import importer
 
 # ###############################################
 # Main Parts STarts Here
 # ###############################################
-url = "http://Dunedinaurora.nz/Service24CSV.php"
+
 while True:
-    importarray = []
-    response = webreader.urlopen(url)
-    for item in response:
-        logData = str(item, 'ascii').strip()
-        logData = logData.split(",")
-        dp = logData[0] + "," + logData[1]
-        importarray.append(dp)
+    importarray = importer.importdata()
 
     importarray.pop(0)
     print(importarray[10])
@@ -43,4 +38,5 @@ while True:
     print("Binning complete.")
     print("\n")
 
-    time.sleep(600)
+    # tap our data as infrequently as we can get away with
+    time.sleep(900)
