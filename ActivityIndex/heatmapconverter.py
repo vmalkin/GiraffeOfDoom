@@ -216,7 +216,7 @@ def htmlcreate(array, dateminmaxvalues):
     currentdt = datetime.utcnow().strftime('%B %d %Y - %H:%M')
     bestmin = dateminmaxvalues[0].strftime('%B %d %Y - %H:%M')
     bestmax = dateminmaxvalues[1].strftime('%B %d %Y - %H:%M')
-	# info = "<i>Best min: " + str(bestmin) + " UTC. Best max: " + str(bestmax) +" UTC. </i>  "
+    # info = "<i>Best min: " + str(bestmin) + " UTC. Best max: " + str(bestmax) +" UTC. </i>  "
     info = ""
     stringtxt = 'Last updated at ' + str(currentdt) + " UTC.   "
     stringtxt = '<div style="font-size: 0.7em;">' + stringtxt + info + '<div>'

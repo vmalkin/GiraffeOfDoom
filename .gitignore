@@ -4,3 +4,5 @@
 heatmap/.DS_Store
 
 heatmap/.DS_Store
+
+*.pyc
