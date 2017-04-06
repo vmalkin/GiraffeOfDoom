@@ -11,31 +11,61 @@
 		width: 100%;
 	}
 	
-	#tile
+	td
 	{
 		background-color: red;
 		border-radius: 3px;
 		-webkit-animation-name: tileanim; /* Safari 4.0 - 8.0 */
-		-webkit-animation-duration: 2s; /* Safari 4.0 - 8.0 */
 		animation-name: tileanim;
-		animation-duration: 1s;
 	}
-	</style
+	</style>
+	
+<script type="text/javascript">
+function changetime(tile)
+	{
+		transitiontime = 2;
+		change = Math.random() * transitiontime;
+		stylestring = "animation-duration: " + change + "s; -webkit-animation-duration: " + change + "s;";
+		document.getElementById(tile).style = stylestring;
+	}
+</script>
+
 </head>
 
 <body>
 
 <table>
 	<tr>
-		<td id="tile">O_O</td><td id="tile">O_O</td><td id="tile">O_O</td><td id="tile">O_O</td>
+		<td id="t1"> O_O</td><script>changetime("t1");</script>
+		<td id="t2"> O_O</td><script>changetime("t2");</script>
+		<td id="t3"> O_O</td><script>changetime("t3");</script>
+		<td id="t4"> O_O</td><script>changetime("t4");</script>
 	</tr>
+
 	<tr>
-	<td id="tile">O_O</td><td id="tile">O_O</td><td id="tile">O_O</td><td id="tile">O_O</td>
+		<td id="t5"> O_O</td><script>changetime("t5");</script>
+		<td id="t6"> O_O</td><script>changetime("t6");</script>
+		<td id="t7"> O_O</td><script>changetime("t7");</script>
+		<td id="t8"> O_O</td><script>changetime("t8");</script>
 	</tr>
+	
 	<tr>
-		<td id="tile">O_O</td><td id="tile">O_O</td><td id="tile">O_O</td><td id="tile">O_O</td>
+		<td id="t9"> O_O</td><script>changetime("t9");</script>
+		<td id="t10"> O_O</td><script>changetime("t10");</script>
+		<td id="t11"> O_O</td><script>changetime("t11");</script>
+		<td id="t12"> O_O</td><script>changetime("t12");</script>
+	</tr>
+	
+	<tr>
+		<td id="t13"> O_O</td><script>changetime("t13");</script>
+		<td id="t14"> O_O</td><script>changetime("t14");</script>
+		<td id="t15"> O_O</td><script>changetime("t15");</script>
+		<td id="t16"> O_O</td><script>changetime("t16");</script>
 	</tr>
 <table>
+
+
+
 
 </body>
 </html>
