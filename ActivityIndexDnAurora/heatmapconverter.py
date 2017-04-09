@@ -3,7 +3,6 @@ import constants as k
 from datetime import datetime
 import os
 
-
 # load pickle file and return the min-max array
 def loadpickle(file):
     try:
@@ -181,8 +180,8 @@ def htmlcreate(array, dateminmaxvalues):
             hr = "now<b>"
         else:
             hr = str(hr) + " hr<b>"
-        cellstring = str(hr) + "</b>"
-        # cellstring = str(hr) + '<br>' + str(dp) + '</b>'
+        # cellstring = str(hr) + "</b>"
+        cellstring = str(hr) + '<br>' + str(dp) + '</b>'
         fileoutput(str(cellstring), htmlfile)
 
         fileoutput("</td>", htmlfile)
@@ -196,8 +195,8 @@ def htmlcreate(array, dateminmaxvalues):
 
     fileoutput("</table>", htmlfile)
     currentdt = datetime.utcnow().strftime('%B %d %Y - %H:%M')
-    bestmin = dateminmaxvalues[0].strftime('%B %d %Y - %H:%M')
-    bestmax = dateminmaxvalues[1].strftime('%B %d %Y - %H:%M')
+    # bestmin = dateminmaxvalues[0].strftime('%B %d %Y - %H:%M')
+    # bestmax = dateminmaxvalues[1].strftime('%B %d %Y - %H:%M')
     # info = "<i>Best min: " + str(bestmin) + " UTC. Best max: " + str(bestmax) +" UTC. </i>  "
     info = ""
     stringtxt = 'Last updated at ' + str(currentdt) + " UTC.   "
@@ -209,7 +208,7 @@ def getmedian(maxvalue, maxfilename):
     listlength = 9
 
     # If exists the maxes file load it
-    if os.exists(maxfilename):
+    if os.path.isfile(maxfilename):
         values = loadpickle(maxfilename)
 
         # If the length >= maxlength
@@ -227,6 +226,9 @@ def getmedian(maxvalue, maxfilename):
             # sort the list
             values.sort()
             # return the median value (set return value)
+            index = int(len(values) / 2)
+            returnvalue = values[index]
+
 
         # Else the length is odd (will become even after this)
         else:
@@ -236,6 +238,8 @@ def getmedian(maxvalue, maxfilename):
             values.sort()
             # get the avg of the middlemost values
             # return the median value (set return value)
+            index = int(len(values) / 2)
+            returnvalue = values[index]
 
     # else create new file and simply return current maxvalue
     else:
@@ -245,46 +249,62 @@ def getmedian(maxvalue, maxfilename):
 
     #   save the array to pickle file
     savepickle(values, maxfilename)
-
+    print(maxfilename + " is " + str(len(values)) + " records long")
     return returnvalue
 
 
 # wrapper function to run this library. Called from the main script
 def main(livedata):
-    # check the current min/max values from the live data _for_this_24_hour_period_
+    WORKINGVALUES_FILE = "workingvalues.pkl"
     currentminvalue = findarraymin(livedata)
     currentmaxvalue = findarraymax(livedata)
-    currentdatetime = datetime.utcnow()
+    # unix time
+    currentUTCtime = datetime.utcnow()
+    currentunixtime = int(datetime.utcnow().timestamp())
+    currentunixtime = str(currentunixtime)
+
 
     # load the current values from the pickle files
     # workingvalues
     # of the format [datetime, minvalue],[datetime, maxvalue]
-    workingvalues = loadpickle("workingminmax.pkl")
+    if os.path.isfile(WORKINGVALUES_FILE):
+        workingvalues = loadpickle(WORKINGVALUES_FILE)
+    else:
+        print("Seeding new tempt values")
+        workingvalues = [currentunixtime, currentminvalue, currentmaxvalue]
+
 
     # DETERMINE IF THIS IS THE TIME TO CHECK FOR NEW VALUES, ONCE EVERY 24 HOURS
     #Determine if our current max and min values have changed, if so then append the the correct arrays and get the
     # median values back. This will help ignore blips and over time, will trend to moderate values
-    if currentmaxvalue > workingvalues[1][1]:
-        workingvalues[1][1] = getmedian(currentmaxvalue,"maxvalues.pkl")
-        workingvalues[1][0] = currentdatetime
+    timeelapsed = int(currentunixtime) - int(str(workingvalues[0]))
+    print("Time elapsed is: " + str(timeelapsed))
 
-    if currentminvalue < workingvalues[0][1]:
-        workingvalues[0][1] = getmedian(currentminvalue, "minvalues.pkl")
-        workingvalues[0][0] = currentdatetime
+    if  timeelapsed > 86400:
+        if currentminvalue < workingvalues[1]:
+            print("New minimum value found")
+            workingvalues[1] = getmedian(currentminvalue, "minvalues.pkl")
 
-    # Save the current working values
-    savepickle(workingvalues, "workingvalues.pkl")
+        if currentmaxvalue > workingvalues[2]:
+            print("New maximum value found")
+            workingvalues[2] = getmedian(currentmaxvalue,"maxvalues.pkl")
+
+        workingvalues[0] = currentunixtime
+
+        # Save the current working values
+        savepickle(workingvalues, WORKINGVALUES_FILE)
+    else:
+        print("Using current values")
 
     # if currentminmax > working minmax
     #   append current minmax to minmax longterm array
     #   sort and get median value
     #   median value becomes new workingminmax
-
-    maxvalue = workingvalues[0][1]
-    minvalue = workingvalues[1][1]
+    maxvalue = workingvalues[1]
+    minvalue = workingvalues[2]
     heatmaparray = heatmapprocess(maxvalue, minvalue, livedata)
-    htmlcreate(heatmaparray, currentdatetime)
+    htmlcreate(heatmaparray, currentUTCtime)
 
-    print(workingvalues)
+    print("Current working values are: " + str(workingvalues))
 
     return heatmaparray

@@ -1,11 +1,11 @@
 import urllib.request as webreader
-
+import os
 # this bit gets the info from remote source. This fucntion will probably have to be customised to deal with
 # any data format, but must return an array with each element of the format: ("UTC datetime", datareading)
 
-# #################################################################################
-# Create the raw datapoint array from the save file
-# #################################################################################
+# # #################################################################################
+# # Create the raw datapoint array from the save file
+# # #################################################################################
 # def importdata(sourcefile):
 #     print("Loading " + sourcefile)
 #     readings = []

@@ -1,75 +1,75 @@
 <table style="border-radius: 3px; width: 95%; font-size: 0.6em; background-color: #e0f0e0">
 <tr>
-<td style="border-radius: 3px; text-align: center; padding: 2px; background-color: #ffb077">
-23 hr<b><br>0.57</b>
+<td style="border-radius: 3px; text-align: center; padding: 2px; background-color: #ffb37c">
+23 hr<b><br>0.54</b>
 </td>
-<td style="border-radius: 3px; text-align: center; padding: 2px; background-color: #fb3d3d">
-22 hr<b><br>0.76</b>
+<td style="border-radius: 3px; text-align: center; padding: 2px; background-color: #fb3737">
+22 hr<b><br>0.78</b>
 </td>
-<td style="border-radius: 3px; text-align: center; padding: 2px; background-color: #fa2020">
-21 hr<b><br>0.87</b>
+<td style="border-radius: 3px; text-align: center; padding: 2px; background-color: #fb3333">
+21 hr<b><br>0.79</b>
 </td>
-<td style="border-radius: 3px; text-align: center; padding: 2px; background-color: #ffbf90">
-20 hr<b><br>0.46</b>
-</td>
-<td style="border-radius: 3px; text-align: center; padding: 2px; background-color: #ffb782">
-19 hr<b><br>0.52</b>
-</td>
-<td style="border-radius: 3px; text-align: center; padding: 2px; background-color: #ffd4b5">
-18 hr<b><br>0.30</b>
-</td>
-<td style="border-radius: 3px; text-align: center; padding: 2px; background-color: #fb3939">
-17 hr<b><br>0.77</b>
+<td style="border-radius: 3px; text-align: center; padding: 2px; background-color: #fa1919">
+20 hr<b><br>0.90</b>
 </td>
 <td style="border-radius: 3px; text-align: center; padding: 2px; background-color: #fa0000">
-16 hr<b><br>1.0</b>
+19 hr<b><br>1.0</b>
 </td>
-<td style="border-radius: 3px; text-align: center; padding: 2px; background-color: #ffb783">
-15 hr<b><br>0.52</b>
+<td style="border-radius: 3px; text-align: center; padding: 2px; background-color: #fa1111">
+18 hr<b><br>0.93</b>
 </td>
-<td style="border-radius: 3px; text-align: center; padding: 2px; background-color: #ffa869">
-14 hr<b><br>0.62</b>
+<td style="border-radius: 3px; text-align: center; padding: 2px; background-color: #fa2525">
+17 hr<b><br>0.85</b>
 </td>
-<td style="border-radius: 3px; text-align: center; padding: 2px; background-color: #ffbc8b">
-13 hr<b><br>0.48</b>
+<td style="border-radius: 3px; text-align: center; padding: 2px; background-color: #fa2121">
+16 hr<b><br>0.86</b>
 </td>
-<td style="border-radius: 3px; text-align: center; padding: 2px; background-color: #ffa767">
-12 hr<b><br>0.63</b>
+<td style="border-radius: 3px; text-align: center; padding: 2px; background-color: #fb3e3e">
+15 hr<b><br>0.75</b>
 </td>
-<td style="border-radius: 3px; text-align: center; padding: 2px; background-color: #ffd4b5">
-11 hr<b><br>0.30</b>
+<td style="border-radius: 3px; text-align: center; padding: 2px; background-color: #fa2525">
+14 hr<b><br>0.85</b>
 </td>
-<td style="border-radius: 3px; text-align: center; padding: 2px; background-color: #ffcca6">
-10 hr<b><br>0.37</b>
+<td style="border-radius: 3px; text-align: center; padding: 2px; background-color: #fb4b4b">
+13 hr<b><br>0.70</b>
 </td>
-<td style="border-radius: 3px; text-align: center; padding: 2px; background-color: #ffb076">
-9 hr<b><br>0.57</b>
+<td style="border-radius: 3px; text-align: center; padding: 2px; background-color: #fa1e1e">
+12 hr<b><br>0.88</b>
 </td>
-<td style="border-radius: 3px; text-align: center; padding: 2px; background-color: #ffbf90">
-8 hr<b><br>0.46</b>
+<td style="border-radius: 3px; text-align: center; padding: 2px; background-color: #ffb37b">
+11 hr<b><br>0.55</b>
 </td>
-<td style="border-radius: 3px; text-align: center; padding: 2px; background-color: #ceceff">
-7 hr<b><br>0.19</b>
+<td style="border-radius: 3px; text-align: center; padding: 2px; background-color: #ffa25f">
+10 hr<b><br>0.67</b>
 </td>
-<td style="border-radius: 3px; text-align: center; padding: 2px; background-color: #ffd9be">
-6 hr<b><br>0.27</b>
-</td>
-<td style="border-radius: 3px; text-align: center; padding: 2px; background-color: #fa0404">
-5 hr<b><br>0.98</b>
-</td>
-<td style="border-radius: 3px; text-align: center; padding: 2px; background-color: #ffcca6">
-4 hr<b><br>0.36</b>
+<td style="border-radius: 3px; text-align: center; padding: 2px; background-color: #ffd0ae">
+9 hr<b><br>0.33</b>
 </td>
 <td style="border-radius: 3px; text-align: center; padding: 2px; background-color: #ffb57f">
-3 hr<b><br>0.53</b>
+8 hr<b><br>0.53</b>
 </td>
-<td style="border-radius: 3px; text-align: center; padding: 2px; background-color: #ffc092">
-2 hr<b><br>0.45</b>
+<td style="border-radius: 3px; text-align: center; padding: 2px; background-color: #fb4545">
+7 hr<b><br>0.72</b>
 </td>
-<td style="border-radius: 3px; text-align: center; padding: 2px; background-color: #ffcaa4">
-now<b><br>0.38</b>
+<td style="border-radius: 3px; text-align: center; padding: 2px; background-color: #ffb27a">
+6 hr<b><br>0.55</b>
+</td>
+<td style="border-radius: 3px; text-align: center; padding: 2px; background-color: #fb3636">
+5 hr<b><br>0.78</b>
+</td>
+<td style="border-radius: 3px; text-align: center; padding: 2px; background-color: #ffb986">
+4 hr<b><br>0.50</b>
+</td>
+<td style="border-radius: 3px; text-align: center; padding: 2px; background-color: #ffffff">
+3 hr<b><br>-0.0</b>
+</td>
+<td style="border-radius: 3px; text-align: center; padding: 2px; background-color: #d3d3ff">
+2 hr<b><br>0.17</b>
+</td>
+<td style="border-radius: 3px; text-align: center; padding: 2px; background-color: #fa1919">
+now<b><br>0.89</b>
 </td>
 <td style="border-radius: 3px; text-align: center; padding: 2px;"><h4>Dunedin<br>Aurora</h4></td>
 </tr>
 </table>
-<div style="font-size: 0.7em;">Last updated at April 01 2017 - 01:00 UTC.   <i>Best min: March 31 2017 - 23:38 UTC. Best max: April 01 2017 - 01:00 UTC. </i>  <div>
+<div style="font-size: 0.7em;">Last updated at April 09 2017 - 06:56 UTC.   <div>

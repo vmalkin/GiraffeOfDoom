@@ -9,6 +9,7 @@ import importer
 # ###############################################
 
 while True:
+    # importarray = importer.importdata("Dalmore_Prime.1minbins.csv")
     importarray = importer.importdata()
 
     importarray.pop(0)
