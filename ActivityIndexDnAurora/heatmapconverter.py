@@ -2,6 +2,7 @@ import pickle
 import constants as k
 from datetime import datetime
 import os
+import random
 
 # load pickle file and return the min-max array
 def loadpickle(file):
@@ -165,10 +166,13 @@ def htmlcreate(array, dateminmaxvalues):
 
 
     for i in range(0, len(array)):
-        c1 = '<td style="border-radius: 3px; text-align: center; padding: 2px; background-color: #'
-        c2 = '">'
+        change = random.random() * 1
+        c1 = '<td style=" border-radius: 3px; text-align: center; padding: 2px; '
+        c2 = 'animation-duration: ' + str(change) + 's; '
+        c3 = 'background-color: #'
+        c4 = '">'
         hexcode = createcolour(array[i])
-        c3 = c1 + hexcode + c2
+        c3 = c1 + c2 + c3 + hexcode + c4
         fileoutput(c3, htmlfile)
 
         # cell content
@@ -219,17 +223,6 @@ def getmedian(maxvalue, maxfilename):
             values.pop(listlength)
             values.pop(0)
 
-        # if the length of the max file is even, (willbecome odd after this)
-        if len(values) % 2 == 0:
-            # append the current value
-            values.append(maxvalue)
-            # sort the list
-            values.sort()
-            # return the median value (set return value)
-            index = int(len(values) / 2)
-            returnvalue = values[index]
-
-
         # Else the length is odd (will become even after this)
         else:
             # append the value
@@ -249,20 +242,15 @@ def getmedian(maxvalue, maxfilename):
 
     #   save the array to pickle file
     savepickle(values, maxfilename)
-    print(maxfilename + " is " + str(len(values)) + " records long")
+    print("Max file is: " + str(maxfilename))
     return returnvalue
 
 
 # wrapper function to run this library. Called from the main script
 def main(livedata):
     WORKINGVALUES_FILE = "workingvalues.pkl"
-    currentminvalue = findarraymin(livedata)
-    currentmaxvalue = findarraymax(livedata)
-    # unix time
+    currentunixtime = datetime.utcnow().timestamp()
     currentUTCtime = datetime.utcnow()
-    currentunixtime = int(datetime.utcnow().timestamp())
-    currentunixtime = str(currentunixtime)
-
 
     # load the current values from the pickle files
     # workingvalues
@@ -270,17 +258,18 @@ def main(livedata):
     if os.path.isfile(WORKINGVALUES_FILE):
         workingvalues = loadpickle(WORKINGVALUES_FILE)
     else:
-        print("Seeding new tempt values")
-        workingvalues = [currentunixtime, currentminvalue, currentmaxvalue]
+        print("Seeding new temp values")
+        workingvalues = [currentunixtime, findarraymin(livedata), findarraymax(livedata)]
 
+    elapsedtime = currentunixtime - workingvalues[0]
+    elapsedtime = int(elapsedtime)
 
-    # DETERMINE IF THIS IS THE TIME TO CHECK FOR NEW VALUES, ONCE EVERY 24 HOURS
-    #Determine if our current max and min values have changed, if so then append the the correct arrays and get the
-    # median values back. This will help ignore blips and over time, will trend to moderate values
-    timeelapsed = int(currentunixtime) - int(str(workingvalues[0]))
-    print("Time elapsed is: " + str(timeelapsed))
+    # if 24 hours have passed, then check for new max/min values
+    # Apply the new MEDIAN value.
+    if elapsedtime > 60*60*24:
+        currentminvalue = findarraymin(livedata)
+        currentmaxvalue = findarraymax(livedata)
 
-    if  timeelapsed > 86400:
         if currentminvalue < workingvalues[1]:
             print("New minimum value found")
             workingvalues[1] = getmedian(currentminvalue, "minvalues.pkl")
@@ -291,15 +280,9 @@ def main(livedata):
 
         workingvalues[0] = currentunixtime
 
-        # Save the current working values
-        savepickle(workingvalues, WORKINGVALUES_FILE)
-    else:
-        print("Using current values")
+    # Save the current working values
+    savepickle(workingvalues, WORKINGVALUES_FILE)
 
-    # if currentminmax > working minmax
-    #   append current minmax to minmax longterm array
-    #   sort and get median value
-    #   median value becomes new workingminmax
     maxvalue = workingvalues[1]
     minvalue = workingvalues[2]
     heatmaparray = heatmapprocess(maxvalue, minvalue, livedata)
