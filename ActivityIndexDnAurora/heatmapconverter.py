@@ -25,24 +25,6 @@ def savepickle(array, file):
         print("ERROR saving array")
 
 
-# return the median value of an list
-# the array is a list of single values
-# this function could also be used to reset a large array to a seed value as part of a periodic
-# pruning process to manage the size of the arrays.
-def findarraymedian(array):
-    if len(array) > 2:
-        medpoint = int(len(array) / 2)
-    else:
-        medpoint = 0
-
-    if medpoint == k.NULLBIN:
-        medianvalue = 0
-    else:
-        medianvalue = array[medpoint]
-
-    return medianvalue
-
-
 # find min and max values in a list
 def findarraymin(array):
     values = []
@@ -223,23 +205,49 @@ def htmlcreate(array, dateminmaxvalues):
     fileoutput(stringtxt, htmlfile)
 
 
-def getmax(maxvalue):
-    maxes = loadpickle("maxvalues.pkl")
+def getmedian(maxvalue, maxfilename):
+    listlength = 9
 
+    # If exists the maxes file load it
+    if os.exists(maxfilename):
+        values = loadpickle(maxfilename)
+        # if the length of the max file is even,
+        if len(values) % 2 == 0:
+            # append the current value
+            values.append(maxvalue)
+            # sort the list
+            values.sort()
+            # return the median value
 
-    savepickle(maxes, "maxvalues.pkl")
+        # Else the length is odd
+        else:
+        # append the value
+        # sort the list
+        # get the avg of the middlemost values and return that
 
-def getmin(minvalue):
-    mins = loadpickle("minvalues.pkl")
+    # else create new file and simply return current maxvalue
+    else:
+        values = []
+        values.append(maxvalue)
+        returnvalue = maxvalue
 
-    savepickle(mins, "minvalues.pkl")
+    #
+    # If the length >= maxlength
+    #   sort the list
+    #   prune the 0th and nth values from the array
+    
+    #   save the array to pickle file
+    savepickle(values, maxfilename)
+
+    return returnvalue
+
 
 # wrapper function to run this library. Called from the main script
 def main(livedata):
     # check the current min/max values from the live data _for_this_24_hour_period_
     currentminvalue = findarraymin(livedata)
     currentmaxvalue = findarraymax(livedata)
-    currentdatetime = currentdt = datetime.utcnow()
+    currentdatetime = datetime.utcnow()
 
     # load the current values from the pickle files
     # workingvalues
@@ -249,11 +257,11 @@ def main(livedata):
     #Determine if our current max and min values have changed, if so then append the the correct arrays and get the
     # median values back. This will help ignore blips and over time, will trend to moderate values
     if currentmaxvalue > workingvalues[1][1]:
-        workingvalues[1][1] = getmax(currentmaxvalue)
+        workingvalues[1][1] = getmedian(currentmaxvalue,"maxvalues.pkl")
         workingvalues[1][0] = currentdatetime
 
     if currentminvalue < workingvalues[0][1]:
-        workingvalues[0][1] = getmin(currentminvalue)
+        workingvalues[0][1] = getmedian(currentminvalue, "minvalues.pkl")
         workingvalues[0][0] = currentdatetime
 
     # Save the current working values
