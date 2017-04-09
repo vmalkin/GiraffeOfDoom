@@ -1,5 +1,3 @@
-import constants as k
-import ArrayManager as am
 import time
 import binlibrary as binner
 import heatmapconverter as hm

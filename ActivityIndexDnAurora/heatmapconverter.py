@@ -25,24 +25,6 @@ def savepickle(array, file):
         print("ERROR saving array")
 
 
-# return the median value of an list
-# the array is a list of single values
-# this function could also be used to reset a large array to a seed value as part of a periodic
-# pruning process to manage the size of the arrays.
-def findarraymedian(array):
-    if len(array) > 2:
-        medpoint = int(len(array) / 2)
-    else:
-        medpoint = 0
-
-    if medpoint == k.NULLBIN:
-        medianvalue = 0
-    else:
-        medianvalue = array[medpoint]
-
-    return medianvalue
-
-
 # find min and max values in a list
 def findarraymin(array):
     values = []
@@ -216,54 +198,93 @@ def htmlcreate(array, dateminmaxvalues):
     currentdt = datetime.utcnow().strftime('%B %d %Y - %H:%M')
     bestmin = dateminmaxvalues[0].strftime('%B %d %Y - %H:%M')
     bestmax = dateminmaxvalues[1].strftime('%B %d %Y - %H:%M')
-	# info = "<i>Best min: " + str(bestmin) + " UTC. Best max: " + str(bestmax) +" UTC. </i>  "
+    # info = "<i>Best min: " + str(bestmin) + " UTC. Best max: " + str(bestmax) +" UTC. </i>  "
     info = ""
     stringtxt = 'Last updated at ' + str(currentdt) + " UTC.   "
     stringtxt = '<div style="font-size: 0.7em;">' + stringtxt + info + '<div>'
     fileoutput(stringtxt, htmlfile)
 
+
+def getmedian(maxvalue, maxfilename):
+    listlength = 9
+
+    # If exists the maxes file load it
+    if os.exists(maxfilename):
+        values = loadpickle(maxfilename)
+
+        # If the length >= maxlength
+        if len(values) >= listlength:
+            #   sort the list
+            values.sort()
+            #   prune the 0th and nth values from the array
+            values.pop(listlength)
+            values.pop(0)
+
+        # if the length of the max file is even, (willbecome odd after this)
+        if len(values) % 2 == 0:
+            # append the current value
+            values.append(maxvalue)
+            # sort the list
+            values.sort()
+            # return the median value (set return value)
+
+        # Else the length is odd (will become even after this)
+        else:
+            # append the value
+            values.append(maxvalue)
+            # sort the list
+            values.sort()
+            # get the avg of the middlemost values
+            # return the median value (set return value)
+
+    # else create new file and simply return current maxvalue
+    else:
+        values = []
+        values.append(maxvalue)
+        returnvalue = maxvalue
+
+    #   save the array to pickle file
+    savepickle(values, maxfilename)
+
+    return returnvalue
+
+
 # wrapper function to run this library. Called from the main script
 def main(livedata):
-    # minmax only contains 2 values: [minv, maxv]. These are the highest and lowest recorded results to date. These
-    # are appended to the max and min arrays and form the long-term "memory" of highest and lowest values for the
-    # device. Outlier data will be appended the should be missed when grabbing the median value
-    minmax = loadpickle("minmax.pkl")
-    dateminmax = loadpickle("dateminmax.pkl")
+    # check the current min/max values from the live data _for_this_24_hour_period_
+    currentminvalue = findarraymin(livedata)
+    currentmaxvalue = findarraymax(livedata)
+    currentdatetime = datetime.utcnow()
 
-    if len(dateminmax) == 0:
-        currentdt = datetime.utcnow()
-        dateminmax.append(currentdt)
-        dateminmax.append(currentdt)
+    # load the current values from the pickle files
+    # workingvalues
+    # of the format [datetime, minvalue],[datetime, maxvalue]
+    workingvalues = loadpickle("workingminmax.pkl")
 
-    # get the current max and min values from the live data. if the minmax array is empty, then start with
-    # whatever minmax values we can find
-    if len(minmax) == 0:
-        d = findarraymin(livedata)
-        minmax.append(d)
-        d = findarraymax(livedata)
-        minmax.append(d)
-    # Otherwise compare current stored values with live. The assumption is larger values than stored are valid...
-    else:
-        dtm = datetime.utcnow()
-        livemin = findarraymin(livedata)
-        if livemin <= minmax[0]:
-            minmax[0] = livemin
-            dateminmax[0] = dtm
+    # DETERMINE IF THIS IS THE TIME TO CHECK FOR NEW VALUES, ONCE EVERY 24 HOURS
+    #Determine if our current max and min values have changed, if so then append the the correct arrays and get the
+    # median values back. This will help ignore blips and over time, will trend to moderate values
+    if currentmaxvalue > workingvalues[1][1]:
+        workingvalues[1][1] = getmedian(currentmaxvalue,"maxvalues.pkl")
+        workingvalues[1][0] = currentdatetime
 
-        livemax = findarraymax(livedata)
-        if livemax >= minmax[1]:
-            minmax[1] = livemax
-            dateminmax[1] = dtm
+    if currentminvalue < workingvalues[0][1]:
+        workingvalues[0][1] = getmedian(currentminvalue, "minvalues.pkl")
+        workingvalues[0][0] = currentdatetime
 
-    maxvalue = minmax[1]
-    minvalue = minmax[0]
+    # Save the current working values
+    savepickle(workingvalues, "workingvalues.pkl")
+
+    # if currentminmax > working minmax
+    #   append current minmax to minmax longterm array
+    #   sort and get median value
+    #   median value becomes new workingminmax
+
+    maxvalue = workingvalues[0][1]
+    minvalue = workingvalues[1][1]
     heatmaparray = heatmapprocess(maxvalue, minvalue, livedata)
-    htmlcreate(heatmaparray, dateminmax)
+    htmlcreate(heatmaparray, currentdatetime)
 
-    print("Low value of " + str(minmax[0]) + " recorded at " + str(dateminmax[0]))
-    print("High value of " + str(minmax[1]) + " recorded at " + str(dateminmax[1]))
-
-    savepickle(minmax, "minmax.pkl")
-    savepickle(dateminmax, "dateminmax.pkl")
+    print(workingvalues)
 
     return heatmaparray
