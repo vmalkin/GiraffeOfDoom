@@ -211,19 +211,31 @@ def getmedian(maxvalue, maxfilename):
     # If exists the maxes file load it
     if os.exists(maxfilename):
         values = loadpickle(maxfilename)
-        # if the length of the max file is even,
+
+        # If the length >= maxlength
+        if len(values) >= listlength:
+            #   sort the list
+            values.sort()
+            #   prune the 0th and nth values from the array
+            values.pop(listlength)
+            values.pop(0)
+
+        # if the length of the max file is even, (willbecome odd after this)
         if len(values) % 2 == 0:
             # append the current value
             values.append(maxvalue)
             # sort the list
             values.sort()
-            # return the median value
+            # return the median value (set return value)
 
-        # Else the length is odd
+        # Else the length is odd (will become even after this)
         else:
-        # append the value
-        # sort the list
-        # get the avg of the middlemost values and return that
+            # append the value
+            values.append(maxvalue)
+            # sort the list
+            values.sort()
+            # get the avg of the middlemost values
+            # return the median value (set return value)
 
     # else create new file and simply return current maxvalue
     else:
@@ -231,11 +243,6 @@ def getmedian(maxvalue, maxfilename):
         values.append(maxvalue)
         returnvalue = maxvalue
 
-    #
-    # If the length >= maxlength
-    #   sort the list
-    #   prune the 0th and nth values from the array
-    
     #   save the array to pickle file
     savepickle(values, maxfilename)
 
@@ -254,6 +261,7 @@ def main(livedata):
     # of the format [datetime, minvalue],[datetime, maxvalue]
     workingvalues = loadpickle("workingminmax.pkl")
 
+    # DETERMINE IF THIS IS THE TIME TO CHECK FOR NEW VALUES, ONCE EVERY 24 HOURS
     #Determine if our current max and min values have changed, if so then append the the correct arrays and get the
     # median values back. This will help ignore blips and over time, will trend to moderate values
     if currentmaxvalue > workingvalues[1][1]:
