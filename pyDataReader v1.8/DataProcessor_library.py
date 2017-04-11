@@ -60,18 +60,19 @@ def invert_data_array(data_array):
 # #################################################################################
 # Calculate the differences
 # This function will create an array of differences
-# this can be used to create a new display array of relative readings, that do
-# not have nose spikes in them
+# using a wide interval between readings t calculate dh/dt is the same as narrower
+# intervals that have to be averaged.
 # #################################################################################
 def create_diffs_array(readings_array):
     spike_counter = 0
     diffsarray = []
+    fivemininterval = k.MAG_READ_FREQ * 5
     counterbit = 0
 
     if len(readings_array) > 2:
-        for i in range (1, len(readings_array)):
+        for i in range (fivemininterval, len(readings_array)):
             counterbit = 0
-            diff_x = (Decimal(readings_array[i].raw_x) - Decimal(readings_array[i-1].raw_x))
+            diff_x = (Decimal(readings_array[i].raw_x) - Decimal(readings_array[i-fivemininterval].raw_x))
             # Each IF statement checks to see if reading exceeds the spike value. If it does
             # then we change the reading to zero. We trip the counterbit and at the end of the
             # data read incr the spike counter
@@ -79,12 +80,12 @@ def create_diffs_array(readings_array):
                 diff_x = 0
                 counterbit = 1
 
-            diff_y = (Decimal(readings_array[i].raw_y) - Decimal(readings_array[i-1].raw_y))
+            diff_y = (Decimal(readings_array[i].raw_y) - Decimal(readings_array[i-fivemininterval].raw_y))
             if math.sqrt(math.pow(diff_y,2)) > k.NOISE_SPIKE:
                 diff_y = 0
                 counterbit = 1
 
-            diff_z = (Decimal(readings_array[i].raw_z) - Decimal(readings_array[i-1].raw_z))
+            diff_z = (Decimal(readings_array[i].raw_z) - Decimal(readings_array[i-fivemininterval].raw_z))
             if math.sqrt(math.pow(diff_z,2)) > k.NOISE_SPIKE:
                 diff_z = 0
                 counterbit = 1

@@ -50,8 +50,8 @@ def process_data(input_data_array):
     # of diurnal variation, allowing us to see rapid onsets/changes in the magnetic field.
     # ###########################################################################
     output_diffs = dp.create_diffs_array(data_array)
-    for i in range(0,2):
-        output_diffs = dp.diffs_running_average(output_diffs)
+    # for i in range(0,2):
+    #     output_diffs = dp.diffs_running_average(output_diffs)
     ofm.CreateDiffs(output_diffs)  # use output_diffs data
 
 
