@@ -159,15 +159,15 @@ def htmlcreate(array, dateminmaxvalues):
         os.remove(htmlfile)
     except OSError:
         print("WARNING: could not delete " + htmlfile)
-
+    fileoutput('<link href="../anim.css" rel="stylesheet" type="text/css">', htmlfile)
     fileoutput('<table style="border-radius: 3px; width: 95%; font-size: 0.6em; background-color: #e0f0e0">', htmlfile)
 
     fileoutput("<tr>", htmlfile)
 
 
     for i in range(0, len(array)):
-        change = random.random() * 1
-        c1 = '<td style=" border-radius: 3px; text-align: center; padding: 2px; '
+        change = random.random() * 3
+        c1 = '<td class="tile" style="'
         c2 = 'animation-duration: ' + str(change) + 's; '
         c3 = 'background-color: #'
         c4 = '">'
@@ -184,8 +184,8 @@ def htmlcreate(array, dateminmaxvalues):
             hr = "now<b>"
         else:
             hr = str(hr) + " hr<b>"
-        # cellstring = str(hr) + "</b>"
-        cellstring = str(hr) + '<br>' + str(dp) + '</b>'
+        cellstring = str(hr) + "</b>"
+        # cellstring = str(hr) + '<br>' + str(dp) + '</b>'
         fileoutput(str(cellstring), htmlfile)
 
         fileoutput("</td>", htmlfile)
@@ -263,28 +263,30 @@ def main(livedata):
 
     elapsedtime = currentunixtime - workingvalues[0]
     elapsedtime = int(elapsedtime)
-
+    print("Elapsed time: " + str(elapsedtime))
     # if 24 hours have passed, then check for new max/min values
     # Apply the new MEDIAN value.
-    if elapsedtime > 60*60*24:
-        currentminvalue = findarraymin(livedata)
-        currentmaxvalue = findarraymax(livedata)
+    # if elapsedtime > 60*60*24:
+    currentminvalue = findarraymin(livedata)
+    currentmaxvalue = findarraymax(livedata)
 
-        if currentminvalue < workingvalues[1]:
-            print("New minimum value found")
-            workingvalues[1] = getmedian(currentminvalue, "minvalues.pkl")
+    if currentminvalue < workingvalues[1]:
+        print("New minimum value found")
+        # workingvalues[1] = getmedian(currentminvalue, "minvalues.pkl")
+        workingvalues[1] = currentminvalue
 
-        if currentmaxvalue > workingvalues[2]:
-            print("New maximum value found")
-            workingvalues[2] = getmedian(currentmaxvalue,"maxvalues.pkl")
+    if currentmaxvalue > workingvalues[2]:
+        print("New maximum value found")
+        # workingvalues[2] = getmedian(currentmaxvalue,"maxvalues.pkl")
+        workingvalues[2] = currentmaxvalue
 
-        workingvalues[0] = currentunixtime
+    workingvalues[0] = currentunixtime
 
     # Save the current working values
     savepickle(workingvalues, WORKINGVALUES_FILE)
 
-    maxvalue = workingvalues[1]
-    minvalue = workingvalues[2]
+    minvalue = workingvalues[1]
+    maxvalue = workingvalues[2]
     heatmaparray = heatmapprocess(maxvalue, minvalue, livedata)
     htmlcreate(heatmaparray, currentUTCtime)
 

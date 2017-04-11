@@ -1,75 +1,76 @@
+<link href="anim.css" rel="stylesheet" type="text/css">
 <table style="border-radius: 3px; width: 95%; font-size: 0.6em; background-color: #e0f0e0">
 <tr>
-<td style=" border-radius: 3px; text-align: center; padding: 2px; animation-duration: 0.06387154576321397s; background-color: #fa1717">
-23 hr<b><br>0.90</b>
+<td class="tile" style="animation-duration: 2.2882814642835285s; background-color: #e0e0ff">
+23 hr<b><br>0.11</b>
 </td>
-<td style=" border-radius: 3px; text-align: center; padding: 2px; animation-duration: 0.39468910025664306s; background-color: #fa0e0e">
-22 hr<b><br>0.94</b>
+<td class="tile" style="animation-duration: 0.6694756044581899s; background-color: #fdfdff">
+22 hr<b><br>0.00</b>
 </td>
-<td style=" border-radius: 3px; text-align: center; padding: 2px; animation-duration: 0.4554971963134934s; background-color: #fa0b0b">
-21 hr<b><br>0.95</b>
+<td class="tile" style="animation-duration: 1.698334484959653s; background-color: #f1f1ff">
+21 hr<b><br>0.05</b>
 </td>
-<td style=" border-radius: 3px; text-align: center; padding: 2px; animation-duration: 0.8441705509846062s; background-color: #fa0000">
-20 hr<b><br>1.0</b>
+<td class="tile" style="animation-duration: 2.4197994595183467s; background-color: #eeeeff">
+20 hr<b><br>0.06</b>
 </td>
-<td style=" border-radius: 3px; text-align: center; padding: 2px; animation-duration: 0.3171723103046563s; background-color: #fa0a0a">
-19 hr<b><br>0.96</b>
+<td class="tile" style="animation-duration: 0.97457902791326s; background-color: #dbdbff">
+19 hr<b><br>0.14</b>
 </td>
-<td style=" border-radius: 3px; text-align: center; padding: 2px; animation-duration: 0.2762068763419433s; background-color: #fa1d1d">
-18 hr<b><br>0.88</b>
+<td class="tile" style="animation-duration: 2.9020482006047783s; background-color: #e3e3ff">
+18 hr<b><br>0.10</b>
 </td>
-<td style=" border-radius: 3px; text-align: center; padding: 2px; animation-duration: 0.9619925426734721s; background-color: #fa1515">
-17 hr<b><br>0.91</b>
+<td class="tile" style="animation-duration: 1.576131962729118s; background-color: #d3d3ff">
+17 hr<b><br>0.16</b>
 </td>
-<td style=" border-radius: 3px; text-align: center; padding: 2px; animation-duration: 0.9148695561400111s; background-color: #fa2525">
-16 hr<b><br>0.85</b>
+<td class="tile" style="animation-duration: 2.1333070939942527s; background-color: #d5d5ff">
+16 hr<b><br>0.16</b>
 </td>
-<td style=" border-radius: 3px; text-align: center; padding: 2px; animation-duration: 0.30657910416557477s; background-color: #fa1f1f">
-15 hr<b><br>0.87</b>
+<td class="tile" style="animation-duration: 1.146041560731402s; background-color: #cdcdff">
+15 hr<b><br>0.19</b>
 </td>
-<td style=" border-radius: 3px; text-align: center; padding: 2px; animation-duration: 0.7240362291673729s; background-color: #fa2e2e">
-14 hr<b><br>0.81</b>
+<td class="tile" style="animation-duration: 2.7806235267376174s; background-color: #ffd5b7">
+14 hr<b><br>0.30</b>
 </td>
-<td style=" border-radius: 3px; text-align: center; padding: 2px; animation-duration: 0.15420006538149278s; background-color: #fb4747">
-13 hr<b><br>0.71</b>
+<td class="tile" style="animation-duration: 2.666324876367086s; background-color: #ffdcc3">
+13 hr<b><br>0.25</b>
 </td>
-<td style=" border-radius: 3px; text-align: center; padding: 2px; animation-duration: 0.37238756513020854s; background-color: #fb3a3a">
-12 hr<b><br>0.77</b>
+<td class="tile" style="animation-duration: 0.6215878939212081s; background-color: #ffcda9">
+12 hr<b><br>0.36</b>
 </td>
-<td style=" border-radius: 3px; text-align: center; padding: 2px; animation-duration: 0.33412704101057966s; background-color: #fb3c3c">
-11 hr<b><br>0.76</b>
+<td class="tile" style="animation-duration: 0.4963845461892299s; background-color: #ffd5b7">
+11 hr<b><br>0.30</b>
 </td>
-<td style=" border-radius: 3px; text-align: center; padding: 2px; animation-duration: 0.45051990029272115s; background-color: #ffaf75">
-10 hr<b><br>0.57</b>
+<td class="tile" style="animation-duration: 1.263180885188204s; background-color: #ffdac0">
+10 hr<b><br>0.26</b>
 </td>
-<td style=" border-radius: 3px; text-align: center; padding: 2px; animation-duration: 0.033013065679702414s; background-color: #fb4a4a">
-9 hr<b><br>0.70</b>
+<td class="tile" style="animation-duration: 2.174571306039569s; background-color: #ffd6b8">
+9 hr<b><br>0.29</b>
 </td>
-<td style=" border-radius: 3px; text-align: center; padding: 2px; animation-duration: 0.1611506192397194s; background-color: #fb4646">
-8 hr<b><br>0.72</b>
+<td class="tile" style="animation-duration: 2.424039293116568s; background-color: #e4e4ff">
+8 hr<b><br>0.10</b>
 </td>
-<td style=" border-radius: 3px; text-align: center; padding: 2px; animation-duration: 0.21847334097385251s; background-color: #fa0f0f">
-7 hr<b><br>0.93</b>
+<td class="tile" style="animation-duration: 0.42133021374120716s; background-color: #ffd1b0">
+7 hr<b><br>0.32</b>
 </td>
-<td style=" border-radius: 3px; text-align: center; padding: 2px; animation-duration: 0.9889687552214201s; background-color: #ffa05b">
-6 hr<b><br>0.68</b>
+<td class="tile" style="animation-duration: 2.7267315744977227s; background-color: #d3d3ff">
+6 hr<b><br>0.17</b>
 </td>
-<td style=" border-radius: 3px; text-align: center; padding: 2px; animation-duration: 0.45550792150885944s; background-color: #fa0e0e">
-5 hr<b><br>0.94</b>
+<td class="tile" style="animation-duration: 1.8925557204693932s; background-color: #fa0000">
+5 hr<b><br>1.0</b>
 </td>
-<td style=" border-radius: 3px; text-align: center; padding: 2px; animation-duration: 0.3197716247959471s; background-color: #ffffff">
-4 hr<b><br>-0.0</b>
+<td class="tile" style="animation-duration: 1.2250262575282598s; background-color: #e2e2ff">
+4 hr<b><br>0.11</b>
 </td>
-<td style=" border-radius: 3px; text-align: center; padding: 2px; animation-duration: 0.3895739273580273s; background-color: #fb3838">
-3 hr<b><br>0.77</b>
+<td class="tile" style="animation-duration: 0.8521140983293807s; background-color: #ffd3b2">
+3 hr<b><br>0.32</b>
 </td>
-<td style=" border-radius: 3px; text-align: center; padding: 2px; animation-duration: 0.6462552396516598s; background-color: #fa2222">
-2 hr<b><br>0.86</b>
+<td class="tile" style="animation-duration: 0.8072470367105326s; background-color: #ffcaa3">
+2 hr<b><br>0.38</b>
 </td>
-<td style=" border-radius: 3px; text-align: center; padding: 2px; animation-duration: 0.1808307796763493s; background-color: #ffaf74">
-now<b><br>0.58</b>
+<td class="tile" style="animation-duration: 2.3369014507380896s; background-color: #ccccff">
+now<b><br>0.19</b>
 </td>
 <td style="border-radius: 3px; text-align: center; padding: 2px;"><h4>Dunedin<br>Aurora</h4></td>
 </tr>
 </table>
-<div style="font-size: 0.7em;">Last updated at April 09 2017 - 08:21 UTC.   <div>
+<div style="font-size: 0.7em;">Last updated at April 09 2017 - 09:36 UTC.   <div>
