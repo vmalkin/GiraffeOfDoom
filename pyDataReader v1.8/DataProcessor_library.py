@@ -66,7 +66,7 @@ def invert_data_array(data_array):
 def create_diffs_array(readings_array):
     spike_counter = 0
     diffsarray = []
-    fivemininterval = k.MAG_READ_FREQ * 5
+    fivemininterval = k.MAG_READ_FREQ * 10
     counterbit = 0
 
     if len(readings_array) > 2:

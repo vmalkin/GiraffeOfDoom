@@ -3,8 +3,8 @@ __author__ = 'vaughn'
 # Constants
 MAG_READ_FREQ = 4         # how often the magnetometer sends data per minute
 MAG_RUNNINGAVG_COUNT = 6   # The number of readings "wide" the averaging window is. EVEN NUMBER
-NOISE_SPIKE = 5          # Sensor chip flips at this reading
-FIELD_CORRECTION = -1        # if the field is increasing in strength, the values should go up, and vica versa
+NOISE_SPIKE = 20          # Sensor chip flips at this reading
+FIELD_CORRECTION = 1        # if the field is increasing in strength, the values should go up, and vica versa
 STATION_ID = "Dalmore_Prime."
 
 # Files

@@ -37,7 +37,7 @@
 
 #define MAG_ADDR  0x0E //7-bit address for the MAG3110, doesn't change#
 
-const float AvgCount = 5000; //size for running average arrays
+const float AvgCount = 1000; //size for running average arrays
 
 float xValue; // GLOBAL reported values
 float yValue;
@@ -130,11 +130,11 @@ void Smooth_Recording()
  */
 void print_values(void)
 {       
-    Serial.print(xValue);
+    Serial.print(xValue,3);
     Serial.print(",");
-    Serial.print(yValue);
+    Serial.print(yValue,3);
     Serial.print(",");
-    Serial.print(zValue);
+    Serial.print(zValue,3);
     Serial.print("\r\n");
 }
 
