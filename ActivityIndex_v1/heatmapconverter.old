@@ -248,4 +248,5 @@ def getmedian(maxvalue, maxfilename):
 
 # wrapper function to run this library. Called from the main script
 def main(livedata):
-    loadpickle("workingvalues.pkl")
+
+    return heatmaparray

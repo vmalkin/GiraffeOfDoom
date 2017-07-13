@@ -1,0 +1,14 @@
+@keyframes tileanim
+{
+	from {transform: rotatey(90deg); background-color: white;}
+	to {transform: rotatey(0deg); }
+}
+
+.tile
+{
+    text-align: center; padding: 2px;
+	border-radius: 3px;
+	-webkit-animation-name: tileanim; /* Safari 4.0 - 8.0 */
+	animation-name: tileanim;
+}
+	

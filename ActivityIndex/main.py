@@ -1,4 +1,5 @@
 import time
+from datetime import datetime
 import binlibrary as binner
 import heatmapconverter as hm
 
@@ -7,10 +8,9 @@ import importer
 # ###############################################
 # Main Parts STarts Here
 # ###############################################
-
-while True:
-    # importarray = importer.importdata("Dalmore_Prime.1minbins.csv")
-    importarray = importer.importdata()
+def do_main():
+    importarray = importer.importdata("Dalmore_Prime.1minbins.csv")
+    # importarray = importer.importdata()
 
     importarray.pop(0)
     print(importarray[10])
@@ -19,16 +19,12 @@ while True:
     dhdt = importarray
     dhdt = binner.make_dhdt(dhdt)
 
-    # smooth data if necessary
-    dhdt = binner.running_average(dhdt)
-    dhdt = binner.running_average(dhdt)
-
     # Convert the timestamps to UNIX
     dhdt = binner.utc2unix(dhdt)
 
     # Bin the data into appropriate intervals
     dhdt = binner.bin_dh_dt(dhdt)
-    binner.SaveRawArray(dhdt,"output.csv")
+    binner.SaveRawArray(dhdt, "output.csv")
 
     # Convert the binned data into colour-coded chart thing
     dhdt.reverse()
@@ -37,5 +33,25 @@ while True:
     print("Binning complete.")
     print("\n")
 
-    # tap our data as infrequently as we can get away with
-    time.sleep(900)
+# ###############################################
+# recalculate the max min values once per 24hr
+# ###############################################
+def do_renormalise():
+    pass
+
+if __name__ == '__main__':
+    starttime = datetime.now()
+    starttime = time.mktime(starttime.timetuple())
+
+    while True:
+        #sleep time in seconds 86400sec in a day
+        sleeptime = 900
+        currenttime = datetime.now()
+        currenttime = time.mktime(currenttime.timetuple())
+
+        if currenttime > starttime + 86400:
+            do_renormalise()
+            starttime = currenttime
+        else:
+            do_main()
+        time.sleep(sleeptime)
