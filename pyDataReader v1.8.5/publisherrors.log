@@ -24,3 +24,16 @@
 2017-07-30 15:54:14,948 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
 2017-07-30 15:58:45,402 WARNING: File IO Exception raised - could not delete: graphing/04hr.csv
 2017-07-30 15:58:45,406 WARNING: File IO Exception raised - could not delete: graphing/24hr.csv
+2017-07-30 16:07:06,004 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-30 16:10:56,806 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-30 16:10:56,806 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-30 16:11:31,138 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-30 16:11:31,138 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-30 16:12:12,301 WARNING: File IO Exception raised - could not delete: graphing/24hr.csv
+2017-07-30 16:12:12,302 WARNING: File IO Exception raised whilst accessing file: graphing/24hr.csv
+2017-07-30 16:16:26,608 WARNING: File IO Exception raised - could not delete: graphing/24hr.csv
+2017-07-30 16:16:26,608 WARNING: File IO Exception raised whilst accessing file: graphing/24hr.csv
+2017-07-30 17:06:45,373 WARNING: File IO Exception raised - could not delete: graphing/24hr.csv
+2017-07-30 17:06:45,384 WARNING: File IO Exception raised whilst accessing file: graphing/24hr.csv
+2017-07-30 17:09:34,193 WARNING: File IO Exception raised - could not delete: graphing/24hr.csv
+2017-07-30 17:09:34,194 WARNING: File IO Exception raised whilst accessing file: graphing/24hr.csv

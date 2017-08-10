@@ -1,201 +1,151 @@
 import time
-from time import mktime
 from datetime import datetime
-import urllib.request as webreader
-import os
+import Station
 
-NULLBIN = "#n/a"
 
-class Station:
-    def __init__(self, name, datasource, sourcetype, dateformat):
-        self.name = name
-        self.datasource = datasource
-        self.sourcetype = sourcetype
-        self.dateformat = dateformat
-        self.binned_data = []
+# #################################################################################
+# Save the binned data as CSV file
+# #################################################################################
+def SaveAsCSV(datalist):
+    # export array to array-save file
+    try:
+        with open("combo.csv", 'w') as w:
+            for item in datalist:
+                w.write(item + '\n')
+    except IOError:
+        print("WARNING: There was a problem saving binned CSV data")
 
-    # GET the source data
-    def get_data(self):
-        if self.sourcetype == "w1":
-            url = self.datasource
-            importarray = []
-            response = webreader.urlopen(url)
-            for item in response:
-                logData = str(item, 'ascii').strip()
-                logData = logData.split(",")
-                dp = logData[0] + "," + logData[1]
-                importarray.append(dp)
-            print("Data for " + self.name + " loaded from Internet. Size: " + str(len(importarray)) + " records")
-            self.binned_data = importarray
-
-        if self.sourcetype == "f1":
-            importarray = []
-            # Check if exists CurrentUTC file. If exists, load up Datapoint Array.
-            if os.path.isfile(self.datasource):
-                with open(self.datasource) as e:
-                    for line in e:
-                        line = line.strip()  # remove any trailing whitespace chars like CR and NL
-                        values = line.split(",")
-                        dp = values[0] + "," + values[1]
-                        importarray.append(dp)
-                print("Data for " + self.name + " loaded from File. Size: " + str(len(importarray)) + " records")
-                self.binned_data = importarray
-            else:
-                print("UNABLE to load data for " + self.name)
-
-    def make_dhdt(self, rawdata):
-        returnarray = []
-
-        for i in range(1, len(rawdata)):
-            olddata = rawdata[i - 1].split(",")
-            nowdata = rawdata[i].split(",")
-
-            nowtime = nowdata[0]
-            dhdt = float(nowdata[1]) - float(olddata[1])
-            dp = nowtime + "," + str(dhdt)
-
-            returnarray.append(dp)
-
-        return returnarray
-
-    # ##################################################
-    # Convert timestamps in array to Unix time
-    # ##################################################
-    def utc2unix(self):
-        print("Converting time to UNIX time...")
-
-        # set date time format for strptime()
-        # dateformat = "%Y-%m-%d %H:%M:%S.%f"
-        # dateformat = '"%Y-%m-%d %H:%M:%S"'
-        # dateformat = '%Y-%m-%d %H:%M'
-        dateformat = self.dateformat
-
-        # convert array data times to unix time
-        workingarray = []
-        count = 0
-        for i in range(1, len(self.binned_data)):
-            try:
-                itemsplit = self.binned_data[i].split(",")
-                newdatetime = datetime.strptime(itemsplit[0], dateformat)
-                # convert to Unix time (Seconds)
-                newdatetime = mktime(newdatetime.timetuple())
-
-                datastring = str(newdatetime) + "," + str(itemsplit[1])
-                workingarray.append(datastring)
-            except:
-                count = count + 1
-                print("UTC 2 Unix conversion - problem with entry " + str(count))
-
-        self.binned_data = workingarray
-
-    # #################################################################################
-    # Rawdata is in the format (UnixDatetime, data)
-    # the function will return an array of (binned_value))
-    # #################################################################################
-    def bin_dh_dt(self):
-        # setup the bin array based on binsize. The bins will start from now and go back 24 hours
-        # get current UTC
-        currentdt = datetime.utcnow()
-
-        # Convert to UNIX time
-        currentdt = mktime(currentdt.timetuple())
-
-        # width of bin in seconds.
-        binwidth = 60 * 60
-
-        # how many bins in a day?
-        binnum = int(86400 / binwidth)
-        print("Bin width is " + str(binwidth) + " seconds. There are " + str(binnum) + " bins in a day")
-
-        # Threshold value for binning. We need more that this number of datapoints per bin, to have a reasonable amount
-        # of data
-        threshold = 1
-
-        # setup the binneddata array timestamps
-        # the array goes from index[now] -> index[time is oldest]
-        timestamps = []
-        for i in range(0, binnum):
-            timestamps.append(currentdt)
-            currentdt = currentdt - binwidth
-
-        # array for final binned values
-        binneddata = []
-
-        # parse thru the data array, assigning the correct values to the bins
-        for i in range(0, len(timestamps) - 1):
-            nowtime = timestamps[i]
-            prevtime = timestamps[i + 1]
-            maxv = float(-1000)
-            minv = float(1000)
-
-            # GO thru the raw data and check for max-min H readings and calculate the rate of change for the bin
-            for j in range(0, len(self.binned_data)):
-                datasplit = self.binned_data[j].split(",")
-                datadate = float(datasplit[0])
-                datavalue = float(datasplit[1])
-
-                # if the data falls into the range of the bin, determine if its a max or min value
-                if datadate < nowtime and datadate > prevtime:
-                    # determin max and min values for this window interval
-                    if datavalue >= maxv:
-                        maxv = datavalue
-                    elif datavalue <= minv:
-                        minv = datavalue
-
-            # determin dH/dt for the bin period append to the bin array
-            # null data will manifest as a large minus value, so we discount it
-            hvalue = maxv - minv
-            if hvalue < -500:
-                binneddata.append(NULLBIN)
-            else:
-                binneddata.append(hvalue)
-
-            self.binned_data = binneddata
-
-    # #################################################################################
-    # Save the raw datapoint array to the save file
-    # #################################################################################
-    def SaveRawArray(self):
-        # export array to array-save file
-        try:
-            with open(self.name + ".csv", 'w') as w:
-                for dataObjects in self.binned_data:
-                    w.write(str(dataObjects) + '\n')
-        except IOError:
-            print("WARNING: There was a problem accessing " + self.name + ".csv")
-
-# ###############################################
-# recalculate the max min values once per 24hr
-# ###############################################
-def do_renormalise():
-    pass
 
 if __name__ == '__main__':
-    starttime = datetime.now()
-    starttime = time.mktime(starttime.timetuple())
-
     stationlist = []
-    station1 = Station("Dalmore", "Dalmore_Prime.1minbins.csv", "f1", '%Y-%m-%d %H:%M')
-    station2 = Station("DnAurora", "http://Dunedinaurora.nz/Service24CSV.php", "w1", '"%Y-%m-%d %H:%M:%S"')
+    try:
+        station1 = Station.Station("Dalmore Prime", "/home/vmalkin/Magnetometer/dalomoreP/pyDataReader/graphing/Dalmore_Prime.1minbins.csv", "f1", '%Y-%m-%d %H:%M', 1)
+    except:
+        print("Unable to create Station")
 
-    stationlist.append(station1)
-    stationlist.append(station2)
+    try:
+        station2 = Station.Station("Dalmore Rapid Run No 01", "/home/vmalkin/Magnetometer/dalomoreR/pyDataReader/graphing/Dalmore_Rapid.1minbins.csv", "f1", '%Y-%m-%d %H:%M', 1)
+    except:
+        print("Unable to create Station")
 
-    for magstation in stationlist:
-        magstation.get_data()
-        magstation.utc2unix()
-        magstation.bin_dh_dt()
-        magstation.SaveRawArray()
+    # try:
+    #     station3 = Station.Station("Dalmore Rapid Run No 02", "NX2000.1minbins.csv", "f1", '%Y-%m-%d %H:%M', 1)
+    # except:
+    #     print("Unable to create Station")
 
-    # while True:
-    #     #sleep time in seconds 86400sec in a day
-    #     sleeptime = 900
-    #     currenttime = datetime.now()
-    #     currenttime = time.mktime(currenttime.timetuple())
+    # try:
+    #     station4 = Station.Station("DUMMY", "DUMMY.1minbins.csv", "f1", '%d-%m-%Y %H:%M', 1)
+    # except:
+    #     print("Unable to create Station")
+
+    try:
+        station5 = Station.Station("DunedinAurora.NZ", "http://Dunedinaurora.nz/Service24CSV.php", "w1", '"%Y-%m-%d %H:%M:%S"', 6)
+    except:
+        print("Unable to create Station")
+
+    try:
+       station6 = Station.Station("GOES-13 Satellite", "http://services.swpc.noaa.gov/text/goes-magnetometer-primary.txt", "w2", '%Y-%m-%d %H:%M', 1)
+    except:
+       print("Unable to create Station")
+
+
+
+    try:
+        stationlist.append(station1)
+    except:
+        print("Unable to add Station")
+
+    try:
+        stationlist.append(station2)
+    except:
+        print("Unable to add Station")
+
+    # try:
+    #     stationlist.append(station3)
+    # except:
+    #     print("Unable to add Station")
     #
-    #     if currenttime > starttime + 86400:
-    #         do_renormalise()
-    #         starttime = currenttime
-    #     else:
-    #         do_main()
-    #     time.sleep(sleeptime)
+    # try:
+    #     stationlist.append(station4)
+    # except:
+    #     print("Unable to add Station")
+
+    try:
+        stationlist.append(station5)
+    except:
+        print("Unable to add Station")
+
+    try:
+        stationlist.append(station6)
+    except:
+        print("Unable to add Station")
+
+    while True:
+        sleeptime = 900
+        starttime = datetime.now()
+        starttime = time.mktime(starttime.timetuple())
+
+        for magstation in stationlist:
+            print("\n")
+            # grab newest data
+            print("Getting new data...\n")
+            magstation.get_data()
+
+            # convert new data time to UNIX
+            print("Converting to UNIX time...\n")
+            magstation.utc2unix()
+
+            # get the latest timestamp from the saved_data. ONly add new data
+            # to saved_data that is after thhis latest timestamp
+            print("Appending new data...\n")
+            magstation.append_new_data()
+            print("Pruning OLD data...\n")
+            magstation.prune_saved_data()
+
+            # # save out the station data as a CSV file.
+            name = magstation.name + ".absl"
+            magstation.SaveAsCSV(name)
+
+            # finally, save the station saved_data array to file.
+            print("Save data to file...\n")
+            magstation.savepickle()
+
+            # convert the absolute values to rates of change
+            magstation.create_dadt()
+
+            # create the one hour bins of dhdt
+            print("Creating data bins...\n")
+            magstation.do_bin_dh_dt()
+
+            # We need to reduce our absolute values, to some relative value that accounts for historical
+            # highs and lows. Find the Median? calculate the Standard Deviation??
+            print("Normalising data...\n")
+            magstation.normaliseDHDT()
+
+            # create the combined output file
+            combolist = []
+            comboitem = "Station Name, NOW, 2hr, 3hr, 4hr, 5hr, 6hr, 7hr, 8hr, 9hr, 10hr, 11hr, 12hr, 13hr, 14hr, 15hr, 16hr, 17hr, 18hr, 19hr, 20hr, 21hr, 22hr, 23hr"
+            combolist.append(comboitem)
+
+            for magstation in stationlist:
+                comboitem = ""
+                comboitem = comboitem + str(magstation.name)
+
+                for measurement in magstation.bin_dadt:
+                    comboitem = comboitem + "," + str(measurement)
+
+                combolist.append(comboitem)
+
+            SaveAsCSV(combolist)
+
+        fintime = datetime.now()
+        fintime = time.mktime(fintime.timetuple())
+
+        totaltime = fintime - starttime
+        nextfetch = fintime + sleeptime
+        nextfetch = datetime.utcfromtimestamp(nextfetch).strftime('%Y-%m-%d %H:%M UTC')
+
+        print("\nFINISHED! Processing time: " + str(totaltime) + " seconds. Next update at " + str(nextfetch))
+
+        time.sleep(sleeptime)
+

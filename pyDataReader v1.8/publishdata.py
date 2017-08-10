@@ -40,7 +40,7 @@ def process_data(input_data_array):
     #
     # ###################################### #####################################
     data_array = dp.median_filter_3values(data_array)
-    smoothed_data_array = dp.running_average(data_array) # smooth the array
+    # smoothed_data_array = dp.running_average(data_array) # smooth the array
 
     # ###########################################################################
     # CReate the differences array and smooth.
@@ -52,7 +52,8 @@ def process_data(input_data_array):
     output_diffs = dp.create_diffs_array(data_array)
     # for i in range(0,2):
     #     output_diffs = dp.diffs_running_average(output_diffs)
-    ofm.CreateDiffs(output_diffs)  # use output_diffs data
+    # ofm.CreateDiffs(output_diffs)  # use output_diffs data
+    smoothed_data_array = dp.readings_from_diffs(output_diffs)
 
 
     # ###########################################################
