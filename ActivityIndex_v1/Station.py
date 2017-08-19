@@ -216,7 +216,7 @@ class Station:
         currentdt = mktime(currentdt.timetuple())
 
         # calculate the cutoff value for old data in the station dataset.
-        chartduration = 24 # No of bins we want to chart
+        chartduration = 48 # No of bins we want to chart
 
         # setup the binneddata array timestamps
         # each value appended to the array is older, so goes from young -> old
@@ -280,7 +280,7 @@ class Station:
         workingdatalist = []
         currentdt = datetime.utcnow()
         currentdt = mktime(currentdt.timetuple())
-        cutoffdt = float(currentdt - (24*60*60))
+        cutoffdt = float(currentdt - (48*60*60))
 
         print("Time now is " +  str(currentdt))
         print("Cutoff for old data is " + str(cutoffdt))

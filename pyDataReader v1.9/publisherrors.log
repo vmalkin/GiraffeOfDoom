@@ -1,0 +1,803 @@
+2017-06-22 23:29:23,421 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-06-22 23:29:23,440 WARNING: File IO Exception raised - could not delete: graphing/04hr.csv
+2017-06-22 23:29:23,461 WARNING: File IO Exception raised - could not delete: graphing/24hr.csv
+2017-06-27 11:15:53,596 WARNING: File IO Exception raised - could not delete: graphing/04hr.csv
+2017-06-27 11:15:53,598 WARNING: File IO Exception raised whilst accessing file: graphing/04hr.csv
+2017-06-27 11:19:04,890 WARNING: File IO Exception raised - could not delete: graphing/04hr.csv
+2017-06-27 11:19:04,892 WARNING: File IO Exception raised whilst accessing file: graphing/04hr.csv
+2017-06-27 11:38:10,853 WARNING: File IO Exception raised - could not delete: graphing/04hr.csv
+2017-06-27 11:38:10,855 WARNING: File IO Exception raised whilst accessing file: graphing/04hr.csv
+2017-06-27 11:47:51,116 WARNING: File IO Exception raised - could not delete: graphing/04hr.csv
+2017-06-27 11:47:51,118 WARNING: File IO Exception raised whilst accessing file: graphing/04hr.csv
+2017-06-27 14:35:48,366 WARNING: File IO Exception raised - could not delete: graphing/04hr.csv
+2017-06-27 14:35:48,367 WARNING: File IO Exception raised whilst accessing file: graphing/04hr.csv
+2017-06-27 15:09:51,653 WARNING: File IO Exception raised - could not delete: graphing/04hr.csv
+2017-06-27 15:09:51,655 WARNING: File IO Exception raised whilst accessing file: graphing/04hr.csv
+2017-06-27 15:16:53,370 WARNING: File IO Exception raised - could not delete: graphing/01hr.csv
+2017-06-27 15:29:32,227 WARNING: File IO Exception raised - could not delete: graphing/01hr.csv
+2017-06-27 15:29:32,229 WARNING: File IO Exception raised whilst accessing file: graphing/01hr.csv
+2017-06-27 16:35:11,567 WARNING: File IO Exception raised - could not delete: graphing/01hr.csv
+2017-06-27 16:35:11,577 WARNING: File IO Exception raised whilst accessing file: graphing/01hr.csv
+2017-06-27 17:14:36,833  ERROR: Problem opening file. Unable to create display files
+2017-06-27 18:12:15,776 WARNING: File IO Exception raised - could not delete: graphing/01hr.csv
+2017-06-27 18:12:15,777 WARNING: File IO Exception raised whilst accessing file: graphing/01hr.csv
+2017-06-28 03:10:18,997  ERROR: Problem opening file. Unable to create display files
+2017-06-28 04:57:31,254  ERROR: Problem opening file. Unable to create display files
+2017-06-28 05:04:09,302  ERROR: Problem opening file. Unable to create display files
+2017-06-28 05:50:13,338  ERROR: Problem opening file. Unable to create display files
+2017-06-28 08:21:10,778  ERROR: Problem opening file. Unable to create display files
+2017-06-28 09:45:07,058  ERROR: Problem opening file. Unable to create display files
+2017-06-28 09:59:16,627 WARNING: File IO Exception raised - could not delete: graphing/24hr.csv
+2017-06-28 09:59:16,629 WARNING: File IO Exception raised whilst accessing file: graphing/24hr.csv
+2017-06-28 10:02:57,937 WARNING: File IO Exception raised - could not delete: graphing/24hr.csv
+2017-06-28 10:02:57,938 WARNING: File IO Exception raised whilst accessing file: graphing/24hr.csv
+2017-06-28 10:06:40,938 WARNING: File IO Exception raised - could not delete: graphing/24hr.csv
+2017-06-28 10:06:40,940 WARNING: File IO Exception raised whilst accessing file: graphing/24hr.csv
+2017-06-28 10:10:29,068 WARNING: File IO Exception raised - could not delete: graphing/24hr.csv
+2017-06-28 10:10:29,070 WARNING: File IO Exception raised whilst accessing file: graphing/24hr.csv
+2017-06-28 12:03:16,621  ERROR: Problem opening file. Unable to create display files
+2017-06-28 14:30:24,037  ERROR: Problem opening file. Unable to create display files
+2017-06-28 16:57:43,041  ERROR: Problem opening file. Unable to create display files
+2017-06-28 18:50:02,548  ERROR: Problem opening file. Unable to create display files
+2017-06-29 03:39:56,309  ERROR: Problem opening file. Unable to create display files
+2017-06-29 04:41:21,687  ERROR: Problem opening file. Unable to create display files
+2017-06-29 06:56:59,749  ERROR: Problem opening file. Unable to create display files
+2017-06-30 00:45:41,445  ERROR: Problem opening file. Unable to create display files
+2017-06-30 05:40:58,211  ERROR: Problem opening file. Unable to create display files
+2017-06-30 14:00:07,528  ERROR: Problem opening file. Unable to create display files
+2017-06-30 15:32:39,673 WARNING: File IO Exception raised - could not delete: graphing/24hr.csv
+2017-06-30 15:32:39,675 WARNING: File IO Exception raised whilst accessing file: graphing/24hr.csv
+2017-06-30 19:59:45,956  ERROR: Problem opening file. Unable to create display files
+2017-06-30 20:55:22,004 WARNING: File IO Exception raised - could not delete: graphing/04hr.csv
+2017-06-30 20:55:22,006 WARNING: File IO Exception raised whilst accessing file: graphing/04hr.csv
+2017-06-30 21:18:57,835  ERROR: Problem opening file. Unable to create display files
+2017-06-30 21:57:15,470 WARNING: File IO Exception raised - could not delete: graphing/24hr.csv
+2017-06-30 21:57:15,472 WARNING: File IO Exception raised whilst accessing file: graphing/24hr.csv
+2017-06-30 23:03:49,292  ERROR: Problem opening file. Unable to create display files
+2017-07-01 00:56:43,658  ERROR: Problem opening file. Unable to create display files
+2017-07-01 00:59:45,669  ERROR: Problem opening file. Unable to create display files
+2017-07-01 01:10:48,556  ERROR: Problem opening file. Unable to create display files
+2017-07-01 01:45:13,524  ERROR: Problem opening file. Unable to create display files
+2017-07-01 09:03:03,330  ERROR: Problem opening file. Unable to create display files
+2017-07-01 11:27:27,660  ERROR: Problem opening file. Unable to create display files
+2017-07-01 12:13:42,920 WARNING: File IO Exception raised - could not delete: graphing/24hr.csv
+2017-07-01 12:13:42,922 WARNING: File IO Exception raised whilst accessing file: graphing/24hr.csv
+2017-07-01 12:33:40,347  ERROR: Problem opening file. Unable to create display files
+2017-07-01 13:54:58,083  ERROR: Problem opening file. Unable to create display files
+2017-07-01 18:19:30,714  ERROR: Problem opening file. Unable to create display files
+2017-07-01 19:01:38,775  ERROR: Problem opening file. Unable to create display files
+2017-07-01 23:50:56,727  ERROR: Problem opening file. Unable to create display files
+2017-07-02 04:31:08,059  ERROR: Problem opening file. Unable to create display files
+2017-07-02 06:58:55,569  ERROR: Problem opening file. Unable to create display files
+2017-07-02 07:29:30,537  ERROR: Problem opening file. Unable to create display files
+2017-07-02 10:09:23,131  ERROR: Problem opening file. Unable to create display files
+2017-07-02 11:06:38,979  ERROR: Problem opening file. Unable to create display files
+2017-07-02 13:14:39,858  ERROR: Problem opening file. Unable to create display files
+2017-07-02 15:15:35,924  ERROR: Problem opening file. Unable to create display files
+2017-07-02 15:18:37,987  ERROR: Problem opening file. Unable to create display files
+2017-07-02 19:20:19,315  ERROR: Problem opening file. Unable to create display files
+2017-07-02 20:30:50,674  ERROR: Problem opening file. Unable to create display files
+2017-07-02 22:25:21,282  ERROR: Problem opening file. Unable to create display files
+2017-07-02 22:36:15,538  ERROR: Problem opening file. Unable to create display files
+2017-07-02 23:58:20,811  ERROR: Problem opening file. Unable to create display files
+2017-07-03 02:46:03,670  ERROR: Problem opening file. Unable to create display files
+2017-07-03 06:21:09,974  ERROR: Problem opening file. Unable to create display files
+2017-07-03 06:39:11,753  ERROR: Problem opening file. Unable to create display files
+2017-07-03 08:27:55,329  ERROR: Problem opening file. Unable to create display files
+2017-07-03 09:18:15,467  ERROR: Problem opening file. Unable to create display files
+2017-07-03 09:48:57,028  ERROR: Problem opening file. Unable to create display files
+2017-07-03 09:56:04,828 WARNING: File IO Exception raised - could not delete: graphing/24hr.csv
+2017-07-03 09:56:04,830 WARNING: File IO Exception raised whilst accessing file: graphing/24hr.csv
+2017-07-03 09:59:57,371 WARNING: File IO Exception raised - could not delete: graphing/24hr.csv
+2017-07-03 09:59:57,373 WARNING: File IO Exception raised whilst accessing file: graphing/24hr.csv
+2017-07-03 10:03:56,120  ERROR: Problem opening file. Unable to create display files
+2017-07-03 10:07:02,410 WARNING: File IO Exception raised - could not delete: graphing/24hr.csv
+2017-07-03 10:07:02,412 WARNING: File IO Exception raised whilst accessing file: graphing/24hr.csv
+2017-07-03 13:15:31,045  ERROR: Problem opening file. Unable to create display files
+2017-07-03 13:57:56,745  ERROR: Problem opening file. Unable to create display files
+2017-07-03 16:30:05,414  ERROR: Problem opening file. Unable to create display files
+2017-07-03 18:26:43,560 WARNING: File IO Exception raised - could not delete: graphing/01hr.csv
+2017-07-03 18:26:43,562 WARNING: File IO Exception raised whilst accessing file: graphing/01hr.csv
+2017-07-03 21:54:15,646  ERROR: Problem opening file. Unable to create display files
+2017-07-03 22:25:02,152  ERROR: Problem opening file. Unable to create display files
+2017-07-03 23:38:24,897  ERROR: Problem opening file. Unable to create display files
+2017-07-04 01:04:09,101  ERROR: Problem opening file. Unable to create display files
+2017-07-04 04:31:27,287  ERROR: Problem opening file. Unable to create display files
+2017-07-04 05:33:01,874  ERROR: Problem opening file. Unable to create display files
+2017-07-04 05:39:35,122  ERROR: Problem opening file. Unable to create display files
+2017-07-04 06:49:02,223  ERROR: Problem opening file. Unable to create display files
+2017-07-04 06:52:04,267  ERROR: Problem opening file. Unable to create display files
+2017-07-04 09:13:44,002  ERROR: Problem opening file. Unable to create display files
+2017-07-04 09:59:37,379  ERROR: Problem opening file. Unable to create display files
+2017-07-04 11:29:40,755  ERROR: Problem opening file. Unable to create display files
+2017-07-04 13:42:38,678  ERROR: Problem opening file. Unable to create display files
+2017-07-04 14:29:14,764  ERROR: Problem opening file. Unable to create display files
+2017-07-04 15:04:42,742  ERROR: Problem opening file. Unable to create display files
+2017-07-04 15:54:18,234  ERROR: Problem opening file. Unable to create display files
+2017-07-04 18:55:26,302  ERROR: Problem opening file. Unable to create display files
+2017-07-04 21:14:15,466  ERROR: Problem opening file. Unable to create display files
+2017-07-04 21:17:17,534  ERROR: Problem opening file. Unable to create display files
+2017-07-05 01:07:05,289  ERROR: Problem opening file. Unable to create display files
+2017-07-05 01:49:31,525  ERROR: Problem opening file. Unable to create display files
+2017-07-05 03:15:02,941  ERROR: Problem opening file. Unable to create display files
+2017-07-05 07:37:19,920  ERROR: Problem opening file. Unable to create display files
+2017-07-05 08:07:54,320  ERROR: Problem opening file. Unable to create display files
+2017-07-05 09:29:23,548  ERROR: Problem opening file. Unable to create display files
+2017-07-05 09:36:23,936  ERROR: Problem opening file. Unable to create display files
+2017-07-05 10:46:20,446  ERROR: Problem opening file. Unable to create display files
+2017-07-05 10:57:28,096  ERROR: Problem opening file. Unable to create display files
+2017-07-05 13:24:33,446  ERROR: Problem opening file. Unable to create display files
+2017-07-05 15:40:12,894  ERROR: Problem opening file. Unable to create display files
+2017-07-05 16:07:03,636  ERROR: Problem opening file. Unable to create display files
+2017-07-05 17:09:22,510  ERROR: Problem opening file. Unable to create display files
+2017-07-05 18:53:07,674  ERROR: Problem opening file. Unable to create display files
+2017-07-05 18:56:09,710  ERROR: Problem opening file. Unable to create display files
+2017-07-05 19:47:04,512  ERROR: Problem opening file. Unable to create display files
+2017-07-05 22:09:42,085  ERROR: Problem opening file. Unable to create display files
+2017-07-05 23:29:11,969  ERROR: Problem opening file. Unable to create display files
+2017-07-06 00:03:58,089  ERROR: Problem opening file. Unable to create display files
+2017-07-06 00:54:32,375  ERROR: Problem opening file. Unable to create display files
+2017-07-06 03:03:53,767  ERROR: Problem opening file. Unable to create display files
+2017-07-06 04:02:43,689  ERROR: Problem opening file. Unable to create display files
+2017-07-06 05:43:59,986  ERROR: Problem opening file. Unable to create display files
+2017-07-06 06:02:32,893  ERROR: Problem opening file. Unable to create display files
+2017-07-06 09:58:54,886  ERROR: Problem opening file. Unable to create display files
+2017-07-06 10:52:51,838  ERROR: Problem opening file. Unable to create display files
+2017-07-06 14:08:57,164  ERROR: Problem opening file. Unable to create display files
+2017-07-06 15:26:13,833  ERROR: Problem opening file. Unable to create display files
+2017-07-06 21:21:35,540  ERROR: Problem opening file. Unable to create display files
+2017-07-07 02:50:17,736  ERROR: Problem opening file. Unable to create display files
+2017-07-07 05:34:59,886  ERROR: Problem opening file. Unable to create display files
+2017-07-07 08:45:52,737  ERROR: Problem opening file. Unable to create display files
+2017-07-07 09:43:20,607  ERROR: Problem opening file. Unable to create display files
+2017-07-07 10:18:51,183 WARNING: File IO Exception raised - could not delete: graphing/24hr.csv
+2017-07-07 10:18:51,184 WARNING: File IO Exception raised whilst accessing file: graphing/24hr.csv
+2017-07-07 13:16:53,505 WARNING: File IO Exception raised - could not delete: graphing/01hr.csv
+2017-07-07 13:16:53,507 WARNING: File IO Exception raised whilst accessing file: graphing/01hr.csv
+2017-07-08 19:49:35,194 WARNING: File IO Exception raised - could not delete: graphing/01hr.csv
+2017-07-08 19:49:35,210 WARNING: File IO Exception raised whilst accessing file: graphing/01hr.csv
+2017-07-09 02:18:01,505  ERROR: Problem opening file. Unable to create display files
+2017-07-09 04:49:13,246  ERROR: Problem opening file. Unable to create display files
+2017-07-09 06:11:16,979  ERROR: Problem opening file. Unable to create display files
+2017-07-09 07:01:22,305  ERROR: Problem opening file. Unable to create display files
+2017-07-09 07:59:21,640  ERROR: Problem opening file. Unable to create display files
+2017-07-09 08:02:21,657  ERROR: Problem opening file. Unable to create display files
+2017-07-09 10:29:31,615 WARNING: File IO Exception raised - could not delete: graphing/24hr.csv
+2017-07-09 10:29:31,617 WARNING: File IO Exception raised whilst accessing file: graphing/24hr.csv
+2017-07-09 10:33:15,773 WARNING: File IO Exception raised - could not delete: graphing/01hr.csv
+2017-07-09 10:33:15,774 WARNING: File IO Exception raised whilst accessing file: graphing/01hr.csv
+2017-07-09 10:37:07,313  ERROR: Problem opening file. Unable to create display files
+2017-07-09 14:06:24,143 WARNING: File IO Exception raised - could not delete: graphing/01hr.csv
+2017-07-09 14:06:24,145 WARNING: File IO Exception raised whilst accessing file: graphing/01hr.csv
+2017-07-09 14:25:44,297  ERROR: Problem opening file. Unable to create display files
+2017-07-09 16:17:18,353 WARNING: File IO Exception raised - could not delete: graphing/24hr.csv
+2017-07-09 16:17:18,354 WARNING: File IO Exception raised whilst accessing file: graphing/24hr.csv
+2017-07-09 20:35:09,617  ERROR: Problem opening file. Unable to create display files
+2017-07-09 21:37:59,671  ERROR: Problem opening file. Unable to create display files
+2017-07-09 22:17:33,152 WARNING: File IO Exception raised - could not delete: graphing/01hr.csv
+2017-07-09 22:17:33,154 WARNING: File IO Exception raised whilst accessing file: graphing/01hr.csv
+2017-07-10 01:09:11,826  ERROR: Problem opening file. Unable to create display files
+2017-07-10 01:40:09,550  ERROR: Problem opening file. Unable to create display files
+2017-07-10 01:51:02,545  ERROR: Problem opening file. Unable to create display files
+2017-07-10 02:53:46,283  ERROR: Problem opening file. Unable to create display files
+2017-07-10 04:48:03,238  ERROR: Problem opening file. Unable to create display files
+2017-07-10 05:07:20,818  ERROR: Problem opening file. Unable to create display files
+2017-07-10 06:34:04,834  ERROR: Problem opening file. Unable to create display files
+2017-07-10 06:49:16,746  ERROR: Problem opening file. Unable to create display files
+2017-07-16 00:57:48,827  ERROR: Problem opening file. Unable to create display files
+2017-07-16 06:46:38,056  ERROR: Problem opening file. Unable to create display files
+2017-07-16 06:53:18,678  ERROR: Problem opening file. Unable to create display files
+2017-07-16 08:25:42,217  ERROR: Problem opening file. Unable to create display files
+2017-07-16 11:26:03,853  ERROR: Problem opening file. Unable to create display files
+2017-07-16 11:55:14,771 WARNING: File IO Exception raised - could not delete: graphing/24hr.csv
+2017-07-16 11:55:14,773 WARNING: File IO Exception raised whilst accessing file: graphing/24hr.csv
+2017-07-16 13:21:22,209  ERROR: Problem opening file. Unable to create display files
+2017-07-16 14:09:46,065  ERROR: Problem opening file. Unable to create display files
+2017-07-16 15:40:02,763 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-16 15:40:02,764 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-16 16:07:00,951  ERROR: Problem opening file. Unable to create display files
+2017-07-16 17:08:19,868 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-16 17:08:19,869 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-16 17:47:50,856 WARNING: File IO Exception raised - could not delete: graphing/04hr.csv
+2017-07-16 17:47:50,857 WARNING: File IO Exception raised whilst accessing file: graphing/04hr.csv
+2017-07-16 18:23:46,939  ERROR: Problem opening file. Unable to create display files
+2017-07-16 23:09:26,516 WARNING: File IO Exception raised - could not delete: graphing/01hr.csv
+2017-07-16 23:09:26,520 WARNING: File IO Exception raised whilst accessing file: graphing/01hr.csv
+2017-07-17 03:32:38,747  ERROR: Problem opening file. Unable to create display files
+2017-07-17 04:15:21,404  ERROR: Problem opening file. Unable to create display files
+2017-07-17 05:01:07,279  ERROR: Problem opening file. Unable to create display files
+2017-07-17 05:08:12,696  ERROR: Problem opening file. Unable to create display files
+2017-07-17 05:54:21,651  ERROR: Problem opening file. Unable to create display files
+2017-07-17 05:57:21,700  ERROR: Problem opening file. Unable to create display files
+2017-07-17 07:56:50,365  ERROR: Problem opening file. Unable to create display files
+2017-07-17 08:31:26,260  ERROR: Problem opening file. Unable to create display files
+2017-07-17 08:34:35,306  ERROR: Problem opening file. Unable to create display files
+2017-07-17 08:41:38,490  ERROR: Problem opening file. Unable to create display files
+2017-07-17 08:44:38,601  ERROR: Problem opening file. Unable to create display files
+2017-07-17 14:29:05,665  ERROR: Problem opening file. Unable to create display files
+2017-07-17 15:39:27,995  ERROR: Problem opening file. Unable to create display files
+2017-07-17 18:27:02,829 WARNING: File IO Exception raised - could not delete: graphing/04hr.csv
+2017-07-17 18:27:02,832 WARNING: File IO Exception raised whilst accessing file: graphing/04hr.csv
+2017-07-17 20:11:58,427  ERROR: Problem opening file. Unable to create display files
+2017-07-17 21:31:42,455  ERROR: Problem opening file. Unable to create display files
+2017-07-17 23:02:57,602  ERROR: Problem opening file. Unable to create display files
+2017-07-17 23:49:25,969  ERROR: Problem opening file. Unable to create display files
+2017-07-17 23:56:29,377  ERROR: Problem opening file. Unable to create display files
+2017-07-18 00:19:03,730  ERROR: Problem opening file. Unable to create display files
+2017-07-18 10:02:43,776  ERROR: Problem opening file. Unable to create display files
+2017-07-18 13:15:36,328  ERROR: Problem opening file. Unable to create display files
+2017-07-18 15:16:20,321  ERROR: Problem opening file. Unable to create display files
+2017-07-18 17:21:30,297  ERROR: Problem opening file. Unable to create display files
+2017-07-18 20:19:10,266  ERROR: Problem opening file. Unable to create display files
+2017-07-18 22:48:14,920  ERROR: Problem opening file. Unable to create display files
+2017-07-18 22:51:15,031  ERROR: Problem opening file. Unable to create display files
+2017-07-18 23:06:02,181  ERROR: Problem opening file. Unable to create display files
+2017-07-19 04:58:55,003  ERROR: Problem opening file. Unable to create display files
+2017-07-19 05:37:10,509  ERROR: Problem opening file. Unable to create display files
+2017-07-19 10:05:19,728  ERROR: Problem opening file. Unable to create display files
+2017-07-19 10:51:12,533  ERROR: Problem opening file. Unable to create display files
+2017-07-21 10:24:46,713  ERROR: Problem opening file. Unable to create display files
+2017-07-21 11:34:25,060  ERROR: Problem opening file. Unable to create display files
+2017-07-21 13:29:25,579  ERROR: Problem opening file. Unable to create display files
+2017-07-21 19:43:45,481 WARNING: File IO Exception raised - could not delete: graphing/01hr.csv
+2017-07-21 19:43:45,483 WARNING: File IO Exception raised whilst accessing file: graphing/01hr.csv
+2017-07-21 22:43:36,393  ERROR: Problem opening file. Unable to create display files
+2017-07-22 00:20:26,349  ERROR: Problem opening file. Unable to create display files
+2017-07-22 02:09:05,409  ERROR: Problem opening file. Unable to create display files
+2017-07-22 08:31:12,203  ERROR: Problem opening file. Unable to create display files
+2017-07-22 10:16:10,563 WARNING: File IO Exception raised - could not delete: graphing/01hr.csv
+2017-07-22 10:16:10,566 WARNING: File IO Exception raised whilst accessing file: graphing/01hr.csv
+2017-07-22 10:20:18,318 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-22 10:20:18,332 WARNING: File IO Exception raised - could not delete: graphing/04hr.csv
+2017-07-22 10:20:18,344 WARNING: File IO Exception raised - could not delete: graphing/24hr.csv
+2017-07-22 10:20:18,358 WARNING: File IO Exception raised - could not delete: graphing/01hr.csv
+2017-07-22 10:27:32,228 WARNING: File IO Exception raised - could not delete: graphing/01hr.csv
+2017-07-22 10:27:32,230 WARNING: File IO Exception raised whilst accessing file: graphing/01hr.csv
+2017-07-22 10:31:35,433 WARNING: File IO Exception raised - could not delete: graphing/01hr.csv
+2017-07-22 10:31:35,437 WARNING: File IO Exception raised whilst accessing file: graphing/01hr.csv
+2017-07-22 11:07:04,070  ERROR: Problem opening file. Unable to create display files
+2017-07-22 11:45:29,730  ERROR: Problem opening file. Unable to create display files
+2017-07-22 12:16:38,047  ERROR: Problem opening file. Unable to create display files
+2017-07-22 14:36:17,807 WARNING: File IO Exception raised - could not delete: graphing/01hr.csv
+2017-07-22 14:36:17,809 WARNING: File IO Exception raised whilst accessing file: graphing/01hr.csv
+2017-07-22 18:34:54,569 WARNING: File IO Exception raised - could not delete: graphing/01hr.csv
+2017-07-22 18:34:54,571 WARNING: File IO Exception raised whilst accessing file: graphing/01hr.csv
+2017-07-22 19:40:14,087 WARNING: File IO Exception raised - could not delete: graphing/01hr.csv
+2017-07-22 19:40:14,089 WARNING: File IO Exception raised whilst accessing file: graphing/01hr.csv
+2017-07-22 19:43:31,624 WARNING: File IO Exception raised - could not delete: graphing/24hr.csv
+2017-07-22 19:43:31,625 WARNING: File IO Exception raised whilst accessing file: graphing/24hr.csv
+2017-07-22 19:46:50,534 WARNING: File IO Exception raised - could not delete: graphing/24hr.csv
+2017-07-22 19:46:50,535 WARNING: File IO Exception raised whilst accessing file: graphing/24hr.csv
+2017-07-22 19:50:11,499 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-22 19:50:11,501 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-22 22:03:00,918  ERROR: Problem opening file. Unable to create display files
+2017-07-23 11:23:42,866  ERROR: Problem opening file. Unable to create display files
+2017-07-23 13:02:04,627 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-23 13:02:04,628 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-23 13:06:02,830 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-23 13:06:02,832 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-23 13:10:04,983 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-23 13:10:04,984 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-23 15:13:28,814  ERROR: Problem opening file. Unable to create display files
+2017-07-23 15:31:50,587 WARNING: File IO Exception raised - could not delete: graphing/24hr.csv
+2017-07-23 15:31:50,589 WARNING: File IO Exception raised whilst accessing file: graphing/24hr.csv
+2017-07-23 15:43:38,212  ERROR: Problem opening file. Unable to create display files
+2017-07-23 16:18:36,211  ERROR: Problem opening file. Unable to create display files
+2017-07-23 20:09:26,183 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-23 20:09:26,185 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-24 01:15:51,159  ERROR: Problem opening file. Unable to create display files
+2017-07-24 05:24:17,023  ERROR: Problem opening file. Unable to create display files
+2017-07-24 07:53:43,538 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-24 07:53:43,539 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-24 08:13:32,788  ERROR: Problem opening file. Unable to create display files
+2017-07-25 09:42:02,963  ERROR: Problem opening file. Unable to create display files
+2017-07-25 10:11:49,950  ERROR: Problem opening file. Unable to create display files
+2017-07-25 11:45:41,702  ERROR: Problem opening file. Unable to create display files
+2017-07-25 11:56:44,167  ERROR: Problem opening file. Unable to create display files
+2017-07-25 12:23:48,659  ERROR: Problem opening file. Unable to create display files
+2017-07-25 12:58:42,173  ERROR: Problem opening file. Unable to create display files
+2017-07-25 17:45:52,138  ERROR: Problem opening file. Unable to create display files
+2017-07-25 17:48:59,156  ERROR: Problem opening file. Unable to create display files
+2017-07-25 19:23:27,979  ERROR: Problem opening file. Unable to create display files
+2017-07-25 23:07:12,494 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-25 23:07:12,496 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-25 23:11:11,079 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-25 23:11:11,081 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-25 23:15:03,631 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-25 23:15:03,633 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-25 23:19:03,964 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-25 23:19:03,966 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-25 23:23:02,690 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-25 23:23:02,692 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-25 23:26:58,136 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-25 23:26:58,138 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-25 23:31:00,573 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-25 23:31:00,575 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-25 23:34:56,753 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-25 23:34:56,754 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-25 23:38:58,152 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-25 23:38:58,153 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-25 23:42:57,445 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-25 23:42:57,446 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-25 23:46:52,676 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-25 23:46:52,678 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-25 23:50:47,924 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-25 23:50:47,926 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-25 23:54:40,454 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-25 23:54:40,456 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-25 23:58:43,140 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-25 23:58:43,141 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-26 00:02:40,398 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-26 00:02:40,400 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-26 00:06:36,602 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-26 00:06:36,603 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-26 00:10:29,151 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-26 00:10:29,153 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-26 00:14:22,630 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-26 00:14:22,632 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-26 00:18:19,040 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-26 00:18:19,042 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-26 00:22:13,338 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-26 00:22:13,339 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-26 00:26:10,799 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-26 00:26:10,801 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-26 00:30:11,315 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-26 00:30:11,316 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-26 00:34:08,937 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-26 00:34:08,939 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-26 00:38:01,186 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-26 00:38:01,188 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-26 00:41:56,444 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-26 00:41:56,445 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-26 00:45:48,870 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-26 00:45:48,872 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-26 00:49:45,635 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-26 00:49:45,637 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-26 00:53:46,942 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-26 00:53:46,944 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-26 00:57:40,476 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-26 00:57:40,478 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-26 01:01:42,831 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-26 01:01:42,833 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-26 01:05:44,311 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-26 01:05:44,312 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-26 01:09:00,632 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-26 01:09:00,634 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-26 01:13:03,099 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-26 01:13:03,101 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-26 01:16:56,508 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-26 01:16:56,511 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-26 01:20:51,206 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-26 01:20:51,208 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-26 01:24:50,684 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-26 01:24:50,685 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-26 01:28:43,114 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-26 01:28:43,116 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-26 01:32:36,429 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-26 01:32:36,431 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-26 01:36:35,053 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-26 01:36:35,055 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-26 01:40:36,649 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-26 01:40:36,650 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-26 01:44:31,969 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-26 01:44:31,970 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-26 01:48:28,414 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-26 01:48:28,416 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-26 01:52:27,975 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-26 01:52:27,977 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-26 01:56:28,696 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-26 01:56:28,698 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-26 02:00:26,988 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-26 02:00:26,990 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-26 02:04:21,296 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-26 02:04:21,297 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-26 02:08:16,908 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-26 02:08:16,909 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-26 02:12:11,473 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-26 02:12:11,475 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-26 02:16:14,062 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-26 02:16:14,064 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-26 02:20:16,363 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-26 02:20:16,365 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-26 02:24:12,120 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-26 02:24:12,122 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-26 02:28:14,579 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-26 02:28:14,580 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-26 02:32:09,639 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-26 02:32:09,640 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-26 02:36:03,562 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-26 02:36:03,563 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-26 02:39:19,741 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-26 02:39:19,743 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-26 02:43:13,124 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-26 02:43:13,125 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-26 02:47:07,706 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-26 02:47:07,708 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-26 02:51:07,507 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-26 02:51:07,509 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-26 02:55:05,968 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-26 02:55:05,969 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-26 02:59:06,479 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-26 02:59:06,481 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-26 03:03:05,925 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-26 03:03:05,927 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-26 03:07:01,670 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-26 03:07:01,672 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-26 03:10:56,292 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-26 03:10:56,293 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-26 03:14:52,893 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-26 03:14:52,895 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-26 03:18:46,536 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-26 03:18:46,538 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-26 03:22:44,052 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-26 03:22:44,054 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-26 03:26:36,482 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-26 03:26:36,484 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-26 03:30:36,945 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-26 03:30:36,947 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-26 03:34:32,473 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-26 03:34:32,475 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-26 03:38:26,924 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-26 03:38:26,926 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-26 03:42:26,515 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-26 03:42:26,516 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-26 03:46:19,778 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-26 03:46:19,779 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-26 03:50:20,126 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-26 03:50:20,128 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-26 03:54:19,716 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-26 03:54:19,717 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-26 03:58:12,386 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-26 03:58:12,387 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-26 04:02:08,657 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-26 04:02:08,659 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-26 04:06:07,008 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-26 04:06:07,010 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-26 04:10:09,636 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-26 04:10:09,637 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-26 04:14:07,182 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-26 04:14:07,183 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-26 04:17:59,620 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-26 04:17:59,621 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-26 04:22:01,154 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-26 04:22:01,156 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-26 04:25:58,450 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-26 04:25:58,452 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-26 04:29:56,871 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-26 04:29:56,873 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-26 04:33:57,618 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-26 04:33:57,620 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-26 04:37:56,047 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-26 04:37:56,048 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-26 04:41:50,388 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-26 04:41:50,390 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-26 04:45:51,707 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-26 04:45:51,708 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-26 04:49:51,174 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-26 04:49:51,176 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-26 04:53:51,453 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-26 04:53:51,454 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-26 04:57:49,777 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-26 04:57:49,779 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-26 05:01:42,196 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-26 05:01:42,198 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-26 05:05:41,538 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-26 05:05:41,540 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-26 05:09:42,360 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-26 05:09:42,361 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-26 05:13:38,534 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-26 05:13:38,536 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-26 05:17:32,116 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-26 05:17:32,117 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-26 05:21:27,635 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-26 05:21:27,636 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-26 05:25:28,484 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-26 05:25:28,487 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-26 05:29:23,990 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-26 05:29:23,991 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-26 05:33:17,395 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-26 05:33:17,396 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-26 05:37:19,736 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-26 05:37:19,737 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-26 05:41:21,235 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-26 05:41:21,237 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-26 05:45:16,799 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-26 05:45:16,800 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-26 05:49:10,241 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-26 05:49:10,242 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-26 05:53:09,608 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-26 05:53:09,609 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-26 05:57:06,004 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-26 05:57:06,005 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-26 06:00:58,787 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-26 06:00:58,789 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-26 06:04:51,962 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-26 06:04:51,964 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-26 06:08:50,371 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-26 06:08:50,373 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-26 06:12:45,839 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-26 06:12:45,841 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-26 06:16:44,626 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-26 06:16:44,628 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-26 06:20:39,237 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-26 06:20:39,238 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-26 06:24:33,557 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-26 06:24:33,559 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-26 06:28:27,901 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-26 06:28:27,903 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-26 06:32:24,376 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-26 06:32:24,377 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-26 06:36:25,699 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-26 06:36:25,701 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-26 06:40:25,764 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-26 06:40:25,765 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-26 06:44:10,793 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-26 06:44:10,794 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-26 06:48:05,353 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-26 06:48:05,355 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-26 06:52:08,181 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-26 06:52:08,183 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-26 06:56:00,481 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-26 06:56:00,483 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-26 06:59:55,152 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-26 06:59:55,154 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-26 07:03:54,646 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-26 07:03:54,648 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-26 07:07:56,149 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-26 07:07:56,150 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-26 07:11:49,451 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-26 07:11:49,452 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-26 07:15:48,881 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-26 07:15:48,883 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-26 07:19:50,315 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-26 07:19:50,316 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-26 07:23:44,623 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-26 07:23:44,625 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-26 07:27:45,908 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-26 07:27:45,910 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-26 07:31:41,215 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-26 07:31:41,216 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-26 08:50:45,040  ERROR: Problem opening file. Unable to create display files
+2017-07-26 11:35:58,079  ERROR: Problem opening file. Unable to create display files
+2017-07-26 12:06:57,410  ERROR: Problem opening file. Unable to create display files
+2017-07-26 12:14:07,860  ERROR: Problem opening file. Unable to create display files
+2017-07-26 16:50:26,611  ERROR: Problem opening file. Unable to create display files
+2017-07-26 17:01:24,463  ERROR: Problem opening file. Unable to create display files
+2017-07-26 19:14:12,451  ERROR: Problem opening file. Unable to create display files
+2017-07-26 20:23:49,382 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-26 20:23:49,384 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-26 20:27:51,505 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-26 20:27:51,507 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-26 20:31:48,741 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-26 20:31:48,744 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-26 20:35:53,410 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-26 20:35:53,411 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-26 20:39:58,871 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-26 20:39:58,873 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-26 20:43:56,434 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-26 20:43:56,436 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-26 20:47:56,246 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-26 20:47:56,248 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-26 20:51:57,705  ERROR: Problem opening file. Unable to create display files
+2017-07-26 20:54:58,958 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-26 20:54:58,960 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-26 20:58:57,730 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-26 20:58:57,731 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-26 21:03:00,290 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-26 21:03:00,292 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-26 21:07:00,951 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-26 21:07:00,953 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-26 21:11:01,713 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-26 21:11:01,714 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-26 21:14:59,368 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-26 21:14:59,369 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-26 21:19:05,850 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-26 21:19:05,852 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-26 23:44:30,656  ERROR: Problem opening file. Unable to create display files
+2017-07-27 04:01:25,891  ERROR: Problem opening file. Unable to create display files
+2017-07-27 06:05:34,040  ERROR: Problem opening file. Unable to create display files
+2017-07-27 09:21:32,207  ERROR: Problem opening file. Unable to create display files
+2017-07-27 10:51:32,486  ERROR: Problem opening file. Unable to create display files
+2017-07-27 10:54:39,598  ERROR: Problem opening file. Unable to create display files
+2017-07-27 13:32:42,928 WARNING: File IO Exception raised - could not delete: graphing/24hr.csv
+2017-07-27 13:32:42,933 WARNING: File IO Exception raised whilst accessing file: graphing/24hr.csv
+2017-07-27 15:25:04,295  ERROR: Problem opening file. Unable to create display files
+2017-07-27 16:50:35,192  ERROR: Problem opening file. Unable to create display files
+2017-07-27 18:02:20,135  ERROR: Problem opening file. Unable to create display files
+2017-07-27 21:14:10,917 WARNING: File IO Exception raised - could not delete: graphing/01hr.csv
+2017-07-27 21:14:10,925 WARNING: File IO Exception raised whilst accessing file: graphing/01hr.csv
+2017-07-28 00:54:17,109  ERROR: Problem opening file. Unable to create display files
+2017-07-28 05:05:54,203  ERROR: Problem opening file. Unable to create display files
+2017-07-28 06:39:59,329  ERROR: Problem opening file. Unable to create display files
+2017-07-28 07:10:53,991  ERROR: Problem opening file. Unable to create display files
+2017-07-28 10:10:38,979  ERROR: Problem opening file. Unable to create display files
+2017-07-28 20:41:45,657  ERROR: Problem opening file. Unable to create display files
+2017-07-28 21:40:13,260 WARNING: File IO Exception raised - could not delete: graphing/01hr.csv
+2017-07-28 21:40:13,262 WARNING: File IO Exception raised whilst accessing file: graphing/01hr.csv
+2017-07-29 02:34:39,717  ERROR: Problem opening file. Unable to create display files
+2017-07-29 03:17:15,859  ERROR: Problem opening file. Unable to create display files
+2017-07-29 03:48:13,089  ERROR: Problem opening file. Unable to create display files
+2017-07-29 04:37:48,489  ERROR: Problem opening file. Unable to create display files
+2017-07-29 05:00:43,294  ERROR: Problem opening file. Unable to create display files
+2017-07-29 06:10:56,940  ERROR: Problem opening file. Unable to create display files
+2017-07-29 06:45:42,153  ERROR: Problem opening file. Unable to create display files
+2017-07-29 09:42:32,013  ERROR: Problem opening file. Unable to create display files
+2017-07-29 12:02:24,744  ERROR: Problem opening file. Unable to create display files
+2017-07-29 15:28:18,697  ERROR: Problem opening file. Unable to create display files
+2017-07-29 17:02:57,097  ERROR: Problem opening file. Unable to create display files
+2017-07-29 17:25:51,310  ERROR: Problem opening file. Unable to create display files
+2017-07-29 19:15:22,352  ERROR: Problem opening file. Unable to create display files
+2017-07-29 20:09:38,210  ERROR: Problem opening file. Unable to create display files
+2017-07-29 20:48:24,111  ERROR: Problem opening file. Unable to create display files
+2017-07-30 00:55:59,237  ERROR: Problem opening file. Unable to create display files
+2017-07-30 02:01:45,410  ERROR: Problem opening file. Unable to create display files
+2017-07-30 04:49:52,798  ERROR: Problem opening file. Unable to create display files
+2017-07-30 08:34:19,967  ERROR: Problem opening file. Unable to create display files
+2017-07-30 08:37:19,978  ERROR: Problem opening file. Unable to create display files
+2017-07-30 10:30:07,466  ERROR: Problem opening file. Unable to create display files
+2017-07-30 17:56:17,033  ERROR: Problem opening file. Unable to create display files
+2017-07-30 17:59:33,013 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-30 17:59:33,121 WARNING: File IO Exception raised - could not delete: graphing/04hr.csv
+2017-07-30 17:59:33,140 WARNING: File IO Exception raised - could not delete: graphing/24hr.csv
+2017-07-30 18:03:31,851  ERROR: Problem opening file. Unable to create display files
+2017-07-30 18:04:34,651 WARNING: File IO Exception raised - could not delete: graphing/dr_01hr.csv
+2017-07-30 18:31:44,643 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-30 18:31:44,746 WARNING: File IO Exception raised - could not delete: graphing/dr_01hr.csv
+2017-07-30 18:34:36,164 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-30 18:34:36,264 WARNING: File IO Exception raised - could not delete: graphing/dr_01hr.csv
+2017-07-30 18:35:41,945 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-30 18:35:42,047 WARNING: File IO Exception raised - could not delete: graphing/dr_01hr.csv
+2017-07-30 21:59:17,929  ERROR: Problem opening file. Unable to create display files
+2017-07-30 22:44:42,425 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-30 22:44:42,426 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-31 05:00:54,217  ERROR: Problem opening file. Unable to create display files
+2017-07-31 05:25:37,288  ERROR: Problem opening file. Unable to create display files
+2017-07-31 05:55:35,466  ERROR: Problem opening file. Unable to create display files
+2017-07-31 06:20:23,254  ERROR: Problem opening file. Unable to create display files
+2017-07-31 08:23:19,922 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-31 08:23:19,924 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-07-31 19:02:53,282  ERROR: Problem opening file. Unable to create display files
+2017-07-31 19:27:54,087  ERROR: Problem opening file. Unable to create display files
+2017-07-31 19:41:45,733  ERROR: Problem opening file. Unable to create display files
+2017-07-31 22:03:59,375  ERROR: Problem opening file. Unable to create display files
+2017-07-31 22:29:46,806 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-07-31 22:29:46,808 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-08-01 03:02:03,280  ERROR: Problem opening file. Unable to create display files
+2017-08-01 07:17:48,358 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-08-01 07:17:48,360 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-08-01 15:13:51,733  ERROR: Problem opening file. Unable to create display files
+2017-08-01 15:48:09,243  ERROR: Problem opening file. Unable to create display files
+2017-08-01 19:48:57,082  ERROR: Problem opening file. Unable to create display files
+2017-08-01 22:11:28,570 WARNING: File IO Exception raised - could not delete: graphing/dr_01hr.csv
+2017-08-01 22:11:28,572 WARNING: File IO Exception raised whilst accessing file: graphing/dr_01hr.csv
+2017-08-02 05:20:37,042  ERROR: Problem opening file. Unable to create display files
+2017-08-02 08:28:52,622  ERROR: Problem opening file. Unable to create display files
+2017-08-02 09:00:39,154 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-08-02 09:00:39,156 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-08-02 10:18:56,054  ERROR: Problem opening file. Unable to create display files
+2017-08-02 10:39:23,130  ERROR: Problem opening file. Unable to create display files
+2017-08-02 15:47:46,270  ERROR: Problem opening file. Unable to create display files
+2017-08-02 19:57:44,515  ERROR: Problem opening file. Unable to create display files
+2017-08-02 22:28:00,580  ERROR: Problem opening file. Unable to create display files
+2017-08-03 01:11:06,112  ERROR: Problem opening file. Unable to create display files
+2017-08-03 02:05:32,747  ERROR: Problem opening file. Unable to create display files
+2017-08-03 06:05:53,239  ERROR: Problem opening file. Unable to create display files
+2017-08-03 06:09:58,170  ERROR: Problem opening file. Unable to create display files
+2017-08-03 07:36:03,795  ERROR: Problem opening file. Unable to create display files
+2017-08-03 07:55:32,719  ERROR: Problem opening file. Unable to create display files
+2017-08-03 10:28:09,882  ERROR: Problem opening file. Unable to create display files
+2017-08-03 11:33:59,095  ERROR: Problem opening file. Unable to create display files
+2017-08-03 15:35:44,525  ERROR: Problem opening file. Unable to create display files
+2017-08-03 15:59:28,039  ERROR: Problem opening file. Unable to create display files
+2017-08-03 17:47:02,466  ERROR: Problem opening file. Unable to create display files
+2017-08-03 20:11:04,670  ERROR: Problem opening file. Unable to create display files
+2017-08-03 21:42:59,061  ERROR: Problem opening file. Unable to create display files
+2017-08-03 22:18:16,663  ERROR: Problem opening file. Unable to create display files
+2017-08-04 02:56:04,725  ERROR: Problem opening file. Unable to create display files
+2017-08-04 12:40:24,920  ERROR: Problem opening file. Unable to create display files
+2017-08-04 13:40:27,187  ERROR: Problem opening file. Unable to create display files
+2017-08-04 14:56:35,395  ERROR: Problem opening file. Unable to create display files
+2017-08-04 15:26:02,482  ERROR: Problem opening file. Unable to create display files
+2017-08-04 20:21:41,070  ERROR: Problem opening file. Unable to create display files
+2017-08-04 21:12:01,569  ERROR: Problem opening file. Unable to create display files
+2017-08-04 22:37:35,928  ERROR: Problem opening file. Unable to create display files
+2017-08-04 23:58:53,951  ERROR: Problem opening file. Unable to create display files
+2017-08-05 07:14:44,187  ERROR: Problem opening file. Unable to create display files
+2017-08-05 07:23:51,310  ERROR: Problem opening file. Unable to create display files
+2017-08-05 10:43:17,326  ERROR: Problem opening file. Unable to create display files
+2017-08-05 11:49:40,374 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-08-05 11:49:40,376 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-08-05 11:54:37,098  ERROR: Problem opening file. Unable to create display files
+2017-08-05 11:59:02,622 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-08-05 11:59:02,624 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-08-05 12:40:16,440 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-08-05 12:45:24,883 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-08-05 12:50:21,762  ERROR: Problem opening file. Unable to create display files
+2017-08-05 16:00:06,084  ERROR: Problem opening file. Unable to create display files
+2017-08-05 16:24:42,370  ERROR: Problem opening file. Unable to create display files
+2017-08-05 17:40:29,661  ERROR: Problem opening file. Unable to create display files
+2017-08-05 19:11:06,127 WARNING: File IO Exception raised - could not delete: graphing/dr_01hr.csv
+2017-08-05 19:11:06,130 WARNING: File IO Exception raised whilst accessing file: graphing/dr_01hr.csv
+2017-08-05 20:12:55,931  ERROR: Problem opening file. Unable to create display files
+2017-08-05 20:58:15,371  ERROR: Problem opening file. Unable to create display files
+2017-08-06 01:43:12,104  ERROR: Problem opening file. Unable to create display files
+2017-08-06 05:26:59,523  ERROR: Problem opening file. Unable to create display files
+2017-08-06 09:22:44,158  ERROR: Problem opening file. Unable to create display files
+2017-08-06 12:16:38,237  ERROR: Problem opening file. Unable to create display files
+2017-08-06 14:19:06,893  ERROR: Problem opening file. Unable to create display files
+2017-08-06 16:06:40,697 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-08-06 16:06:40,699 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-08-06 16:11:48,910 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-08-06 16:11:48,912 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-08-06 16:16:58,254 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-08-06 16:16:58,256 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-08-06 16:22:07,509 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-08-06 16:22:07,511 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-08-06 16:27:14,884 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-08-06 16:27:14,886 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-08-06 17:08:32,286  ERROR: Problem opening file. Unable to create display files
+2017-08-07 09:40:55,818  ERROR: Problem opening file. Unable to create display files
+2017-08-07 09:45:05,788  ERROR: Problem opening file. Unable to create display files
+2017-08-07 09:49:06,881  ERROR: Problem opening file. Unable to create display files
+2017-08-07 11:09:19,369  ERROR: Problem opening file. Unable to create display files
+2017-08-07 12:52:00,375  ERROR: Problem opening file. Unable to create display files
+2017-08-07 13:06:29,824  ERROR: Problem opening file. Unable to create display files
+2017-08-07 15:35:05,770  ERROR: Problem opening file. Unable to create display files
+2017-08-07 16:41:18,252  ERROR: Problem opening file. Unable to create display files
+2017-08-07 23:40:22,329  ERROR: Problem opening file. Unable to create display files
+2017-08-08 01:33:12,817  ERROR: Problem opening file. Unable to create display files
+2017-08-08 02:48:43,015  ERROR: Problem opening file. Unable to create display files
+2017-08-08 03:49:41,328  ERROR: Problem opening file. Unable to create display files
+2017-08-08 04:13:27,105  ERROR: Problem opening file. Unable to create display files
+2017-08-08 07:52:54,506 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-08-08 07:52:54,508 WARNING: File IO Exception raised whilst accessing file: graphing/diffs.csv
+2017-08-08 10:42:29,985  ERROR: Problem opening file. Unable to create display files
+2017-08-08 11:27:58,485  ERROR: Problem opening file. Unable to create display files
+2017-08-08 13:46:05,233  ERROR: Problem opening file. Unable to create display files
+2017-08-08 15:23:18,700  ERROR: Problem opening file. Unable to create display files
+2017-08-08 16:45:33,708  ERROR: Problem opening file. Unable to create display files
+2017-08-08 17:00:05,708  ERROR: Problem opening file. Unable to create display files
+2017-08-09 01:48:38,479  ERROR: Problem opening file. Unable to create display files
+2017-08-09 03:00:06,675  ERROR: Problem opening file. Unable to create display files
+2017-08-09 04:06:01,254  ERROR: Problem opening file. Unable to create display files
+2017-08-09 06:03:04,697  ERROR: Problem opening file. Unable to create display files
+2017-08-09 07:03:00,122  ERROR: Problem opening file. Unable to create display files
+2017-08-09 21:44:59,205  ERROR: Problem opening file. Unable to create display files
+2017-08-09 22:20:13,011  ERROR: Problem opening file. Unable to create display files
+2017-08-09 22:40:09,691 WARNING: File IO Exception raised - could not delete: graphing/dr_01hr.csv
+2017-08-09 22:40:09,693 WARNING: File IO Exception raised whilst accessing file: graphing/dr_01hr.csv
+2017-08-10 18:03:49,723  ERROR: Problem opening file. Unable to create display files
+2017-08-10 20:53:31,762  ERROR: Problem opening file. Unable to create display files
+2017-08-10 23:17:49,985  ERROR: Problem opening file. Unable to create display files
+2017-08-11 08:03:24,178  ERROR: Problem opening file. Unable to create display files
+2017-08-11 11:21:20,264  ERROR: Problem opening file. Unable to create display files
+2017-08-11 12:27:06,296  ERROR: Problem opening file. Unable to create display files
+2017-08-11 13:22:35,925  ERROR: Problem opening file. Unable to create display files
+2017-08-11 17:17:51,038  ERROR: Problem opening file. Unable to create display files
+2017-08-11 18:34:27,555 WARNING: File IO Exception raised - could not delete: graphing/dr_01hr.csv
+2017-08-11 18:34:27,557 WARNING: File IO Exception raised whilst accessing file: graphing/dr_01hr.csv
+2017-08-11 18:44:33,395  ERROR: Problem opening file. Unable to create display files
+2017-08-11 20:21:59,039  ERROR: Problem opening file. Unable to create display files
+2017-08-11 20:41:43,049 WARNING: File IO Exception raised - could not delete: graphing/dr_01hr.csv
+2017-08-11 20:41:43,051 WARNING: File IO Exception raised whilst accessing file: graphing/dr_01hr.csv
+2017-08-11 21:02:09,960  ERROR: Problem opening file. Unable to create display files
+2017-08-11 21:47:32,867 WARNING: File IO Exception raised - could not delete: graphing/dr_01hr.csv
+2017-08-11 21:47:32,879 WARNING: File IO Exception raised whilst accessing file: graphing/dr_01hr.csv
+2017-08-12 00:56:33,401  ERROR: Problem opening file. Unable to create display files
+2017-08-12 07:14:36,301  ERROR: Problem opening file. Unable to create display files
+2017-08-12 07:28:53,340  ERROR: Problem opening file. Unable to create display files
+2017-08-12 07:48:20,929  ERROR: Problem opening file. Unable to create display files
+2017-08-12 08:12:57,689  ERROR: Problem opening file. Unable to create display files
+2017-08-12 08:53:09,109  ERROR: Problem opening file. Unable to create display files
+2017-08-12 11:07:40,478 WARNING: File IO Exception raised - could not delete: graphing/dr_01hr.csv
+2017-08-12 14:55:33,573  ERROR: Problem opening file. Unable to create display files
+2017-08-12 16:43:25,179  ERROR: Problem opening file. Unable to create display files
+2017-08-12 16:52:40,960  ERROR: Problem opening file. Unable to create display files
+2017-08-12 19:57:05,455 WARNING: File IO Exception raised - could not delete: graphing/dr_02hr.csv
+2017-08-12 20:01:58,657  ERROR: Problem opening file. Unable to create display files
+2017-08-12 20:06:21,610 WARNING: File IO Exception raised - could not delete: graphing/diffs.csv
+2017-08-12 20:06:21,715 WARNING: File IO Exception raised - could not delete: graphing/dr_02hr.csv
+2017-08-12 22:42:18,060 WARNING: File IO Exception raised - could not delete: graphing/dr_02hr.csv
+2017-08-13 02:24:40,234  ERROR: Problem opening file. Unable to create display files
+2017-08-13 02:44:08,090  ERROR: Problem opening file. Unable to create display files
+2017-08-13 04:10:47,014  ERROR: Problem opening file. Unable to create display files

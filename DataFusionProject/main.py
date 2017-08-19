@@ -115,13 +115,13 @@ while True:
 
     print("\n")
     try:
-        dalmore02 = Station.Station("Dalmore 02", "Dalmore_Rapid.1minbins.csv")
+        dalmore02 = Station.Station("Dalmore 02", "dr_02.csv")
     except:
         print("Unable to create station")
 
     print("\n")
     try:
-        dalmore01 = Station.Station("Dalmore 01", "Dalmore_prime.1minbins.csv")
+        dalmore01 = Station.Station("Dalmore 01", "dr_01.csv")
     except:
         print("Unable to create station")
 

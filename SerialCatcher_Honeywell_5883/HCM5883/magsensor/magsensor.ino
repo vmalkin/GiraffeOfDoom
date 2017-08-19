@@ -47,6 +47,7 @@ void displaySensorDetails(void)
 {
   sensor_t sensor;
   mag.getSensor(&sensor);
+  Serial.println("Dalmore Rapid No 2");
   Serial.println("------------------------------------");
   Serial.print  ("Sensor:       "); Serial.println(sensor.name);
   Serial.print  ("Driver Ver:   "); Serial.println(sensor.version);

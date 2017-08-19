@@ -1,0 +1,443 @@
+2017-06-05 13:44:48,504 WARNING: Garbage data from Magnetometer: 110.741
+2017-06-05 13:44:49,633 WARNING: Garbage data from Magnetometer: 110.825
+2017-06-05 13:44:50,762 WARNING: Garbage data from Magnetometer: 110.733
+2017-06-05 13:45:08,785 WARNING: Garbage data from Magnetometer: 110.700
+2017-06-05 13:45:09,914 WARNING: Garbage data from Magnetometer: 110.472
+2017-06-05 13:45:11,042 WARNING: Garbage data from Magnetometer: 110.687
+2017-06-05 13:45:12,172 WARNING: Garbage data from Magnetometer: 110.802
+2017-06-05 13:45:13,300 WARNING: Garbage data from Magnetometer: 110.738
+2017-06-05 13:45:14,429 WARNING: Garbage data from Magnetometer: 110.630
+2017-06-05 13:45:15,559 WARNING: Garbage data from Magnetometer: 110.734
+2017-06-05 18:42:46,728 WARNING: File IO Exception raised whilst accessing file: ArraySave.csv
+2017-06-05 18:42:47,856 WARNING: File IO Exception raised whilst accessing file: ArraySave.csv
+2017-06-05 22:21:08,933 WARNING: File IO Exception raised whilst accessing file: ArraySave.csv
+2017-06-05 22:21:10,061 WARNING: File IO Exception raised whilst accessing file: ArraySave.csv
+2017-06-06 07:18:43,094 WARNING: File IO Exception raised whilst accessing file: ArraySave.csv
+2017-06-06 11:08:41,539 WARNING: File IO Exception raised whilst accessing file: ArraySave.csv
+2017-06-06 17:19:28,476 WARNING: File IO Exception raised whilst accessing file: ArraySave.csv
+2017-06-22 20:58:24,116 WARNING: Garbage data from Magnetometer: ------------------------------------
+2017-06-22 20:58:24,151 WARNING: Garbage data from Magnetometer: Sensor:       HMC5883
+2017-06-22 20:58:24,151 WARNING: Garbage data from Magnetometer: Driver Ver:   1
+2017-06-22 20:58:24,183 WARNING: Garbage data from Magnetometer: Unique ID:    12345
+2017-06-22 20:58:24,217 WARNING: Garbage data from Magnetometer: Max Value:    800.00 uT
+2017-06-22 20:58:24,250 WARNING: Garbage data from Magnetometer: Min Value:    -800.00 uT
+2017-06-22 20:58:24,250 WARNING: Garbage data from Magnetometer: Resolution:   0.20 uT
+2017-06-22 20:58:24,290 WARNING: Garbage data from Magnetometer: ------------------------------------
+2017-06-22 20:58:24,291 WARNING: Garbage data from Magnetometer: 
+2017-06-22 20:58:25,872 WARNING: Garbage data from Magnetometer: -15.575 -414.988 95.575
+2017-06-22 20:58:26,995 WARNING: Garbage data from Magnetometer: -13.260 -290.477 82.227
+2017-06-22 20:58:28,118 WARNING: Garbage data from Magnetometer: -13.279 -290.440 82.074
+2017-06-22 20:58:29,241 WARNING: Garbage data from Magnetometer: -13.235 -290.569 82.144
+2017-06-22 20:58:30,365 WARNING: Garbage data from Magnetometer: -13.158 -290.590 82.087
+2017-06-22 20:58:31,489 WARNING: Garbage data from Magnetometer: -13.067 -290.535 82.216
+2017-06-22 20:58:32,613 WARNING: Garbage data from Magnetometer: -13.110 -290.600 82.143
+2017-06-22 20:58:33,737 WARNING: Garbage data from Magnetometer: -12.878 -290.613 82.148
+2017-06-22 20:58:34,860 WARNING: Garbage data from Magnetometer: -12.854 -290.613 82.216
+2017-06-22 20:58:35,984 WARNING: Garbage data from Magnetometer: -12.976 -290.679 82.163
+2017-06-22 20:58:37,107 WARNING: Garbage data from Magnetometer: -12.969 -290.727 82.149
+2017-06-22 21:00:00,962 WARNING: Garbage data from Magnetometer: ------------------------------------
+2017-06-22 21:00:00,976 WARNING: Garbage data from Magnetometer: Sensor:       HMC5883
+2017-06-22 21:00:00,998 WARNING: Garbage data from Magnetometer: Driver Ver:   1
+2017-06-22 21:00:01,020 WARNING: Garbage data from Magnetometer: Unique ID:    12345
+2017-06-22 21:00:01,044 WARNING: Garbage data from Magnetometer: Max Value:    800.00 uT
+2017-06-22 21:00:01,067 WARNING: Garbage data from Magnetometer: Min Value:    -800.00 uT
+2017-06-22 21:00:01,089 WARNING: Garbage data from Magnetometer: Resolution:   0.20 uT
+2017-06-22 21:00:01,131 WARNING: Garbage data from Magnetometer: ------------------------------------
+2017-06-22 21:00:01,132 WARNING: Garbage data from Magnetometer: 
+2017-06-22 21:00:02,733 WARNING: Garbage data from Magnetometer: -11.170 -473.720 95.863
+2017-06-22 21:00:03,834 WARNING: Garbage data from Magnetometer: -9.541 -292.627 82.464
+2017-06-22 21:00:04,954 WARNING: Garbage data from Magnetometer: -9.619 -292.693 82.497
+2017-06-22 21:00:06,076 WARNING: Garbage data from Magnetometer: -9.683 -292.687 82.523
+2017-06-22 21:00:07,198 WARNING: Garbage data from Magnetometer: -9.533 -292.606 82.630
+2017-06-22 21:00:08,321 WARNING: Garbage data from Magnetometer: -9.394 -292.618 82.528
+2017-06-22 21:00:09,500 WARNING: Garbage data from Magnetometer: -9.522 -292.669 82.482
+2017-06-22 21:01:30,159 WARNING: Garbage data from Magnetometer: ------------------------------------
+2017-06-22 21:01:30,182 WARNING: Garbage data from Magnetometer: Sensor:       HMC5883
+2017-06-22 21:01:30,203 WARNING: Garbage data from Magnetometer: Driver Ver:   1
+2017-06-22 21:01:30,225 WARNING: Garbage data from Magnetometer: Unique ID:    12345
+2017-06-22 21:01:30,248 WARNING: Garbage data from Magnetometer: Max Value:    800.00 uT
+2017-06-22 21:01:30,270 WARNING: Garbage data from Magnetometer: Min Value:    -800.00 uT
+2017-06-22 21:01:30,314 WARNING: Garbage data from Magnetometer: Resolution:   0.20 uT
+2017-06-22 21:01:30,336 WARNING: Garbage data from Magnetometer: ------------------------------------
+2017-06-22 21:01:30,336 WARNING: Garbage data from Magnetometer: 
+2017-06-22 23:32:17,584 WARNING: File IO Exception raised whilst accessing file: ArraySave.csv
+2017-06-22 23:32:18,706 WARNING: File IO Exception raised whilst accessing file: ArraySave.csv
+2017-06-22 23:32:19,828 WARNING: File IO Exception raised whilst accessing file: ArraySave.csv
+2017-06-22 23:32:20,949 WARNING: File IO Exception raised whilst accessing file: ArraySave.csv
+2017-06-22 23:32:22,070 WARNING: File IO Exception raised whilst accessing file: ArraySave.csv
+2017-06-22 23:32:23,192 WARNING: File IO Exception raised whilst accessing file: ArraySave.csv
+2017-06-22 23:32:24,314 WARNING: File IO Exception raised whilst accessing file: ArraySave.csv
+2017-06-22 23:32:25,434 WARNING: File IO Exception raised whilst accessing file: ArraySave.csv
+2017-06-22 23:32:26,556 WARNING: File IO Exception raised whilst accessing file: ArraySave.csv
+2017-06-22 23:32:27,677 WARNING: File IO Exception raised whilst accessing file: ArraySave.csv
+2017-06-22 23:32:28,799 WARNING: File IO Exception raised whilst accessing file: ArraySave.csv
+2017-06-22 23:32:29,921 WARNING: File IO Exception raised whilst accessing file: ArraySave.csv
+2017-06-22 23:32:31,042 WARNING: File IO Exception raised whilst accessing file: ArraySave.csv
+2017-06-22 23:32:32,164 WARNING: File IO Exception raised whilst accessing file: ArraySave.csv
+2017-06-22 23:32:33,286 WARNING: File IO Exception raised whilst accessing file: ArraySave.csv
+2017-06-22 23:32:34,407 WARNING: File IO Exception raised whilst accessing file: ArraySave.csv
+2017-06-22 23:32:35,528 WARNING: File IO Exception raised whilst accessing file: ArraySave.csv
+2017-06-22 23:32:36,651 WARNING: File IO Exception raised whilst accessing file: ArraySave.csv
+2017-06-22 23:32:37,773 WARNING: File IO Exception raised whilst accessing file: ArraySave.csv
+2017-06-23 07:46:58,409 WARNING: File IO Exception raised whilst accessing file: ArraySave.csv
+2017-06-26 17:34:44,744 WARNING: Garbage data from Magnetometer: ------------------------------------
+2017-06-26 17:34:44,776 WARNING: Garbage data from Magnetometer: Sensor:       HMC5883
+2017-06-26 17:34:44,776 WARNING: Garbage data from Magnetometer: Driver Ver:   1
+2017-06-26 17:34:44,788 WARNING: Garbage data from Magnetometer: Unique ID:    12345
+2017-06-26 17:34:44,842 WARNING: Garbage data from Magnetometer: Max Value:    800.00 uT
+2017-06-26 17:34:44,843 WARNING: Garbage data from Magnetometer: Min Value:    -800.00 uT
+2017-06-26 17:34:44,877 WARNING: Garbage data from Magnetometer: Resolution:   0.20 uT
+2017-06-26 17:34:44,904 WARNING: Garbage data from Magnetometer: ------------------------------------
+2017-06-26 17:34:44,905 WARNING: Garbage data from Magnetometer: 
+2017-06-26 18:32:17,346 WARNING: Garbage data from Magnetometer: ------------------------------------
+2017-06-26 18:32:17,378 WARNING: Garbage data from Magnetometer: Sensor:       HMC5883
+2017-06-26 18:32:17,379 WARNING: Garbage data from Magnetometer: Driver Ver:   1
+2017-06-26 18:32:17,390 WARNING: Garbage data from Magnetometer: Unique ID:    12345
+2017-06-26 18:32:17,445 WARNING: Garbage data from Magnetometer: Max Value:    800.00 uT
+2017-06-26 18:32:17,446 WARNING: Garbage data from Magnetometer: Min Value:    -800.00 uT
+2017-06-26 18:32:17,479 WARNING: Garbage data from Magnetometer: Resolution:   0.20 uT
+2017-06-26 18:32:17,508 WARNING: Garbage data from Magnetometer: ------------------------------------
+2017-06-26 18:32:17,509 WARNING: Garbage data from Magnetometer: 
+2017-06-26 20:15:47,507 WARNING: Garbage data from Magnetometer: 
+2017-06-26 20:21:01,726 WARNING: Garbage data from Magnetometer: ------------------------------------
+2017-06-26 20:21:01,760 WARNING: Garbage data from Magnetometer: Sensor:       HMC5883
+2017-06-26 20:21:01,792 WARNING: Garbage data from Magnetometer: Driver Ver:   1
+2017-06-26 20:21:01,792 WARNING: Garbage data from Magnetometer: Unique ID:    12345
+2017-06-26 20:21:01,825 WARNING: Garbage data from Magnetometer: Max Value:    800.00 uT
+2017-06-26 20:21:01,851 WARNING: Garbage data from Magnetometer: Min Value:    -800.00 uT
+2017-06-26 20:21:01,872 WARNING: Garbage data from Magnetometer: Resolution:   0.20 uT
+2017-06-26 20:21:01,907 WARNING: Garbage data from Magnetometer: ------------------------------------
+2017-06-26 20:21:01,907 WARNING: Garbage data from Magnetometer: 
+2017-06-26 20:46:39,244 WARNING: Garbage data from Magnetometer: ------------------------------------
+2017-06-26 20:46:39,266 WARNING: Garbage data from Magnetometer: Sensor:       HMC5883
+2017-06-26 20:46:39,266 WARNING: Garbage data from Magnetometer: Driver Ver:   1
+2017-06-26 20:46:39,289 WARNING: Garbage data from Magnetometer: Unique ID:    12345
+2017-06-26 20:46:39,332 WARNING: Garbage data from Magnetometer: Max Value:    800.00 uT
+2017-06-26 20:46:39,355 WARNING: Garbage data from Magnetometer: Min Value:    -800.00 uT
+2017-06-26 20:46:39,377 WARNING: Garbage data from Magnetometer: Resolution:   0.20 uT
+2017-06-26 20:46:39,405 WARNING: Garbage data from Magnetometer: ------------------------------------
+2017-06-26 20:46:39,405 WARNING: Garbage data from Magnetometer: 
+2017-06-26 21:41:50,187 WARNING: Garbage data from Magnetometer: ------------------------------------
+2017-06-26 21:41:50,209 WARNING: Garbage data from Magnetometer: Sensor:       HMC5883
+2017-06-26 21:41:50,241 WARNING: Garbage data from Magnetometer: Driver Ver:   1
+2017-06-26 21:41:50,253 WARNING: Garbage data from Magnetometer: Unique ID:    12345
+2017-06-26 21:41:50,275 WARNING: Garbage data from Magnetometer: Max Value:    800.00 uT
+2017-06-26 21:41:50,308 WARNING: Garbage data from Magnetometer: Min Value:    -800.00 uT
+2017-06-26 21:41:50,342 WARNING: Garbage data from Magnetometer: Resolution:   0.20 uT
+2017-06-26 21:41:50,364 WARNING: Garbage data from Magnetometer: ------------------------------------
+2017-06-26 21:41:50,364 WARNING: Garbage data from Magnetometer: 
+2017-06-27 08:10:14,684 WARNING: Garbage data from Magnetometer: ------------------------------------
+2017-06-27 08:10:14,706 WARNING: Garbage data from Magnetometer: Sensor:       HMC5883
+2017-06-27 08:10:14,727 WARNING: Garbage data from Magnetometer: Driver Ver:   1
+2017-06-27 08:10:14,750 WARNING: Garbage data from Magnetometer: Unique ID:    12345
+2017-06-27 08:10:14,772 WARNING: Garbage data from Magnetometer: Max Value:    800.00 uT
+2017-06-27 08:10:14,804 WARNING: Garbage data from Magnetometer: Min Value:    -800.00 uT
+2017-06-27 08:10:14,816 WARNING: Garbage data from Magnetometer: Resolution:   0.20 uT
+2017-06-27 08:10:14,856 WARNING: Garbage data from Magnetometer: ------------------------------------
+2017-06-27 08:10:14,860 WARNING: Garbage data from Magnetometer: 
+2017-06-27 08:24:12,621 WARNING: Garbage data from Magnetometer: ------------------------------------
+2017-06-27 08:24:12,633 WARNING: Garbage data from Magnetometer: Sensor:       HMC5883
+2017-06-27 08:24:12,656 WARNING: Garbage data from Magnetometer: Driver Ver:   1
+2017-06-27 08:24:12,691 WARNING: Garbage data from Magnetometer: Unique ID:    12345
+2017-06-27 08:24:12,700 WARNING: Garbage data from Magnetometer: Max Value:    800.00 uT
+2017-06-27 08:24:12,722 WARNING: Garbage data from Magnetometer: Min Value:    -800.00 uT
+2017-06-27 08:24:12,756 WARNING: Garbage data from Magnetometer: Resolution:   0.20 uT
+2017-06-27 08:24:12,785 WARNING: Garbage data from Magnetometer: ------------------------------------
+2017-06-27 08:24:12,786 WARNING: Garbage data from Magnetometer: 
+2017-06-27 12:00:39,569 WARNING: Garbage data from Magnetometer: 
+2017-06-27 12:22:32,592 WARNING: Garbage data from Magnetometer: ------------------------------------
+2017-06-27 12:22:32,596 WARNING: Garbage data from Magnetometer: Sensor:       HMC5883
+2017-06-27 12:22:32,605 WARNING: Garbage data from Magnetometer: Driver Ver:   1
+2017-06-27 12:22:32,622 WARNING: Garbage data from Magnetometer: Unique ID:    12345
+2017-06-27 12:22:32,645 WARNING: Garbage data from Magnetometer: Max Value:    800.00 uT
+2017-06-27 12:22:32,666 WARNING: Garbage data from Magnetometer: Min Value:    -800.00 uT
+2017-06-27 12:22:32,688 WARNING: Garbage data from Magnetometer: Resolution:   0.20 uT
+2017-06-27 12:22:32,739 WARNING: Garbage data from Magnetometer: ------------------------------------
+2017-06-27 12:22:32,743 WARNING: Garbage data from Magnetometer: 
+2017-06-27 12:24:27,358 WARNING: Garbage data from Magnetometer: ------------------------------------
+2017-06-27 12:24:27,361 WARNING: Garbage data from Magnetometer: Sensor:       HMC5883
+2017-06-27 12:24:27,378 WARNING: Garbage data from Magnetometer: Driver Ver:   1
+2017-06-27 12:24:27,401 WARNING: Garbage data from Magnetometer: Unique ID:    12345
+2017-06-27 12:24:27,421 WARNING: Garbage data from Magnetometer: Max Value:    800.00 uT
+2017-06-27 12:24:27,444 WARNING: Garbage data from Magnetometer: Min Value:    -800.00 uT
+2017-06-27 12:24:27,466 WARNING: Garbage data from Magnetometer: Resolution:   0.20 uT
+2017-06-27 12:24:27,500 WARNING: Garbage data from Magnetometer: ------------------------------------
+2017-06-27 12:24:27,502 WARNING: Garbage data from Magnetometer: 
+2017-06-27 13:08:43,841 WARNING: Garbage data from Magnetometer: ------------------------------------
+2017-06-27 13:08:43,861 WARNING: Garbage data from Magnetometer: Sensor:       HMC5883
+2017-06-27 13:08:43,873 WARNING: Garbage data from Magnetometer: Driver Ver:   1
+2017-06-27 13:08:43,895 WARNING: Garbage data from Magnetometer: Unique ID:    12345
+2017-06-27 13:08:43,927 WARNING: Garbage data from Magnetometer: Max Value:    800.00 uT
+2017-06-27 13:08:43,960 WARNING: Garbage data from Magnetometer: Min Value:    -800.00 uT
+2017-06-27 13:08:43,985 WARNING: Garbage data from Magnetometer: Resolution:   0.20 uT
+2017-06-27 13:08:44,006 WARNING: Garbage data from Magnetometer: ------------------------------------
+2017-06-27 13:08:44,008 WARNING: Garbage data from Magnetometer: 
+2017-06-29 17:11:50,781 WARNING: Garbage data from Magnetometer: ------------------------------------
+2017-06-29 17:11:50,799 WARNING: Garbage data from Magnetometer: Sensor:       HMC5883
+2017-06-29 17:11:50,812 WARNING: Garbage data from Magnetometer: Driver Ver:   1
+2017-06-29 17:11:50,834 WARNING: Garbage data from Magnetometer: Unique ID:    12345
+2017-06-29 17:11:50,857 WARNING: Garbage data from Magnetometer: Max Value:    800.00 uT
+2017-06-29 17:11:50,902 WARNING: Garbage data from Magnetometer: Min Value:    -800.00 uT
+2017-06-29 17:11:50,924 WARNING: Garbage data from Magnetometer: Resolution:   0.20 uT
+2017-06-29 17:11:50,945 WARNING: Garbage data from Magnetometer: ------------------------------------
+2017-06-29 17:11:50,947 WARNING: Garbage data from Magnetometer: 
+2017-06-29 17:11:51,448 WARNING: Garbage data from Magnetometer: ------------------------------------
+2017-06-29 17:11:51,450 WARNING: Garbage data from Magnetometer: Sensor:       HMC5883
+2017-06-29 17:11:51,481 WARNING: Garbage data from Magnetometer: Driver Ver:   1
+2017-06-29 17:11:51,483 WARNING: Garbage data from Magnetometer: Unique ID:    12345
+2017-06-29 17:11:51,517 WARNING: Garbage data from Magnetometer: Max Value:    800.00 uT
+2017-06-29 17:11:51,539 WARNING: Garbage data from Magnetometer: Min Value:    -800.00 uT
+2017-06-29 17:11:51,561 WARNING: Garbage data from Magnetometer: Resolution:   0.20 uT
+2017-06-29 17:11:51,599 WARNING: Garbage data from Magnetometer: ------------------------------------
+2017-06-29 17:11:51,601 WARNING: Garbage data from Magnetometer: 
+2017-07-02 23:20:33,062 WARNING: File IO Exception raised whilst accessing file: ArraySave.csv
+2017-07-06 16:11:07,568 WARNING: Garbage data from Magnetometer: 
+2017-07-06 16:26:31,643 WARNING: Garbage data from Magnetometer: ------------------------------------
+2017-07-06 16:26:31,645 WARNING: Garbage data from Magnetometer: Sensor:       HMC5883
+2017-07-06 16:26:31,647 WARNING: Garbage data from Magnetometer: Driver Ver:   1
+2017-07-06 16:26:31,660 WARNING: Garbage data from Magnetometer: Unique ID:    12345
+2017-07-06 16:26:31,693 WARNING: Garbage data from Magnetometer: Max Value:    800.00 uT
+2017-07-06 16:26:31,705 WARNING: Garbage data from Magnetometer: Min Value:    -800.00 uT
+2017-07-06 16:26:31,727 WARNING: Garbage data from Magnetometer: Resolution:   0.20 uT
+2017-07-06 16:26:31,764 WARNING: Garbage data from Magnetometer: ------------------------------------
+2017-07-06 16:26:31,766 WARNING: Garbage data from Magnetometer: 
+2017-07-06 16:26:32,268 WARNING: Garbage data from Magnetometer: ------------------------------------
+2017-07-06 16:26:32,276 WARNING: Garbage data from Magnetometer: Sensor:       HMC5883
+2017-07-06 16:26:32,298 WARNING: Garbage data from Magnetometer: Driver Ver:   1
+2017-07-06 16:26:32,320 WARNING: Garbage data from Magnetometer: Unique ID:    12345
+2017-07-06 16:26:32,342 WARNING: Garbage data from Magnetometer: Max Value:    800.00 uT
+2017-07-06 16:26:32,364 WARNING: Garbage data from Magnetometer: Min Value:    -800.00 uT
+2017-07-06 16:26:32,387 WARNING: Garbage data from Magnetometer: Resolution:   0.20 uT
+2017-07-06 16:26:32,419 WARNING: Garbage data from Magnetometer: ------------------------------------
+2017-07-06 16:26:32,421 WARNING: Garbage data from Magnetometer: 
+2017-07-06 16:27:55,776 WARNING: File IO Exception raised whilst accessing file: logs/2017-07-06.csv
+2017-07-06 16:27:58,016 WARNING: File IO Exception raised whilst accessing file: logs/2017-07-06.csv
+2017-07-06 16:34:48,824 WARNING: Garbage data from Magnetometer: ------------------------------------
+2017-07-06 16:34:48,832 WARNING: Garbage data from Magnetometer: Sensor:       HMC5883
+2017-07-06 16:34:48,855 WARNING: Garbage data from Magnetometer: Driver Ver:   1
+2017-07-06 16:34:48,877 WARNING: Garbage data from Magnetometer: Unique ID:    12345
+2017-07-06 16:34:48,899 WARNING: Garbage data from Magnetometer: Max Value:    800.00 uT
+2017-07-06 16:34:48,943 WARNING: Garbage data from Magnetometer: Min Value:    -800.00 uT
+2017-07-06 16:34:48,965 WARNING: Garbage data from Magnetometer: Resolution:   0.20 uT
+2017-07-06 16:34:48,989 WARNING: Garbage data from Magnetometer: ------------------------------------
+2017-07-06 16:34:48,993 WARNING: Garbage data from Magnetometer: 
+2017-07-07 08:08:55,669 WARNING: File IO Exception raised whilst accessing file: ArraySave.csv
+2017-07-07 08:08:57,881 WARNING: File IO Exception raised whilst accessing file: ArraySave.csv
+2017-07-07 08:09:00,125 WARNING: File IO Exception raised whilst accessing file: ArraySave.csv
+2017-07-07 08:09:02,373 WARNING: File IO Exception raised whilst accessing file: ArraySave.csv
+2017-07-07 08:09:04,623 WARNING: File IO Exception raised whilst accessing file: ArraySave.csv
+2017-07-07 08:09:06,872 WARNING: File IO Exception raised whilst accessing file: ArraySave.csv
+2017-07-07 08:09:09,121 WARNING: File IO Exception raised whilst accessing file: ArraySave.csv
+2017-07-07 12:26:42,744 WARNING: Garbage data from Magnetometer: ------------------------------------
+2017-07-07 12:26:42,769 WARNING: Garbage data from Magnetometer: Sensor:       HMC5883
+2017-07-07 12:26:42,791 WARNING: Garbage data from Magnetometer: Driver Ver:   1
+2017-07-07 12:26:42,823 WARNING: Garbage data from Magnetometer: Unique ID:    12345
+2017-07-07 12:26:42,826 WARNING: Garbage data from Magnetometer: Max Value:    800.00 uT
+2017-07-07 12:26:42,858 WARNING: Garbage data from Magnetometer: Min Value:    -800.00 uT
+2017-07-07 12:26:42,890 WARNING: Garbage data from Magnetometer: Resolution:   0.20 uT
+2017-07-07 12:26:42,911 WARNING: Garbage data from Magnetometer: ------------------------------------
+2017-07-07 12:26:42,912 WARNING: Garbage data from Magnetometer: 
+2017-07-08 13:32:26,679 WARNING: Garbage data from Magnetometer: ------------------------------------
+2017-07-08 13:32:26,694 WARNING: Garbage data from Magnetometer: Sensor:       HMC5883
+2017-07-08 13:32:26,726 WARNING: Garbage data from Magnetometer: Driver Ver:   1
+2017-07-08 13:32:26,757 WARNING: Garbage data from Magnetometer: Unique ID:    12345
+2017-07-08 13:32:26,757 WARNING: Garbage data from Magnetometer: Max Value:    800.00 uT
+2017-07-08 13:32:26,788 WARNING: Garbage data from Magnetometer: Min Value:    -800.00 uT
+2017-07-08 13:32:26,819 WARNING: Garbage data from Magnetometer: Resolution:   0.20 uT
+2017-07-08 13:32:26,850 WARNING: Garbage data from Magnetometer: ------------------------------------
+2017-07-08 13:32:26,850 WARNING: Garbage data from Magnetometer: 
+2017-07-08 15:39:03,447 WARNING: Garbage data from Magnetometer: ------------------------------------
+2017-07-08 15:39:03,499 WARNING: Garbage data from Magnetometer: Sensor:       HMC5883
+2017-07-08 15:39:03,503 WARNING: Garbage data from Magnetometer: Driver Ver:   1
+2017-07-08 15:39:03,512 WARNING: Garbage data from Magnetometer: Unique ID:    12345
+2017-07-08 15:39:03,534 WARNING: Garbage data from Magnetometer: Max Value:    800.00 uT
+2017-07-08 15:39:03,557 WARNING: Garbage data from Magnetometer: Min Value:    -800.00 uT
+2017-07-08 15:39:03,579 WARNING: Garbage data from Magnetometer: Resolution:   0.20 uT
+2017-07-08 15:39:03,612 WARNING: Garbage data from Magnetometer: ------------------------------------
+2017-07-08 15:39:03,615 WARNING: Garbage data from Magnetometer: 
+2017-07-15 14:12:08,786 WARNING: Garbage data from Magnetometer: HMC5883 Magnetometer Test
+2017-07-15 14:12:08,799 WARNING: Garbage data from Magnetometer: 
+2017-07-15 14:12:08,831 WARNING: Garbage data from Magnetometer: ------------------------------------
+2017-07-15 14:12:08,851 WARNING: Garbage data from Magnetometer: Sensor:       HMC5883
+2017-07-15 14:12:08,871 WARNING: Garbage data from Magnetometer: Driver Ver:   1
+2017-07-15 14:12:08,892 WARNING: Garbage data from Magnetometer: Unique ID:    12345
+2017-07-15 14:12:08,917 WARNING: Garbage data from Magnetometer: Max Value:    800.00 uT
+2017-07-15 14:12:08,945 WARNING: Garbage data from Magnetometer: Min Value:    -800.00 uT
+2017-07-15 14:12:08,969 WARNING: Garbage data from Magnetometer: Resolution:   0.20 uT
+2017-07-15 14:12:09,006 WARNING: Garbage data from Magnetometer: ------------------------------------
+2017-07-15 14:12:09,010 WARNING: Garbage data from Magnetometer: 
+2017-07-15 14:14:21,655 WARNING: Garbage data from Magnetometer: 
+2017-07-15 14:15:21,666 WARNING: Garbage data from Magnetometer: 
+2017-07-15 14:16:21,676 WARNING: Garbage data from Magnetometer: 
+2017-07-15 14:17:21,686 WARNING: Garbage data from Magnetometer: 
+2017-07-15 14:18:21,695 WARNING: Garbage data from Magnetometer: 
+2017-07-15 14:19:21,705 WARNING: Garbage data from Magnetometer: 
+2017-07-15 14:20:21,714 WARNING: Garbage data from Magnetometer: 
+2017-07-15 14:21:21,723 WARNING: Garbage data from Magnetometer: 
+2017-07-15 14:22:21,733 WARNING: Garbage data from Magnetometer: 
+2017-07-15 14:23:21,741 WARNING: Garbage data from Magnetometer: 
+2017-07-15 14:24:21,751 WARNING: Garbage data from Magnetometer: 
+2017-07-15 14:25:21,759 WARNING: Garbage data from Magnetometer: 
+2017-07-15 14:26:21,769 WARNING: Garbage data from Magnetometer: 
+2017-07-15 14:27:21,797 WARNING: Garbage data from Magnetometer: 
+2017-07-15 14:27:44,638 WARNING: Garbage data from Magnetometer: HMC5883 Magnetometer Test
+2017-07-15 14:27:44,641 WARNING: Garbage data from Magnetometer: 
+2017-07-15 14:27:44,678 WARNING: Garbage data from Magnetometer: ------------------------------------
+2017-07-15 14:27:44,703 WARNING: Garbage data from Magnetometer: Sensor:       HMC5883
+2017-07-15 14:27:44,723 WARNING: Garbage data from Magnetometer: Driver Ver:   1
+2017-07-15 14:27:44,743 WARNING: Garbage data from Magnetometer: Unique ID:    12345
+2017-07-15 14:27:44,768 WARNING: Garbage data from Magnetometer: Max Value:    800.00 uT
+2017-07-15 14:27:44,797 WARNING: Garbage data from Magnetometer: Min Value:    -800.00 uT
+2017-07-15 14:27:44,821 WARNING: Garbage data from Magnetometer: Resolution:   0.20 uT
+2017-07-15 14:27:44,860 WARNING: Garbage data from Magnetometer: ------------------------------------
+2017-07-15 14:27:44,866 WARNING: Garbage data from Magnetometer: 
+2017-07-15 14:31:15,289 WARNING: Garbage data from Magnetometer: 
+2017-07-15 14:32:15,300 WARNING: Garbage data from Magnetometer: 
+2017-07-15 14:33:15,310 WARNING: Garbage data from Magnetometer: 
+2017-07-15 14:34:15,320 WARNING: Garbage data from Magnetometer: 
+2017-07-15 14:35:15,329 WARNING: Garbage data from Magnetometer: 
+2017-07-15 14:36:15,339 WARNING: Garbage data from Magnetometer: 
+2017-07-15 14:37:15,348 WARNING: Garbage data from Magnetometer: 
+2017-07-15 14:38:15,357 WARNING: Garbage data from Magnetometer: 
+2017-07-15 14:39:15,367 WARNING: Garbage data from Magnetometer: 
+2017-07-15 14:40:15,376 WARNING: Garbage data from Magnetometer: 
+2017-07-15 14:41:15,385 WARNING: Garbage data from Magnetometer: 
+2017-07-15 14:42:15,393 WARNING: Garbage data from Magnetometer: 
+2017-07-15 14:43:15,402 WARNING: Garbage data from Magnetometer: 
+2017-07-15 14:44:15,442 WARNING: Garbage data from Magnetometer: 
+2017-07-15 14:45:15,450 WARNING: Garbage data from Magnetometer: 
+2017-07-15 14:46:15,459 WARNING: Garbage data from Magnetometer: 
+2017-07-15 14:47:15,467 WARNING: Garbage data from Magnetometer: 
+2017-07-15 14:48:15,476 WARNING: Garbage data from Magnetometer: 
+2017-07-15 14:49:15,484 WARNING: Garbage data from Magnetometer: 
+2017-07-15 14:50:15,493 WARNING: Garbage data from Magnetometer: 
+2017-07-15 14:51:15,501 WARNING: Garbage data from Magnetometer: 
+2017-07-15 14:52:15,509 WARNING: Garbage data from Magnetometer: 
+2017-07-15 14:53:15,518 WARNING: Garbage data from Magnetometer: 
+2017-07-15 14:54:15,526 WARNING: Garbage data from Magnetometer: 
+2017-07-15 14:55:15,535 WARNING: Garbage data from Magnetometer: 
+2017-07-15 15:52:45,023 WARNING: Garbage data from Magnetometer: HMC5883 Magnetometer Test
+2017-07-15 15:52:45,025 WARNING: Garbage data from Magnetometer: 
+2017-07-15 15:52:45,063 WARNING: Garbage data from Magnetometer: ------------------------------------
+2017-07-15 15:52:45,088 WARNING: Garbage data from Magnetometer: Sensor:       HMC5883
+2017-07-15 15:52:45,104 WARNING: Garbage data from Magnetometer: Driver Ver:   1
+2017-07-15 15:52:45,126 WARNING: Garbage data from Magnetometer: Unique ID:    12345
+2017-07-15 15:52:45,153 WARNING: Garbage data from Magnetometer: Max Value:    800.00 uT
+2017-07-15 15:52:45,178 WARNING: Garbage data from Magnetometer: Min Value:    -800.00 uT
+2017-07-15 15:52:45,202 WARNING: Garbage data from Magnetometer: Resolution:   0.20 uT
+2017-07-15 15:52:45,243 WARNING: Garbage data from Magnetometer: ------------------------------------
+2017-07-15 15:52:45,245 WARNING: Garbage data from Magnetometer: 
+2017-07-20 15:52:14,472 WARNING: Garbage data from Magnetometer: HMC5883 Magnetometer Test
+2017-07-20 15:52:14,488 WARNING: Garbage data from Magnetometer: 
+2017-07-20 15:52:14,513 WARNING: Garbage data from Magnetometer: ------------------------------------
+2017-07-20 15:52:14,538 WARNING: Garbage data from Magnetometer: Sensor:       HMC5883
+2017-07-20 15:52:14,554 WARNING: Garbage data from Magnetometer: Driver Ver:   1
+2017-07-20 15:52:14,574 WARNING: Garbage data from Magnetometer: Unique ID:    12345
+2017-07-20 15:52:14,603 WARNING: Garbage data from Magnetometer: Max Value:    800.00 uT
+2017-07-20 15:52:14,628 WARNING: Garbage data from Magnetometer: Min Value:    -800.00 uT
+2017-07-20 15:52:14,652 WARNING: Garbage data from Magnetometer: Resolution:   0.20 uT
+2017-07-20 15:52:14,693 WARNING: Garbage data from Magnetometer: ------------------------------------
+2017-07-20 15:52:14,693 WARNING: Garbage data from Magnetometer: 
+2017-07-20 17:15:57,097 WARNING: Garbage data from Magnetometer: HMC5883 Magnetometer Test
+2017-07-20 17:15:57,200 WARNING: Garbage data from Magnetometer: 
+2017-07-20 17:15:57,204 WARNING: Garbage data from Magnetometer: ------------------------------------
+2017-07-20 17:15:57,207 WARNING: Garbage data from Magnetometer: Sensor:       HMC5883
+2017-07-20 17:15:57,211 WARNING: Garbage data from Magnetometer: Driver Ver:   1
+2017-07-20 17:15:57,214 WARNING: Garbage data from Magnetometer: Unique ID:    12345
+2017-07-20 17:15:57,218 WARNING: Garbage data from Magnetometer: Max Value:    800.00 uT
+2017-07-20 17:15:57,222 WARNING: Garbage data from Magnetometer: Min Value:    -800.00 uT
+2017-07-20 17:15:57,225 WARNING: Garbage data from Magnetometer: Resolution:   0.20 uT
+2017-07-20 17:15:57,229 WARNING: Garbage data from Magnetometer: ------------------------------------
+2017-07-20 17:15:57,235 WARNING: Garbage data from Magnetometer: 
+2017-07-22 13:35:59,598 WARNING: Garbage data from Magnetometer: HMC5883 Magnetometer Test
+2017-07-22 13:35:59,599 WARNING: Garbage data from Magnetometer: 
+2017-07-22 13:35:59,638 WARNING: Garbage data from Magnetometer: ------------------------------------
+2017-07-22 13:35:59,663 WARNING: Garbage data from Magnetometer: Sensor:       HMC5883
+2017-07-22 13:35:59,679 WARNING: Garbage data from Magnetometer: Driver Ver:   1
+2017-07-22 13:35:59,704 WARNING: Garbage data from Magnetometer: Unique ID:    12345
+2017-07-22 13:35:59,728 WARNING: Garbage data from Magnetometer: Max Value:    800.00 uT
+2017-07-22 13:35:59,753 WARNING: Garbage data from Magnetometer: Min Value:    -800.00 uT
+2017-07-22 13:35:59,777 WARNING: Garbage data from Magnetometer: Resolution:   0.20 uT
+2017-07-22 13:35:59,818 WARNING: Garbage data from Magnetometer: ------------------------------------
+2017-07-22 13:35:59,820 WARNING: Garbage data from Magnetometer: 
+2017-07-23 22:07:57,466 WARNING: Garbage data from Magnetometer: HMC5883 Magnetometer Test
+2017-07-23 22:07:57,486 WARNING: Garbage data from Magnetometer: 
+2017-07-23 22:07:57,505 WARNING: Garbage data from Magnetometer: ------------------------------------
+2017-07-23 22:07:57,529 WARNING: Garbage data from Magnetometer: Sensor:       HMC5883
+2017-07-23 22:07:57,545 WARNING: Garbage data from Magnetometer: Driver Ver:   1
+2017-07-23 22:07:57,565 WARNING: Garbage data from Magnetometer: Unique ID:    12345
+2017-07-23 22:07:57,594 WARNING: Garbage data from Magnetometer: Max Value:    800.00 uT
+2017-07-23 22:07:57,619 WARNING: Garbage data from Magnetometer: Min Value:    -800.00 uT
+2017-07-23 22:07:57,644 WARNING: Garbage data from Magnetometer: Resolution:   0.20 uT
+2017-07-23 22:07:57,685 WARNING: Garbage data from Magnetometer: ------------------------------------
+2017-07-23 22:07:57,692 WARNING: Garbage data from Magnetometer: 
+2017-07-24 17:53:21,946 WARNING: Garbage data from Magnetometer: HMC5883 Magnetometer Test
+2017-07-24 17:53:22,150 WARNING: Garbage data from Magnetometer: 
+2017-07-24 17:53:22,154 WARNING: Garbage data from Magnetometer: ------------------------------------
+2017-07-24 17:53:22,158 WARNING: Garbage data from Magnetometer: Sensor:       HMC5883
+2017-07-24 17:53:22,161 WARNING: Garbage data from Magnetometer: Driver Ver:   1
+2017-07-24 17:53:22,165 WARNING: Garbage data from Magnetometer: Unique ID:    12345
+2017-07-24 17:53:22,169 WARNING: Garbage data from Magnetometer: Max Value:    800.00 uT
+2017-07-24 17:53:22,173 WARNING: Garbage data from Magnetometer: Min Value:    -800.00 uT
+2017-07-24 17:53:22,176 WARNING: Garbage data from Magnetometer: Resolution:   0.20 uT
+2017-07-24 17:53:22,181 WARNING: Garbage data from Magnetometer: ------------------------------------
+2017-07-24 17:53:22,184 WARNING: Garbage data from Magnetometer: 
+2017-07-30 17:55:06,520 WARNING: Garbage data from Magnetometer: HMC5883 Magnetometer Test
+2017-07-30 17:55:06,520 WARNING: Garbage data from Magnetometer: 
+2017-07-30 17:55:06,560 WARNING: Garbage data from Magnetometer: ------------------------------------
+2017-07-30 17:55:06,585 WARNING: Garbage data from Magnetometer: Sensor:       HMC5883
+2017-07-30 17:55:06,601 WARNING: Garbage data from Magnetometer: Driver Ver:   1
+2017-07-30 17:55:06,626 WARNING: Garbage data from Magnetometer: Unique ID:    12345
+2017-07-30 17:55:06,650 WARNING: Garbage data from Magnetometer: Max Value:    800.00 uT
+2017-07-30 17:55:06,675 WARNING: Garbage data from Magnetometer: Min Value:    -800.00 uT
+2017-07-30 17:55:06,700 WARNING: Garbage data from Magnetometer: Resolution:   0.20 uT
+2017-07-30 17:55:06,740 WARNING: Garbage data from Magnetometer: ------------------------------------
+2017-07-30 17:55:06,741 WARNING: Garbage data from Magnetometer: 
+2017-07-30 19:42:08,486 WARNING: Garbage data from Magnetometer: HMC5883 Magnetometer Test
+2017-07-30 19:42:08,490 WARNING: Garbage data from Magnetometer: 
+2017-07-30 19:42:08,526 WARNING: Garbage data from Magnetometer: ------------------------------------
+2017-07-30 19:42:08,550 WARNING: Garbage data from Magnetometer: Sensor:       HMC5883
+2017-07-30 19:42:08,571 WARNING: Garbage data from Magnetometer: Driver Ver:   1
+2017-07-30 19:42:08,591 WARNING: Garbage data from Magnetometer: Unique ID:    12345
+2017-07-30 19:42:08,616 WARNING: Garbage data from Magnetometer: Max Value:    800.00 uT
+2017-07-30 19:42:08,644 WARNING: Garbage data from Magnetometer: Min Value:    -800.00 uT
+2017-07-30 19:42:08,670 WARNING: Garbage data from Magnetometer: Resolution:   0.20 uT
+2017-07-30 19:42:08,707 WARNING: Garbage data from Magnetometer: ------------------------------------
+2017-07-30 19:42:08,714 WARNING: Garbage data from Magnetometer: 
+2017-07-31 22:26:20,956 WARNING: File IO Exception raised whilst accessing file: ArraySave.csv
+2017-08-01 20:16:01,441 WARNING: Garbage data from Magnetometer: HMC5883 Magnetometer Test
+2017-08-01 20:16:01,444 WARNING: Garbage data from Magnetometer: 
+2017-08-01 20:16:01,481 WARNING: Garbage data from Magnetometer: ------------------------------------
+2017-08-01 20:16:01,506 WARNING: Garbage data from Magnetometer: Sensor:       HMC5883
+2017-08-01 20:16:01,526 WARNING: Garbage data from Magnetometer: Driver Ver:   1
+2017-08-01 20:16:01,547 WARNING: Garbage data from Magnetometer: Unique ID:    12345
+2017-08-01 20:16:01,571 WARNING: Garbage data from Magnetometer: Max Value:    800.00 uT
+2017-08-01 20:16:01,600 WARNING: Garbage data from Magnetometer: Min Value:    -800.00 uT
+2017-08-01 20:16:01,625 WARNING: Garbage data from Magnetometer: Resolution:   0.20 uT
+2017-08-01 20:16:01,661 WARNING: Garbage data from Magnetometer: ------------------------------------
+2017-08-01 20:16:01,665 WARNING: Garbage data from Magnetometer: 
+2017-08-02 09:03:14,134 WARNING: File IO Exception raised whilst accessing file: ArraySave.csv
+2017-08-04 07:48:57,606 WARNING: File IO Exception raised whilst accessing file: ArraySave.csv
+2017-08-07 00:02:35,844 WARNING: Garbage data from Magnetometer: HMC5883 Magnetometer Test
+2017-08-07 00:02:35,861 WARNING: Garbage data from Magnetometer: 
+2017-08-07 00:02:35,884 WARNING: Garbage data from Magnetometer: ------------------------------------
+2017-08-07 00:02:35,908 WARNING: Garbage data from Magnetometer: Sensor:       HMC5883
+2017-08-07 00:02:35,929 WARNING: Garbage data from Magnetometer: Driver Ver:   1
+2017-08-07 00:02:35,949 WARNING: Garbage data from Magnetometer: Unique ID:    12345
+2017-08-07 00:02:35,974 WARNING: Garbage data from Magnetometer: Max Value:    800.00 uT
+2017-08-07 00:02:36,003 WARNING: Garbage data from Magnetometer: Min Value:    -800.00 uT
+2017-08-07 00:02:36,027 WARNING: Garbage data from Magnetometer: Resolution:   0.20 uT
+2017-08-07 00:02:36,066 WARNING: Garbage data from Magnetometer: ------------------------------------
+2017-08-07 00:02:36,073 WARNING: Garbage data from Magnetometer: 
+2017-08-08 18:04:56,495 WARNING: File IO Exception raised whilst accessing file: ArraySave.csv
+2017-08-10 07:37:49,971 WARNING: Garbage data from Magnetometer: HMC5883 Magnetometer Test
+2017-08-10 07:37:49,974 WARNING: Garbage data from Magnetometer: 
+2017-08-10 07:37:50,011 WARNING: Garbage data from Magnetometer: ------------------------------------
+2017-08-10 07:37:50,036 WARNING: Garbage data from Magnetometer: Sensor:       HMC5883
+2017-08-10 07:37:50,052 WARNING: Garbage data from Magnetometer: Driver Ver:   1
+2017-08-10 07:37:50,077 WARNING: Garbage data from Magnetometer: Unique ID:    12345
+2017-08-10 07:37:50,102 WARNING: Garbage data from Magnetometer: Max Value:    800.00 uT
+2017-08-10 07:37:50,130 WARNING: Garbage data from Magnetometer: Min Value:    -800.00 uT
+2017-08-10 07:37:50,150 WARNING: Garbage data from Magnetometer: Resolution:   0.20 uT
+2017-08-10 07:37:50,193 WARNING: Garbage data from Magnetometer: ------------------------------------
+2017-08-10 07:37:50,195 WARNING: Garbage data from Magnetometer: 

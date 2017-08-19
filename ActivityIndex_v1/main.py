@@ -18,15 +18,15 @@ def SaveAsCSV(datalist):
 
 if __name__ == '__main__':
     stationlist = []
-    try:
-        station1 = Station.Station("Dalmore Prime", "/home/vmalkin/Magnetometer/dalomoreP/pyDataReader/graphing/Dalmore_Prime.1minbins.csv", "f1", '%Y-%m-%d %H:%M', 1)
-    except:
-        print("Unable to create Station")
-
-    try:
-        station2 = Station.Station("Dalmore Rapid Run No 01", "/home/vmalkin/Magnetometer/dalomoreR/pyDataReader/graphing/Dalmore_Rapid.1minbins.csv", "f1", '%Y-%m-%d %H:%M', 1)
-    except:
-        print("Unable to create Station")
+    # try:
+    #     station1 = Station.Station("Dalmore Prime", "/home/vmalkin/Magnetometer/dalomoreP/pyDataReader/graphing/Dalmore_Prime.1minbins.csv", "f1", '%Y-%m-%d %H:%M', 1)
+    # except:
+    #     print("Unable to create Station")
+    #
+    # try:
+    #     station2 = Station.Station("Dalmore Rapid Run No 01", "/home/vmalkin/Magnetometer/dalomoreR/pyDataReader/graphing/Dalmore_Rapid.1minbins.csv", "f1", '%Y-%m-%d %H:%M', 1)
+    # except:
+    #     print("Unable to create Station")
 
     # try:
     #     station3 = Station.Station("Dalmore Rapid Run No 02", "NX2000.1minbins.csv", "f1", '%Y-%m-%d %H:%M', 1)
@@ -50,35 +50,7 @@ if __name__ == '__main__':
 
 
 
-    try:
-        stationlist.append(station1)
-    except:
-        print("Unable to add Station")
-
-    try:
-        stationlist.append(station2)
-    except:
-        print("Unable to add Station")
-
-    # try:
-    #     stationlist.append(station3)
-    # except:
-    #     print("Unable to add Station")
-    #
-    # try:
-    #     stationlist.append(station4)
-    # except:
-    #     print("Unable to add Station")
-
-    try:
-        stationlist.append(station5)
-    except:
-        print("Unable to add Station")
-
-    try:
-        stationlist.append(station6)
-    except:
-        print("Unable to add Station")
+    stationlist = [station5, station6]
 
     while True:
         sleeptime = 900
@@ -124,7 +96,7 @@ if __name__ == '__main__':
 
             # create the combined output file
             combolist = []
-            comboitem = "Station Name, NOW, 2hr, 3hr, 4hr, 5hr, 6hr, 7hr, 8hr, 9hr, 10hr, 11hr, 12hr, 13hr, 14hr, 15hr, 16hr, 17hr, 18hr, 19hr, 20hr, 21hr, 22hr, 23hr"
+            comboitem = "Station Name, NOW, 2hr, 3hr, 4hr, 5hr, 6hr, 7hr, 8hr, 9hr, 10hr, 11hr, 12hr, 13hr, 14hr, 15hr, 16hr, 17hr, 18hr, 19hr, 20hr, 21hr, 22hr, 23hr, 24hr, 25hr, 26hr, 27hr, 28hr, 29hr, 30hr, 31hr, 32hr, 33hr, 34hr, 35hr, 36hr, 37hr, 38hr, 39hr, 49hr, 41hr, 42hr, 43hr, 44hr, 45hr, 47hr, 47hr, 48hr"
             combolist.append(comboitem)
 
             for magstation in stationlist:
