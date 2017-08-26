@@ -40,14 +40,14 @@
 /* Assign a unique ID to this sensor at the same time */
 Adafruit_HMC5883_Unified mag = Adafruit_HMC5883_Unified(12345);
 
-double AVERAGE_ITERATIONS = 2000.0; /* Approx 1000 iterations per second */
+double AVERAGE_ITERATIONS = 15000; /* Approx 1000 iterations per second */
 
 
 void displaySensorDetails(void)
 {
   sensor_t sensor;
   mag.getSensor(&sensor);
-  Serial.println("Dalmore Rapid No 2");
+  Serial.println("Dalmore Prime. Est 2015");
   Serial.println("------------------------------------");
   Serial.print  ("Sensor:       "); Serial.println(sensor.name);
   Serial.print  ("Driver Ver:   "); Serial.println(sensor.version);
@@ -72,7 +72,7 @@ void setup(void)
     Serial.println("Ooops, no HMC5883 detected ... Check your wiring!");
     while(1);
   }
-  
+  mag.setMagGain(HMC5883_MAGGAIN_2_5);
   /* Display some basic information on this sensor */
   displaySensorDetails();
 }

@@ -53,7 +53,7 @@ def process_data(input_data_array):
     output_diffs = dp.create_diffs_array(data_array)
 
     # rebuild the relative readings, now with no blips
-    SPIKE_CHECK = True
+    SPIKE_CHECK = False
     smoothed_data_array = []
 
     if SPIKE_CHECK == True:
@@ -67,8 +67,10 @@ def process_data(input_data_array):
     smoothed_data_array = dp.running_average(smoothed_data_array, 6)
 
     # smoothed for 10 minutes here
-    output_diffs = dp.running_average(output_diffs, 140)
-    output_diffs = dp.running_average(output_diffs, 140)
+    output_diffs = dp.running_average(output_diffs, 32)
+    output_diffs = dp.running_average(output_diffs, 32)
+
+    # Calculate the avg smallest diff value, based on the smoothed data
 
     # ###########################################################
     # create the display files for graphing, using ArraySave.CSV
@@ -79,18 +81,17 @@ def process_data(input_data_array):
 
     ofm.CreateDiffs(output_diffs) # use output_diffs data
 
-    # # to get the last 4 hours the split value is mag read frequency * 60 * 4
+    # to get the last 1 hours the split value is mag read frequency * 60 * 1
     splitvalue = k.MAG_READ_FREQ * 60 * 1
-    onehrfile = "graphing/dr_02hr.csv"
-    ofm.create_hichart_datafile(smoothed_data_array, splitvalue, onehrfile)
+    ofm.create_hichart_datafile(smoothed_data_array, splitvalue, k.FILE_1HR)
 
-    # # to get the last 4 hours the split value is mag read frequency * 60 * 4
-    # splitvalue = k.MAG_READ_FREQ * 60 * 4
-    # ofm.create_hichart_datafile(smoothed_data_array, splitvalue, k.FILE_4HR)
+    # to get the last 4 hours the split value is mag read frequency * 60 * 4
+    splitvalue = k.MAG_READ_FREQ * 60 * 4
+    ofm.create_hichart_datafile(smoothed_data_array, splitvalue, k.FILE_4HR)
 
-    # # to get the last 24 hours the split value is mag read frequency * 60 * 23
-    # splitvalue = k.MAG_READ_FREQ * 60 * 24
-    # ofm.create_hichart_datafile(smoothed_data_array, splitvalue, k.FILE_24HR)
+    # to get the last 24 hours the split value is mag read frequency * 60 * 24
+    splitvalue = k.MAG_READ_FREQ * 60 * 24
+    ofm.create_hichart_datafile(smoothed_data_array, splitvalue, k.FILE_24HR)
 
     # Create the 1 minute bin file
     binned_data = binner.utc2unix(data_array)
@@ -107,19 +108,19 @@ while True:
     starttime = time.time()
 
     mag_readings = []
-    try:
-        mag_readings = ofm.CreateRawArray()
-        process_data(mag_readings)
-        # Calculate the processing time
-        endtime = time.time()
-        processingtime = endtime - starttime
-        processingtime = str(processingtime)[:5]
-        print("Processing complete. Elapsed time: " + processingtime + " seconds.\n")
-        # print(str(len(mag_readings)) + " records loaded")
+    # try:
+    mag_readings = ofm.CreateRawArray()
+    process_data(mag_readings)
+    # Calculate the processing time
+    endtime = time.time()
+    processingtime = endtime - starttime
+    processingtime = str(processingtime)[:5]
+    print("Processing complete. Elapsed time: " + processingtime + " seconds.\n")
+    # print(str(len(mag_readings)) + " records loaded")
 
-    except:
-        print("ERROR: Problem opening file")
-        logging.critical(" ERROR: Problem opening file. Unable to create display files")
+    # except:
+    #     print("ERROR: Problem opening file")
+    #     logging.critical(" ERROR: Problem opening file. Unable to create display files")
 
 
     timedelay = DELAY_SHORT_INTERVAL + random.randint(0,RANDOM_SECS)

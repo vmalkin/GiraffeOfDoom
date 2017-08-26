@@ -56,17 +56,26 @@ class Station:
         # #################################################################################
         def normaliseDHDT(unix_data_array):
             workingarray = []
-            minvalue = 1000
-            maxvalue = -1000
 
             # first calculate the max/min values in our datadata
-            for item in unix_data_array:
-                itemsplit = item.split(",")
-                datadata = itemsplit[1]
-                if float(datadata) > float(maxvalue):
-                    maxvalue = datadata
-                if float(datadata) < float(minvalue):
-                    minvalue = datadata
+            temp1 = []
+            for i in range(1,len(unix_data_array)):
+                itemsplit = unix_data_array[i].split(",")
+                datavalue = itemsplit[1]
+                temp1.append(datavalue)
+
+            minvalue = float(temp1[0])
+            for i in range(0,len(temp1)):
+                if float(temp1[i]) <= minvalue:
+                    minvalue = float(temp1[i])
+
+            maxvalue = float(temp1[0])
+            for i in range(0, len(temp1)):
+                if float(temp1[i]) >= maxvalue:
+                    maxvalue = float(temp1[i])
+
+            # print(str(self.station_name) + ' min/max values are ' + str(minvalue) + " " + str(maxvalue))
+
 
             # now normalise the datadata
             for item in unix_data_array:
@@ -77,6 +86,13 @@ class Station:
                 newdata = (float(datadata) - float(minvalue)) / (float(maxvalue) - float(minvalue))
                 newdata = datatime + "," + str(newdata)
                 workingarray.append(newdata)
+
+            testarray = []
+            for item in workingarray:
+                itemsplit = item.split(",")
+                testarray.append(str(itemsplit[1]))
+            testarray.sort()
+            print(str(self.station_name) + ' NORMALISED min/max values are ' + str(testarray[0]) + " " + str(testarray[len(testarray) - 1]))
 
             return workingarray
 

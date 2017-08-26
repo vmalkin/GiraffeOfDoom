@@ -27,6 +27,11 @@ class Station:
         # load up previous saved data
         self.save_array = self.loadpickle()
 
+        # min data has the format [currentmin, counter]. We increment each one
+        # and calculate the avg to scale our binned data against
+        self.mindata = self.loadminvalues()
+        print("Current min values stored are: " + str(self.mindata[0]) + " " + str(self.mindata[1]))
+
         # the latest data to be downloaded
         self.latest_data = []
 
@@ -35,6 +40,20 @@ class Station:
 
         # Binned DHDT data.
         self.bin_dadt = []
+
+    # #################################################################################
+    # load pickle file and return the min-max array
+    # #################################################################################
+    def loadminvalues(self):
+        savefile = self.name + ".minvalues.pkl"
+        try:
+            dataarray = pickle.load(open(savefile, "rb"))
+            # print("Loaded values from file")
+        except:
+            dataarray = [0.001,1]
+            print("No min values to load. Creating values of zero")
+
+        return dataarray
 
     # #################################################################################
     # load pickle file and return the min-max array
@@ -70,27 +89,32 @@ class Station:
         if self.sourcetype == "w2":
             url = self.datasource
             importarray = []
-            response = webreader.urlopen(url)
+            try:
+                response = webreader.urlopen(url)
+                linecount = 0
+                for item in response:
+                    linecount = linecount + 1
+                    if linecount > 21:
+                        logData = str(item, 'ascii').strip()
+                        logData = logData.split()
+                        # print(str(logData) + " " + str(linecount))
+                        dp_date = logData[0] + "-" + logData[1] + "-" + logData[2]
 
-            linecount = 0
-            for item in response:
-                linecount = linecount + 1
-                if linecount > 21:
-                    logData = str(item, 'ascii').strip()
-                    logData = logData.split()
-                    # print(str(logData) + " " + str(linecount))
-                    dp_date = logData[0] + "-" + logData[1] + "-" + logData[2]
+                        dp_time = logData[3][:2] + ":" + logData[3][2:]
 
-                    dp_time = logData[3][:2] + ":" + logData[3][2:]
+                        dp_data = logData[9]
+                        dp_data = dp_data.split("e")
+                        dp_data = dp_data[0]
 
-                    dp_data = logData[9]
-                    dp_data = dp_data.split("e")
-                    dp_data = dp_data[0]
+                        dp = dp_date + " " + dp_time + "," + dp_data
+                        importarray.append(dp)
 
-                    dp = dp_date + " " + dp_time + "," + dp_data
-                    importarray.append(dp)
+                print("Data for " + self.name + " loaded from Internet. Size: " + str(len(importarray)) + " records")
 
-            print("Data for " + self.name + " loaded from Internet. Size: " + str(len(importarray)) + " records")
+            except webreader.HTTPError as err:
+                if err.code == 404:
+                    print("Error 404")
+
             self.latest_data = importarray
 
         # Dunedin Aurora CSV data
@@ -216,7 +240,7 @@ class Station:
         currentdt = mktime(currentdt.timetuple())
 
         # calculate the cutoff value for old data in the station dataset.
-        chartduration = 48 # No of bins we want to chart
+        chartduration = 24 # No of bins we want to chart
 
         # setup the binneddata array timestamps
         # each value appended to the array is older, so goes from young -> old
@@ -280,7 +304,7 @@ class Station:
         workingdatalist = []
         currentdt = datetime.utcnow()
         currentdt = mktime(currentdt.timetuple())
-        cutoffdt = float(currentdt - (48*60*60))
+        cutoffdt = float(currentdt - (24*60*60))
 
         print("Time now is " +  str(currentdt))
         print("Cutoff for old data is " + str(cutoffdt))
@@ -322,29 +346,44 @@ class Station:
     # normalise the data
     # #################################################################################
     def normaliseDHDT(self):
+        # retrieve the current aggregates of the mins and counter
+        stored_min = self.mindata[0]
+        counter = self.mindata[1]
+
+        # sort the current bin list to find the minimum value so far
+        temp1 = self.bin_dadt
+        temp1.sort()
+        current_min = temp1[0]
+
+        # only if the current min is NOT zero, will we aggregate it on and calculate the new
+        # avg min value.
+        avg_min = 0
+        if current_min > 0:
+            stored_min = stored_min + current_min
+            counter = counter + 1
+            self.mindata = [stored_min, counter]
+            avg_min = float(stored_min / counter)
+            print("Current min values stored are: " + str(self.mindata[0]) + " " + str(self.mindata[1]))
+        else:
+            print("Current min value equals zero...")
+            avg_min = float(stored_min / counter)
+
+        # Now simply reformat the bin data in terms of the average background level.
         temparray = []
-        minvalue = 1000
-        maxvalue = -1000
-
         for item in self.bin_dadt:
-            if item > maxvalue:
-                maxvalue = item
+            datathing = float(item / avg_min)
 
-        for item in self.bin_dadt:
-            if item < minvalue:
-                minvalue = item
+            temparray.append(datathing)
 
-        print(str(maxvalue) + " " + str(minvalue))
 
-        # for item in self.bin_dhdt:
-        for i in range (0, len(self.bin_dadt)):
-            if self.bin_dadt[i] == 0:
-                temparray.append(0)
-            elif self.bin_dadt[i] == NULLBIN:
-                temparray.append(0)
-            else:
-                tempdata = (self.bin_dadt[i] - minvalue) / (maxvalue - minvalue)
-                temparray.append(tempdata)
+        # save the average min values
+        savefile = self.name + ".minvalues.pkl"
+        try:
+            pickle.dump(self.mindata, open(savefile, "wb"))
+            print("Save " + savefile + " ok.")
+        except:
+            print("ERROR saving min data array")
 
+        # return the bin data
         self.bin_dadt = temparray
 
