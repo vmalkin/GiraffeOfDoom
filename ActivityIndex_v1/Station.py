@@ -56,6 +56,19 @@ class Station:
         return dataarray
 
     # #################################################################################
+    # lSave the the min-max array
+    # #################################################################################
+    def saveminvalues(self):
+        savefile = self.name + ".minvalues.pkl"
+        try:
+            pickle.dump(self.save_array, open(savefile, "wb"))
+            print("Save " + savefile + " ok.")
+        except:
+            print("ERROR saving minmax values array")
+
+
+
+    # #################################################################################
     # load pickle file and return the min-max array
     # #################################################################################
     def loadpickle(self):
@@ -114,6 +127,9 @@ class Station:
             except webreader.HTTPError as err:
                 if err.code == 404:
                     print("Error 404")
+
+            except webreader.URLError as err:
+                print("There was an error associated with the URL")
 
             self.latest_data = importarray
 
@@ -343,7 +359,8 @@ class Station:
         self.bin_dhdt = temparray
 
     # #################################################################################
-    # normalise the data
+    # normalise the data. The final binned data will be expressed in terms of the average minimum value
+    # self.dadt is made up of absolute values.
     # #################################################################################
     def normaliseDHDT(self):
         # retrieve the current aggregates of the mins and counter
@@ -351,9 +368,10 @@ class Station:
         counter = self.mindata[1]
 
         # sort the current bin list to find the minimum value so far
-        temp1 = self.bin_dadt
-        temp1.sort()
-        current_min = temp1[0]
+        current_min = float(int(self.bin_dadt[0]))
+        for item in self.bin_dadt:
+            if item <= current_min:
+                current_min = float(item)
 
         # only if the current min is NOT zero, will we aggregate it on and calculate the new
         # avg min value.

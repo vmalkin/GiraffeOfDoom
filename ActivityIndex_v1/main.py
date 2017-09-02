@@ -20,16 +20,18 @@ if __name__ == '__main__':
     stationlist = []
     try:
         station1 = Station.Station("Dalmore Prime", "/home/vmalkin/Magnetometer/publish/Dalmore_Prime.1minbins.csv", "f1", '%Y-%m-%d %H:%M', 1)
+        # station1 = Station.Station("Dalmore Prime", "Dalmore_Prime.1minbins.csv", "f1", '%Y-%m-%d %H:%M', 1)
     except:
         print("Unable to create Station")
 
     try:
         station2 = Station.Station("Dalmore Rapid Run No 01", "/home/vmalkin/Magnetometer/dalmoreR1/pyDataReader/graphing/Dalmore_Rapid_01.1minbins.csv", "f1", '%Y-%m-%d %H:%M', 1)
+        # station2 = Station.Station("Dalmore Rapid Run No 01", "Dalmore_Rapid_01.1minbins.csv", "f1", '%Y-%m-%d %H:%M', 1)
     except:
         print("Unable to create Station")
 
     try:
-        station3 = Station.Station("Dalmore Rapid Run No 02", "/home/vmalkin/Magnetometer/dalmoreR2/pyDataReader/graphing/Dalmore_Rapid_02.1minbins.csv", "f1", '%Y-%m-%d %H:%M', 1)
+        station3 = Station.Station("Dalmore Rapid Run No 02", "/home/vmalkin/Magnetometer/publish/dr02.1minbins.csv", "f1", '%Y-%m-%d %H:%M', 1)
     except:
         print("Unable to create Station")
 
@@ -43,10 +45,10 @@ if __name__ == '__main__':
     except:
         print("Unable to create Station")
 
-    try:
-       station6 = Station.Station("GOES-13 Satellite", "http://services.swpc.noaa.gov/text/goes-magnetometer-primary.txt", "w2", '%Y-%m-%d %H:%M', 1)
-    except:
-       print("Unable to create Station")
+    # try:
+    #    station6 = Station.Station("GOES-13 Satellite", "http://services.swpc.noaa.gov/text/goes-magnetometer-primary.txt", "w2", '%Y-%m-%d %H:%M', 1)
+    # except:
+    #    print("Unable to create Station")
 
     # Add the stations to the station list
     stationlist = []
@@ -102,10 +104,10 @@ if __name__ == '__main__':
             magstation.append_new_data()
             print("Pruning OLD data...\n")
             magstation.prune_saved_data()
-
-            # # save out the station data as a CSV file.
-            name = magstation.name + ".absl"
-            magstation.SaveAsCSV(name)
+            #
+            # # # save out the station data as a CSV file.
+            # name = magstation.name + ".absl"
+            # magstation.SaveAsCSV(name)
 
             # finally, save the station saved_data array to file.
             print("Save data to file...\n")
@@ -125,7 +127,7 @@ if __name__ == '__main__':
 
             # create the combined output file
             combolist = []
-            comboitem = "Station Name, NOW, 2hr, 3hr, 4hr, 5hr, 6hr, 7hr, 8hr, 9hr, 10hr, 11hr, 12hr, 13hr, 14hr, 15hr, 16hr, 17hr, 18hr, 19hr, 20hr, 21hr, 22hr, 23hr, 24hr"
+            comboitem = "Station Name, NOW, 2hr, 3hr, 4hr, 5hr, 6hr, 7hr, 8hr, 9hr, 10hr, 11hr, 12hr, 13hr, 14hr, 15hr, 16hr, 17hr, 18hr, 19hr, 20hr, 21hr, 22hr, 23hr"
             combolist.append(comboitem)
 
             for magstation in stationlist:

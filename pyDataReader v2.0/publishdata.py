@@ -66,9 +66,9 @@ def process_data(input_data_array):
     # SMooth the data slightly
     smoothed_data_array = dp.running_average(smoothed_data_array, 6)
 
-    # smoothed for 10 minutes here
-    output_diffs = dp.running_average(output_diffs, 32)
-    output_diffs = dp.running_average(output_diffs, 32)
+    # smoothed for two by 5 minutes here
+    output_diffs = dp.running_average(output_diffs, 150)
+    output_diffs = dp.running_average(output_diffs, 150)
 
     # Calculate the avg smallest diff value, based on the smoothed data
 
@@ -96,6 +96,7 @@ def process_data(input_data_array):
     # Create the 1 minute bin file
     binned_data = binner.utc2unix(data_array)
     binned_data = binner.binsimple(binned_data)
+    print(binned_data)
     binned_data = binner.unix2utc(binned_data)
     binner.SaveRawArray(binned_data)
 
