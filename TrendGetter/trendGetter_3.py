@@ -445,11 +445,11 @@ rawdatalist = correct_days(rawdatalist)
 print("Converting to differences...\n")
 rawdatalist = diffs_data(rawdatalist)
 
-# Smooth the diffs twice.
-print("Smoothing, pass 1...")
-rawdatalist = running_avg(rawdatalist, 10 * magrate)
-print("Smoothing, pass 2...")
-rawdatalist = running_avg(rawdatalist, 10 * magrate)
+# # Smooth the diffs twice.
+# print("Smoothing, pass 1...")
+# rawdatalist = running_avg(rawdatalist, 10 * magrate)
+# print("Smoothing, pass 2...")
+# rawdatalist = running_avg(rawdatalist, 10 * magrate)
 
 # COnvert the array back to UTC time
 rawdatalist = array_days_to_utc(rawdatalist)
@@ -459,9 +459,9 @@ rawdatalist = array_days_to_utc(rawdatalist)
 print("Finding Daily max/mins...\n")
 rawdatalist = maxmin_readings(rawdatalist)
 
-# Normalise the readings
-print("Normalising data...")
-rawdatalist = normalise(rawdatalist)
+# # Normalise the readings
+# print("Normalising data...")
+# rawdatalist = normalise(rawdatalist)
 
 # Create the 5 day average of readings, and append this to the correct date
 # this displays the carrington cycle
