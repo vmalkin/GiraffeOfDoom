@@ -102,17 +102,33 @@ def array_diffs(arraylist):
     if len(arraylist) == 0:
         returnvalue = 0
     else:
-        maxvalue = arraylist[0]
-        minvalue = arraylist[0]
-        for item in arraylist:
-            if item >=maxvalue:
-                maxvalue = item
-            if item <= minvalue:
-                minvalue = item
+        maxvalue = float(arraylist[0])
+        minvalue = float(arraylist[0])
+        for i in range(0, len(arraylist)):
+            if float(arraylist[i]) >= float(maxvalue):
+                maxvalue = arraylist[i]
+            if float(arraylist[i]) <= float(minvalue):
+                minvalue = arraylist[i]
 
         returnvalue = float(maxvalue) - float(minvalue)
 
     return returnvalue
+
+# ##################################################
+# median filter
+# ##################################################
+def medianfilter(arraylist):
+    filteredlist = []
+    for i in range(1,len(arraylist) - 1):
+        templist = []
+        templist.append(arraylist[i-1])
+        templist.append(arraylist[i])
+        templist.append(arraylist[i + 1])
+
+        sortedlist = sorted(templist, key=lambda datastring: datastring[0])
+
+        filteredlist.append(sortedlist[1])
+    return filteredlist
 
 
 # ##################################################
@@ -185,6 +201,8 @@ if __name__ == "__main__":
     # print("Ensure list is sorted by time...")
     # # Sort the main array by timestamp oldest to newest
     # rawdatalist = sorted(rawdatalist, key=lambda datastring: datastring[0])
+    print("Applying median filter for blips...")
+    rawdatalist = medianfilter(rawdatalist)
 
     print("Create dates for data bins...")
     # using the most recent date in the main array, create  temp list of bin dates
