@@ -110,8 +110,8 @@ void loop(void)
   Serial.print(",");
   Serial.println(magZ,3);
   
-  magX = 0;
-  magY = 0;
-  magZ = 0;
+  magX = (double)0;
+  magY = (double)0;
+  magZ = (double)0;
 
 }
