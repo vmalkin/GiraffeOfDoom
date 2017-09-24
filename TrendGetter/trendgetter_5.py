@@ -2,8 +2,7 @@ import os
 from datetime import datetime
 from time import mktime
 
-
-BIN_SIZE = 60 * 60 * 24  # the number of seconds wide a bin is
+BIN_SIZE = 60 * 60 *24 # the number of seconds wide a bin is
 BIN_NUMBER = 365  # how many bins we want in total
 
 # ##################################################
@@ -153,6 +152,10 @@ def save_csv(arraydata, savefile):
 # ##################################################
 # using the list of files, open each logfile into the main array
 if __name__ == "__main__":
+    # calculate the processing time
+    starttime = datetime.now()
+    starttime = mktime(starttime.timetuple())
+
     CSVlist = "files.txt"
     CSVFilenames = []
     rawdatalist = []
@@ -225,27 +228,26 @@ if __name__ == "__main__":
         templist = []
 
         # parse thru the main array entries that fit in the interval are added to the holding list
-        for item in rawdatalist:
-            itemsplit = item.split(",")
+        for j in range(0, len(rawdatalist)):
+            itemsplit = rawdatalist[j].split(",")
             itemdate = itemsplit[0]
             itemdata = itemsplit[1]
+            # print(itemdate)
 
             if float(itemdate) <= float(bindates[i]) and float(itemdate) > float(bindates[i-1]):
                 templist.append(itemdata)
-                # WE NO LONGER NEED THE CURRENT ITEM IN THE RAW ARRAY
-                # we can delete this and make future iterations quicker!!
-                rawdatalist.pop(item)
 
-        # PERFORM WHATEVER OPERATION WE WANT, AVERAGE OR DH/DT, ETC
-        # we now have a list templist[] of values for this bin
-        # print("Averaging bin contents: " + str(i) + " / " + str(len(bindates)) + "...")
-        # binvalue = array_average(templist)
+            # PERFORM WHATEVER OPERATION WE WANT, AVERAGE OR DH/DT, ETC
+            # we now have a list templist[] of values for this bin
+            # print("Averaging bin contents: " + str(i) + " / " + str(len(bindates)) + "...")
+            # binvalue = array_average(templist)
 
         print("Calculating dH/dt for bins: " + str(i) + " / " + str(len(bindates)) + "...")
         binvalue = array_diffs(templist)
 
         finaldataitem = str(bindates[i]) + "," + str(binvalue)
         finaldataarray.append(finaldataitem)
+
 
     # convert the POSIX datetimes back to UTC.
     # print("Converting time to UTC...")
@@ -254,3 +256,9 @@ if __name__ == "__main__":
     # create the header and save the file as a CSV/JSON
     save_csv(finaldataarray, "binned_values.csv")
     print("FINISHED: Data saved to CSV file.")
+    finishtime = datetime.now()
+    finishtime = mktime(finishtime.timetuple())
+
+    elapsedtime = finishtime - starttime
+    elapsedtime = float(elapsedtime / 60)
+    print("\nElapsed time is " +str(elapsedtime) + " minutes.")
