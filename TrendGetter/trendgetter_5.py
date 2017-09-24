@@ -197,10 +197,6 @@ if __name__ == "__main__":
     # convert the timestamps in the main array to POSIX format
     rawdatalist = utc_2_unix(rawdatalist)
 
-    # superfluous step as the binning process will deal with this.
-    # print("Ensure list is sorted by time...")
-    # # Sort the main array by timestamp oldest to newest
-    # rawdatalist = sorted(rawdatalist, key=lambda datastring: datastring[0])
     print("Applying median filter for blips...")
     rawdatalist = medianfilter(rawdatalist)
 
@@ -236,6 +232,9 @@ if __name__ == "__main__":
 
             if float(itemdate) <= float(bindates[i]) and float(itemdate) > float(bindates[i-1]):
                 templist.append(itemdata)
+                # WE NO LONGER NEED THE CURRENT ITEM IN THE RAW ARRAY
+                # we can delete this and make future iterations quicker!!
+                rawdatalist.pop(item)
 
         # PERFORM WHATEVER OPERATION WE WANT, AVERAGE OR DH/DT, ETC
         # we now have a list templist[] of values for this bin
