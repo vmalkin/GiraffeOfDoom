@@ -8,15 +8,65 @@ import pickle
 NULLBIN = "#n/a"
 
 class Station:
-    def __init__(self, station_details_tuple):
-        # each item has the format ("name", "data_source", "source_type", "dateformat", readings_per_minute)
-        self.name = station_details_tuple[0]
-        self.datasource = station_details_tuple[1]
-        self.sourcetype = station_details_tuple[2]
-        self.dateformat = station_details_tuple[3]
-        self.readfreq = station_details_tuple[4]
+    def __init__(self, name, datasource, sourcetype, dateformat, readfreq):
+        # Station name
+        self.name = name
 
-        self.stationdata = self.loadpickle()
+        # string for datasource - URL, filepath, etc
+        self.datasource = datasource
+
+        # Used to determin how get_data() will behave
+        self.sourcetype = sourcetype
+
+        # Date format regex for conversion
+        self.dateformat = dateformat
+
+        # how many readings per minute the data is
+        self.readfreq = readfreq
+
+        # load up previous saved data
+        self.save_array = self.loadpickle()
+
+        # min data has the format [currentmin, counter]. We increment each one
+        # and calculate the avg to scale our binned data against
+        self.mindata = self.loadminvalues()
+        print("Current min values stored are: " + str(self.mindata[0]) + " " + str(self.mindata[1]))
+
+        # the latest data to be downloaded
+        self.latest_data = []
+
+        # DHDT data
+        self.dadt = []
+
+        # Binned DHDT data.
+        self.bin_dadt = []
+
+    # #################################################################################
+    # load pickle file and return the min-max array
+    # #################################################################################
+    def loadminvalues(self):
+        savefile = self.name + ".minvalues.pkl"
+        try:
+            dataarray = pickle.load(open(savefile, "rb"))
+            # print("Loaded values from file")
+        except:
+            dataarray = [0.001,1]
+            print("No min values to load. Creating values of zero")
+
+        return dataarray
+
+    # #################################################################################
+    # lSave the the min-max array
+    # #################################################################################
+    def saveminvalues(self):
+        savefile = self.name + ".minvalues.pkl"
+        try:
+            pickle.dump(self.save_array, open(savefile, "wb"))
+            print("Save " + savefile + " ok.")
+        except:
+            print("ERROR saving minmax values array")
+
+
 
     # #################################################################################
     # load pickle file and return the min-max array
@@ -81,7 +131,7 @@ class Station:
             except webreader.URLError as err:
                 print("There was an error associated with the URL")
 
-            return importarray
+            self.latest_data = importarray
 
         # Dunedin Aurora CSV data
         if self.sourcetype == "w1":
@@ -94,20 +144,7 @@ class Station:
                 dp = logData[0] + "," + logData[1]
                 importarray.append(dp)
             print("Data for " + self.name + " loaded from Internet. Size: " + str(len(importarray)) + " records")
-            return importarray
-
-        # Ruru Observatory CSV data
-        if self.sourcetype == "w3":
-            url = self.datasource
-            importarray = []
-            response = webreader.urlopen(url)
-            for item in response:
-                logData = str(item, 'ascii').strip()
-                logData = logData.split(",")
-                dp = logData[0] + "," + logData[1]
-                importarray.append(dp)
-            print("Data for " + self.name + " loaded from Internet. Size: " + str(len(importarray)) + " records")
-            return importarray
+            self.latest_data = importarray
 
         # % Y-%m-%d %H:%M:%S.%f from a file (My magnetometers)
         if self.sourcetype == "f1":
@@ -121,7 +158,7 @@ class Station:
                         dp = values[0] + "," + values[1]
                         importarray.append(dp)
                 print("Data for " + self.name + " loaded from File. Size: " + str(len(importarray)) + " records")
-                return importarray
+                self.latest_data = importarray
             else:
                 print("UNABLE to load data for " + self.name)
 
@@ -153,7 +190,7 @@ class Station:
     # ##################################################
     # Convert timestamps in array to Unix time
     # ##################################################
-    def utc2unix(self, new_data_array):
+    def utc2unix(self):
         print("Converting time to UNIX time...")
 
         # set date time format for strptime()
@@ -165,9 +202,9 @@ class Station:
         # convert array data times to unix time
         workingarray = []
         count = 0
-        for i in range(1, len(new_data_array)):
+        for i in range(1, len(self.latest_data)):
             try:
-                itemsplit = new_data_array[i].split(",")
+                itemsplit = self.latest_data[i].split(",")
                 newdatetime = datetime.strptime(itemsplit[0], dateformat)
                 # convert to Unix time (Seconds)
                 newdatetime = mktime(newdatetime.timetuple())
@@ -176,15 +213,16 @@ class Station:
                 workingarray.append(datastring)
             except:
                 count = count + 1
-                print("UTC 2 Unix conversion - problem with entry " + str(count) + " " + str(new_data_array[i]))
-        return workingarray
+                print("UTC 2 Unix conversion - problem with entry " + str(count) + " " + str(self.latest_data[i]))
+
+        self.latest_data = workingarray
 
     # turn raw values into rates of change
-    def create_dadt(self, new_data):
-        dadtlist = []
-        for i in range(1, len(new_data)):
-            previtems = new_data[i].split(",")
-            currentitems = new_data[i-1].split(",")
+    def create_dadt(self):
+        self.dadt = []
+        for i in range(1, len(self.save_array)):
+            previtems = self.save_array[i].split(",")
+            currentitems = self.save_array[i-1].split(",")
             currentdt = currentitems[0]
 
             if (currentitems[1]) == '':
@@ -200,8 +238,80 @@ class Station:
             dadt =  currentdata - prevdata
 
             datastring = str(currentdt) + "," + str(dadt)
-            dadtlist.append(datastring)
-        return dadtlist
+            self.dadt.append(datastring)
+
+
+    # #################################################################################
+    # Rawdata is in the format (UnixDatetime, data)
+    # the function will return an array of (binned_value))
+    # #################################################################################
+    def do_bin_dh_dt(self):
+        self.bin_dadt = []
+        # setup the bin array based on binsize. The bins will start from now and go back 24 hours
+        # width of bin in seconds.
+        binwidth = 60*60
+
+        # get current UTC, Convert to UNIX time
+        currentdt = datetime.utcnow()
+        currentdt = mktime(currentdt.timetuple())
+
+        # calculate the cutoff value for old data in the station dataset.
+        chartduration = 24 # No of bins we want to chart
+
+        # setup the binneddata array timestamps
+        # each value appended to the array is older, so goes from young -> old
+        timestamps = []
+        timevalue = currentdt
+        for i in range(0, chartduration):
+            timevalue = timevalue - binwidth
+            timestamps.append(timevalue)
+
+        # array for final binned values
+        binneddata = []
+        bincounter = 0
+        # for each bin interal, parse thru the current dataset, checking for max/min values and deal with NUL values
+        # Calculate dH/dt for each bin.
+        for i in range(0, len(timestamps) - 1):
+            # get the timestamp values that bracket the current bin
+            nowtime = timestamps[i]
+            prevtime = timestamps[i + 1]
+            binvalue = 0
+
+            # create a small list to hold values found
+            tempholder = []
+            for item in self.dadt:
+                # get the datetime and data
+                datasplit = item.split(",")
+                datadate = float(datasplit[0])
+                datavalue = float(datasplit[1])
+
+                # create a mini-list of readings for this bin.
+                if datadate < nowtime and datadate > prevtime:
+                    tempholder.append(datavalue)
+
+            # Parse the temp data anc find the max and min values. Calculate the biggest diff.
+            minvalue = 1000
+            maxvalue = -1000
+
+            if len(tempholder) > 0:
+                for item in tempholder:
+                    if item > maxvalue:
+                        maxvalue = item
+
+                for item in tempholder:
+                    if item < minvalue:
+                        minvalue = item
+            else:
+                minvalue = 0
+                maxvalue = 0
+
+            binvalue = maxvalue - minvalue
+
+            bincounter = bincounter + 1
+            # print("Appending data to bin " + str(bincounter) + ". Value: " + str(maxvalue) + " " + str(minvalue) + " " + str(binvalue))
+            binneddata.append(binvalue)
+
+            self.bin_dadt = binneddata
 
     def prune_saved_data(self):
         # IF NECESSARY prune the dataset BACK from the earliest bin datetime as previously determined to keep the data
@@ -240,28 +350,58 @@ class Station:
         except IOError:
             print("WARNING: There was a problem accessing " + self.name + ".csv")
 
-    def process_mag_station(self):
-        # Get new data
-        # we should end up with UTCdate, datavalue
-        new_data = []
-        new_data = self.get_data()
-        print("Loaded NEW data for " + self.name)
+    # #################################################################################
+    # Calculate the average reading
+    # #################################################################################
+    def get_average_reading(self):
+        temparray = []
 
-        # split new data and convert timestamps to UNIX
-        new_data = self.utc2unix(new_data)
-        print("Converted timestamps of new data for " + self.name)
+        self.bin_dhdt = temparray
 
-        # convert new data to dF/dt
-        new_data = self.create_dadt(new_data)
+    # #################################################################################
+    # normalise the data. The final binned data will be expressed in terms of the average minimum value
+    # self.dadt is made up of absolute values.
+    # #################################################################################
+    def normaliseDHDT(self):
+        # retrieve the current aggregates of the mins and counter
+        stored_min = self.mindata[0]
+        counter = self.mindata[1]
 
-        # remove spikes
-        # Aggregate new data onto current data array
+        # sort the current bin list to find the minimum value so far
+        current_min = float(int(self.bin_dadt[0]))
+        for item in self.bin_dadt:
+            if item <= current_min:
+                current_min = float(item)
 
-        # Prune current data to whatever length
+        # only if the current min is NOT zero, will we aggregate it on and calculate the new
+        # avg min value.
+        avg_min = 0
+        if current_min > 0:
+            stored_min = stored_min + current_min
+            counter = counter + 1
+            self.mindata = [stored_min, counter]
+            avg_min = float(stored_min / counter)
+            print("Current min values stored are: " + str(self.mindata[0]) + " " + str(self.mindata[1]))
+        else:
+            print("Current min value equals zero...")
+            avg_min = float(stored_min / counter)
 
-        # SAVE current data to PKL file
+        # Now simply reformat the bin data in terms of the average background level.
+        temparray = []
+        for item in self.bin_dadt:
+            datathing = float(item / avg_min)
+
+            temparray.append(datathing)
 
 
-        # CREATE 1-min bins output array (dF/dt) of current data
-        # CREATE 1-min bins output array (reconstructed magnetogram) of current data
-        print("\n")
+        # save the average min values
+        savefile = self.name + ".minvalues.pkl"
+        try:
+            pickle.dump(self.mindata, open(savefile, "wb"))
+            print("Save " + savefile + " ok.")
+        except:
+            print("ERROR saving min data array")
+
+        # return the bin data
+        self.bin_dadt = temparray
+
