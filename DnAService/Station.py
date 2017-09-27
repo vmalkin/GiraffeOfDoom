@@ -35,10 +35,10 @@ class Station:
     # #################################################################################
     # save array to pickle file. Prints a result
     # #################################################################################
-    def savepickle(self):
+    def savepickle(self, datatosave):
         savefile = self.name + ".savedata.pkl"
         try:
-            pickle.dump(self.save_array, open(savefile, "wb"))
+            pickle.dump(datatosave, open(savefile, "wb"))
             print("Save " + savefile + " ok.")
         except:
             print("ERROR saving array")
@@ -255,11 +255,17 @@ class Station:
         new_data = self.create_dadt(new_data)
 
         # remove spikes
-        # Aggregate new data onto current data array
+        # Aggregate new data onto current data array. We need to check thru the stationdata and makre sure a datetime
+        # is not duplicted.
+        new_data = set(self.stationdata).union(set(new_data))
+
+        print("Data for " + self.name + " is " + str(len(self.stationdata)) + " records long")
 
         # Prune current data to whatever length
 
         # SAVE current data to PKL file
+        print("Saving current data for " + self.name)
+        self.savepickle(self.stationdata)
 
 
         # CREATE 1-min bins output array (dF/dt) of current data
