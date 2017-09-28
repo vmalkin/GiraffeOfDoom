@@ -16,6 +16,7 @@ class Station:
         self.dateformat = station_details_tuple[3]
         self.readfreq = station_details_tuple[4]
 
+        # stationdata is the accumulating data for each minuten of the past 24 hours for this station
         self.stationdata = self.loadpickle()
 
     # #################################################################################
@@ -228,6 +229,9 @@ class Station:
         print("PRUNED Data list is " + str(len(workingdatalist)) + " records long")
         self.save_array = workingdatalist
 
+    def despike(self, dataarray):
+        return dataarray
+
     # #################################################################################
     # Save the binned data as CSV file
     # #################################################################################
@@ -253,21 +257,32 @@ class Station:
 
         # convert new data to dF/dt
         new_data = self.create_dadt(new_data)
+        print("Calculated dF/dt of new data for " + self.name)
 
         # remove spikes
-        # Aggregate new data onto current data array. We need to check thru the stationdata and makre sure a datetime
-        # is not duplicted.
-        new_data = set(self.stationdata).union(set(new_data))
+        new_data = self.despike(new_data)
 
-        print("Data for " + self.name + " is " + str(len(self.stationdata)) + " records long")
+        # Aggregate new data onto current data array. We need to check thru the stationdata and makre sure a datetime
+        # is not duplicted. We will use Set() with a union to do this.
+        self.stationdata = set(self.stationdata).union(set(new_data))
 
         # Prune current data to whatever length
+        nowtime = datetime.now()
+        nowtime = time.mktime(nowtime.timetuple())
+        begintime = nowtime - (60*60*24)
+
+        temparray = []
+        for item in self.stationdata:
+            itemsplit = item.split(",")
+            itemdate = itemsplit[0]
+
+            if float(itemdate) > begintime:
+                temparray.append(item)
+        self.stationdata = temparray
+        print("Data for " + self.name + " is " + str(len(self.stationdata)) + " records long")
 
         # SAVE current data to PKL file
         print("Saving current data for " + self.name)
         self.savepickle(self.stationdata)
 
-
-        # CREATE 1-min bins output array (dF/dt) of current data
-        # CREATE 1-min bins output array (reconstructed magnetogram) of current data
         print("\n")
