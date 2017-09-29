@@ -5,10 +5,13 @@ import os
 
 # setup dictionary of stations
 # each item has the format ("name", "data_source", "source_type", " datetime regex", readings_per_minute)
+# station_details = (
+#     ("GOES-13 Satellite", "http://services.swpc.noaa.gov/text/goes-magnetometer-secondary.txt", "w2", '%Y-%m-%d %H:%M', 1),
+#     ("Ruru Observatory Rapid-run magnetometer", "http://www.ruruobservatory.org.nz/dr01_1hr.csv", "w3", "%Y-%m-%d %H:%M:%S.%f", 30),
+#     ("DunedinAurora.NZ", "http://Dunedinaurora.nz/Service24CSV.php", "w1", '"%Y-%m-%d %H:%M:%S"', 6)
+# )
 station_details = (
-    ("GOES-13 Satellite", "http://services.swpc.noaa.gov/text/goes-magnetometer-secondary.txt", "w2", '%Y-%m-%d %H:%M', 1),
-    ("Ruru Observatory Rapid-run magnetometer", "http://www.ruruobservatory.org.nz/dr01_1hr.csv", "w3", "%Y-%m-%d %H:%M:%S.%f", 30),
-    ("DunedinAurora.NZ", "http://Dunedinaurora.nz/Service24CSV.php", "w1", '"%Y-%m-%d %H:%M:%S"', 6)
+    ("Ruru Observatory Rapid-run magnetometer", "http://www.ruruobservatory.org.nz/dr01_1hr.csv", "w3", "%Y-%m-%d %H:%M:%S.%f", 30)
 )
 
 station_list = []
@@ -17,7 +20,9 @@ for item in station_details:
     new_station = Station.Station(item)
     station_list.append(new_station)
 
+# ##################################################
 # Create the one mininte aggregated bin file thing!
+# ##################################################
 def oneminbin(stationlist):
     nowtime = datetime.now()
     nowtime = time.mktime(nowtime.timetuple())
@@ -33,7 +38,6 @@ def oneminbin(stationlist):
     time_bins.reverse()
 
     finaloutput = []
-
     for i in range(1,len(time_bins)):
         finaloutput_data = time_bins[i]
         for mag_station in station_list:
@@ -51,6 +55,7 @@ def oneminbin(stationlist):
             else:
                 avg_value = 0
             finaloutput_data = str(finaloutput_data) + "," + str(avg_value)
+            print(finaloutput_data)
 
 
         finaloutput.append(finaloutput_data)

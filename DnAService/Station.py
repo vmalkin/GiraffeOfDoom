@@ -244,6 +244,9 @@ class Station:
         except IOError:
             print("WARNING: There was a problem accessing " + self.name + ".csv")
 
+    # #################################################################################
+    # Wrapper function that will process new readings for this station
+    # #################################################################################
     def process_mag_station(self):
         # Get new data
         # we should end up with UTCdate, datavalue
@@ -255,7 +258,7 @@ class Station:
         new_data = self.utc2unix(new_data)
         print("Converted timestamps of new data for " + self.name)
 
-        # convert new data to dF/dt
+        # convert new data to rate of change
         new_data = self.create_dadt(new_data)
         print("Calculated dF/dt of new data for " + self.name)
 
