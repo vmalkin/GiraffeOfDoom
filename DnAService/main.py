@@ -84,7 +84,7 @@ def save_csv(arraydata, savefile):
 def unix_to_utc(arraylist):
     print("Converting time to UTC time...")
     # set date time format for strptime()
-    dateformat = "%Y-%m-%d %H:%M:%S.%f"
+    dateformat = "%Y-%m-%d %H:%M:%S"
 
     # Convert the date string to the format of: 2016-10-10 00:00:26.19
     returnarray = []
@@ -95,12 +95,9 @@ def unix_to_utc(arraylist):
         unixdate = unixdate.split(".")
         unixdate = unixdate[0]
 
-        print(len(datasplit))
-
         datavalues = ""
         for i in range(1, len(datasplit)):
             datavalues = "," + datasplit[i]
-
 
         # Convert the UNix timestamp, inot a UTC string
         utcdate = datetime.fromtimestamp(int(str(unixdate)))
