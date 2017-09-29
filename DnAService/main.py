@@ -17,10 +17,7 @@ for item in station_details:
     new_station = Station.Station(item)
     station_list.append(new_station)
 
-for mag_station in station_list:
-    # load station PKL file.
-    pass
-
+# Create the one mininte aggregated bin file thing!
 def oneminbin(stationlist):
     nowtime = datetime.now()
     nowtime = time.mktime(nowtime.timetuple())
@@ -92,12 +89,13 @@ def unix_to_utc(arraylist):
     # Convert the date string to the format of: 2016-10-10 00:00:26.19
     returnarray = []
 
-    for item in arraylist:
-        datasplit = item.split(",")
+    for j in range(1,len(arraylist)):
+        datasplit = arraylist[j].split(",")
         unixdate = datasplit[0]
         unixdate = unixdate.split(".")
         unixdate = unixdate[0]
-        print(unixdate)
+
+        print(len(datasplit))
 
         datavalues = ""
         for i in range(1, len(datasplit)):
@@ -117,28 +115,28 @@ def unix_to_utc(arraylist):
 # Main method starrts here
 # ############################################
 if __name__ == "__main__":
-    while True:
+    # while True:
     # calculate the processing time
-        starttime = datetime.now()
-        starttime = time.mktime(starttime.timetuple())
-        # for each station.....
-        for mag_station in station_list:
-            mag_station.process_mag_station()
+    starttime = datetime.now()
+    starttime = time.mktime(starttime.timetuple())
+    # for each station.....
+    for mag_station in station_list:
+        mag_station.process_mag_station()
 
-        # Create aggregate list of dF/dt
-        # create the combined output file
-        aggregated_data = []
-        aggregated_data = oneminbin(station_list)
-        aggregated_data = unix_to_utc(aggregated_data)
+    # Create aggregate list of dF/dt
+    # create the combined output file
+    aggregated_data = []
+    aggregated_data = oneminbin(station_list)
+    aggregated_data = unix_to_utc(aggregated_data)
 
-        # save to CSV or JSON file
-        save_csv(aggregated_data, "aggregate.csv")
+    # save to CSV or JSON file
+    save_csv(aggregated_data, "aggregate.csv")
 
-        finishtime = datetime.now()
-        finishtime = time.mktime(finishtime.timetuple())
+    finishtime = datetime.now()
+    finishtime = time.mktime(finishtime.timetuple())
 
-        elapsedtime = finishtime - starttime
-        elapsedtime = float(elapsedtime / 60)
-        print("\nElapsed time is " + str(elapsedtime) + " minutes.")
+    elapsedtime = finishtime - starttime
+    elapsedtime = float(elapsedtime / 60)
+    print("\nElapsed time is " + str(elapsedtime) + " minutes.")
 
-        time.sleep(121)
+        # time.sleep(121)
