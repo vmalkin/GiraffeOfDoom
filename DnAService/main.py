@@ -10,7 +10,7 @@ import os
 #     ("Ruru Observatory Rapid-run magnetometer", "http://www.ruruobservatory.org.nz/dr01_1hr.csv", "w3", "%Y-%m-%d %H:%M:%S.%f", 30),
 #     ("DunedinAurora.NZ", "http://Dunedinaurora.nz/Service24CSV.php", "w1", '"%Y-%m-%d %H:%M:%S"', 6)
 # )
-station_details = (("Ruru Observatory Main magnetometer", "http://www.ruruobservatory.org.nz/24hr.csv", "w3", "%Y-%m-%d %H:%M:%S.%f", 4),)
+station_details = (("Ruru Observatory Rapid-run magnetometer", "http://www.ruruobservatory.org.nz/dr01_1hr.csv", "w3", "%Y-%m-%d %H:%M:%S.%f", 30),)
 
 # create the list of magnetometer stations
 station_list = []

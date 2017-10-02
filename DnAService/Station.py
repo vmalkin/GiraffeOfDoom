@@ -244,6 +244,27 @@ class Station:
         except IOError:
             print("WARNING: There was a problem accessing " + self.name + ".csv")
 
+
+    # #################################################################################
+    # aggregate new data onto current data
+    # #################################################################################
+    def aggregate_new_data(self, currentdata, newdata):
+        if len(currentdata) == 0:
+            tempdata = newdata
+        else:
+            tempdata = currentdata
+            datasplit = currentdata[len(currentdata) - 1].split(",")
+            latesttime = datasplit[0]
+
+            for iitem in newdata:
+                itemsplit = iitem.split(",")
+                newdatetime = itemsplit[0]
+                if newdatetime > latesttime:
+                    tempdata.append(iitem)
+
+        return tempdata
+
+
     # #################################################################################
     # Wrapper function that will process new readings for this station
     # #################################################################################
@@ -267,7 +288,7 @@ class Station:
 
         # Aggregate new data onto current data array. We need to check thru the stationdata and makre sure a datetime
         # is not duplicted. We will use Set() with a union to do this.
-        self.stationdata = set(self.stationdata).union(set(new_data))
+        self.stationdata = self.aggregate_new_data(self.stationdata, new_data)
 
         # Prune current data to whatever length
         nowtime = datetime.now()
