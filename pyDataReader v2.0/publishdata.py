@@ -96,7 +96,6 @@ def process_data(input_data_array):
     # Create the 1 minute bin file
     binned_data = binner.utc2unix(data_array)
     binned_data = binner.binsimple(binned_data)
-    print(binned_data)
     binned_data = binner.unix2utc(binned_data)
     binner.SaveRawArray(binned_data)
 
