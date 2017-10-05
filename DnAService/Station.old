@@ -23,11 +23,10 @@ class Station:
     # load pickle file and return the min-max array
     # #################################################################################
     def loadpickle(self):
-        """load pickle file"""
         savefile = self.name + ".savedata.pkl"
         try:
-            with open(savefile,"rb", ) as sv:
-                dataarray = sv.read()
+            dataarray = pickle.load(open(savefile, "rb"))
+            # print("Loaded values from file")
         except:
             dataarray = []
             print("No file to load. Creating values of zero")
@@ -131,7 +130,25 @@ class Station:
     # APpend new data to the running array
     # #################################################################################
     def append_new_data(self):
-        pass
+        # If we have saved data...
+        if len(self.save_array) > 0:
+            # get the latest item from the saved data, split on commas
+            datasplit = self.save_array[len(self.save_array) - 1].split(",")
+            # get the time of the latest readings. (SHould be in UNIX time.)
+            latestreadingtime = datasplit[0]
+
+            # now, for each item in the latest data fot this station...
+            for item in self.latest_data:
+                datasplit = item.split(",")
+
+                # Find there the timestamp is just after the latest item in what we have already saved for
+                # this station, and start appending this to our data for THIS station.
+                if datasplit[0] > latestreadingtime:
+                    self.save_array.append(item)
+                    # print("Appended data item " + item)
+        else:
+            print("No saved data array")
+            self.save_array = self.latest_data
 
 
     # ##################################################
@@ -232,7 +249,20 @@ class Station:
     # aggregate new data onto current data
     # #################################################################################
     def aggregate_new_data(self, currentdata, newdata):
-        pass
+        if len(currentdata) == 0:
+            tempdata = newdata
+        else:
+            tempdata = currentdata
+            datasplit = currentdata[len(currentdata) - 1].split(",")
+            latesttime = datasplit[0]
+
+            for iitem in newdata:
+                itemsplit = iitem.split(",")
+                newdatetime = itemsplit[0]
+                if newdatetime > latesttime:
+                    tempdata.append(iitem)
+
+        return tempdata
 
 
     # #################################################################################
