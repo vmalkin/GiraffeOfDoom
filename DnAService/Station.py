@@ -148,19 +148,19 @@ class Station:
 
         # convert array data times to unix time
         workingarray = []
-        count = 0
-        for i in range(1, len(new_data_array)):
+
+        for item in new_data_array:
             try:
-                itemsplit = new_data_array[i].split(",")
-                newdatetime = datetime.strptime(itemsplit[0], dateformat)
+                itemsplit = item.split(",")
+                newdatetime = itemsplit[0]
+                newdatetime = datetime.strptime(newdatetime, dateformat)
                 # convert to Unix time (Seconds)
                 newdatetime = mktime(newdatetime.timetuple())
 
                 datastring = str(newdatetime) + "," + str(itemsplit[1])
                 workingarray.append(datastring)
             except:
-                count = count + 1
-                print("UTC 2 Unix conversion - problem with entry " + str(count) + " " + str(new_data_array[i]))
+                print("UTC 2 Unix conversion - problem with entry " + str(item))
         return workingarray
 
     # turn raw values into rates of change

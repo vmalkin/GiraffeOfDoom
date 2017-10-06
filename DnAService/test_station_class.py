@@ -17,11 +17,13 @@ class pickletest(unittest.TestCase):
         self.assertTrue(len(test_array) > 0)
 
     def test_utc2unix_conversion(self):
-        input_array = ["2017-10-05 02:06:08,38.787"]
-        answer_array = ["1507122368.0,38.787"]
+        input_array = ["2017-10-05 02:06:08.1,10", "2017-10-05 02:06:08.1,20"]
+        answer_array = ["1507122368.0,10","1507122368.0,20"]
         test_answer = test_station.utc2unix(input_array)
-        print(test_answer)
+        self.assertCountEqual(test_answer, answer_array)
 
+    def test_create_dadt(self):
+        pass
 
 if __name__ =="__main__":
     unittest.main()
