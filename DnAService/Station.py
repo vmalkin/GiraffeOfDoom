@@ -17,7 +17,8 @@ class Station:
         self.readfreq = station_details_tuple[4]
 
         # stationdata is the accumulating data for each minuten of the past 24 hours for this station
-        self.stationdata = self.loadpickle()
+        self.station_data_file = self.name + ".data.csv"
+        self.stationdata = self.load_csv(self.station_data_file)
 
     # #################################################################################
     # load pickle file and return the min-max array
@@ -215,24 +216,65 @@ class Station:
     def despike(self, dataarray):
         return dataarray
 
-    # #################################################################################
-    # Save the binned data as CSV file
-    # #################################################################################
-    def SaveAsCSV(self, namestring):
-        # export array to array-save file
+    # ##################################################
+    # Save out CSV data
+    # ##################################################
+    def save_csv(self, arraydata, savefile):
         try:
-            with open(namestring + ".csv", 'w') as w:
-                for dataObjects in self.save_array:
-                    w.write(str(dataObjects) + '\n')
-        except IOError:
-            print("WARNING: There was a problem accessing " + self.name + ".csv")
+            os.remove(savefile)
+        except:
+            print("Error deleting old file")
 
+        for line in arraydata:
+            try:
+                with open(savefile, 'a') as f:
+                    f.write(line + "\n")
+
+            except IOError:
+                print("WARNING: There was a problem accessing file")
+
+    # #################################################################################
+    # LOad CSV
+    # #################################################################################
+    def load_csv(self, loadfile):
+        readings = []
+        # Check if exists CurrentUTC file. If exists, load up Datapoint Array.
+        if os.path.isfile(loadfile):
+            with open(loadfile) as e:
+                for line in e:
+                    line = line.strip()  # remove any trailing whitespace chars like CR and NL
+                    readings.append(line)
+            print("Array loaded from file. Size: " + str(len(readings)) + " records")
+        else:
+            print("No save file loaded. Using new array.")
+
+        return readings
 
     # #################################################################################
     # aggregate new data onto current data
     # #################################################################################
     def aggregate_new_data(self, currentdata, newdata):
-        pass
+        returndata = currentdata
+        latestdate = 0.0
+
+        # find the biggest datetime in the current data
+        for item in currentdata:
+            itemsplit = item.split(",")
+            checkdate = float(itemsplit[0])
+
+            if checkdate > latestdate:
+                latestdate = checkdate
+
+        # now check thru the new data looking for items more recent than the latest date
+        for item in newdata:
+            itemsplit = item.split(",")
+            checkdate = float(itemsplit[0])
+
+            # if it's later append to the return results
+            if checkdate > latestdate:
+                returndata.append(item)
+
+        return returndata
 
 
     # #################################################################################
@@ -260,23 +302,15 @@ class Station:
         # is not duplicted. We will use Set() with a union to do this.
         self.stationdata = self.aggregate_new_data(self.stationdata, new_data)
 
-        # Prune current data to whatever length
-        nowtime = datetime.now()
-        nowtime = time.mktime(nowtime.timetuple())
-        begintime = nowtime - (60*60*24)
+        # Prune current data to 24 hours
+        arraylength = self.readfreq * 60 * 24
+        splitstart = len(self.stationdata) -  arraylength
+        self.stationdata = self.stationdata[splitstart:]
 
-        temparray = []
-        for item in self.stationdata:
-            itemsplit = item.split(",")
-            itemdate = itemsplit[0]
-
-            if float(itemdate) > begintime:
-                temparray.append(item)
-        self.stationdata = temparray
         print("Data for " + self.name + " is " + str(len(self.stationdata)) + " records long")
 
         # SAVE current data to PKL file
         print("Saving current data for " + self.name)
-        self.savepickle(self.stationdata)
+        self.save_csv(self.stationdata, self.station_data_file)
 
         print("\n")

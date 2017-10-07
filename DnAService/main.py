@@ -150,7 +150,7 @@ if __name__ == "__main__":
     # convert the timesampts to UTC for display on the website
     aggregated_data = unix_to_utc(aggregated_data)
 
-    # save to CSV or JSON file
+    # save to CSV or JSON OUTPUT file
     save_csv(aggregated_data, "aggregate.csv")
 
     # Calculate the elapsed processing time and display the result to the console...
