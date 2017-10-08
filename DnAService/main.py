@@ -7,10 +7,10 @@ import os
 # each item has the format ("name", "data_source", "source_type", " datetime regex", readings_per_minute)
 # station_details = (
 #     ("GOES-13 Satellite", "http://services.swpc.noaa.gov/text/goes-magnetometer-secondary.txt", "w2", '%Y-%m-%d %H:%M', 1),
-#     ("Ruru Observatory Rapid-run magnetometer", "http://www.ruruobservatory.org.nz/dr01_1hr.csv", "w3", "%Y-%m-%d %H:%M:%S.%f", 30),
+#     ("Ruru Observatory", "http://www.ruruobservatory.org.nz/dr01_1hr.csv", "w3", "%Y-%m-%d %H:%M:%S.%f", 30),
 #     ("DunedinAurora.NZ", "http://Dunedinaurora.nz/Service24CSV.php", "w1", '"%Y-%m-%d %H:%M:%S"', 6)
 # )
-station_details = (("Ruru Observatory Rapid-run magnetometer", "http://www.ruruobservatory.org.nz/dr01_1hr.csv", "w3", "%Y-%m-%d %H:%M:%S.%f", 30),)
+station_details = (("Ruru Observatory", "http://www.ruruobservatory.org.nz/dr01_1hr.csv", "w3", "%Y-%m-%d %H:%M:%S.%f", 30),("GOES-13 Satellite", "http://services.swpc.noaa.gov/text/goes-magnetometer-secondary.txt", "w2", '%Y-%m-%d %H:%M', 1))
 
 # create the list of magnetometer stations
 station_list = []
@@ -157,7 +157,7 @@ if __name__ == "__main__":
     finishtime = datetime.now()
     finishtime = time.mktime(finishtime.timetuple())
     elapsedtime = finishtime - starttime
-    elapsedtime = float(elapsedtime / 60)
-    print("\nElapsed time is " + str(elapsedtime) + " minutes.")
+    # elapsedtime = float(elapsedtime / 60)
+    print("\nElapsed time is " + str(elapsedtime) + " seconds")
 
-        # time.sleep(121)
+        # time.sleep(2 * 60)

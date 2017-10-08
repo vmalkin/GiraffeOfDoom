@@ -2,6 +2,7 @@ import time
 from time import mktime
 from datetime import datetime
 import urllib.request as webreader
+from urllib.error import  URLError
 import os
 import pickle
 
@@ -58,6 +59,7 @@ class Station:
             try:
                 response = webreader.urlopen(url)
                 linecount = 0
+
                 for item in response:
                     linecount = linecount + 1
                     if linecount > 21:
@@ -77,12 +79,19 @@ class Station:
 
                 print("Data for " + self.name + " loaded from Internet. Size: " + str(len(importarray)) + " records")
 
-            except webreader.HTTPError as err:
-                if err.code == 404:
-                    print("Error 404")
+            except URLError as e:
+                if hasattr(e, 'reason'):
+                    print('We failed to reach a server.')
+                    print('Reason: ', e.reason)
+                elif hasattr(e, 'code'):
+                    print('The server couldn\'t fulfill the request.')
+                    print('Error code: ', e.code)
 
-            except webreader.URLError as err:
-                print("There was an error associated with the URL")
+            # except webreader.HTTPError as err:
+            #     print("A non-handled HTTP error occurred")
+            #
+            # except webreader.URLError as err:
+            #     print("There was an error associated with the URL")
 
             return importarray
 
