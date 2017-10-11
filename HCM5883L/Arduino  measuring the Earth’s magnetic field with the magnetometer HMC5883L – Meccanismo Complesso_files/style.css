@@ -1,0 +1,152 @@
+/* 
+Theme Name: Tempera Child
+Theme URI:  http://meccanismocomplesso.org
+Description: Child Theme per la personalizzazione di Meccanismo Complesso
+Author: Fabio Nelli
+Author URI: http://meccanismocomplesso.org
+Template: tempera
+Version: 1.0
+*/
+
+/* LOGIN e REGISTER nell'HEADER */
+.login_div {
+   float: left;
+   width: 30%;
+   font-size: 14px;
+   margin-top: 9px;
+}
+
+.login_div li {
+   float: left;
+   margin-left: 15px;
+}
+
+.login_div a {
+   color: #cccccc;
+}
+
+/* FLAGS di Q-translate nell'HEADER */
+.qtranslate-div {
+   float: left;
+   width: 20%;
+   margin-top: 9px;
+}
+
+.qtranslate-div li {
+   float: left;
+   padding-left: 15px;
+}
+
+/* sezione search nella header della home page */
+.searchform {
+   float: left;
+   padding-top: 4px;
+}
+
+.searchform #searchsubmit {
+   margin-left: 5px;
+   background-color: #dddddd;
+   padding: 1px 15px;
+}
+
+.searchform #searchfield {
+   height: 10px;
+}
+
+/* MyCred Leaderboard su sidebar widget */
+.myCRED-leaderboard > li a img {
+	height: 30px;
+	width: 30px;
+}
+
+/* pagina della leaderboard */
+#content table img {
+	height: 30px;
+	width: 30px;
+}
+
+/* Sfondo grigio per snippet di codice */
+.codice {
+    background-color:#eeeeee;
+    border:1px solid #c0c0c0;
+}
+
+/* altezza dell'header */
+#branding {
+  height: 250px;!important
+}
+
+li.menu-main-search .searchform input[type="search"] {
+   display: none;
+}
+
+/* aspetto dei pulsanti */
+
+.button:hover, #respond .form-submit input#submit:hover {
+    background-color: #3190d8 !important;
+}
+
+.button, #respond .form-submit input#submit, input[type=submit], input[type=reset] {
+    background-color: #167ac6 !important;
+    box-shadow: 0 -10px 10px 0 #0b5994 inset !important;
+    border: 0;
+    border-radius: 2px;
+    color: #fff;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 10px 30px 11px;
+    text-transform: uppercase;
+    vertical-align: bottom;
+
+}
+
+/* aspetto per LearnPress */
+.learn-press-content-item-only {
+    background-color: #e0e0e0;
+    font-size: 14px;
+    line-height: 170%;
+}
+
+.learn-press-content-item-only h2 {
+    font-size: 18px;
+    font-weight: bold;
+    padding-bottom: 5px;
+    padding-top: 10px;
+}
+
+.learn-press-content-item-only .terminal {
+    border: 1px solid #005cb9;
+    background-color: #000000;
+    color: white;
+    overflow: auto;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-left: 5px;
+    margin-top: 8px;
+    margin-bottom: 8px;
+}
+
+.learn-press-content-item-only li {
+    padding-left: 30px;
+    list-style-type: square;
+    list-style-position: inside;
+}
+
+.learn-press-content-item-only p {
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.learn-press-content-item-only .istruzione {
+    padding-bottom: 10px;
+    padding-top: 10px;
+    color: darkgray;
+    font-size: 16px;
+    font-style: italic;
+}
+
+/* editor MCE caratteri ingranditi */
+.mce-content-body {
+   font-family: Georgia, "Times New Roman", "Bitstream Charter", Times, serif !important;
+   font-size: 16px !important;
+}

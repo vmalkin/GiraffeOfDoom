@@ -9,13 +9,13 @@ import pickle
 NULLBIN = "#n/a"
 
 class Station:
-    def __init__(self, station_details_tuple):
+    def __init__(self, name, datasource, sourcetype, dateformat, readfreq):
         # each item has the format ("name", "data_source", "source_type", "dateformat", readings_per_minute)
-        self.name = station_details_tuple[0]
-        self.datasource = station_details_tuple[1]
-        self.sourcetype = station_details_tuple[2]
-        self.dateformat = station_details_tuple[3]
-        self.readfreq = station_details_tuple[4]
+        self.name = name
+        self.datasource = datasource
+        self.sourcetype = sourcetype
+        self.dateformat = dateformat
+        self.readfreq = readfreq
 
         # stationdata is the accumulating data for each minuten of the past 24 hours for this station
         self.station_data_file = self.name + ".data.csv"
@@ -300,12 +300,12 @@ class Station:
         new_data = self.utc2unix(new_data)
         print("Converted timestamps of new data for " + self.name)
 
-        # convert new data to rate of change
-        new_data = self.create_dadt(new_data)
-        print("Calculated dF/dt of new data for " + self.name)
+        # # convert new data to rate of change
+        # new_data = self.create_dadt(new_data)
+        # print("Calculated dF/dt of new data for " + self.name)
 
-        # remove spikes
-        new_data = self.despike(new_data)
+        # # remove spikes
+        # new_data = self.despike(new_data)
 
         # Aggregate new data onto current data array. We need to check thru the stationdata and makre sure a datetime
         # is not duplicted. We will use Set() with a union to do this.

@@ -4,8 +4,7 @@ import Station
 # ##################################
 # Unit test File for Station Class
 # ##################################
-station_details = ("Ruru Observatory Rapid-run magnetometer", "http://www.ruruobservatory.org.nz/dr01_1hr.csv", "w3", "%Y-%m-%d %H:%M:%S.%f", 30)
-test_station = Station.Station(station_details)
+test_station = Station.Station("Ruru Observatory", "http://www.ruruobservatory.org.nz/dr01_1hr.csv", "w3", "%Y-%m-%d %H:%M:%S.%f", 30)
 
 class pickletest(unittest.TestCase):
     # def test_pickleload(self):

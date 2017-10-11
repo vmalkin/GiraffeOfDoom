@@ -1,22 +1,32 @@
+#!/usr/bin/env python
+"""
+This module is designed to aggregate data from disparate sources, and create a single aggregated CSV file to be
+used by the website to display and graph. The rational for this:
+1) Separation of concerns between web pages and SQL server and related performance issues, effects.
+2) Aggregate data from multiple sources to provide redundancy and enable continuous service to users should any one
+   magnetometer device fail.
+3) Create aggregated index of hourly activity using data-merging principles that will be more useful to website users
+"""
+
 import time
-from datetime import datetime
+import datetime
 import Station
 import os
 
-# setup dictionary of stations
-# each item has the format ("name", "data_source", "source_type", " datetime regex", readings_per_minute)
-# station_details = (
-#     ("GOES-13 Satellite", "http://services.swpc.noaa.gov/text/goes-magnetometer-secondary.txt", "w2", '%Y-%m-%d %H:%M', 1),
-#     ("Ruru Observatory", "http://www.ruruobservatory.org.nz/dr01_1hr.csv", "w3", "%Y-%m-%d %H:%M:%S.%f", 30),
-#     ("DunedinAurora.NZ", "http://Dunedinaurora.nz/Service24CSV.php", "w1", '"%Y-%m-%d %H:%M:%S"', 6)
-# )
-station_details = (("Ruru Observatory", "http://www.ruruobservatory.org.nz/dr01_1hr.csv", "w3", "%Y-%m-%d %H:%M:%S.%f", 30),("GOES-13 Satellite", "http://services.swpc.noaa.gov/text/goes-magnetometer-secondary.txt", "w2", '%Y-%m-%d %H:%M', 1))
+__version__ = "0.9"
+__author__ = "Vaughn Malkin"
 
-# create the list of magnetometer stations
+
+# setup dictionary of stations
 station_list = []
-for item in station_details:
-    new_station = Station.Station(item)
-    station_list.append(new_station)
+# station0 = Station.Station("DunedinAurora.NZ", "http://Dunedinaurora.nz/Service24CSV.php", "w1", '"%Y-%m-%d %H:%M:%S"', 6)
+# station_list.append(station0)
+
+station1 = Station.Station("Ruru Observatory", "http://www.ruruobservatory.org.nz/dr01_1hr.csv", "w3", "%Y-%m-%d %H:%M:%S.%f", 30)
+station_list.append(station1)
+
+station2 = Station.Station("GOES-13 Satellite", "http://services.swpc.noaa.gov/text/goes-magnetometer-secondary.txt", "w2", '%Y-%m-%d %H:%M', 1)
+station_list.append(station2)
 
 
 # ##################################################
@@ -25,7 +35,7 @@ for item in station_details:
 
 def create_one_minute_bin_values():
     # what is the current datetime? create a UNix timetuple
-    nowtime = datetime.utcnow()
+    nowtime = datetime.datetime.utcnow()
     nowtime = time.mktime(nowtime.timetuple())
 
     # create the list of time values for the past 24 hours
@@ -36,6 +46,7 @@ def create_one_minute_bin_values():
     # reverse so the most recent data is last
     bins.reverse()
     return bins
+
 
 # take in a datalist and two time values, output an average value for whatever data falls in-between the time range
 def create_binned_data(prev_time, next_time, datalist):
@@ -58,26 +69,60 @@ def create_binned_data(prev_time, next_time, datalist):
 
     return bin_value
 
+
 def create_aggregated_magnetometer_values(stationlist):
     time_bins = create_one_minute_bin_values()
+    finaloutput = []
+    null_value = "#n/a"
 
+    print("number of stations: " + str(len(stationlist)))
     # For each station, we need to check off what values it has that fall into our time bins, calculate the
     # average of that and append it to the final output file that will be used by the website.
-    finaloutput = []
+
+    # For each time bin
     for i in range(1, len(time_bins)):
-        timeprev = time_bins[i-1]
-        timenext = time_bins[i]
-        aggregated_readings = ""
+        time_prev = time_bins[i-1]
+        time_now = time_bins[i]
+        aggregateddata = ""
 
-        for mag_station in stationlist:
-            returnvalue = create_binned_data(timeprev, timenext, mag_station.stationdata)
+        # process each station
+        for station in stationlist:
+            tempdata = float(0)
+            counter = 0
+            # for each item in the stations data
+            for item in station.stationdata:
+                datasplit = item.split(",")
+                date_part = float(datasplit[0])
+                data_part = datasplit[1]
+                # check that it falls insode the bin range
+                if date_part >= time_prev and date_part < time_now:
+                    tempdata = tempdata + float(data_part)
+                    counter = counter + 1
+            # if we have accrued data, calculate the avg, otherwise its  null
+            if tempdata > 0:
+                tempdata = float(tempdata / counter)
+            else:
+                tempdata = null_value
 
-        aggregated_readings = aggregated_readings + "," + str(returnvalue)
-
-        finaldata = str(time_bins[i]) + "," + aggregated_readings
+            aggregateddata = aggregateddata + "," + str(tempdata)
+        # convert the UNIX time to UTC and create the final string to append to the
+        # returned array
+        utc_time_now = unix_to_utc(time_now)
+        finaldata = str(utc_time_now) + aggregateddata
         finaloutput.append(finaldata)
 
-    # return the final, aggregated, binned outputs
+    # create the column headers and append to the return array
+    headerstring = "Date/Time UTC"
+    datathing = ""
+    for item in stationlist:
+        datathing = datathing + "," + item.name
+    headerstring = headerstring + datathing
+
+    finaloutput.reverse()
+    finaloutput.append(headerstring)
+    finaloutput.reverse()
+
+    # append final aggregated data to output
     return finaloutput
 
 
@@ -102,62 +147,45 @@ def save_csv(arraydata, savefile):
 # ##################################################
 # Convert timestamps in array to UTC time
 # ##################################################
-def unix_to_utc(arraylist):
-    print("Converting time to UTC time...")
-    # set date time format for strptime()
-    dateformat = "%Y-%m-%d %H:%M:%S"
-
-    # Convert the date string to the format of: 2016-10-10 00:00:26.19
-    returnarray = []
-
-    for j in range(1, len(arraylist)):
-        datasplit = arraylist[j].split(",")
-        unixdate = datasplit[0]
-        unixdate = unixdate.split(".")
-        unixdate = unixdate[0]
-
-        datavalues = ""
-        for i in range(1, len(datasplit)):
-            datavalues = "," + datasplit[i]
-
-        # Convert the UNix timestamp, into a UTC string
-        utcdate = datetime.fromtimestamp(int(str(unixdate)))
-
-        # Create the dataline to be appended
-        dataline = str(utcdate) + datavalues
-        returnarray.append(dataline)
-
-    return returnarray
+def unix_to_utc(unixdate):
+    utctime = datetime.datetime.fromtimestamp(int(unixdate)).strftime('%Y-%m-%d %H:%M:%S')
+    return utctime
 
 
 # ############################################
 # Main method starrts here
 # ############################################
 if __name__ == "__main__":
-    # while True:
-    # calculate the processing time
-    starttime = datetime.now()
-    starttime = time.mktime(starttime.timetuple())
+    while True:
+        # calculate the processing time
+        sleeptime = 300  # delay the next iteration
+        starttime = datetime.datetime.now()
+        starttime = time.mktime(starttime.timetuple())
 
-    # for each station.....
-    for mag_station in station_list:
-        mag_station.process_mag_station()
+        # for each station.....
+        for mag_station in station_list:
+            mag_station.process_mag_station()
 
-    # Create aggregate list of dF/dt
-    # create the combined output file
-    aggregated_data = []
-    aggregated_data = create_aggregated_magnetometer_values(station_list)
-    # convert the timesampts to UTC for display on the website
-    aggregated_data = unix_to_utc(aggregated_data)
+        # Create aggregate list of dF/dt
+        # create the combined output file
+        aggregated_data = []
+        aggregated_data = create_aggregated_magnetometer_values(station_list)
+        # convert the timesampts to UTC for display on the website
 
-    # save to CSV or JSON OUTPUT file
-    save_csv(aggregated_data, "aggregate.csv")
+        # THIS IS NOT RIGHT!!!
+        # aggregated_data = unix_to_utc(aggregated_data)
 
-    # Calculate the elapsed processing time and display the result to the console...
-    finishtime = datetime.now()
-    finishtime = time.mktime(finishtime.timetuple())
-    elapsedtime = finishtime - starttime
-    # elapsedtime = float(elapsedtime / 60)
-    print("\nElapsed time is " + str(elapsedtime) + " seconds")
+        # save to CSV or JSON OUTPUT file
+        save_csv(aggregated_data, "aggregate.csv")
 
-        # time.sleep(2 * 60)
+        # Calculate the elapsed processing time and display the result to the console...
+        finishtime = datetime.datetime.now()
+        finishtime = time.mktime(finishtime.timetuple())
+        elapsedtime = finishtime - starttime
+
+        # elapsedtime = float(elapsedtime / 60)
+        print("\nCOMPLETED. Time to process data was " + str(elapsedtime) + " seconds")
+
+        for i in range(0, sleeptime):
+            print(str(sleeptime - i) + " seconds until next pass")
+            time.sleep(1)
