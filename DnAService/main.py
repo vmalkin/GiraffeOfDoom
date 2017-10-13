@@ -111,7 +111,7 @@ def create_aggregated_magnetometer_values(stationlist):
         finaldata = str(utc_time_now) + aggregateddata
         finaloutput.append(finaldata)
 
-    # create the column headers and append to the return array
+    # create the column headers and prepend to the return array
     headerstring = "Date/Time UTC"
     datathing = ""
     for item in stationlist:

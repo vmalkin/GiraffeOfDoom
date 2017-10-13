@@ -114,13 +114,21 @@ class Station:
         if self.sourcetype == "w3":
             url = self.datasource
             importarray = []
-            response = webreader.urlopen(url)
-            for item in response:
-                logData = str(item, 'ascii').strip()
-                logData = logData.split(",")
-                dp = logData[0] + "," + logData[1]
-                importarray.append(dp)
-            print("Data for " + self.name + " loaded from Internet. Size: " + str(len(importarray)) + " records")
+            try:
+                response = webreader.urlopen(url)
+                for item in response:
+                    logData = str(item, 'ascii').strip()
+                    logData = logData.split(",")
+                    dp = logData[0] + "," + logData[1]
+                    importarray.append(dp)
+                print("Data for " + self.name + " loaded from Internet. Size: " + str(len(importarray)) + " records")
+            except URLError as e:
+                if hasattr(e, 'reason'):
+                    print('We failed to reach a server.')
+                    print('Reason: ', e.reason)
+                elif hasattr(e, 'code'):
+                    print('The server couldn\'t fulfill the request.')
+                    print('Error code: ', e.code)
             return importarray
 
         # % Y-%m-%d %H:%M:%S.%f from a file (My magnetometers)
@@ -331,6 +339,6 @@ class Station:
         # rebuild magnetometer readings
         self.displaylist = self.rebuild_from_dadt(self.displaylist)
 
-        # savefile = self.name + "displaydata.csv"
-        # self.save_csv(self.displaylist, savefile)
+        savefile = self.name + "displaydata.csv"
+        self.save_csv(self.displaylist, savefile)
         print("\n")
