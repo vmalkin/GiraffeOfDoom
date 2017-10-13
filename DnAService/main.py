@@ -19,13 +19,13 @@ __author__ = "Vaughn Malkin"
 
 # setup dictionary of stations
 station_list = []
-# station0 = Station.Station("DunedinAurora.NZ", "http://Dunedinaurora.nz/Service24CSV.php", "w1", '"%Y-%m-%d %H:%M:%S"', 6)
+# station0 = Station.Station("DunedinAurora.NZ", "http://Dunedinaurora.nz/Service24CSV.php", "w1", '"%Y-%m-%d %H:%M:%S"', 6, 5)
 # station_list.append(station0)
 
-station1 = Station.Station("Ruru Observatory", "http://www.ruruobservatory.org.nz/dr01_1hr.csv", "w3", "%Y-%m-%d %H:%M:%S.%f", 30)
+station1 = Station.Station("Ruru Observatory", "http://www.ruruobservatory.org.nz/dr01_1hr.csv", "w3", "%Y-%m-%d %H:%M:%S.%f", 30, 0.5)
 station_list.append(station1)
 
-station2 = Station.Station("GOES-13 Satellite", "http://services.swpc.noaa.gov/text/goes-magnetometer-secondary.txt", "w2", '%Y-%m-%d %H:%M', 1)
+station2 = Station.Station("GOES-13 Satellite", "http://services.swpc.noaa.gov/text/goes-magnetometer-secondary.txt", "w2", '%Y-%m-%d %H:%M', 1, 0.1)
 station_list.append(station2)
 
 
@@ -89,8 +89,8 @@ def create_aggregated_magnetometer_values(stationlist):
         for station in stationlist:
             tempdata = float(0)
             counter = 0
-            # for each item in the stations data
-            for item in station.stationdata:
+            # for each item in the stations DISPLAY LIST!
+            for item in station.displaylist:
                 datasplit = item.split(",")
                 date_part = float(datasplit[0])
                 data_part = datasplit[1]
@@ -158,7 +158,7 @@ def unix_to_utc(unixdate):
 if __name__ == "__main__":
     while True:
         # calculate the processing time
-        sleeptime = 300  # delay the next iteration
+        sleeptime = 5 * 60  # delay the next iteration
         starttime = datetime.datetime.now()
         starttime = time.mktime(starttime.timetuple())
 
@@ -168,12 +168,9 @@ if __name__ == "__main__":
 
         # Create aggregate list of dF/dt
         # create the combined output file
+        # convert the timesampts to UTC for display on the website
         aggregated_data = []
         aggregated_data = create_aggregated_magnetometer_values(station_list)
-        # convert the timesampts to UTC for display on the website
-
-        # THIS IS NOT RIGHT!!!
-        # aggregated_data = unix_to_utc(aggregated_data)
 
         # save to CSV or JSON OUTPUT file
         save_csv(aggregated_data, "aggregate.csv")

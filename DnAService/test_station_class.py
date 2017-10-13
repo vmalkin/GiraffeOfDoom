@@ -4,7 +4,7 @@ import Station
 # ##################################
 # Unit test File for Station Class
 # ##################################
-test_station = Station.Station("Ruru Observatory", "http://www.ruruobservatory.org.nz/dr01_1hr.csv", "w3", "%Y-%m-%d %H:%M:%S.%f", 30)
+test_station = Station.Station("Ruru Observatory", "http://www.ruruobservatory.org.nz/dr01_1hr.csv", "w3", "%Y-%m-%d %H:%M:%S.%f", 30,100)
 
 class pickletest(unittest.TestCase):
     # def test_pickleload(self):
@@ -31,14 +31,33 @@ class pickletest(unittest.TestCase):
         ]
 
         answer_array = [
-            "1507122378.0, 1",
-            "1507122388.0, 1",
-            "1507122398.0, -1",
-            "1507122408.0, -1"
+            "1507122378.0,1.0",
+            "1507122388.0,1.0",
+            "1507122398.0,-1.0",
+            "1507122408.0,-1.0"
         ]
 
         test_answer = test_station.create_dadt(input_array)
-        self.assertCountEqual(answer_array, answer_array)
+        self.assertCountEqual(answer_array, test_answer)
+
+    def test_reconstruct_readings(self):
+        input_array = [
+            "1507122378.0,1",
+            "1507122388.0,1",
+            "1507122398.0,-1",
+            "1507122408.0,-1"
+        ]
+
+        answer_array = [
+            "1507122378.0,1.0",
+            "1507122388.0,2.0",
+            "1507122398.0,1.0",
+            "1507122408.0,0.0"
+        ]
+
+        test_answer = test_station.rebuild_from_dadt(input_array)
+        self.assertCountEqual(answer_array, test_answer)
+
 
     def test_aggregate_new_data(self):
         current_data = [

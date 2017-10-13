@@ -1,4 +1,4 @@
-import time
+import math
 from time import mktime
 from datetime import datetime
 import urllib.request as webreader
@@ -9,17 +9,19 @@ import pickle
 NULLBIN = "#n/a"
 
 class Station:
-    def __init__(self, name, datasource, sourcetype, dateformat, readfreq):
-        # each item has the format ("name", "data_source", "source_type", "dateformat", readings_per_minute)
+    def __init__(self, name, datasource, sourcetype, dateformat, readfreq, blips):
+        # each item has the format ("name", "data_source", "source_type", "dateformat", readings_per_minute, blip_threshold)
         self.name = name
         self.datasource = datasource
         self.sourcetype = sourcetype
         self.dateformat = dateformat
         self.readfreq = readfreq
+        self.blip_threshold = blips
 
         # stationdata is the accumulating data for each minuten of the past 24 hours for this station
         self.station_data_file = self.name + ".data.csv"
         self.stationdata = self.load_csv(self.station_data_file)
+        self.displaylist = []
 
     # #################################################################################
     # load pickle file and return the min-max array
@@ -137,12 +139,6 @@ class Station:
             else:
                 print("UNABLE to load data for " + self.name)
 
-    # #################################################################################
-    # APpend new data to the running array
-    # #################################################################################
-    def append_new_data(self):
-        pass
-
 
     # ##################################################
     # Convert timestamps in array to Unix time
@@ -176,26 +172,42 @@ class Station:
     # turn raw values into rates of change
     def create_dadt(self, new_data):
         dadtlist = []
+
         for i in range(1, len(new_data)):
-            previtems = new_data[i].split(",")
-            currentitems = new_data[i-1].split(",")
-            currentdt = currentitems[0]
+            currentsplit = new_data[i].split(",")
+            currentdt = currentsplit[0]
+            currentdata = float(currentsplit[1])
 
-            if (currentitems[1]) == '':
-                currentdata = 0
-            else:
-                currentdata = float(currentitems[1])
+            prevsplit = new_data[i - 1].split(",")
+            prevdata = float(prevsplit[1])
 
-            if (previtems[1]) == '':
-                prevdata = 0
-            else:
-                prevdata = float(str(previtems[1]))
+            dadt = currentdata - prevdata
 
-            dadt =  currentdata - prevdata
+            test_dadt = math.sqrt(math.pow(dadt,2))
+            if test_dadt > self.blip_threshold:
+                dadt = 0.0
+                print("BLIP detected")
 
             datastring = str(currentdt) + "," + str(dadt)
             dadtlist.append(datastring)
         return dadtlist
+
+
+    def rebuild_from_dadt(self, dadt_data):
+        returnarray = []
+        returnvalue = 0
+
+        for i in range(0,len(dadt_data)):
+            datasplit = dadt_data[i].split(",")
+            datetime = datasplit[0]
+            datavalue = float(datasplit[1])
+            returnvalue = returnvalue + datavalue
+
+            datastring = datetime + "," + str(returnvalue)
+            returnarray.append(datastring)
+
+        return returnarray
+
 
     def prune_saved_data(self):
         # IF NECESSARY prune the dataset BACK from the earliest bin datetime as previously determined to keep the data
@@ -222,8 +234,6 @@ class Station:
         print("PRUNED Data list is " + str(len(workingdatalist)) + " records long")
         self.save_array = workingdatalist
 
-    def despike(self, dataarray):
-        return dataarray
 
     # ##################################################
     # Save out CSV data
@@ -300,13 +310,6 @@ class Station:
         new_data = self.utc2unix(new_data)
         print("Converted timestamps of new data for " + self.name)
 
-        # # convert new data to rate of change
-        # new_data = self.create_dadt(new_data)
-        # print("Calculated dF/dt of new data for " + self.name)
-
-        # # remove spikes
-        # new_data = self.despike(new_data)
-
         # Aggregate new data onto current data array. We need to check thru the stationdata and makre sure a datetime
         # is not duplicted. We will use Set() with a union to do this.
         self.stationdata = self.aggregate_new_data(self.stationdata, new_data)
@@ -322,4 +325,12 @@ class Station:
         print("Saving current data for " + self.name)
         self.save_csv(self.stationdata, self.station_data_file)
 
+        # CREATE the list for display. this will not be raw data
+        self.displaylist = self.create_dadt(self.stationdata)
+
+        # rebuild magnetometer readings
+        self.displaylist = self.rebuild_from_dadt(self.displaylist)
+
+        # savefile = self.name + "displaydata.csv"
+        # self.save_csv(self.displaylist, savefile)
         print("\n")
