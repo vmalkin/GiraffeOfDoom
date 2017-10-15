@@ -34,37 +34,37 @@ void loop(){
   if(6<=Wire.available()){
     x = Wire.read()<<8; //MSB  x 
     x |= Wire.read(); //LSB  x
-    z = Wire.read()<<8; //MSB  z
-    z |= Wire.read(); //LSB z
-    y = Wire.read()<<8; //MSB y
-    y |= Wire.read(); //LSB y
+//    z = Wire.read()<<8; //MSB  z
+//    z |= Wire.read(); //LSB z
+//    y = Wire.read()<<8; //MSB y
+//    y |= Wire.read(); //LSB y
   }
 
   final_x = final_x + x;
-  final_y = final_y + y;
-  final_z = final_z + z;
+//  final_y = final_y + y;
+//  final_z = final_z + z;
   counter = counter + 1;
 
   if (counter >= output_delay)
   {
     final_x = final_x / counter;
-    final_y = final_y / counter;
-    final_z = final_z / counter;
+//    final_y = final_y / counter;
+//    final_z = final_z / counter;
     
     // Show Values
-    Serial.print(final_x,3);
-    Serial.print(",");
-    Serial.print(final_y,3);
-    Serial.print(",");
-    Serial.println(final_z,3);
+    Serial.println(final_x,3);
+//    Serial.print(",");
+//    Serial.print(final_y,3);
+//    Serial.print(",");
+//    Serial.println(final_z,3);
 
     x = 0;
-    y = 0;
-    z = 0;
+//    y = 0;
+//    z = 0;
     
     final_x = 0;
-    final_y = 0;
-    final_z = 0;
+//    final_y = 0;
+//    final_z = 0;
     counter =0;
     }
 }

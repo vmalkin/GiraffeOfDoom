@@ -70,7 +70,7 @@ def process_data(input_data_array):
     output_diffs = dp.running_average(output_diffs, 150)
     output_diffs = dp.running_average(output_diffs, 150)
 
-    # Calculate the avg smallest diff value, based on the smoothed data
+
 
     # ###########################################################
     # create the display files for graphing, using ArraySave.CSV
@@ -80,6 +80,9 @@ def process_data(input_data_array):
     # ###########################################################
 
     ofm.CreateDiffs(output_diffs) # use output_diffs data
+    # append the min/max background values. Changing the smoothing values WILL change this so be aware
+    dp.find_avg_background()
+
 
     # to get the last 1 hours the split value is mag read frequency * 60 * 1
     splitvalue = k.MAG_READ_FREQ * 60 * 1
@@ -108,19 +111,19 @@ while True:
     starttime = time.time()
 
     mag_readings = []
-    try:
-        mag_readings = ofm.CreateRawArray()
-        process_data(mag_readings)
-        # Calculate the processing time
-        endtime = time.time()
-        processingtime = endtime - starttime
-        processingtime = str(processingtime)[:5]
-        print("Processing complete. Elapsed time: " + processingtime + " seconds.\n")
+    # try:
+    mag_readings = ofm.CreateRawArray()
+    process_data(mag_readings)
+    # Calculate the processing time
+    endtime = time.time()
+    processingtime = endtime - starttime
+    processingtime = str(processingtime)[:5]
+    print("Processing complete. Elapsed time: " + processingtime + " seconds.\n")
     # print(str(len(mag_readings)) + " records loaded")
 
-    except:
-        print("ERROR: Problem opening file")
-        logging.critical(" ERROR: Problem opening file. Unable to create display files")
+    # except:
+    #     print("ERROR: Problem opening file")
+    #     logging.critical(" ERROR: Problem opening file. Unable to create display files")
 
 
     timedelay = DELAY_SHORT_INTERVAL + random.randint(0,RANDOM_SECS)

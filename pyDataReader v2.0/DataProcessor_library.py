@@ -69,7 +69,7 @@ def create_diffs_array(readings_array):
 
     if len(readings_array) > 2:
         for i in range (1, len(readings_array)):
-            diff_x = (Decimal(readings_array[i].raw_x) / Decimal(readings_array[i-1].raw_x))
+            diff_x = (Decimal(readings_array[i].raw_x) - Decimal(readings_array[i-1].raw_x))
             # Each IF statement checks to see if reading exceeds the spike value. If it does
             # then we change the reading to zero. We trip the counterbit and at the end of the
             # data read incr the spike counter
@@ -77,12 +77,12 @@ def create_diffs_array(readings_array):
                 diff_x = 0
                 print("spike in differences detected")
 
-            diff_y = (Decimal(readings_array[i].raw_y) / Decimal(readings_array[i-1].raw_y))
+            diff_y = (Decimal(readings_array[i].raw_y) - Decimal(readings_array[i-1].raw_y))
             if math.sqrt(math.pow(diff_y,2)) > k.NOISE_SPIKE:
                 diff_y = 0
                 print("spike in differences detected")
 
-            diff_z = (Decimal(readings_array[i].raw_z) / Decimal(readings_array[i-1].raw_z))
+            diff_z = (Decimal(readings_array[i].raw_z) - Decimal(readings_array[i-1].raw_z))
             if math.sqrt(math.pow(diff_z,2)) > k.NOISE_SPIKE:
                 diff_z = 0
                 print("spike in differences detected")
@@ -94,6 +94,36 @@ def create_diffs_array(readings_array):
         diffsarray.append(dp)
 
     return diffsarray
+
+def find_avg_background():
+        avg_min_file = "avgdata.csv"
+        avg_min = []
+        # Check if exists CurrentUTC file. If exists, load up Datapoint Array.
+        if os.path.isfile(avg_min_file):
+            with open(avg_min_file) as e:
+                for line in e:
+                    line = line.strip()  # remove any trailing whitespace chars like CR and NL
+                    avg_min.append(line)
+        else:
+            print("No save file loaded. Using new array.")
+
+        if os.path.isfile(k.FILE_4DIFFS):
+            with open(k.FILE_4DIFFS) as e:
+                for line in e:
+                    line = line.strip()  # remove any trailing whitespace chars like CR and NL
+                    avg_min.append(line)
+        else:
+            print("No save file loaded. Using new array.")
+
+    # export array to array-save file
+    try:
+        with open(avg_min_file, 'w') as w:
+            for dataObjects in avg_min:
+                w.write(dataObjects.print_values() + '\n')
+    except IOError:
+        print("WARNING: There was a problem accessing " + avg_min_file)
+        logging.warning("WARNING: File IO Exception raised whilst accessing file: " + avg_min_file)
+
 
 
 # #################################################################################
