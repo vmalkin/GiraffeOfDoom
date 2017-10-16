@@ -29,8 +29,8 @@ __version__ = "2.0"
 # Check serial data is 3 positive or negative comma separated decimal numbers.
 def CheckData(logDataToAdd):
     # Checking here.
-    # if re.match(r'\A-?\d+(\.\d+)?\Z',logDataToAdd):
-    if re.match(r'\A-?\d+(\.\d+)?[,]-?\d+(\.\d+)?[,]-?\d+(\.\d+)?\Z',logDataToAdd):
+    if re.match(r'\A-?\d+(\.\d+)?\Z',logDataToAdd):
+    # if re.match(r'\A-?\d+(\.\d+)?[,]-?\d+(\.\d+)?[,]-?\d+(\.\d+)?\Z',logDataToAdd):
         LogRawMagnetometerData(logDataToAdd)
     else:
         print("Garbage data from Magnetometer: " + logDataToAdd)
@@ -53,7 +53,9 @@ def LogRawMagnetometerData(logDataToAdd):
     lg = logDataToAdd.split(",")
 
     # Create the DataPoint object, pass in the datetime and the 3 list values
-    dp = DataPoint.DataPoint(str(logdate), lg[0], lg[1], lg[2])
+    # dp = DataPoint.DataPoint(str(logdate), lg[0], lg[1], lg[2])
+    # if the mag spits out only one data value at a time
+    dp = DataPoint.DataPoint(str(logdate), lg[0], 0, 0)
 
     # DP is added to array.
     filemanager_library.AppendDataPoint(dp, mag_readings)

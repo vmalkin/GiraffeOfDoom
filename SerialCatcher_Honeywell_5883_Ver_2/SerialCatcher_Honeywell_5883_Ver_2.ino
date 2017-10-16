@@ -42,7 +42,5 @@ void loop(){
   Serial.print(y);
   Serial.print(",");
   Serial.println(z);
-  Serial.println();
-  
-  delay(250);
+  delay(2000);
 }
