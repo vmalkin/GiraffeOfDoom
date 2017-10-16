@@ -1,0 +1,176 @@
+"""
+This file is for the purposes of creating a display file of magnetometer readings - dF/dt
+The returned file should have the smoothed rate of change, and the average background levels
+the returned file is CSV format
+"""
+
+import DataPoint
+import constants as k
+import os.path
+import logging
+import math
+from decimal import Decimal, getcontext
+from datetime import datetime
+import time
+
+
+# #################################################################################
+# Calculate the differences
+# This function will create an array of differences
+# #################################################################################
+def create_diffs_array(readings_array):
+    diffsarray = []
+
+    if len(readings_array) > 2:
+        for i in range (1, len(readings_array)):
+            diff_x = (Decimal(readings_array[i].raw_x) - Decimal(readings_array[i-1].raw_x))
+            # Each IF statement checks to see if reading exceeds the spike value. If it does
+            # then we change the reading to zero. We trip the counterbit and at the end of the
+            # data read incr the spike counter
+            if math.sqrt(math.pow(diff_x,2)) > k.NOISE_SPIKE:
+                diff_x = 0
+                print("spike in differences detected")
+
+            diff_y = (Decimal(readings_array[i].raw_y) - Decimal(readings_array[i-1].raw_y))
+            if math.sqrt(math.pow(diff_y,2)) > k.NOISE_SPIKE:
+                diff_y = 0
+                print("spike in differences detected")
+
+            diff_z = (Decimal(readings_array[i].raw_z) - Decimal(readings_array[i-1].raw_z))
+            if math.sqrt(math.pow(diff_z,2)) > k.NOISE_SPIKE:
+                diff_z = 0
+                print("spike in differences detected")
+
+            dp = DataPoint.DataPoint(readings_array[i].dateTime,diff_x, diff_y, diff_z)
+            diffsarray.append(dp)
+    else:
+        dp = DataPoint.DataPoint("0000-00-00 00:00:00",0,0,0)
+        diffsarray.append(dp)
+
+    return diffsarray
+
+
+# #################################################################################
+# Create the smoothed data array and write out the files for plotting.
+# We will do a running average based on the running average time in minutes and the number
+# readings per minute
+#
+# we will divide this number evenly so our average represents the midpoint of these
+# readings.
+# #################################################################################
+def running_average(input_array, averaging_interval):
+    getcontext().prec = 10
+    displayarray = []
+
+    # This figure MUST be an even number. Check your constants.
+    AVERAGING_TIME = int(averaging_interval)
+    AVERAGING_TIME_HALF = int(AVERAGING_TIME / 2)
+
+    # NOW average the cumulative array, smooth out the blips
+    if len(input_array) > AVERAGING_TIME:
+        for i in range(AVERAGING_TIME_HALF, len(input_array) - AVERAGING_TIME_HALF):
+            xvalue = Decimal(0)
+            yvalue = Decimal(0)
+            zvalue = Decimal(0)
+
+            # This is where we average for the time i before and after i.
+            for j in range(0, AVERAGING_TIME):
+                xvalue = xvalue + Decimal(input_array[(i - AVERAGING_TIME_HALF) + j].raw_x)
+                yvalue = yvalue + Decimal(input_array[(i - AVERAGING_TIME_HALF) + j].raw_y)
+                zvalue = zvalue + Decimal(input_array[(i - AVERAGING_TIME_HALF) + j].raw_z)
+
+            xvalue = Decimal(xvalue / AVERAGING_TIME)
+            yvalue = Decimal(yvalue / AVERAGING_TIME)
+            zvalue = Decimal(zvalue / AVERAGING_TIME)
+
+            displaypoint = DataPoint.DataPoint(input_array[i].dateTime, xvalue, yvalue, zvalue)
+            displayarray.append(displaypoint)
+
+    else:
+        displayarray = input_array
+
+    return displayarray
+
+# #################################################################################
+# calculate the lines that will be displayed as background threshold bars
+# these will be appended to the diffs data before being finally saved.
+# The data is saved out to a CSV with the format [UNIX_time, accrued_min_values, count_of_averages]
+# #################################################################################
+def create_background_bars(diffs):
+    # load up mins value from file from calculate_min_values()
+    # create string of min data to be appended to diffs file
+    # append the min data
+    pass
+
+
+
+def calculate_min_values(data_array):
+    # IF the min value file does not exist then...
+    # calculate min value of the current array
+    # Create the min value array
+    # save the min values to file
+
+    # IF more than 24 hours passed since the last calculation? Then
+    # calculate min value of the current array
+    # Create the min value array
+    # save the min values to file
+
+    # ELSE load the min values and create the min value array
+
+    # return min values
+    pass
+
+
+# #################################################################################
+# load an array from file
+# #################################################################################
+def loadvalues(filename, array_name):
+    readings = []
+    # Check if exists CurrentUTC file. If exists, load up Datapoint Array.
+    if os.path.isfile(k.FILE_ROLLING):
+        with open(k.FILE_ROLLING) as e:
+            for line in e:
+                line = line.strip() # remove any trailing whitespace chars like CR and NL
+                values = line.split(",")
+                # See the datapoint object/constructor for the current values it holds.
+                dp = DataPoint.DataPoint(values[0], values[1], values[2], values[3])
+                readings.append(dp)
+        print("Array loaded from file. Size: " + str(len(readings)) + " records")
+    else:
+        print("No save file loaded. Using new array.")
+
+    return readings
+
+# #################################################################################
+# save an array to file
+# #################################################################################
+def savevalues(filename, array_name):
+    # export array to array-save file
+        try:
+            with open (filename, 'w') as w:
+                for dataObjects in array_name:
+                    w.write(dataObjects.print_values() + '\n')
+        except IOError:
+            print("WARNING: There was a problem accessing " + filename)
+            logging.warning("WARNING: File IO Exception raised whilst accessing file: " + filename)
+
+
+# #################################################################################
+# Wrapper function to process diffs
+# #################################################################################
+def process_differences(data_array):
+    # create the array of dF/dt
+    diffs_data = create_diffs_array(data_array)
+
+    # smooth the diffs to show the trend. Two passes at 5 minutes is usually ok.
+    diffs_data = running_average(diffs_data, 150)
+    diffs_data = running_average(diffs_data, 150)
+
+    # calculate the minimum rate of change from THIS smoothed data. append this range to the data. Highcharts
+    # will display this as +/- ve bars on the chart
+    diffs_data = create_background_bars(diffs_data)
+
+    # add the CSV file headers
+
+    #Save out the diffs array
+    save_differences_file(diffs_data)

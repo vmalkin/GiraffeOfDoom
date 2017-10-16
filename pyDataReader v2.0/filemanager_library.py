@@ -11,22 +11,7 @@ __author__ = 'Meepo'
 #
 # ###################################################################
 
-def CreateDiffs(diffsArray):
-    try:
-        os.remove(k.FILE_4DIFFS)
-    except OSError:
-        print("WARNING: could not delete " + k.FILE_4DIFFS)
-        logging.warning("WARNING: File IO Exception raised - could not delete: " + k.FILE_4DIFFS)
 
-    try:
-        with open (k.FILE_4DIFFS,'a') as f:
-            f.write("Date/Time (UTC), Smoothed dH/dt" + "\n")
-            for datapoints in diffsArray:
-                # f.write(datapoints.dateTime + "," + str(datapoints.raw_x) + "," + str(datapoints.raw_y) + "," + str(datapoints.raw_z) + '\n')
-                f.write(datapoints.dateTime + "," + str(datapoints.raw_x)  + '\n')
-    except IOError:
-        print("WARNING: There was a problem accessing " + k.FILE_4DIFFS)
-        logging.warning("WARNING: File IO Exception raised whilst accessing file: " + k.FILE_4DIFFS)
 
 
 # ############################################################

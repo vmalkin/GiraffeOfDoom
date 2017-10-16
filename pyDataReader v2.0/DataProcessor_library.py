@@ -57,44 +57,6 @@ def invert_data_array(data_array):
 
     return returnarray
 
-# #################################################################################
-# Calculate the differences
-# This function will create an array of differences
-# we will use division rather than subtraction so the differences are _relative_
-# We should be able to ignore what the value is from the sensor, and instead use
-# the magntitude of change bteween values
-# #################################################################################
-def create_diffs_array(readings_array):
-    diffsarray = []
-
-    if len(readings_array) > 2:
-        for i in range (1, len(readings_array)):
-            diff_x = (Decimal(readings_array[i].raw_x) / Decimal(readings_array[i-1].raw_x))
-            # Each IF statement checks to see if reading exceeds the spike value. If it does
-            # then we change the reading to zero. We trip the counterbit and at the end of the
-            # data read incr the spike counter
-            if math.sqrt(math.pow(diff_x,2)) > k.NOISE_SPIKE:
-                diff_x = 0
-                print("spike in differences detected")
-
-            diff_y = (Decimal(readings_array[i].raw_y) / Decimal(readings_array[i-1].raw_y))
-            if math.sqrt(math.pow(diff_y,2)) > k.NOISE_SPIKE:
-                diff_y = 0
-                print("spike in differences detected")
-
-            diff_z = (Decimal(readings_array[i].raw_z) / Decimal(readings_array[i-1].raw_z))
-            if math.sqrt(math.pow(diff_z,2)) > k.NOISE_SPIKE:
-                diff_z = 0
-                print("spike in differences detected")
-
-            dp = DataPoint.DataPoint(readings_array[i].dateTime,diff_x, diff_y, diff_z)
-            diffsarray.append(dp)
-    else:
-        dp = DataPoint.DataPoint("0000-00-00 00:00:00",0,0,0)
-        diffsarray.append(dp)
-
-    return diffsarray
-
 
 # #################################################################################
 # Datafilters
