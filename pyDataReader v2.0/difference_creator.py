@@ -114,14 +114,20 @@ def calculate_min_values(diffs_data):
     nowtime = datetime.datetime.utcnow()
     nowtime = time.mktime(nowtime.timetuple())
     calc_flag = False
+    savefilename = k.STATION_ID + "mindata.csv"
 
     # IF the min value file does not exist then...
     # calculate min value of the current array
     # Create the min value array
+    if os.path.isfile(savefilename):
+       loadvalues(savefilename, min_value_data)
+
 
     # IF more than 24 hours passed since the last calculation? Then
     # calculate min value of the current array
     # Create the min value array
+
+
 
     if calc_flag == True:
         print("More than 24 hours calculation. re-calculating new min values")
@@ -150,7 +156,7 @@ def calculate_min_values(diffs_data):
 
     # save the min values to file
     filename = k.STATION_ID + "mindata.csv"
-    savevalues(filename, min_value_data)
+    savevalues(savefilename, min_value_data)
 
     return min_value_data
 
