@@ -25,8 +25,7 @@ def create_diffs_array(readings_array):
         for i in range (1, len(readings_array)):
             diff_x = (Decimal(readings_array[i].raw_x) - Decimal(readings_array[i-1].raw_x))
             # Each IF statement checks to see if reading exceeds the spike value. If it does
-            # then we change the reading to zero. We trip the counterbit and at the end of the
-            # data read incr the spike counter
+            # then we change the reading to zero.
             if math.sqrt(math.pow(diff_x,2)) > k.NOISE_SPIKE:
                 diff_x = 0
                 print("spike in differences detected")
@@ -103,22 +102,57 @@ def create_background_bars(diffs):
     pass
 
 
+# #################################################################################
+# min values for an array of data will be the minimum dF/dt in any 60min interval
+# within the data
+# the format for the min value data is a list of one entry: [unix_date,min_value]
+# #################################################################################
+def calculate_min_values(diffs_data):
+    min_value_data = []
+    hourrange = k.MAG_READ_FREQ * 60
+    min_value = 1000000
+    nowtime = datetime.datetime.utcnow()
+    nowtime = time.mktime(nowtime.timetuple())
+    calc_flag = False
 
-def calculate_min_values(data_array):
     # IF the min value file does not exist then...
     # calculate min value of the current array
     # Create the min value array
-    # save the min values to file
 
     # IF more than 24 hours passed since the last calculation? Then
     # calculate min value of the current array
     # Create the min value array
-    # save the min values to file
+
+    if calc_flag == True:
+        print("More than 24 hours calculation. re-calculating new min values")
+        for i in range (0, len(diffs_data)):
+            minholder = 1000000
+            maxholder = -1000000
+            for j in range(0, hourrange):
+                checkdata = diffs_data[j + i].split(",")
+                checkdata = checkdata[1]
+                if checkdata > maxholder:
+                    maxholder = checkdata
+                if checkdata < minholder:
+                    minholder = checkdata
+
+            checkdata = maxholder - minholder
+
+            if checkdata < min_value:
+                min_value = checkdata
+
+        appenddata = str(nowtime) + "," + min_value
+        min_value_data.append(appenddata)
+        print("Min values done.")
+
 
     # ELSE load the min values and create the min value array
 
-    # return min values
-    pass
+    # save the min values to file
+    filename = k.STATION_ID + "mindata.csv"
+    savevalues(filename, min_value_data)
+
+    return min_value_data
 
 
 # #################################################################################
@@ -173,4 +207,4 @@ def process_differences(data_array):
     # add the CSV file headers
 
     #Save out the diffs array
-    save_differences_file(diffs_data)
+    savevalues("diffs.csv", diffs_data)
