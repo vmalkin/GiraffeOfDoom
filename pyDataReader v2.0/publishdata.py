@@ -6,6 +6,7 @@ import constants as k
 import random
 import logging
 import binlibrary as binner
+import difference_creator as df
 # from constants import mag_readings
 
 # #################################################################################
@@ -50,7 +51,7 @@ def process_data(input_data_array):
     # ###########################################################################
 
     # create the differences array from the raw data
-    output_diffs = dp.create_diffs_array(data_array)
+    output_diffs = df.process_differences(input_data_array)
 
     # rebuild the relative readings, now with no blips
     SPIKE_CHECK = False
@@ -67,8 +68,7 @@ def process_data(input_data_array):
     smoothed_data_array = dp.running_average(smoothed_data_array, 6)
 
     # smoothed for two by 5 minutes here
-    output_diffs = dp.running_average(output_diffs, 150)
-    output_diffs = dp.running_average(output_diffs, 150)
+
 
 
 

@@ -57,8 +57,7 @@ def invert_data_array(data_array):
 
     return returnarray
 
-<<<<<<< HEAD
-=======
+
 # #################################################################################
 # Calculate the differences
 # This function will create an array of differences
@@ -96,38 +95,6 @@ def create_diffs_array(readings_array):
         diffsarray.append(dp)
 
     return diffsarray
-
-def find_avg_background():
-        avg_min_file = "avgdata.csv"
-        avg_min = []
-        # Check if exists CurrentUTC file. If exists, load up Datapoint Array.
-        if os.path.isfile(avg_min_file):
-            with open(avg_min_file) as e:
-                for line in e:
-                    line = line.strip()  # remove any trailing whitespace chars like CR and NL
-                    avg_min.append(line)
-        else:
-            print("No save file loaded. Using new array.")
-
-        if os.path.isfile(k.FILE_4DIFFS):
-            with open(k.FILE_4DIFFS) as e:
-                for line in e:
-                    line = line.strip()  # remove any trailing whitespace chars like CR and NL
-                    avg_min.append(line)
-        else:
-            print("No save file loaded. Using new array.")
-
-    # export array to array-save file
-    try:
-        with open(avg_min_file, 'w') as w:
-            for dataObjects in avg_min:
-                w.write(dataObjects.print_values() + '\n')
-    except IOError:
-        print("WARNING: There was a problem accessing " + avg_min_file)
-        logging.warning("WARNING: File IO Exception raised whilst accessing file: " + avg_min_file)
-
-
->>>>>>> 9a486512005d5373f6e8eb5a90102dd489a53152
 
 # #################################################################################
 # Datafilters

@@ -96,10 +96,20 @@ def running_average(input_array, averaging_interval):
 # The data is saved out to a CSV with the format [UNIX_time, accrued_min_values, count_of_averages]
 # #################################################################################
 def create_background_bars(diffs):
+    newdiffs = []
     # load up mins value from file from calculate_min_values()
-    # create string of min data to be appended to diffs file
-    # append the min data
-    pass
+    minbg = calculate_min_values(diffs)
+
+    # create string of min data to be appended to diffs file. The value in the array is a range from low to high
+    # so we will halve it and create two series of +ve and -ve values to create the max-min band in the graph.
+    minbg = minbg[1] / 2
+
+
+    for item in diffs:
+        appendvalue = item + "," + minbg + "," + -1*minbg
+        newdiffs.append(appendvalue)
+
+    return newdiffs
 
 
 # #################################################################################
@@ -111,7 +121,7 @@ def calculate_min_values(diffs_data):
     min_value_data = []
     hourrange = k.MAG_READ_FREQ * 60
     min_value = 1000000
-    nowtime = datetime.datetime.utcnow()
+    nowtime = datetime.utcnow()
     nowtime = time.mktime(nowtime.timetuple())
     calc_flag = False
     savefilename = k.STATION_ID + "mindata.csv"
@@ -121,17 +131,9 @@ def calculate_min_values(diffs_data):
     # Create the min value array
     if os.path.isfile(savefilename):
        loadvalues(savefilename, min_value_data)
-
-
-    # IF more than 24 hours passed since the last calculation? Then
-    # calculate min value of the current array
-    # Create the min value array
-
-
-
-    if calc_flag == True:
-        print("More than 24 hours calculation. re-calculating new min values")
-        for i in range (0, len(diffs_data)):
+    else:
+        print("No saved values. Calculating new min values")
+        for i in range (0, len(diffs_data) - hourrange):
             minholder = 1000000
             maxholder = -1000000
             for j in range(0, hourrange):
@@ -147,10 +149,35 @@ def calculate_min_values(diffs_data):
             if checkdata < min_value:
                 min_value = checkdata
 
-        appenddata = str(nowtime) + "," + min_value
+        appenddata = str(nowtime) + "," + str(min_value)
         min_value_data.append(appenddata)
         print("Min values done.")
 
+    # IF more than 24 hours passed since the last calculation? Then
+    # calculate min value of the current array
+    # Create the min value array
+
+    if (float(nowtime) - float(min_value_data[0])) > (hourrange * 24):
+        print("Over 24 hours. Re-calculating new min values")
+        for i in range (0, len(diffs_data) - hourrange):
+            minholder = 1000000
+            maxholder = -1000000
+            for j in range(0, hourrange):
+                checkdata = diffs_data[j + i].split(",")
+                checkdata = checkdata[1]
+                if checkdata > maxholder:
+                    maxholder = checkdata
+                if checkdata < minholder:
+                    minholder = checkdata
+
+            checkdata = maxholder - minholder
+
+            if checkdata < min_value:
+                min_value = checkdata
+
+        appenddata = str(nowtime) + "," + str(min_value)
+        min_value_data.append(appenddata)
+        print("Min values done.")
 
     # ELSE load the min values and create the min value array
 
