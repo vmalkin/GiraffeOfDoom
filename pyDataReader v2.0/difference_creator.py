@@ -250,4 +250,4 @@ def process_differences(data_array):
     diffs_data.reverse()
 
     #Save out the diffs array
-    savevalues("diffs.csv", diffs_data)
+    savevalues(k.FILE_4DIFFS, diffs_data)
