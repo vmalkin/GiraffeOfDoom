@@ -4,7 +4,6 @@ The returned file should have the smoothed rate of change, and the average backg
 the returned file is CSV format
 """
 
-import DataPoint
 import constants as k
 import os.path
 import logging
@@ -40,10 +39,17 @@ def create_diffs_array(readings_array):
                 diff_z = 0
                 print("spike in differences detected")
 
-            dp = DataPoint.DataPoint(readings_array[i].dateTime,diff_x, diff_y, diff_z)
+            datadate = readings_array[i].dateTime
+            dx = diff_x
+            # dy = diff_y
+            # dz = diff_z
+            # dp = str(datadate) + "," + str(dx) + "," + str(dy)+ "," + str(dz)
+            dp = str(datadate) + "," + str(dx)
+
+            # dp = DataPoint.DataPoint(readings_array[i].dateTime,diff_x, diff_y, diff_z)
             diffsarray.append(dp)
     else:
-        dp = DataPoint.DataPoint("0000-00-00 00:00:00",0,0,0)
+        dp = "0000-00-00 00:00:00,0"
         diffsarray.append(dp)
 
     return diffsarray
@@ -69,20 +75,20 @@ def running_average(input_array, averaging_interval):
     if len(input_array) > AVERAGING_TIME:
         for i in range(AVERAGING_TIME_HALF, len(input_array) - AVERAGING_TIME_HALF):
             xvalue = Decimal(0)
-            yvalue = Decimal(0)
-            zvalue = Decimal(0)
+            jdatasplit = input_array[i].split(",")
+            jdatadate = jdatasplit[0]
 
             # This is where we average for the time i before and after i.
             for j in range(0, AVERAGING_TIME):
-                xvalue = xvalue + Decimal(input_array[(i - AVERAGING_TIME_HALF) + j].raw_x)
-                yvalue = yvalue + Decimal(input_array[(i - AVERAGING_TIME_HALF) + j].raw_y)
-                zvalue = zvalue + Decimal(input_array[(i - AVERAGING_TIME_HALF) + j].raw_z)
+                datasplit = input_array[(i - AVERAGING_TIME_HALF) + j]
+                datasplit = datasplit.split(",")
+                xdata = datasplit[1]
+
+                xvalue = xvalue + Decimal(xdata)
 
             xvalue = Decimal(xvalue / AVERAGING_TIME)
-            yvalue = Decimal(yvalue / AVERAGING_TIME)
-            zvalue = Decimal(zvalue / AVERAGING_TIME)
 
-            displaypoint = DataPoint.DataPoint(input_array[i].dateTime, xvalue, yvalue, zvalue)
+            displaypoint = jdatadate + "," + str(xvalue)
             displayarray.append(displaypoint)
 
     else:
@@ -200,8 +206,8 @@ def loadvalues(filename, array_name):
                 line = line.strip() # remove any trailing whitespace chars like CR and NL
                 values = line.split(",")
                 # See the datapoint object/constructor for the current values it holds.
-                dp = DataPoint.DataPoint(values[0], values[1], values[2], values[3])
-                readings.append(dp)
+                # dp = DataPoint.DataPoint(values[0], values[1], values[2], values[3])
+                readings.append(values)
         print("Array loaded from file. Size: " + str(len(readings)) + " records")
     else:
         print("No save file loaded. Using new array.")
@@ -216,7 +222,7 @@ def savevalues(filename, array_name):
         try:
             with open (filename, 'w') as w:
                 for dataObjects in array_name:
-                    w.write(dataObjects.print_values() + '\n')
+                    w.write(dataObjects + '\n')
         except IOError:
             print("WARNING: There was a problem accessing " + filename)
             logging.warning("WARNING: File IO Exception raised whilst accessing file: " + filename)
@@ -235,9 +241,13 @@ def process_differences(data_array):
 
     # calculate the minimum rate of change from THIS smoothed data. append this range to the data. Highcharts
     # will display this as +/- ve bars on the chart
-    diffs_data = create_background_bars(diffs_data)
+    # diffs_data = create_background_bars(diffs_data)
 
     # add the CSV file headers
+    headerstring = "Date/time UTC, Differences"
+    diffs_data.reverse()
+    diffs_data.append(headerstring)
+    diffs_data.reverse()
 
     #Save out the diffs array
     savevalues("diffs.csv", diffs_data)
