@@ -29,7 +29,7 @@ __version__ = "2.1"
 # Check serial data is 3 positive or negative comma separated decimal numbers.
 def CheckData(logDataToAdd):
     # Checking here.
-    if re.match(r'\A-?\d+(\.\d+)?\Z',logDataToAdd):
+    if re.match(r'-?\d+',logDataToAdd):
     # if re.match(r'\A-?\d+(\.\d+)?[,]-?\d+(\.\d+)?[,]-?\d+(\.\d+)?\Z',logDataToAdd):
         LogRawMagnetometerData(logDataToAdd)
     else:

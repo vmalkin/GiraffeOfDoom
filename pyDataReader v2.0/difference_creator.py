@@ -236,8 +236,8 @@ def process_differences(data_array):
     diffs_data = create_diffs_array(data_array)
 
     # smooth the diffs to show the trend. Two passes at 5 minutes is usually ok.
-    diffs_data = running_average(diffs_data, 150)
-    diffs_data = running_average(diffs_data, 150)
+    diffs_data = running_average(diffs_data, 20)
+    diffs_data = running_average(diffs_data, 20)
 
     # calculate the minimum rate of change from THIS smoothed data. append this range to the data. Highcharts
     # will display this as +/- ve bars on the chart
