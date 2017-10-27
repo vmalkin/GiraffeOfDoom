@@ -108,6 +108,7 @@ def create_background_bars(diffs):
 
     # create string of min data to be appended to diffs file. The value in the array is a range from low to high
     # so we will halve it and create two series of +ve and -ve values to create the max-min band in the graph.
+    print(minbg)
     minbg = minbg[1] / 2
 
 
@@ -140,17 +141,17 @@ def calculate_min_values(diffs_data):
     else:
         print("No saved values. Calculating new min values")
         for i in range (0, len(diffs_data) - hourrange):
-            minholder = 1000000
-            maxholder = -1000000
+            minholder = float(1000000)
+            maxholder = float(-1000000)
             for j in range(0, hourrange):
                 checkdata = diffs_data[j + i].split(",")
                 checkdata = checkdata[1]
-                if checkdata > maxholder:
+                if float(checkdata) > float(maxholder):
                     maxholder = checkdata
-                if checkdata < minholder:
+                if float(checkdata) < float(minholder):
                     minholder = checkdata
 
-            checkdata = maxholder - minholder
+            checkdata = float(maxholder) - float(minholder)
 
             if checkdata < min_value:
                 min_value = checkdata
@@ -162,8 +163,9 @@ def calculate_min_values(diffs_data):
     # IF more than 24 hours passed since the last calculation? Then
     # calculate min value of the current array
     # Create the min value array
-
-    if (float(nowtime) - float(min_value_data[0])) > (hourrange * 24):
+    storedsplit = min_value_data[0].split(",")
+    storedtime = storedsplit[0]
+    if (float(nowtime) - float(storedtime)) > (hourrange * 24):
         print("Over 24 hours. Re-calculating new min values")
         for i in range (0, len(diffs_data) - hourrange):
             minholder = 1000000
@@ -241,7 +243,7 @@ def process_differences(data_array):
 
     # calculate the minimum rate of change from THIS smoothed data. append this range to the data. Highcharts
     # will display this as +/- ve bars on the chart
-    # diffs_data = create_background_bars(diffs_data)
+    diffs_data = create_background_bars(diffs_data)
 
     # add the CSV file headers
     headerstring = "Date/time UTC, Differences"
