@@ -1,7 +1,7 @@
 #!/usr/bin/python
 import DataPoint
 import constants as k
-import filemanager_library
+import mgr_files
 import serial
 import datetime
 import logging
@@ -58,10 +58,10 @@ def LogRawMagnetometerData(logDataToAdd):
     dp = DataPoint.DataPoint(str(logdate), lg[0], 0, 0)
 
     # DP is added to array.
-    filemanager_library.AppendDataPoint(dp, mag_readings)
+    mgr_files.AppendDataPoint(dp, mag_readings)
 
     # Save the array to the ArraySave.csv file loaded at the beginning
-    filemanager_library.SaveRawArray(mag_readings)
+    mgr_files.SaveRawArray(mag_readings)
 
     ###############################################
     # Logdata to be appended to current 24 hr file
@@ -153,7 +153,7 @@ except serial.SerialException:
 print("Port is: ", com.name)
 
 # Initialise array from savefile if possible, otherwise new array
-mag_readings = filemanager_library.CreateRawArray()
+mag_readings = mgr_files.CreateRawArray()
 
 # *****************************************************************************************
 # MAIN LOOP. Only the End of Days will stop this program.

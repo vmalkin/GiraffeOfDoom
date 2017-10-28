@@ -3,7 +3,6 @@ This file is for the purposes of creating a display file of magnetometer reading
 The returned file should have the smoothed rate of change, and the average background levels
 the returned file is CSV format
 """
-
 import constants as k
 import os.path
 import logging
@@ -21,21 +20,21 @@ def create_diffs_array(readings_array):
     diffsarray = []
 
     if len(readings_array) > 2:
-        for i in range (1, len(readings_array)):
+        for i in range(1, len(readings_array)):
             diff_x = (Decimal(readings_array[i].raw_x) - Decimal(readings_array[i-1].raw_x))
             # Each IF statement checks to see if reading exceeds the spike value. If it does
             # then we change the reading to zero.
-            if math.sqrt(math.pow(diff_x,2)) > k.NOISE_SPIKE:
+            if math.sqrt(math.pow(diff_x, 2)) > k.NOISE_SPIKE:
                 diff_x = 0
                 print("spike in differences detected")
 
             diff_y = (Decimal(readings_array[i].raw_y) - Decimal(readings_array[i-1].raw_y))
-            if math.sqrt(math.pow(diff_y,2)) > k.NOISE_SPIKE:
+            if math.sqrt(math.pow(diff_y, 2)) > k.NOISE_SPIKE:
                 diff_y = 0
                 print("spike in differences detected")
 
             diff_z = (Decimal(readings_array[i].raw_z) - Decimal(readings_array[i-1].raw_z))
-            if math.sqrt(math.pow(diff_z,2)) > k.NOISE_SPIKE:
+            if math.sqrt(math.pow(diff_z, 2)) > k.NOISE_SPIKE:
                 diff_z = 0
                 print("spike in differences detected")
 
@@ -96,23 +95,25 @@ def running_average(input_array, averaging_interval):
 
     return displayarray
 
+
 # #################################################################################
 # calculate the lines that will be displayed as background threshold bars
 # these will be appended to the diffs data before being finally saved.
 # The data is saved out to a CSV with the format [UNIX_time, accrued_min_values, count_of_averages]
 # #################################################################################
 def create_background_bars(diffs):
+    gain = 1.3
     newdiffs = []
+
     # load up mins value from file from calculate_min_values()
     minbg = calculate_min_values(diffs)
-
-    # create string of min data to be appended to diffs file. The value in the array is a range from low to high
-    # so we will halve it and create two series of +ve and -ve values to create the max-min band in the graph.
-    minbg = minbg[1] / 2
-
+    minbg = (minbg * gain) / 2
 
     for item in diffs:
-        appendvalue = item + "," + minbg + "," + -1*minbg
+        itemsplit = item.split(",")
+        itemdate = itemsplit[0]
+        itemdata = itemsplit[1]
+        appendvalue = itemdate + "," + str(minbg) + "," + str(-1 * minbg) + "," + itemdata
         newdiffs.append(appendvalue)
 
     return newdiffs
@@ -124,74 +125,39 @@ def create_background_bars(diffs):
 # the format for the min value data is a list of one entry: [unix_date,min_value]
 # #################################################################################
 def calculate_min_values(diffs_data):
-    min_value_data = []
-    hourrange = k.MAG_READ_FREQ * 60
-    min_value = 1000000
-    nowtime = datetime.utcnow()
-    nowtime = time.mktime(nowtime.timetuple())
-    calc_flag = False
-    savefilename = k.STATION_ID + "mindata.csv"
-
-    # IF the min value file does not exist then...
-    # calculate min value of the current array
-    # Create the min value array
-    if os.path.isfile(savefilename):
-       loadvalues(savefilename, min_value_data)
-    else:
-        print("No saved values. Calculating new min values")
-        for i in range (0, len(diffs_data) - hourrange):
-            minholder = 1000000
-            maxholder = -1000000
-            for j in range(0, hourrange):
-                checkdata = diffs_data[j + i].split(",")
-                checkdata = checkdata[1]
-                if checkdata > maxholder:
-                    maxholder = checkdata
-                if checkdata < minholder:
-                    minholder = checkdata
-
-            checkdata = maxholder - minholder
-
-            if checkdata < min_value:
-                min_value = checkdata
-
-        appenddata = str(nowtime) + "," + str(min_value)
-        min_value_data.append(appenddata)
-        print("Min values done.")
+    # file has the format of one line [UTC_of_last_update, min_value]
+    # saved_min_file = k.STATION_ID + "mins.csv"
+    # stationmin = []
+    # unix_timenow = time.time()
+    #
+    # # IF the min value file does not exist then...
+    # if os.path.isfile(saved_min_file):
+    #     with open(saved_min_file) as e:
+    #         for line in e:
+    #             line = line.strip()  # remove any trailing whitespace chars like CR and NL
+    #             stationmin.append(line)
+    #
+    #     datasplit = stationmin.split(",")
+    #     datadate = datasplit[0]
+    #
+    #     if (datadate + 86400) < unix_timenow:
+    #         # recalc values[]
+    #         pass
+    # else:
+    #     # recalc values[]
+    #     pass
 
     # IF more than 24 hours passed since the last calculation? Then
     # calculate min value of the current array
     # Create the min value array
 
-    if (float(nowtime) - float(min_value_data[0])) > (hourrange * 24):
-        print("Over 24 hours. Re-calculating new min values")
-        for i in range (0, len(diffs_data) - hourrange):
-            minholder = 1000000
-            maxholder = -1000000
-            for j in range(0, hourrange):
-                checkdata = diffs_data[j + i].split(",")
-                checkdata = checkdata[1]
-                if checkdata > maxholder:
-                    maxholder = checkdata
-                if checkdata < minholder:
-                    minholder = checkdata
-
-            checkdata = maxholder - minholder
-
-            if checkdata < min_value:
-                min_value = checkdata
-
-        appenddata = str(nowtime) + "," + str(min_value)
-        min_value_data.append(appenddata)
-        print("Min values done.")
-
     # ELSE load the min values and create the min value array
 
     # save the min values to file
-    filename = k.STATION_ID + "mindata.csv"
-    savevalues(savefilename, min_value_data)
+    # savevalues(saved_min_file, stationmin)
 
-    return min_value_data
+    min_data = 0.02
+    return min_data
 
 
 # #################################################################################
@@ -203,7 +169,7 @@ def loadvalues(filename, array_name):
     if os.path.isfile(k.FILE_ROLLING):
         with open(k.FILE_ROLLING) as e:
             for line in e:
-                line = line.strip() # remove any trailing whitespace chars like CR and NL
+                line = line.strip()  # remove any trailing whitespace chars like CR and NL
                 values = line.split(",")
                 # See the datapoint object/constructor for the current values it holds.
                 # dp = DataPoint.DataPoint(values[0], values[1], values[2], values[3])
@@ -214,13 +180,14 @@ def loadvalues(filename, array_name):
 
     return readings
 
+
 # #################################################################################
 # save an array to file
 # #################################################################################
 def savevalues(filename, array_name):
     # export array to array-save file
         try:
-            with open (filename, 'w') as w:
+            with open(filename, 'w') as w:
                 for dataObjects in array_name:
                     w.write(dataObjects + '\n')
         except IOError:
@@ -236,18 +203,19 @@ def process_differences(data_array):
     diffs_data = create_diffs_array(data_array)
 
     # smooth the diffs to show the trend. Two passes at 5 minutes is usually ok.
-    diffs_data = running_average(diffs_data, 20)
-    diffs_data = running_average(diffs_data, 20)
+    window = k.MAG_READ_FREQ * 5
+    diffs_data = running_average(diffs_data, window)
+    diffs_data = running_average(diffs_data, window)
 
     # calculate the minimum rate of change from THIS smoothed data. append this range to the data. Highcharts
     # will display this as +/- ve bars on the chart
-    # diffs_data = create_background_bars(diffs_data)
+    diffs_data = create_background_bars(diffs_data)
 
     # add the CSV file headers
-    headerstring = "Date/time UTC, Differences"
+    headerstring = "Date/time UTC, Background, Background, dH/dt"
     diffs_data.reverse()
     diffs_data.append(headerstring)
     diffs_data.reverse()
 
-    #Save out the diffs array
+    # Save out the diffs array
     savevalues(k.FILE_4DIFFS, diffs_data)
