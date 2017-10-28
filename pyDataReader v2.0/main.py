@@ -1,7 +1,7 @@
 #!/usr/bin/python
 import DataPoint
 import constants as k
-import filemanager_library
+import mgr_files
 import serial
 import datetime
 import logging
@@ -11,7 +11,7 @@ import time
 # from constants import mag_readings
 
 __author__ = 'Vaughn Malkin'
-__version__ = "2.0"
+__version__ = "2.1"
 
 
 # *****************************************************************************************
@@ -29,8 +29,8 @@ __version__ = "2.0"
 # Check serial data is 3 positive or negative comma separated decimal numbers.
 def CheckData(logDataToAdd):
     # Checking here.
-    # if re.match(r'\A-?\d+(\.\d+)?\Z',logDataToAdd):
-    if re.match(r'\A-?\d+(\.\d+)?[,]-?\d+(\.\d+)?[,]-?\d+(\.\d+)?\Z',logDataToAdd):
+    if re.match(r'-?\d+',logDataToAdd):
+    # if re.match(r'\A-?\d+(\.\d+)?[,]-?\d+(\.\d+)?[,]-?\d+(\.\d+)?\Z',logDataToAdd):
         LogRawMagnetometerData(logDataToAdd)
     else:
         print("Garbage data from Magnetometer: " + logDataToAdd)
@@ -53,13 +53,15 @@ def LogRawMagnetometerData(logDataToAdd):
     lg = logDataToAdd.split(",")
 
     # Create the DataPoint object, pass in the datetime and the 3 list values
-    dp = DataPoint.DataPoint(str(logdate), lg[0], lg[1], lg[2])
+    # dp = DataPoint.DataPoint(str(logdate), lg[0], lg[1], lg[2])
+    # if the mag spits out only one data value at a time
+    dp = DataPoint.DataPoint(str(logdate), lg[0], 0, 0)
 
     # DP is added to array.
-    filemanager_library.AppendDataPoint(dp, mag_readings)
+    mgr_files.AppendDataPoint(dp, mag_readings)
 
     # Save the array to the ArraySave.csv file loaded at the beginning
-    filemanager_library.SaveRawArray(mag_readings)
+    mgr_files.SaveRawArray(mag_readings)
 
     ###############################################
     # Logdata to be appended to current 24 hr file
@@ -151,7 +153,7 @@ except serial.SerialException:
 print("Port is: ", com.name)
 
 # Initialise array from savefile if possible, otherwise new array
-mag_readings = filemanager_library.CreateRawArray()
+mag_readings = mgr_files.CreateRawArray()
 
 # *****************************************************************************************
 # MAIN LOOP. Only the End of Days will stop this program.
