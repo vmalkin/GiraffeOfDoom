@@ -64,12 +64,28 @@ while True:
     starttime = time.time()
 
     mag_readings = []
+<<<<<<< HEAD
     try:
         mag_readings = ofm.CreateRawArray()
         process_data(mag_readings)
     except:
         print("ERROR: Problem opening ArraySave file")
         logging.critical(" ERROR: Problem opening file. Unable to create display files")
+=======
+    # try:
+    mag_readings = ofm.CreateRawArray()
+    process_data(mag_readings)
+    # Calculate the processing time
+    endtime = time.time()
+    processingtime = endtime - starttime
+    processingtime = str(processingtime)[:5]
+    print("Processing complete. Elapsed time: " + processingtime + " seconds.\n")
+    print(str(len(mag_readings)) + " records loaded")
+
+    # except:
+    #     print("ERROR: Problem opening file")
+    #     logging.critical(" ERROR: Problem opening file. Unable to create display files")
+>>>>>>> origin/DnA-Service
 
     # Calculate the processing time
     endtime = time.time()

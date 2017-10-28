@@ -107,7 +107,16 @@ def create_background_bars(diffs):
 
     # load up mins value from file from calculate_min_values()
     minbg = calculate_min_values(diffs)
+<<<<<<< HEAD:pyDataReader v2.0/mgr_dhdt.py
     minbg = (minbg * gain) / 2
+=======
+
+    # create string of min data to be appended to diffs file. The value in the array is a range from low to high
+    # so we will halve it and create two series of +ve and -ve values to create the max-min band in the graph.
+    print(minbg)
+    minbg = minbg[1] / 2
+
+>>>>>>> origin/DnA-Service:pyDataReader v2.0/difference_creator.py
 
     for item in diffs:
         itemsplit = item.split(",")
@@ -125,6 +134,7 @@ def create_background_bars(diffs):
 # the format for the min value data is a list of one entry: [unix_date,min_value]
 # #################################################################################
 def calculate_min_values(diffs_data):
+<<<<<<< HEAD:pyDataReader v2.0/mgr_dhdt.py
     # file has the format of one line [UTC_of_last_update, min_value]
     # saved_min_file = k.STATION_ID + "mins.csv"
     # stationmin = []
@@ -146,10 +156,72 @@ def calculate_min_values(diffs_data):
     # else:
     #     # recalc values[]
     #     pass
+=======
+    min_value_data = []
+    hourrange = k.MAG_READ_FREQ * 60
+    min_value = 1000000
+    nowtime = datetime.utcnow()
+    nowtime = time.mktime(nowtime.timetuple())
+    calc_flag = False
+    savefilename = k.STATION_ID + "mindata.csv"
+
+    # IF the min value file does not exist then...
+    # calculate min value of the current array
+    # Create the min value array
+    if os.path.isfile(savefilename):
+       loadvalues(savefilename, min_value_data)
+    else:
+        print("No saved values. Calculating new min values")
+        for i in range (0, len(diffs_data) - hourrange):
+            minholder = float(1000000)
+            maxholder = float(-1000000)
+            for j in range(0, hourrange):
+                checkdata = diffs_data[j + i].split(",")
+                checkdata = checkdata[1]
+                if float(checkdata) > float(maxholder):
+                    maxholder = checkdata
+                if float(checkdata) < float(minholder):
+                    minholder = checkdata
+
+            checkdata = float(maxholder) - float(minholder)
+
+            if checkdata < min_value:
+                min_value = checkdata
+
+        appenddata = str(nowtime) + "," + str(min_value)
+        min_value_data.append(appenddata)
+        print("Min values done.")
+>>>>>>> origin/DnA-Service:pyDataReader v2.0/difference_creator.py
 
     # IF more than 24 hours passed since the last calculation? Then
     # calculate min value of the current array
     # Create the min value array
+<<<<<<< HEAD:pyDataReader v2.0/mgr_dhdt.py
+=======
+    storedsplit = min_value_data[0].split(",")
+    storedtime = storedsplit[0]
+    if (float(nowtime) - float(storedtime)) > (hourrange * 24):
+        print("Over 24 hours. Re-calculating new min values")
+        for i in range (0, len(diffs_data) - hourrange):
+            minholder = 1000000
+            maxholder = -1000000
+            for j in range(0, hourrange):
+                checkdata = diffs_data[j + i].split(",")
+                checkdata = checkdata[1]
+                if checkdata > maxholder:
+                    maxholder = checkdata
+                if checkdata < minholder:
+                    minholder = checkdata
+
+            checkdata = maxholder - minholder
+
+            if checkdata < min_value:
+                min_value = checkdata
+
+        appenddata = str(nowtime) + "," + str(min_value)
+        min_value_data.append(appenddata)
+        print("Min values done.")
+>>>>>>> origin/DnA-Service:pyDataReader v2.0/difference_creator.py
 
     # ELSE load the min values and create the min value array
 

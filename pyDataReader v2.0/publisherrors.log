@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 2017-10-28 17:10:33,951  ERROR: Problem opening file. Unable to create display files
 2017-10-28 17:11:51,764  ERROR: Problem opening file. Unable to create display files
 2017-10-28 17:12:21,339  ERROR: Problem opening file. Unable to create display files
@@ -7,3 +8,11 @@
 2017-10-28 19:10:11,755  ERROR: Problem opening file. Unable to create display files
 2017-10-28 19:10:24,650  ERROR: Problem opening file. Unable to create display files
 2017-10-28 19:10:42,394  ERROR: Problem opening file. Unable to create display files
+=======
+2017-10-15 20:37:42,597  ERROR: Problem opening file. Unable to create display files
+2017-10-15 20:38:03,672  ERROR: Problem opening file. Unable to create display files
+2017-10-23 14:47:37,864  ERROR: Problem opening file. Unable to create display files
+2017-10-23 14:48:08,750  ERROR: Problem opening file. Unable to create display files
+2017-10-27 12:55:58,868  ERROR: Problem opening file. Unable to create display files
+2017-10-27 12:56:20,119  ERROR: Problem opening file. Unable to create display files
+>>>>>>> origin/DnA-Service
