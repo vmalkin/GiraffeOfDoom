@@ -194,7 +194,7 @@ def process_differences(data_array):
     diffs_data = calculate_minmax_values(diffs_data)
 
     # add the CSV file headers
-    headerstring = "Date/time UTC, Min, Max, dH/dt"
+    headerstring = "Date/time UTC, Min for hour, Max for hour, dH/dt"
     diffs_data.reverse()
     diffs_data.append(headerstring)
     diffs_data.reverse()
