@@ -101,103 +101,45 @@ def running_average(input_array, averaging_interval):
 # these will be appended to the diffs data before being finally saved.
 # The data is saved out to a CSV with the format [UNIX_time, accrued_min_values, count_of_averages]
 # #################################################################################
-def create_background_bars(diffs):
-    gain = 1.3
-    newdiffs = []
+def calculate_minmax_values(diffs_data):
+    diffs_data.reverse()
+    r1 = []
+    r2 = []
+    hour_interval = k.MAG_READ_FREQ * 60
 
-    # load up mins value from file from calculate_min_values()
-    minbg = calculate_min_values(diffs)
+    # Assuming the array represents contiguous values. We count out blocks of one hour. For each hour
+    # we calculate the min/max value.
+    for i in range(0, len(diffs_data) - hour_interval, hour_interval):
+        min = 10000
+        max = -10000
 
-    # create string of min data to be appended to diffs file. The value in the array is a range from low to high
-    # so we will halve it and create two series of +ve and -ve values to create the max-min band in the graph.
-    print(minbg)
-    minbg = minbg[1] / 2
+        for j in range(0, hour_interval):
+            datasplit = diffs_data[i+j].split(",")
+            datevalue = datasplit[0]
+            datavalue = datasplit[1]
 
-    for item in diffs:
-        itemsplit = item.split(",")
-        itemdate = itemsplit[0]
-        itemdata = itemsplit[1]
-        appendvalue = itemdate + "," + str(minbg) + "," + str(-1 * minbg) + "," + itemdata
-        newdiffs.append(appendvalue)
+            if float(datavalue) < float(min):
+                min = datavalue
+            if float(datavalue) > float(max):
+                max = datavalue
 
-    return newdiffs
+        for j in range(0, hour_interval):
+            datavalue = diffs_data[i+j] + "," + min + "," + max
+            r1.append(datavalue)
 
+    r1.reverse()
 
-# #################################################################################
-# min values for an array of data will be the minimum dF/dt in any 60min interval
-# within the data
-# the format for the min value data is a list of one entry: [unix_date,min_value]
-# #################################################################################
-def calculate_min_values(diffs_data):
-    min_value_data = []
-    hourrange = k.MAG_READ_FREQ * 60
-    min_value = 1000000
-    nowtime = datetime.utcnow()
-    nowtime = time.mktime(nowtime.timetuple())
-    calc_flag = False
-    savefilename = k.STATION_ID + "mindata.csv"
+    for item in r1:
+        datasplit = item.split(",")
+        date = datasplit[0]
+        reading = datasplit[1]
+        min = datasplit[2]
+        max = datasplit[3]
 
-    # IF the min value file does not exist then...
-    # calculate min value of the current array
-    # Create the min value array
-    if os.path.isfile(savefilename):
-       loadvalues(savefilename, min_value_data)
-    else:
-        print("No saved values. Calculating new min values")
-        for i in range (0, len(diffs_data) - hourrange):
-            minholder = float(1000000)
-            maxholder = float(-1000000)
-            for j in range(0, hourrange):
-                checkdata = diffs_data[j + i].split(",")
-                checkdata = checkdata[1]
-                if float(checkdata) > float(maxholder):
-                    maxholder = checkdata
-                if float(checkdata) < float(minholder):
-                    minholder = checkdata
+        newreading  = date + "," + min + "," + max + "," + reading
+        r2.append(newreading)
 
-            checkdata = float(maxholder) - float(minholder)
-
-            if checkdata < min_value:
-                min_value = checkdata
-
-        appenddata = str(nowtime) + "," + str(min_value)
-        min_value_data.append(appenddata)
-        print("Min values done.")
-
-    # IF more than 24 hours passed since the last calculation? Then
-    # calculate min value of the current array
-    # Create the min value array
-    storedsplit = min_value_data[0].split(",")
-    storedtime = storedsplit[0]
-    if (float(nowtime) - float(storedtime)) > (hourrange * 24):
-        print("Over 24 hours. Re-calculating new min values")
-        for i in range (0, len(diffs_data) - hourrange):
-            minholder = 1000000
-            maxholder = -1000000
-            for j in range(0, hourrange):
-                checkdata = diffs_data[j + i].split(",")
-                checkdata = checkdata[1]
-                if checkdata > maxholder:
-                    maxholder = checkdata
-                if checkdata < minholder:
-                    minholder = checkdata
-
-            checkdata = maxholder - minholder
-
-            if checkdata < min_value:
-                min_value = checkdata
-
-        appenddata = str(nowtime) + "," + str(min_value)
-        min_value_data.append(appenddata)
-        print("Min values done.")
-
-    # ELSE load the min values and create the min value array
-
-    # save the min values to file
-    # savevalues(saved_min_file, stationmin)
-
-    min_data = 0.02
-    return min_data
+    return r2
 
 
 # #################################################################################
@@ -249,10 +191,10 @@ def process_differences(data_array):
 
     # calculate the minimum rate of change from THIS smoothed data. append this range to the data. Highcharts
     # will display this as +/- ve bars on the chart
-    diffs_data = create_background_bars(diffs_data)
+    diffs_data = calculate_minmax_values(diffs_data)
 
     # add the CSV file headers
-    headerstring = "Date/time UTC, Background, Background, dH/dt"
+    headerstring = "Date/time UTC, Min, Max, dH/dt"
     diffs_data.reverse()
     diffs_data.append(headerstring)
     diffs_data.reverse()
