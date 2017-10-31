@@ -104,6 +104,7 @@ def running_average(input_array, averaging_interval):
 def calculate_minmax_values(diffs_data):
     r1 = []
     r2 = []
+    r3 = []
     hour_interval = k.MAG_READ_FREQ * 60
 
     if len(diffs_data) > hour_interval:
@@ -129,8 +130,8 @@ def calculate_minmax_values(diffs_data):
                 r1.append(datavalue)
         r1.reverse()
 
-        for item in r1:
-            datasplit = item.split(",")
+        for i in range(0, len(r1)):
+            datasplit = r1[i].split(",")
             date = datasplit[0]
             reading = datasplit[1]
             min = datasplit[2]
@@ -138,9 +139,24 @@ def calculate_minmax_values(diffs_data):
 
             newreading  = date + "," + min + "," + max + "," + reading
             r2.append(newreading)
-        else:
-            r2 = diffs_data
 
+            # create the array of short values modding on the hour interval
+            if i%hour_interval == 0:
+                datasplit = newreading.split(",")
+                date = datasplit[0]
+                reading = datasplit[1]
+                max = datasplit[2]
+                min = datasplit[3]
+                localindex = float(max) - float(min)
+
+                r3_data = date + "," + str(localindex)
+                r3.append(r3_data)
+
+    else:
+        r2 = diffs_data
+
+    # save the short values to file and return the diffs data
+    savevalues("shortdiffs.csv", r3)
     return r2
 
 
