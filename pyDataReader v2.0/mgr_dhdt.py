@@ -102,42 +102,44 @@ def running_average(input_array, averaging_interval):
 # The data is saved out to a CSV with the format [UNIX_time, accrued_min_values, count_of_averages]
 # #################################################################################
 def calculate_minmax_values(diffs_data):
-    diffs_data.reverse()
     r1 = []
     r2 = []
     hour_interval = k.MAG_READ_FREQ * 60
 
-    # Assuming the array represents contiguous values. We count out blocks of one hour. For each hour
-    # we calculate the min/max value.
-    for i in range(0, len(diffs_data) - hour_interval, hour_interval):
-        min = 10000
-        max = -10000
+    if len(diffs_data) > hour_interval:
+        diffs_data.reverse()
+        # Assuming the array represents contiguous values. We count out blocks of one hour. For each hour
+        # we calculate the min/max value.
+        for i in range(0, len(diffs_data) - hour_interval, hour_interval):
+            min = 10000
+            max = -10000
 
-        for j in range(0, hour_interval):
-            datasplit = diffs_data[i+j].split(",")
-            datevalue = datasplit[0]
-            datavalue = datasplit[1]
+            for j in range(0, hour_interval):
+                datasplit = diffs_data[i+j].split(",")
+                datevalue = datasplit[0]
+                datavalue = datasplit[1]
 
-            if float(datavalue) < float(min):
-                min = datavalue
-            if float(datavalue) > float(max):
-                max = datavalue
+                if float(datavalue) < float(min):
+                    min = datavalue
+                if float(datavalue) > float(max):
+                    max = datavalue
 
-        for j in range(0, hour_interval):
-            datavalue = diffs_data[i+j] + "," + min + "," + max
-            r1.append(datavalue)
+            for j in range(0, hour_interval):
+                datavalue = diffs_data[i+j] + "," + min + "," + max
+                r1.append(datavalue)
+        r1.reverse()
 
-    r1.reverse()
+        for item in r1:
+            datasplit = item.split(",")
+            date = datasplit[0]
+            reading = datasplit[1]
+            min = datasplit[2]
+            max = datasplit[3]
 
-    for item in r1:
-        datasplit = item.split(",")
-        date = datasplit[0]
-        reading = datasplit[1]
-        min = datasplit[2]
-        max = datasplit[3]
-
-        newreading  = date + "," + min + "," + max + "," + reading
-        r2.append(newreading)
+            newreading  = date + "," + min + "," + max + "," + reading
+            r2.append(newreading)
+        else:
+            r2 = diffs_data
 
     return r2
 
