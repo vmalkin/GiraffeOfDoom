@@ -99,7 +99,7 @@ def running_average(input_array, averaging_interval):
 # #################################################################################
 # calculate the lines that will be displayed as background threshold bars
 # these will be appended to the diffs data before being finally saved.
-# The data is saved out to a CSV with the format [UNIX_time, accrued_min_values, count_of_averages]
+# The data is saved out to a CSV with the format [UTC_time, accrued_min_values, count_of_averages]
 # #################################################################################
 def calculate_minmax_values(diffs_data):
     r1 = []
