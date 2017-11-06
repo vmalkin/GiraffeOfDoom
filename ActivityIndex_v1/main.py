@@ -104,10 +104,10 @@ if __name__ == '__main__':
             magstation.append_new_data()
             print("Pruning OLD data...\n")
             magstation.prune_saved_data()
-            #
-            # # # save out the station data as a CSV file.
-            # name = magstation.name + ".absl"
-            # magstation.SaveAsCSV(name)
+
+            # # save out the station data as a CSV file.
+            name = magstation.name + ".absl"
+            magstation.SaveAsCSV(name)
 
             # finally, save the station saved_data array to file.
             print("Save data to file...\n")
@@ -116,30 +116,22 @@ if __name__ == '__main__':
             # convert the absolute values to rates of change
             magstation.create_dadt()
 
-            # create the one hour bins of dhdt
-            print("Creating data bins...\n")
-            magstation.do_bin_dh_dt()
 
-            # We need to reduce our absolute values, to some relative value that accounts for historical
-            # highs and lows. Find the Median? calculate the Standard Deviation??
-            print("Normalising data...\n")
-            magstation.normaliseDHDT()
-
-            # create the combined output file
-            combolist = []
-            comboitem = "Station Name, NOW, 2hr, 3hr, 4hr, 5hr, 6hr, 7hr, 8hr, 9hr, 10hr, 11hr, 12hr, 13hr, 14hr, 15hr, 16hr, 17hr, 18hr, 19hr, 20hr, 21hr, 22hr, 23hr"
-            combolist.append(comboitem)
-
-            for magstation in stationlist:
-                comboitem = ""
-                comboitem = comboitem + str(magstation.name)
-
-                for measurement in magstation.bin_dadt:
-                    comboitem = comboitem + "," + str(measurement)
-
-                combolist.append(comboitem)
-
-            SaveAsCSV(combolist)
+            # # create the combined output file
+            # combolist = []
+            # comboitem = "Station Name, NOW, 2hr, 3hr, 4hr, 5hr, 6hr, 7hr, 8hr, 9hr, 10hr, 11hr, 12hr, 13hr, 14hr, 15hr, 16hr, 17hr, 18hr, 19hr, 20hr, 21hr, 22hr, 23hr"
+            # combolist.append(comboitem)
+            #
+            # for magstation in stationlist:
+            #     comboitem = ""
+            #     comboitem = comboitem + str(magstation.name)
+            #
+            #     for measurement in magstation.bin_dadt:
+            #         comboitem = comboitem + "," + str(measurement)
+            #
+            #     combolist.append(comboitem)
+            #
+            # SaveAsCSV(combolist)
 
         fintime = datetime.now()
         fintime = time.mktime(fintime.timetuple())

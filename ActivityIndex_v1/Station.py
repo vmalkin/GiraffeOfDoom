@@ -246,72 +246,7 @@ class Station:
     # the function will return an array of (binned_value))
     # #################################################################################
     def do_bin_dh_dt(self):
-        self.bin_dadt = []
-        # setup the bin array based on binsize. The bins will start from now and go back 24 hours
-        # width of bin in seconds.
-        binwidth = 60*60
-
-        # get current UTC, Convert to UNIX time
-        currentdt = datetime.utcnow()
-        currentdt = mktime(currentdt.timetuple())
-
-        # calculate the cutoff value for old data in the station dataset.
-        chartduration = 24 # No of bins we want to chart
-
-        # setup the binneddata array timestamps
-        # each value appended to the array is older, so goes from young -> old
-        timestamps = []
-        timevalue = currentdt
-        for i in range(0, chartduration):
-            timevalue = timevalue - binwidth
-            timestamps.append(timevalue)
-
-        # array for final binned values
-        binneddata = []
-        bincounter = 0
-        # for each bin interal, parse thru the current dataset, checking for max/min values and deal with NUL values
-        # Calculate dH/dt for each bin.
-        for i in range(0, len(timestamps) - 1):
-            # get the timestamp values that bracket the current bin
-            nowtime = timestamps[i]
-            prevtime = timestamps[i + 1]
-            binvalue = 0
-
-            # create a small list to hold values found
-            tempholder = []
-            for item in self.dadt:
-                # get the datetime and data
-                datasplit = item.split(",")
-                datadate = float(datasplit[0])
-                datavalue = float(datasplit[1])
-
-                # create a mini-list of readings for this bin.
-                if datadate < nowtime and datadate > prevtime:
-                    tempholder.append(datavalue)
-
-            # Parse the temp data anc find the max and min values. Calculate the biggest diff.
-            minvalue = 1000
-            maxvalue = -1000
-
-            if len(tempholder) > 0:
-                for item in tempholder:
-                    if item > maxvalue:
-                        maxvalue = item
-
-                for item in tempholder:
-                    if item < minvalue:
-                        minvalue = item
-            else:
-                minvalue = 0
-                maxvalue = 0
-
-            binvalue = maxvalue - minvalue
-
-            bincounter = bincounter + 1
-            # print("Appending data to bin " + str(bincounter) + ". Value: " + str(maxvalue) + " " + str(minvalue) + " " + str(binvalue))
-            binneddata.append(binvalue)
-
-            self.bin_dadt = binneddata
+        pass
 
     def prune_saved_data(self):
         # IF NECESSARY prune the dataset BACK from the earliest bin datetime as previously determined to keep the data
@@ -363,45 +298,5 @@ class Station:
     # self.dadt is made up of absolute values.
     # #################################################################################
     def normaliseDHDT(self):
-        # retrieve the current aggregates of the mins and counter
-        stored_min = self.mindata[0]
-        counter = self.mindata[1]
-
-        # sort the current bin list to find the minimum value so far
-        current_min = float(int(self.bin_dadt[0]))
-        for item in self.bin_dadt:
-            if item <= current_min:
-                current_min = float(item)
-
-        # only if the current min is NOT zero, will we aggregate it on and calculate the new
-        # avg min value.
-        avg_min = 0
-        if current_min > 0:
-            stored_min = stored_min + current_min
-            counter = counter + 1
-            self.mindata = [stored_min, counter]
-            avg_min = float(stored_min / counter)
-            print("Current min values stored are: " + str(self.mindata[0]) + " " + str(self.mindata[1]))
-        else:
-            print("Current min value equals zero...")
-            avg_min = float(stored_min / counter)
-
-        # Now simply reformat the bin data in terms of the average background level.
-        temparray = []
-        for item in self.bin_dadt:
-            datathing = float(item / avg_min)
-
-            temparray.append(datathing)
-
-
-        # save the average min values
-        savefile = self.name + ".minvalues.pkl"
-        try:
-            pickle.dump(self.mindata, open(savefile, "wb"))
-            print("Save " + savefile + " ok.")
-        except:
-            print("ERROR saving min data array")
-
-        # return the bin data
-        self.bin_dadt = temparray
+        pass
 
