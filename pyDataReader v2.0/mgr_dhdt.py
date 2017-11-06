@@ -102,12 +102,14 @@ def running_average(input_array, averaging_interval):
 # The data is saved out to a CSV with the format [UTC_time, accrued_min_values, count_of_averages]
 # #################################################################################
 def calculate_minmax_values(diffs_data):
-    r1 = []
-    r2 = []
-    r3 = []
+    r1 = []  # the min/max/dhdt data
+    r2 = []  # reorganised r1 that is retured
+    r3 = []  # short values - 1 hr summary
+
     hour_interval = k.MAG_READ_FREQ * 60
 
     if len(diffs_data) > hour_interval:
+        # reverse the array. this ensures that our bin starts from now and goes back
         diffs_data.reverse()
         # Assuming the array represents contiguous values. We count out blocks of one hour. For each hour
         # we calculate the min/max value.
@@ -115,6 +117,7 @@ def calculate_minmax_values(diffs_data):
             min = 10000
             max = -10000
 
+            # find the min max value for the hour
             for j in range(0, hour_interval):
                 datasplit = diffs_data[i+j].split(",")
                 datevalue = datasplit[0]
@@ -125,11 +128,13 @@ def calculate_minmax_values(diffs_data):
                 if float(datavalue) > float(max):
                     max = datavalue
 
+            # append the min and max values to the data. Write out to the
+            # display file
             for j in range(0, hour_interval):
                 datavalue = diffs_data[i+j] + "," + min + "," + max
                 r1.append(datavalue)
-        r1.reverse()
 
+        # reorganise the data for display in Highcharts
         for i in range(0, len(r1)):
             datasplit = r1[i].split(",")
             date = datasplit[0]
@@ -152,11 +157,14 @@ def calculate_minmax_values(diffs_data):
                 r3_data = date + "," + str(localindex)
                 r3.append(r3_data)
 
+        # finally revert the data
     else:
         r2 = diffs_data
 
     # save the short values to file and return the diffs data
+    r3.reverse()
     savevalues("shortdiffs.csv", r3)
+    r2.reverse()
     return r2
 
 
