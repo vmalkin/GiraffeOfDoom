@@ -208,6 +208,39 @@ class Station:
 
         self.latest_data = workingarray
 
+<<<<<<< HEAD
+=======
+    # turn raw values into rates of change
+    def create_dadt(self):
+        self.dadt = []
+        for i in range(1, len(self.save_array)):
+            previtems = self.save_array[i].split(",")
+            currentitems = self.save_array[i-1].split(",")
+            currentdt = currentitems[0]
+
+            if (currentitems[1]) == '':
+                currentdata = 0
+            else:
+                currentdata = float(currentitems[1])
+
+            if (previtems[1]) == '':
+                prevdata = 0
+            else:
+                prevdata = float(str(previtems[1]))
+
+            dadt =  currentdata - prevdata
+
+            datastring = str(currentdt) + "," + str(dadt)
+            self.dadt.append(datastring)
+
+
+    # #################################################################################
+    # Rawdata is in the format (UnixDatetime, data)
+    # the function will return an array of (binned_value))
+    # #################################################################################
+    def do_bin_dh_dt(self):
+        pass
+>>>>>>> origin/master
 
     def prune_saved_data(self):
         # IF NECESSARY prune the dataset BACK from the earliest bin datetime as previously determined to keep the data
@@ -246,3 +279,22 @@ class Station:
                     w.write(str(dataObjects) + '\n')
         except IOError:
             print("WARNING: There was a problem accessing " + self.name + ".csv")
+<<<<<<< HEAD
+=======
+
+    # #################################################################################
+    # Calculate the average reading
+    # #################################################################################
+    def get_average_reading(self):
+        temparray = []
+
+        self.bin_dhdt = temparray
+
+    # #################################################################################
+    # normalise the data. The final binned data will be expressed in terms of the average minimum value
+    # self.dadt is made up of absolute values.
+    # #################################################################################
+    def normaliseDHDT(self):
+        pass
+
+>>>>>>> origin/master

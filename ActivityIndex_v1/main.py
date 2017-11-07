@@ -73,6 +73,29 @@ if __name__ == '__main__':
             print("Save data to file...\n")
             magstation.savepickle()
 
+<<<<<<< HEAD
+=======
+            # convert the absolute values to rates of change
+            magstation.create_dadt()
+
+
+            # # create the combined output file
+            # combolist = []
+            # comboitem = "Station Name, NOW, 2hr, 3hr, 4hr, 5hr, 6hr, 7hr, 8hr, 9hr, 10hr, 11hr, 12hr, 13hr, 14hr, 15hr, 16hr, 17hr, 18hr, 19hr, 20hr, 21hr, 22hr, 23hr"
+            # combolist.append(comboitem)
+            #
+            # for magstation in stationlist:
+            #     comboitem = ""
+            #     comboitem = comboitem + str(magstation.name)
+            #
+            #     for measurement in magstation.bin_dadt:
+            #         comboitem = comboitem + "," + str(measurement)
+            #
+            #     combolist.append(comboitem)
+            #
+            # SaveAsCSV(combolist)
+
+>>>>>>> origin/master
         fintime = datetime.now()
         fintime = time.mktime(fintime.timetuple())
 
