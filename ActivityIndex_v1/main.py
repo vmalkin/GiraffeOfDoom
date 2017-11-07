@@ -73,8 +73,6 @@ if __name__ == '__main__':
             print("Save data to file...\n")
             magstation.savepickle()
 
-<<<<<<< HEAD
-=======
             # convert the absolute values to rates of change
             magstation.create_dadt()
 
@@ -95,7 +93,6 @@ if __name__ == '__main__':
             #
             # SaveAsCSV(combolist)
 
->>>>>>> origin/master
         fintime = datetime.now()
         fintime = time.mktime(fintime.timetuple())
 
