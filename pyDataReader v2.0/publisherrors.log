@@ -20,3 +20,9 @@
 2017-10-30 18:24:31,975  ERROR: Problem opening file. Unable to create display files
 2017-11-01 09:25:49,268  ERROR: Problem opening file. Unable to create display files
 2017-11-01 09:25:59,313  ERROR: Problem opening file. Unable to create display files
+2017-11-07 18:01:21,677 WARNING: File IO Exception raised whilst accessing file: shortdiffs.csv
+2017-11-07 18:01:21,698 WARNING: File IO Exception raised whilst accessing file: graphing/dr02.diffs.csv
+2017-11-07 18:05:29,611 WARNING: File IO Exception raised whilst accessing file: shortdiffs.csv
+2017-11-07 18:05:29,611 WARNING: File IO Exception raised whilst accessing file: graphing/dr02.diffs.csv
+2017-11-07 18:31:31,095  ERROR: Problem opening file. Unable to create display files
+2017-11-07 18:31:39,761  ERROR: Problem opening file. Unable to create display files

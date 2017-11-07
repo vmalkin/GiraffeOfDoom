@@ -145,17 +145,17 @@ def calculate_minmax_values(diffs_data):
             newreading  = date + "," + min + "," + max + "," + reading
             r2.append(newreading)
 
-            # create the array of short values modding on the hour interval
-            if i%hour_interval == 0:
-                datasplit = newreading.split(",")
-                date = datasplit[0]
-                reading = datasplit[1]
-                max = datasplit[2]
-                min = datasplit[3]
-                localindex = float(max) - float(min)
+        # create the array of short values modding on the hour interval
+        for i in range(0, len(r2), hour_interval):
+            datasplit = r2[i].split(",")
+            date = datasplit[0]
+            maxvalue = datasplit[2]
+            minvalue = datasplit[1]
 
-                r3_data = date + "," + str(localindex)
-                r3.append(r3_data)
+            localindex = float(maxvalue) - float(minvalue)
+
+            r3_data = date + "," + str(localindex)
+            r3.append(r3_data)
 
         # finally revert the data
     else:
@@ -163,7 +163,7 @@ def calculate_minmax_values(diffs_data):
 
     # save the short values to file and return the diffs data
     r3.reverse()
-    savevalues("shortdiffs.csv", r3)
+    savevalues("publish/shortdiffs.csv", r3)
     r2.reverse()
     return r2
 
