@@ -105,6 +105,7 @@ def calculate_minmax_values(diffs_data):
     r1 = []  # the min/max/dhdt data
     r2 = []  # reorganised r1 that is retured
     r3 = []  # short values - 1 hr summary
+    BACKGROUND_VALUE = 0.04  # empirically derived background during geomag quiet conditions.
 
     hour_interval = k.MAG_READ_FREQ * 60
 
@@ -153,6 +154,8 @@ def calculate_minmax_values(diffs_data):
             minvalue = datasplit[1]
 
             localindex = float(maxvalue) - float(minvalue)
+            # make local index the ratio of the current reading to the usual background.
+            localindex = float(localindex / BACKGROUND_VALUE)
 
             r3_data = date + "," + str(localindex)
             r3.append(r3_data)
