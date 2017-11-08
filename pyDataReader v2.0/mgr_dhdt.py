@@ -154,8 +154,12 @@ def calculate_minmax_values(diffs_data):
             minvalue = datasplit[1]
 
             localindex = float(maxvalue) - float(minvalue)
+
             # make local index the ratio of the current reading to the usual background.
-            localindex = float(localindex / BACKGROUND_VALUE)
+            try:
+                localindex = float(localindex / BACKGROUND_VALUE)
+            except ZeroDivisionError:
+                localindex = 0
 
             r3_data = date + "," + str(localindex)
             r3.append(r3_data)
