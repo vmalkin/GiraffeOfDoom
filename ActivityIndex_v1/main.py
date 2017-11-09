@@ -73,8 +73,6 @@ if __name__ == '__main__':
             print("Save data to file...\n")
             magstation.savepickle()
 
-            # convert the absolute values to rates of change
-            magstation.create_dadt()
 
 
             # # create the combined output file

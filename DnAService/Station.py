@@ -202,19 +202,19 @@ class Station:
 
         print("Time now is " +  str(currentdt))
         print("Cutoff for old data is " + str(cutoffdt))
-        print("ORIGINAL Data list is " + str(len(self.save_array)) + " records long")
+        print("ORIGINAL Data list is " + str(len(self.stationdata)) + " records long")
 
-        for i in range(0, len(self.save_array)):
+        for i in range(0, len(self.stationdata)):
         # for item in workingdatalist:
-            itemlist = self.save_array[i].split(",")
+            itemlist = self.stationdata[i].split(",")
             newdatetime = float(itemlist[0])
 
             if newdatetime > cutoffdt:
                 # print(newdatetime - cutoffdt)
-                workingdatalist.append(self.save_array[i])
+                workingdatalist.append(self.stationdata[i])
 
         print("PRUNED Data list is " + str(len(workingdatalist)) + " records long")
-        self.save_array = workingdatalist
+        return workingdatalist
 
 
     # ##################################################
@@ -296,18 +296,12 @@ class Station:
         # is not duplicted. We will use Set() with a union to do this.
         self.stationdata = self.aggregate_new_data(self.stationdata, new_data)
 
+        # pruning old data
+        self.stationdata = self.prune_saved_data()
+
         print("Data for " + self.name + " is " + str(len(self.stationdata)) + " records long")
 
-        # SAVE current data to PKL file
+        # SAVE current data to csv file
         print("Saving current data for " + self.name)
         self.save_csv(self.stationdata, self.station_data_file)
-
-        # # CREATE the list for display. this will not be raw data
-        # self.displaylist = self.create_dadt(self.stationdata)
-        #
-        # # rebuild magnetometer readings
-        # self.displaylist = self.rebuild_from_dadt(self.displaylist)
-
-        savefile = self.name + "displaydata.csv"
-        self.save_csv(self.displaylist, savefile)
         print("\n")

@@ -166,14 +166,14 @@ if __name__ == "__main__":
         for mag_station in station_list:
             mag_station.process_mag_station()
 
-        # Create aggregate list of dF/dt
-        # create the combined output file
-        # convert the timesampts to UTC for display on the website
-        aggregated_data = []
-        aggregated_data = create_aggregated_magnetometer_values(station_list)
-
-        # save to CSV or JSON OUTPUT file
-        save_csv(aggregated_data, "aggregate.csv")
+        # # Create aggregate list of dF/dt
+        # # create the combined output file
+        # # convert the timesampts to UTC for display on the website
+        # aggregated_data = []
+        # aggregated_data = create_aggregated_magnetometer_values(station_list)
+        #
+        # # save to CSV or JSON OUTPUT file
+        # save_csv(aggregated_data, "aggregate.csv")
 
         # Calculate the elapsed processing time and display the result to the console...
         finishtime = datetime.datetime.now()
