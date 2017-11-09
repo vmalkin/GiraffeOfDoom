@@ -158,7 +158,7 @@ def unix_to_utc(unixdate):
 if __name__ == "__main__":
     while True:
         # calculate the processing time
-        sleeptime = 5 * 60  # delay the next iteration
+        sleeptime = 15 * 60  # delay the next iteration
         starttime = datetime.datetime.now()
         starttime = time.mktime(starttime.timetuple())
 

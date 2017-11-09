@@ -23,32 +23,6 @@ class Station:
         self.stationdata = self.load_csv(self.station_data_file)
         self.displaylist = []
 
-    # #################################################################################
-    # load pickle file and return the min-max array
-    # #################################################################################
-    def loadpickle(self):
-        """load pickle file"""
-        savefile = self.name + ".savedata.pkl"
-        try:
-            with open(savefile,"rb", ) as sv:
-                dataarray = sv.read()
-        except:
-            dataarray = []
-            print("No file to load. Creating values of zero")
-
-        return dataarray
-
-    # #################################################################################
-    # save array to pickle file. Prints a result
-    # #################################################################################
-    def savepickle(self, datatosave):
-        savefile = self.name + ".savedata.pkl"
-        try:
-            pickle.dump(datatosave, open(savefile, "wb"))
-            print("Save " + savefile + " ok.")
-        except:
-            print("ERROR saving array")
-
 
     # #################################################################################
     # GET the source data
@@ -322,22 +296,17 @@ class Station:
         # is not duplicted. We will use Set() with a union to do this.
         self.stationdata = self.aggregate_new_data(self.stationdata, new_data)
 
-        # Prune current data to 24 hours
-        arraylength = self.readfreq * 60 * 24
-        splitstart = len(self.stationdata) -  arraylength
-        self.stationdata = self.stationdata[splitstart:]
-
         print("Data for " + self.name + " is " + str(len(self.stationdata)) + " records long")
 
         # SAVE current data to PKL file
         print("Saving current data for " + self.name)
         self.save_csv(self.stationdata, self.station_data_file)
 
-        # CREATE the list for display. this will not be raw data
-        self.displaylist = self.create_dadt(self.stationdata)
-
-        # rebuild magnetometer readings
-        self.displaylist = self.rebuild_from_dadt(self.displaylist)
+        # # CREATE the list for display. this will not be raw data
+        # self.displaylist = self.create_dadt(self.stationdata)
+        #
+        # # rebuild magnetometer readings
+        # self.displaylist = self.rebuild_from_dadt(self.displaylist)
 
         savefile = self.name + "displaydata.csv"
         self.save_csv(self.displaylist, savefile)
