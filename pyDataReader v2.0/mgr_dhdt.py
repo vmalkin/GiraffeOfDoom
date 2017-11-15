@@ -105,7 +105,7 @@ def calculate_minmax_values(diffs_data):
     r1 = []  # the min/max/dhdt data
     r2 = []  # reorganised r1 that is retured
     r3 = []  # short values - 1 hr summary
-    BACKGROUND_VALUE = 0.04  # empirically derived background during geomag quiet conditions.
+    BACKGROUND_VALUE = 0.02  # empirically derived background during geomag quiet conditions.
 
     hour_interval = k.MAG_READ_FREQ * 60
 
