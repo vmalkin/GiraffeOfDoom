@@ -28,10 +28,12 @@ class Station:
     # GET the source data
     # #################################################################################
     def get_data(self):
+        # return array
+        importarray = []
+
         # GOES Satellite Magnetometer Data - Total Field only.
         if self.sourcetype == "w2":
             url = self.datasource
-            importarray = []
             try:
                 response = webreader.urlopen(url)
                 linecount = 0
@@ -69,25 +71,10 @@ class Station:
             # except webreader.URLError as err:
             #     print("There was an error associated with the URL")
 
-            return importarray
 
         # Dunedin Aurora CSV data
         if self.sourcetype == "w1":
             url = self.datasource
-            importarray = []
-            response = webreader.urlopen(url)
-            for item in response:
-                logData = str(item, 'ascii').strip()
-                logData = logData.split(",")
-                dp = logData[0] + "," + logData[1]
-                importarray.append(dp)
-            print("Data for " + self.name + " loaded from Internet. Size: " + str(len(importarray)) + " records")
-            return importarray
-
-        # Ruru Observatory CSV data
-        if self.sourcetype == "w3":
-            url = self.datasource
-            importarray = []
             try:
                 response = webreader.urlopen(url)
                 for item in response:
@@ -103,11 +90,28 @@ class Station:
                 elif hasattr(e, 'code'):
                     print('The server couldn\'t fulfill the request.')
                     print('Error code: ', e.code)
-            return importarray
+
+        # Ruru Observatory CSV data
+        if self.sourcetype == "w3":
+            url = self.datasource
+            try:
+                response = webreader.urlopen(url)
+                for item in response:
+                    logData = str(item, 'ascii').strip()
+                    logData = logData.split(",")
+                    dp = logData[0] + "," + logData[1]
+                    importarray.append(dp)
+                print("Data for " + self.name + " loaded from Internet. Size: " + str(len(importarray)) + " records")
+            except URLError as e:
+                if hasattr(e, 'reason'):
+                    print('We failed to reach a server.')
+                    print('Reason: ', e.reason)
+                elif hasattr(e, 'code'):
+                    print('The server couldn\'t fulfill the request.')
+                    print('Error code: ', e.code)
 
         # % Y-%m-%d %H:%M:%S.%f from a file (My magnetometers)
         if self.sourcetype == "f1":
-            importarray = []
             # Check if exists CurrentUTC file. If exists, load up Datapoint Array.
             if os.path.isfile(self.datasource):
                 with open(self.datasource) as e:
@@ -120,6 +124,8 @@ class Station:
                 return importarray
             else:
                 print("UNABLE to load data for " + self.name)
+
+        return importarray
 
 
     # ##################################################

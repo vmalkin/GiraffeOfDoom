@@ -20,10 +20,12 @@ class Station:
     # GET the source data
     # #################################################################################
     def get_data(self):
+        # This is what will be returned
+        importarray = []
+
         # GOES Satellite Magnetometer Data - Total Field only.
         if self.sourcetype == "w2":
             url = self.datasource
-            importarray = []
             try:
                 response = webreader.urlopen(url)
                 linecount = 0
@@ -64,7 +66,6 @@ class Station:
         # Dunedin Aurora CSV data
         if self.sourcetype == "w1":
             url = self.datasource
-            importarray = []
             try:
                 response = webreader.urlopen(url)
                 for item in response:
@@ -75,18 +76,17 @@ class Station:
                 print("Data for " + self.name + " loaded from Internet. Size: " + str(len(importarray)) + " records")
 
             except URLError as e:
-            if hasattr(e, 'reason'):
-                print('We failed to reach a server.')
-                print('Reason: ', e.reason)
-            elif hasattr(e, 'code'):
-                print('The server couldn\'t fulfill the request.')
-                print('Error code: ', e.code)
+                if hasattr(e, 'reason'):
+                    print('We failed to reach a server.')
+                    print('Reason: ', e.reason)
+                elif hasattr(e, 'code'):
+                    print('The server couldn\'t fulfill the request.')
+                    print('Error code: ', e.code)
 
 
         # Ruru Observatory CSV data
         if self.sourcetype == "w3":
             url = self.datasource
-            importarray = []
             try:
                 response = webreader.urlopen(url)
                 for item in response:
@@ -106,7 +106,6 @@ class Station:
 
         # % Y-%m-%d %H:%M:%S.%f from a file (My magnetometers)
         if self.sourcetype == "f1":
-            importarray = []
             # Check if exists CurrentUTC file. If exists, load up Datapoint Array.
             if os.path.isfile(self.datasource):
                 with open(self.datasource) as e:
