@@ -22,6 +22,8 @@ void setup(){
 
 
 void loop(){
+  // Small delay in case the sensor needs time
+  delay(10);
   //Tell the HMC what regist to begin writing data into
   Wire.beginTransmission(addr);
   Wire.write(0x03); //start with register 3.
