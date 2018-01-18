@@ -19,17 +19,14 @@ __author__ = "Vaughn Malkin"
 
 # setup dictionary of stations
 station_list = []
-# station0 = Station.Station("DunedinAurora.NZ", "http://Dunedinaurora.nz/Service24CSV.php", "w1", '"%Y-%m-%d %H:%M:%S"', 6, 5)
-# station_list.append(station0)
+station0 = Station.Station("DunedinAurora.NZ", "http://Dunedinaurora.nz/Service24CSV.php", "w1", '"%Y-%m-%d %H:%M:%S"', 6, 5)
+station_list.append(station0)
 
 station1 = Station.Station("Ruru Observatory", "http://www.ruruobservatory.org.nz/dr01_1hr.csv", "w3", "%Y-%m-%d %H:%M:%S.%f", 30, 0.5)
 station_list.append(station1)
 
 station2 = Station.Station("GOES-13 Satellite", "http://services.swpc.noaa.gov/text/goes-magnetometer-secondary.txt", "w2", '%Y-%m-%d %H:%M', 1, 0.1)
 station_list.append(station2)
-
-station3 = Station.Station("Ruru Observatory", "http://www.ruruobservatory.org.nz/shortdiffs.csv", "w3", "%Y-%m-%d %H:%M:%S.%f", 30, 0.5)
-station_list.append(station3)
 
 
 # ##################################################

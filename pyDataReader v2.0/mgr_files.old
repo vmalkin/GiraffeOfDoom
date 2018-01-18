@@ -38,7 +38,7 @@ def create_hichart_datafile(readingsArray, splitvalue, filename):
             f.write("Date/Time (UTC), Reading" + "\n")
             for datapoints in displayList:
                 # f.write(datapoints.dateTime + "," + str(datapoints.raw_x) + "," + str(datapoints.raw_y) + "," + str(datapoints.raw_z) + '\n')
-                f.write(datapoints + '\n')
+                f.write(datapoints.dateTime + "," + str(datapoints.raw_x) + '\n')
     except IOError:
         print("WARNING: There was a problem accessing " + filename)
         logging.warning("WARNING: File IO Exception raised whilst accessing file: " + filename)

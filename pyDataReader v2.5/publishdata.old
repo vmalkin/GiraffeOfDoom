@@ -31,50 +31,23 @@ def process_data(input_data_array):
     # If necessary, invert the data so that trends up mean increasing field strength
     data_array = dp.invert_data_array(input_data_array)
 
-    # create the array of dF/dt
-    diffs_data = df.create_diffs_array(data_array)
-
-    # recalculate and save a corrected display file free from blips
-    # rebuild = False
-    rebuild = False
-    if rebuild == True:
-        rebuilt_data = df.rebuild_originaldata(diffs_data)
-    else:
-        rebuilt_data = data_array
-
-    # smooth the diffs to show the trend. Two passes at 5 minutes is usually ok.
-    window = k.MAG_READ_FREQ * 5
-    diffs_data = df.running_average(diffs_data, window)
-    diffs_data = df.running_average(diffs_data, window)
-
-    # calculate the minimum rate of change from THIS smoothed data. append this range to the data. Highcharts
-    # will display this as +/- ve bars on the chart
-    diffs_data = df.calculate_minmax_values(diffs_data)
-
-    # add the CSV file headers
-    headerstring = "Date/time UTC, Min for hour, Max for hour, dH/dt"
-    diffs_data.reverse()
-    diffs_data.append(headerstring)
-    diffs_data.reverse()
-
-    # Save out the diffs array
-    df.savevalues(k.FILE_4DIFFS, diffs_data)
-
-
-    # # SMooth the data slightly
-    # smoothed_data_array = dp.running_average(rebuilt_data, 6)
+    # SMooth the data slightly
+    smoothed_data_array = dp.running_average(data_array, 6)
     #
     # to get the last 1 hours the split value is mag read frequency * 60 * 1
     splitvalue = k.MAG_READ_FREQ * 60 * 1
-    ofm.create_hichart_datafile(rebuilt_data, splitvalue, k.FILE_1HR)
+    ofm.create_hichart_datafile(smoothed_data_array, splitvalue, k.FILE_1HR)
     #
     # # to get the last 4 hours the split value is mag read frequency * 60 * 4
     # splitvalue = k.MAG_READ_FREQ * 60 * 4
-    # ofm.create_hichart_datafile(rebuilt_data, splitvalue, k.FILE_4HR)
+    # ofm.create_hichart_datafile(smoothed_data_array, splitvalue, k.FILE_4HR)
     #
     # to get the last 24 hours the split value is mag read frequency * 60 * 24
     splitvalue = k.MAG_READ_FREQ * 60 * 24
-    ofm.create_hichart_datafile(rebuilt_data, splitvalue, k.FILE_24HR)
+    ofm.create_hichart_datafile(smoothed_data_array, splitvalue, k.FILE_24HR)
+
+    # create the differences array from the raw data
+    df.process_differences(input_data_array)
 
     # Create the 1 minute bin file
     binned_data = binner.utc2unix(data_array)
@@ -91,13 +64,13 @@ while True:
     starttime = time.time()
     mag_readings = []
 
-# try:
-    mag_readings = ofm.CreateRawArray()
-    process_data(mag_readings)
+    try:
+        mag_readings = ofm.CreateRawArray()
+        process_data(mag_readings)
 
-# except:
-    print("ERROR: Problem opening file")
-    logging.critical(" ERROR: Problem opening file. Unable to create display files")
+    except:
+        print("ERROR: Problem opening file")
+        logging.critical(" ERROR: Problem opening file. Unable to create display files")
 
     # Calculate the processing time
     endtime = time.time()

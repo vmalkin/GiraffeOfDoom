@@ -2,8 +2,8 @@ import os
 from datetime import datetime
 from time import mktime
 
-BIN_SIZE = 60 * 60 *24 # the number of seconds wide a bin is
-BIN_NUMBER = 365  # how many bins we want in total
+BIN_SIZE = 60 * 60 # the number of seconds wide a bin is
+BIN_NUMBER = int(31536000 / BIN_SIZE)  # how many bins we want in total
 
 # ##################################################
 # Prune Data - we only need Raw X value.

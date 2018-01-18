@@ -1,0 +1,16 @@
+2017-11-27 14:15:55,117  ERROR: Problem opening file. Unable to create display files
+2017-11-27 14:16:51,904  ERROR: Problem opening file. Unable to create display files
+2017-11-27 14:19:02,422 WARNING: File IO Exception raised whilst accessing file: /home/vmalkin/Magnetometer/RuruRapid/dr01_diffs.csv
+2017-11-27 14:21:31,132  ERROR: Problem opening file. Unable to create display files
+2017-11-27 14:23:28,288 WARNING: File IO Exception raised whilst accessing file: display.rebuiltdata.csv
+2017-11-27 14:24:44,899  ERROR: Problem opening file. Unable to create display files
+2017-11-27 14:28:26,562  ERROR: Problem opening file. Unable to create display files
+2017-11-27 14:30:46,616  ERROR: Problem opening file. Unable to create display files
+2017-11-27 14:35:55,342  ERROR: Problem opening file. Unable to create display files
+2017-11-27 14:36:24,927 WARNING: File IO Exception raised - could not delete: publish/dr01_24hr.csv
+2017-11-27 14:47:54,448  ERROR: Problem opening file. Unable to create display files
+2017-11-27 15:50:51,036 WARNING: File IO Exception raised - could not delete: publish/dr01_1hr.csv
+2017-11-27 15:50:51,059  ERROR: Problem opening file. Unable to create display files
+2017-11-27 15:51:48,156  ERROR: Problem opening file. Unable to create display files
+2017-11-27 15:52:35,889 WARNING: File IO Exception raised - could not delete: publish/dr01_1hr.csv
+2017-11-27 15:52:35,890  ERROR: Problem opening file. Unable to create display files

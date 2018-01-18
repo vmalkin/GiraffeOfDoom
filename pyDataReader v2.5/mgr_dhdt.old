@@ -53,26 +53,6 @@ def create_diffs_array(readings_array):
 
     return diffsarray
 
-# #################################################################################
-# Calculate the differences
-# This function will create an array of differences
-# #################################################################################
-def rebuild_originaldata(diffsdata):
-    returnfile = []
-    newvalue = 0
-
-    for item in diffsdata:
-        datasplit = item.split(",")
-        splitdate = datasplit[0]
-        splitdiff = datasplit[1]
-
-        newvalue = float(newvalue) + float(splitdiff)
-
-        newitem = splitdate + "," + str(newvalue)
-        returnfile.append(newitem)
-
-    return returnfile
-
 
 # #################################################################################
 # Create the smoothed data array and write out the files for plotting.
@@ -126,8 +106,7 @@ def calculate_minmax_values(diffs_data):
     r2 = []  # reorganised r1 that is retured
     r3 = []  # short values - 1 hr summary
 
-    BACKGROUND_VALUE = 0.02  # empirically derived background during geomag quiet conditions.
-
+    BACKGROUND_VALUE = 0.03  # empirically derived background during geomag quiet conditions.
 
     hour_interval = k.MAG_READ_FREQ * 60
 
@@ -238,10 +217,6 @@ def savevalues(filename, array_name):
 def process_differences(data_array):
     # create the array of dF/dt
     diffs_data = create_diffs_array(data_array)
-
-    # recalculate and save a corrected display file free from blips
-    rebuilt_data = rebuild_originaldata(diffs_data)
-    savevalues("display.rebuiltdata.csv", rebuilt_data)
 
     # smooth the diffs to show the trend. Two passes at 5 minutes is usually ok.
     window = k.MAG_READ_FREQ * 5

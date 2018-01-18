@@ -127,6 +127,25 @@ class Station:
 
         return importarray
 
+    # ##################################################
+    # Convert timestamps in array to UTC time
+    # ##################################################
+    def unix2utc(self, dataarray):
+        # dateformat = "%Y-%m-%d %H:%M:%S"
+        returnarray = []
+
+        for item in dataarray:
+            itemsplit = item.split(",")
+            itemdate = itemsplit[0]
+            itemdate = itemdate.split(".")
+            itemdate = int(itemdate[0])
+
+            itemdatavalue = itemsplit[1]
+            utcdate = datetime.fromtimestamp(itemdate)
+
+            returnitem = str(utcdate) + "," + itemdatavalue
+            returnarray.append(returnitem)
+        return returnarray
 
     # ##################################################
     # Convert timestamps in array to Unix time
@@ -310,4 +329,10 @@ class Station:
         # SAVE current data to csv file
         print("Saving current data for " + self.name)
         self.save_csv(self.stationdata, self.station_data_file)
+
+        # create the display file with UTC timestamps
+        displayfile = "display." + self.station_data_file
+        self.stationdata = self.unix2utc(self.stationdata)
+        self.save_csv(self.stationdata, displayfile)
+
         print("\n")
