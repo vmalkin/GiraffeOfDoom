@@ -192,7 +192,6 @@ if __name__ == "__main__":
 
     # Out data should be in the format of timestamp, data1, data2, etc We only need the timestamp and the
     # first data value
-
     print("Getting timestamps and data...")
     rawdatalist = prune_data(rawdatalist)
 
@@ -248,12 +247,17 @@ if __name__ == "__main__":
         finaldataitem = str(bindates[i]) + "," + str(binvalue)
         finaldataarray.append(finaldataitem)
 
+    # AT this point we have list of entries, the format of each is
+    # datestamp_posix_format, dh_dt_bin_value.
+
+    # We will use the rate of change of the bin values, to 
+
 
     # convert the POSIX datetimes back to UTC.
     # print("Converting time to UTC...")
     finaldataarray = unix_to_utc(finaldataarray)
 
-    # create the header and save the file as a CSV/JSON
+    # save the file as a CSV
     save_csv(finaldataarray, "binned_values.csv")
     print("FINISHED: Data saved to CSV file.")
     finishtime = datetime.now()
