@@ -146,6 +146,7 @@ def save_csv(arraydata, savefile):
 
         except IOError:
             print("WARNING: There was a problem accessing heatmap file")
+    f.close()
 
 # ##################################################
 # S C R I P T   B E G I N S   H E R E
