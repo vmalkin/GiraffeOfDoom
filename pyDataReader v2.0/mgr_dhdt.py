@@ -186,7 +186,6 @@ def calculate_minmax_values(diffs_data):
             r3_data = date + "," + str(localindex)
             r3.append(r3_data)
 
-        # finally revert the data
     else:
         r2 = diffs_data
 
