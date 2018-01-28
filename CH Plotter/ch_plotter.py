@@ -279,44 +279,47 @@ def geomagnetic_storm(arraydata):
 # Append marker for Aurora Sighting
 # ##################################################
 def aurora_sighting(arraydata):
-    print("Appending Aurora Sighting Data")
-    # load csv file of aurora sightng dates
-    sightingdata = load_csv(AURORA_SIGHTINGS)
-    placeholder = []  # The data that will be appended to each entry in the CSV
-    returndata = []
+    if os.path.exists(AURORA_SIGHTINGS):
+        print("Appending Aurora Sighting Data")
+        # load csv file of aurora sightng dates
+        sightingdata = load_csv(AURORA_SIGHTINGS)
+        placeholder = []  # The data that will be appended to each entry in the CSV
+        returndata = []
 
-    # Convert dates to Unix time
-    logging.debug("Converting aurora sighting to UNIX time")
-    sightingdata = utc_2_unix(sightingdata)
+        # Convert dates to Unix time
+        logging.debug("Converting aurora sighting to UNIX time")
+        sightingdata = utc_2_unix(sightingdata)
 
-    # The UTC converter normally expects to append data after the time, so we have a comma after the date. Lets prune this
-    templist = []
-    logging.debug("Purging extra comma from converted sighting list")
-    for item in sightingdata:
-        itemsplit = item.split(",")
-        unixdate = itemsplit[0]
+        # The UTC converter normally expects to append data after the time, so we have a comma after the date. Lets prune this
+        templist = []
+        logging.debug("Purging extra comma from converted sighting list")
+        for item in sightingdata:
+            itemsplit = item.split(",")
+            unixdate = itemsplit[0]
 
-        templist.append(str(unixdate))
-    sightingdata = templist
+            templist.append(str(unixdate))
+        sightingdata = templist
 
-    logging.debug("Creating placeholder list for aurora sightings")
-    # parse thru array data if a date matches append the placeholder value, otherwise, append a zero
-    for item in arraydata:
-        itemsplit = item.split(",")
-        itemdate = itemsplit[0]
+        logging.debug("Creating placeholder list for aurora sightings")
+        # parse thru array data if a date matches append the placeholder value, otherwise, append a zero
+        for item in arraydata:
+            itemsplit = item.split(",")
+            itemdate = itemsplit[0]
 
-        sightedmatches = NULLVALUE
-        for jtem in sightingdata:
-                if itemdate == jtem:
-                    sightedmatches = AURORA_REPORTED
+            sightedmatches = NULLVALUE
+            for jtem in sightingdata:
+                    if itemdate == jtem:
+                        sightedmatches = AURORA_REPORTED
 
-        placeholder.append(sightedmatches)
+            placeholder.append(sightedmatches)
 
-    # The placeholder array should be populated. Append its values to arraydata
-    for i in range(0, len(arraydata)):
-        returnitem = arraydata[i] + "," + placeholder[i]
-        returndata.append(returnitem)
-
+        # The placeholder array should be populated. Append its values to arraydata
+        for i in range(0, len(arraydata)):
+            returnitem = arraydata[i] + "," + placeholder[i]
+            returndata.append(returnitem)
+    else:
+        returndata = arraydata
+        
     return returndata
 
 # ##################################################
