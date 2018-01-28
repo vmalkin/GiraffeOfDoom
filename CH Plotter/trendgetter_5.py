@@ -262,12 +262,15 @@ def geomagnetic_storm(arraydata):
     # Then, for each item in the arraydata, concatenate the corresponding index from the placeholder.
     for i in range(0, len(arraydata)):
         returnvalue = ""
-        datasplit = arraydata[i].split(",")
-        returndate = datasplit[0]
-        returndata = datasplit[1]
+        # datasplit = arraydata[i].split(",")
+        # returndate = datasplit[0]
+        # returndata = datasplit[1]
+        returndata = arraydata[i]
         returnthreshold = placeholder[i]
 
-        returnvalue = str(returndate) + "," + str(returndata) + "," + str(returnthreshold)
+        # returnvalue = str(returndate) + "," + str(returndata) + "," + str(returnthreshold)
+        returnvalue = str(returndata) + "," + str(returnthreshold)
+
         returnarray.append(returnvalue)
 
     return returnarray
@@ -280,6 +283,7 @@ def aurora_sighting(arraydata):
     # load csv file of aurora sightng dates
     sightingdata = load_csv(AURORA_SIGHTINGS)
     placeholder = []  # The data that will be appended to each entry in the CSV
+    returndata = []
 
     # Convert dates to Unix time
     logging.debug("Converting aurora sighting to UNIX time")
@@ -308,7 +312,12 @@ def aurora_sighting(arraydata):
 
         placeholder.append(sightedmatches)
 
-    return arraydata
+    # The placeholder array should be populated. Append its values to arraydata
+    for i in range(0, len(arraydata)):
+        returnitem = arraydata[i] + "," + placeholder[i]
+        returndata.append(returnitem)
+
+    return returndata
 
 # ##################################################
 # process conronal hole predictions
@@ -447,7 +456,6 @@ if __name__ == "__main__":
     finaldataarray = aurora_sighting(finaldataarray)
 
     # DATA ARRAY now has the format posix_date, dh/dt, storm_detect, aurora_reported
-
     # Run prediction
     print("Running Coronal Hole Prediction")
     prediction(finaldataarray)
