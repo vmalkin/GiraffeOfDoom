@@ -12,10 +12,10 @@ BIN_NUMBER = int(31536000 / BIN_SIZE)  # how many bins we want in total
 BINNED_PRELIM_DATA = "binned_preliminary_data.csv"
 BINNED_FINAL_DATA = "aurora_activity.csv"
 PREDICTION = "aurora_prediction.csv"
-AURORA_SIGHTINGS = "aurorasitings.csv"
-STORM_THRESHOLD = 6  # The threshold value for when we have a storm
+AURORA_SIGHTINGS = "sightings.csv"
+STORM_THRESHOLD = 6.7  # The threshold value for when we have a storm
 AURORA_REPORTED = STORM_THRESHOLD * 1.2
-NULLVALUE = "0"  # the null value for charting software
+NULLVALUE = "#n/a"  # the null value for charting software
 
 # logging levels in order of severity:
 # DEBUG
@@ -102,10 +102,10 @@ def prune_data(arraydata):
 # ##################################################
 # Convert timestamps in array to Unix time
 # ##################################################
-def utc_2_unix(arraylist):
+def utc_2_unix(arraylist, dateformat):
     print("Converting time to UNIX time...")
     # set date time format for strptime()
-    dateformat = "%Y-%m-%d %H:%M:%S.%f"
+    # dateformat = "%Y-%m-%d %H:%M:%S.%f"
     workingarray = []
 
     # convert array data times to unix time
@@ -118,8 +118,17 @@ def utc_2_unix(arraylist):
             # convert to Unix time (Seconds)
             newdatetime = mktime(newdatetime.timetuple())
 
-            datastring = str(newdatetime) + "," + datasplit[1]
-            workingarray.append(datastring)
+            # remove the date part of the split
+            datasplit.pop(0)
+
+            # Create the dataline to be appended. Iterate thru the rest of the datasplit
+            # and append it to the converted datetime
+            dataline = ""
+            for thing in datasplit:
+                dataline = dataline + "," + str(thing)
+
+            dataline = str(newdatetime) + dataline
+            workingarray.append(dataline)
         except:
             logging.debug("UTC 2 Unix: Problem with this entry: " + item)
             print("Problem with this entry: " + item)
@@ -220,7 +229,7 @@ def load_csv(savefile):
                 line = line.strip()  # remove any trailing whitespace chars like CR and NL
                 returnarray.append(line)
     except IOError:
-        print("WARNING: There was a problem accessing heatmap file")
+        print("WARNING: There was a problem accessing CSV file")
     return returnarray
 
 # ##################################################
@@ -237,7 +246,7 @@ def save_csv(arraydata, savefile):
             with open(savefile, 'a') as f:
                 f.write(line + "\n")
         except IOError:
-            print("WARNING: There was a problem accessing heatmap file")
+            print("WARNING: There was a problem accessing CSV file")
 
 
 # ##################################################
@@ -288,7 +297,7 @@ def aurora_sighting(arraydata):
 
         # Convert dates to Unix time
         logging.debug("Converting aurora sighting to UNIX time")
-        sightingdata = utc_2_unix(sightingdata)
+        sightingdata = utc_2_unix(sightingdata, "%d/%m/%Y")
 
         # The UTC converter normally expects to append data after the time, so we have a comma after the date. Lets prune this
         templist = []
@@ -307,17 +316,18 @@ def aurora_sighting(arraydata):
             itemdate = itemsplit[0]
 
             sightedmatches = NULLVALUE
-            for jtem in sightingdata:
-                    if itemdate == jtem:
+            for sighting in sightingdata:
+                    if (float(itemdate) > float(sighting) - 86400) and (float(itemdate) < float(sighting) + 86400):
                         sightedmatches = AURORA_REPORTED
 
             placeholder.append(sightedmatches)
 
         # The placeholder array should be populated. Append its values to arraydata
         for i in range(0, len(arraydata)):
-            returnitem = arraydata[i] + "," + placeholder[i]
+            returnitem = str(arraydata[i]) + "," + str(placeholder[i])
             returndata.append(returnitem)
     else:
+        print("No Aurora Sightings Loaded")
         returndata = arraydata
         
     return returndata
@@ -389,7 +399,7 @@ if __name__ == "__main__":
 
         print("Converting timestamps to UNIX time...")
         # convert the timestamps in the main array to POSIX format
-        rawdatalist = utc_2_unix(rawdatalist)
+        rawdatalist = utc_2_unix(rawdatalist, "%Y-%m-%d %H:%M:%S.%f")
 
         print("Applying median filter for blips...")
         rawdatalist = medianfilter(rawdatalist)
@@ -451,6 +461,7 @@ if __name__ == "__main__":
     # SMooth the data
     finaldataarray = running_average(finaldataarray)
     finaldataarray = running_average(finaldataarray)
+    finaldataarray = medianfilter(finaldataarray)
 
     # calculate if any readings go over geomagnetic storm threshold. Append the value to correct date bins if they do
     finaldataarray = geomagnetic_storm(finaldataarray)
