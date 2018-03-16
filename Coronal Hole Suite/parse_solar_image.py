@@ -4,8 +4,12 @@ import numpy as np
 
 imgfolder = ''
 # open an image
-img = cv2.imread(imgfolder + '20180313_012605_512_0193.jpg')
-mask = cv2.imread(imgfolder + 'mask_black.bmp',0)
+# https://sdo.gsfc.nasa.gov/assets/img/latest/latest_512_0193.jpg
+#img = cv2.imread(imgfolder + 'test.jpg')
+img = cv2.imread(imgfolder + 'latest_512_0193.jpg')
+mask = cv2.imread(imgfolder + 'mask_black.bmp', 0)
+#mask_red = cv2.imread(imgfolder + 'mask.bmp',0)
+
 maskedsun = cv2.bitwise_and(img,img,mask = mask)
 
 # converting an Image to grey scale...
@@ -13,7 +17,7 @@ greyimg = cv2.cvtColor(maskedsun, cv2.COLOR_BGR2GRAY)
 
 # Identify dark coronal hole areas from the solar surface...
 # This is crude at the moment, but it basically works
-ret, outputimg = cv2.threshold(greyimg, 40,255, cv2.THRESH_BINARY)
+ret, outputimg = cv2.threshold(greyimg, 30,255, cv2.THRESH_BINARY)
 
 # Save adjusted image
 cv2.imwrite(imgfolder + 'saved.bmp', outputimg)
