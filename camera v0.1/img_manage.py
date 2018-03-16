@@ -8,7 +8,7 @@ from PIL import Image
 
 # This function downsizes the image to quicker uploading, using Pillow
 def downscale_upload():
-    publish_dir = "\\\\RUSTBUCKET3\MagPublish\\"
+    publish_dir = "c:\temp\"
     try:
         img = Image.open("timestamped.png")
         img = img.resize((800, 600), PIL.Image.ANTIALIAS)

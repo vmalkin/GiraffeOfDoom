@@ -9,13 +9,13 @@ __author__ = "Vaughn Malkin"
 
 BIN_SIZE = 60 * 60 # the number of seconds wide a bin is
 BIN_NUMBER = int(31536000 / BIN_SIZE)  # how many bins we want in total
-BINNED_PRELIM_DATA = "binned_preliminary_data.csv"
+BINNED_PRELIM_DATA = "DELETE_ME_to_recalculate.csv"
 BINNED_FINAL_DATA = "aurora_activity.csv"
 PREDICTION = "aurora_prediction.csv"
 AURORA_SIGHTINGS = "sightings.csv"
 STORM_THRESHOLD = 6.7  # The threshold value for when we have a storm
 AURORA_REPORTED = STORM_THRESHOLD * 1.2
-NULLVALUE = "#n/a"  # the null value for charting software
+NULLVALUE = ""  # the null value for charting software
 
 # logging levels in order of severity:
 # DEBUG
@@ -317,7 +317,7 @@ def aurora_sighting(arraydata):
 
             sightedmatches = NULLVALUE
             for sighting in sightingdata:
-                    if (float(itemdate) > float(sighting) - 86400) and (float(itemdate) < float(sighting) + 86400):
+                    if (float(itemdate) > float(sighting) - 43200) and (float(itemdate) < float(sighting) + 43200):
                         sightedmatches = AURORA_REPORTED
 
             placeholder.append(sightedmatches)
@@ -456,7 +456,7 @@ if __name__ == "__main__":
     else:
         logging.debug("Using existing calculated binned data values")
         print("Using existing caluclated binned data values")
-        finaldataarray = load_csv("binned_preliminary_data.csv")
+        finaldataarray = load_csv(BINNED_PRELIM_DATA)
 
     # SMooth the data
     finaldataarray = running_average(finaldataarray)

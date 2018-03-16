@@ -170,4 +170,4 @@ while True:
    # SharpCap.SelectedCamera.Controls.Exposure.Value = 0
    
    # pause
-   time.sleep(180)
+   time.sleep(58)
