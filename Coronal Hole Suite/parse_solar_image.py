@@ -10,6 +10,7 @@ import numpy as np
 import urllib.request
 import datetime
 from decimal import Decimal, getcontext
+import time
 
 getcontext().prec = 4
 
@@ -50,62 +51,68 @@ def count_pixels(part_img, whole_img):
     # the area occupied by coronal holes
     total_pixels = cv2.countNonZero(whole_img)
     remainder_pixels = cv2.countNonZero(part_img)
-    coverage = Decimal(remainder_pixels) / Decimal(total_pixels)
+    coverage = 1 - (Decimal(remainder_pixels) / Decimal(total_pixels))
     return coverage
     
-    
+def record_coverage(value_string):
+    pass
 
 if __name__ == '__main__':
-    try:
-        # open an image
-        # https://sdo.gsfc.nasa.gov/assets/img/latest/latest_512_0193.jpg
-        URL = 'https://sdo.gsfc.nasa.gov/assets/img/latest/latest_512_0193.jpg'
-        
-        with urllib.request.urlopen(URL) as url:
-            with open('sun.jpg', 'wb') as f:
-                f.write(url.read())
-          
-        img = cv2.imread('sun.jpg')
-        
-        # when saved in paint, a 16bit bmp seems ok
-        mask1 = cv2.imread('mask_full.bmp', 0)
-        mask2 = cv2.imread('mask1.bmp', 0)
-        
-        # print mask parameters for debugging purposes.
-        print(str(mask1.dtype) + " " + str(mask1.shape))
-        print(str(mask2.dtype) + " " + str(mask2.shape))
-    
-        # Process the image to get B+W coronal hole image    
-        outputimg = greyscale_img(img)
-        outputimg = threshold_img(outputimg)
-        outputimg = erode_dilate_img(outputimg)
-        
-        # save out the masked images
+    while True:
         try:
-            # Full disk image
-            outputimg1 = mask_img(outputimg, mask1)
-            label = 'DunedinAurora.NZ Coronal Hole Map'
-            label2 = get_utc()
-            cv2.putText(outputimg1, label, (10,482), cv2.FONT_HERSHEY_SIMPLEX, 0.5,(250,250,250), 1 );
-            cv2.putText(outputimg1, label2, (10,498), cv2.FONT_HERSHEY_SIMPLEX, 0.5,(250,250,250), 1 );
-            cv2.imwrite('disc_full.bmp', outputimg1)
-        except:
-            print("Unable to write image")
+            # open an image
+            # https://sdo.gsfc.nasa.gov/assets/img/latest/latest_512_0193.jpg
+            URL = 'https://sdo.gsfc.nasa.gov/assets/img/latest/latest_512_0193.jpg'
+            
+            with urllib.request.urlopen(URL) as url:
+                with open('sun.jpg', 'wb') as f:
+                    f.write(url.read())
+              
+            img = cv2.imread('sun.jpg')
+            
+            #current UTC time
+            nowtime = get_utc()
+            
+            # when saved in paint, a 16bit bmp seems ok
+            mask1 = cv2.imread('mask_full.bmp', 0)
+            mask2 = cv2.imread('mask1.bmp', 0)
+            
+    #        # print mask parameters for debugging purposes.
+    #        print(str(mask1.dtype) + " " + str(mask1.shape))
+    #        print(str(mask2.dtype) + " " + str(mask2.shape))
         
-        try:
-            # Meridian Segment
-            outputimg2 = mask_img(outputimg, mask2)
-            cv2.imwrite('disc_segment.bmp', outputimg2)
+            # Process the image to get B+W coronal hole image    
+            outputimg = greyscale_img(img)
+            outputimg = threshold_img(outputimg)
+            outputimg = erode_dilate_img(outputimg)
+            
+            # save out the masked images
+            try:
+                # Full disk image
+                outputimg1 = mask_img(outputimg, mask1)
+                label = 'DunedinAurora.NZ Coronal Hole Map'
+                label2 = nowtime
+                cv2.putText(outputimg1, label, (10,482), cv2.FONT_HERSHEY_SIMPLEX, 0.5,(250,250,250), 1 );
+                cv2.putText(outputimg1, label2, (10,498), cv2.FONT_HERSHEY_SIMPLEX, 0.5,(250,250,250), 1 );
+                cv2.imwrite('disc_full.bmp', outputimg1)
+            except:
+                print("Unable to write image")
+            
+            try:
+                # Meridian Segment
+                outputimg2 = mask_img(outputimg, mask2)
+                cv2.imwrite('disc_segment.bmp', outputimg2)
+            except:
+                print("Unable to write image")
+               
         except:
-            print("Unable to write image")
+            # URL access has malfunctioned??
+            print("Unable to open URL")
         
-        print("Done!")
+        # Calculate the area occupied by coronal holes
+        coverage = count_pixels(outputimg2, mask2)
+        print(str(nowtime) + "," + str(coverage))
+        # tie this in with solar sind speed and density data
+        # create the incremental indice of CH activity.
     
-    except:
-        # URL access has malfunctioned??
-        print("Unable to open URL")
-    
-    # Calculate the area occupied by coronal holes
-    print(str(count_pixels(outputimg2, mask1)))
-    # tie this in with solar sind speed and density data
-    # create the incremental indice of CH activity.
+        time.sleep(3600)
