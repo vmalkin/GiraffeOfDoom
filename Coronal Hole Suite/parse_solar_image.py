@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # Solar Image Parser v0.1
-# Designed to process an EUV image from a live URL
+# Designed to process an EUV image from a live URL 
 # to display probably coronal hole locations. 
 # uses the OpenCV library
 # http://oh.geof.unizg.hr/SOLSTEL/images/dissemination/papers/Rotter2015_SoPh290_arxiv.pdf
@@ -11,8 +11,11 @@ import urllib.request
 import datetime
 from decimal import Decimal, getcontext
 import time
+import os
 
 getcontext().prec = 4
+
+LOGFILE = 'log.csv'
 
 def get_utc():
     # returns a STRING of the current UTC time
@@ -54,8 +57,15 @@ def count_pixels(part_img, whole_img):
     coverage = 1 - (Decimal(remainder_pixels) / Decimal(total_pixels))
     return coverage
     
-def record_coverage(value_string):
-    pass
+def log_data(value_string):
+    # If the logfile exists append the datapoint
+    try:
+        with open (LOGFILE,'a') as f:
+            f.write(value_string + '\n')
+            # print("Data logged ok. Array Size: " + str(len(readings)))
+    except IOError:
+        print("WARNING: There was a problem accessing the current logfile: " + LOGFILE)
+        
 
 if __name__ == '__main__':
     while True:
@@ -111,7 +121,9 @@ if __name__ == '__main__':
         
         # Calculate the area occupied by coronal holes
         coverage = count_pixels(outputimg2, mask2)
-        print(str(nowtime) + "," + str(coverage))
+        datastring = str(nowtime) + "," + str(coverage)
+        print(datastring)
+        log_data(datastring)
         # tie this in with solar sind speed and density data
         # create the incremental indice of CH activity.
     
