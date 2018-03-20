@@ -1,6 +1,6 @@
 import requests
 from decimal import Decimal, getcontext
-getcontext().prec = 4
+getcontext().prec = 6
 
 
 # #################################################################################
@@ -13,36 +13,29 @@ def get_json():
     # ["2018-03-19 02:05:00.000","6.35","573.4","330513"]
   
     url = "http://services.swpc.noaa.gov/products/solar-wind/plasma-1-day.json"
-    
-    try:
-        # using Reequests library
-        discovr_json = requests.get(url)
-        discovr_json = discovr_json.json()
+    response = requests.get(url)
+    discovr_data = response.json()  # requests has built in json
 
-    except:
-        print("Problem connecting to URL")
+    return discovr_data
+
+def plasma_density(jsonfile):
+    wind_density = 0
+    counter = 0
+    for i in range(1, len(jsonfile)):
+        value = jsonfile[i][1]
+        wind_density = wind_density + Decimal(value)
+        counter = counter + 1
         
-    return discovr_json
+    wind_density = Decimal(wind_density) / Decimal(counter)
+    return wind_density
 
-json_data = get_json()
-
-#for item in json_data:
-#    print(item[2])
-
-counter = (0)
-avg_density = (0)
-for item in json_data:
-    counter = counter + 1
-    print(float(item[1]) +10)
-    
-avg_density = (avg_density) / (counter)
-
-#counter = (0)
-#avg_speed = (0)
-#for item in json_data:
-#    counter = counter + 1
-#    avg_speed = float(avg_speed) + float(item[2])
-#    
-#avg_speed = (avg_speed) / (counter)
-    
-#print(str(avg_density) + " " + str(avg_speed))
+def plasma_speed(jsonfile):
+    wind_speed = 0
+    counter = 0
+    for i in range(1, len(jsonfile)):
+        value = jsonfile[i][2]
+        wind_speed = wind_speed + Decimal(value)
+        counter = counter + 1
+        
+    wind_speed = Decimal(wind_speed) / Decimal(counter)
+    return wind_speed
