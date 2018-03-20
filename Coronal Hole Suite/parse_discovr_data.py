@@ -1,4 +1,7 @@
 import requests
+from decimal import Decimal, getcontext
+getcontext().prec = 4
+
 
 # #################################################################################
 # GET the source data
@@ -21,3 +24,25 @@ def get_json():
         
     return discovr_json
 
+json_data = get_json()
+
+#for item in json_data:
+#    print(item[2])
+
+counter = (0)
+avg_density = (0)
+for item in json_data:
+    counter = counter + 1
+    print(float(item[1]) +10)
+    
+avg_density = (avg_density) / (counter)
+
+#counter = (0)
+#avg_speed = (0)
+#for item in json_data:
+#    counter = counter + 1
+#    avg_speed = float(avg_speed) + float(item[2])
+#    
+#avg_speed = (avg_speed) / (counter)
+    
+#print(str(avg_density) + " " + str(avg_speed))
