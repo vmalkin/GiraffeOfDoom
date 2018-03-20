@@ -12,7 +12,7 @@ def get_json():
     # ["time_tag","density","speed","temperature"]
     # ["2018-03-19 02:05:00.000","6.35","573.4","330513"]
   
-    url = "http://services.swpc.noaa.gov/products/solar-wind/plasma-1-day.json"
+    url = "http://services.swpc.noaa.gov/products/solar-wind/plasma-2-hour.json"
     response = requests.get(url)
     discovr_data = response.json()  # requests has built in json
 
@@ -39,3 +39,13 @@ def plasma_speed(jsonfile):
         
     wind_speed = Decimal(wind_speed) / Decimal(counter)
     return wind_speed
+
+def check_timestamp(posix_time_value):
+    pass
+
+#data = get_json()
+#w_dens = plasma_density(data)
+#w_spd = plasma_speed(data)
+#
+#print(str(w_spd) + "," + str(w_dens))
+    

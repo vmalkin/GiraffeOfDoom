@@ -127,9 +127,12 @@ if __name__ == '__main__':
     
     # Calculate the area occupied by coronal holes
     coverage = count_pixels(outputimg2, mask2)
+    dscvr_data = discovr.get_json()
+    w_dens = discovr.plasma_density(dscvr_data)
+    w_spd = discovr.plasma_speed(dscvr_data)
     
     # create the final string to save to the logfile
-    datastring = str(nowtime) + "," + str(coverage)
+    datastring = str(nowtime) + "," + str(coverage) + "," + str(w_spd) + "," + str(w_dens)
     print(datastring)
     
     # tie this in with solar sind speed and density data
