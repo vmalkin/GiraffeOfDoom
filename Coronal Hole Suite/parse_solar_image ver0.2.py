@@ -11,7 +11,7 @@ import urllib.request
 import datetime
 from decimal import Decimal, getcontext
 import parse_discovr_data as discovr
-
+import time
 
 getcontext().prec = 4
 
@@ -72,70 +72,71 @@ def log_data(value_string):
         
 
 if __name__ == '__main__':
-#    while True:
-    try:
-        # open an image
-        # https://sdo.gsfc.nasa.gov/assets/img/latest/latest_512_0193.jpg
-        URL = 'https://sdo.gsfc.nasa.gov/assets/img/latest/latest_512_0193.jpg'
-        
-        with urllib.request.urlopen(URL) as url:
-            with open('sun.jpg', 'wb') as f:
-                f.write(url.read())
-          
-        img = cv2.imread('sun.jpg')
-        
-        #current UTC time
-        nowtime = get_utc()
-        
-        # when saved in paint, a 16bit bmp seems ok
-        mask1 = cv2.imread('mask_full.bmp', 0)
-        mask2 = cv2.imread('mask1.bmp', 0)
-        
-#        # print mask parameters for debugging purposes.
-#        print(str(mask1.dtype) + " " + str(mask1.shape))
-#        print(str(mask2.dtype) + " " + str(mask2.shape))
-        
-        # Process the image to get B+W coronal hole image    
-        outputimg = greyscale_img(img)
-#        calc_histo(outputimg)
-        
-        outputimg = threshold_img(outputimg)
-        outputimg = erode_dilate_img(outputimg)
-        
-        # save out the masked images
+    while True:
         try:
-            # Full disk image
-            outputimg1 = mask_img(outputimg, mask1)
-            label = 'DunedinAurora.NZ Coronal Hole Map'
-            label2 = nowtime
-            cv2.putText(outputimg1, label, (10,482), cv2.FONT_HERSHEY_SIMPLEX, 0.5,(250,250,250), 1 );
-            cv2.putText(outputimg1, label2, (10,498), cv2.FONT_HERSHEY_SIMPLEX, 0.5,(250,250,250), 1 );
-            cv2.imwrite('disc_full.bmp', outputimg1)
+            # open an image
+            # https://sdo.gsfc.nasa.gov/assets/img/latest/latest_512_0193.jpg
+            URL = 'https://sdo.gsfc.nasa.gov/assets/img/latest/latest_512_0193.jpg'
+            
+            with urllib.request.urlopen(URL) as url:
+                with open('sun.jpg', 'wb') as f:
+                    f.write(url.read())
+              
+            img = cv2.imread('sun.jpg')
+            
+            #current UTC time
+            nowtime = get_utc()
+            
+            # when saved in paint, a 16bit bmp seems ok
+            mask1 = cv2.imread('mask_full.bmp', 0)
+            mask2 = cv2.imread('mask1.bmp', 0)
+            
+    #        # print mask parameters for debugging purposes.
+    #        print(str(mask1.dtype) + " " + str(mask1.shape))
+    #        print(str(mask2.dtype) + " " + str(mask2.shape))
+            
+            # Process the image to get B+W coronal hole image    
+            outputimg = greyscale_img(img)
+    #        calc_histo(outputimg)
+            
+            outputimg = threshold_img(outputimg)
+            outputimg = erode_dilate_img(outputimg)
+            
+            # save out the masked images
+            try:
+                # Full disk image
+                outputimg1 = mask_img(outputimg, mask1)
+                label = 'DunedinAurora.NZ Coronal Hole Map'
+                label2 = nowtime
+                cv2.putText(outputimg1, label, (10,482), cv2.FONT_HERSHEY_SIMPLEX, 0.5,(250,250,250), 1 );
+                cv2.putText(outputimg1, label2, (10,498), cv2.FONT_HERSHEY_SIMPLEX, 0.5,(250,250,250), 1 );
+                cv2.imwrite('disc_full.bmp', outputimg1)
+            except:
+                print("Unable to write image")
+            
+            try:
+                # Meridian Segment
+                outputimg2 = mask_img(outputimg, mask2)
+                cv2.imwrite('disc_segment.bmp', outputimg2)
+            except:
+                print("Unable to write image")
+               
         except:
-            print("Unable to write image")
+            # URL access has malfunctioned??
+            print("Unable to open URL")
         
-        try:
-            # Meridian Segment
-            outputimg2 = mask_img(outputimg, mask2)
-            cv2.imwrite('disc_segment.bmp', outputimg2)
-        except:
-            print("Unable to write image")
-           
-    except:
-        # URL access has malfunctioned??
-        print("Unable to open URL")
-    
-    # Calculate the area occupied by coronal holes
-    coverage = count_pixels(outputimg2, mask2)
-    dscvr_data = discovr.get_json()
-    w_dens = discovr.plasma_density(dscvr_data)
-    w_spd = discovr.plasma_speed(dscvr_data)
-    
-    # create the final string to save to the logfile
-    datastring = str(nowtime) + "," + str(coverage) + "," + str(w_spd) + "," + str(w_dens)
-    print(datastring)
-    
-    # tie this in with solar sind speed and density data
-    # create the incremental indice of CH activity.
-    log_data(datastring)
-#        time.sleep(3600)
+        # Calculate the area occupied by coronal holes
+        coverage = count_pixels(outputimg2, mask2)
+        dscvr_data = discovr.get_json()
+        w_dens = discovr.plasma_density(dscvr_data)
+        w_spd = discovr.plasma_speed(dscvr_data)
+        
+        # create the final string to save to the logfile
+        datastring = str(nowtime) + "," + str(coverage) + "," + str(w_spd) + "," + str(w_dens)
+        print(datastring)
+        
+        # tie this in with solar sind speed and density data
+        # create the incremental indice of CH activity.
+        log_data(datastring)
+        
+        time.sleep(3600)
