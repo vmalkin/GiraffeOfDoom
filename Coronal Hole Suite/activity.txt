@@ -1,0 +1,11 @@
+WHILE true
+  get current UTC timedate
+
+  get data
+
+  process data
+
+  IF data falls inside timerange:
+    log data
+  ELSE skip
+

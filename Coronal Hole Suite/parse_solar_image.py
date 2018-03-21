@@ -2,25 +2,38 @@
 # Solar Image Parser v0.1
 # Designed to process an EUV image from a live URL 
 # to display probably coronal hole locations. 
-# uses the OpenCV library
+# uses the OpenCV library and based on the work of Rotter, Veronig, Temmer & Vrsnak
 # http://oh.geof.unizg.hr/SOLSTEL/images/dissemination/papers/Rotter2015_SoPh290_arxiv.pdf
 
 import cv2
 import numpy as np
-import urllib.request
+#import urllib.request
 import datetime
 from decimal import Decimal, getcontext
-import time
-import os
 
-getcontext().prec = 4
 
-LOGFILE = 'log.csv'
+getcontext().prec = 6
 
-def get_utc():
+
+def latest_timestamp(posix_time_value):
+    pass
+
+def image_read(file_name):
+    img = cv2.imread(file_name)
+    return img
+
+def image_write(file_name, image_name):
+    cv2.imwrite(file_name, image_name)
+
+
+def get_utc_time():
     # returns a STRING of the current UTC time
     time_now = str(datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S"))
     return time_now
+
+def calc_histo(image_to_process):
+    hist = cv2.calcHist([image_to_process], [0], None, [256], [0, 256])
+    print(hist)
 
 def greyscale_img(image_to_process):
     # converting an Image to grey scale...
@@ -56,75 +69,15 @@ def count_pixels(part_img, whole_img):
     remainder_pixels = cv2.countNonZero(part_img)
     coverage = 1 - (Decimal(remainder_pixels) / Decimal(total_pixels))
     return coverage
-    
-def log_data(value_string):
-    # If the logfile exists append the datapoint
-    try:
-        with open (LOGFILE,'a') as f:
-            f.write(value_string + '\n')
-            # print("Data logged ok. Array Size: " + str(len(readings)))
-    except IOError:
-        print("WARNING: There was a problem accessing the current logfile: " + LOGFILE)
-        
-
-if __name__ == '__main__':
-    while True:
-        try:
-            # open an image
-            # https://sdo.gsfc.nasa.gov/assets/img/latest/latest_512_0193.jpg
-            URL = 'https://sdo.gsfc.nasa.gov/assets/img/latest/latest_512_0193.jpg'
-            
-            with urllib.request.urlopen(URL) as url:
-                with open('sun.jpg', 'wb') as f:
-                    f.write(url.read())
-              
-            img = cv2.imread('sun.jpg')
-            
-            #current UTC time
-            nowtime = get_utc()
-            
-            # when saved in paint, a 16bit bmp seems ok
-            mask1 = cv2.imread('mask_full.bmp', 0)
-            mask2 = cv2.imread('mask1.bmp', 0)
-            
-    #        # print mask parameters for debugging purposes.
-    #        print(str(mask1.dtype) + " " + str(mask1.shape))
-    #        print(str(mask2.dtype) + " " + str(mask2.shape))
-        
-            # Process the image to get B+W coronal hole image    
-            outputimg = greyscale_img(img)
-            outputimg = threshold_img(outputimg)
-            outputimg = erode_dilate_img(outputimg)
-            
-            # save out the masked images
-            try:
-                # Full disk image
-                outputimg1 = mask_img(outputimg, mask1)
-                label = 'DunedinAurora.NZ Coronal Hole Map'
-                label2 = nowtime
-                cv2.putText(outputimg1, label, (10,482), cv2.FONT_HERSHEY_SIMPLEX, 0.5,(250,250,250), 1 );
-                cv2.putText(outputimg1, label2, (10,498), cv2.FONT_HERSHEY_SIMPLEX, 0.5,(250,250,250), 1 );
-                cv2.imwrite('disc_full.bmp', outputimg1)
-            except:
-                print("Unable to write image")
-            
-            try:
-                # Meridian Segment
-                outputimg2 = mask_img(outputimg, mask2)
-                cv2.imwrite('disc_segment.bmp', outputimg2)
-            except:
-                print("Unable to write image")
-               
-        except:
-            # URL access has malfunctioned??
-            print("Unable to open URL")
-        
-        # Calculate the area occupied by coronal holes
-        coverage = count_pixels(outputimg2, mask2)
-        datastring = str(nowtime) + "," + str(coverage)
-        print(datastring)
-        log_data(datastring)
-        # tie this in with solar sind speed and density data
-        # create the incremental indice of CH activity.
-    
-        time.sleep(3600)
+      
+def make_mask(mask_filepath):
+    mask = cv2.imread(mask_filepath, 0)
+    return mask
+     
+def add_img_logo(image_name):
+    label = 'DunedinAurora.NZ Coronal Hole Map'
+    label2 = get_utc_time()
+    cv2.putText(image_name, label, (10,482), cv2.FONT_HERSHEY_SIMPLEX, 0.5,(250,250,250), 1 );
+    cv2.putText(image_name, label2, (10,498), cv2.FONT_HERSHEY_SIMPLEX, 0.5,(250,250,250), 1 );
+#    cv2.imwrite('disc_full.bmp', image_name)
+    return image_name

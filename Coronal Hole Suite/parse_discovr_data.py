@@ -40,12 +40,7 @@ def plasma_speed(jsonfile):
     wind_speed = Decimal(wind_speed) / Decimal(counter)
     return wind_speed
 
-def check_timestamp(posix_time_value):
+def latest_timestamp(posix_time_value):
     pass
 
-#data = get_json()
-#w_dens = plasma_density(data)
-#w_spd = plasma_speed(data)
-#
-#print(str(w_spd) + "," + str(w_dens))
     
