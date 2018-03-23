@@ -4,7 +4,8 @@ getcontext().prec = 6
 
 
 # #################################################################################
-# GET the source data
+# THESE FUNCTIONS NEED TO BE REFINED TO GET DATA ONLY FOR THE PERIOD
+# OF THE IMAGERY, NOT THE WHOLE DEFAULT TIME FOR THE DATASET
 # #################################################################################
 def get_json():
     # DISCOVR satellite data in JSON format

@@ -47,6 +47,8 @@ if __name__ == '__main__':
               
             img = solar.image_read('sun.jpg')
             
+            
+            
             #current UTC time
             nowtime = get_utc_time()
             
@@ -90,16 +92,18 @@ if __name__ == '__main__':
         # Get the DISCOVR solar wind data (speed and density)
         # We do need to check that data is timely!! Naive implementation at the moment
         # #################################################################################
-        dscvr_data = discovr.get_json()
-        w_dens = discovr.plasma_density(dscvr_data)
-        w_spd = discovr.plasma_speed(dscvr_data)
-        
-        # create the final string to save to the logfile
-        datastring = str(nowtime) + "," + str(coverage) + "," + str(w_spd) + "," + str(w_dens)
-        print(datastring)
-        
-        log_data(datastring)
-           
+        try:
+            dscvr_data = discovr.get_json()
+            w_dens = discovr.plasma_density(dscvr_data)
+            w_spd = discovr.plasma_speed(dscvr_data)
+            
+            # create the final string to save to the logfile
+            datastring = str(nowtime) + "," + str(coverage) + "," + str(w_spd) + "," + str(w_dens)
+            print(datastring)
+            
+            log_data(datastring)
+        except:
+            print("Cannot log DISCOVR data")
         # #################################################################################
         # We need to implement the "predicting" algorith to forcast CH HSS impact, and even offer
         # possible future carrington rotations
