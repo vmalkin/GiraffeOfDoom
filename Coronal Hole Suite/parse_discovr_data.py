@@ -1,7 +1,7 @@
 import requests
 from decimal import Decimal, getcontext
 getcontext().prec = 6
-
+NULL = "null"
 
 # #################################################################################
 # THESE FUNCTIONS NEED TO BE REFINED TO GET DATA ONLY FOR THE PERIOD
@@ -20,25 +20,31 @@ def get_json():
     return discovr_data
 
 def plasma_density(jsonfile):
-    wind_density = 0
-    counter = 0
-    for i in range(1, len(jsonfile)):
-        value = jsonfile[i][1]
-        wind_density = wind_density + Decimal(value)
-        counter = counter + 1
-        
-    wind_density = Decimal(wind_density) / Decimal(counter)
+    try:
+        wind_density = 0
+        counter = 0
+        for i in range(1, len(jsonfile)):
+            value = jsonfile[i][1]
+            wind_density = wind_density + Decimal(value)
+            counter = counter + 1
+            
+        wind_density = Decimal(wind_density) / Decimal(counter)
+    except:
+        wind_density = NULL
     return wind_density
 
 def plasma_speed(jsonfile):
-    wind_speed = 0
-    counter = 0
-    for i in range(1, len(jsonfile)):
-        value = jsonfile[i][2]
-        wind_speed = wind_speed + Decimal(value)
-        counter = counter + 1
-        
-    wind_speed = Decimal(wind_speed) / Decimal(counter)
+    try:
+        wind_speed = 0
+        counter = 0
+        for i in range(1, len(jsonfile)):
+            value = jsonfile[i][2]
+            wind_speed = wind_speed + Decimal(value)
+            counter = counter + 1
+            
+        wind_speed = Decimal(wind_speed) / Decimal(counter)
+    except:
+        wind_speed = NULL
     return wind_speed
 
 def latest_timestamp(posix_time_value):

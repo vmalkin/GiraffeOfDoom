@@ -7,6 +7,17 @@ import time
 
 LOGFILE = 'log.csv'
 
+def UTC_POSIX(timestamp):
+    # %Y-%m-%d %H:%M:%S
+    pass
+
+def POSIX_UTC(timestamp):
+    # %Y-%m-%d %H:%M:%S
+    pass
+
+def prune_logfile(filename):
+    pass
+
 def log_data(value_string):
     # If the logfile exists append the datapoint
     try:
@@ -92,6 +103,7 @@ if __name__ == '__main__':
         # Get the DISCOVR solar wind data (speed and density)
         # We do need to check that data is timely!! Naive implementation at the moment
         # #################################################################################
+        
         try:
             dscvr_data = discovr.get_json()
             w_dens = discovr.plasma_density(dscvr_data)
