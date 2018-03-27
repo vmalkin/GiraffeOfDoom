@@ -1,11 +1,12 @@
 import requests
 from decimal import Decimal, getcontext
+import time
+
 getcontext().prec = 6
 NULL = "null"
 
 # #################################################################################
-# THESE FUNCTIONS NEED TO BE REFINED TO GET DATA ONLY FOR THE PERIOD
-# OF THE IMAGERY, NOT THE WHOLE DEFAULT TIME FOR THE DATASET
+# Gets json data. 
 # #################################################################################
 def get_json():
     # DISCOVR satellite data in JSON format
@@ -19,6 +20,26 @@ def get_json():
 
     return discovr_data
 
+
+def parse_json_convert_time(jsonfile):
+    # converts the time to POSIX
+    # grabs the Plasma and Density data
+    for i in range(1, len(jsonfile)):
+            datetime_UTC = utc2posix(jsonfile[i][0])
+            wind_density = jsonfile[i][1]
+            wind_speed = jsonfile[i][2]
+ 
+           
+def parse_json_prune(posix_jsonfile):
+    # we want only the data for the last hour.
+    # we will return a modified array of the current data only
+    nowtime = time.time()
+    prevtime = nowtime - 3600  # the past hour
+    returnarray = []
+    
+    for i in range (1, len(posix_jsonfile)):
+        
+    
 def plasma_density(jsonfile):
     try:
         wind_density = 0
@@ -32,6 +53,7 @@ def plasma_density(jsonfile):
     except:
         wind_density = NULL
     return wind_density
+
 
 def plasma_speed(jsonfile):
     try:
@@ -47,7 +69,16 @@ def plasma_speed(jsonfile):
         wind_speed = NULL
     return wind_speed
 
-def latest_timestamp(posix_time_value):
-    pass
 
+def utc2posix(timestamp):
+    # 2018-03-19 02:05:00.000
+    # %Y-%m-%d %H:%M:%S
+    posix_time = time.strptime(timestamp, "%Y-%m-%d %H:%M:%S.%f")
+    posix_time = time.mktime(posix_time)
+    return posix_time
+
+
+def posix2utc(timestamp):
+    # 1521378300.0
+    
     

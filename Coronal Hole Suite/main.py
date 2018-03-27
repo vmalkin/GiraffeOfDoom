@@ -7,14 +7,6 @@ import time
 
 LOGFILE = 'log.csv'
 
-def UTC_POSIX(timestamp):
-    # %Y-%m-%d %H:%M:%S
-    pass
-
-def POSIX_UTC(timestamp):
-    # %Y-%m-%d %H:%M:%S
-    pass
-
 def prune_logfile(filename):
     pass
 
@@ -105,7 +97,13 @@ if __name__ == '__main__':
         # #################################################################################
         
         try:
+            # get the data
             dscvr_data = discovr.get_json()
+            
+            # parse to the correct format
+            dscvr_data = discovr.parse_json_convert_time(dscvr_data)
+            dscvr_data = discovr.parse_json_prune(dscvr_data)
+            
             w_dens = discovr.plasma_density(dscvr_data)
             w_spd = discovr.plasma_speed(dscvr_data)
             
