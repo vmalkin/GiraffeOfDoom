@@ -1,6 +1,7 @@
 import requests
 from decimal import Decimal, getcontext
 import time
+import datetime
 
 getcontext().prec = 6
 NULL = "null"
@@ -24,28 +25,45 @@ def get_json():
 def parse_json_convert_time(jsonfile):
     # converts the time to POSIX
     # grabs the Plasma and Density data
+    # returns a python list
+    returnlist = []
     for i in range(1, len(jsonfile)):
-            datetime_UTC = utc2posix(jsonfile[i][0])
-            wind_density = jsonfile[i][1]
-            wind_speed = jsonfile[i][2]
+        date_posix = utc2posix(jsonfile[i][0])
+        wind_density = jsonfile[i][1]
+        wind_speed = jsonfile[i][2]
+        
+        csvdata = str(date_posix) + "," + str(wind_density) + "," + str(wind_speed)
+        returnlist.append(csvdata)
+        
+    return returnlist
  
            
-def parse_json_prune(posix_jsonfile):
+def parse_json_prune(posix_list):
     # we want only the data for the last hour.
     # we will return a modified array of the current data only
-    nowtime = time.time()
+    nowtime = utc2posix(str(datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S.%f"))) 
     prevtime = nowtime - 3600  # the past hour
     returnarray = []
     
-    for i in range (1, len(posix_jsonfile)):
-        
+    for i in range (1, len(posix_list)):
+        datasplit = posix_list[i].split(",")
+        checkdate = datasplit[0]
+        wind_density = datasplit[1]
+        wind_speed = datasplit[2]
+#        print(str(checkdate) + " " + str(nowtime) + " " + str(prevtime))
+        if float(checkdate) > float(str(prevtime)) and float(checkdate) <= float(str(nowtime)):
+            csvdata = str(checkdate) + "," + str(wind_density) + "," + str(wind_speed)
+            returnarray.append(csvdata)
+    return returnarray
+
     
-def plasma_density(jsonfile):
+def plasma_density(posix_list):
     try:
         wind_density = 0
         counter = 0
-        for i in range(1, len(jsonfile)):
-            value = jsonfile[i][1]
+        for i in range(1, len(posix_list)):
+            datasplit = posix_list[i].split(",")
+            value = datasplit[1]
             wind_density = wind_density + Decimal(value)
             counter = counter + 1
             
@@ -55,12 +73,13 @@ def plasma_density(jsonfile):
     return wind_density
 
 
-def plasma_speed(jsonfile):
+def plasma_speed(posix_list):
     try:
         wind_speed = 0
         counter = 0
-        for i in range(1, len(jsonfile)):
-            value = jsonfile[i][2]
+        for i in range(1, len(posix_list)):
+            datasplit = posix_list[i].split(",")
+            value = datasplit[2]
             wind_speed = wind_speed + Decimal(value)
             counter = counter + 1
             
@@ -79,6 +98,4 @@ def utc2posix(timestamp):
 
 
 def posix2utc(timestamp):
-    # 1521378300.0
-    
-    
+    pass

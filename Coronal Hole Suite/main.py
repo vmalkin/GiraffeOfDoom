@@ -1,9 +1,10 @@
 import datetime
 import parse_discovr_data as discovr
 import parse_solar_image as solar
+import forcast
 import urllib.request
 import os
-import time
+
 
 LOGFILE = 'log.csv'
 
@@ -96,24 +97,24 @@ if __name__ == '__main__':
         # We do need to check that data is timely!! Naive implementation at the moment
         # #################################################################################
         
-        try:
+    #        try:
             # get the data
-            dscvr_data = discovr.get_json()
-            
-            # parse to the correct format
-            dscvr_data = discovr.parse_json_convert_time(dscvr_data)
-            dscvr_data = discovr.parse_json_prune(dscvr_data)
-            
-            w_dens = discovr.plasma_density(dscvr_data)
-            w_spd = discovr.plasma_speed(dscvr_data)
-            
-            # create the final string to save to the logfile
-            datastring = str(nowtime) + "," + str(coverage) + "," + str(w_spd) + "," + str(w_dens)
-            print(datastring)
-            
-            log_data(datastring)
-        except:
-            print("Cannot log DISCOVR data")
+        dscvr_data = discovr.get_json()
+        
+        # parse to the correct format
+        dscvr_data = discovr.parse_json_convert_time(dscvr_data)
+        dscvr_data = discovr.parse_json_prune(dscvr_data)
+        
+        w_dens = discovr.plasma_density(dscvr_data)
+        w_spd = discovr.plasma_speed(dscvr_data)
+        
+        # create the final string to save to the logfile
+        datastring = str(nowtime) + "," + str(coverage) + "," + str(w_spd) + "," + str(w_dens)
+        print(datastring)
+        
+        log_data(datastring)
+    #        except:
+    #            print("Cannot log DISCOVR data")
         # #################################################################################
         # We need to implement the "predicting" algorith to forcast CH HSS impact, and even offer
         # possible future carrington rotations
@@ -121,4 +122,4 @@ if __name__ == '__main__':
         
         # Pause for an hour
         time.sleep(3600)
-           
+       
