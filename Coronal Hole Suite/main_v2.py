@@ -65,6 +65,14 @@ if __name__ == '__main__':
     while True:   
         try:
             # open an image
+            # Grab the SWPS Syntopic Map for Local Display
+            URL = 'https://services.swpc.noaa.gov/images/synoptic-map.jpg'
+            
+            with urllib.request.urlopen(URL) as url:
+                with open('syntopic.jpg', 'wb') as f:
+                    f.write(url.read())
+            
+            # open an image
             # https://sdo.gsfc.nasa.gov/assets/img/latest/latest_512_0193.jpg
             URL = 'https://sdo.gsfc.nasa.gov/assets/img/latest/latest_512_0193.jpg'
             
