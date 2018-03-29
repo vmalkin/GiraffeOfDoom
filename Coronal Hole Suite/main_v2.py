@@ -167,5 +167,5 @@ if __name__ == '__main__':
         
         
         # Pause for an hour
-        time.sleep(10)
+        time.sleep(3600)
        
