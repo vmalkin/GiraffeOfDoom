@@ -123,15 +123,17 @@ if __name__ == '__main__':
         # Calculate the area occupied by coronal holes
         coverage = solar.count_pixels(outputimg2, mask2)
             
-            # #################################################################################
-            # Get the DISCOVR solar wind data (speed and density)
-            # We do need to check that data is timely!! Naive implementation at the moment
-            # #################################################################################
+        # #################################################################################
+        # Get the DISCOVR solar wind data (speed and density)
+        # We do need to check that data is timely!! Naive implementation at the moment
+        # #################################################################################
+        datastring = ""
+        dscvr_data = discovr.get_json()
         
-        try:
-            # get the data
-            dscvr_data = discovr.get_json()
-            
+        if dscvr_data == "no_data":
+            # Unable to get DISCOVR data
+            datastring = str(nowtime) + "," + str(coverage) + ",0,0,0"
+        else:        
             # parse to the correct format
             # The timestampt is in POSIX format
             dscvr_data = discovr.parse_json_convert_time(dscvr_data)
@@ -148,19 +150,16 @@ if __name__ == '__main__':
             # create the final string to save to the logfile
             datastring = str(nowtime) + "," + str(coverage) + "," + str(w_spd) + "," + str(w_dens)
             
-            # Append to the datalist
-            datalist.append(datastring)    
-            
-            # Prune the datalist to be 3 Carrington Rotations long
-            datalist = prune_datalist(datalist)
-            
-            # Save the datalist to file, display output.
-            save_data(datalist, LOGFILE)
-            print(datastring)
-            
-        except:
-            print("Cannot log DISCOVR data")
-            
+        # Append to the datalist
+        datalist.append(datastring)    
+        
+        # Prune the datalist to be 3 Carrington Rotations long
+        datalist = prune_datalist(datalist)
+        
+        # Save the datalist to file, display output.
+        save_data(datalist, LOGFILE)
+        print(datastring)
+
         # #################################################################################
         # We need to implement the "predicting" algorith to forcast CH HSS impact, and even offer
         # possible future carrington rotations
@@ -168,5 +167,5 @@ if __name__ == '__main__':
         
         
         # Pause for an hour
-        time.sleep(3600)
+        time.sleep(10)
        

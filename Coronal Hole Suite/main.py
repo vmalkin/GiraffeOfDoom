@@ -1,7 +1,7 @@
 import datetime
 import parse_discovr_data as discovr
 import parse_solar_image as solar
-import forcast
+import forecast
 import urllib.request
 import os
 import time

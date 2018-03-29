@@ -14,10 +14,13 @@ def get_json():
     # first is the header values, then the data values:
     # ["time_tag","density","speed","temperature"]
     # ["2018-03-19 02:05:00.000","6.35","573.4","330513"]
-  
-    url = "http://services.swpc.noaa.gov/products/solar-wind/plasma-2-hour.json"
-    response = requests.get(url)
-    discovr_data = response.json()  # requests has built in json
+    try:
+        url = "http://services.swpc.noaa.gov/products/solar-wind/plasma-2-hour.json"
+        response = requests.get(url)
+        discovr_data = response.json()  # requests has built in json
+    except:
+#        time_now = str(datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S"))
+        discovr_data = "no_data"
 
     return discovr_data
 
