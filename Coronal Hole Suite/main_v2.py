@@ -54,7 +54,7 @@ print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
 print("As based on:")
 print("http://oh.geof.unizg.hr/SOLSTEL/images/dissemination/papers/Rotter2015_SoPh290_arxiv.pdf")
 print("http://swe.uni-graz.at/index.php/services/solar-wind-forecast")
-print("Code Implementation (c) 2018, Vaughn Malkin ")
+print("Code Implementation (c) 2018, Vaughn Malkin\n\n")
 if __name__ == '__main__':
     # load up the main datalist
     datalist = load_data(LOGFILE)
@@ -145,7 +145,7 @@ if __name__ == '__main__':
             # High wind speeds may be due to CME and not teh High Speed Stream
             # set the wind speed value to NUL of this is the case. 
             if w_spd >= WIND_SPEED_THRESHOLD:
-                w_spd = 'null'
+                w_spd = 0
             
             # create the final string to save to the logfile
             datastring = str(nowtime) + "," + str(coverage) + "," + str(w_spd) + "," + str(w_dens)
@@ -164,7 +164,6 @@ if __name__ == '__main__':
         # We need to implement the "predicting" algorith to forcast CH HSS impact, and even offer
         # possible future carrington rotations
         # #################################################################################
-        
         
         # Pause for an hour
         time.sleep(3600)
