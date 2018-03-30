@@ -24,15 +24,23 @@ def CH_match_launchdate(ch_array, posix_launchdate):
     # closest to the supplied launchdate. 
     # data is of format posixtime, ch_coverage, wind_speed, wind_density
     delta_smallest = 1000000000
-    return_ch_coverage = 0
-    for item in ch_array:
-        datasplit = item.split(",")
-        checktime = datasplit[0]  # posix date
-        ch_coverage = datasplit[1]
-        delta_current = math.sqrt(math.pow((checktime - posix_launchdate),2))
-        if delta_current < delta_smallest:
-            return_ch_coverage = ch_coverage
-    return return_ch_coverage
+    return_index = -1
+
+    for i in range(0, len(ch_array)):
+        datasplit = ch_array[i].split
+        chdate = datasplit[0]
+
+        # test the date to see if it is closest
+        delta_check = math.sqrt(math.pow((posix_launchdate - chdate),2))
+        if delta_check < delta_smallest:
+            return_index = i
+    
+    returnsplit = ch_array[return_index].split(",")
+    
+    # the CH coverage should be the second value in the split
+    ch_coverage = returnsplit[1]
+    
+    return ch_coverage
 
 # Store the Launchdate, windspeed, CH coverage
 
@@ -128,12 +136,26 @@ def mean_y(xy_list):
 
    
 # ################################################################
-# C A L L   T H I S   W R A P P E R   F U N C T IO N  
+# C A L L   T H I S   W R A P P E R   F U N C T I O N  
 # ################################################################
 def calculate_forecast(CH_data):
-    # Convert the CH data, matching the current CH reading with the
-    # earlier launchdate, based on CH wind speed.
+    # Match the current CH reading with the earlier launchdate, based on CH wind speed.
     # Build a new list of these corrected values.
+    # timevalues are in POSIX format
+    xy_data = []
+    
+    for item in CH_data:
+        datasplit = item.split(",")
+        chdate = datasplit[0]
+        windspeed = datasplit[1]
+        winddensity = datasplit[2]
+        transittime = travel_time(windspeed)
+        launchtime = launchdate(chdate, transittime)
+        reviseCHcover = CH_match_launchdate(CH_data, launchdate)
+        
+        newdata = launchtime + "," + reviseCHcover + "," + windspeed
+        xy_data.append(newdata)
+        
     
     # reduce the CH data to x y values only
     xy_data = reduce_chdata(CH_data)
@@ -154,12 +176,11 @@ def calculate_forecast(CH_data):
     syy = sm_y_sqr - (1/count_n) * math.pow(sm_y, 2)
     sxy = sm_x_times_y - (1/count_n) * sm_x * sm_y
     
-    pearson_r_value = sxy / math.sqrt(sxx * syy)
-    
     # calculate the a and b values needed for the regression formula
-    # y = a + b*x
+    # y = rg_a + rg_b * x
     rg_b = float(sxy / sxx)
     rg_a = float(mn_y - (rg_b * mn_x))
+    pearson_r_value = math.sqrt(math.pow((sxy / math.sqrt(sxx * syy)),2))
     
     print(str(sxx) + " " + str(syy) + " " + str(sxy))
     print(str(rg_a) + " " + str(rg_b) + " " + str(pearson_r_value))
