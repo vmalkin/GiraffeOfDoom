@@ -11,12 +11,7 @@ import numpy as np
 import datetime
 from decimal import Decimal, getcontext
 
-
 getcontext().prec = 6
-
-
-def latest_timestamp(posix_time_value):
-    pass
 
 def image_read(file_name):
     img = cv2.imread(file_name)
