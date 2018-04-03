@@ -5,6 +5,9 @@ import math
 
 # calculate travel time over 1 AU
 def travel_time(windspeed):
+    if windspeed == 0:
+        windspeed = 400
+
     travel_time_sec = float(ASTRONOMICAL_UNIT_KM) / float(windspeed)
     return travel_time_sec
 
@@ -27,12 +30,13 @@ def CH_match_launchdate(ch_array, posix_launchdate):
     return_index = -1
 
     for i in range(0, len(ch_array)):
-        datasplit = ch_array[i].split
+        datasplit = ch_array[i].split(",")
         chdate = datasplit[0]
 
         # test the date to see if it is closest
-        delta_check = math.sqrt(math.pow((posix_launchdate - chdate),2))
-        if delta_check < delta_smallest:
+        delta_check = math.sqrt(math.pow((float(posix_launchdate) - float(chdate)),2))
+        if delta_check < delta_smallest and delta_check < 3600:
+            delta_smallest = delta_check
             return_index = i
     
     returnsplit = ch_array[return_index].split(",")

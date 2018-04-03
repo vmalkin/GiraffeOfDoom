@@ -4,6 +4,18 @@ import parse_solar_image as solar
 import forecast
 import urllib.request
 import time
+import logging
+
+# setup error logging
+# logging levels in order of severity:
+# DEBUG
+# INFO
+# WARNING
+# ERROR
+# CRITICAL
+errorloglevel = logging.ERROR
+logging.basicConfig(filename="errors.log", format='%(asctime)s %(message)s', level=errorloglevel)
+logging.info("Created error log for this session")
 
 WIND_SPEED_THRESHOLD = 800
 LOGFILE = 'log.csv'
@@ -72,6 +84,16 @@ def get_posix_time():
     time_now = time.time()
     return time_now
 
+def save_image_from_url(imageurl, filename):
+    logging.debug("starting image from URL download")
+    try:
+        request = urllib.request.Request(imageurl, headers={'User-Agent': 'Mozilla/5.0'})
+        response = urllib.request.urlopen(request)
+        with open(filename, 'wb') as f:
+            f.write(response.read())
+    except urllib.request.HTTPError:
+        logging.error("Unable to load/save image from URL: " + str(imageurl) + " " + str(filename))
+
  # #################################################################################
  # B E G I N   M A I N   H E R E 
  # #################################################################################  
@@ -89,22 +111,12 @@ if __name__ == '__main__':
     save_data(datalist, 'log.backup')
 
     while True:
+        # open an image
+        # Grab the SWPS Syntopic Map for Local Display
+        save_image_from_url('https://services.swpc.noaa.gov/images/synoptic-map.jpg', 'syntopic.jpg')
+
         try:
-            # open an image
-            # Grab the SWPS Syntopic Map for Local Display
-            URL = 'https://services.swpc.noaa.gov/images/synoptic-map.jpg'
-
-            with urllib.request.urlopen(URL) as url:
-                with open('syntopic.jpg', 'wb') as f:
-                    f.write(url.read())
-
-            # open an image
-            # https://sdo.gsfc.nasa.gov/assets/img/latest/latest_512_0193.jpg
-            URL = 'https://sdo.gsfc.nasa.gov/assets/img/latest/latest_512_0193.jpg'
-
-            with urllib.request.urlopen(URL) as url:
-                with open('sun.jpg', 'wb') as f:
-                    f.write(url.read())
+            save_image_from_url("https://sdo.gsfc.nasa.gov/assets/img/latest/latest_512_0193.jpg", "sun.jpg")
 
             img = solar.image_read('sun.jpg')
 
@@ -126,27 +138,20 @@ if __name__ == '__main__':
             outputimg = solar.erode_dilate_img(outputimg)
 
             # save out the masked images
-            try:
-                # Full disk image
-                outputimg1 = solar.mask_img(outputimg, mask1)
-                solar.add_img_logo(outputimg1)
-                solar.image_write('disc_full.bmp', outputimg1)
-            except:
-                print("Unable to write image")
 
-            try:
-                # Meridian Segment
-                outputimg2 = solar.mask_img(outputimg, mask2)
-                solar.image_write('disc_segment.bmp', outputimg2)
-            except:
-                print("Unable to write image")
+            # Full disk image
+            outputimg1 = solar.mask_img(outputimg, mask1)
+            solar.add_img_logo(outputimg1)
+            solar.image_write('disc_full.bmp', outputimg1)
 
+            # Meridian Segment
+            outputimg2 = solar.mask_img(outputimg, mask2)
+            solar.image_write('disc_segment.bmp', outputimg2)
+
+            # Calculate the area occupied by coronal holes
+            coverage = solar.count_pixels(outputimg2, mask2)
         except:
-            # URL access has malfunctioned??
-            print("Unable to open URL")
-
-        # Calculate the area occupied by coronal holes
-        coverage = solar.count_pixels(outputimg2, mask2)
+            logging.error("Unable to process SDO image")
 
         # #################################################################################
         # Get the DISCOVR solar wind data (speed and density)
@@ -187,7 +192,7 @@ if __name__ == '__main__':
         # Save the datalist to file. CReate the display file. Print output to console
         save_data(datalist, LOGFILE)
         save_display_file(datalist)
-        print(datastring)
+        print(datastring + " " + "(" + get_utc_time() + " UTC)")
 
         # #################################################################################
         # We need to implement the "predicting" algorith to forcast CH HSS impact, and even offer

@@ -2,6 +2,17 @@ import requests
 from decimal import Decimal, getcontext
 import time
 import datetime
+import logging
+
+# setup error logging
+# logging levels in order of severity:
+# DEBUG
+# INFO
+# WARNING
+# ERROR
+# CRITICAL
+errorloglevel = logging.DEBUG
+logging.basicConfig(filename="errors.log", format='%(asctime)s %(message)s', level=errorloglevel)
 
 getcontext().prec = 6
 NULL = "null"
