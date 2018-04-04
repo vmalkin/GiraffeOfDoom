@@ -138,7 +138,38 @@ def mean_y(xy_list):
     y_mean = float(y_sum / y_count)
     return y_mean
 
-   
+
+def regression_analysis(CH_data):
+    # reduce the CH data to x y values only
+    xy_data = reduce_chdata(CH_data)
+
+    # ################################################################
+    # Regression Analysis
+    # ################################################################
+    sm_x = sum_x(xy_data)
+    sm_y = sum_y(xy_data)
+    sm_x_sqr = sum_x_sqr(xy_data)
+    sm_y_sqr = sum_y_sqr(xy_data)
+    sm_x_times_y = sum_x_times_y(xy_data)
+    mn_x = mean_x(xy_data)
+    mn_y = mean_y(xy_data)
+    count_n = len(xy_data)
+
+    sxx = sm_x_sqr - (1 / count_n) * math.pow(sm_x, 2)
+    syy = sm_y_sqr - (1 / count_n) * math.pow(sm_y, 2)
+    sxy = sm_x_times_y - (1 / count_n) * sm_x * sm_y
+
+    # calculate the a and b values needed for the regression formula
+    # y = rg_a + rg_b * x
+    rg_b = float(sxy / sxx)
+    rg_a = float(mn_y - (rg_b * mn_x))
+    pearson_r_value = math.sqrt(math.pow((sxy / math.sqrt(sxx * syy)), 2))
+
+    regression_parameters = [rg_a, rg_b, pearson_r_value]
+
+    return regression_parameters
+
+
 # ################################################################
 # C A L L   T H I S   W R A P P E R   F U N C T I O N  
 # ################################################################
@@ -159,34 +190,8 @@ def calculate_forecast(CH_data):
         
         newdata = launchtime + "," + reviseCHcover + "," + windspeed
         xy_data.append(newdata)
-        
-    
-    # reduce the CH data to x y values only
-    xy_data = reduce_chdata(CH_data)
-    
-    # ################################################################
-    # Regression Analysis
-    # ################################################################
-    sm_x = sum_x(xy_data)
-    sm_y = sum_y(xy_data)
-    sm_x_sqr = sum_x_sqr(xy_data)
-    sm_y_sqr = sum_y_sqr(xy_data)
-    sm_x_times_y = sum_x_times_y(xy_data)  
-    mn_x = mean_x(xy_data)
-    mn_y = mean_y(xy_data)
-    count_n = len(xy_data)
 
-    sxx = sm_x_sqr - (1/count_n) * math.pow(sm_x, 2)
-    syy = sm_y_sqr - (1/count_n) * math.pow(sm_y, 2)
-    sxy = sm_x_times_y - (1/count_n) * sm_x * sm_y
-    
-    # calculate the a and b values needed for the regression formula
-    # y = rg_a + rg_b * x
-    rg_b = float(sxy / sxx)
-    rg_a = float(mn_y - (rg_b * mn_x))
-    pearson_r_value = math.sqrt(math.pow((sxy / math.sqrt(sxx * syy)),2))
-    
-    print(str(sxx) + " " + str(syy) + " " + str(sxy))
-    print(str(rg_a) + " " + str(rg_b) + " " + str(pearson_r_value))
+    regression_analysis(xy_data)
+
     
     

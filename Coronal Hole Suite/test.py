@@ -30,11 +30,8 @@ def test_datetime_shift():
             line = line.strip()  # remove \n from EOL
             CH_data.append(line)
 
-    print(CH_data)
-
     # parse the data to find the CH date that matches the speed of solar wind
     revised_ch_data = []
-
 
     for item in CH_data:
         datasplit = item.split(",")
@@ -48,18 +45,40 @@ def test_datetime_shift():
         # calculate when the wind left the sun
         launchtime = forecast.launchdate(chdate, transittime)
 
-
         # whats was the actual CH coverage on that day?
         reviseCHcover = forecast.CH_match_launchdate(CH_data, launchtime)
 
         # Collate the revised launchdate with the actual speed of the solar wind
         # append to revised datalist
-        newdata = chdate + "," + current_ch + "," + str(launchtime) + "," + reviseCHcover + "," + windspeed
+        # newdata = chdate + "," + current_ch + "," + str(launchtime) + "," + reviseCHcover + "," + windspeed
+        newdata = str(launchtime) + "," + reviseCHcover + "," + windspeed
         revised_ch_data.append(newdata)
 
     with open ("TESTSAVED.CSV", 'w') as w:
         for item in revised_ch_data:
             w.write(str(item) + '\n')
 
+    for item in CH_data:
+        print(item)
+
+    # This will create the parameters for a linear model:
+    # y = rg_a + rg_b * x
+    parameters = forecast.regression_analysis(revised_ch_data)
+    rg_a = parameters[0]
+    rg_b = parameters[1]
+    pearson = parameters[2]
+
+    for item in CH_data:
+        datasplit = item.split(",")
+        date = datasplit[0]
+        coronal_hole_opening = datasplit[1]
+        windspeed = datasplit[2]
+
+        predict_speed = rg_a + rg_b * coronal_hole_opening
+
+
+
+
+
+
 test_datetime_shift()
-print("finished")
