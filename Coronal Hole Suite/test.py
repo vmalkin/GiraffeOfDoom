@@ -68,17 +68,24 @@ def test_datetime_shift():
     rg_b = parameters[1]
     pearson = parameters[2]
 
+    prediction_array = []
+
     for item in CH_data:
         datasplit = item.split(",")
-        date = datasplit[0]
+        launchdate = datasplit[0]
         coronal_hole_opening = datasplit[1]
         windspeed = datasplit[2]
 
-        predict_speed = rg_a + rg_b * coronal_hole_opening
+        predict_speed = float(rg_a) + float(rg_b) * float(coronal_hole_opening)
+        transittime = forecast.ASTRONOMICAL_UNIT_KM / predict_speed
+        arrivaldate = float(launchdate) + float(transittime)
 
+        prediction = str(arrivaldate) + "," + str(windspeed)
 
+        prediction_array.append(prediction)
 
-
-
+    with open ("prediction.csv", 'w') as w:
+        for item in prediction_array:
+            w.write(str(item) + '\n')
 
 test_datetime_shift()
