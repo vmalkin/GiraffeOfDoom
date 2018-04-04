@@ -68,7 +68,9 @@ def test_datetime_shift():
     rg_b = parameters[1]
     pearson = parameters[2]
 
+    # the array that will hold prediction values
     prediction_array = []
+
 
     for item in CH_data:
         datasplit = item.split(",")
