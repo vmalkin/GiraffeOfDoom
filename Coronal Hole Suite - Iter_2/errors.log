@@ -59,3 +59,31 @@
 2018-04-05 23:22:57,088 http://services.swpc.noaa.gov:80 "GET /products/solar-wind/plasma-2-hour.json HTTP/1.1" 200 None
 2018-04-05 23:22:57,094 SAVING datapoint values to file: log.csv
 2018-04-05 23:22:57,095 SAVING datapoint values to file: display.csv
+2018-04-06 10:21:33,529 Created error log for this session
+2018-04-06 10:21:33,529 loading datapoints from CSV: log.csv
+2018-04-06 10:21:33,529 SAVING datapoint values to file: log.backup
+2018-04-06 10:21:33,529 starting image from URL download
+2018-04-06 10:21:36,129 starting image from URL download
+2018-04-06 10:21:38,333 Unable to process SDO image
+2018-04-06 10:21:38,333 Starting new HTTP connection (1): services.swpc.noaa.gov
+2018-04-06 10:21:38,958 http://services.swpc.noaa.gov:80 "GET /products/solar-wind/plasma-2-hour.json HTTP/1.1" 200 None
+2018-04-06 10:23:18,915 Created error log for this session
+2018-04-06 10:23:18,915 loading datapoints from CSV: log.csv
+2018-04-06 10:23:18,915 SAVING datapoint values to file: log.backup
+2018-04-06 10:23:18,915 starting image from URL download
+2018-04-06 10:23:20,993 starting image from URL download
+2018-04-06 10:23:22,734 Unable to process SDO image
+2018-04-06 10:23:22,734 Starting new HTTP connection (1): services.swpc.noaa.gov
+2018-04-06 10:23:23,218 http://services.swpc.noaa.gov:80 "GET /products/solar-wind/plasma-2-hour.json HTTP/1.1" 200 None
+2018-04-06 10:23:23,218 SAVING datapoint values to file: log.csv
+2018-04-06 10:23:23,234 SAVING datapoint values to file: display.csv
+2018-04-06 10:23:59,891 Created error log for this session
+2018-04-06 10:23:59,891 loading datapoints from CSV: log.csv
+2018-04-06 10:23:59,891 SAVING datapoint values to file: log.backup
+2018-04-06 10:23:59,907 starting image from URL download
+2018-04-06 10:24:02,065 starting image from URL download
+2018-04-06 10:24:03,806 Unable to process SDO image
+2018-04-06 10:24:03,822 Starting new HTTP connection (1): services.swpc.noaa.gov
+2018-04-06 10:24:04,166 http://services.swpc.noaa.gov:80 "GET /products/solar-wind/plasma-2-hour.json HTTP/1.1" 200 None
+2018-04-06 10:24:04,166 SAVING datapoint values to file: log.csv
+2018-04-06 10:24:04,166 SAVING datapoint values to file: display.csv

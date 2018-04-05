@@ -133,6 +133,10 @@ if __name__ == '__main__':
     save_datapoint(datalist, 'log.backup')
 
     while True:
+        coverage = 0
+        w_dens = 0
+        w_spd = 0
+        
         # open an image
         # Grab the SWPS Syntopic Map for Local Display
         save_image_from_url('https://services.swpc.noaa.gov/images/synoptic-map.jpg', 'syntopic.jpg')
