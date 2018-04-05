@@ -27,6 +27,6 @@ class DataPoint:
         travel_time_sec = float(self.ASTRONOMICAL_UNIT_KM) / float(reportedspeed)
         return travel_time_sec
 
-    def print_values(self):
-        values = str(self.posix_date) + " " + str(self.coronal_hole_coverage) + " " + str(self.wind_speed)  + " " + str(self.wind_density) + " " + str(self.launch_date)
-        print(values)
+    def return_values(self):
+        values = str(self.posix_date) + "," + str(self.coronal_hole_coverage) + "," + str(self.wind_speed)  + "," + str(self.wind_density)
+        return values

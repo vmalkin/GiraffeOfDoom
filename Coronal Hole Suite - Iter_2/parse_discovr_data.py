@@ -96,8 +96,8 @@ def plasma_speed(posix_list):
             value = datasplit[2]
             wind_speed = wind_speed + Decimal(value)
             counter = counter + 1
-        logging.debug("Sum of windspeed: "  + str(wind_speed))
-        logging.debug("counter: " + str(counter))
+        # logging.debug("Sum of windspeed: "  + str(wind_speed))
+        # logging.debug("counter: " + str(counter))
 
         wind_speed = Decimal(wind_speed) / Decimal(counter)
     except:

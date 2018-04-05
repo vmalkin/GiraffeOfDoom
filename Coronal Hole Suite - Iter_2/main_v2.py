@@ -6,6 +6,7 @@ import urllib.request
 import time
 import logging
 import datapoint as dp
+import os
 
 # setup error logging
 # logging levels in order of severity:
@@ -31,7 +32,7 @@ def load_datapoints(filename):
     logging.debug("loading datapoints from CSV: " + filename)
 
     returnlist = []
-    try:
+    if os.path.isfile(filename):
         with open (filename, 'r') as f:
             for line in f:
                 line = line.strip()  # remove \n from EOL
@@ -41,11 +42,9 @@ def load_datapoints(filename):
                 speed = datasplit[2]
                 density = datasplit[3]
                 dataitem = dp.DataPoint(posixdate, ch, speed, density)
-
-                logging.debug(posixdate + " " + ch + " " + speed + " " + density)
-
+                # logging.debug(posixdate + " " + ch + " " + speed + " " + density)
                 returnlist.append(dataitem)
-    except:
+    else:
         print("No logfile. Starting from scratch")
     return returnlist
 
@@ -61,21 +60,9 @@ def save_csv(csvlist, filename):
 def save_datapoint(datapoint_list, filename):
     # list in format posix_date, ch_value, windspeed, winddensity
     logging.debug("SAVING datapoint values to file: " + filename)
-    try:
-        with open(filename, 'w') as f:
-            for dpoint in datapoint_list:
-                posix_date = dpoint.posix_date
-                ch_value = dpoint.coronal_hole_coverage
-                windspeed = dpoint.wind_speed
-                winddensity = dpoint.wind_density
-
-                logging.debug(str(posix_date) + "," + str(ch_value) + "," + str(windspeed) + "," + str(winddensity))
-
-                dataline = str(posix_date) + "," + str(ch_value) + "," + str(windspeed) + "," + str(winddensity)
-                f.write(str(dataline) + '\n')
-    except:
-        logging.debug("Save of datapoint values ended on an except??")
-        f.close()
+    with open(filename, 'w') as f:
+        for dpoint in datapoint_list:
+            f.write(dpoint.return_values() + '\n')
 
 
 # Save list to CSV - convert posix time in list to UTC
@@ -197,7 +184,8 @@ if __name__ == '__main__':
 
         if dscvr_data == "no_data":
             # Unable to get DISCOVR data
-            datastring = str(nowtime_posix) + "," + str(coverage) + ",0,0,0"
+            # datastring = str(nowtime_posix) + "," + str(coverage) + ",0,0"
+            newdatapoint = dp.DataPoint(nowtime_posix, coverage, 0, 0)
         else:
             # parse new data to the correct format
             # The timestampt is in POSIX format
@@ -216,19 +204,23 @@ if __name__ == '__main__':
                 w_spd = 0
 
             # create the final string to save to the logfile
-            datastring = str(nowtime_posix) + "," + str(coverage) + "," + str(w_spd) + "," + str(w_dens)
+            # datastring = str(nowtime_posix) + "," + str(coverage) + "," + str(w_spd) + "," + str(w_dens)
+            newdatapoint = dp.DataPoint(nowtime_posix, coverage, w_spd, w_dens)
 
         # Append to the datalist
-        datalist.append(datastring)
+        datalist.append(newdatapoint)
 
         # Prune the datalist to be 3 Carrington Rotations long
         datalist = prune_datalist(datalist)
 
         # Save the datalist to file. CReate the display file. Print output to console
+        # for thing in datalist:
+        #     print(thing.return_values())
+
         save_datapoint(datalist, LOGFILE)
         save_datapoint(datalist, "display.csv")
 
-        print(datastring + " " + "(" + get_utc_time() + " UTC)")
+        print(newdatapoint.return_values() + "  (" + get_utc_time() + " UTC)")
 
         # #################################################################################
         # We need to implement the "predicting" algorith to forcast CH HSS impact, and even offer
