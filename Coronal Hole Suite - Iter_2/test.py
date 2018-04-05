@@ -146,16 +146,15 @@ def test_datetime_shift():
     for item in CH_data:
         predict_speed = float(rg_a) + float(rg_b) * float(item.coronal_hole_coverage)
         transittime = forecast.ASTRONOMICAL_UNIT_KM / predict_speed
-        arrivaldate = float(item.launch_date) + float(transittime)
+        futurearrival = float(item.launch_date) + float(transittime)
 
-        prediction = str(arrivaldate) + "," + str(predict_speed)
+        prediction = str(futurearrival) + "," + str(predict_speed)
 
         prediction_array.append(prediction)
 
     with open ("prediction.csv", 'w') as w:
         for item in prediction_array:
             w.write(str(item) + '\n')
-
 
 
 test_datetime_shift()

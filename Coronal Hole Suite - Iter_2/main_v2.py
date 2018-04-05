@@ -5,6 +5,7 @@ import forecast
 import urllib.request
 import time
 import logging
+import datapoint as dp
 
 # setup error logging
 # logging levels in order of severity:
@@ -13,7 +14,7 @@ import logging
 # WARNING
 # ERROR
 # CRITICAL
-errorloglevel = logging.ERROR
+errorloglevel = logging.DEBUG
 logging.basicConfig(filename="errors.log", format='%(asctime)s %(message)s', level=errorloglevel)
 logging.info("Created error log for this session")
 
@@ -24,26 +25,60 @@ CARRINGTON_ROTATION = 655   # hours
 __version__ = '0.8'
 
 # load a CSV file into a list
-def load_data(filename):
-    # returns an array loaded from the logfile. 
+def load_datapoints(filename):
+    # returns an array loaded from the logfile.
+    # list in format posix_date, ch_value, windspeed, winddensity
+    logging.debug("loading datapoints from CSV: " + filename)
+
     returnlist = []
     try:
         with open (filename, 'r') as f:
             for line in f:
                 line = line.strip()  # remove \n from EOL
-                returnlist.append(line)
+                datasplit = line.split(",")
+                posixdate = datasplit[0]
+                ch = datasplit[1]
+                speed = datasplit[2]
+                density = datasplit[3]
+                dataitem = dp.DataPoint(posixdate, ch, speed, density)
+
+                logging.debug(posixdate + " " + ch + " " + speed + " " + density)
+
+                returnlist.append(dataitem)
     except:
         print("No logfile. Starting from scratch")
     return returnlist
 
 # Save a list ot a CSV data file
-def save_data(datalist, filename):
+def save_csv(csvlist, filename):
     # Save a list to a disc file
+    # list in format posix_date, ch_value, windspeed, winddensity
     with open (filename, 'w') as w:
-        for item in datalist:
+        for item in csvlist:
             w.write(str(item) + '\n')
 
-# Save list to CSV - conver posix time in list to UTC
+# save datapoint list
+def save_datapoint(datapoint_list, filename):
+    # list in format posix_date, ch_value, windspeed, winddensity
+    logging.debug("SAVING datapoint values to file: " + filename)
+    try:
+        with open(filename, 'w') as f:
+            for dpoint in datapoint_list:
+                posix_date = dpoint.posix_date
+                ch_value = dpoint.coronal_hole_coverage
+                windspeed = dpoint.wind_speed
+                winddensity = dpoint.wind_density
+
+                logging.debug(str(posix_date) + "," + str(ch_value) + "," + str(windspeed) + "," + str(winddensity))
+
+                dataline = str(posix_date) + "," + str(ch_value) + "," + str(windspeed) + "," + str(winddensity)
+                f.write(str(dataline) + '\n')
+    except:
+        logging.debug("Save of datapoint values ended on an except??")
+        f.close()
+
+
+# Save list to CSV - convert posix time in list to UTC
 def save_display_file(datalist):
     returndata = []
 
@@ -105,10 +140,10 @@ print("http://swe.uni-graz.at/index.php/services/solar-wind-forecast")
 print("Code Implementation (c) 2018, Vaughn Malkin\n\n")
 if __name__ == '__main__':
     # load up the main datalist
-    datalist = load_data(LOGFILE)
+    datalist = load_datapoints(LOGFILE)
     
     # make a oneoff backup at loadtime. 
-    save_data(datalist, 'log.backup')
+    save_datapoint(datalist, 'log.backup')
 
     while True:
         # open an image
@@ -177,7 +212,7 @@ if __name__ == '__main__':
 
             # High wind speeds may be due to CME and not teh High Speed Stream
             # set the wind speed value to NUL of this is the case.
-            if w_spd >= WIND_SPEED_THRESHOLD:
+            if (w_spd) >= WIND_SPEED_THRESHOLD:
                 w_spd = 0
 
             # create the final string to save to the logfile
@@ -190,15 +225,16 @@ if __name__ == '__main__':
         datalist = prune_datalist(datalist)
 
         # Save the datalist to file. CReate the display file. Print output to console
-        save_data(datalist, LOGFILE)
-        save_display_file(datalist)
+        save_datapoint(datalist, LOGFILE)
+        save_datapoint(datalist, "display.csv")
+
         print(datastring + " " + "(" + get_utc_time() + " UTC)")
 
         # #################################################################################
         # We need to implement the "predicting" algorith to forcast CH HSS impact, and even offer
         # possible future carrington rotations
         # #################################################################################
-        # forecast.calculate_forecast(datalist)
+        forecast.calculate_forecast(datalist)
 
         # Pause for an hour
         time.sleep(3600)

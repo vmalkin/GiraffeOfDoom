@@ -8,11 +8,11 @@
 
 class DataPoint:
     def __init__(self, posix_date, coronal_hole_coverage, wind_speed, wind_density):
-        self.ASTRONOMICAL_UNIT_KM = 149597900
-        self.posix_date = posix_date
-        self.coronal_hole_coverage = coronal_hole_coverage
-        self.wind_speed = wind_speed
-        self.wind_density = wind_density
+        self.ASTRONOMICAL_UNIT_KM = float(149597900)
+        self.posix_date = float(posix_date)
+        self.coronal_hole_coverage = float(coronal_hole_coverage)
+        self.wind_speed = float(wind_speed)
+        self.wind_density = float(wind_density)
 
         # A datapoint can also calculate the corrected launchtime of the current wind data, knowing the speed
         # and the size of an astronomical unit
@@ -24,7 +24,9 @@ class DataPoint:
             reportedspeed = 400
         else:
             reportedspeed = self.wind_speed
-
         travel_time_sec = float(self.ASTRONOMICAL_UNIT_KM) / float(reportedspeed)
-
         return travel_time_sec
+
+    def print_values(self):
+        values = str(self.posix_date) + " " + str(self.coronal_hole_coverage) + " " + str(self.wind_speed)  + " " + str(self.wind_density) + " " + str(self.launch_date)
+        print(values)

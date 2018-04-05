@@ -2,26 +2,7 @@
 ASTRONOMICAL_UNIT_KM = 149597900
 import math
 
-
-# # calculate travel time over 1 AU
-# def travel_time(windspeed):
-#     if windspeed == 0:
-#         windspeed = 400
-#
-#     travel_time_sec = float(ASTRONOMICAL_UNIT_KM) / float(windspeed)
-#     return travel_time_sec
-
-
-# # generate the launchdate
-# # The nowdate should be POSIX
-# def launchdate(posix_date, traveltimeseconds):
-#     posix_launchdate = float(posix_date) - float(traveltimeseconds)
-#     return posix_launchdate
-
-
 # Parse CH coverage the matches the launchdate - return the CH coverage
-# that matches.
-# CH Array shold be in POSIX time laready at this point. 
 def CH_match_launchdate(ch_array, posix_launchdate):
     # What we want to do is find the timestamp in the CH array that is the
     # closest to the supplied launchdate. 
@@ -29,24 +10,19 @@ def CH_match_launchdate(ch_array, posix_launchdate):
     delta_smallest = 1000000000
     return_index = -1
 
-    for i in range(0, len(ch_array)):
-        datasplit = ch_array[i].split(",")
-        chdate = datasplit[0]
+    for i in range(0, len(ch_array)-1):
+        chdate = ch_array[i].posix_date
 
         # test the date to see if it is closest
         delta_check = math.sqrt(math.pow((float(posix_launchdate) - float(chdate)),2))
         if delta_check < delta_smallest and delta_check < 3600:
             delta_smallest = delta_check
             return_index = i
-    
-    returnsplit = ch_array[return_index].split(",")
-    
-    # the CH coverage should be the second value in the split
-    ch_coverage = returnsplit[1]
-    
+
+    ch_coverage= ch_array[return_index].coronal_hole_coverage
+
     return ch_coverage
 
-# Store the Launchdate, windspeed, CH coverage
 
 # ################################################################
 # Functions required for the Linear Regression 
@@ -170,28 +146,49 @@ def regression_analysis(CH_data):
     return regression_parameters
 
 
-# ################################################################
-# C A L L   T H I S   W R A P P E R   F U N C T I O N  
-# ################################################################
+# # ################################################################
+# # C A L L   T H I S   W R A P P E R   F U N C T I O N
+# # ################################################################
 def calculate_forecast(CH_data):
-    # Match the current CH reading with the earlier launchdate, based on CH wind speed.
-    # Build a new list of these corrected values.
-    # timevalues are in POSIX format
-    xy_data = []
-    
+    # load in the test data
+    # parse the data to find the CH date that matches the speed of solar wind
+    revised_ch_data = []
+
+    for data_p in CH_data:
+        # Each datapoint can report it's speed, and the launch date of the space weather
+        # we need to find the CH coverage for the date in question.
+
+        # whats was the actual CH coverage on that day?
+        reviseCHcover = CH_match_launchdate(CH_data, str(data_p.launch_date))
+
+        # Collate the revised launchdate with the actual speed of the solar wind
+        # append to revised datalist
+        # newdata = chdate + "," + current_ch + "," + str(launchtime) + "," + reviseCHcover + "," + windspeed
+        newdata = str(data_p.launch_date) + "," + reviseCHcover + "," + data_p.wind_speed
+        revised_ch_data.append(newdata)
+
+
+    # This will create the parameters for a linear model:
+    # y = rg_a + rg_b * x
+    parameters = regression_analysis(revised_ch_data)
+    rg_a = parameters[0]
+    rg_b = parameters[1]
+    pearson = parameters[2]
+
+    # the array that will hold prediction values
+    prediction_array = []
+
+
     for item in CH_data:
-        datasplit = item.split(",")
-        chdate = datasplit[0]
-        windspeed = datasplit[1]
-        winddensity = datasplit[2]
-        transittime = travel_time(windspeed)
-        launchtime = launchdate(chdate, transittime)
-        reviseCHcover = CH_match_launchdate(CH_data, launchdate)
-        
-        newdata = launchtime + "," + reviseCHcover + "," + windspeed
-        xy_data.append(newdata)
+        predict_speed = float(rg_a) + float(rg_b) * float(item.coronal_hole_coverage)
+        transittime = ASTRONOMICAL_UNIT_KM / predict_speed
+        futurearrival = float(item.launch_date) + float(transittime)
 
-    regression_analysis(xy_data)
+        prediction = str(futurearrival) + "," + str(predict_speed)
 
-    
+        prediction_array.append(prediction)
+
+    with open ("prediction.csv", 'w') as w:
+        for item in prediction_array:
+            w.write(str(item) + '\n')
     
