@@ -7,6 +7,8 @@ import time
 import logging
 import datapoint as dp
 import os
+from decimal import Decimal, getcontext
+
 
 # setup error logging
 # logging levels in order of severity:
@@ -66,10 +68,10 @@ def save_datapoint(datapoint_list, filename):
 
 
 # Save list to CSV - convert posix time in list to UTC
-def save_display_file(datalist):
+def save_display_file(posix_datalist, filename):
     returndata = []
 
-    for item in datalist:
+    for item in posix_datalist:
         datasplit = item.split(",")
         timestamp = datasplit[0]
         # utctime = datetime.datetime.fromtimestamp(int(float(timestamp))).strftime('%Y-%m-%d %H:%M:%S')
@@ -79,7 +81,7 @@ def save_display_file(datalist):
 
         returndata.append(dataitem)
 
-    with open (DISPLAYFILE, 'w') as w:
+    with open (filename, 'w') as w:
         for item in returndata:
             w.write(str(item) + '\n')
 
@@ -133,49 +135,46 @@ if __name__ == '__main__':
     save_datapoint(datalist, 'log.backup')
 
     while True:
-        coverage = 0
-        w_dens = 0
-        w_spd = 0
-        
         # open an image
         # Grab the SWPS Syntopic Map for Local Display
         save_image_from_url('https://services.swpc.noaa.gov/images/synoptic-map.jpg', 'syntopic.jpg')
 
         try:
             save_image_from_url("https://sdo.gsfc.nasa.gov/assets/img/latest/latest_512_0193.jpg", "sun.jpg")
-
+    
             img = solar.image_read('sun.jpg')
-
+    
             #current UTC time
             # nowtime_utc = get_utc_time()
             nowtime_posix = get_posix_time()
-
+    
             # when saved in paint, a 16bit bmp seems ok
             mask1 = solar.make_mask('mask_full.bmp')
             mask2 = solar.make_mask('mask1.bmp')
-
+    
         #        # print mask parameters for debugging purposes.
         #        print(str(mask1.dtype) + " " + str(mask1.shape))
         #        print(str(mask2.dtype) + " " + str(mask2.shape))
-
+    
             # Process the image to get B+W coronal hole image
             outputimg = solar.greyscale_img(img)
             outputimg = solar.threshold_img(outputimg)
             outputimg = solar.erode_dilate_img(outputimg)
-
+    
             # save out the masked images
-
+    
             # Full disk image
             outputimg1 = solar.mask_img(outputimg, mask1)
             solar.add_img_logo(outputimg1)
             solar.image_write('disc_full.bmp', outputimg1)
-
+    
             # Meridian Segment
             outputimg2 = solar.mask_img(outputimg, mask2)
             solar.image_write('disc_segment.bmp', outputimg2)
-
+    
             # Calculate the area occupied by coronal holes
             coverage = solar.count_pixels(outputimg2, mask2)
+                
         except:
             logging.error("Unable to process SDO image")
 
@@ -224,14 +223,27 @@ if __name__ == '__main__':
         save_datapoint(datalist, LOGFILE)
         save_datapoint(datalist, "display.csv")
 
-        print(newdatapoint.return_values() + "  (" + get_utc_time() + " UTC)")
+        print(newdatapoint.return_values() + "  (" + newdatapoint.posix2utc() + " UTC)")
 
         # #################################################################################
         # We need to implement the "predicting" algorith to forcast CH HSS impact, and even offer
         # possible future carrington rotations
         # #################################################################################
-        forecast.calculate_forecast(datalist)
+
+        # determine if we have enough data to begin a regression analysis. seeing as transit time is
+        # approx 4 days, lets choose 8 days before we start predicting...
+        WAITPERIOD = 86400 * 8
+        startdate = datalist[0].posix_date
+        nowdate = datalist[len(datalist) - 1].posix_date
+        elapsedtime = nowdate - startdate
+        timeleft = (WAITPERIOD - elapsedtime) / (60*60*24)
+
+        if elapsedtime >= WAITPERIOD:
+            forecast.calculate_forecast(datalist)
+        else:
+            # getcontext().prec = 4
+            # timeleft = Decimal(timeleft)
+            print("Insufficient time has passed to begin forecasting. " + str(timeleft) + " days remaining")
 
         # Pause for an hour
         time.sleep(3600)
-   

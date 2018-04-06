@@ -1,6 +1,13 @@
 # This will contain the forecasting algorithm
 ASTRONOMICAL_UNIT_KM = 149597900
 import math
+import time
+
+# convert the internal posx_date to UTC format
+def posix2utc(posix_date):
+    utctime = time.gmtime(int(float(posix_date)))
+    utctime = time.strftime('%Y-%m-%d %H:%M:%S', utctime)
+    return utctime
 
 # Parse CH coverage the matches the launchdate - return the CH coverage
 def CH_match_launchdate(ch_array, posix_launchdate):
@@ -18,7 +25,9 @@ def CH_match_launchdate(ch_array, posix_launchdate):
         if delta_check < delta_smallest and delta_check < 3600:
             delta_smallest = delta_check
             return_index = i
-
+    
+    # Using the result for the closest date match, grab the index from that date 
+    # and return the coverage figure
     ch_coverage= ch_array[return_index].coronal_hole_coverage
 
     return ch_coverage
@@ -164,7 +173,7 @@ def calculate_forecast(CH_data):
         # Collate the revised launchdate with the actual speed of the solar wind
         # append to revised datalist
         # newdata = chdate + "," + current_ch + "," + str(launchtime) + "," + reviseCHcover + "," + windspeed
-        newdata = str(data_p.launch_date) + "," + reviseCHcover + "," + data_p.wind_speed
+        newdata = str(data_p.launch_date) + "," + str(reviseCHcover) + "," + str(data_p.wind_speed)
         revised_ch_data.append(newdata)
 
 
@@ -174,16 +183,17 @@ def calculate_forecast(CH_data):
     rg_a = parameters[0]
     rg_b = parameters[1]
     pearson = parameters[2]
+    print("Linear approximation is: y = " + str(rg_a) + " + " + str(rg_b) + " * x     R = " + str(pearson))
 
     # the array that will hold prediction values
     prediction_array = []
 
 
     for item in CH_data:
-        predict_speed = float(rg_a) + float(rg_b) * float(item.coronal_hole_coverage)
+        predict_speed = float(rg_a) + (float(rg_b) * float(item.coronal_hole_coverage))
         transittime = ASTRONOMICAL_UNIT_KM / predict_speed
         futurearrival = float(item.launch_date) + float(transittime)
-
+        futurearrival = posix2utc(futurearrival)
         prediction = str(futurearrival) + "," + str(predict_speed)
 
         prediction_array.append(prediction)
@@ -191,4 +201,5 @@ def calculate_forecast(CH_data):
     with open ("prediction.csv", 'w') as w:
         for item in prediction_array:
             w.write(str(item) + '\n')
+
     

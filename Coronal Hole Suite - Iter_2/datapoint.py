@@ -4,7 +4,7 @@
 # coronal_hole_coverage - the coverage at the date (a percentage between 0-1)
 # wind_speed - windspeed at the time of posix_date as recorded by DISCOVR (km/s)
 # wind_density - wind density at the time of posix_date as recorded by DISCOVR (particles/m^3)
-
+import time
 
 class DataPoint:
     def __init__(self, posix_date, coronal_hole_coverage, wind_speed, wind_density):
@@ -27,6 +27,14 @@ class DataPoint:
         travel_time_sec = float(self.ASTRONOMICAL_UNIT_KM) / float(reportedspeed)
         return travel_time_sec
 
+    # allows the object to return a string of it's own parameters
+    # handy for quikcly building lists of object propertiezs
     def return_values(self):
         values = str(self.posix_date) + "," + str(self.coronal_hole_coverage) + "," + str(self.wind_speed)  + "," + str(self.wind_density)
         return values
+
+    # convert the internal posx_date to UTC format
+    def posix2utc(self):
+        utctime = time.gmtime(int(float(self.posix_date)))
+        utctime = time.strftime('%Y-%m-%d %H:%M:%S', utctime)
+        return utctime
