@@ -109,10 +109,10 @@ def get_posix_time():
     return time_now
 
 def save_image_from_url(imageurl, filename):
-    logging.debug("starting image from URL download")
+    logging.debug("starting image from URL download: " + filename)
     try:
         request = urllib.request.Request(imageurl, headers={'User-Agent': 'Mozilla/5.0'})
-        response = urllib.request.urlopen(request)
+        response = urllib.request.urlopen(request, timeout = 10)
         with open(filename, 'wb') as f:
             f.write(response.read())
     except urllib.request.HTTPError:
@@ -137,7 +137,10 @@ if __name__ == '__main__':
     while True:
         # open an image
         # Grab the SWPS Syntopic Map for Local Display
-        save_image_from_url('https://services.swpc.noaa.gov/images/synoptic-map.jpg', 'syntopic.jpg')
+        try:
+            save_image_from_url('https://services.swpc.noaa.gov/images/synoptic-map.jpg', 'syntopic.jpg')
+        except:
+            logging.debug("Unable to get syntopic map from NOAA")
 
         try:
             save_image_from_url("https://sdo.gsfc.nasa.gov/assets/img/latest/latest_512_0193.jpg", "sun.jpg")
@@ -177,6 +180,7 @@ if __name__ == '__main__':
                 
         except:
             logging.error("Unable to process SDO image")
+            coverage = -1
 
         # #################################################################################
         # Get the DISCOVR solar wind data (speed and density)
@@ -243,7 +247,7 @@ if __name__ == '__main__':
         else:
             # getcontext().prec = 4
             # timeleft = Decimal(timeleft)
-            print("Insufficient time has passed to begin forecasting. " + str(timeleft) + " days remaining")
+            print("Insufficient time has passed to begin forecasting. " + str(timeleft)[:5] + " days remaining")
 
         # Pause for an hour
         time.sleep(3600)
