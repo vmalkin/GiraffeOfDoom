@@ -16,3 +16,98 @@
 2018-04-06 15:04:52,245 http://services.swpc.noaa.gov:80 "GET /products/solar-wind/plasma-2-hour.json HTTP/1.1" 200 None
 2018-04-06 15:04:52,245 SAVING datapoint values to file: log.csv
 2018-04-06 15:04:52,260 SAVING datapoint values to file: display.csv
+2018-04-06 16:04:57,469 Created error log for this session
+2018-04-06 16:04:57,469 loading datapoints from CSV: log.csv
+2018-04-06 16:04:57,470 SAVING datapoint values to file: log.backup
+2018-04-06 16:04:57,471 starting image from URL download: syntopic.jpg
+2018-04-06 16:04:59,950 starting image from URL download: sun.jpg
+2018-04-06 16:05:01,943 Starting new HTTP connection (1): services.swpc.noaa.gov
+2018-04-06 16:05:02,564 http://services.swpc.noaa.gov:80 "GET /products/solar-wind/plasma-2-hour.json HTTP/1.1" 200 None
+2018-04-06 16:05:02,570 SAVING datapoint values to file: log.csv
+2018-04-06 16:05:02,572 SAVING datapoint values to file: display.csv
+2018-04-06 16:50:24,311 Created error log for this session
+2018-04-06 16:50:24,311 loading datapoints from CSV: log.csv
+2018-04-06 16:50:24,312 SAVING datapoint values to file: log.backup
+2018-04-06 16:50:24,314 starting image from URL download: syntopic.jpg
+2018-04-06 16:50:26,532 starting image from URL download: sun.jpg
+2018-04-06 16:50:28,173 Starting new HTTP connection (1): services.swpc.noaa.gov
+2018-04-06 16:50:28,636 http://services.swpc.noaa.gov:80 "GET /products/solar-wind/plasma-2-hour.json HTTP/1.1" 200 None
+2018-04-06 16:50:28,643 SAVING datapoint values to file: log.csv
+2018-04-06 16:50:28,644 SAVING datapoint values to file: display.csv
+2018-04-06 16:54:48,050 Created error log for this session
+2018-04-06 16:54:48,060 loading datapoints from CSV: log.csv
+2018-04-06 16:54:48,060 SAVING datapoint values to file: log.backup
+2018-04-06 16:54:48,061 starting image from URL download: syntopic.jpg
+2018-04-06 16:54:50,527 starting image from URL download: sun.jpg
+2018-04-06 16:54:51,927 Starting new HTTP connection (1): services.swpc.noaa.gov
+2018-04-06 16:54:52,507 http://services.swpc.noaa.gov:80 "GET /products/solar-wind/plasma-2-hour.json HTTP/1.1" 200 None
+2018-04-06 16:54:52,513 SAVING datapoint values to file: log.csv
+2018-04-06 16:54:52,515 SAVING datapoint values to file: display.csv
+2018-04-06 17:05:02,499 starting image from URL download: syntopic.jpg
+2018-04-06 17:05:04,364 starting image from URL download: sun.jpg
+2018-04-06 17:05:06,102 Starting new HTTP connection (1): services.swpc.noaa.gov
+2018-04-06 17:05:06,458 http://services.swpc.noaa.gov:80 "GET /products/solar-wind/plasma-2-hour.json HTTP/1.1" 200 None
+2018-04-06 17:05:06,462 SAVING datapoint values to file: log.csv
+2018-04-06 17:05:06,463 SAVING datapoint values to file: display.csv
+2018-04-06 20:25:24,400 Created error log for this session
+2018-04-06 20:25:24,400 loading datapoints from CSV: log.csv
+2018-04-06 20:25:24,401 SAVING datapoint values to file: log.backup
+2018-04-06 20:25:24,402 starting image from URL download: syntopic.jpg
+2018-04-06 20:25:26,456 starting image from URL download: sun.jpg
+2018-04-06 20:25:27,858 Starting new HTTP connection (1): services.swpc.noaa.gov
+2018-04-06 20:25:28,495 http://services.swpc.noaa.gov:80 "GET /products/solar-wind/plasma-2-hour.json HTTP/1.1" 200 None
+2018-04-06 20:25:28,502 SAVING datapoint values to file: log.csv
+2018-04-06 20:25:28,503 SAVING datapoint values to file: display.csv
+2018-04-07 12:11:15,073 Created error log for this session
+2018-04-07 12:11:15,073 loading datapoints from CSV: log.csv
+2018-04-07 12:11:15,074 SAVING datapoint values to file: log.backup
+2018-04-07 12:11:15,075 starting image from URL download: syntopic.jpg
+2018-04-07 12:11:17,227 starting image from URL download: sun.jpg
+2018-04-07 12:11:18,632 Starting new HTTP connection (1): services.swpc.noaa.gov
+2018-04-07 12:11:19,105 http://services.swpc.noaa.gov:80 "GET /products/solar-wind/plasma-2-hour.json HTTP/1.1" 200 None
+2018-04-07 12:11:19,111 SAVING datapoint values to file: log.csv
+2018-04-07 12:11:19,112 SAVING datapoint values to file: display.csv
+2018-04-07 13:39:31,992 Created error log for this session
+2018-04-07 13:39:31,993 loading datapoints from CSV: log.csv
+2018-04-07 13:39:31,994 SAVING datapoint values to file: log.backup
+2018-04-07 13:39:31,996 starting image from URL download: syntopic.jpg
+2018-04-07 13:39:33,849 starting image from URL download: sun.jpg
+2018-04-07 13:39:35,255 Starting new HTTP connection (1): services.swpc.noaa.gov
+2018-04-07 13:39:35,722 http://services.swpc.noaa.gov:80 "GET /products/solar-wind/plasma-2-hour.json HTTP/1.1" 200 None
+2018-04-07 13:39:35,729 SAVING datapoint values to file: log.csv
+2018-04-07 13:39:35,730 SAVING datapoint values to file: display.csv
+2018-04-07 13:40:16,405 Created error log for this session
+2018-04-07 13:40:16,405 loading datapoints from CSV: log.csv
+2018-04-07 13:40:16,406 SAVING datapoint values to file: log.backup
+2018-04-07 13:40:16,408 starting image from URL download: syntopic.jpg
+2018-04-07 13:40:17,787 starting image from URL download: sun.jpg
+2018-04-07 13:40:19,255 Starting new HTTP connection (1): services.swpc.noaa.gov
+2018-04-07 13:40:19,858 http://services.swpc.noaa.gov:80 "GET /products/solar-wind/plasma-2-hour.json HTTP/1.1" 200 None
+2018-04-07 13:40:19,864 SAVING datapoint values to file: log.csv
+2018-04-07 13:40:19,866 SAVING datapoint values to file: display.csv
+2018-04-07 13:46:44,144 Created error log for this session
+2018-04-07 13:46:44,145 loading datapoints from CSV: log.csv
+2018-04-07 14:40:19,809 starting image from URL download: syntopic.jpg
+2018-04-07 14:40:21,769 starting image from URL download: sun.jpg
+2018-04-07 14:40:23,169 Starting new HTTP connection (1): services.swpc.noaa.gov
+2018-04-07 14:40:23,530 http://services.swpc.noaa.gov:80 "GET /products/solar-wind/plasma-2-hour.json HTTP/1.1" 200 None
+2018-04-07 14:40:23,534 SAVING datapoint values to file: log.csv
+2018-04-07 14:40:23,536 SAVING datapoint values to file: display.csv
+2018-04-07 14:58:28,735 Created error log for this session
+2018-04-07 14:58:28,735 loading datapoints from CSV: log.csv
+2018-04-07 15:28:53,742 Created error log for this session
+2018-04-07 15:28:53,743 loading datapoints from CSV: log.csv
+2018-04-07 15:29:17,662 Created error log for this session
+2018-04-07 15:29:17,662 loading datapoints from CSV: log.csv
+2018-04-07 15:30:08,520 Created error log for this session
+2018-04-07 15:30:08,521 loading datapoints from CSV: log.csv
+2018-04-07 15:30:26,056 Created error log for this session
+2018-04-07 15:30:26,057 loading datapoints from CSV: log.csv
+2018-04-07 15:38:03,030 Created error log for this session
+2018-04-07 15:38:03,031 loading datapoints from CSV: log.csv
+2018-04-07 16:02:55,523 Created error log for this session
+2018-04-07 16:02:55,523 loading datapoints from CSV: log.csv
+2018-04-07 16:03:23,343 Created error log for this session
+2018-04-07 16:03:23,343 loading datapoints from CSV: log.csv
+2018-04-07 16:07:45,623 Created error log for this session
+2018-04-07 16:07:45,623 loading datapoints from CSV: log.csv

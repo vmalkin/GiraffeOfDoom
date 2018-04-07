@@ -17,11 +17,12 @@ def CH_match_launchdate(ch_array, posix_launchdate):
     delta_smallest = 1000000000
     return_index = -1
 
-    for i in range(0, len(ch_array)-1):
-        chdate = ch_array[i].posix_date
+    for i in range(0, len(ch_array)):
+        datasplit = ch_array[i].split(",")
+        check_date = datasplit[0]
 
         # test the date to see if it is closest
-        delta_check = math.sqrt(math.pow((float(posix_launchdate) - float(chdate)),2))
+        delta_check = math.sqrt(math.pow((float(posix_launchdate) - float(check_date)),2))
         if delta_check < delta_smallest and delta_check < 3600:
             delta_smallest = delta_check
             return_index = i
@@ -177,29 +178,29 @@ def calculate_forecast(CH_data):
         revised_ch_data.append(newdata)
 
 
-    # This will create the parameters for a linear model:
-    # y = rg_a + rg_b * x
-    parameters = regression_analysis(revised_ch_data)
-    rg_a = parameters[0]
-    rg_b = parameters[1]
-    pearson = parameters[2]
-    print("Linear approximation is: y = " + str(rg_a) + " + " + str(rg_b) + " * x     R = " + str(pearson))
-
-    # the array that will hold prediction values
-    prediction_array = []
-
-
-    for item in CH_data:
-        predict_speed = float(rg_a) + (float(rg_b) * float(item.coronal_hole_coverage))
-        transittime = ASTRONOMICAL_UNIT_KM / predict_speed
-        futurearrival = float(item.launch_date) + float(transittime)
-        futurearrival = posix2utc(futurearrival)
-        prediction = str(futurearrival) + "," + str(predict_speed)
-
-        prediction_array.append(prediction)
-
-    with open ("prediction.csv", 'w') as w:
-        for item in prediction_array:
-            w.write(str(item) + '\n')
+    # # This will create the parameters for a linear model:
+    # # y = rg_a + rg_b * x
+    # parameters = regression_analysis(revised_ch_data)
+    # rg_a = parameters[0]
+    # rg_b = parameters[1]
+    # pearson = parameters[2]
+    # print("Linear approximation is: y = " + str(rg_a) + " + " + str(rg_b) + " * x     R = " + str(pearson))
+    #
+    # # the array that will hold prediction values
+    # prediction_array = []
+    #
+    #
+    # for item in CH_data:
+    #     predict_speed = float(rg_a) + (float(rg_b) * float(item.coronal_hole_coverage))
+    #     transittime = ASTRONOMICAL_UNIT_KM / predict_speed
+    #     futurearrival = float(item.launch_date) + float(transittime)
+    #     futurearrival = posix2utc(futurearrival)
+    #     prediction = str(futurearrival) + "," + str(predict_speed)
+    #
+    #     prediction_array.append(prediction)
+    #
+    # with open ("prediction.csv", 'w') as w:
+    #     for item in prediction_array:
+    #         w.write(str(item) + '\n')
 
     

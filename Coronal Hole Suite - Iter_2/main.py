@@ -236,7 +236,7 @@ if __name__ == '__main__':
 
         # determine if we have enough data to begin a regression analysis. seeing as transit time is
         # approx 4 days, lets choose 8 days before we start predicting...
-        WAITPERIOD = 86400 * 8
+        WAITPERIOD = 86400 * 5
         startdate = datalist[0].posix_date
         nowdate = datalist[len(datalist) - 1].posix_date
         elapsedtime = nowdate - startdate
