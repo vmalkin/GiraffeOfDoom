@@ -136,7 +136,7 @@ var heightthing = 320;
 
 		Highcharts.setOptions({})
 		
-			$.get('log.csv', function(csv) {
+			$.get('display.csv', function(csv) {
 			    $('#wind').highcharts({
 			        chart: {
 			        	//type: 'line',
@@ -204,7 +204,7 @@ var heightthing = 320;
 
 		Highcharts.setOptions({})
 		
-			$.get('log.csv', function(csv) {
+			$.get('display.csv', function(csv) {
 			    $('#density').highcharts({
 			        chart: {
 			        	//type: 'line',
@@ -250,6 +250,65 @@ var heightthing = 320;
 					subtitle:
 					{
 						text: 'particles/m^3'
+					},
+					yAxis: 
+					{
+					},
+					xAxis: 
+					{
+						tickInterval: 60,
+						gridLineWidth: 1,
+						gridLineColor: "#D8D8D8",
+						title: 
+						{
+							text: 'Time, UTC'
+						}
+					}
+			    });
+			});
+			
+					Highcharts.setOptions({})
+		
+			$.get('prediction.csv', function(csv) {
+			    $('#density').highcharts({
+			        chart: {
+			        	//type: 'line',
+						zoomType:'x',
+						height: heightthing,
+						spacingLeft: 10,
+						spacingRight: 10
+			        },
+					legend: {
+						enabled: false
+					},
+					plotOptions: {
+						series: {
+							marker: {
+								enabled: false
+							}
+						}
+					},
+			        data: 
+					{
+			            csv: csv,
+						//startColumn: 0,
+						//endColumn: 1,
+			        },
+					series:[
+						{
+							visible: true
+						}
+					],
+					tooltip: {
+						enabled: true
+					},
+			        title: 
+					{
+						text: 'Solar Wind Prediction'
+					},
+					subtitle:
+					{
+						text: 'km/s'
 					},
 					yAxis: 
 					{
