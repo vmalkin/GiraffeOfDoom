@@ -10,28 +10,18 @@ def posix2utc(posix_date):
     return utctime
 
 # Parse CH coverage the matches the launchdate - return the CH coverage
-def CH_match_launchdate(ch_array, posix_launchdate):
-    # What we want to do is find the timestamp in the CH array that is the
-    # closest to the supplied launchdate. 
-    # data is of format posixtime, ch_coverage, wind_speed, wind_density
-    delta_smallest = 1000000000
-    return_index = -1
+# CHData uses a datapoint object to store it's information
+def CH_match_launchdate(CHData, launchdate):
+    chcover = 0
+    for i in range(1, len(CHData)):
+        topvalue = int(CHData[i].posix_date)
+        lowervalue = int(CHData[i - 1].posix_date)
+        launchdate = int(launchdate)
 
-    for i in range(0, len(ch_array)):
-        datasplit = ch_array[i].split(",")
-        check_date = datasplit[0]
+        if launchdate <= topvalue and  launchdate > lowervalue:
+            chcover = CHData[i].coronal_hole_coverage
 
-        # test the date to see if it is closest
-        delta_check = math.sqrt(math.pow((float(posix_launchdate) - float(check_date)),2))
-        if delta_check < delta_smallest and delta_check < 3600:
-            delta_smallest = delta_check
-            return_index = i
-    
-    # Using the result for the closest date match, grab the index from that date 
-    # and return the coverage figure
-    ch_coverage= ch_array[return_index].coronal_hole_coverage
-
-    return ch_coverage
+    return chcover
 
 
 # ################################################################
