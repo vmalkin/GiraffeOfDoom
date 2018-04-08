@@ -1,19 +1,27 @@
 import datapoint
 import forecast as fc
 import main
+
+
 CH_data = main.load_datapoints("log.csv")
 
 
-# load in the test data
-# parse the data to find the CH date that matches the speed of solar wind
+# This part corresponds to forecast.calculate_forecast()
+# the revised data list is NOT a list of objects, but data.
 revised_ch_data = []
 
-# get the launchdate for eat datapoints windspeed
+# get the launchdate for each datapoints windspeed
 for data_p in CH_data:
-    appenddata = str((data_p.launch_date)) + "," + str(data_p.wind_speed)
+    appenddata = []
+    appenddata.append(data_p.launch_date)
+    appenddata.append(data_p.wind_speed)
     revised_ch_data.append(appenddata)
 
-# Get the CH coveraeg that correspsonds to the launch date
+## Sort the list by launchdate - there will be some shifting of the datapoints.
+sorted = []
+for i in range(0, len(revised_ch_data)):
+    
+    
 
 # Save a list to a disc file
 csvlist = revised_ch_data
