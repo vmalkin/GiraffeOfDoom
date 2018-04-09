@@ -55,7 +55,7 @@
 		<!-- <div id="hss" style="width: 100%; height: 600px; margin: 0 auto"></div> -->
 		<div class = "row">
 			<div class = "col-md-12">
-				<div id="prediction"></div>
+				<div id="ch"></div>
 				<div id="wind"></div>
 				<div id="density"></div>
 			</div
@@ -63,11 +63,12 @@
 
 <script type="text/javascript">
 var heightthing = 320;
-			
 		$(document).ready(function() {
-			Highcharts.setOptions({})
-			$.get('prediction.csv', function(csv) {
-			    $('#prediction').highcharts({
+
+		Highcharts.setOptions({})
+		
+			$.get('display.csv', function(csv) {
+			    $('#ch').highcharts({
 			        chart: {
 			        	//type: 'line',
 						zoomType:'x',
@@ -77,13 +78,12 @@ var heightthing = 320;
 			        },
 					legend: {
 						enabled: false
-					},
+					},				
 					plotOptions: {
 						series: {
 							marker: {
 								enabled: false
-							},
-						color: '#ff0000'
+							}
 						}
 					},
 			        data: 
@@ -94,19 +94,26 @@ var heightthing = 320;
 			        },
 					series:[
 						{
-							visible: true
+							visible: true,
+						},
+						{
+							visible: false
+						},
+						{
+							visible: false
 						}
 					],
+					
 					tooltip: {
 						enabled: true
 					},
 			        title: 
 					{
-						text: 'Predicted - solar wind speed'
+						text: 'Coronal Hole Meridian Coverage'
 					},
 					subtitle:
 					{
-						text: 'km/s'
+						text: '0.0 - 1.0'
 					},
 					yAxis: 
 					{
@@ -125,10 +132,10 @@ var heightthing = 320;
 			});
 		});
 
-
 		$(document).ready(function() {
 
 		Highcharts.setOptions({})
+		
 			$.get('display.csv', function(csv) {
 			    $('#wind').highcharts({
 			        chart: {
@@ -170,7 +177,7 @@ var heightthing = 320;
 					},
 			        title: 
 					{
-						text: 'Actual - Solar Wind Speed'
+						text: 'Solar Wind Speed'
 					},
 					subtitle:
 					{
@@ -193,8 +200,8 @@ var heightthing = 320;
 			});
 		});
 
-		
 		$(document).ready(function() {
+
 		Highcharts.setOptions({})
 		
 			$.get('display.csv', function(csv) {
@@ -238,7 +245,7 @@ var heightthing = 320;
 					},
 			        title: 
 					{
-						text: 'Actual - Solar Wind Density'
+						text: 'Solar Wind Density'
 					},
 					subtitle:
 					{
@@ -259,8 +266,66 @@ var heightthing = 320;
 					}
 			    });
 			});
-		});	
-
+			
+					Highcharts.setOptions({})
+		
+			$.get('prediction.csv', function(csv) {
+			    $('#density').highcharts({
+			        chart: {
+			        	//type: 'line',
+						zoomType:'x',
+						height: heightthing,
+						spacingLeft: 10,
+						spacingRight: 10
+			        },
+					legend: {
+						enabled: false
+					},
+					plotOptions: {
+						series: {
+							marker: {
+								enabled: false
+							}
+						}
+					},
+			        data: 
+					{
+			            csv: csv,
+						//startColumn: 0,
+						//endColumn: 1,
+			        },
+					series:[
+						{
+							visible: true
+						}
+					],
+					tooltip: {
+						enabled: true
+					},
+			        title: 
+					{
+						text: 'Solar Wind Prediction'
+					},
+					subtitle:
+					{
+						text: 'km/s'
+					},
+					yAxis: 
+					{
+					},
+					xAxis: 
+					{
+						tickInterval: 60,
+						gridLineWidth: 1,
+						gridLineColor: "#D8D8D8",
+						title: 
+						{
+							text: 'Time, UTC'
+						}
+					}
+			    });
+			});
+		});
 		</script>	
 		<?PHP
 			include "modal_forecast.php";

@@ -7,8 +7,6 @@ import time
 import logging
 import datapoint as dp
 import os
-from decimal import Decimal, getcontext
-
 
 # setup error logging
 # logging levels in order of severity:
@@ -68,19 +66,11 @@ def save_datapoint(datapoint_list, filename):
 
 
 # Save list to CSV - convert posix time in list to UTC
-def save_display_file(posix_datalist, filename):
+def save_display_file(datapoint_list, filename):
     returndata = []
-
-    for item in posix_datalist:
-        datasplit = item.split(",")
-        timestamp = datasplit[0]
-        # utctime = datetime.datetime.fromtimestamp(int(float(timestamp))).strftime('%Y-%m-%d %H:%M:%S')
-        utctime = time.gmtime(int(float(timestamp)))
-        utctime = time.strftime('%Y-%m-%d %H:%M:%S', utctime)
-        dataitem = (utctime) + "," + datasplit[1] + "," + datasplit[2] + "," + datasplit[3]
-
+    for item in datapoint_list:
+        dataitem = str(item.posix2utc()) + "," + str(item.coronal_hole_coverage) + "," + str(item.wind_speed) + "," + str(item.wind_density)
         returndata.append(dataitem)
-
     with open (filename, 'w') as w:
         for item in returndata:
             w.write(str(item) + '\n')
@@ -225,7 +215,7 @@ if __name__ == '__main__':
         #     print(thing.return_values())
 
         save_datapoint(datalist, LOGFILE)
-        save_datapoint(datalist, "display.csv")
+        save_display_file(datalist, "display.csv")
 
         print(newdatapoint.return_values() + "  (" + newdatapoint.posix2utc() + " UTC)")
 
