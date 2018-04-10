@@ -545,3 +545,11 @@
 2018-04-09 22:07:23,864 Starting new HTTP connection (1): services.swpc.noaa.gov
 2018-04-09 22:07:24,484 http://services.swpc.noaa.gov:80 "GET /products/solar-wind/plasma-2-hour.json HTTP/1.1" 200 None
 2018-04-09 22:07:24,490 SAVING datapoint values to file: log.csv
+2018-04-10 12:48:51,425 Created error log for this session
+2018-04-10 12:48:51,425 loading datapoints from CSV: log.csv
+2018-04-10 12:48:51,427 SAVING datapoint values to file: log.backup
+2018-04-10 12:48:51,430 starting image from URL download: syntopic.jpg
+2018-04-10 12:48:53,864 starting image from URL download: sun.jpg
+2018-04-10 12:48:56,914 Starting new HTTP connection (1): services.swpc.noaa.gov
+2018-04-10 12:48:57,283 http://services.swpc.noaa.gov:80 "GET /products/solar-wind/plasma-2-hour.json HTTP/1.1" 200 None
+2018-04-10 12:48:57,299 SAVING datapoint values to file: log.csv

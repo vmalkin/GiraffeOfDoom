@@ -206,6 +206,9 @@ def calculate_forecast(CH_data):
         prediction = str(futurearrival) + "," + str(predict_speed)
         prediction_array.append(prediction)
 
+    with open("prediction.csv", 'w') as w:
+        for item in prediction_array:
+            w.write(str(item) + '\n')
     avg = 0
     for item in CH_data:
         avg = avg + item.wind_speed
@@ -214,6 +217,5 @@ def calculate_forecast(CH_data):
     print("Average Windspeed is " + str(avg_speed)[:6] + "km/s")
     print("Coronal Hole effects will be felt in " + str(delay_days)[:3] + " days")
 
-    with open("prediction.csv", 'w') as w:
-        for item in prediction_array:
-            w.write(str(item) + '\n')
+
+
