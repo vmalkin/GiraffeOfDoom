@@ -7,6 +7,17 @@
 import time
 import datetime
 from decimal import *
+import logging
+import os
+# setup error logging
+# logging levels in order of severity:
+# DEBUG
+# INFO
+# WARNING
+# ERROR
+# CRITICAL
+errorloglevel = logging.DEBUG
+logging.basicConfig(filename="errors.log", format='%(asctime)s %(message)s', level=errorloglevel)
 getcontext().prec = 6
 CARRINGTON_ROTATION = 655   # hours
 
@@ -20,10 +31,14 @@ class DataPoint:
 
         # A datapoint can also calculate the corrected launchtime of the current wind data, knowing the speed
         # and the size of an astronomical unit
-        self.launch_date = float(self.posix_date) - float(self.travel_time())
+        self.launch_date = float(self.posix_date) - float(self._travel_time())
 
+
+    # ##############
+    # M E T H O D S
+    # ##############
     # calculate travel time over 1 AU
-    def travel_time(self):
+    def _travel_time(self):
         if self.wind_speed == 0:
             reportedspeed = 400
         else:
@@ -37,16 +52,22 @@ class DataPoint:
         values = str(self.posix_date) + "," + str(self.coronal_hole_coverage) + "," + str(self.wind_speed)  + "," + str(self.wind_density)
         return values
 
-    # convert the internal posx_date to UTC format
-    def posix2utc(self):
-        utctime = time.gmtime(int(float(self.posix_date)))
-        utctime = time.strftime('%Y-%m-%d %H:%M:%S', utctime)
-        return utctime
+    # # convert the internal posx_date to UTC format
+    # def _posix2utc(self):
+    #     utctime = time.gmtime(int(float(self.posix_date)))
+    #     utctime = time.strftime('%Y-%m-%d %H:%M:%S', utctime)
+    #     return utctime
+
 
 class DataManager:
     def __init__(self, data_save_file):
         self.data_save_file = data_save_file
+        self.master_data = self.load_datapoints(self.data_save_file)
 
+
+    # ##############
+    # M E T H O D S
+    # ##############
     def get_utc_time(self):
         # returns a STRING of the current UTC time
         time_now = str(datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S"))
@@ -68,7 +89,7 @@ class DataManager:
         else:
             returnlist = datalist
 
-    def load_datapoints(filename):
+    def load_datapoints(self, filename):
         # returns an array loaded from the logfile.
         # list in format posix_date, ch_value, windspeed, winddensity
         logging.debug("loading datapoints from CSV: " + filename)
@@ -83,9 +104,13 @@ class DataManager:
                     ch = datasplit[1]
                     speed = datasplit[2]
                     density = datasplit[3]
-                    dataitem = dp.DataPoint(posixdate, ch, speed, density)
+                    dataitem = DataPoint(posixdate, ch, speed, density)
                     # logging.debug(posixdate + " " + ch + " " + speed + " " + density)
                     returnlist.append(dataitem)
         else:
             print("No logfile. Starting from scratch")
         return returnlist
+
+    # ################################
+    # W R A P P E R   F U N C T I O N
+    # ################################

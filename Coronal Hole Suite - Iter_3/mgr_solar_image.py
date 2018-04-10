@@ -19,7 +19,7 @@ import logging
 # WARNING
 # ERROR
 # CRITICAL
-errorloglevel = logging.DEBUG
+errorloglevel = logging.ERROR
 logging.basicConfig(filename="errors.log", format='%(asctime)s %(message)s', level=errorloglevel)
 
 getcontext().prec = 6
@@ -28,6 +28,10 @@ class SolarImageProcessor:
     def __init__(self):
         self.coverage = 0
 
+
+    # ##############
+    # M E T H O D S
+    # ##############
     def _image_read(self, file_name):
         img = cv2.imread(file_name)
         return img
@@ -101,6 +105,10 @@ class SolarImageProcessor:
         except urllib.request.HTTPError:
             logging.error("Unable to load/save image from URL: " + str(imageurl) + " " + str(filename))
 
+
+    # ################################
+    # W R A P P E R   F U N C T I O N
+    # ################################
     def get_meridian_coverage(self):
         try:
             self._save_image_from_url('https://services.swpc.noaa.gov/images/synoptic-map.jpg', 'syntopic.jpg')

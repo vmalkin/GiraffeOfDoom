@@ -11,7 +11,7 @@ import logging
 # WARNING
 # ERROR
 # CRITICAL
-errorloglevel = logging.DEBUG
+errorloglevel = logging.ERROR
 logging.basicConfig(filename="errors.log", format='%(asctime)s %(message)s', level=errorloglevel)
 WIND_SPEED_THRESHOLD = 800
 getcontext().prec = 6
@@ -118,6 +118,9 @@ class SatelliteDataProcessor:
         return wind_speed
 
 
+    # ################################
+    # W R A P P E R   F U N C T I O N
+    # ################################
     def get_data(self):
         self.satdata = self._get_json()
         if self.satdata == "no_data":

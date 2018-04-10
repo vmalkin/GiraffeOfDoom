@@ -69,7 +69,7 @@ def save_datapoint(datapoint_list, filename):
 def save_display_file(datapoint_list, filename):
     returndata = []
     for item in datapoint_list:
-        dataitem = str(item.posix2utc()) + "," + str(item.coronal_hole_coverage) + "," + str(item.wind_speed) + "," + str(item.wind_density)
+        dataitem = str(item._posix2utc()) + "," + str(item.coronal_hole_coverage) + "," + str(item.wind_speed) + "," + str(item.wind_density)
         returndata.append(dataitem)
     with open (filename, 'w') as w:
         for item in returndata:
@@ -171,7 +171,7 @@ if __name__ == '__main__':
         save_datapoint(datalist, LOGFILE)
         save_display_file(datalist, "display.csv")
 
-        print(newdatapoint.return_values() + "  (" + newdatapoint.posix2utc() + " UTC)")
+        print(newdatapoint.return_values() + "  (" + newdatapoint._posix2utc() + " UTC)")
 
         # #################################################################################
         # We need to implement the "predicting" algorith to forcast CH HSS impact, and even offer
