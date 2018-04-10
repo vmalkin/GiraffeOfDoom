@@ -5,8 +5,10 @@
 # wind_speed - windspeed at the time of posix_date as recorded by DISCOVR (km/s)
 # wind_density - wind density at the time of posix_date as recorded by DISCOVR (particles/m^3)
 import time
+import datetime
 from decimal import *
 getcontext().prec = 6
+CARRINGTON_ROTATION = 655   # hours
 
 class DataPoint:
     def __init__(self, posix_date, coronal_hole_coverage, wind_speed, wind_density):
@@ -40,3 +42,50 @@ class DataPoint:
         utctime = time.gmtime(int(float(self.posix_date)))
         utctime = time.strftime('%Y-%m-%d %H:%M:%S', utctime)
         return utctime
+
+class DataManager:
+    def __init__(self, data_save_file):
+        self.data_save_file = data_save_file
+
+    def get_utc_time(self):
+        # returns a STRING of the current UTC time
+        time_now = str(datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S"))
+        return time_now
+
+    def get_posix_time(self):
+        time_now = time.time()
+        return time_now
+
+    # Prune the size of the datalist
+    def prune_datalist(self, datalist):
+        # Keep the datalist 3 carrington rotations long
+        listlength = (CARRINGTON_ROTATION * 3)
+        returnlist = []
+
+        if len(datalist) > listlength:
+            chop = len(datalist) - listlength
+            returnlist = datalist[chop:]
+        else:
+            returnlist = datalist
+
+    def load_datapoints(filename):
+        # returns an array loaded from the logfile.
+        # list in format posix_date, ch_value, windspeed, winddensity
+        logging.debug("loading datapoints from CSV: " + filename)
+
+        returnlist = []
+        if os.path.isfile(filename):
+            with open(filename, 'r') as f:
+                for line in f:
+                    line = line.strip()  # remove \n from EOL
+                    datasplit = line.split(",")
+                    posixdate = datasplit[0]
+                    ch = datasplit[1]
+                    speed = datasplit[2]
+                    density = datasplit[3]
+                    dataitem = dp.DataPoint(posixdate, ch, speed, density)
+                    # logging.debug(posixdate + " " + ch + " " + speed + " " + density)
+                    returnlist.append(dataitem)
+        else:
+            print("No logfile. Starting from scratch")
+        return returnlist

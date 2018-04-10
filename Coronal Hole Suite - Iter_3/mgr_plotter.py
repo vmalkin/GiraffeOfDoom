@@ -3,7 +3,7 @@ This py manages the plotting of values. It allows me to easily build up a CSV or
 multiple series in it for use in APIS like Highcharts, etc.
 """
 import time
-import datapoint
+import mgr_data
 import os
 import logging
 

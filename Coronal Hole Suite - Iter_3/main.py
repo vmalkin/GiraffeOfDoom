@@ -1,11 +1,11 @@
 import datetime
 import parse_discovr_data as discovr
-import parse_solar_image as solar
+import mgr_solar_image as solar
 import forecast
 import urllib.request
 import time
 import logging
-import datapoint as dp
+import mgr_data as dp
 import os
 
 # setup error logging
@@ -125,52 +125,6 @@ if __name__ == '__main__':
     save_datapoint(datalist, 'log.backup')
 
     while True:
-        # open an image
-        # Grab the SWPS Syntopic Map for Local Display
-        try:
-            save_image_from_url('https://services.swpc.noaa.gov/images/synoptic-map.jpg', 'syntopic.jpg')
-        except:
-            logging.debug("Unable to get syntopic map from NOAA")
-
-        try:
-            save_image_from_url("https://sdo.gsfc.nasa.gov/assets/img/latest/latest_512_0193.jpg", "sun.jpg")
-    
-            img = solar.image_read('sun.jpg')
-    
-            #current UTC time
-            # nowtime_utc = get_utc_time()
-            nowtime_posix = get_posix_time()
-    
-            # when saved in paint, a 16bit bmp seems ok
-            mask1 = solar.make_mask('mask_full.bmp')
-            mask2 = solar.make_mask('mask1.bmp')
-    
-        #        # print mask parameters for debugging purposes.
-        #        print(str(mask1.dtype) + " " + str(mask1.shape))
-        #        print(str(mask2.dtype) + " " + str(mask2.shape))
-    
-            # Process the image to get B+W coronal hole image
-            outputimg = solar.greyscale_img(img)
-            outputimg = solar.threshold_img(outputimg)
-            outputimg = solar.erode_dilate_img(outputimg)
-    
-            # save out the masked images
-    
-            # Full disk image
-            outputimg1 = solar.mask_img(outputimg, mask1)
-            solar.add_img_logo(outputimg1)
-            solar.image_write('disc_full.bmp', outputimg1)
-    
-            # Meridian Segment
-            outputimg2 = solar.mask_img(outputimg, mask2)
-            solar.image_write('disc_segment.bmp', outputimg2)
-    
-            # Calculate the area occupied by coronal holes
-            coverage = solar.count_pixels(outputimg2, mask2)
-                
-        except:
-            logging.error("Unable to process SDO image")
-            coverage = -1
 
         # #################################################################################
         # Get the DISCOVR solar wind data (speed and density)

@@ -13,22 +13,22 @@ import logging
 # CRITICAL
 errorloglevel = logging.DEBUG
 logging.basicConfig(filename="errors.log", format='%(asctime)s %(message)s', level=errorloglevel)
-
+WIND_SPEED_THRESHOLD = 800
 getcontext().prec = 6
 NULL = "null"
 
 class SatelliteDataProcessor:
     def __init__(self):
         logging.info("instantiated Satellite Data Processor")
-        self.plasma_density = 0
-        self.plasma_speed = 0
+        self.wind_density = 0
+        self.wind_speed = 0
         self.satdata = []
 
 
     def _utc2posix(self, timestamp):
         # 2018-03-19 02:05:00.000
         # %Y-%m-%d %H:%M:%S
-        posix_time = time.strptime(timestamp, "%Y-%m-%d %H:%M:%S")
+        posix_time = time.strptime(timestamp, "%Y-%m-%d %H:%M:%S.%f")
         posix_time = time.mktime(posix_time)
         return posix_time
 
@@ -68,7 +68,7 @@ class SatelliteDataProcessor:
     def _parse_json_prune(self, posix_list):
         # we want only the data for the last hour.
         # we will return a modified array of the current data only
-        nowtime = self.utc2posix(str(datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S.%f")))
+        nowtime = self._utc2posix(str(datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S.%f")))
         prevtime = nowtime - 3600  # the past hour
         returnarray = []
 
@@ -96,7 +96,7 @@ class SatelliteDataProcessor:
 
             wind_density = Decimal(wind_density) / Decimal(counter)
         except:
-            wind_density = NULL
+            wind_density = 0
         return wind_density
 
 
@@ -109,10 +109,12 @@ class SatelliteDataProcessor:
                 value = datasplit[2]
                 wind_speed = wind_speed + Decimal(value)
                 counter = counter + 1
-
             wind_speed = Decimal(wind_speed) / Decimal(counter)
+
+            if wind_speed > WIND_SPEED_THRESHOLD:
+                wind_speed = 400
         except:
-            wind_speed = NULL
+            wind_speed = 0
         return wind_speed
 
 
@@ -131,5 +133,5 @@ class SatelliteDataProcessor:
             dscvr_data = self._parse_json_prune(dscvr_data)
 
             # get the avg windspeed and plasma density
-            self.plasma_density = self.plasma_density(dscvr_data)
-            self.plasma_speed = self.plasma_speed(dscvr_data)
+            self.wind_density = self._plasma_density(dscvr_data)
+            self.wind_speed = self._plasma_speed(dscvr_data)

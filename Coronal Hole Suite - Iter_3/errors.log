@@ -553,3 +553,40 @@
 2018-04-10 12:48:56,914 Starting new HTTP connection (1): services.swpc.noaa.gov
 2018-04-10 12:48:57,283 http://services.swpc.noaa.gov:80 "GET /products/solar-wind/plasma-2-hour.json HTTP/1.1" 200 None
 2018-04-10 12:48:57,299 SAVING datapoint values to file: log.csv
+2018-04-10 22:37:11,208 instantiated Satellite Data Processor
+2018-04-10 22:37:11,225 Starting new HTTP connection (1): services.swpc.noaa.gov
+2018-04-10 22:37:11,725 http://services.swpc.noaa.gov:80 "GET /products/solar-wind/plasma-2-hour.json HTTP/1.1" 200 None
+2018-04-10 22:37:45,366 instantiated Satellite Data Processor
+2018-04-10 22:37:45,370 Starting new HTTP connection (1): services.swpc.noaa.gov
+2018-04-10 22:37:45,660 http://services.swpc.noaa.gov:80 "GET /products/solar-wind/plasma-2-hour.json HTTP/1.1" 200 None
+2018-04-10 22:38:17,336 instantiated Satellite Data Processor
+2018-04-10 22:38:17,339 Starting new HTTP connection (1): services.swpc.noaa.gov
+2018-04-10 22:38:17,683 http://services.swpc.noaa.gov:80 "GET /products/solar-wind/plasma-2-hour.json HTTP/1.1" 200 None
+2018-04-10 22:39:43,251 instantiated Satellite Data Processor
+2018-04-10 22:39:43,255 Starting new HTTP connection (1): services.swpc.noaa.gov
+2018-04-10 22:39:43,874 http://services.swpc.noaa.gov:80 "GET /products/solar-wind/plasma-2-hour.json HTTP/1.1" 200 None
+2018-04-10 22:39:43,880 starting image from URL download: syntopic.jpg
+2018-04-10 22:39:45,890 starting image from URL download: sun.jpg
+2018-04-10 22:39:47,327 Unable to process SDO image
+2018-04-10 22:40:46,658 instantiated Satellite Data Processor
+2018-04-10 22:40:46,662 Starting new HTTP connection (1): services.swpc.noaa.gov
+2018-04-10 22:40:47,154 http://services.swpc.noaa.gov:80 "GET /products/solar-wind/plasma-2-hour.json HTTP/1.1" 200 None
+2018-04-10 22:40:47,160 starting image from URL download: syntopic.jpg
+2018-04-10 22:40:59,125 starting image from URL download: sun.jpg
+2018-04-10 22:41:00,519 Unable to process SDO image
+2018-04-10 22:42:51,632 instantiated Satellite Data Processor
+2018-04-10 22:42:51,636 Starting new HTTP connection (1): services.swpc.noaa.gov
+2018-04-10 22:42:52,045 http://services.swpc.noaa.gov:80 "GET /products/solar-wind/plasma-2-hour.json HTTP/1.1" 200 None
+2018-04-10 22:42:52,051 starting image from URL download: syntopic.jpg
+2018-04-10 22:42:54,246 starting image from URL download: sun.jpg
+2018-04-10 22:42:55,631 Unable to process SDO image
+2018-04-10 22:43:58,022 instantiated Satellite Data Processor
+2018-04-10 22:43:58,026 Starting new HTTP connection (1): services.swpc.noaa.gov
+2018-04-10 22:43:58,317 http://services.swpc.noaa.gov:80 "GET /products/solar-wind/plasma-2-hour.json HTTP/1.1" 200 None
+2018-04-10 22:43:58,324 starting image from URL download: syntopic.jpg
+2018-04-10 22:44:00,268 starting image from URL download: sun.jpg
+2018-04-10 22:44:47,192 instantiated Satellite Data Processor
+2018-04-10 22:44:47,195 Starting new HTTP connection (1): services.swpc.noaa.gov
+2018-04-10 22:44:47,726 http://services.swpc.noaa.gov:80 "GET /products/solar-wind/plasma-2-hour.json HTTP/1.1" 200 None
+2018-04-10 22:44:47,733 starting image from URL download: syntopic.jpg
+2018-04-10 22:45:09,726 starting image from URL download: sun.jpg

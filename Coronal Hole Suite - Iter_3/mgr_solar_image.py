@@ -26,7 +26,7 @@ getcontext().prec = 6
 
 class SolarImageProcessor:
     def __init__(self):
-        pass
+        self.coverage = 0
 
     def _image_read(self, file_name):
         img = cv2.imread(file_name)
@@ -85,7 +85,7 @@ class SolarImageProcessor:
 
     def _add_img_logo(self, image_name):
         label = 'DunedinAurora.NZ Coronal Hole Map'
-        label2 = self.get_utc_time()
+        label2 = self._get_utc_time()
         cv2.putText(image_name, label, (10,482), cv2.FONT_HERSHEY_SIMPLEX, 0.5,(250,250,250), 1 );
         cv2.putText(image_name, label2, (10,498), cv2.FONT_HERSHEY_SIMPLEX, 0.5,(250,250,250), 1 );
         # cv2.imwrite('disc_full.bmp', image_name)
@@ -114,36 +114,36 @@ class SolarImageProcessor:
 
             # current UTC time
             # nowtime_utc = get_utc_time()
-            nowtime_posix = get_posix_time()
+            # nowtime_posix = get_posix_time()
 
             # when saved in paint, a 16bit bmp seems ok
-            mask1 = solar.make_mask('mask_full.bmp')
-            mask2 = solar.make_mask('mask1.bmp')
+            mask_full = self._make_mask('mask_full.bmp')
+            mask_segment = self._make_mask('mask_meridian.bmp')
 
-            #        # print mask parameters for debugging purposes.
-            #        print(str(mask1.dtype) + " " + str(mask1.shape))
-            #        print(str(mask2.dtype) + " " + str(mask2.shape))
+            # # print mask parameters for debugging purposes.
+            # print(str(mask_full.dtype) + " " + str(mask_full.shape))
+            # print(str(mask_segment.dtype) + " " + str(mask_segment.shape))
 
             # Process the image to get B+W coronal hole image
-            outputimg = solar.greyscale_img(img)
-            outputimg = solar.threshold_img(outputimg)
-            outputimg = solar.erode_dilate_img(outputimg)
+            outputimg = self._greyscale_img(img)
+            outputimg = self._threshold_img(outputimg)
+            outputimg = self._erode_dilate_img(outputimg)
 
             # save out the masked images
 
             # Full disk image
-            outputimg1 = solar.mask_img(outputimg, mask1)
-            solar.add_img_logo(outputimg1)
-            solar.image_write('disc_full.bmp', outputimg1)
+            outputimg1 = self._mask_img(outputimg, mask_full)
+            self._add_img_logo(outputimg1)
+            self._image_write('disc_full.bmp', outputimg1)
 
             # Meridian Segment
-            outputimg2 = solar.mask_img(outputimg, mask2)
-            solar.image_write('disc_segment.bmp', outputimg2)
+            outputimg2 = self._mask_img(outputimg, mask_segment)
+            self._image_write('disc_segment.bmp', outputimg2)
 
             # Calculate the area occupied by coronal holes
-            coverage = solar.count_pixels(outputimg2, mask2)
+            self.coverage = self._count_pixels(outputimg2, mask_segment)
 
         except:
             logging.error("Unable to process SDO image")
-            coverage = -1
+            self.coverage = -1
 
