@@ -24,8 +24,8 @@ class PlotPoint:
     def __init__(self, posixdate):
         self.posix_date = posixdate
         self.utcdate = self._posix2utc()
-        self.series1value = 0
-        self.series2value = 0
+        self.series1value = ""
+        self.series2value = ""
 
     def printvalues(self):
         value = str(self.utcdate) + "," + str(self.series1value) + "," + str(self.series2value)
@@ -82,7 +82,7 @@ class Plotter:
 
         # Create the list of datapoints with the appropriate dates in them
         predictionlist = []
-        for i in range(startdate, enddate, count):
+        for i in range(startdate, enddate, 3600):
             dp = PlotPoint(i)
             predictionlist.append(dp)
 
@@ -107,3 +107,10 @@ class Plotter:
         
         # parse thru the 2 lists and modify the datapoint properties as appropriate
         # Save out as a CSV file for display
+        try:
+            with open("forecast.csv", "w") as f:
+                for plotpt in predictionlist:
+                    f.write(plotpt.printvalues() + '\n')
+        except:
+            print("Unable to write forecast data to file")
+                    
