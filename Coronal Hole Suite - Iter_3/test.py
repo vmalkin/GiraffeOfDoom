@@ -1,5 +1,5 @@
 import mgr_data
-import forecast as fc
+import mgr_forecast as fc
 import main
 from decimal import *
 

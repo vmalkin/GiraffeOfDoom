@@ -16,7 +16,7 @@ import os
 # WARNING
 # ERROR
 # CRITICAL
-errorloglevel = logging.DEBUG
+errorloglevel = logging.error
 logging.basicConfig(filename="errors.log", format='%(asctime)s %(message)s', level=errorloglevel)
 getcontext().prec = 6
 CARRINGTON_ROTATION = 655   # hours
@@ -121,7 +121,8 @@ class DataManager:
         logging.debug("SAVING datapoint values to file: " + filename)
         with open(filename, 'w') as f:
             for dpoint in datapoint_list:
-                f.write(dpoint.return_values() + '\n')
+                values = str(dpoint.posix_date) + "," + str(dpoint.coronal_hole_coverage) + "," + str(dpoint.wind_speed) + "," + str(dpoint.wind_density)
+                f.write(values + '\n')
 
     # ################################
     # W R A P P E R   F U N C T I O N
