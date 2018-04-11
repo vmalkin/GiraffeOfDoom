@@ -88,13 +88,22 @@ class Plotter:
 
         for item in self._reading_actual:
             itemsplit = item.split(",")
-            date = itemsplit[0]
+            date = int(itemsplit[0])
             windspeed = itemsplit[2]
 
             for i in range(1, len(predictionlist)):
-                if date <= predictionlist[i].posix_date and date > predictionlist[i - 1].posix_date:
-                    predictionlist[i].series1value
+                if date <= int(predictionlist[i].posix_date) and date > int(predictionlist[i - 1].posix_date):
+                    predictionlist[i].series1value = windspeed
+        
+        for item in self._reading_predicted:
+            itemsplit = item.split(",")
+            date = int(itemsplit[0])
+            windspeed = itemsplit[1]
 
-
+            for i in range(1, len(predictionlist)):
+                if date <= int(predictionlist[i].posix_date) and date > int(predictionlist[i - 1].posix_date):
+                    predictionlist[i].series2value = windspeed
+        
+        
         # parse thru the 2 lists and modify the datapoint properties as appropriate
         # Save out as a CSV file for display
