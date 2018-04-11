@@ -125,8 +125,8 @@ class SatelliteDataProcessor:
         self.satdata = self._get_json()
         if self.satdata == "no_data":
             # Unable to get DISCOVR data
-            self.plasma_density = 0
-            self.plasma_speed = 0
+            self.wind_density = 0
+            self.wind_speed = 0
         else:
             # parse new data to the correct format
             # The timestampt is in POSIX format

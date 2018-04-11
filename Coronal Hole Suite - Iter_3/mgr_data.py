@@ -24,7 +24,7 @@ CARRINGTON_ROTATION = 655   # hours
 class DataPoint:
     def __init__(self, posix_date, coronal_hole_coverage, wind_speed, wind_density):
         self.ASTRONOMICAL_UNIT_KM = Decimal(149597900)
-        self.posix_date = float(posix_date)
+        self.posix_date = posix_date
         self.coronal_hole_coverage = Decimal(coronal_hole_coverage)
         self.wind_speed = Decimal(wind_speed)
         self.wind_density = Decimal(wind_density)
@@ -49,7 +49,8 @@ class DataPoint:
     # allows the object to return a string of it's own parameters
     # handy for quikcly building lists of object propertiezs
     def return_values(self):
-        values = str(self.posix_date) + "," + str(self.coronal_hole_coverage) + "," + str(self.wind_speed)  + "," + str(self.wind_density)
+        time_now = datetime.datetime.utcfromtimestamp(int(self.posix_date))
+        values = str(self.posix_date) + "," + str(self.coronal_hole_coverage) + "," + str(self.wind_speed)  + "," + str(self.wind_density) + "  " + str(time_now)
         return values
 
     # # convert the internal posx_date to UTC format
@@ -62,23 +63,26 @@ class DataPoint:
 class DataManager:
     def __init__(self, data_save_file):
         self.data_save_file = data_save_file
-        self.master_data = self.load_datapoints(self.data_save_file)
+        self.master_data = self._load_datapoints(self.data_save_file)
 
 
     # ##############
     # M E T H O D S
     # ##############
-    def get_utc_time(self):
-        # returns a STRING of the current UTC time
-        time_now = str(datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S"))
-        return time_now
+    def append_datapoint(self, datapoint):
+        self.master_data.append(datapoint)
 
-    def get_posix_time(self):
-        time_now = time.time()
-        return time_now
+    # def get_utc_time(self):
+    #     # returns a STRING of the current UTC time
+    #     time_now = str(datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S"))
+    #     return time_now
+
+    # def get_posix_time(self):
+    #     time_now = time.time()
+    #     return time_now
 
     # Prune the size of the datalist
-    def prune_datalist(self, datalist):
+    def _prune_datalist(self, datalist):
         # Keep the datalist 3 carrington rotations long
         listlength = (CARRINGTON_ROTATION * 3)
         returnlist = []
@@ -89,7 +93,7 @@ class DataManager:
         else:
             returnlist = datalist
 
-    def load_datapoints(self, filename):
+    def _load_datapoints(self, filename):
         # returns an array loaded from the logfile.
         # list in format posix_date, ch_value, windspeed, winddensity
         logging.debug("loading datapoints from CSV: " + filename)
@@ -111,6 +115,17 @@ class DataManager:
             print("No logfile. Starting from scratch")
         return returnlist
 
+    # save datapoint list
+    def _save_datapoint(self, datapoint_list, filename):
+        # list in format posix_date, ch_value, windspeed, winddensity
+        logging.debug("SAVING datapoint values to file: " + filename)
+        with open(filename, 'w') as f:
+            for dpoint in datapoint_list:
+                f.write(dpoint.return_values() + '\n')
+
     # ################################
     # W R A P P E R   F U N C T I O N
     # ################################
+    def process_new_data(self):
+        self._prune_datalist(self.master_data)
+        self._save_datapoint(self.master_data, self.data_save_file)
