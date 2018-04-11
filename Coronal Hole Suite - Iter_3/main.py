@@ -1,8 +1,10 @@
 import mgr_discovr_data
 import mgr_solar_image
 import mgr_data
+import mgr_plotter
 import mgr_forecast
 import time
+
 LOGFILE = 'log.csv'
 WAITPERIOD = 86400 * 5
 __version__ = '0.8'
@@ -37,8 +39,12 @@ if __name__ == "__main__":
         timeleft = (WAITPERIOD - elapsedtime) / (60 * 60 * 24)
 
         if elapsedtime >= WAITPERIOD:
+            # create the forecast
             forecaster.calculate_forecast(data_manager.master_data)
 
+            # Instantiate the prediction plotter, this will load it with the lates values. Plot the final data
+            prediction_plotter = mgr_plotter.Plotter()
+            prediction_plotter.plot_data()
         else:
             print("Insufficient time has passed to begin forecasting. " + str(timeleft)[:5] + " days remaining")
 

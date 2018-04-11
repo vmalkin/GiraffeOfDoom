@@ -4,11 +4,13 @@
 # coronal_hole_coverage - the coverage at the date (a percentage between 0-1)
 # wind_speed - windspeed at the time of posix_date as recorded by DISCOVR (km/s)
 # wind_density - wind density at the time of posix_date as recorded by DISCOVR (particles/m^3)
+
 import time
 import datetime
 from decimal import *
 import logging
 import os
+
 # setup error logging
 # logging levels in order of severity:
 # DEBUG
