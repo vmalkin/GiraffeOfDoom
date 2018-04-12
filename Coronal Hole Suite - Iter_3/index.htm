@@ -55,8 +55,7 @@
 		<!-- <div id="hss" style="width: 100%; height: 600px; margin: 0 auto"></div> -->
 		<div class = "row">
 			<div class = "col-md-12">
-				<div id="prediction"></div>
-				<div id="wind"></div>
+				<div id="forecast"></div>
 				<div id="density"></div>
 			</div
 		</div>
@@ -66,8 +65,8 @@ var heightthing = 320;
 			
 		$(document).ready(function() {
 			Highcharts.setOptions({})
-			$.get('prediction.csv', function(csv) {
-			    $('#prediction').highcharts({
+			$.get('forecast.csv', function(csv) {
+			    $('#forecast').highcharts({
 			        chart: {
 			        	//type: 'line',
 						zoomType:'x',
@@ -76,16 +75,17 @@ var heightthing = 320;
 						spacingRight: 10
 			        },
 					legend: {
-						enabled: false
+						enabled: true
 					},
 					plotOptions: {
 						series: {
 							marker: {
 								enabled: false
 							},
-						color: '#ff0000'
+						
 						}
 					},
+					colors: ['#008000', '#ff0000'],
 			        data: 
 					{
 			            csv: csv,
@@ -94,106 +94,47 @@ var heightthing = 320;
 			        },
 					series:[
 						{
-							visible: true
+							visible: true,
+							name: "Speed - Actual"
+						},
+						{
+							visible: true,
+							name: "Speed - Predicted"
 						}
 					],
 					tooltip: {
-						enabled: true
+						enabled: true,
+						crosshairs: true,
+						shared: true
 					},
 			        title: 
 					{
-						text: 'Predicted - solar wind speed'
+						text: 'Solar Wind Forecast'
 					},
 					subtitle:
 					{
-						text: 'km/s'
+						text: ''
 					},
 					yAxis: 
 					{
+						gridLineWidth: 1,
+						gridLineColor: "#D8D8D8",
+						title: 
+							{
+								text: 'Wind Speed km/s',
+							},
 					},
 					xAxis: 
 					{
 						tickInterval: 60,
 						gridLineWidth: 1,
 						gridLineColor: "#D8D8D8",
-						title: 
-						{
-							text: 'Time, UTC'
-						}
+						
 					}
 			    });
 			});
 		});
 
-
-		$(document).ready(function() {
-
-		Highcharts.setOptions({})
-			$.get('display.csv', function(csv) {
-			    $('#wind').highcharts({
-			        chart: {
-			        	//type: 'line',
-						zoomType:'x',
-						height: heightthing,
-						spacingLeft: 10,
-						spacingRight: 10
-			        },
-					legend: {
-						enabled: false
-					},
-					plotOptions: {
-						series: {
-							marker: {
-								enabled: false
-							}
-						}
-					},
-			        data: 
-					{
-			            csv: csv,
-						//startColumn: 0,
-						//endColumn: 1,
-			        },
-					series:[
-						{
-							visible: false
-						},
-						{
-							visible: true
-						},
-						{
-							visible: false
-						},
-					],
-					tooltip: {
-						enabled: true
-					},
-			        title: 
-					{
-						text: 'Actual - Solar Wind Speed'
-					},
-					subtitle:
-					{
-						text: 'km/s'
-					},
-					yAxis: 
-					{
-					},
-					xAxis: 
-					{
-						tickInterval: 60,
-						gridLineWidth: 1,
-						gridLineColor: "#D8D8D8",
-						title: 
-						{
-							text: 'Time, UTC'
-						}
-					}
-			    });
-			});
-		});
-
-		
 		$(document).ready(function() {
 		Highcharts.setOptions({})
 		
@@ -231,7 +172,7 @@ var heightthing = 320;
 						},
 						{
 							visible: true
-						},
+						}
 					],
 					tooltip: {
 						enabled: true
@@ -246,6 +187,8 @@ var heightthing = 320;
 					},
 					yAxis: 
 					{
+						softMax: 800,
+						min: 0
 					},
 					xAxis: 
 					{

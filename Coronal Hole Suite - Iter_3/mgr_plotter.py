@@ -74,11 +74,11 @@ class Plotter:
         startdate = int(startsplit[0])
         enddate = int(endsplit[0])
 
-        # we are going to set up times at 1hr intervals from the earliest date to most recent.
-        # we will build a list of datapoints with those times to catch the data across both series
-        count = int(((enddate - startdate) / 3600) + 1)
-        # revise the enddate figure so it should be an increment of 3600 from the start date
-        enddate = enddate + (3600 * count)
+        # # we are going to set up times at 1hr intervals from the earliest date to most recent.
+        # # we will build a list of datapoints with those times to catch the data across both series
+        # count = int(((enddate - startdate) / 3600) + 1)
+        # # revise the enddate figure so it should be an increment of 3600 from the start date
+        # enddate = enddate + (3600 * count)
 
         # Create the list of datapoints with the appropriate dates in them
         predictionlist = []
