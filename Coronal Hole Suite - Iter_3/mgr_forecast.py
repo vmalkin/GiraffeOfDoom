@@ -189,10 +189,9 @@ class Forecaster:
         rg_a = Decimal(parameters[0])
         rg_b = Decimal(parameters[1])
         pearson = Decimal(parameters[2])
-        regression_status = ("<p style = \"color: orange;\">Linear approximation is: Predicted windspeed = " + str(rg_a)[:6] + " + " + str(rg_b)[:6] + " * coronal hole area on meridian     <br>Pearsons correlation = " + str(pearson)[:6])
-        print(regression_status)
-        with open("regression.php", 'w') as w:
-            w.write(regression_status + '\n')
+        # regression_values = ("<p style = \"color: orange;\">Linear approximation is: Predicted windspeed = " + str(rg_a)[:6] + " + " + str(rg_b)[:6] + " * coronal hole area on meridian     <br>Pearsons correlation = " + str(pearson)[:6])
+        regression_values = ("<p style = \"color: orange;\">Pearsons correlation = " + str(pearson)[:6])
+
 
         # the array that will hold prediction values
 
@@ -211,5 +210,10 @@ class Forecaster:
             avg = avg + item.wind_speed
         avg_speed = avg / len(CH_data)
         delay_days = (ASTRONOMICAL_UNIT_KM / avg_speed) / (60 * 60 * 24)
-        print("Average Windspeed is " + str(avg_speed)[:6] + "km/s")
-        print("Coronal Hole effects will be felt in " + str(delay_days)[:3] + " days")
+        regression_speed = ("<br style = \"color: orange;\">Average Windspeed is " + str(avg_speed)[:6] + "km/s")
+        regression_delay = ("<br style = \"color: orange;\">Coronal Hole effects will be felt in " + str(delay_days)[:3] + " days")
+
+        regression_status = str(regression_values) + str(regression_speed) + str(regression_delay)
+        print(regression_status)
+        with open("regression.php", 'w') as w:
+            w.write(regression_status + '\n')

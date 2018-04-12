@@ -1,1 +1,1 @@
-<p style = "color: orange;">Linear approximation is: Predicted windspeed = 387.24 + 474.93 * coronal hole area on meridian     <br>Pearsons correlation = 0.3775
+<p style = "color: orange;">Pearsons correlation = 0.3980<br style = "color: orange;">Average Windspeed is 421.21km/s<br style = "color: orange;">Coronal Hole effects will be felt in 4.1 days
