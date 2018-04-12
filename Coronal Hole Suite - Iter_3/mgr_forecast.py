@@ -189,7 +189,7 @@ class Forecaster:
         rg_a = Decimal(parameters[0])
         rg_b = Decimal(parameters[1])
         pearson = Decimal(parameters[2])
-        print("Linear approximation is: y = " + str(rg_a)[:6] + " + " + str(rg_b)[:6] + " * x     R = " + str(pearson)[:6])
+        print("Linear approximation is: Predicted windspeed = " + str(rg_a)[:6] + " + " + str(rg_b)[:6] + " * coronal hole area on meridian     R = " + str(pearson)[:6])
 
         # the array that will hold prediction values
 
