@@ -7,7 +7,7 @@ import time
 
 LOGFILE = 'log.csv'
 WAITPERIOD = 86400 * 5
-__version__ = '0.8'
+__version__ = '1.0'
 __author__ = "Vaughn Malkin"
 
 discovr = mgr_discovr_data.SatelliteDataProcessor()
@@ -48,6 +48,6 @@ if __name__ == "__main__":
         else:
             print("Insufficient time has passed to begin forecasting. " + str(timeleft)[:5] + " days remaining")
 
-        # Pause for an hour
+       # Pause for an hour
         time.sleep(3600)
 
