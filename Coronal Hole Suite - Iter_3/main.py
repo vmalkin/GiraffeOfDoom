@@ -46,7 +46,10 @@ if __name__ == "__main__":
             prediction_plotter = mgr_plotter.Plotter()
             prediction_plotter.plot_data()
         else:
-            print("Insufficient time has passed to begin forecasting. " + str(timeleft)[:5] + " days remaining")
+            regression_status = ("Insufficient time has passed to begin forecasting. " + str(timeleft)[:5] + " days remaining")
+            print(regression_status)
+            with open("regression.php", 'w') as w:
+                w.write(regression_status + '\n')
 
        # Pause for an hour
         time.sleep(3600)
