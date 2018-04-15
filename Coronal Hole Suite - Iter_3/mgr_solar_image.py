@@ -153,5 +153,5 @@ class SolarImageProcessor:
 
         except:
             logging.error("Unable to process SDO image")
-            self.coverage = -1
+            self.coverage = 0
 
