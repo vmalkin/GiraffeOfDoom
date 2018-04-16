@@ -19,7 +19,7 @@ forecaster = mgr_forecast.Forecaster()
 forecaster.calculate_forecast(data_manager.master_data)
 
 # # Instantiate the prediction plotter, this will load it with the lates values. Plot the final data
-# prediction_plotter = mgr_plotter.Plotter()
-# prediction_plotter.plot_data()
+prediction_plotter = mgr_plotter.Plotter()
+prediction_plotter.plot_data()
 
 
