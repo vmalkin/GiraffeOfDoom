@@ -194,6 +194,7 @@ class Forecaster:
 
 
         # the array that will hold prediction values
+        self.prediction_list = []
 
         for item in CH_data:
             predict_speed = rg_a + (rg_b * Decimal(item.coronal_hole_coverage))
