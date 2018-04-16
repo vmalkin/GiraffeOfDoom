@@ -18,7 +18,7 @@ import os
 # WARNING
 # ERROR
 # CRITICAL
-errorloglevel = logging.error
+errorloglevel = logging.DEBUG
 logging.basicConfig(filename="errors.log", format='%(asctime)s %(message)s', level=errorloglevel)
 getcontext().prec = 6
 CARRINGTON_ROTATION = 655   # hours
@@ -43,6 +43,7 @@ class DataPoint:
     def _travel_time(self):
         if self.wind_speed == 0:
             reportedspeed = 400
+            logging.debug("data_mrg: solar wind speed is zero, substituting 400")
         else:
             reportedspeed = self.wind_speed
         travel_time_sec = Decimal(self.ASTRONOMICAL_UNIT_KM) / Decimal(reportedspeed)

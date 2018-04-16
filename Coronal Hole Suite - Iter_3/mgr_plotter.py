@@ -73,6 +73,7 @@ class Plotter:
 
         startdate = int(startsplit[0])
         enddate = int(endsplit[0])
+        logging.debug("Star and end dates: " + str(startdate) + " " + str(enddate))
 
         # # we are going to set up times at 1hr intervals from the earliest date to most recent.
         # # we will build a list of datapoints with those times to catch the data across both series
@@ -89,20 +90,20 @@ class Plotter:
         for item in self._reading_actual:
             itemsplit = item.split(",")
             date = int(itemsplit[0])
-            windspeed = itemsplit[2]
+            windspeed_actual = itemsplit[2]
 
             for i in range(1, len(predictionlist)):
                 if date <= int(predictionlist[i].posix_date) and date > int(predictionlist[i - 1].posix_date):
-                    predictionlist[i].series1value = windspeed
+                    predictionlist[i].series1value = windspeed_actual
         
         for item in self._reading_predicted:
             itemsplit = item.split(",")
             date = int(itemsplit[0])
-            windspeed = itemsplit[1]
+            windspeed_predicted = itemsplit[1]
 
             for i in range(1, len(predictionlist)):
                 if date <= int(predictionlist[i].posix_date) and date > int(predictionlist[i - 1].posix_date):
-                    predictionlist[i].series2value = windspeed
+                    predictionlist[i].series2value = windspeed_predicted
         
         
         # parse thru the 2 lists and modify the datapoint properties as appropriate

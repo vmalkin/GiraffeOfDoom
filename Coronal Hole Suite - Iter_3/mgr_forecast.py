@@ -3,10 +3,20 @@ ASTRONOMICAL_UNIT_KM = 149597900
 import math
 import time
 from decimal import *
+import logging
+# setup error logging
+# logging levels in order of severity:
+# DEBUG
+# INFO
+# WARNING
+# ERROR
+# CRITICAL
+errorloglevel = logging.DEBUG
+logging.basicConfig(filename="errors.log", format='%(asctime)s %(message)s', level=errorloglevel)
 
 class Forecaster:
     def __init__(self):
-        self.prediction_list = []
+        pass
 
     # convert the internal posx_date to UTC format
     def _posix2utc(self, posix_date):
@@ -194,17 +204,17 @@ class Forecaster:
 
 
         # the array that will hold prediction values
-        self.prediction_list = []
+        prediction_list = []
 
         for item in CH_data:
             predict_speed = rg_a + (rg_b * Decimal(item.coronal_hole_coverage))
             transittime = ASTRONOMICAL_UNIT_KM / predict_speed
             futurearrival = int(item.posix_date) + int(transittime)
             prediction = str(futurearrival) + "," + str(predict_speed)
-            self.prediction_list.append(prediction)
+            prediction_list.append(prediction)
 
         with open("prediction.csv", 'w') as w:
-            for item in self.prediction_list:
+            for item in prediction_list:
                 w.write(str(item) + '\n')
         avg = 0
         for item in CH_data:
