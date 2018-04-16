@@ -1,71 +1,55 @@
+import mgr_discovr_data
+import mgr_solar_image
 import mgr_data
-import mgr_forecast as fc
-import main
-from decimal import *
+import mgr_plotter
+import mgr_forecast
+import time
 
-CH_data = main.load_datapoints("log.csv")
+LOGFILE = 'log.csv'
+WAITPERIOD = 86400 * 5
+__version__ = '1.0'
+__author__ = "Vaughn Malkin"
 
-getcontext().prec = 6
+discovr = mgr_discovr_data.SatelliteDataProcessor()
+sun = mgr_solar_image.SolarImageProcessor()
+data_manager = mgr_data.DataManager(LOGFILE)
+forecaster = mgr_forecast.Forecaster()
 
-# This part corresponds to forecast.calculate_forecast()
-# the revised data list is NOT a list of objects, but data.
-revised_ch_data = []
+if __name__ == "__main__":
+    while True:
+        # Get the satellite data
+        discovr.get_data()
 
-# get the launchdate for each datapoints windspeed
-for data_p in CH_data:
-    appenddata = []
-    appenddata.append(data_p.launch_date)
-    appenddata.append(data_p.wind_speed)
-    revised_ch_data.append(appenddata)
+        # process latest solar image
+        sun.get_meridian_coverage()
 
-# get the coverage for the launch time
-coverage_data = []
+        # get current posix time and create the datapoint to append the the main data
+        posixtime = int(time.time())   # sun.coverage  discovr.wind_speed  discovr.wind_density
+        dp = mgr_data.DataPoint(posixtime, sun.coverage, discovr.wind_speed, discovr.wind_density)
+        print(dp.return_values())
 
-for item in revised_ch_data:
-    coverage = fc.CH_match_launchdate(CH_data, item[0])
-    date = float(item[0])
-    windspeed = item[1]
-    appenditem = str(date) + "," + str(coverage) + "," + str(windspeed)
-    coverage_data.append(appenditem)
+        # append the new datapoint and process the master datalist
+        data_manager.append_datapoint(dp)
+        data_manager.process_new_data()
 
-# print(fc.CH_match_launchdate(CH_data, 1522695859.073293))
+        # Calculate if enough time has elapsed to start running the forecasting.
+        startdate = int(data_manager.master_data[0].posix_date)
+        nowdate = int(data_manager.master_data[len(data_manager.master_data) - 1].posix_date)
+        elapsedtime = nowdate - startdate
+        timeleft = (WAITPERIOD - elapsedtime) / (60 * 60 * 24)
 
+        if elapsedtime >= WAITPERIOD:
+            # create the forecast
+            forecaster.calculate_forecast(data_manager.master_data)
 
-with open ("testscatter.csv", 'w') as w:
-    for item in coverage_data:
-        w.write(str(item) + '\n')
+            # Instantiate the prediction plotter, this will load it with the lates values. Plot the final data
+            prediction_plotter = mgr_plotter.Plotter()
+            prediction_plotter.plot_data()
+        else:
+            regression_status = ("Insufficient time has passed to begin forecasting. " + str(timeleft)[:5] + " days remaining")
+            print(regression_status)
+            with open("regression.php", 'w') as w:
+                w.write(regression_status + '\n')
 
-
-# This will create the parameters for a linear model:
-# y = rg_a + rg_b * x
-parameters = fc.regression_analysis(coverage_data)
-rg_a = Decimal(parameters[0])
-rg_b = Decimal(parameters[1])
-pearson = Decimal(parameters[2])
-print("Linear approximation is: y = " + str(rg_a)[:6] + " + " + str(rg_b)[:6] + " * x     R = " + str(pearson)[:6])
-
-# the array that will hold prediction values
-prediction_array = []
-
-for item in CH_data:
-    predict_speed = rg_a + (rg_b * Decimal(item.coronal_hole_coverage))
-    # predict_speed = Decimal(predict_speed)
-    transittime = fc.ASTRONOMICAL_UNIT_KM / predict_speed
-    # transittime = Decimal(transittime)
-    futurearrival = float(item.posix_date) + float(transittime)
-    futurearrival = fc.posix2utc(futurearrival)
-    prediction = str(futurearrival) + "," + str(predict_speed)
-    prediction_array.append(prediction)
-
-avg = 0
-for item in CH_data:
-    avg = avg + item.wind_speed
-avg_speed = avg / len(CH_data)
-delay_days = (fc.ASTRONOMICAL_UNIT_KM / avg_speed) / (60*60*24)
-print("Average Windspeed is " + str(avg_speed)[:6] + "km/s")
-print("Coronal Hole effects will be felt in " + str(delay_days)[:3] + " days")
-
-
-with open ("prediction.csv", 'w') as w:
-    for item in prediction_array:
-        w.write(str(item) + '\n')
+       # Pause for an hour
+        time.sleep(3600)
