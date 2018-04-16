@@ -15,41 +15,11 @@ sun = mgr_solar_image.SolarImageProcessor()
 data_manager = mgr_data.DataManager(LOGFILE)
 forecaster = mgr_forecast.Forecaster()
 
-if __name__ == "__main__":
-    while True:
-        # Get the satellite data
-        discovr.get_data()
 
-        # process latest solar image
-        sun.get_meridian_coverage()
+forecaster.calculate_forecast(data_manager.master_data)
 
-        # get current posix time and create the datapoint to append the the main data
-        posixtime = int(time.time())   # sun.coverage  discovr.wind_speed  discovr.wind_density
-        dp = mgr_data.DataPoint(posixtime, sun.coverage, discovr.wind_speed, discovr.wind_density)
-        print(dp.return_values())
+# # Instantiate the prediction plotter, this will load it with the lates values. Plot the final data
+# prediction_plotter = mgr_plotter.Plotter()
+# prediction_plotter.plot_data()
 
-        # append the new datapoint and process the master datalist
-        data_manager.append_datapoint(dp)
-        data_manager.process_new_data()
 
-        # Calculate if enough time has elapsed to start running the forecasting.
-        startdate = int(data_manager.master_data[0].posix_date)
-        nowdate = int(data_manager.master_data[len(data_manager.master_data) - 1].posix_date)
-        elapsedtime = nowdate - startdate
-        timeleft = (WAITPERIOD - elapsedtime) / (60 * 60 * 24)
-
-        if elapsedtime >= WAITPERIOD:
-            # create the forecast
-            forecaster.calculate_forecast(data_manager.master_data)
-
-            # Instantiate the prediction plotter, this will load it with the lates values. Plot the final data
-            prediction_plotter = mgr_plotter.Plotter()
-            prediction_plotter.plot_data()
-        else:
-            regression_status = ("Insufficient time has passed to begin forecasting. " + str(timeleft)[:5] + " days remaining")
-            print(regression_status)
-            with open("regression.php", 'w') as w:
-                w.write(regression_status + '\n')
-
-       # Pause for an hour
-        time.sleep(3600)
