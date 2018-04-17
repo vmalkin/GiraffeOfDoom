@@ -15,7 +15,7 @@ errorloglevel = logging.ERROR
 logging.basicConfig(filename="errors.log", format='%(asctime)s %(message)s', level=errorloglevel)
 WIND_SPEED_THRESHOLD = 800
 getcontext().prec = 6
-NULL = "null"
+NULL = ""
 
 class SatelliteDataProcessor:
     def __init__(self):
@@ -45,7 +45,7 @@ class SatelliteDataProcessor:
         except:
             # time_now = str(datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S"))
             discovr_data = "no_data"
-
+            logging.error("No data from DISCOVR!")
         return discovr_data
 
 
