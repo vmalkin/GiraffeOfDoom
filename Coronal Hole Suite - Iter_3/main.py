@@ -53,7 +53,7 @@ if __name__ == "__main__":
             prediction_plotter = mgr_plotter.Plotter()
             prediction_plotter.plot_data()
         else:
-            common_data.report_string = common_data.report_string + ("Insufficient time has passed to begin forecasting. " + str(timeleft)[:5] + " days remaining" + "\n")
+            common_data.report_string = common_data.report_string + ("<br>Insufficient time has passed to begin forecasting. " + str(timeleft)[:5] + " days remaining" + "\n")
             print(common_data.report_string)
             with open("regression.php", 'w') as w:
                 w.write(common_data.report_string + '\n')
