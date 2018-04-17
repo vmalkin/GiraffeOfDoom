@@ -9,7 +9,7 @@
 		include "icon.php";
 	?>
 	
-	<title>Dunedin Aurora</title>
+	<title>Dunedin Aurora - 4 Day Solar Wind Forecast</title>
 	
 	<script type="text/javascript" src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
 	<script type="text/javascript" src="http://code.highcharts.com/highcharts.js"></script>
@@ -33,10 +33,13 @@
 		<div class="page-header">
 		<h1 class = "headline"><i>Dunedin Aurora</i></h1>
 		</div>
-	 
+		<?php
+			include "menu.php";
+		?>
 		<!-- PAGE CONTENT HERE -->
-		<h2>Short-range Forecast <sub><a href="" data-toggle="modal" data-target="#modal_forecast">&sect;</a></sub></h2>
-		<p>Based on <i>Empirical Space Weather Forecast Tool</i> by University of Graz</p>
+		<h2>Coronal Hole Solar Wind Forecast <sub><a href="" data-toggle="modal" data-target="#modal_forecast">&sect;</a></sub></h2>
+		<p>Based on <i>Empirical Space Weather Forecast Tool</i> by University of Graz.<br>SDO image courtesy of NASA/SDO and the AIA, EVE, and HMI science teams.</p>
+		<p style = "color: red;"><b><i>BETA Test Edition</i></b></p>
 		<div class = "row">
 			<div class = "col-sm-4">
 				<img class="img-responsive" src="sun.jpg">
@@ -55,18 +58,19 @@
 		<!-- <div id="hss" style="width: 100%; height: 600px; margin: 0 auto"></div> -->
 		<div class = "row">
 			<div class = "col-md-12">
+				<div id="actual"></div>
 				<div id="forecast"></div>
-				<div id="density"></div>
-			</div
+				<a href="" data-toggle="modal" data-target="#modal_scatterplot">Display scatterplot?</a>
+			</div>
 		</div>
 
 <script type="text/javascript">
-var heightthing = 320;
+var heightthing = 250;
 			
 		$(document).ready(function() {
 			Highcharts.setOptions({})
 			$.get('forecast.csv', function(csv) {
-			    $('#forecast').highcharts({
+			    $('#actual').highcharts({
 			        chart: {
 			        	//type: 'line',
 						zoomType:'x',
@@ -75,7 +79,11 @@ var heightthing = 320;
 						spacingRight: 10
 			        },
 					legend: {
-						enabled: true
+						enabled: false
+					},
+					credits:
+					{
+						enabled: false
 					},
 					plotOptions: {
 						series: {
@@ -90,12 +98,117 @@ var heightthing = 320;
 					{
 			            csv: csv,
 						//startColumn: 0,
-						//endColumn: 1,
+						//endColumn: 2,
 			        },
 					series:[
 						{
 							visible: true,
 							name: "Speed - Actual"
+						},
+												{
+							visible: false,
+						}
+					],
+					tooltip: {
+						enabled: true,
+						crosshairs: true,
+						shared: true
+					},
+			        title: 
+					{
+						text: ''
+					},
+					subtitle:
+					{
+						text: ''
+					},
+					yAxis:
+					{
+						//softMin: actual_min,
+						minPadding: 0,
+						gridLineWidth: 1,
+						gridLineColor: "#D8D8D8",
+						title: 
+							{
+								text: '',
+								style:
+									{
+										color: '#008000'
+									},
+							},
+						labels: 
+							{
+								style:
+								{
+									color: "#008000"
+								}
+							}
+					},
+
+					xAxis: 
+					{
+						
+						tickInterval: 24 * 3600 * 1000,
+						minorTickInterval: 6 * 3600 * 1000,
+						minorGridLineWidth: 1,
+						minorGridLineColor: '#d8d8d8',
+						gridLineWidth: 1,
+						gridLineColor: "#a0a0a0",
+						title: 
+							{
+								text: ''
+							},
+						labels: 
+							{
+								enabled: false,
+								style:
+								{
+									color: "#404040"
+								}
+							}
+					}
+			    });
+			});
+		});	
+
+		
+		$(document).ready(function() {
+			Highcharts.setOptions({})
+			$.get('forecast.csv', function(csv) {
+			    $('#forecast').highcharts({
+			        chart: {
+			        	//type: 'line',
+						zoomType:'x',
+						height: heightthing,
+						spacingLeft: 10,
+						spacingRight: 10
+			        },
+					legend: {
+						enabled: false
+					},
+					credits:
+					{
+						enabled: false
+					},
+					plotOptions: {
+						series: {
+							marker: {
+								enabled: false
+							},
+						
+						}
+					},
+					colors: ['#008000', '#ff0000'],
+			        data: 
+					{
+			            csv: csv,
+						//startColumn: 0,
+						//endColumn: 2,
+			        },
+					series:[
+						{
+							visible: false
+							
 						},
 						{
 							visible: true,
@@ -109,7 +222,7 @@ var heightthing = 320;
 					},
 			        title: 
 					{
-						text: 'Solar Wind Forecast'
+						text: ''
 					},
 					subtitle:
 					{
@@ -117,100 +230,66 @@ var heightthing = 320;
 					},
 					yAxis: 
 					{
+						//softMin: actual_min,
+						minPadding: 0,
 						gridLineWidth: 1,
 						gridLineColor: "#D8D8D8",
 						title: 
 							{
-								text: 'Wind Speed km/s',
+								text: '',
+								style:
+									{
+										color: '#800000'
+									},
 							},
-					},
-					xAxis: 
-					{
-						tickInterval: 60,
-						gridLineWidth: 1,
-						gridLineColor: "#D8D8D8",
-						
-					}
-			    });
-			});
-		});
-
-		$(document).ready(function() {
-		Highcharts.setOptions({})
-		
-			$.get('display.csv', function(csv) {
-			    $('#density').highcharts({
-			        chart: {
-			        	//type: 'line',
-						zoomType:'x',
-						height: heightthing,
-						spacingLeft: 10,
-						spacingRight: 10
-			        },
-					legend: {
-						enabled: false
-					},
-					plotOptions: {
-						series: {
-							marker: {
-								enabled: false
+						labels: 
+							{
+								style:
+								{
+									color: "#f00000"
+								}
 							}
-						}
 					},
-			        data: 
-					{
-			            csv: csv,
-						//startColumn: 0,
-						//endColumn: 1,
-			        },
-					series:[
-						{
-							visible: false
-						},
-						{
-							visible: false
-						},
-						{
-							visible: true
-						}
-					],
-					tooltip: {
-						enabled: true
-					},
-			        title: 
-					{
-						text: 'Actual - Solar Wind Density'
-					},
-					subtitle:
-					{
-						text: 'particles/m^3'
-					},
-					yAxis: 
-					{
-						softMax: 800,
-						min: 0
-					},
+
 					xAxis: 
 					{
-						tickInterval: 60,
+						
+						tickInterval: 24 * 3600 * 1000,
+						minorTickInterval: 6 * 3600 * 1000,
+						minorGridLineWidth: 1,
+						minorGridLineColor: '#d8d8d8',
 						gridLineWidth: 1,
-						gridLineColor: "#D8D8D8",
+						gridLineColor: "#a0a0a0",
 						title: 
-						{
-							text: 'Time, UTC'
-						}
+							{
+								text: 'Date/Time UTC'
+							},
+						labels: 
+							{
+								style:
+								{
+									color: "#404040"
+								}
+							}
 					}
 			    });
 			});
 		});	
-
+		
 		</script>	
+		
 		<?PHP
+			include "regression.php";
 			include "modal_forecast.php";
+			include "modal_scatterplot.php";
 		?>
 		<footer>
+		<?PHP
+			include "footer.php";
+		?>
 		</footer>
 		
 		</div>
+		<script src="js/bootstrap.min.js"></script>
   </body>
 </html>
