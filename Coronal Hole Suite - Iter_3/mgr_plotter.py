@@ -18,7 +18,7 @@ logging.basicConfig(filename="errors.log", format='%(asctime)s %(message)s', lev
 
 READING_PREDICTED = "prediction.csv"
 READING_ACTUAL = "log.csv"
-NULL = "#n/a"
+NULL = ""
 """
 A plot point, used to aggregate multiple data series for final display. 
 """
