@@ -4,6 +4,8 @@ multiple series in it for use in APIS like Highcharts, etc.
 """
 import logging
 import time
+import common_data
+
 # setup error logging
 # logging levels in order of severity:
 # DEBUG

@@ -11,6 +11,7 @@ import urllib.request
 import datetime
 from decimal import Decimal, getcontext
 import logging
+import common_data
 
 # setup error logging
 # logging levels in order of severity:
@@ -114,6 +115,7 @@ class SolarImageProcessor:
             self._save_image_from_url('https://services.swpc.noaa.gov/images/synoptic-map.jpg', 'syntopic.jpg')
         except:
             logging.debug("Unable to get syntopic map from NOAA")
+            common_data.report_string = common_data.report_string + "Unable to get syntopic map from NOAA.\n"
 
         try:
             self._save_image_from_url("https://sdo.gsfc.nasa.gov/assets/img/latest/latest_512_0193.jpg", "sun.jpg")
@@ -153,5 +155,6 @@ class SolarImageProcessor:
 
         except:
             logging.error("Unable to process SDO image")
+            common_data.report_string = common_data.report_string + "Unable to calculate coronal hole coverage.\n"
             self.coverage = 0
 

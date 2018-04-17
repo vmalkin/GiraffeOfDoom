@@ -4,6 +4,7 @@ import mgr_data
 import mgr_plotter
 import mgr_forecast
 import time
+import common_data
 
 LOGFILE = 'log.csv'
 WAITPERIOD = 86400 * 5
@@ -14,9 +15,13 @@ discovr = mgr_discovr_data.SatelliteDataProcessor()
 sun = mgr_solar_image.SolarImageProcessor()
 data_manager = mgr_data.DataManager(LOGFILE)
 forecaster = mgr_forecast.Forecaster()
+common_data.report_string = ""
 
 if __name__ == "__main__":
     while True:
+        # reset the resport string
+        common_data.report_string = ""
+
         # get the wind data and coronal hole coverage. In cases of no information, the the
         # returned values will be ZERO!
         # Get the satellite data
@@ -48,10 +53,10 @@ if __name__ == "__main__":
             prediction_plotter = mgr_plotter.Plotter()
             prediction_plotter.plot_data()
         else:
-            regression_status = ("Insufficient time has passed to begin forecasting. " + str(timeleft)[:5] + " days remaining")
-            print(regression_status)
+            common_data.report_string = common_data.report_string + ("Insufficient time has passed to begin forecasting. " + str(timeleft)[:5] + " days remaining" + "\n")
+            print(common_data.report_string)
             with open("regression.php", 'w') as w:
-                w.write(regression_status + '\n')
+                w.write(common_data.report_string + '\n')
 
         # Pause for an hour
         time.sleep(3600)

@@ -10,6 +10,7 @@ import datetime
 from decimal import *
 import logging
 import os
+import common_data
 
 # setup error logging
 # logging levels in order of severity:

@@ -3,6 +3,7 @@ from decimal import Decimal, getcontext
 import time
 import datetime
 import logging
+import common_data
 
 # setup error logging
 # logging levels in order of severity:
@@ -125,6 +126,7 @@ class SatelliteDataProcessor:
         self.satdata = self._get_json()
         if self.satdata == "no_data":
             # Unable to get DISCOVR data
+            common_data.report_string = common_data.report_string + "DISCOVR does not have new solar wind data to report \n"
             self.wind_density = 0
             self.wind_speed = 0
         else:
