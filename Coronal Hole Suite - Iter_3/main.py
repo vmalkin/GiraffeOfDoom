@@ -17,6 +17,8 @@ forecaster = mgr_forecast.Forecaster()
 
 if __name__ == "__main__":
     while True:
+        # get the wind data and coronal hole coverage. In cases of no information, the the
+        # returned values will be ZERO!
         # Get the satellite data
         discovr.get_data()
 
@@ -51,6 +53,6 @@ if __name__ == "__main__":
             with open("regression.php", 'w') as w:
                 w.write(regression_status + '\n')
 
-       # Pause for an hour
+        # Pause for an hour
         time.sleep(3600)
 

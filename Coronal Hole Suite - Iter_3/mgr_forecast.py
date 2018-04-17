@@ -6,7 +6,7 @@ from decimal import *
 
 class Forecaster:
     def __init__(self):
-        self.prediction_list = []
+        pass
 
     # convert the internal posx_date to UTC format
     def _posix2utc(self, posix_date):
@@ -158,8 +158,9 @@ class Forecaster:
         # parse the data to find the CH date that matches the speed of solar wind
         getcontext().prec = 6
 
-        # This part corresponds to forecast.calculate_forecast()
-        # the revised data list is NOT a list of objects, but data.
+        # the revised data list is will be a python list of data, not objects.
+        # revised data will contain a list of [launchdate, windspeed]
+        # Windspeed may be zero! Esp if the downlink to the sat fails.
         revised_ch_data = []
 
         # get the launchdate for each datapoints windspeed
@@ -194,17 +195,18 @@ class Forecaster:
 
 
         # the array that will hold prediction values
-
+        prediction_list = []
         for item in CH_data:
             predict_speed = rg_a + (rg_b * Decimal(item.coronal_hole_coverage))
             transittime = ASTRONOMICAL_UNIT_KM / predict_speed
             futurearrival = int(item.posix_date) + int(transittime)
             prediction = str(futurearrival) + "," + str(predict_speed)
-            self.prediction_list.append(prediction)
+            prediction_list.append(prediction)
 
         with open("prediction.csv", 'w') as w:
-            for item in self.prediction_list:
+            for item in prediction_list:
                 w.write(str(item) + '\n')
+
         avg = 0
         for item in CH_data:
             avg = avg + item.wind_speed
