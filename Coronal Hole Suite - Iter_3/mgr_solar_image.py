@@ -153,6 +153,12 @@ class SolarImageProcessor:
             # Calculate the area occupied by coronal holes
             self.coverage = self._count_pixels(outputimg2, mask_segment)
 
+            # It is extremely unlikely that we will ever get 100% coronal hole coverage on the meridian
+            # Most ikely it is a glitched image from SDO - se we gett less statistical grief if we reset the value
+            # to a zero.
+            if self.coverage == 1:
+                self.coverage = 0
+
         except:
             logging.error("Unable to process SDO image")
             common_data.report_string = common_data.report_string + "Unable to calculate coronal hole coverage.\n"
