@@ -1,0 +1,41 @@
+2018-04-02 10:57:40,523 Created error log for this session
+2018-04-02 10:57:43,184 Starting new HTTP connection (1): services.swpc.noaa.gov
+2018-04-02 10:57:43,687 http://services.swpc.noaa.gov:80 "GET /products/solar-wind/plasma-2-hour.json HTTP/1.1" 200 None
+2018-04-02 10:59:48,663 Created error log for this session
+2018-04-02 10:59:51,168 Starting new HTTP connection (1): services.swpc.noaa.gov
+2018-04-02 10:59:51,459 http://services.swpc.noaa.gov:80 "GET /products/solar-wind/plasma-2-hour.json HTTP/1.1" 200 None
+2018-04-02 11:03:14,925 Created error log for this session
+2018-04-02 11:03:18,242 Starting new HTTP connection (1): services.swpc.noaa.gov
+2018-04-02 11:03:18,526 http://services.swpc.noaa.gov:80 "GET /products/solar-wind/plasma-2-hour.json HTTP/1.1" 200 None
+2018-04-02 11:27:41,718 Created error log for this session
+2018-04-02 11:27:41,719 starting image from URL download
+2018-04-02 11:29:58,141 Created error log for this session
+2018-04-02 11:29:58,142 starting image from URL download
+2018-04-02 11:30:00,515 starting image from URL download
+2018-04-02 11:30:01,942 Starting new HTTP connection (1): services.swpc.noaa.gov
+2018-04-02 11:30:02,251 http://services.swpc.noaa.gov:80 "GET /products/solar-wind/plasma-2-hour.json HTTP/1.1" 200 None
+2018-04-02 11:30:31,096 Created error log for this session
+2018-04-02 11:30:31,097 starting image from URL download
+2018-04-02 11:30:33,271 starting image from URL download
+2018-04-02 11:30:34,673 Starting new HTTP connection (1): services.swpc.noaa.gov
+2018-04-02 11:30:34,972 http://services.swpc.noaa.gov:80 "GET /products/solar-wind/plasma-2-hour.json HTTP/1.1" 200 None
+2018-04-02 13:52:57,569 Created error log for this session
+2018-04-02 13:52:57,570 starting image from URL download
+2018-04-02 13:52:58,880 starting image from URL download
+2018-04-02 13:53:00,299 Starting new HTTP connection (1): services.swpc.noaa.gov
+2018-04-02 13:53:00,649 http://services.swpc.noaa.gov:80 "GET /products/solar-wind/plasma-2-hour.json HTTP/1.1" 200 None
+2018-04-02 13:53:56,678 Created error log for this session
+2018-04-02 13:53:56,679 starting image from URL download
+2018-04-02 13:53:58,038 starting image from URL download
+2018-04-02 13:53:59,462 Starting new HTTP connection (1): services.swpc.noaa.gov
+2018-04-02 13:53:59,772 http://services.swpc.noaa.gov:80 "GET /products/solar-wind/plasma-2-hour.json HTTP/1.1" 200 None
+2018-04-02 13:54:16,649 Created error log for this session
+2018-04-02 13:54:16,649 starting image from URL download
+2018-04-02 13:54:18,697 starting image from URL download
+2018-04-02 13:54:20,113 Starting new HTTP connection (1): services.swpc.noaa.gov
+2018-04-02 13:54:20,616 http://services.swpc.noaa.gov:80 "GET /products/solar-wind/plasma-2-hour.json HTTP/1.1" 200 None
+2018-04-02 13:54:32,981 Created error log for this session
+2018-04-02 13:54:32,982 starting image from URL download
+2018-04-02 13:54:34,076 starting image from URL download
+2018-04-02 13:54:35,453 Starting new HTTP connection (1): services.swpc.noaa.gov
+2018-04-02 13:54:35,814 http://services.swpc.noaa.gov:80 "GET /products/solar-wind/plasma-2-hour.json HTTP/1.1" 200 None

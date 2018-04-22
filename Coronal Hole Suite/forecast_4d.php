@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <?php
+		include "icon.php";
+	?>
+	
+	<title>Dunedin Aurora</title>
+	
+	<script type="text/javascript" src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+	<script type="text/javascript" src="http://code.highcharts.com/highcharts.js"></script>
+	<script type="text/javascript" src="http://code.highcharts.com/modules/data.js"></script>
+
+	<link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">	
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+	<link href="dna.css" rel="stylesheet">
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+	
+
+  </head>
+  <body>
+	<div class="container">
+		<div class="page-header">
+		<h1 class = "headline"><i>Dunedin Aurora</i></h1>
+		</div>
+	 
+		<!-- PAGE CONTENT HERE -->
+		<h2>Short-range Forecast <sub><a href="" data-toggle="modal" data-target="#modal_forecast">&sect;</a></sub></h2>
+		<p>Based on <i>Empirical Space Weather Forecast Tool</i> by University of Graz</p>
+		<div class = "row">
+			<div class = "col-sm-4">
+				<img class="img-responsive" src="sun.jpg">
+				<p><i>SDO 193 &#8491; EUV Image</i><br>
+			</div>
+			<div class = "col-sm-4">
+				<img class="img-responsive" src="syntopic.jpg">
+				<p><i>NOAA SWPC Syntopic Map</i><br>
+			</div>
+			<div class = "col-sm-4">
+				<img class="img-responsive" src="disc_full.bmp">
+				<p><i>DunedinAurora.NZ computer generated CH Map</i><br>
+			</div>
+		</div>
+
+		<!-- <div id="hss" style="width: 100%; height: 600px; margin: 0 auto"></div> -->
+		<div class = "row">
+			<div class = "col-md-12">
+				<div id="ch"></div>
+				<div id="wind"></div>
+				<div id="density"></div>
+			</div
+		</div>
+
+<script type="text/javascript">
+var heightthing = 320;
+		$(document).ready(function() {
+
+		Highcharts.setOptions({})
+		
+			$.get('log.csv', function(csv) {
+			    $('#ch').highcharts({
+			        chart: {
+			        	//type: 'line',
+						zoomType:'x',
+						height: heightthing,
+						spacingLeft: 10,
+						spacingRight: 10
+			        },
+					legend: {
+						enabled: false
+					},				
+					plotOptions: {
+						series: {
+							marker: {
+								enabled: false
+							}
+						}
+					},
+			        data: 
+					{
+			            csv: csv,
+						//startColumn: 0,
+						//endColumn: 1,
+			        },
+					series:[
+						{
+							visible: true,
+						},
+						{
+							visible: false
+						},
+						{
+							visible: false
+						}
+					],
+					
+					tooltip: {
+						enabled: true
+					},
+			        title: 
+					{
+						text: 'Coronal Hole Meridian Coverage'
+					},
+					subtitle:
+					{
+						text: '0.0 - 1.0'
+					},
+					yAxis: 
+					{
+					},
+					xAxis: 
+					{
+						tickInterval: 60,
+						gridLineWidth: 1,
+						gridLineColor: "#D8D8D8",
+						title: 
+						{
+							text: 'Time, UTC'
+						}
+					}
+			    });
+			});
+		});
+
+		$(document).ready(function() {
+
+		Highcharts.setOptions({})
+		
+			$.get('log.csv', function(csv) {
+			    $('#wind').highcharts({
+			        chart: {
+			        	//type: 'line',
+						zoomType:'x',
+						height: heightthing,
+						spacingLeft: 10,
+						spacingRight: 10
+			        },
+					legend: {
+						enabled: false
+					},
+					plotOptions: {
+						series: {
+							marker: {
+								enabled: false
+							}
+						}
+					},
+			        data: 
+					{
+			            csv: csv,
+						//startColumn: 0,
+						//endColumn: 1,
+			        },
+					series:[
+						{
+							visible: false
+						},
+						{
+							visible: true
+						},
+						{
+							visible: false
+						},
+					],
+					tooltip: {
+						enabled: true
+					},
+			        title: 
+					{
+						text: 'Solar Wind Speed'
+					},
+					subtitle:
+					{
+						text: 'km/s'
+					},
+					yAxis: 
+					{
+					},
+					xAxis: 
+					{
+						tickInterval: 60,
+						gridLineWidth: 1,
+						gridLineColor: "#D8D8D8",
+						title: 
+						{
+							text: 'Time, UTC'
+						}
+					}
+			    });
+			});
+		});
+
+		$(document).ready(function() {
+
+		Highcharts.setOptions({})
+		
+			$.get('log.csv', function(csv) {
+			    $('#density').highcharts({
+			        chart: {
+			        	//type: 'line',
+						zoomType:'x',
+						height: heightthing,
+						spacingLeft: 10,
+						spacingRight: 10
+			        },
+					legend: {
+						enabled: false
+					},
+					plotOptions: {
+						series: {
+							marker: {
+								enabled: false
+							}
+						}
+					},
+			        data: 
+					{
+			            csv: csv,
+						//startColumn: 0,
+						//endColumn: 1,
+			        },
+					series:[
+						{
+							visible: false
+						},
+						{
+							visible: false
+						},
+						{
+							visible: true
+						},
+					],
+					tooltip: {
+						enabled: true
+					},
+			        title: 
+					{
+						text: 'Solar Wind Density'
+					},
+					subtitle:
+					{
+						text: 'particles/m^3'
+					},
+					yAxis: 
+					{
+					},
+					xAxis: 
+					{
+						tickInterval: 60,
+						gridLineWidth: 1,
+						gridLineColor: "#D8D8D8",
+						title: 
+						{
+							text: 'Time, UTC'
+						}
+					}
+			    });
+			});
+		});
+		</script>	
+		<?PHP
+			include "modal_forecast.php";
+		?>
+		<footer>
+		</footer>
+		
+		</div>
+  </body>
+</html>

@@ -1,12 +1,11 @@
-
 *.xml
-
 heatmap/.DS_Store
-
 heatmap/.DS_Store
-
 *.pyc
-
-*.pyc
-
-*.pyc
+*.jpg
+*.bmp
+*.exe
+Coronal Hole Suite/dna.css
+Coronal Hole Suite/index.html
+*.css
+*.map
