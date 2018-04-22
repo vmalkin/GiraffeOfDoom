@@ -11,7 +11,34 @@ __author__ = 'Meepo'
 #
 # ###################################################################
 
+# ############################################################
+# Create display file for Highcharts
+# ############################################################
+def create_hichart_datafile_brendan(readingsArray, splitvalue, filename):
 
+    splitvalue = len(readingsArray) - splitvalue
+
+    if splitvalue < 1:
+        splitvalue = 0
+
+    displayList = readingsArray[splitvalue:]
+    # we want the average reading of this array now...
+
+    try:
+        os.remove(filename)
+    except OSError:
+        print("WARNING: could not delete " + filename)
+        logging.warning("WARNING: File IO Exception raised - could not delete: " + filename)
+
+    try:
+        with open(filename, 'a') as f:
+            f.write("Date/Time (UTC), Reading" + "\n")
+            for datapoints in displayList:
+                # f.write(datapoints.dateTime + "," + str(datapoints.raw_x) + "," + str(datapoints.raw_y) + "," + str(datapoints.raw_z) + '\n')
+                f.write(datapoints + '\n')
+    except IOError:
+        print("WARNING: There was a problem accessing " + filename)
+        logging.warning("WARNING: File IO Exception raised whilst accessing file: " + filename)
 
 
 # ############################################################

@@ -68,9 +68,11 @@ def process_data(input_data_array):
     splitvalue = k.MAG_READ_FREQ * 60 * 1
     ofm.create_hichart_datafile(rebuilt_data, splitvalue, k.FILE_1HR)
     #
-    # # to get the last 4 hours the split value is mag read frequency * 60 * 4
-    # splitvalue = k.MAG_READ_FREQ * 60 * 4
-    # ofm.create_hichart_datafile(rebuilt_data, splitvalue, k.FILE_4HR)
+    
+    # to get the last 1 MINUTE the split value is mag read frequency * 1
+    ofm.create_hichart_datafile_brendan(rebuilt_data, 60, "brendan.csv")
+
+    
     #
     # to get the last 24 hours the split value is mag read frequency * 60 * 24
     splitvalue = k.MAG_READ_FREQ * 60 * 24
