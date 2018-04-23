@@ -40,7 +40,7 @@ class FileManager:
         if os.path.isfile(RawlogName):
             try:
                 with open(RawlogName, 'a') as f:
-                    f.write(datapoint.print_values("utc") + '\n')
+                    f.write(datapoint.print_values("posix") + '\n')
                     # print("Data logged ok. Array Size: " + str(len(readings)))
             except IOError:
                 print("WARNING: There was a problem accessing the current logfile: " + RawlogName)
