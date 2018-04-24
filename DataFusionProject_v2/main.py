@@ -61,10 +61,10 @@ if __name__ == "__main__":
         # except:
         #     print("Unable to create station3")
         #
-        # try:
-        #     station4 = Station.Station("Corstorpine", "/home/vmcdonal/vicbins/Corstorphine01.1minbins.csv")
-        # except:
-        #     print("Unable to create station4")
+        try:
+            station4 = Station.Station("Corstorpine", "Corstorphine01.1minbins.csv")
+        except:
+            print("Unable to create station4")
 
         # we're only ever going to have a handful of stations here, so just manually append them
         logging.info("Creating the list of magnetometer stations")

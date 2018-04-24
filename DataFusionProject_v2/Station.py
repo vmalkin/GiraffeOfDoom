@@ -13,100 +13,96 @@ class Station:
         self.csvfile = csvfile
         self.station_name = station_name
 
-        # ####################################################################################
-        # Load datadata from file
-        # ####################################################################################
-        def load_csv(self, datafile):
-            importarray = []
-            # Check if exists CurrentUTC file. If exists, load up Datapoint Array.
-            if os.path.isfile(datafile):
-                with open(datafile) as e:
-                    for line in e:
-                        line = line.strip()  # remove any trailing whitespace chars like CR and NL
-                        values = line.split(",")
-                        dp = values[0] + "," + values[1]
-                        importarray.append(dp)
-            return importarray
 
-        # ##################################################
-        # Convert timestamps in array to Unix datatime
-        # ##################################################
-        def utc2unix(utc_data_array):
-            # set date datatime format for strptime()
-            # dateformat = "%Y-%m-%d %H:%M:%S.%f"
-            # dateformat = '"%Y-%m-%d %H:%M:%S"'
-            dateformat = '%Y-%m-%d %H:%M'
+    # ####################################################################################
+    # Load datadata from file
+    # ####################################################################################
+    def load_csv(self, datafile):
+        importarray = []
+        # Check if exists CurrentUTC file. If exists, load up Datapoint Array.
+        if os.path.isfile(datafile):
+            with open(datafile) as e:
+                for line in e:
+                    line = line.strip()  # remove any trailing whitespace chars like CR and NL
+                    values = line.split(",")
+                    dp = values[0] + "," + values[1]
+                    importarray.append(dp)
+        return importarray
 
-            # convert array datadata times to unix datatime
-            workingarray = []
-            count = 0
-            for i in range(1, len(utc_data_array)):
-                itemsplit = utc_data_array[i].split(",")
-                newdatetime = datetime.strptime(itemsplit[0], dateformat)
-                # convert to Unix datatime (Seconds)
-                newdatetime = mktime(newdatetime.timetuple())
+    # ##################################################
+    # Convert timestamps in array to Unix datatime
+    # ##################################################
+    def utc2unix(self, utc_data_array):
+        # set date datatime format for strptime()
+        # dateformat = "%Y-%m-%d %H:%M:%S.%f"
+        # dateformat = '"%Y-%m-%d %H:%M:%S"'
+        dateformat = '%Y-%m-%d %H:%M'
 
-                datastring = str(newdatetime) + "," + str(itemsplit[1])
-                workingarray.append(datastring)
+        # convert array datadata times to unix datatime
+        workingarray = []
+        count = 0
+        for i in range(1, len(utc_data_array)):
+            itemsplit = utc_data_array[i].split(",")
+            newdatetime = datetime.strptime(itemsplit[0], dateformat)
+            # convert to Unix datatime (Seconds)
+            newdatetime = mktime(newdatetime.timetuple())
 
-            return workingarray
+            datastring = str(newdatetime) + "," + str(itemsplit[1])
+            workingarray.append(datastring)
 
-        # #################################################################################
-        # normalise the datadata
-        # #################################################################################
-        def normaliseDHDT(unix_data_array):
-            workingarray = []
+        return workingarray
 
-            # first calculate the max/min values in our datadata
-            temp1 = []
-            for i in range(1,len(unix_data_array)):
-                itemsplit = unix_data_array[i].split(",")
-                datavalue = itemsplit[1]
-                temp1.append(datavalue)
+    # #################################################################################
+    # normalise the datadata
+    # #################################################################################
+    def normaliseDHDT(self, unix_data_array):
+        workingarray = []
 
-            minvalue = float(temp1[0])
-            for i in range(0,len(temp1)):
-                if float(temp1[i]) <= minvalue:
-                    minvalue = float(temp1[i])
+        # first calculate the max/min values in our datadata
+        temp1 = []
+        for i in range(1,len(unix_data_array)):
+            itemsplit = unix_data_array[i].split(",")
+            datavalue = itemsplit[1]
+            temp1.append(datavalue)
 
-            maxvalue = float(temp1[0])
-            for i in range(0, len(temp1)):
-                if float(temp1[i]) >= maxvalue:
-                    maxvalue = float(temp1[i])
+        minvalue = float(temp1[0])
+        for i in range(0,len(temp1)):
+            if float(temp1[i]) <= minvalue:
+                minvalue = float(temp1[i])
 
-            # print(str(self.station_name) + ' min/max values are ' + str(minvalue) + " " + str(maxvalue))
+        maxvalue = float(temp1[0])
+        for i in range(0, len(temp1)):
+            if float(temp1[i]) >= maxvalue:
+                maxvalue = float(temp1[i])
+
+        # print(str(self.station_name) + ' min/max values are ' + str(minvalue) + " " + str(maxvalue))
 
 
-            # now normalise the datadata
-            for item in unix_data_array:
-                itemsplit = item.split(",")
-                datatime = itemsplit[0]
-                datadata = itemsplit[1]
+        # now normalise the datadata
+        for item in unix_data_array:
+            itemsplit = item.split(",")
+            datatime = itemsplit[0]
+            datadata = itemsplit[1]
 
-                newdata = (float(datadata) - float(minvalue)) / (float(maxvalue) - float(minvalue))
-                newdata = datatime + "," + str(newdata)
-                workingarray.append(newdata)
+            newdata = (float(datadata) - float(minvalue)) / (float(maxvalue) - float(minvalue))
+            newdata = datatime + "," + str(newdata)
+            workingarray.append(newdata)
 
-            testarray = []
-            for item in workingarray:
-                itemsplit = item.split(",")
-                testarray.append(str(itemsplit[1]))
-            testarray.sort()
-            print(str(self.station_name) + ' NORMALISED min/max values are ' + str(testarray[0]) + " " + str(testarray[len(testarray) - 1]))
+        testarray = []
+        for item in workingarray:
+            itemsplit = item.split(",")
+            testarray.append(str(itemsplit[1]))
+        testarray.sort()
+        print(str(self.station_name) + ' NORMALISED min/max values are ' + str(testarray[0]) + " " + str(testarray[len(testarray) - 1]))
 
-            return workingarray
+        return workingarray
 
-        # ####################################################################################
-        # This stuff happens when the class is instantiated
-        # ####################################################################################
+    def process_stationdata(self):
         #load the station datadata
-        station_data = load_csv(self, self.csvfile)
+        station_data = self.load_csv(self, self.csvfile)
 
         # convert their datetimes to UNIX
-        station_data = utc2unix(station_data)
+        station_data = self.utc2unix(station_data)
 
         # normalise their datadata
-        station_data = normaliseDHDT(station_data)
-
-        #
-        self.station_data = station_data
+        station_data = self.normaliseDHDT(station_data)

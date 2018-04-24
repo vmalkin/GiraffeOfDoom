@@ -14,6 +14,7 @@ class BinData():
     def __init__(self):
         self.posix_time = 0
         self.data_values = []
+        self._flipvalue = -1
 
     def average_value(self):
         avg = 0.0
@@ -21,6 +22,8 @@ class BinData():
             for item in self.data_values:
                 avg = avg + float(item)
             avg = avg / float(len(self.data_values))
+        if avg == 0:
+            avg = ""
         return avg
 
     def _posix2utc(self):
@@ -29,7 +32,7 @@ class BinData():
         return utctime
 
     def print_values(self):
-        value_string = (str(self._posix2utc()) + "," + str(self.average_value()))
+        value_string = (str(self._posix2utc()) + "," + str(self.average_value() * self._flipvalue))
         return value_string
 
 class Binner():
@@ -63,7 +66,7 @@ class Binner():
         for i in range(0, len(self.binned_data)):
             self.binned_data[i].posix_time = (i * self._binsize) + t_deduct
 
-        filename = "graphing/RuruRapid.1minbins.csv"
+        filename = "RuruRapid.1minbins.csv"
         try:
             with open(filename, 'w') as w:
                 for dataObjects in self.binned_data:

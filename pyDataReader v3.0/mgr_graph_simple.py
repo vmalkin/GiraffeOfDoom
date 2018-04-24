@@ -103,9 +103,12 @@ class Grapher():
     # W R A P P E R   F U N C T I O N
     # ############################################################
     def wrapper_function(self):
+        # correct sign of data so increasing values = incr mag field
         revised_data = self._invert_data_array()
+        # smooth data slightly
         revised_data = self._running_average(revised_data, 6)
 
+        # Create the CSV display files
         splitvalue = self._mag_read_freq * 60 * 1
         self._create_hichart_datafile(revised_data, splitvalue, "../publish/dr01_1hr.csv")
 
