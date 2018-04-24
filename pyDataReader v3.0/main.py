@@ -2,7 +2,9 @@ import mgr_data
 import mgr_files
 import mgr_serialport
 import mgr_graph_simple
-import mgr_dhdt
+# import mgr_dhdt
+import mgr_brendan
+import datapoint
 import time
 import logging
 import re
@@ -20,7 +22,7 @@ field_correction = -1   # graph should go up, as H value increases
 station_id = "Ruru_Rapid"   # ID of magnetometer station
 
 # Comm port parameters - uncomment and change one of the portNames depending on your OS
-portName = 'Com8' # Windows
+portName = 'Com4' # Windows
 # portName = '/dev/tty.usbserial-A702O0K9' #MacOS
 # portName = '/dev/ttyACM0'
 baudrate = 9600
@@ -39,10 +41,14 @@ interCharTimeout = None
 class ChartThread(Thread):
     def __init__(self):
         Thread.__init__(self, name="SimpleChartingThread")
+        print("Starting thread for charting")
 
     def run(self):
-        time.sleep(120)
-        grapher_simple.wrapper_function()
+        while True:
+            time.sleep(20)
+            print("Create Highcharts")
+            grapher_simple.wrapper_function()
+            grapher_brendan.create_datablip()
 
 
 if __name__ == "__main__":
@@ -53,8 +59,9 @@ if __name__ == "__main__":
     comport = mgr_serialport.SerialManager(portName,baudrate,bytesize,parity,stopbits,timeout,xonxoff,rtscts,writeTimeout,dsrdtr,interCharTimeout)
     filemanager = mgr_files.FileManager()
     datamanager = mgr_data.DataList()
-    grapher_simple = mgr_graph_simple.Grapher(mag_read_freq, mag_running_count, noise_spike, field_correction, station_id, datamanager.data_array)
-    grapher_dhdt = mgr_dhdt.Differencer()
+    grapher_simple = mgr_graph_simple.Grapher(mag_read_freq, mag_running_count, field_correction, station_id, datamanager.data_array)
+    # grapher_dhdt = mgr_dhdt.Differencer()
+    grapher_brendan = mgr_brendan.Data4Brendan(datamanager.data_array, mag_read_freq)
 
     # Thread code to implement charting in a new thread.
     grapher_thread = ChartThread()
@@ -79,7 +86,7 @@ if __name__ == "__main__":
             reading_time = time.time()
 
             # create the datapoint. Print the values for the user.
-            data_point = mgr_data.DataPoint(reading_time, magnetometer_reading)
+            data_point = datapoint.DataPoint(reading_time, magnetometer_reading)
             print(data_point.print_values("utc"))
 
             # Append to the running list of readings. Save the list.

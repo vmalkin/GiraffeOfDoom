@@ -18,16 +18,16 @@ class Grapher():
         self._mag_running_count = mag_running_count
         self._field_correction = field_correction
         self._station_id = station_id
-        self.rawdata = rawdata
+        self._rawdata = rawdata
 
     # #################################################################################
     # data inverter
     # If necessary, invert the data so that trends up mean increasing field strength
     # #################################################################################
-    def _invert_data_array(self, data_array, correction):
+    def _invert_data_array(self):
         returnarray = []
-        for dataitem in data_array:
-            newdata = dataitem.data_1 * correction
+        for dataitem in self._rawdata:
+            newdata = float(dataitem.data_1) * float(self._field_correction)
             newdp = dp.DataPoint(dataitem.posix_time, newdata)
             returnarray.append(newdp)
 
@@ -106,7 +106,7 @@ class Grapher():
     # W R A P P E R   F U N C T I O N
     # ############################################################
     def wrapper_function(self):
-        revised_data = self._invert_data_array(self, self.rawdata, self._field_correction)
+        revised_data = self._invert_data_array()
 
         splitvalue = self._mag_read_freq * 60 * 1
         self._create_hichart_datafile(revised_data, splitvalue, "1hr.csv")
