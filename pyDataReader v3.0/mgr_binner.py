@@ -25,7 +25,7 @@ class BinData():
 
     def _posix2utc(self):
         utctime = time.gmtime(int(float(self.posix_time)))
-        utctime = time.strftime('%Y-%m-%d %H:%M:%S', utctime)
+        utctime = time.strftime('%Y-%m-%d %H:%M', utctime)
         return utctime
 
     def print_values(self):
