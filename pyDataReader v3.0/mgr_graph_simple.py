@@ -53,20 +53,17 @@ class Grapher():
         if len(input_array) > AVERAGING_TIME:
             for i in range(AVERAGING_TIME_HALF, len(input_array) - AVERAGING_TIME_HALF):
                 xvalue = Decimal(0)
-                jdatasplit = input_array[i].split(",")
-                jdatadate = jdatasplit[0]
+                jdatadate = input_array[i].posix_time
 
                 # This is where we average for the time i before and after i.
                 for j in range(0, AVERAGING_TIME):
-                    datasplit = input_array[(i - AVERAGING_TIME_HALF) + j]
-                    datasplit = datasplit.split(",")
-                    xdata = datasplit[1]
+                    datavalue = input_array[(i - AVERAGING_TIME_HALF) + j].data_1
 
-                    xvalue = xvalue + Decimal(xdata)
+                    xvalue = xvalue + Decimal(datavalue)
 
                 xvalue = Decimal(xvalue / AVERAGING_TIME)
 
-                displaypoint = jdatadate + "," + str(xvalue)
+                displaypoint = dp.DataPoint(jdatadate, str(xvalue))
                 displayarray.append(displaypoint)
 
         else:
@@ -107,10 +104,11 @@ class Grapher():
     # ############################################################
     def wrapper_function(self):
         revised_data = self._invert_data_array()
+        revised_data = self._running_average(revised_data, 6)
 
         splitvalue = self._mag_read_freq * 60 * 1
-        self._create_hichart_datafile(revised_data, splitvalue, "1hr.csv")
+        self._create_hichart_datafile(revised_data, splitvalue, "../publish/dr01_1hr.csv")
 
         # to get the last 24 hours the split value is mag read frequency * 60 * 24
         splitvalue = self._mag_read_freq * 60 * 24
-        self._create_hichart_datafile(revised_data, splitvalue, "24hr.csv")
+        self._create_hichart_datafile(revised_data, splitvalue, "../publish/dr01_24hr.csv")

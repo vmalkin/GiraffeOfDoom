@@ -3,6 +3,7 @@ import mgr_files
 import mgr_serialport
 import mgr_graph_simple
 # import mgr_dhdt
+import mgr_binner
 import mgr_brendan
 import datapoint
 import time
@@ -22,7 +23,7 @@ field_correction = -1   # graph should go up, as H value increases
 station_id = "Ruru_Rapid"   # ID of magnetometer station
 
 # Comm port parameters - uncomment and change one of the portNames depending on your OS
-portName = 'Com4' # Windows
+portName = 'Com8' # Windows
 # portName = '/dev/tty.usbserial-A702O0K9' #MacOS
 # portName = '/dev/ttyACM0'
 baudrate = 9600
@@ -45,11 +46,23 @@ class ChartThread(Thread):
 
     def run(self):
         while True:
-            time.sleep(20)
+            time.sleep(60)
             print("Create Highcharts")
-            grapher_simple.wrapper_function()
-            grapher_brendan.create_datablip()
-
+            try:
+                grapher_simple.wrapper_function()
+            except:
+                print("Simple grapher failed")
+                logging.error("Simple grapher failed")
+            try:
+                grapher_brendan.create_datablip()
+            except:
+                print("Brendans binner failed")
+                logging.error("Brendans binner failed")
+            try:
+                shortbins.create_binned_values()
+            except:
+                print("1 min bins grapher failed")
+                logging.error("1 min bins grapher failed")
 
 if __name__ == "__main__":
     print("Pything Data Logger")
@@ -62,6 +75,7 @@ if __name__ == "__main__":
     grapher_simple = mgr_graph_simple.Grapher(mag_read_freq, mag_running_count, field_correction, station_id, datamanager.data_array)
     # grapher_dhdt = mgr_dhdt.Differencer()
     grapher_brendan = mgr_brendan.Data4Brendan(datamanager.data_array, mag_read_freq)
+    shortbins = mgr_binner.Binner(datamanager.data_array, 86400, 60)
 
     # Thread code to implement charting in a new thread.
     grapher_thread = ChartThread()
