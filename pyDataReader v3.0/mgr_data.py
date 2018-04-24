@@ -1,36 +1,10 @@
-import time
 import os
 import logging
-import re
+import datapoint as dp
+
 errorloglevel = logging.ERROR
 logging.basicConfig(filename="errors.log", format='%(asctime)s %(message)s', level=errorloglevel)
 
-
-# #############################
-# D A T A P O I N T   C L A S S 
-# #############################
-class DataPoint:
-    def __init__(self, posix_time, data_1):
-        self.posix_time = posix_time
-        self.data_1 = data_1
-        
-    # convert the internal posx_date to UTC format
-    def _posix2utc(self):
-        utctime = time.gmtime(int(float(self.posix_time)))
-        utctime = time.strftime('%Y-%m-%d %H:%M:%S', utctime)
-        return utctime
-    
-    # create a string of labels
-    def print_labels(self):
-        return "Date/Time, Data value 1"
-
-    # return the values of this datapoint as a astring
-    def print_values(self, value_type):
-        if value_type == "utc":
-            return_time = self._posix2utc()
-            return str(return_time) + "," + str(self.data_1)
-        else:
-            return str(self.posix_time) + "," + str(self.data_1)
 
 
 # ###########################
@@ -64,8 +38,8 @@ class DataList:
                     line = line.strip()  # remove any trailing whitespace chars like CR and NL
                     values = line.split(",")
                     # See the datapoint object/constructor for the current values it holds.
-                    dp = DataPoint(values[0], values[1])
-                    readings.append(dp)
+                    datap = dp.DataPoint(values[0], values[1])
+                    readings.append(datap)
             print("Array loaded from file. Size: " + str(len(readings)) + " records")
         else:
             print("No save file loaded. Using new array.")

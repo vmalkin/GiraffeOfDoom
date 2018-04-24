@@ -56,3 +56,16 @@ class FileManager:
             except IOError:
                 print("WARNING: There was a problem accessing the current logfile: " + RawlogName)
                 logging.warning("WARNING: File IO Exception raised whilst accessing file: " + RawlogName)
+
+    # #################################################################################
+    # save an array to file
+    # #################################################################################
+    def savevalues(self, filename, array_name):
+        # export array to array-save file
+        try:
+            with open(filename, 'w') as w:
+                for dataObjects in array_name:
+                    w.write(dataObjects + '\n')
+        except IOError:
+            print("WARNING: There was a problem accessing " + filename)
+            logging.warning("WARNING: File IO Exception raised whilst accessing file: " + filename)

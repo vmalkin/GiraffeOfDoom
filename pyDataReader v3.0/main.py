@@ -1,7 +1,8 @@
 import mgr_data
 import mgr_files
 import mgr_serialport
-import mgr_graphing
+import mgr_graph_simple
+import mgr_dhdt
 import time
 import logging
 import re
@@ -10,9 +11,11 @@ __version__ = "3.0"
 errorloglevel = logging.ERROR
 logging.basicConfig(filename="errors.log", format='%(asctime)s %(message)s', level=errorloglevel)
 
-# Constants and other global variables required
-MAG_READ_FREQ = 30         # how often the magnetometer sends data per minute
-STATION_ID = "RuruRapid."
+mag_read_freq = 30   # how many readings per minute
+mag_running_count = 6   # width of the window for running average
+noise_spike = 2   # threshold for rate of change noise
+field_correction = -1   # graph should go up, as H value increases
+station_id = "Ruru_Rapid"   # ID of magnetometer station
 
 # Comm port parameters - uncomment and change one of the portNames depending on your OS
 portName = 'Com8' # Windows
@@ -38,7 +41,7 @@ if __name__ == "__main__":
     comport = mgr_serialport.SerialManager(portName,baudrate,bytesize,parity,stopbits,timeout,xonxoff,rtscts,writeTimeout,dsrdtr,interCharTimeout)
     filemanager = mgr_files.FileManager()
     datamanager = mgr_data.DataList()
-    grapher = mgr_graphing.Grapher()
+    grapher_simple = mgr_graph_simple.Grapher(mag_read_freq, mag_running_count, noise_spike, field_correction, station_id, datamanager.data_array)
 
     while True:
         # single data value from com port
@@ -57,14 +60,15 @@ if __name__ == "__main__":
             print(data_point.print_values("utc"))
 
             # Append to the running list of readings. Save the list.
-            datamanager.list_append(data_point, MAG_READ_FREQ)
+            datamanager.list_append(data_point, mag_read_freq)
             datamanager.list_save()
 
             # Save the 24 hour logfile.
             filemanager.save_daily_log(data_point)
 
             # create the highchart display files.
-            grapher.wrapper()
+            # THis will need to run in it's own thread...
+            grapher_simple.wrapper_function()
 
         else:
             print("Garbage data from Magnetometer: " + magnetometer_reading)
