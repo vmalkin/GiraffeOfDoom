@@ -7,9 +7,10 @@ errorloglevel = logging.DEBUG
 logging.basicConfig(filename="errors.log", format='%(asctime)s %(message)s', level=errorloglevel)
 
 class Data4Brendan():
-    def __init__(self, data_array, mag_read_freq):
+    def __init__(self, data_array, mag_read_freq, field_correction):
         self._data_array = data_array
         self._mag_read_freq = mag_read_freq
+        self._fieldcorrection = field_correction
 
 
     def create_datablip(self):
@@ -30,7 +31,7 @@ class Data4Brendan():
             for item in templist:
                 avg_reading = Decimal(avg_reading) + Decimal(item)
 
-            avg_reading = avg_reading / len(templist)
+            avg_reading = (avg_reading / len(templist)) * self._fieldcorrection
             avg_reading = round(avg_reading, 2)
 
             utctime = time.gmtime(t_now)

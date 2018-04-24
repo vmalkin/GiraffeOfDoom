@@ -11,10 +11,10 @@ This version of the binner creates an AVERAGE in each bin. THis can be modifed t
 a rate of change. 
 '''
 class BinData():
-    def __init__(self):
+    def __init__(self, field_correction):
         self.posix_time = 0
         self.data_values = []
-        self._flipvalue = -1
+        self._flipvalue = field_correction
 
     def average_value(self):
         avg = 0.0
@@ -36,10 +36,11 @@ class BinData():
         return value_string
 
 class Binner():
-    def __init__(self, raw_data_array, timespan, binsize):
+    def __init__(self, raw_data_array, timespan, binsize, field_correction):
         self._raw_data_array = raw_data_array
         self._timespan = timespan
         self._binsize = binsize
+        self._fieldcorrection = field_correction
         self.binned_data = self._createbins()
 
     # setup the list of bins
@@ -47,7 +48,7 @@ class Binner():
         blankbins = []
         maxrange = int(self._timespan / self._binsize)
         for i in range(0,maxrange):
-            dp = BinData()
+            dp = BinData(self._fieldcorrection)
             blankbins.append(dp)
         return blankbins
 
@@ -66,7 +67,7 @@ class Binner():
         for i in range(0, len(self.binned_data)):
             self.binned_data[i].posix_time = (i * self._binsize) + t_deduct
 
-        filename = "RuruRapid.1minbins.csv"
+        filename = "graphing/RuruRapid.1minbins.csv"
         try:
             with open(filename, 'w') as w:
                 for dataObjects in self.binned_data:
@@ -75,3 +76,10 @@ class Binner():
             print("WARNING: There was a problem accessing " + filename)
             logging.warning("WARNING: File IO Exception raised whilst accessing file: " + filename)
 
+        filename = "brendan.csv"
+        try:
+            with open(filename, 'w') as w:
+                w.write(self.binned_data[len(self.binned_data) - 1].print_values() + '\n')
+        except IOError:
+            print("WARNING: There was a problem accessing " + filename)
+            logging.warning("WARNING: File IO Exception raised whilst accessing file: " + filename)

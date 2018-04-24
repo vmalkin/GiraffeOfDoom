@@ -4,7 +4,6 @@ import mgr_serialport
 import mgr_graph_simple
 # import mgr_dhdt
 import mgr_binner
-import mgr_brendan
 import datapoint
 import time
 import logging
@@ -54,11 +53,6 @@ class ChartThread(Thread):
                 print("Simple grapher failed")
                 logging.error("Simple grapher failed")
             try:
-                grapher_brendan.create_datablip()
-            except:
-                print("Brendans binner failed")
-                logging.error("Brendans binner failed")
-            try:
                 shortbins.create_binned_values()
             except:
                 print("1 min bins grapher failed")
@@ -74,8 +68,7 @@ if __name__ == "__main__":
     datamanager = mgr_data.DataList()
     grapher_simple = mgr_graph_simple.Grapher(mag_read_freq, mag_running_count, field_correction, station_id, datamanager.data_array)
     # grapher_dhdt = mgr_dhdt.Differencer()
-    grapher_brendan = mgr_brendan.Data4Brendan(datamanager.data_array, mag_read_freq)
-    shortbins = mgr_binner.Binner(datamanager.data_array, 86400, 60)
+    shortbins = mgr_binner.Binner(datamanager.data_array, 86400, 60, field_correction)
 
     # Thread code to implement charting in a new thread.
     grapher_thread = ChartThread()
