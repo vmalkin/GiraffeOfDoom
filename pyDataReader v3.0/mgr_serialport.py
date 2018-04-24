@@ -1,5 +1,6 @@
 import serial
 import logging
+import sys
 errorloglevel = logging.ERROR
 logging.basicConfig(filename="errors.log", format='%(asctime)s %(message)s', level=errorloglevel)
 
@@ -23,6 +24,7 @@ class SerialManager():
         except serial.SerialException:
             print("CRITICAL ERROR: Com port not responding. Please check parameters")
             logging.critical("CRITICAL ERROR: Unable to open com port. Please check com port parameters and/or hardware!!")
+            print("\n\n" + str(sys.exc_info()))
 
     def data_recieve(self):
         logData = self.com.readline()  # logData is a byte array, not a string at this point

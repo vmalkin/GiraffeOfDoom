@@ -6,9 +6,11 @@ import mgr_dhdt
 import time
 import logging
 import re
+import sys
+from threading import Thread
 
 __version__ = "3.0"
-errorloglevel = logging.ERROR
+errorloglevel = logging.DEBUG
 logging.basicConfig(filename="errors.log", format='%(asctime)s %(message)s', level=errorloglevel)
 
 mag_read_freq = 30   # how many readings per minute
@@ -33,6 +35,16 @@ dsrdtr = False
 interCharTimeout = None
 
 
+# CHARTING FUNCTION AS A THREAD
+class ChartThread(Thread):
+    def __init__(self):
+        Thread.__init__(self, name="SimpleChartingThread")
+
+    def run(self):
+        time.sleep(120)
+        grapher_simple.wrapper_function()
+
+
 if __name__ == "__main__":
     print("Pything Data Logger")
     print("(c) Vaughn Malkin, 2015 - 2018")
@@ -42,12 +54,23 @@ if __name__ == "__main__":
     filemanager = mgr_files.FileManager()
     datamanager = mgr_data.DataList()
     grapher_simple = mgr_graph_simple.Grapher(mag_read_freq, mag_running_count, noise_spike, field_correction, station_id, datamanager.data_array)
+    grapher_dhdt = mgr_dhdt.Differencer()
 
+    # Thread code to implement charting in a new thread.
+    grapher_thread = ChartThread()
+    try:
+        grapher_thread.start()
+    except:
+        print("Unable to start Charting Thread")
+        logging.critical("CRITICAL ERROR: Unable to shart Highcharts Thread")
+        print(str(sys.exc_info()))
+
+    #The program begins here
     while True:
         # single data value from com port
         magnetometer_reading = comport.data_recieve()
 
-        # Checking here.
+        # Checking magnetometer values against regex here.
         # r'\A-?\d+(\.\d+)?[,]-?\d+(\.\d+)?[,]-?\d+(\.\d+)?\Z'
         # example of 3-value regex...
         if re.match(r'-?\d+', magnetometer_reading):
@@ -66,12 +89,6 @@ if __name__ == "__main__":
             # Save the 24 hour logfile.
             filemanager.save_daily_log(data_point)
 
-            # create the highchart display files.
-            # THis will need to run in it's own thread...
-            grapher_simple.wrapper_function()
-
         else:
             print("Garbage data from Magnetometer: " + magnetometer_reading)
             logging.warning("WARNING: Garbage data from Magnetometer: " + magnetometer_reading)
-
-

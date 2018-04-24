@@ -97,18 +97,20 @@ class Grapher():
             with open(filename, 'a') as f:
                 f.write("Date/Time (UTC), Reading" + "\n")
                 for datapoints in displayList:
-                    # f.write(datapoints.dateTime + "," + str(datapoints.raw_x) + "," + str(datapoints.raw_y) + "," + str(datapoints.raw_z) + '\n')
-                    f.write(datapoints + '\n')
+                    f.write(datapoints.print_values("utc") + '\n')
         except IOError:
             print("WARNING: There was a problem accessing " + filename)
             logging.warning("WARNING: File IO Exception raised whilst accessing file: " + filename)
 
+    # ############################################################
+    # W R A P P E R   F U N C T I O N
+    # ############################################################
     def wrapper_function(self):
         revised_data = self._invert_data_array(self, self.rawdata, self._field_correction)
 
-        splitvalue = k.MAG_READ_FREQ * 60 * 1
-        self._create_hichart_datafile(revised_data, splitvalue, k.FILE_1HR)
+        splitvalue = self._mag_read_freq * 60 * 1
+        self._create_hichart_datafile(revised_data, splitvalue, "1hr.csv")
 
         # to get the last 24 hours the split value is mag read frequency * 60 * 24
-        splitvalue = k.MAG_READ_FREQ * 60 * 24
-        self._create_hichart_datafile(revised_data, splitvalue, k.FILE_24HR)
+        splitvalue = self._mag_read_freq * 60 * 24
+        self._create_hichart_datafile(revised_data, splitvalue, "24hr.csv")

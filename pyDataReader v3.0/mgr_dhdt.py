@@ -3,7 +3,6 @@ This file is for the purposes of creating a display file of magnetometer reading
 The returned file should have the smoothed rate of change, and the average background levels
 the returned file is CSV format
 """
-import constants as k
 import os.path
 import logging
 import math
@@ -11,6 +10,9 @@ from decimal import Decimal, getcontext
 from datetime import datetime
 import time
 
+class Differencer():
+    def __init__(self):
+        pass
 
 # #################################################################################
 # Calculate the differences
