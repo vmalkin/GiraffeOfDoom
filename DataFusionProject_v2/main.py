@@ -1,6 +1,7 @@
 import Station
 import logging
 import datetime
+import mgr_binner
 import time
 
 
@@ -31,6 +32,8 @@ if __name__ == "__main__":
     logging.basicConfig(filename="errors.log", format='%(asctime)s %(message)s', level=logging.INFO)
     logging.info("Created error log for this session")
 
+    binner = mgr_binner.Binner(array, 86400, 60, 1)
+    binner.
     station1 = Station.Station("Rure No 1", "Dalmore_Prime.1minbins.csv")
     station2 = Station.Station("Ruru Rapid No 2", "RuruRapid.1minbins.csv")
     station3 = Station.Station("Corstorpine", "Corstorphine01.1minbins.csv")

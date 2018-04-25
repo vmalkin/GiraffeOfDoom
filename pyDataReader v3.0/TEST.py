@@ -11,10 +11,8 @@ station_id = "Ruru_Rapid"   # ID of magnetometer station
 
 d_mg = mgr_data.DataList()
 binner = mgr_binner.Binner(d_mg.data_array, 86400, 60, field_correction)
-grapher_brendan = mgr_brendan.Data4Brendan(d_mg.data_array, mag_read_freq, field_correction)
 
-binner.create_binned_values()
-grapher_brendan.create_datablip()
+binner.wrapper_function()
 
 print(len(binner.binned_data))
 

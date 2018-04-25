@@ -76,10 +76,17 @@ class Binner():
             print("WARNING: There was a problem accessing " + filename)
             logging.warning("WARNING: File IO Exception raised whilst accessing file: " + filename)
 
-        filename = "brendan.csv"
+        filename = "../publish/brendan.csv"
         try:
             with open(filename, 'w') as w:
                 w.write(self.binned_data[len(self.binned_data) - 1].print_values() + '\n')
         except IOError:
             print("WARNING: There was a problem accessing " + filename)
             logging.warning("WARNING: File IO Exception raised whilst accessing file: " + filename)
+
+    def wrapper_function(self):
+        # create the initial blank list for the binned data
+        self.binned_data = self._createbins()
+
+        # populate the binlist with datapoints
+        self.create_binned_values()

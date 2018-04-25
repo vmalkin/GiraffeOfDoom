@@ -24,7 +24,7 @@ station_id = "Ruru_Rapid"   # ID of magnetometer station
 # Comm port parameters - uncomment and change one of the portNames depending on your OS
 portName = 'Com8' # Windows
 # portName = '/dev/tty.usbserial-A702O0K9' #MacOS
-# portName = '/dev/ttyACM0'
+# portName = '/dev/ttyUSB0'
 baudrate = 9600
 bytesize = 8
 parity = 'N'
@@ -53,7 +53,7 @@ class ChartThread(Thread):
                 print("Simple grapher failed")
                 logging.error("Simple grapher failed")
             try:
-                shortbins.create_binned_values()
+                shortbins.wrapper_function()
             except:
                 print("1 min bins grapher failed")
                 logging.error("1 min bins grapher failed")
