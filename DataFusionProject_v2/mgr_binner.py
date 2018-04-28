@@ -4,27 +4,18 @@ import logging
 import sys
 errorloglevel = logging.DEBUG
 logging.basicConfig(filename="errors.log", format='%(asctime)s %(message)s', level=errorloglevel)
-
+null = ""
 '''
 the datapoint to aggrgate binned values
 This version of the binner creates an AVERAGE in each bin. THis can be modifed to find a max and min, hence
 a rate of change. 
 '''
-class BinData():
-    def __init__(self, field_correction):
+class BinData:
+    def __init__(self):
         self.posix_time = 0
-        self.data_values = []
-        self._flipvalue = field_correction
-
-    def average_value(self):
-        avg = 0.0
-        if len(self.data_values) > 0:
-            for item in self.data_values:
-                avg = avg + float(item)
-            avg = avg / float(len(self.data_values))
-        if avg == 0:
-            avg = ""
-        return avg
+        self.data_1 = null
+        self.data_2 = null
+        self.data_3 = null
 
     def _posix2utc(self):
         utctime = time.gmtime(int(float(self.posix_time)))
@@ -35,20 +26,19 @@ class BinData():
         value_string = (str(self._posix2utc()) + "," + str(self.average_value() * self._flipvalue))
         return value_string
 
-class Binner():
-    def __init__(self, raw_data_array, timespan, binsize, field_correction):
-        self._raw_data_array = raw_data_array
+class Binner:
+    def __init__(self, timespan, binsize):
+        self._binneddata = []
         self._timespan = timespan
         self._binsize = binsize
-        self._fieldcorrection = field_correction
-        self.binned_data = self._createbins()
+
 
     # setup the list of bins
     def _createbins(self):
         blankbins = []
         maxrange = int(self._timespan / self._binsize)
-        for i in range(0,maxrange):
-            dp = BinData(self._fieldcorrection)
+        for i in range(0, maxrange):
+            dp = BinData()
             blankbins.append(dp)
         return blankbins
 
@@ -62,7 +52,6 @@ class Binner():
             bin_index = math.floor((float(data.posix_time) - float(t_deduct)) / float(self._binsize))
             self.binned_data[bin_index].data_values.append(data.data_1)
 
-
         # insert the timestamp for each bin
         for i in range(0, len(self.binned_data)):
             self.binned_data[i].posix_time = (i * self._binsize) + t_deduct
@@ -72,14 +61,6 @@ class Binner():
             with open(filename, 'w') as w:
                 for dataObjects in self.binned_data:
                     w.write(dataObjects.print_values() + '\n')
-        except IOError:
-            print("WARNING: There was a problem accessing " + filename)
-            logging.warning("WARNING: File IO Exception raised whilst accessing file: " + filename)
-
-        filename = "brendan.csv"
-        try:
-            with open(filename, 'w') as w:
-                w.write(self.binned_data[len(self.binned_data) - 1].print_values() + '\n')
         except IOError:
             print("WARNING: There was a problem accessing " + filename)
             logging.warning("WARNING: File IO Exception raised whilst accessing file: " + filename)
