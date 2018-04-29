@@ -53,7 +53,7 @@ class ChartThread(Thread):
                 print("Simple grapher failed")
                 logging.error("Simple grapher failed")
             try:
-                shortbins.wrapper_function()
+                shortbins.processbins()
             except:
                 print("1 min bins grapher failed")
                 logging.error("1 min bins grapher failed")

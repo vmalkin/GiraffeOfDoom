@@ -2,8 +2,11 @@ import time
 import math
 import logging
 import sys
+
 errorloglevel = logging.DEBUG
 logging.basicConfig(filename="errors.log", format='%(asctime)s %(message)s', level=errorloglevel)
+
+
 
 '''
 the datapoint to aggrgate binned values
@@ -41,52 +44,43 @@ class Binner():
         self._timespan = timespan
         self._binsize = binsize
         self._fieldcorrection = field_correction
-        self.binned_data = self._createbins()
 
-    # setup the list of bins
-    def _createbins(self):
-        blankbins = []
-        maxrange = int(self._timespan / self._binsize)
-        for i in range(0,maxrange):
-            dp = BinData(self._fieldcorrection)
-            blankbins.append(dp)
-        return blankbins
-
-    # parse thru the raw data and drop each datapoint's value into the correct bin
-    def create_binned_values(self):
-        t_now = time.time()
+    def processbins(self):
+        t_now = int(time.time())
         t_deduct = t_now - self._timespan
 
-        # aggregate the data values into the correct bins
-        for data in self._raw_data_array:
-            bin_index = math.floor((float(data.posix_time) - float(t_deduct)) / float(self._binsize))
-            self.binned_data[bin_index].data_values.append(data.data_1)
+        # set up the list of bins
+        final_data_bins = []
 
+        # Add the timestamps to the bin list
+        for i in range(t_deduct, t_now, self._binsize):
+            dp = BinData(self._fieldcorrection)
+            dp.posix_time = i
+            final_data_bins.append(dp)
 
-        # insert the timestamp for each bin
-        for i in range(0, len(self.binned_data)):
-            self.binned_data[i].posix_time = (i * self._binsize) + t_deduct
+        # parse thru the raw data, identifying datapoints that fall within the bins
+        # and adding their data to each bins internal array of data.
+        for i in range(0, len(self._raw_data_array)):
+            data = self._raw_data_array[i].data_1
+            posixtime = self._raw_data_array[i].posix_time
+            index = math.floor((float(posixtime) - float(t_deduct)) / float(self._binsize))
+            final_data_bins[index].data_values.append(data)
 
-        filename = "graphing/RuruRapid.1minbins.csv"
-        try:
-            with open(filename, 'w') as w:
-                for dataObjects in self.binned_data:
-                    w.write(dataObjects.print_values() + '\n')
-        except IOError:
-            print("WARNING: There was a problem accessing " + filename)
-            logging.warning("WARNING: File IO Exception raised whilst accessing file: " + filename)
+        savefile = "1minbins.csv"
+        # get each BinDatapoint to spit out the avg of it's stored data, as well as the UTC time.
+        for i in range(0, len(final_data_bins)):
+            with open(savefile, "a") as s:
+                try:
+                    # print(str(i) + " / " + str(len(final_data_bins)))
+                    s.write(final_data_bins[i].print_values() + "\n")
+                except:
+                    pass
 
-        filename = "../publish/brendan.csv"
-        try:
-            with open(filename, 'w') as w:
-                w.write(self.binned_data[len(self.binned_data) - 1].print_values() + '\n')
-        except IOError:
-            print("WARNING: There was a problem accessing " + filename)
-            logging.warning("WARNING: File IO Exception raised whilst accessing file: " + filename)
-
-    def wrapper_function(self):
-        # create the initial blank list for the binned data
-        self.binned_data = self._createbins()
-
-        # populate the binlist with datapoints
-        self.create_binned_values()
+        savefile = "brendan.csv"
+        # get each BinDatapoint to spit out the avg of it's stored data, as well as the UTC time.
+        with open(savefile, "a") as s:
+            try:
+                # print(str(i) + " / " + str(len(final_data_bins)))
+                s.write(final_data_bins[len(final_data_bins) - 1].print_values() + "\n")
+            except:
+                pass
