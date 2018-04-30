@@ -11,5 +11,4 @@ station_id = "Ruru_Rapid"   # ID of magnetometer station
 
 d_mg = mgr_data.DataList()
 binner = mgr_binner.Binner(d_mg.data_array, 86400, 60, field_correction)
-
 binner.processbins()

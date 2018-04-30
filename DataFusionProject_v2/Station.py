@@ -30,10 +30,12 @@ class Station:
     def __init__(self, station_name, csvfile):
         self.csvfile = csvfile
         self.station_name = station_name
-        self.datalist = self.load_csv()
-        self.datalist_normalised = self.normalise()
+        self.datalist = self._load_csv()
+        self.datalist_normalised = self._normalise()
+        self.dateearly = self._date_early()
+        self.daterecent = self._date_latest()
 
-    def normalise(self):
+    def _normalise(self):
         data_normal = []
         min = 20000
         max = -20000
@@ -51,11 +53,18 @@ class Station:
                 data_normal.append(dp)
         return data_normal
 
+    def _date_early(self):
+        early = self.datalist_normalised[0].utc2posix()
+        return early
+
+    def _date_latest(self):
+        latest = self.datalist_normalised[len(self.datalist_normalised) - 1].utc2posix()
+        return latest
 
     # ####################################################################################
     # Load datadata from file
     # ####################################################################################
-    def load_csv(self):
+    def _load_csv(self):
         importarray = []
         # Check if exists CurrentUTC file. If exists, load up Datapoint Array.
         if os.path.isfile(self.csvfile):
@@ -67,16 +76,6 @@ class Station:
                     importarray.append(dp)
         return importarray
 
-    def save_csv(self):
-        # export array to array-save file
-        try:
-            # path = "/home/vmalkin/Magnetometer/publish/"
-            path = ""
-            with open(path + self.station_name + "nrml.csv", 'w') as w:
-                for item in self.datalist_normalised:
-                    w.write(item.print_values() + '\n')
-        except IOError:
-            print("WARNING: There was a problem saving binned CSV datadata")
 
 
 
