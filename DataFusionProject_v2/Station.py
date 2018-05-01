@@ -51,6 +51,10 @@ class Station:
                 data_normal.append(dp)
         return data_normal
 
+    def refresh_stationdata(self):
+        print("Refreshing station data from file...")
+        self.datalist = self._load_csv()
+        self.datalist_normalised = self._normalise()
 
     # ####################################################################################
     # Load datadata from file

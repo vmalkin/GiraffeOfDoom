@@ -8,25 +8,28 @@ print("Creating magentometer stations")
 null_value = ""
 try:
     station1 = Station.Station("Ruru - Standard Variometer", "/home/vmalkin/Magnetometer/publish/Dalmore_Prime.1minbins.csv")
+    # station1 = Station.Station("Ruru - Standard Variometer", "Dalmore_Prime.1minbins.csv")
     print("Station Created!")
 except:
     print("Unable to create station!")
 try:
     station2 = Station.Station("Ruru - Rapid Run Variometer", "/home/vmalkin/Magnetometer/RuruRapid/graphing/RuruRapid.1minbins.csv")
+    # station2 = Station.Station("Ruru - Rapid Run Variometer","RuruRapid.1minbins.csv")
     print("Station Created!")
 except:
     print("Unable to create station!")
 try:
     station3 = Station.Station("Corstorphine", "/home/vmcdonal/vicbins/Corstorphine01.1minbins.csv")
+    # station3 = Station.Station("Corstorphine", "Corstorphine01.1minbins.csv")
     print("Station Created!")
 except:
     print("Unable to create station!")
 
-# # create the array of stations
-# stationlist = []
-# stationlist.append(station1)
-# stationlist.append(station2)
-# stationlist.append(station3)
+# create the array of stations
+stationlist = []
+stationlist.append(station1)
+stationlist.append(station2)
+stationlist.append(station3)
 
 class DisplayDatapoint():
     def __init__(self, utctime):
@@ -41,6 +44,10 @@ class DisplayDatapoint():
 
 if __name__ == "__main__":
     while True:
+        # force a refresh of station data from CSV files
+        for magstations in stationlist:
+            magstations.refresh_stationdata()
+
         aggregated_data = []
         nowtime = int(time.time())
 
@@ -60,7 +67,7 @@ if __name__ == "__main__":
         for item in aggregated_data:
             for datapoint in station1.datalist_normalised:
                 if item.utctime == datapoint.date:
-                    item.data_1 = datapoint.data
+                    item.data_3 = datapoint.data
 
         print("Aggregating data for station 2")
         for item in aggregated_data:
@@ -72,7 +79,7 @@ if __name__ == "__main__":
         for item in aggregated_data:
             for datapoint in station3.datalist_normalised:
                 if item.utctime == datapoint.date:
-                    item.data_3 = datapoint.data
+                    item.data_1 = datapoint.data
 
         # Add a header to the CSV data
         header = DisplayDatapoint("datetime")
@@ -85,6 +92,7 @@ if __name__ == "__main__":
 
         print("Saving Merged Data")
         filename = "/home/vmalkin/Magnetometer/publish/merged.csv"
+        # filename = "merged.csv"
         os.remove(filename)
         try:
             with open(filename, 'a') as w:
