@@ -1,178 +1,97 @@
 import Station
-import logging
-import datetime
+from datetime import datetime
 import time
+import os
 
-# #################################################################################
-# Adjust these parameters according to the datadata...
-# #################################################################################
-# this is the size datatime between magnetometer readings. MUST be the same for all stations being used.
-data_bin_size = 60
-combined_listlength = int(86400 / data_bin_size)
-# this is the delay for the while loop for updating the csv files...
-sleeptime = 120
+# create the stations for the magnetometers
+print("Creating magentometer stations")
+null_value = ""
+try:
+    station1 = Station.Station("Ruru - Standard Variometer", "/home/vmalkin/Magnetometer/publish/Dalmore_Prime.1minbins.csv")
+    print("Station Created!")
+except:
+    print("Unable to create station!")
+try:
+    station2 = Station.Station("Ruru - Rapid Run Variometer", "/home/vmalkin/Magnetometer/RuruRapid/graphing/RuruRapid.1minbins.csv")
+    print("Station Created!")
+except:
+    print("Unable to create station!")
+try:
+    station3 = Station.Station("Corstorphine", "/home/vmcdonal/vicbins/Corstorphine01.1minbins.csv")
+    print("Station Created!")
+except:
+    print("Unable to create station!")
 
-# ####################################################################################
-# converts the UTC timestamp to unix datatime. returns converted array.
-# ####################################################################################
-def unix2utc(unixdate):
-    utctime = datetime.datetime.fromtimestamp(int(unixdate)).strftime('%Y-%m-%d %H:%M:%S')
-    return utctime
+# # create the array of stations
+# stationlist = []
+# stationlist.append(station1)
+# stationlist.append(station2)
+# stationlist.append(station3)
 
-# #################################################################################
-# Save the binned datadata as CSV file
-# #################################################################################
-def SaveAsCSV(datalist):
-    # export array to array-save file
-    try:
-        path = "/home/vmalkin/Magnetometer/publish/"
-        # path = ""
-        with open(path + "merged.csv", 'w') as w:
-            for item in datalist:
-                w.write(item + '\n')
-    except IOError:
-        print("WARNING: There was a problem saving binned CSV datadata")
+class DisplayDatapoint():
+    def __init__(self, utctime):
+        self.utctime = utctime
+        self.data_1 = null_value
+        self.data_2 = null_value
+        self.data_3 = null_value
+
+    def print_values(self):
+        returnstring = str(self.utctime) + "," + str(self.data_1) + "," + str(self.data_2) + "," + str(self.data_3)
+        return returnstring
 
 if __name__ == "__main__":
-    # Setup error/bug logging
-    # logging.basicConfig(filename="errors.log", format='%(asctime)s %(message)s', level=logging.DEBUG)
-    logging.basicConfig(filename="errors.log", format='%(asctime)s %(message)s', level=logging.INFO)
-    logging.info("Created error log for this session")
-
-    # create the entries for each station
-    logging.info("Creating the instance of each station...")
-
     while True:
-        # station1 = Station.Station("Dalmore Rapid No 1", "dr_01hr.csv")
+        aggregated_data = []
+        nowtime = int(time.time())
+
+        print("Creating array for aggregation...")
+        # determin the one min UTC timestamps for the last 24 hours. Create an array to hold these
+        for i in range(0, 1440):
+            nowtime = nowtime - 60
+            # Convert the unix date to UTC time
+            utctime = datetime.utcfromtimestamp(nowtime).strftime("%Y-%m-%d %H:%M")
+            dp = DisplayDatapoint(utctime)
+            aggregated_data.append(dp)
+
+        # the timestamps will be back-to-front, reverse the aggregated data so they age in the correct sequence
+        aggregated_data.reverse()
+
+        print("Aggregating data for station 1")
+        for item in aggregated_data:
+            for datapoint in station1.datalist_normalised:
+                if item.utctime == datapoint.date:
+                    item.data_1 = datapoint.data
+
+        print("Aggregating data for station 2")
+        for item in aggregated_data:
+            for datapoint in station2.datalist_normalised:
+                if item.utctime == datapoint.date:
+                    item.data_2 = datapoint.data
+
+        print("Aggregating data for station 3")
+        for item in aggregated_data:
+            for datapoint in station3.datalist_normalised:
+                if item.utctime == datapoint.date:
+                    item.data_3 = datapoint.data
+
+        # Add a header to the CSV data
+        header = DisplayDatapoint("datetime")
+        header.data_1 = station1.station_name
+        header.data_2 = station2.station_name
+        header.data_3 = station3.station_name
+        aggregated_data.reverse()
+        aggregated_data.append(header)
+        aggregated_data.reverse()
+
+        print("Saving Merged Data")
+        filename = "/home/vmalkin/Magnetometer/publish/merged.csv"
+        os.remove(filename)
         try:
-            # station1 = Station.Station("Dalmore Prime", "/home/vmalkin/Magnetometer/publish/Dalmore_Prime.1minbins.csv")
-            station1 = Station.Station("Dalmore Rapid No 1", "Dalmore_Rapid_01.1minbins.csv")
+            with open(filename, 'a') as w:
+                for items in aggregated_data:
+                    w.write(items.print_values() + '\n')
         except:
-            print("Unable to create station1")
+            pass
+        print("Done!")
 
-        try:
-            # station2 = Station.Station("Dalmore Rapid No 1", "/home/vmalkin/Magnetometer/dalmoreR1/pyDataReader/graphing/Dalmore_Rapid_01.1minbins.csv")
-            station2 = Station.Station("Dalmore Rapid No 2", "Dalmore_Rapid_02.1minbins.csv")
-        except:
-            print("Unable to create station2")
-
-        # try:
-        #     station3 = Station.Station("Dalmore Rapid No 2", "/home/vmalkin/Magnetometer/dalmoreR2/pyDataReader/graphing/Dalmore_Rapid_02.1minbins.csv")
-        # except:
-        #     print("Unable to create station3")
-        #
-        # try:
-        #     station4 = Station.Station("Corstorpine", "/home/vmcdonal/vicbins/Corstorphine01.1minbins.csv")
-        # except:
-        #     print("Unable to create station4")
-
-        # we're only ever going to have a handful of stations here, so just manually append them
-        logging.info("Creating the list of magnetometer stations")
-        stationlist = []
-        try:
-            stationlist.append(station1)
-        except:
-            print("Unable to add station to list")
-
-        try:
-            stationlist.append(station2)
-        except:
-            print("Unable to add station to list")
-
-        try:
-            stationlist.append(station3)
-        except:
-            print("Unable to add station to list")
-
-        try:
-            stationlist.append(station4)
-        except:
-            print("Unable to add station to list")
-
-        # ##############################################################################################################
-        # create the combined list. We will create a series of bins. The datetime range will be from the earliest to the
-        # latest timestamp found from all the station datasets
-        # find the earliest and latest datatime values from all the stations datadata
-
-        time_start = 2000000000
-        time_end = -2000000000
-
-        for station in stationlist:
-            datasplit = station.station_data[0].split(",")
-            if float(datasplit[0]) < float(time_start):
-                time_start = datasplit[0]
-
-        for station in stationlist:
-            finalindex = len(station.station_data) - 1
-            datasplit = station.station_data[finalindex].split(",")
-            if float(datasplit[0]) > float(time_end):
-                time_end = datasplit[0]
-
-        buckets = (float(time_end) - float(time_start)) / float(data_bin_size)
-        logging.info("Start datatime is: " + str(time_start) + " End datatime is: " + str(time_end) + " " + str(buckets) + " records stored")
-
-        # now start building up the final array of combined datadata. Begin by setting up the timestamps
-        time_start = time_start.split(".")
-        time_start = int(time_start[0])
-        time_end = time_end.split(".")
-        time_end = int(time_end[0])
-
-        timestamps = []
-        for i in range(time_start, time_end, data_bin_size):
-            timestamps.append(i)
-
-        # now using the defined timestamps, go thru each station datadata and place it's reading in the correct spot
-        # if a station has no datadata for that timestamp then it's a null.
-        # NULLVALUE = "#n/a"
-        NULLVALUE = ""
-        combineddata = []
-
-        # for each timestamp that we have...
-        for i in range(1, len(timestamps)):
-            appenddata = ""
-            # ...we check each station in our list...
-            for station in stationlist:
-                data_found = False
-                for item in station.station_data:
-                    # ...we check the datadata of each station...
-                    itemsplit = item.split(",")
-                    datatime = itemsplit[0]
-                    datadata = itemsplit[1]
-                    # ...and if a datapoint falls in the bounds of a timestamp, we append it
-                    # to a string...
-                    if datatime < str(timestamps[i]) and datatime >= str(timestamps[i-1]):
-                        stationdataitem = datadata
-                        data_found = True
-
-                    if data_found == False:
-                        stationdataitem = NULLVALUE
-
-                appenddata = appenddata + "," + stationdataitem
-
-            utctime = unix2utc(timestamps[i])
-            finaldata = str(utctime) + appenddata
-            combineddata.append(finaldata)
-
-        # convert times back to UTC, prune to correct number of values, add a header to the final file.
-        print("Length of combined list: " + str(len(combineddata)) + ". Should be " + str(combined_listlength))
-        if len(combineddata) > combined_listlength:
-            slice_start = len(combineddata) - combined_listlength
-            combineddata = combineddata[slice_start:]
-
-        print("Length of final list: " + str(len(combineddata)))
-
-        combineddata.reverse()
-        heading = "Date/Time UTC"
-        for station in stationlist:
-            heading = heading + "," + station.station_name
-        combineddata.append(heading)
-        combineddata.reverse()
-
-        SaveAsCSV(combineddata)
-
-        print("FINISHED processing. Data saved to display file.\n")
-
-        time_to_sleep = sleeptime
-        for i in range(time_to_sleep, 0, -1):
-            print(str(i) + " seconds until next run...")
-            time.sleep(1)
+        time.sleep(300)
