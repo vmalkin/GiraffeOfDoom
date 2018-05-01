@@ -32,8 +32,6 @@ class Station:
         self.station_name = station_name
         self.datalist = self._load_csv()
         self.datalist_normalised = self._normalise()
-        self.dateearly = self._date_early()
-        self.daterecent = self._date_latest()
 
     def _normalise(self):
         data_normal = []
@@ -53,13 +51,6 @@ class Station:
                 data_normal.append(dp)
         return data_normal
 
-    def _date_early(self):
-        early = self.datalist_normalised[0].utc2posix()
-        return early
-
-    def _date_latest(self):
-        latest = self.datalist_normalised[len(self.datalist_normalised) - 1].utc2posix()
-        return latest
 
     # ####################################################################################
     # Load datadata from file
@@ -75,11 +66,3 @@ class Station:
                     dp = DataPoint(values[0], values[1])
                     importarray.append(dp)
         return importarray
-
-
-
-
-
-
-
-
