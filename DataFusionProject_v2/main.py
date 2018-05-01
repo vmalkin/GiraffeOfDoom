@@ -67,7 +67,7 @@ if __name__ == "__main__":
         for item in aggregated_data:
             for datapoint in station1.datalist_normalised:
                 if item.utctime == datapoint.date:
-                    item.data_3 = datapoint.data
+                    item.data_1 = datapoint.data
 
         print("Aggregating data for station 2")
         for item in aggregated_data:
@@ -79,7 +79,7 @@ if __name__ == "__main__":
         for item in aggregated_data:
             for datapoint in station3.datalist_normalised:
                 if item.utctime == datapoint.date:
-                    item.data_1 = datapoint.data
+                    item.data_3 = datapoint.data
 
         # Add a header to the CSV data
         header = DisplayDatapoint("datetime")
