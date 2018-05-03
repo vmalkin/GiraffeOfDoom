@@ -178,8 +178,12 @@ class Forecaster:
             coverage = self._CH_match_launchdate(CH_data, item[0])
             date = int(item[0])
             windspeed = item[1]
-            appenditem = str(date) + "," + str(coverage) + "," + str(windspeed)
-            coverage_data.append(appenditem)
+            # If we have NO wind data, then we should not add this to the final list
+            if windspeed > 0:
+                appenditem = str(date) + "," + str(coverage) + "," + str(windspeed)
+                coverage_data.append(appenditem)
+            else:
+                pass
 
         with open("scatterplot.csv", 'w') as w:
             for item in coverage_data:
@@ -191,8 +195,8 @@ class Forecaster:
         rg_a = Decimal(parameters[0])
         rg_b = Decimal(parameters[1])
         pearson = Decimal(parameters[2])
-        common_data.report_string = common_data.report_string + ("<br>Linear approximation is: Predicted windspeed = " + str(rg_a)[:6] + " + " + str(rg_b)[:6] + " * coronal hole area on meridian     <br>Pearsons correlation = " + str(pearson)[:6] + "\n")
-        regression_values = ("<p>Pearsons correlation: |r| = " + str(pearson)[:6])
+        common_data.report_string = common_data.report_string + ("<br>Linear approximation is: Predicted windspeed = " + str(rg_a)[:6] + " + " + str(rg_b)[:6] + " * coronal hole area on meridian     <br>Pearsons correlation |r| = " + str(pearson)[:6] + "\n")
+        # regression_values = ("<p>Pearsons correlation: |r| = " + str(pearson)[:6])
 
 
         # the array that will hold prediction values
@@ -211,10 +215,10 @@ class Forecaster:
         avg = 0
         for item in CH_data:
             avg = avg + item.wind_speed
-        avg_speed = avg / len(CH_data)
-        delay_days = (ASTRONOMICAL_UNIT_KM / avg_speed) / (60 * 60 * 24)
-        common_data.report_string = common_data.report_string + ("<br>Average Windspeed is " + str(avg_speed)[:6] + "km/s")
-        common_data.report_string = common_data.report_string + ("<br>Coronal Hole effects will be felt in " + str(delay_days)[:3] + " days")
+        avg_speed = round((avg / len(CH_data)), 1)
+        delay_days = round((ASTRONOMICAL_UNIT_KM / avg_speed) / (60 * 60 * 24), 1)
+        common_data.report_string = common_data.report_string + ("<br>Average Windspeed is " + str(avg_speed) + "km/s")
+        common_data.report_string = common_data.report_string + ("<br>Space weather transit time is " + str(delay_days) + " days")
 
         print(common_data.report_string)
         with open("regression.php", 'w') as w:
