@@ -96,6 +96,8 @@ class DataManager:
         else:
             returnlist = datalist
 
+        return returnlist
+
     def _load_datapoints(self, filename):
         # returns an array loaded from the logfile.
         # list in format posix_date, ch_value, windspeed, winddensity
