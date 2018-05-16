@@ -115,7 +115,9 @@ class Plotter:
                 if date <= int(predictionlist[i].posix_date) and date > int(predictionlist[i - 1].posix_date):
                     predictionlist[i].series2value = windspeed
 
-        # SERIES 3 - Markers for Carrington Rotations.
+        # SERIES 3 - Markers for Carrington Rotations. (655 hrs approx)
+        for i in range(0, len(predictionlist), 655):
+            predictionlist[i].series3value = 250
 
         # Save out as a CSV file for display
         try:
