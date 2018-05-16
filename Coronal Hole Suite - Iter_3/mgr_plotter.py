@@ -19,9 +19,9 @@ logging.basicConfig(filename="errors.log", format='%(asctime)s %(message)s', lev
 READING_PREDICTED = "prediction.csv"
 READING_ACTUAL = "log.csv"
 NULL = ""
-"""
-A plot point, used to aggregate multiple data series for final display. 
-"""
+
+# A plot point, used to aggregate multiple data series for final display.
+
 class PlotPoint:
     def __init__(self, posixdate):
         self.posix_date = posixdate
@@ -117,7 +117,7 @@ class Plotter:
 
         # SERIES 3 - Markers for Carrington Rotations. (655 hrs approx)
         for i in range(0, len(predictionlist), 655):
-            predictionlist[i].series3value = 250
+            predictionlist[i].series3value = 240
 
         # Save out as a CSV file for display
         try:
