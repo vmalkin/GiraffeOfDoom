@@ -7,7 +7,7 @@ import os
 print("Creating magentometer stations")
 null_value = ""
 try:
-    station1 = Station.Station("Ruru - Standard Variometer", "/home/vmalkin/Magnetometer/publish/Dalmore_Prime.1minbins.csv")
+    station3 = Station.Station("Ruru - Standard Variometer", "/home/vmalkin/Magnetometer/publish/Dalmore_Prime.1minbins.csv")
     # station1 = Station.Station("Ruru - Standard Variometer", "Dalmore_Prime.1minbins.csv")
     print("Station Created!")
 except:
@@ -19,7 +19,7 @@ try:
 except:
     print("Unable to create station!")
 try:
-    station3 = Station.Station("Corstorphine", "/home/vmcdonal/vicbins/Corstorphine01.1minbins.csv")
+    station1 = Station.Station("Corstorphine", "/home/vmcdonal/vicbins/Corstorphine01.1minbins.csv")
     # station3 = Station.Station("Corstorphine", "Corstorphine01.1minbins.csv")
     print("Station Created!")
 except:
