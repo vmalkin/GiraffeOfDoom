@@ -5,16 +5,16 @@ Mostly python, and mostly about my home magnetometer/sky-camera project (http://
 
 This repo is a bit of a mess - the significant folders are:
 
-###pyDataReader
+### pyDataReader
 The datalogger that is used at Ruru Observatory and Dunedin Aurora. This software gets serial coms data from the magnetometer, stores it to a 24hr logfile and creates a number of CSV files for display purposes. 
 
-###Coronal Hole Suite
+### Coronal Hole Suite
 This project correlates coronal hole coverage to solar wind speed. It corrects for transit time and uses a linear regression to provide a forecast of solar wind speeds. This is implemented from a paper published by the University of Gratz. 
 
-###DataFusionProject
+### DataFusionProject
 Simple project to combine logfile data from different magnetometers according to a common timestamp. Was going to form the basis for "actual" sensor/data fusion to try and increase accuracy of readings across a network of magnetometers
 
-###TrendGetter
+### TrendGetter
 Horrid implementation!! This project is designed to aggregate 24hr magnetogram logfiles and incorporate auroral sightings. It processes the magnetograms to calculate dH/dt and derive a storm threshold value. If it works, there should be a corrleation between the storm threshold and aurora sightings. Over the long term, we should see carrington rotations and maybe equinoctual clumping of sightings.
 
 This README is not current and needs to be updated! :-)
