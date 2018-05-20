@@ -19,18 +19,19 @@ logging.basicConfig(filename="errors.log", format='%(asctime)s %(message)s', lev
 READING_PREDICTED = "prediction.csv"
 READING_ACTUAL = "log.csv"
 NULL = ""
-"""
-A plot point, used to aggregate multiple data series for final display. 
-"""
+
+# A plot point, used to aggregate multiple data series for final display.
+
 class PlotPoint:
     def __init__(self, posixdate):
         self.posix_date = posixdate
         self.utcdate = self._posix2utc()
         self.series1value = NULL
         self.series2value = NULL
+        self.series3value = NULL
 
     def printvalues(self):
-        value = str(self.utcdate) + "," + str(self.series1value) + "," + str(self.series2value)
+        value = str(self.utcdate) + "," + str(self.series1value) + "," + str(self.series2value) + "," + str(self.series3value)
         return value
 
     # convert the internal posx_date to UTC format
@@ -88,6 +89,7 @@ class Plotter:
             dp = PlotPoint(i)
             predictionlist.append(dp)
 
+        # SERIES 1 - CH Wind speed ACTUAL
         for item in self._reading_actual:
             itemsplit = item.split(",")
             date = int(itemsplit[0])
@@ -100,6 +102,7 @@ class Plotter:
                 if date <= int(predictionlist[i].posix_date) and date > int(predictionlist[i - 1].posix_date):
                     predictionlist[i].series1value = windspeed
 
+        # SERIES 2 - CH Wind speed PREDICTED
         for item in self._reading_predicted:
             itemsplit = item.split(",")
             date = int(itemsplit[0])
@@ -111,8 +114,11 @@ class Plotter:
             for i in range(1, len(predictionlist)):
                 if date <= int(predictionlist[i].posix_date) and date > int(predictionlist[i - 1].posix_date):
                     predictionlist[i].series2value = windspeed
-        
-        # parse thru the 2 lists and modify the datapoint properties as appropriate
+
+        # SERIES 3 - Markers for Carrington Rotations. (655 hrs approx)
+        for i in range(0, len(predictionlist), 655):
+            predictionlist[i].series3value = 240
+
         # Save out as a CSV file for display
         try:
             with open("forecast.csv", "w") as f:

@@ -24,6 +24,7 @@ logging.basicConfig(filename="errors.log", format='%(asctime)s %(message)s', lev
 getcontext().prec = 6
 CARRINGTON_ROTATION = 655   # hours
 
+# A Datapoint. This is used to store Solar Wind parameters and CH coverage for a particular date.
 class DataPoint:
     def __init__(self, posix_date, coronal_hole_coverage, wind_speed, wind_density):
         self.ASTRONOMICAL_UNIT_KM = Decimal(149597900)
@@ -63,6 +64,7 @@ class DataPoint:
     #     return utctime
 
 
+# Use to manage a list of datapoints, append, prune list to size, etc.
 class DataManager:
     def __init__(self, data_save_file):
         self.data_save_file = data_save_file
@@ -95,6 +97,8 @@ class DataManager:
             returnlist = datalist[chop:]
         else:
             returnlist = datalist
+
+        return returnlist
 
     def _load_datapoints(self, filename):
         # returns an array loaded from the logfile.

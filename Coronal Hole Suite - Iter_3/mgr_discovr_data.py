@@ -134,7 +134,7 @@ class SatelliteDataProcessor:
             # The timestampt is in POSIX format
             dscvr_data = self._parse_json_convert_time(self.satdata)
 
-            # we want only the ast hour of data
+            # we want only the last hour of data
             dscvr_data = self._parse_json_prune(dscvr_data)
 
             # get the avg windspeed and plasma density
