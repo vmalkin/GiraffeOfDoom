@@ -2,7 +2,7 @@ import mgr_data
 import mgr_files
 import mgr_serialport
 import mgr_graph_simple
-# import mgr_dhdt
+import mgr_dhdt
 import mgr_binner
 import datapoint
 import time
@@ -67,7 +67,7 @@ if __name__ == "__main__":
     filemanager = mgr_files.FileManager()
     datamanager = mgr_data.DataList()
     grapher_simple = mgr_graph_simple.Grapher(mag_read_freq, mag_running_count, field_correction, station_id, datamanager.data_array)
-    # grapher_dhdt = mgr_dhdt.Differencer()
+    grapher_dhdt = mgr_dhdt.Differencer()
     shortbins = mgr_binner.Binner(datamanager.data_array, 86400, 60, field_correction)
 
     # Thread code to implement charting in a new thread.
