@@ -143,6 +143,10 @@ class SolarImageProcessor:
 
             # Full disk image
             outputimg1 = self._mask_img(outputimg, mask_full)
+
+            # HERE we need to calculate the latitude of black pixels and account for dimishing effects cause by
+            # increased latitude
+
             self._add_img_logo(outputimg1)
             self._image_write('disc_full.bmp', outputimg1)
 
@@ -154,7 +158,7 @@ class SolarImageProcessor:
             self.coverage = self._count_pixels(outputimg2, mask_segment)
 
             # It is extremely unlikely that we will ever get 100% coronal hole coverage on the meridian
-            # Most ikely it is a glitched image from SDO - se we gett less statistical grief if we reset the value
+            # Most ikely it is a glitched image from SDO - se we get less statistical grief if we reset the value
             # to a zero.
             if self.coverage == 1:
                 self.coverage = 0
