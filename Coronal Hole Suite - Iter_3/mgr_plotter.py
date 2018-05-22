@@ -34,6 +34,10 @@ class PlotPoint:
         value = str(self.utcdate) + "," + str(self.series1value) + "," + str(self.series2value) + "," + str(self.series3value)
         return value
 
+    def printlabels(self):
+        value = "Date/Time UTC, Speed - Actual, Speed - Forecast, Carrington Rotation Marker"
+        return value
+
     # convert the internal posx_date to UTC format
     def _posix2utc(self):
         utctime = time.gmtime(int(float(self.posix_date)))
@@ -119,9 +123,14 @@ class Plotter:
         for i in range(0, len(predictionlist), 655):
             predictionlist[i].series3value = 240
 
+
         # Save out as a CSV file for display
         try:
             with open("forecast.csv", "w") as f:
+                # create the CSV labels
+                labels = PlotPoint.printlabels()
+                f.write(labels + '\n')
+
                 for plotpt in predictionlist:
                     f.write(plotpt.printvalues() + '\n')
         except:
