@@ -128,8 +128,8 @@ class Plotter:
         try:
             with open("forecast.csv", "w") as f:
                 # create the CSV labels
-                labels = PlotPoint.printlabels()
-                f.write(labels + '\n')
+                null_point = PlotPoint(0)
+                f.write(null_point.printlabels() + '\n')
 
                 for plotpt in predictionlist:
                     f.write(plotpt.printvalues() + '\n')
