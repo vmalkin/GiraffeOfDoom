@@ -135,4 +135,3 @@ class Plotter:
                     f.write(plotpt.printvalues() + '\n')
         except:
             print("Unable to write forecast data to file")
-                    
