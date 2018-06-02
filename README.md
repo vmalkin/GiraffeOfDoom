@@ -9,7 +9,9 @@ This repo is a bit of a mess - the significant folders are:
 The datalogger that is used at Ruru Observatory and Dunedin Aurora. This software gets serial coms data from the magnetometer, stores it to a 24hr logfile and creates a number of CSV files for display purposes. 
 
 ### Coronal Hole Suite
-This project correlates coronal hole coverage to solar wind speed. It corrects for transit time and uses a linear regression to provide a forecast of solar wind speeds. This can be used to forecast conditions likely to cause an auroral display. This is implemented from a paper published by the University of Gratz. 
+This project correlates coronal hole coverage to solar wind speed. It corrects for transit time and uses a linear regression to provide a forecast of solar wind speeds. This can be used to forecast conditions likely to cause an auroral display. This is implemented from a paper published by the University of Gratz.
+
+The next version of this software will look for events that repeat across Carrington rotations to provide a long term guestimate of active conditions.
 
 ### DataFusionProject
 Simple project to combine log-file data from different magnetometers according to a common time-stamp. Was going to form the basis for "actual" sensor/data fusion to try and increase accuracy of readings across a network of magnetometers
