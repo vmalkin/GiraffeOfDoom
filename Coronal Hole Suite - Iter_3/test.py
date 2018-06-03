@@ -15,11 +15,12 @@ sun = mgr_solar_image.SolarImageProcessor()
 data_manager = mgr_data.DataManager(LOGFILE)
 forecaster = mgr_forecast.Forecaster()
 
+sun.get_meridian_coverage()
 
-forecaster.calculate_forecast(data_manager.master_data)
-
-# # Instantiate the prediction plotter, this will load it with the lates values. Plot the final data
-prediction_plotter = mgr_plotter.Plotter()
-prediction_plotter.plot_data()
+# forecaster.calculate_forecast(data_manager.master_data)
+#
+# # # Instantiate the prediction plotter, this will load it with the lates values. Plot the final data
+# prediction_plotter = mgr_plotter.Plotter()
+# prediction_plotter.plot_data()
 
 

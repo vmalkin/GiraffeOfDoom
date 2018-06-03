@@ -9,6 +9,7 @@ import cv2
 import numpy as np
 import urllib.request
 import datetime
+import time
 from decimal import Decimal, getcontext
 import logging
 import common_data
@@ -146,6 +147,15 @@ class SolarImageProcessor:
 
             # HERE we need to calculate the latitude of black pixels and account for dimishing effects cause by
             # increased latitude
+
+            # Start grabbing all processed images and save as jpg
+            try:
+                filename = "sun_jpegs/" + str(int(time.time())) + ".jpg"
+                self._image_write(filename, outputimg1)
+            except:
+                logging.error("Unable to process running solar image in JPG folder")
+                print("Unable to process running solar image in JPG folder")
+
 
             self._add_img_logo(outputimg1)
             self._image_write('disc_full.bmp', outputimg1)
