@@ -62,6 +62,7 @@ class Binner():
 
         # parse thru the raw data, identifying datapoints that fall within the bins
         # and adding their data to each bins internal array of data.
+        # each item is a type of DataPoint - see DataPoint.py
         for item in self._raw_data_array:
             itemdata = round(float(item.data_1), 4)
             itemtime = item.posix_time
@@ -83,7 +84,8 @@ class Binner():
                     s.write(final_data_bins[i].print_values() + "\n")
                 except:
                     print(sys.exc_info())
-
+                    
+        # We just want the last minutes reading for Brendan
         savefile = "brendan.csv"
         try:
             os.remove(savefile)

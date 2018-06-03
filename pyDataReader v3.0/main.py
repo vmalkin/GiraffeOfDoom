@@ -46,12 +46,15 @@ class ChartThread(Thread):
     def run(self):
         while True:
             time.sleep(60)
+            # create the CSV files for general display
             print("Create Highcharts")
             try:
                 grapher_simple.wrapper_function()
             except:
                 print("Simple grapher failed")
                 logging.error("Simple grapher failed")
+            
+            # CReate the one-minute bin file for data fusion/display
             try:
                 shortbins.processbins()
             except:
