@@ -7,11 +7,7 @@ import sys
 errorloglevel = logging.DEBUG
 logging.basicConfig(filename="errors.log", format='%(asctime)s %(message)s', level=errorloglevel)
 
-'''
-the datapoint to aggrgate binned values
-This version of the binner creates an AVERAGE in each bin. THis can be modifed to find a max and min, hence
-a rate of change. 
-'''
+
 class BinData():
     def __init__(self, field_correction):
         self.posix_time = 0
@@ -41,6 +37,11 @@ class BinData():
 
 
 class Binner():
+    """
+    The binner is designed to take an array of data in the format [posix_datestamp, datavalue] and convert the
+    interval of the timestamp. Eg. if the data is recorded every 2 seconds, Binner can convert the data to readings
+    at one minute, or 20 minute intervals instead.
+    """
     def __init__(self, raw_data_array, timespan, binsize, field_correction):
         self._raw_data_array = raw_data_array
         self._timespan = timespan

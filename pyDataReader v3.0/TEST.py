@@ -1,6 +1,5 @@
-import mgr_binner
 import mgr_data
-
+import mgr_dhdt
 
 mag_read_freq = 30   # how many readings per minute
 mag_running_count = 6   # width of the window for running average
@@ -10,5 +9,4 @@ station_id = "Ruru_Rapid"   # ID of magnetometer station
 
 
 d_mg = mgr_data.DataList()
-binner = mgr_binner.Binner(d_mg.data_array, 86400, 60, field_correction)
-binner.processbins()
+mgr_dhdt.process_differences(d_mg.data_array)

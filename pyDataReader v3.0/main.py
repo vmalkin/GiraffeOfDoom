@@ -10,31 +10,13 @@ import logging
 import re
 import sys
 from threading import Thread
+import constants as k
 
-__version__ = "3.0"
+__version__ = "3.1"
 errorloglevel = logging.DEBUG
 logging.basicConfig(filename="errors.log", format='%(asctime)s %(message)s', level=errorloglevel)
 
-mag_read_freq = 30   # how many readings per minute
-mag_running_count = 6   # width of the window for running average
-noise_spike = 2   # threshold for rate of change noise
-field_correction = -1   # graph should go up, as H value increases
-station_id = "Ruru_Rapid"   # ID of magnetometer station
 
-# Comm port parameters - uncomment and change one of the portNames depending on your OS
-portName = 'Com8' # Windows
-# portName = '/dev/tty.usbserial-A702O0K9' #MacOS
-# portName = '/dev/ttyUSB0'
-baudrate = 9600
-bytesize = 8
-parity = 'N'
-stopbits = 1
-timeout = 60
-xonxoff = False
-rtscts = True
-writeTimeout = None
-dsrdtr = False
-interCharTimeout = None
 
 
 # CHARTING FUNCTION AS A THREAD
@@ -61,17 +43,23 @@ class ChartThread(Thread):
                 print("1 min bins grapher failed")
                 logging.error("1 min bins grapher failed")
 
+            # Create the dH/dt display data
+            try:
+                mgr_dhdt.process_differences(datamanager.data_array)
+            except:
+                print("dH/dt processor failed")
+                logging.error("dH/dt processor failed")
+
 if __name__ == "__main__":
     print("Pything Data Logger")
     print("(c) Vaughn Malkin, 2015 - 2018")
     print("Version " + __version__)
 
-    comport = mgr_serialport.SerialManager(portName,baudrate,bytesize,parity,stopbits,timeout,xonxoff,rtscts,writeTimeout,dsrdtr,interCharTimeout)
+    comport = mgr_serialport.SerialManager(k.portName,k.baudrate,k.bytesize,k.parity,k.stopbits,k.timeout,k.xonxoff,k.rtscts,k.writeTimeout,k.dsrdtr,k.interCharTimeout)
     filemanager = mgr_files.FileManager()
     datamanager = mgr_data.DataList()
-    grapher_simple = mgr_graph_simple.Grapher(mag_read_freq, mag_running_count, field_correction, station_id, datamanager.data_array)
-    grapher_dhdt = mgr_dhdt.Differencer()
-    shortbins = mgr_binner.Binner(datamanager.data_array, 86400, 60, field_correction)
+    grapher_simple = mgr_graph_simple.Grapher(k.mag_read_freq, k.mag_running_count, k.field_correction, k.station_id, datamanager.data_array)
+    shortbins = mgr_binner.Binner(datamanager.data_array, 86400, 60, k.field_correction)
 
     # Thread code to implement charting in a new thread.
     grapher_thread = ChartThread()
@@ -100,7 +88,7 @@ if __name__ == "__main__":
             print(data_point.print_values("utc"))
 
             # Append to the running list of readings. Save the list.
-            datamanager.list_append(data_point, mag_read_freq)
+            datamanager.list_append(data_point, k.mag_read_freq)
             datamanager.list_save()
 
             # Save the 24 hour logfile.
