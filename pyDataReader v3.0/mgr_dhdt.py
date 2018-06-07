@@ -1,24 +1,38 @@
 import os.path
 import logging
+import constants as k
 import math
 from decimal import Decimal, getcontext
 from datetime import datetime
 import time
 
 
-class DataPoint():
+class DhdtData():
     def __init__(self, posix_date, data_value):
         self.posix_date = posix_date
         self.data_value = data_value
 
 # #################################################################################
 # Calculate the differences
-# This function will create an array of differences
+# This function will create an array of differences based on data of the format
+# [posix_date, data_value]
+# No smoothing has been applied to this.
+# Blips over a threshold value WILL be zeroed
 # #################################################################################
 def create_diffs_array(readings_array):
     diffsarray = []
 
+    for i in range(1, len(readings_array)):
+        timestamp_value = readings_array[i].posix_time
 
+        # calculate the rate of change (dH/dt)
+        data_value = readings_array[i].data_1 - readings_array[i-1].data_1
+
+        # If the data value is over the noise threshold, then we'll reset it to zero
+        if data_value > k.noise_spike:
+            data_value = 0
+
+        dp = DhdtData(timestamp_value, data_value)
 
     return diffsarray
 
@@ -26,33 +40,19 @@ def create_diffs_array(readings_array):
 # Calculate the differences
 # This function will create an array of differences
 # #################################################################################
-def rebuild_originaldata(diffsdata):
-    returnfile = []
-    newvalue = 0
-
-    for item in diffsdata:
-        datasplit = item.split(",")
-        splitdate = datasplit[0]
-        splitdiff = datasplit[1]
-
-        newvalue = float(newvalue) + float(splitdiff)
-
-        newitem = splitdate + "," + str(newvalue)
-        returnfile.append(newitem)
-
-    return returnfile
+def rebuild_originaldata(diffsdata, startvalue):
+    pass
 
 
 # #################################################################################
 # Create the smoothed data array and write out the files for plotting.
 # We will do a running average based on the running average time in minutes and the number
 # readings per minute
-#
+# Data format is the DhdtData class in this file.
 # we will divide this number evenly so our average represents the midpoint of these
 # readings.
 # #################################################################################
 def running_average(input_array, averaging_interval):
-    getcontext().prec = 10
     displayarray = []
 
     # This figure MUST be an even number. Check your constants.
@@ -62,7 +62,7 @@ def running_average(input_array, averaging_interval):
     # NOW average the cumulative array, smooth out the blips
     if len(input_array) > AVERAGING_TIME:
         for i in range(AVERAGING_TIME_HALF, len(input_array) - AVERAGING_TIME_HALF):
-            xvalue = Decimal(0)
+            xvalue = (0)
             jdatasplit = input_array[i].split(",")
             jdatadate = jdatasplit[0]
 
@@ -72,9 +72,9 @@ def running_average(input_array, averaging_interval):
                 datasplit = datasplit.split(",")
                 xdata = datasplit[1]
 
-                xvalue = xvalue + Decimal(xdata)
+                xvalue = xvalue + (xdata)
 
-            xvalue = Decimal(xvalue / AVERAGING_TIME)
+            xvalue = (xvalue / AVERAGING_TIME)
 
             displaypoint = jdatadate + "," + str(xvalue)
             displayarray.append(displaypoint)
@@ -205,27 +205,30 @@ def savevalues(filename, array_name):
 # Wrapper function to process diffs
 # #################################################################################
 def process_differences(data_array):
-    # create the array of dF/dt
-    diffs_data = create_diffs_array(data_array)
+    # For a start, the data array has to be at least two readings big
+    while len(data_array) > 2:
+        # create the array of dF/dt
+        diffs_data = create_diffs_array(data_array)
 
-    # recalculate and save a corrected display file free from blips
-    rebuilt_data = rebuild_originaldata(diffs_data)
-    savevalues("display.rebuiltdata.csv", rebuilt_data)
+        # recalculate and save a corrected display file free from blips
+        startvalue = data_array[0].data_1
+        rebuilt_data = rebuild_originaldata(diffs_data, startvalue)
+        savevalues("display.rebuiltdata.csv", rebuilt_data)
 
-    # smooth the diffs to show the trend. Two passes at 5 minutes is usually ok.
-    window = k.MAG_READ_FREQ * 5
-    diffs_data = running_average(diffs_data, window)
-    diffs_data = running_average(diffs_data, window)
+        # smooth the diffs to show the trend. Two passes at 5 minutes is usually ok.
+        window = k.mag_read_freq * 5
+        diffs_data = running_average(diffs_data, window)
+        diffs_data = running_average(diffs_data, window)
 
-    # calculate the minimum rate of change from THIS smoothed data. append this range to the data. Highcharts
-    # will display this as +/- ve bars on the chart
-    diffs_data = calculate_minmax_values(diffs_data)
+        # calculate the minimum rate of change from THIS smoothed data. append this range to the data. Highcharts
+        # will display this as +/- ve bars on the chart
+        diffs_data = calculate_minmax_values(diffs_data)
 
-    # add the CSV file headers
-    headerstring = "Date/time UTC, Min for hour, Max for hour, dH/dt"
-    diffs_data.reverse()
-    diffs_data.append(headerstring)
-    diffs_data.reverse()
+        # add the CSV file headers
+        headerstring = "Date/time UTC, Min for hour, Max for hour, dH/dt"
+        diffs_data.reverse()
+        diffs_data.append(headerstring)
+        diffs_data.reverse()
 
-    # Save out the diffs array
-    savevalues(k.FILE_4DIFFS, diffs_data)
+        # Save out the diffs array
+        savevalues(k.FILE_4DIFFS, diffs_data)
