@@ -1,16 +1,38 @@
 import os.path
 import logging
 import constants as k
-import math
-from decimal import Decimal, getcontext
-from datetime import datetime
+import pickle
 import time
 
 
 class DhdtData():
-    def __init__(self, posix_date, data_value):
-        self.posix_date = posix_date
+    '''
+    simple datapoint class for dh/dt
+    '''
+    def __init__(self, posix_time, data_value):
+        self.posix_time = posix_time
         self.data_value = data_value
+        self.min_value = 0
+        self.max_value = 0
+
+    # convert the internal posx_date to UTC format
+    def _posix2utc(self):
+        utctime = time.gmtime(int(float(self.posix_time)))
+        utctime = time.strftime('%Y-%m-%d %H:%M:%S', utctime)
+        return utctime
+
+    # calculate the diffrence between min and max values. Return value.
+    def calc_minmax(self):
+        value = self.max_value - self.min_value
+        return value
+
+    # return the values of this datapoint as a astring
+    def print_values(self, value_type):
+        printvalue = str(self._posix2utc()) + "," + str(self.min_value) + "," + str(self.data_value) + "," + str(self.max_value)
+        return printvalue
+
+    def print_header(self):
+        return "UTC Time, Hourly Min, dH by dt, Hourly Max"
 
 # #################################################################################
 # Calculate the differences
@@ -33,6 +55,7 @@ def create_diffs_array(readings_array):
             data_value = 0
 
         dp = DhdtData(timestamp_value, data_value)
+        diffsarray.append(dp)
 
     return diffsarray
 
@@ -79,10 +102,9 @@ def calculate_minmax_values(diffs_data):
     r2 = []  # reorganised r1 that is retured
     r3 = []  # short values - 1 hr summary
 
-    BACKGROUND_VALUE = 0.02  # empirically derived background during geomag quiet conditions.
 
 
-    hour_interval = k.MAG_READ_FREQ * 60
+    hour_interval = k.mag_read_freq * 60
 
     if len(diffs_data) > hour_interval:
         # reverse the array. this ensures that our bin starts from now and goes back
@@ -149,28 +171,6 @@ def calculate_minmax_values(diffs_data):
     r2.reverse()
     return r2
 
-
-# #################################################################################
-# load an array from file
-# #################################################################################
-def loadvalues(filename, array_name):
-    readings = []
-    # Check if exists CurrentUTC file. If exists, load up Datapoint Array.
-    if os.path.isfile(k.FILE_ROLLING):
-        with open(k.FILE_ROLLING) as e:
-            for line in e:
-                line = line.strip()  # remove any trailing whitespace chars like CR and NL
-                values = line.split(",")
-                # See the datapoint object/constructor for the current values it holds.
-                # dp = DataPoint.DataPoint(values[0], values[1], values[2], values[3])
-                readings.append(values)
-        print("Array loaded from file. Size: " + str(len(readings)) + " records")
-    else:
-        print("No save file loaded. Using new array.")
-
-    return readings
-
-
 # #################################################################################
 # save an array to file
 # #################################################################################
@@ -184,6 +184,12 @@ def savevalues(filename, array_name):
             print("WARNING: There was a problem accessing " + filename)
             logging.warning("WARNING: File IO Exception raised whilst accessing file: " + filename)
 
+# #################################################################################
+# This function summarises the max/min values we've already calculated in terms of the
+# average background value, and produces data from a CSV file.
+# #################################################################################
+def calculate_shortdiffs(avg_background_value):
+    pass
 
 # #################################################################################
 # Wrapper function to process diffs
@@ -194,10 +200,10 @@ def process_differences(data_array):
         # create the array of dF/dt
         diffs_data = create_diffs_array(data_array)
 
-        # recalculate and save a corrected display file free from blips
-        startvalue = data_array[0].data_1
-        rebuilt_data = rebuild_originaldata(diffs_data, startvalue)
-        savevalues("display.rebuiltdata.csv", rebuilt_data)
+        # # recalculate and save a corrected display file free from blips
+        # startvalue = data_array[0].data_1
+        # rebuilt_data = rebuild_originaldata(diffs_data, startvalue)
+        # savevalues("display.rebuiltdata.csv", rebuilt_data)
 
         # smooth the diffs to show the trend. Two passes at 5 minutes is usually ok.
         window = k.mag_read_freq * 5
@@ -207,6 +213,12 @@ def process_differences(data_array):
         # calculate the minimum rate of change from THIS smoothed data. append this range to the data. Highcharts
         # will display this as +/- ve bars on the chart
         diffs_data = calculate_minmax_values(diffs_data)
+
+        # Calculate the average quiet background level - This needs to be saved somewhere to
+        # be accessed after software restarts.
+
+        # caluclate the shortdiffs file.
+        calculate_shortdiffs(avg_background_value)
 
         # add the CSV file headers
         headerstring = "Date/time UTC, Min for hour, Max for hour, dH/dt"
