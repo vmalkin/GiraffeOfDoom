@@ -49,38 +49,22 @@ def rebuild_originaldata(diffsdata, startvalue):
 # We will do a running average based on the running average time in minutes and the number
 # readings per minute
 # Data format is the DhdtData class in this file.
-# we will divide this number evenly so our average represents the midpoint of these
-# readings.
 # #################################################################################
 def running_average(input_array, averaging_interval):
     displayarray = []
 
-    # This figure MUST be an even number. Check your constants.
-    AVERAGING_TIME = int(averaging_interval)
-    AVERAGING_TIME_HALF = int(AVERAGING_TIME / 2)
+    while len(input_array) > averaging_interval:
+        for i in range(averaging_interval + 1, len(input_array)):
+            datavalue = 0
+            datetime = input_array[i].posix_date
 
-    # NOW average the cumulative array, smooth out the blips
-    if len(input_array) > AVERAGING_TIME:
-        for i in range(AVERAGING_TIME_HALF, len(input_array) - AVERAGING_TIME_HALF):
-            xvalue = (0)
-            jdatasplit = input_array[i].split(",")
-            jdatadate = jdatasplit[0]
+            for j in range(0, averaging_interval):
+                newdata = input_array[i-j].data_value
+                datavalue = datavalue + newdata
 
-            # This is where we average for the time i before and after i.
-            for j in range(0, AVERAGING_TIME):
-                datasplit = input_array[(i - AVERAGING_TIME_HALF) + j]
-                datasplit = datasplit.split(",")
-                xdata = datasplit[1]
-
-                xvalue = xvalue + (xdata)
-
-            xvalue = (xvalue / AVERAGING_TIME)
-
-            displaypoint = jdatadate + "," + str(xvalue)
-            displayarray.append(displaypoint)
-
-    else:
-        displayarray = input_array
+            datavalue = round((datavalue / averaging_interval), 3)
+            appendvalue = DhdtData(datetime, datavalue)
+            displayarray.append(appendvalue)
 
     return displayarray
 
