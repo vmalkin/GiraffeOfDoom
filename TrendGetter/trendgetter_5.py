@@ -1,143 +1,74 @@
 import os
 import time
+import datetime
 from datetime import datetime
 from time import mktime
+import re
 
 BIN_SIZE = 60 * 60 # the number of seconds wide a bin is
 BIN_NUMBER = int(31536000 / BIN_SIZE)  # how many bins we want in total
 
-
 class Datapoint():
-    def __init__(self, posix_date, utc_date, datavalue):
-        self.posix_date = posix_date
+    def __init__(self, utc_date, datavalue):
         self.utc_date = utc_date
         self.datavalue = datavalue
+        self.aurora_sighting = ""
+        self.storm_threshold = ""
+
+    def utc_2_posix(self):
+        # set date time format for strptime()
+        dateformat = "%Y-%m-%d %H:%M:%S.%f"
+        newdatetime = datetime.strptime(self.utc_date, dateformat)
+        # convert to Unix time (Seconds)
+        newdatetime = mktime(newdatetime.timetuple())
+        newdatetime = int(newdatetime)
+
+        return newdatetime
+
+    def print_values(self):
+        returnstring = str(self.utc_2_posix()) + "," + str(self.datavalue)
+        return returnstring
 
 class DataBin():
     def __init__(self, posix_date):
         self.posix_date = posix_date
         self.datalist = []
 
-class Trendgetter():
-    def __init__(self):
-        # we do NOT want decimal values for time, only ints
-        self.date_now = int(time.time())
-        self.date_start = self.date_now - 31536000
+    def average_datalist(self):
+        avgvalue = 0
 
-        binned_data = []
-        for i in range(self.date_start, self.date_now, BIN_SIZE):
-            dp = DataBin(i)
-            binned_data.append(dp)
+        if len(self.datalist) > 0:
+            for item in self.datalist:
+                avgvalue = float(avgvalue) + float(item)
 
+            avgvalue = avgvalue / float(len(self.datalist))
+            avgvalue = round(avgvalue, 2)
+        else:
+            avgvalue = ""
+        return avgvalue
 
+    def print_values(self):
+        returnstring = str(self.posix_date) + "," + str(self.average_datalist())
+        return returnstring
 
-# ##################################################
-# Prune Data - we only need Raw X value.
-# ##################################################
-def prune_data(arraydata):
-    outputarray = []
-    # we want to avoid the first line that contains a header text
-    for i in range(0,len(arraydata)):
-        try:
-            dataline = arraydata[i].split(",")
-            # print(dataline)
-            datetime = dataline[0]
-            datavalue = dataline[1]
-            newdata = datetime + "," + datavalue
-            # print("Pruning " + str(i) + " of " + str(len(arraydata)) + " records.")
-            outputarray.append(newdata)
-        except:
-            print("There is a problem with this data value - isolate the log file it belongs to and check: ")
-            print("--> " + str(arraydata[i-1]))
-            print("--> " + str(arraydata[i]))
-            print("--> " + str(arraydata[i + 1]))
+def create_bins(objectlist):
+    # we do NOT want decimal values for time, only ints
+    date_now = int(time.time())
+    date_start = date_now - 31536000
 
-    return outputarray
+    binned_data = []
+    for i in range(date_start, date_now, BIN_SIZE):
+        dp = DataBin(i)
+        binned_data.append(dp)
 
-# ##################################################
-# Convert timestamps in array to Unix time
-# ##################################################
-def utc_2_unix(arraylist):
-    print("Converting time to UNIX time...")
-    # set date time format for strptime()
-    dateformat = "%Y-%m-%d %H:%M:%S.%f"
-    workingarray = []
+    # THis is the hashing function to drop data into the correct bins
+    # according to the date.
+    for i in range(0, len(objectlist)):
+        bin_id = (date_start - objectlist[i].utc_2_posix()) / BIN_SIZE
+        bin_id = int(round(bin_id,0))
+        binned_data[bin_id].datalist.append(objectlist[i].datavalue)
 
-    # convert array data times to unix time
-    workingarray = []
-    for item in arraylist:
-        try:
-            datasplit = item.split(",")
-
-            newdatetime = datetime.strptime(datasplit[0],dateformat)
-            # convert to Unix time (Seconds)
-            newdatetime = mktime(newdatetime.timetuple())
-
-            datastring = str(newdatetime) + "," + datasplit[1]
-            workingarray.append(datastring)
-        except:
-            print("Problem with this entry: " + item)
-
-    return workingarray
-
-# ##################################################
-# Convert timestamps in array to UTC time
-# ##################################################
-def unix_to_utc(arraylist):
-    print("Converting time to UTC time...")
-    # set date time format for strptime()
-    dateformat = "%Y-%m-%d %H:%M:%S.%f"
-
-    # Convert the date string to the format of: 2016-10-10 00:00:26.19
-    returnarray = []
-
-    for item in arraylist:
-        datasplit = item.split(",")
-        unixdate = int(float(datasplit[0]))
-
-        # Convert the UNix timestamp, inot a UTC string
-        utcdate = datetime.fromtimestamp(unixdate)
-
-        # Create the dataline to be appended
-        dataline = str(utcdate) + "," + datasplit[1]
-        returnarray.append(dataline)
-
-    return returnarray
-
-# ##################################################
-# Find the average of an array of values
-# ##################################################
-def array_average(arraylist):
-    returnvalue = 0
-    if len(arraylist) == 0:
-        returnvalue = 0
-    else:
-        for item in arraylist:
-            returnvalue = float(returnvalue) + float(item)
-
-        returnvalue = float(returnvalue) / float(len(arraylist))
-
-    return returnvalue
-
-# ##################################################
-# Find the diff between max and min values of an array of values
-# ##################################################
-def array_diffs(arraylist):
-    returnvalue = 0
-    if len(arraylist) == 0:
-        returnvalue = 0
-    else:
-        maxvalue = float(arraylist[0])
-        minvalue = float(arraylist[0])
-        for i in range(0, len(arraylist)):
-            if float(arraylist[i]) >= float(maxvalue):
-                maxvalue = arraylist[i]
-            if float(arraylist[i]) <= float(minvalue):
-                minvalue = arraylist[i]
-
-        returnvalue = float(maxvalue) - float(minvalue)
-
-    return returnvalue
+    return binned_data
 
 # ##################################################
 # median filter
@@ -172,6 +103,7 @@ def save_csv(arraydata, savefile):
 
         except IOError:
             print("WARNING: There was a problem accessing heatmap file")
+
 
 # ##################################################
 # S C R I P T   B E G I N S   H E R E
@@ -218,73 +150,23 @@ if __name__ == "__main__":
 
     # Out data should be in the format of timestamp, data1, data2, etc We only need the timestamp and the
     # first data value
+    regex = r'(\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d.\d\d)'
+    rawdataobjects = []
+    errorcount = 0
+    for item in rawdatalist:
+        itemsplit = item.split(",")
+        utcdate = itemsplit[0]
+        datavalue = itemsplit[1]
 
-    print("Getting timestamps and data...")
-    rawdatalist = prune_data(rawdatalist)
+        if re.match(regex, utcdate):
+            dp = Datapoint(utcdate, datavalue)
+            rawdataobjects.append(dp)
+        else:
+            errorcount = errorcount + 1
+    print(str(errorcount) + " errors in datetime encountered")
 
-    print("Converting timestamps to UNIX time...")
-    # convert the timestamps in the main array to POSIX format
-    rawdatalist = utc_2_unix(rawdatalist)
+    # Convert the list to binned data.
+    binneddataobjects = create_bins(rawdataobjects)
 
-    print("Applying median filter for blips...")
-    rawdatalist = medianfilter(rawdatalist)
-
-    print("Create dates for data bins...")
-    # using the most recent date in the main array, create  temp list of bin dates
-    # THis will need to take into account the number and size of bins that we want.
-    datasplit = rawdatalist[len(rawdatalist) - 1]
-    datasplit = datasplit.split(",")
-    nowdate = datasplit[0]
-
-    bindates = []
-    for i in range(0, BIN_NUMBER):
-        bindates.append(nowdate)
-        nowdate = float(nowdate) - float(BIN_SIZE)
-
-    # this list is back to front, so reverse it - item[0] is older than item[10]
-    bindates.reverse()
-
-    print("Preparing array for final data")
-    # the array for final data
-    finaldataarray = []
-
-    # for each bin interval in the list of bin timestamps
-    for i in range(0, len(bindates)):
-        # set up a holding list
-        templist = []
-
-        # parse thru the main array entries that fit in the interval are added to the holding list
-        for j in range(0, len(rawdatalist)):
-            itemsplit = rawdatalist[j].split(",")
-            itemdate = itemsplit[0]
-            itemdata = itemsplit[1]
-            # print(itemdate)
-
-            if float(itemdate) <= float(bindates[i]) and float(itemdate) > float(bindates[i-1]):
-                templist.append(itemdata)
-
-            # PERFORM WHATEVER OPERATION WE WANT, AVERAGE OR DH/DT, ETC
-            # we now have a list templist[] of values for this bin
-            # print("Averaging bin contents: " + str(i) + " / " + str(len(bindates)) + "...")
-            # binvalue = array_average(templist)
-
-        print("Calculating dH/dt for bins: " + str(i) + " / " + str(len(bindates)) + "...")
-        binvalue = array_diffs(templist)
-
-        finaldataitem = str(bindates[i]) + "," + str(binvalue)
-        finaldataarray.append(finaldataitem)
-
-
-    # convert the POSIX datetimes back to UTC.
-    # print("Converting time to UTC...")
-    finaldataarray = unix_to_utc(finaldataarray)
-
-    # create the header and save the file as a CSV/JSON
-    save_csv(finaldataarray, "binned_values.csv")
-    print("FINISHED: Data saved to CSV file.")
-    finishtime = datetime.now()
-    finishtime = mktime(finishtime.timetuple())
-
-    elapsedtime = finishtime - starttime
-    elapsedtime = float(elapsedtime / 60)
-    print("\nElapsed time is " +str(elapsedtime) + " minutes.")
+    # convert readings to dh/dt
+    # Append the Aurora and Storm threshold info

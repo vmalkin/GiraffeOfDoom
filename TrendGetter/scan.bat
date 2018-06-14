@@ -2,6 +2,6 @@
 
 dir 2*.csv /b > files.txt
 
-python trendGetter_5.py
+rem python trendGetter_5.py
 
 pause
