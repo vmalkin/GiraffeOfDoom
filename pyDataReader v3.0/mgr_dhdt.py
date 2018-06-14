@@ -102,8 +102,6 @@ def calculate_minmax_values(diffs_data):
     r2 = []  # reorganised r1 that is retured
     r3 = []  # short values - 1 hr summary
 
-
-
     hour_interval = k.mag_read_freq * 60
 
     if len(diffs_data) > hour_interval:

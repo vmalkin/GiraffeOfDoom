@@ -1,9 +1,35 @@
 import os
+import time
 from datetime import datetime
 from time import mktime
 
 BIN_SIZE = 60 * 60 # the number of seconds wide a bin is
 BIN_NUMBER = int(31536000 / BIN_SIZE)  # how many bins we want in total
+
+
+class Datapoint():
+    def __init__(self, posix_date, utc_date, datavalue):
+        self.posix_date = posix_date
+        self.utc_date = utc_date
+        self.datavalue = datavalue
+
+class DataBin():
+    def __init__(self, posix_date):
+        self.posix_date = posix_date
+        self.datalist = []
+
+class Trendgetter():
+    def __init__(self):
+        # we do NOT want decimal values for time, only ints
+        self.date_now = int(time.time())
+        self.date_start = self.date_now - 31536000
+
+        binned_data = []
+        for i in range(self.date_start, self.date_now, BIN_SIZE):
+            dp = DataBin(i)
+            binned_data.append(dp)
+
+
 
 # ##################################################
 # Prune Data - we only need Raw X value.
