@@ -15,13 +15,16 @@ class DP_Initial():
 
 class DP_Publish():
     def __init__(self, posixdate, data):
+        self.null = 0
         self.posixdate = posixdate
         self.data = data
-        self.storm_threshold = 0
-        self.aurora_sighted = 0
+        self.storm_threshold = self.null
+        self.aurora_sighted = self.null
 
     def posix2utc(self):
-        pass
+        utctime = time.gmtime(int(float(self.posixdate)))
+        utctime = time.strftime('%Y-%m-%d %H:%M', utctime)
+        return utctime
 
     def print_values(self):
         returnstring = str(self.posix2utc()) + "," + str(self.data) + "," + str(self.storm_threshold) + "," + str(self.aurora_sighted)
@@ -105,6 +108,20 @@ def create_dhdt(objectlist):
         date = objectlist[i].posixdate
         dp = DP_Publish(date, dhdt)
         returnlist.append(dp)
+    return returnlist
+
+# ##################################################
+# add storm data to dH / dt
+# ##################################################
+def storm_threshold(dhdtlist):
+    returnlist = dhdtlist
+    return returnlist
+
+# ##################################################
+# add aurora sightings to dH / dt
+# ##################################################
+def aurora_sightings(dhdtlist):
+    returnlist = dhdtlist
     return returnlist
 
 # ##################################################
@@ -210,17 +227,18 @@ if __name__ == "__main__":
     # Convert the objects in the list so we can process them
     dhdt_list = []
     for item in binneddataobjects:
-        datetime = item.posix_date
+        datetime = item.posixdate
         datavalue = item.average_datalist()
-        dp = DP_Initial(datetime, datavalue)
+        dp = DP_Publish(datetime, datavalue)
         dhdt_list.append(dp)
 
     # calculate the actual dH / dt. We will use the DP_Publish class now, so we can add storm threshholds and
     # aurora sighting info.
     dhdt_list = create_dhdt(dhdt_list)
 
-    # save_csv(binneddataobjects, "tg_magnetogram.csv")
-
-
-
     # Append the Aurora and Storm threshold info
+    dhdt_list = storm_threshold(dhdt_list)
+    dhdt_list = aurora_sightings(dhdt_list)
+
+    # Save out data
+    save_csv(dhdt_list, "tg_magnetogram.csv")
