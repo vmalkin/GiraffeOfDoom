@@ -1,6 +1,5 @@
 import os
 import time
-import datetime
 from datetime import datetime
 from time import mktime
 import re
@@ -26,7 +25,7 @@ class Datapoint():
         return newdatetime
 
     def print_values(self):
-        returnstring = str(self.utc_2_posix()) + "," + str(self.datavalue)
+        returnstring = str(self.utc_date) + "," + str(self.datavalue)
         return returnstring
 
 class DataBin():
@@ -44,13 +43,22 @@ class DataBin():
             avgvalue = avgvalue / float(len(self.datalist))
             avgvalue = round(avgvalue, 2)
         else:
-            avgvalue = ""
+            avgvalue = 0
         return avgvalue
+
+    def posix_2_utc(self):
+        utctime = time.gmtime(int(float(self.posix_date)))
+        utctime = time.strftime('%Y-%m-%d %H:%M:%S', utctime)
+        return utctime
 
     def print_values(self):
         returnstring = str(self.posix_date) + "," + str(self.average_datalist())
         return returnstring
 
+# ##################################################
+# Binning - this is essentially a hash function based
+# on the posix datetime
+# ##################################################
 def create_bins(objectlist):
     # we do NOT want decimal values for time, only ints
     date_now = int(time.time())
@@ -96,10 +104,10 @@ def save_csv(arraydata, savefile):
     except:
         print("Error deleting old file")
 
-    for line in arraydata:
+    for item in arraydata:
         try:
             with open(savefile, 'a') as f:
-                f.write(line + "\n")
+                f.write(item.print_values() + "\n")
 
         except IOError:
             print("WARNING: There was a problem accessing heatmap file")
@@ -167,6 +175,20 @@ if __name__ == "__main__":
 
     # Convert the list to binned data.
     binneddataobjects = create_bins(rawdataobjects)
+    save_csv(binneddataobjects, "tg_magnetogram.csv")
 
+    current_dhdt = []
     # convert readings to dh/dt
+    for i in range(1, len(binneddataobjects)):
+        date_now = binneddataobjects[i].posix_date
+        data_current = binneddataobjects[i].average_datalist()
+        data_prev = binneddataobjects[i-1].average_datalist()
+        data = (float(data_current) - float(data_prev))
+
+        dp = Datapoint(date_now, data)
+        current_dhdt.append(dp)
+
+    save_csv(current_dhdt, "tg_diffs.csv")
+
+
     # Append the Aurora and Storm threshold info
