@@ -60,6 +60,14 @@ class DataBin():
 def create_bins(objectlist):
     # we do NOT want decimal values for time, only ints
     date_now = int(time.time())
+
+    # just while we work with the short dataset. Otherwise comment out
+    date_now = datetime.strptime("2018-06-13 23:59:51.33", dateformat)
+    # convert to Unix time (Seconds)
+    date_now = mktime(date_now.timetuple())
+    date_now = int(date_now)
+
+
     date_start = date_now - 31536000
 
     binned_data = []
@@ -76,24 +84,25 @@ def create_bins(objectlist):
     return binned_data
 
 # ##################################################
-# median filter
+# median filter this works on a CSV list
 # ##################################################
 def medianfilter(arraylist):
     # objects in the array list have the format [posix_time, data]
     filteredlist = []
 
-    for i in range(1,len(arraylist) - 1):
-        templist = []
-        templist.append(float(arraylist[i-1].data))
-        templist.append(float(arraylist[i].data))
-        templist.append(float(arraylist[i + 1].data))
-        date = arraylist[i].posixdate
-        templist.sort()
-        data = templist[1]
+    # the size of the filter sliding window
+    # MUST BE ODD NUMBER
+    window = 3
+    dateindex = int((window - 1) / 2)  # The index POSITION of the date for the window
+    position_date = 0  # where in the datasplit the date is
+    position_value = 1  # where in the datasplit the info is
 
-        dp = DP_Initial(date, data)
-        filteredlist.append(dp)
-    return filteredlist
+    for i in range(0, len(arraylist) - (window-1)):
+        for j in range(0, window):
+            print(arraylist[i+j])
+
+
+    # return filteredlist
 
 # ##################################################
 # Convert straight magnetogram to dH / dt
@@ -215,30 +224,35 @@ if __name__ == "__main__":
             errorcount = errorcount + 1
     print(str(errorcount) + " errors in datetime encountered")
 
+    # apply a median filter to this list.  We are still working with a list of values, not a list of objects
+    # at this point
     print("Apply median filter to initial data")
-    # Next, apply a median filter to the initial list of objects
     filtered_datalist = medianfilter(initial_datalist)
 
-    print("Adding data to list of datetime bins")
-    # Convert the list to binned data.
-    binneddataobjects = create_bins(filtered_datalist)
-
-    print("Converting the magnetic data to dH/dt")
-    # Convert the objects in the list so we can process them
-    dhdt_list = []
-    for item in binneddataobjects:
-        datetime = item.posixdate
-        datavalue = item.average_datalist()
-        dp = DP_Publish(datetime, datavalue)
-        dhdt_list.append(dp)
-
-    # calculate the actual dH / dt. We will use the DP_Publish class now, so we can add storm threshholds and
-    # aurora sighting info.
-    dhdt_list = create_dhdt(dhdt_list)
-
-    # Append the Aurora and Storm threshold info
-    dhdt_list = storm_threshold(dhdt_list)
-    dhdt_list = aurora_sightings(dhdt_list)
+    # print("Adding data to list of datetime bins")
+    # # Convert the list to binned data.
+    # binneddataobjects = create_bins(filtered_datalist)
+    #
+    # print("Converting the magnetic data to dH/dt")
+    # # Convert the objects in the list so we can process them
+    # dhdt_list = []
+    # for item in binneddataobjects:
+    #     datetime = item.posixdate
+    #     datavalue = item.average_datalist()
+    #     dp = DP_Publish(datetime, datavalue)
+    #     dhdt_list.append(dp)
+    #
+    # # # calculate the actual dH / dt. We will use the DP_Publish class now, so we can add storm threshholds and
+    # # # aurora sighting info.
+    # # dhdt_list = create_dhdt(dhdt_list)
+    #
+    # # Append the Aurora and Storm threshold info
+    # dhdt_list = storm_threshold(dhdt_list)
+    # dhdt_list = aurora_sightings(dhdt_list)
 
     # Save out data
-    save_csv(dhdt_list, "tg_magnetogram.csv")
+    print(rawdatalist)
+
+    # save_csv(dhdt_list, "tg_magnetogram.csv")
+
+    print("FINISHED")
