@@ -98,8 +98,16 @@ def medianfilter(arraylist):
     position_value = 1  # where in the datasplit the info is
 
     for i in range(0, len(arraylist) - (window-1)):
+        tempdata = []
         for j in range(0, window):
-            print(arraylist[i+j])
+            datasplit = arraylist[i+j].split(",")
+            tempvalue = datasplit[position_value]
+            tempdata.append(tempvalue)
+        tempdata.sort()
+        datavalue = tempdata[dateindex] 
+        datasplit = arraylist[i+dateindex].split(",")
+        datevalue = datasplit[position_date]
+        print(datevalue + " " + datavalue)
 
 
     # return filteredlist
