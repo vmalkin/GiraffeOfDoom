@@ -107,10 +107,9 @@ def medianfilter(arraylist):
         datavalue = tempdata[dateindex] 
         datasplit = arraylist[i+dateindex].split(",")
         datevalue = datasplit[position_date]
-        print(datevalue + " " + datavalue)
-
-
-    # return filteredlist
+        dp = datevalue + "," + datavalue
+        filteredlist.append(dp)
+    return filteredlist
 
 # ##################################################
 # Convert straight magnetogram to dH / dt
