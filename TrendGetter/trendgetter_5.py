@@ -59,14 +59,13 @@ class DataBin():
 # ##################################################
 def create_bins(objectlist):
     # we do NOT want decimal values for time, only ints
-    date_now = int(time.time())
+    # date_now = int(time.time())
 
     # just while we work with the short dataset. Otherwise comment out
-    date_now = datetime.strptime("2018-06-13 23:59:51.33", dateformat)
+    date_now = datetime.strftime("2018-06-13 23:59:51.33")
     # convert to Unix time (Seconds)
     date_now = mktime(date_now.timetuple())
     date_now = int(date_now)
-
 
     date_start = date_now - 31536000
 
@@ -83,33 +82,32 @@ def create_bins(objectlist):
         binned_data[bin_id].datalist.append(objectlist[i].data)
     return binned_data
 
+
 # ##################################################
 # median filter this works on a CSV list
 # ##################################################
-def medianfilter(arraylist):
+def medianfilter(datalist):
     # objects in the array list have the format [posix_time, data]
     filteredlist = []
-
-    # the size of the filter sliding window
-    # MUST BE ODD NUMBER
     window = 3
-    dateindex = int((window - 1) / 2)  # The index POSITION of the date for the window
-    position_date = 0  # where in the datasplit the date is
-    position_value = 1  # where in the datasplit the info is
+    arrayindex_date = int((window - 1) / 2)
+    boundary = arrayindex_date
 
-    for i in range(0, len(arraylist) - (window-1)):
-        tempdata = []
-        for j in range(0, window):
-            datasplit = arraylist[i+j].split(",")
-            tempvalue = datasplit[position_value]
-            tempdata.append(tempvalue)
-        tempdata.sort()
-        datavalue = tempdata[dateindex] 
-        datasplit = arraylist[i+dateindex].split(",")
-        datevalue = datasplit[position_date]
-        dp = datevalue + "," + datavalue
+    for i in range(arrayindex_date, len(datalist) - boundary):
+        datasplit = datalist[i].split(",")
+        datetime = datasplit[0]
+        temp_data = []
+
+        for j in range((-1 * boundary), boundary + 1):
+            datasplit = datalist[i + j].split(",")
+            value = datasplit[1]
+            temp_data.append(value)
+        temp_data.sort()
+        value = temp_data[arrayindex_date]
+        dp = datetime + "," + value
         filteredlist.append(dp)
     return filteredlist
+
 
 # ##################################################
 # Convert straight magnetogram to dH / dt
@@ -224,8 +222,8 @@ if __name__ == "__main__":
             # convert to Unix time (Seconds)
             newdatetime = mktime(newdatetime.timetuple())
             newdatetime = int(newdatetime)
-
-            dp = DP_Initial(newdatetime, datavalue)
+            dp = str(newdatetime) + "," + str(datavalue)
+            # dp = DP_Initial(newdatetime, datavalue)
             initial_datalist.append(dp)
         else:
             errorcount = errorcount + 1
@@ -233,12 +231,22 @@ if __name__ == "__main__":
 
     # apply a median filter to this list.  We are still working with a list of values, not a list of objects
     # at this point
+
     print("Apply median filter to initial data")
     filtered_datalist = medianfilter(initial_datalist)
 
-    # print("Adding data to list of datetime bins")
-    # # Convert the list to binned data.
-    # binneddataobjects = create_bins(filtered_datalist)
+    # convert list to list of objects
+    convertedlist = []
+    for i in range(0, len(filtered_datalist)):
+        datasplit = filtered_datalist[i].split(",")
+        datetime = datasplit[0]
+        datavalue = datasplit[1]
+        dp = DP_Initial(datetime,datavalue)
+
+
+    print("Adding data to list of datetime bins")
+    # Convert the list to binned data.
+    binneddataobjects = create_bins(filtered_datalist)
     #
     # print("Converting the magnetic data to dH/dt")
     # # Convert the objects in the list so we can process them
@@ -258,7 +266,6 @@ if __name__ == "__main__":
     # dhdt_list = aurora_sightings(dhdt_list)
 
     # Save out data
-    print(rawdatalist)
 
     # save_csv(dhdt_list, "tg_magnetogram.csv")
 
