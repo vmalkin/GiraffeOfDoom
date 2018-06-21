@@ -1,6 +1,5 @@
 import os
 import time
-import datetime
 from datetime import datetime
 from time import mktime
 import re
@@ -8,30 +7,32 @@ import re
 BIN_SIZE = 60 * 60 # the number of seconds wide a bin is
 BIN_NUMBER = int(31536000 / BIN_SIZE)  # how many bins we want in total
 
-class Datapoint():
-    def __init__(self, utc_date, datavalue):
-        self.utc_date = utc_date
-        self.datavalue = datavalue
-        self.aurora_sighting = ""
-        self.storm_threshold = ""
 
-    def utc_2_posix(self):
-        # set date time format for strptime()
-        dateformat = "%Y-%m-%d %H:%M:%S.%f"
-        newdatetime = datetime.strptime(self.utc_date, dateformat)
-        # convert to Unix time (Seconds)
-        newdatetime = mktime(newdatetime.timetuple())
-        newdatetime = int(newdatetime)
+class DP_Initial():
+    def __init__(self, posixdate, data):
+        self.posixdate = posixdate
+        self.data = data
 
-        return newdatetime
+class DP_Publish():
+    def __init__(self, posixdate, data):
+        self.null = 0
+        self.posixdate = posixdate
+        self.data = data
+        self.storm_threshold = self.null
+        self.aurora_sighted = self.null
+
+    def posix2utc(self):
+        utctime = time.gmtime(int(float(self.posixdate)))
+        utctime = time.strftime('%Y-%m-%d %H:%M', utctime)
+        return utctime
 
     def print_values(self):
-        returnstring = str(self.utc_2_posix()) + "," + str(self.datavalue)
+        returnstring = str(self.posix2utc()) + "," + str(self.data) + "," + str(self.storm_threshold) + "," + str(self.aurora_sighted)
         return returnstring
 
 class DataBin():
-    def __init__(self, posix_date):
-        self.posix_date = posix_date
+    def __init__(self, posixdate):
+        self.posixdate = posixdate
         self.datalist = []
 
     def average_datalist(self):
@@ -44,16 +45,28 @@ class DataBin():
             avgvalue = avgvalue / float(len(self.datalist))
             avgvalue = round(avgvalue, 2)
         else:
-            avgvalue = ""
+            avgvalue = 0
         return avgvalue
 
     def print_values(self):
-        returnstring = str(self.posix_date) + "," + str(self.average_datalist())
+        returnstring = str(self.posixdate) + "," + str(self.average_datalist())
         return returnstring
 
+
+# ##################################################
+# Binning - this is essentially a hash function based
+# on the posix datetime
+# ##################################################
 def create_bins(objectlist):
     # we do NOT want decimal values for time, only ints
-    date_now = int(time.time())
+    # date_now = int(time.time())
+
+    # just while we work with the short dataset. Otherwise comment out
+    date_now = datetime.strftime("2018-06-13 23:59:51.33")
+    # convert to Unix time (Seconds)
+    date_now = mktime(date_now.timetuple())
+    date_now = int(date_now)
+
     date_start = date_now - 31536000
 
     binned_data = []
@@ -64,28 +77,66 @@ def create_bins(objectlist):
     # THis is the hashing function to drop data into the correct bins
     # according to the date.
     for i in range(0, len(objectlist)):
-        bin_id = (date_start - objectlist[i].utc_2_posix()) / BIN_SIZE
+        bin_id = (float(date_start) - float(objectlist[i].posixdate)) / BIN_SIZE
         bin_id = int(round(bin_id,0))
-        binned_data[bin_id].datalist.append(objectlist[i].datavalue)
-
+        binned_data[bin_id].datalist.append(objectlist[i].data)
     return binned_data
 
+
 # ##################################################
-# median filter
+# median filter this works on a CSV list
 # ##################################################
-def medianfilter(arraylist):
+def medianfilter(datalist):
+    # objects in the array list have the format [posix_time, data]
     filteredlist = []
-    for i in range(1,len(arraylist) - 1):
-        templist = []
-        templist.append(arraylist[i-1])
-        templist.append(arraylist[i])
-        templist.append(arraylist[i + 1])
+    window = 3
+    arrayindex_date = int((window - 1) / 2)
+    boundary = arrayindex_date
 
-        sortedlist = sorted(templist, key=lambda datastring: datastring[0])
+    for i in range(arrayindex_date, len(datalist) - boundary):
+        datasplit = datalist[i].split(",")
+        datetime = datasplit[0]
+        temp_data = []
 
-        filteredlist.append(sortedlist[1])
+        for j in range((-1 * boundary), boundary + 1):
+            datasplit = datalist[i + j].split(",")
+            value = datasplit[1]
+            temp_data.append(value)
+        temp_data.sort()
+        value = temp_data[arrayindex_date]
+        dp = datetime + "," + value
+        filteredlist.append(dp)
     return filteredlist
 
+
+# ##################################################
+# Convert straight magnetogram to dH / dt
+# ##################################################
+def create_dhdt(objectlist):
+    returnlist = []
+
+    for i in range(1, len(objectlist)):
+        prev = float(objectlist[i-1].data)
+        now = float(objectlist[i].data)
+        dhdt = round((now - prev),2)
+        date = objectlist[i].posixdate
+        dp = DP_Publish(date, dhdt)
+        returnlist.append(dp)
+    return returnlist
+
+# ##################################################
+# add storm data to dH / dt
+# ##################################################
+def storm_threshold(dhdtlist):
+    returnlist = dhdtlist
+    return returnlist
+
+# ##################################################
+# add aurora sightings to dH / dt
+# ##################################################
+def aurora_sightings(dhdtlist):
+    returnlist = dhdtlist
+    return returnlist
 
 # ##################################################
 # Write out values to file.
@@ -96,18 +147,21 @@ def save_csv(arraydata, savefile):
     except:
         print("Error deleting old file")
 
-    for line in arraydata:
+    for item in arraydata:
         try:
             with open(savefile, 'a') as f:
-                f.write(line + "\n")
+                f.write(item.print_values() + "\n")
 
         except IOError:
             print("WARNING: There was a problem accessing heatmap file")
 
 
 # ##################################################
+#
 # S C R I P T   B E G I N S   H E R E
+#
 # ##################################################
+
 # using the list of files, open each logfile into the main array
 if __name__ == "__main__":
     # calculate the processing time
@@ -150,23 +204,69 @@ if __name__ == "__main__":
 
     # Out data should be in the format of timestamp, data1, data2, etc We only need the timestamp and the
     # first data value
+    # convert the list into an array of datapoint objects, with posix timestamps
+    print("Begin converting logfile data to [posixdate, data] format")
     regex = r'(\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d.\d\d)'
-    rawdataobjects = []
+    dateformat = "%Y-%m-%d %H:%M:%S.%f"
+    initial_datalist = []
     errorcount = 0
+
     for item in rawdatalist:
         itemsplit = item.split(",")
         utcdate = itemsplit[0]
         datavalue = itemsplit[1]
 
+        # if the date matches trhe regex format, attempt to convert to posix timestamp
         if re.match(regex, utcdate):
-            dp = Datapoint(utcdate, datavalue)
-            rawdataobjects.append(dp)
+            newdatetime = datetime.strptime(utcdate, dateformat)
+            # convert to Unix time (Seconds)
+            newdatetime = mktime(newdatetime.timetuple())
+            newdatetime = int(newdatetime)
+            dp = str(newdatetime) + "," + str(datavalue)
+            # dp = DP_Initial(newdatetime, datavalue)
+            initial_datalist.append(dp)
         else:
             errorcount = errorcount + 1
     print(str(errorcount) + " errors in datetime encountered")
 
-    # Convert the list to binned data.
-    binneddataobjects = create_bins(rawdataobjects)
+    # apply a median filter to this list.  We are still working with a list of values, not a list of objects
+    # at this point
 
-    # convert readings to dh/dt
-    # Append the Aurora and Storm threshold info
+    print("Apply median filter to initial data")
+    filtered_datalist = medianfilter(initial_datalist)
+
+    # convert list to list of objects
+    convertedlist = []
+    for i in range(0, len(filtered_datalist)):
+        datasplit = filtered_datalist[i].split(",")
+        datetime = datasplit[0]
+        datavalue = datasplit[1]
+        dp = DP_Initial(datetime,datavalue)
+
+
+    print("Adding data to list of datetime bins")
+    # Convert the list to binned data.
+    binneddataobjects = create_bins(filtered_datalist)
+    #
+    # print("Converting the magnetic data to dH/dt")
+    # # Convert the objects in the list so we can process them
+    # dhdt_list = []
+    # for item in binneddataobjects:
+    #     datetime = item.posixdate
+    #     datavalue = item.average_datalist()
+    #     dp = DP_Publish(datetime, datavalue)
+    #     dhdt_list.append(dp)
+    #
+    # # # calculate the actual dH / dt. We will use the DP_Publish class now, so we can add storm threshholds and
+    # # # aurora sighting info.
+    # # dhdt_list = create_dhdt(dhdt_list)
+    #
+    # # Append the Aurora and Storm threshold info
+    # dhdt_list = storm_threshold(dhdt_list)
+    # dhdt_list = aurora_sightings(dhdt_list)
+
+    # Save out data
+
+    # save_csv(dhdt_list, "tg_magnetogram.csv")
+
+    print("FINISHED")
