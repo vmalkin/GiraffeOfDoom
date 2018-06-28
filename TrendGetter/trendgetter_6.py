@@ -3,10 +3,11 @@ import time
 from datetime import datetime
 from time import mktime
 import re
+import math
 
 BIN_SIZE = 60 * 60 # the number of seconds wide a bin is
 BIN_NUMBER = int(31536000 / BIN_SIZE)  # how many bins we want in total
-
+DHDT_THRESHOLD = 20
 
 class DP_Initial():
     def __init__(self, posixdate, data):
@@ -116,6 +117,11 @@ def create_dhdt(objectlist):
         prev = float(objectlist[i-1].data)
         now = float(objectlist[i].data)
         dhdt = round((now - prev),2)
+
+        dhdt_test = math.sqrt(math.pow(dhdt, 2))
+        if dhdt_test > DHDT_THRESHOLD:
+            dhdt = 0
+
         date = objectlist[i].posixdate
         dp = DP_Publish(date, dhdt)
         returnlist.append(dp)
