@@ -32,9 +32,14 @@ class DP_Publish():
         return returnstring
 
 class DataBin():
+    """DataBin - This objects allows us to crate a bin of values. 
+    Calculates the average value of the bin"""
     def __init__(self, posixdate):
         self.posixdate = posixdate
         self.datalist = []
+
+    def minmax_datalist(self):
+        pass
 
     def average_datalist(self):
         avgvalue = 0

@@ -1,5 +1,5 @@
 import unittest
-from trendgetter_5 import medianfilter
+from trendgetter_6 import medianfilter
 
 class Functionstest(unittest.TestCase):
     def test_medianfilter1(self):
