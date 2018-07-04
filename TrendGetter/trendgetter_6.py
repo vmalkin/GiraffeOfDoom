@@ -14,6 +14,10 @@ class DP_Initial():
         self.posixdate = posixdate
         self.data = data
 
+    def print_values(self):
+        returnstring = str(self.posixdate) + "," + str(self.data)
+        return returnstring
+
 class DP_Publish():
     def __init__(self, posixdate, data):
         self.null = "#n/a"
@@ -32,9 +36,37 @@ class DP_Publish():
         return returnstring
 
 class DataBin():
+    """DataBin - This objects allows us to crate a bin of values. 
+    Calculates the average value of the bin"""
     def __init__(self, posixdate):
         self.posixdate = posixdate
         self.datalist = []
+
+    def dhdt_datalist(self):
+        if len(self.datalist) >= 3:
+            returnlist = []
+            for i in range(1, len(self.datalist) - 1):
+                templist = []
+                v1 = self.datalist[i-1]
+                v2 = self.datalist[i]
+                v3 = self.datalist[i + 1]
+                templist.append(v1)
+                templist.append(v2)
+                templist.append(v3)
+                templist.sort()
+                returnlist.append(templist[1])
+
+            returnlist.sort()
+            print(returnlist)
+            min = float(returnlist[0])
+            max = float(returnlist[len(returnlist)-1])
+            dhdt = max - min
+
+        else:
+            dhdt = 0
+
+        return dhdt
+
 
     def average_datalist(self):
         avgvalue = 0
@@ -50,7 +82,7 @@ class DataBin():
         return avgvalue
 
     def print_values(self):
-        returnstring = str(self.posixdate) + "," + str(self.average_datalist())
+        returnstring = str(self.posixdate) + "," + str(self.dhdt_datalist())
         return returnstring
 
 
@@ -256,13 +288,9 @@ if __name__ == "__main__":
     dhdt_list = []
     for item in binneddataobjects:
         datetime = item.posixdate
-        datavalue = item.average_datalist()
+        datavalue = item.dhdt_datalist()
         dp = DP_Publish(datetime, datavalue)
         dhdt_list.append(dp)
-
-    # # calculate the actual dH / dt. We will use the DP_Publish class now, so we can add storm threshholds and
-    # # aurora sighting info.
-    dhdt_list = create_dhdt(dhdt_list)
 
     # # Append the Aurora and Storm threshold info
     # dhdt_list = storm_threshold(dhdt_list)
@@ -270,7 +298,7 @@ if __name__ == "__main__":
 
     # Save out data
 
-    save_csv(binneddataobjects, "tg_magnetogram.csv")
+    save_csv(convertedlist, "tg_magnetogram.csv")
     save_csv(dhdt_list, "tg_dhdt.csv")
 
     print("FINISHED")
