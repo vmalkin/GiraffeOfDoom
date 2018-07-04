@@ -39,8 +39,8 @@
 /* Assign a unique ID to this sensor at the same time */
 Adafruit_HMC5883_Unified mag = Adafruit_HMC5883_Unified(12345);
 
-double AVERAGE_ITERATIONS = 5000; /* Approx 1000 iterations per second */
-
+int CYCLE = 1000;  /* Approx 1000 iterations per second */
+double COUNT = 5;
 
 void displaySensorDetails(void)
 {
@@ -90,19 +90,26 @@ void loop(void)
   //Serial.print("X: "); Serial.print(event.magnetic.x); Serial.print("  ");
   //Serial.print("Y: "); Serial.print(event.magnetic.y); Serial.print("  ");
   //Serial.print("Z: "); Serial.print(event.magnetic.z); Serial.print("  ");Serial.println("uT");
+
   
-  for (int i=0; i < AVERAGE_ITERATIONS; i++)
+  for (int j = 0; j < COUNT; j++)
   {
-    sensors_event_t event; 
-    mag.getEvent(&event);
-    magX = magX + (double)event.magnetic.x;
-    magY = magY + (double)event.magnetic.y;
-    magZ = magZ + (double)event.magnetic.z;
-  }
+    for (int i=0; i < CYCLE; i++)
+    {
+      sensors_event_t event; 
+      mag.getEvent(&event);
+      magX = magX + (double)event.magnetic.x;
+      magY = magY + (double)event.magnetic.y;
+      magZ = magZ + (double)event.magnetic.z;
+      
+      // Pat the watchdog - good boy!
+      wdt_reset();
+      }
+    }
   
-  magX = magX/AVERAGE_ITERATIONS;  
-  magY = magY/AVERAGE_ITERATIONS; 
-  magZ = magZ/AVERAGE_ITERATIONS; 
+  magX = magX/(COUNT * CYCLE);  
+  magY = magY/(COUNT * CYCLE); 
+  magZ = magZ/(COUNT * CYCLE); 
 
   Serial.println(magX,3);
 //  Serial.print(",");
@@ -114,6 +121,5 @@ void loop(void)
   magY = 0;
   magZ = 0;
 
-  // Pat the watchdog - good boy!
-  wdt_reset();
+
 }
