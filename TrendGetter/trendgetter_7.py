@@ -7,7 +7,8 @@ import math
 
 BIN_SIZE = 60 * 60 # the number of seconds wide a bin is
 BIN_NUMBER = int(31536000 / BIN_SIZE)  # how many bins we want in total
-DHDT_THRESHOLD = 20
+STORM_THRESHOLD = 14
+aurora_sightings_list = "sightings.csv"
 
 class DP_Initial():
     def __init__(self, posixdate, data):
@@ -25,6 +26,7 @@ class DP_Publish():
         self.data = data
         self.storm_threshold = self.null
         self.aurora_sighted = self.null
+        self.carrington_point = self.null
 
     def posix2utc(self):
         utctime = time.gmtime(int(float(self.posixdate)))
@@ -32,7 +34,7 @@ class DP_Publish():
         return utctime
 
     def print_values(self):
-        returnstring = str(self.posix2utc()) + "," + str(self.data) + "," + str(self.storm_threshold) + "," + str(self.aurora_sighted)
+        returnstring = str(self.posix2utc()) + "," + str(self.data) + "," + str(self.storm_threshold) + "," + str(self.aurora_sighted) + "," + str(self.carrington_point)
         return returnstring
 #
 class DataBin():
@@ -132,34 +134,24 @@ def medianfilter(datalist):
         returnlist.append(dp)
     return returnlist
 
+def utc_2_unix(utctime):
+    print("Converting time to UNIX time...")
+    # set date time format for strptime()
+    dateformat = "%Y-%m-%d"
+    newdatetime = datetime.strptime(utctime,dateformat)
+    # convert to Unix time (Seconds)
+    newdatetime = mktime(newdatetime.timetuple())
+    return newdatetime
 
-
-
-# # ##################################################
-# # Convert straight magnetogram to dH / dt
-# # ##################################################
-# def create_dhdt(objectlist):
-#     returnlist = []
-#
-#     for i in range(1, len(objectlist)):
-#         prev = float(objectlist[i-1].data)
-#         now = float(objectlist[i].data)
-#         dhdt = round((now - prev),2)
-#
-#         dhdt_test = math.sqrt(math.pow(dhdt, 2))
-#         if dhdt_test > DHDT_THRESHOLD:
-#             dhdt = 0
-#
-#         date = objectlist[i].posixdate
-#         dp = DP_Publish(date, dhdt)
-#         returnlist.append(dp)
-#     return returnlist
 
 # ##################################################
 # add storm data to dH / dt
 # ##################################################
 def storm_threshold(dhdtlist):
     returnlist = dhdtlist
+    for item in returnlist:
+        if item.data >= STORM_THRESHOLD:
+            item.storm_threshold = STORM_THRESHOLD
     return returnlist
 
 # ##################################################
@@ -167,7 +159,24 @@ def storm_threshold(dhdtlist):
 # ##################################################
 def aurora_sightings(dhdtlist):
     returnlist = dhdtlist
+    posixdates = []
+
+    with open(aurora_sightings_list) as e:
+        for line in e:
+            date = line.strip()  # remove any trailing whitespace chars like CR and NL
+            dt = utc_2_unix(date)
+            posixdates.append(dt)
+
+
     return returnlist
+
+# ##################################################
+# add carrington marker to dH / dt
+# ##################################################
+def carrington_marker(dhdtlist):
+    returnlist = dhdtlist
+    return returnlist
+
 
 # ##################################################
 # Write out values to file.
@@ -186,6 +195,29 @@ def save_csv(arraydata, savefile):
         except IOError:
             print("WARNING: There was a problem accessing heatmap file")
 
+# #################################################################################
+# Create the smoothed data array and write out the files for plotting.
+# We will do a running average based on the running average time in minutes and the number
+# readings per minute
+# Data format is the DhdtData class in this file.
+# #################################################################################
+def running_average(input_array, averaging_interval):
+    displayarray = []
+
+    while len(input_array) > averaging_interval:
+        for i in range(averaging_interval + 1, len(input_array)):
+            datavalue = 0
+            datetime = input_array[i].posix_date
+
+            for j in range(0, averaging_interval):
+                newdata = input_array[i-j].data_value
+                datavalue = datavalue + newdata
+
+            datavalue = round((datavalue / averaging_interval), 3)
+            appendvalue = DhdtData(datetime, datavalue)
+            displayarray.append(appendvalue)
+
+    return displayarray
 
 # ##################################################
 #
@@ -265,6 +297,8 @@ if __name__ == "__main__":
     print("Apply median filter to initial data")
     filtered_datalist = medianfilter(initial_datalist)
 
+    # ######################################################
+    # Calculate the DHDT
     templist = []
     for item in filtered_datalist:
         datasplit = item.split(",")
@@ -277,13 +311,25 @@ if __name__ == "__main__":
 
 
 
-    # # Append the Aurora and Storm threshold info
-    # dhdt_list = storm_threshold(dhdt_list)
-    # dhdt_list = aurora_sightings(dhdt_list)
+    # ######################################################
+    # create the final set of datapoints for publishing
+    finallist = []
+    for item in dhdt_list:
+        datetime = item.posixdate
+        datavalue = item.dhdt_datalist()
+        dp = DP_Publish(datetime, datavalue)
+        finallist.append(dp)
+
+
+
+    # Append the Aurora and Storm threshold info
+    finallist = storm_threshold(finallist)
+    # finallist = aurora_sightings(finallist)
+    # finallist = carrington_marker(finallist)
 
     # Save out data
 
     # save_csv(convertedlist, "tg_magnetogram.csv")
-    save_csv(dhdt_list, "tg_dhdt.csv")
+    save_csv(finallist, "tg_dhdt.csv")
 
     print("FINISHED")
