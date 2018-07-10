@@ -94,6 +94,7 @@ void loop(void)
   
   for (int j = 0; j < COUNT; j++)
   {
+    wdt_reset();
     for (int i=0; i < CYCLE; i++)
     {
       sensors_event_t event; 
@@ -103,7 +104,7 @@ void loop(void)
       magZ = magZ + (double)event.magnetic.z;
       
       // Pat the watchdog - good boy!
-      wdt_reset();
+     
       }
     }
   
