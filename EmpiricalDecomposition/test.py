@@ -9,6 +9,8 @@ Created on Wed Jul 11 19:49:07 2018
 class DataPoint:
     def __init__(self, posix_dt, datavalue):
         self.null = "#n/a"
+        self.posixdate = posix_dt
+        self.datavalue = datavalue
         self.maxvalue = self.null
         self.minvalue = self.null
         
@@ -26,12 +28,18 @@ def loadcsv(csvfilename):
 
 # refine the list to the format [posix_date, datavalue]
 def refine_magnetometer_data(datalist):
+    # List to be returned
     returnlist = []
+
+    # the positions in the datasplit for the date and data values
+    index_date = 1
+    index_data = 2
     datalist.pop(0)
+
     for item in datalist:
         datasplit = item.split(",")
-        posixdate = int(float(datasplit[1]))
-        datavalue = datasplit[2]
+        posixdate = int(float(datasplit[index_date]))
+        datavalue = datasplit[index_data]
         dp = str(posixdate) + "," + str(datavalue)
         returnlist.append(dp)
     return returnlist
