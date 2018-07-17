@@ -238,6 +238,30 @@ def create_dhdt(filtered_datalist):
 
     return returnlist
 
+# #################################################################################
+# Create the smoothed data array and write out the files for plotting.
+# We will do a running average based on the running average time in minutes and the number
+# readings per minute
+# Data format is the DhdtData class in this file.
+# #################################################################################
+def running_average(input_array, averaging_interval):
+    displayarray = []
+
+    while len(input_array) > averaging_interval:
+        for i in range(averaging_interval + 1, len(input_array)):
+            datavalue = 0
+            datetime = input_array[i].posix_date
+
+            for j in range(0, averaging_interval):
+                newdata = input_array[i-j].data_value
+                datavalue = datavalue + newdata
+
+            datavalue = round((datavalue / averaging_interval), 3)
+            appendvalue = DhdtData(datetime, datavalue)
+            displayarray.append(appendvalue)
+
+    return displayarray
+
 # ##################################################
 #
 # S C R I P T   B E G I N S   H E R E
@@ -330,6 +354,9 @@ if __name__ == "__main__":
 
     dhdt_list = create_bins(templist2)
 
+    # ######################################################
+    # SMooth the list before final plotting
+    dhdt_list = running_average(dhdt_list, 6)
 
     # ######################################################
     # create the final set of datapoints for publishing
