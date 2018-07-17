@@ -55,7 +55,7 @@ class DataBin():
             for i in range(0, len(self.datalist)):
                 if float(self.datalist[i]) >= float(max):
                     max = float(self.datalist[i])
-            dhdt = round((max - min),2)
+            dhdt = round((max - min),4)
         else:
             dhdt = 0
 
@@ -195,37 +195,56 @@ def save_csv(arraydata, savefile):
         except IOError:
             print("WARNING: There was a problem accessing heatmap file")
 
-# #################################################################################
-# Create the smoothed data array and write out the files for plotting.
-# We will do a running average based on the running average time in minutes and the number
-# readings per minute
-# Data format is the DhdtData class in this file.
-# #################################################################################
-def running_average(input_array, averaging_interval):
-    displayarray = []
+# # #################################################################################
+# # Create the smoothed data array and write out the files for plotting.
+# # We will do a running average based on the running average time in minutes and the number
+# # readings per minute
+# # Data format is the DhdtData class in this file.
+# # #################################################################################
+# def running_average(input_array, averaging_interval):
+#     displayarray = []
+#
+#     while len(input_array) > averaging_interval:
+#         for i in range(averaging_interval + 1, len(input_array)):
+#             datavalue = 0
+#             datetime = input_array[i].posix_date
+#
+#             for j in range(0, averaging_interval):
+#                 newdata = input_array[i-j].data_value
+#                 datavalue = datavalue + newdata
+#
+#             datavalue = round((datavalue / averaging_interval), 3)
+#             appendvalue = DhdtData(datetime, datavalue)
+#             displayarray.append(appendvalue)
+#
+#     return displayarray
+def create_dhdt(filtered_datalist):
+    returnlist = []
+    dhdt_threshold = 5
+    for i in range(1,len(filtered_datalist)):
+        prevsplit = filtered_datalist[i-1].split(",")
+        nowsplit = filtered_datalist[i].split(",")
 
-    while len(input_array) > averaging_interval:
-        for i in range(averaging_interval + 1, len(input_array)):
-            datavalue = 0
-            datetime = input_array[i].posix_date
+        prev_data = float(prevsplit[1])
+        now_data = float(nowsplit[1])
+        now_datetime = nowsplit[0]
 
-            for j in range(0, averaging_interval):
-                newdata = input_array[i-j].data_value
-                datavalue = datavalue + newdata
+        dhdt = now_data - prev_data
+        if math.sqrt(math.pow(dhdt,2)) > dhdt_threshold:
+            dhdt = 0
 
-            datavalue = round((datavalue / averaging_interval), 3)
-            appendvalue = DhdtData(datetime, datavalue)
-            displayarray.append(appendvalue)
+        dp = str(now_datetime) + "," + str(dhdt)
+        returnlist.append(dp)
 
-    return displayarray
+    return returnlist
 
 # ##################################################
 #
 # S C R I P T   B E G I N S   H E R E
 #
 # ##################################################
-
 # using the list of files, open each logfile into the main array
+
 if __name__ == "__main__":
     # calculate the processing time
     starttime = datetime.now()
@@ -297,18 +316,19 @@ if __name__ == "__main__":
     print("Apply median filter to initial data")
     filtered_datalist = medianfilter(initial_datalist)
 
-    # ######################################################
-    # Calculate the DHDT
-    templist = []
+    # create the list of DHDT values
+    filtered_datalist = create_dhdt(filtered_datalist)
+
+    # Create the list of OBJECTS
+    templist2 = []
     for item in filtered_datalist:
         datasplit = item.split(",")
         date = datasplit[0]
         data = datasplit[1]
         dp = DP_Initial(date, data)
-        templist.append(dp)
+        templist2.append(dp)
 
-    dhdt_list = create_bins(templist)
-
+    dhdt_list = create_bins(templist2)
 
 
     # ######################################################
@@ -328,8 +348,6 @@ if __name__ == "__main__":
     # finallist = carrington_marker(finallist)
 
     # Save out data
-
-    # save_csv(convertedlist, "tg_magnetogram.csv")
     save_csv(finallist, "tg_dhdt.csv")
 
     print("FINISHED")
