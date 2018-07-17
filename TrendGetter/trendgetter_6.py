@@ -293,7 +293,7 @@ if __name__ == "__main__":
         dhdt_list.append(dp)
 
     # # Append the Aurora and Storm threshold info
-    # dhdt_list = storm_threshold(dhdt_list)
+    dhdt_list = storm_threshold(dhdt_list)
     # dhdt_list = aurora_sightings(dhdt_list)
 
     # Save out data
