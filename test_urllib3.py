@@ -14,7 +14,7 @@ def get_url_data(url_string):
     # http = urllib3.PoolManager(cert_reqs = "cert_required", ca_certs=certifi.where())
     http = urllib3.PoolManager()
     data_list = []
-        
+ium for w        
     try:
         response = http.request("GET", url_string)
         # get the repsonse data, convert to UTF-8 and split on the carriage returns

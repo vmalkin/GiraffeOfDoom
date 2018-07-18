@@ -28,6 +28,7 @@ class Bin():
     def __init__(self, posixdate):
         self.posixdate = posixdate
         self.datalist = []
+        self.data = self.average_datalist()
 
     def average_datalist(self):
         avgvalue = 0
@@ -143,18 +144,21 @@ def medianfilter(datalist):
 # ##################################################
 # Convert the list to dh/dt
 # ##################################################
-def create_dhdt(filtered_datalist):
+def create_dhdt(object_list):
     returnlist = []
     dhdt_threshold = 5
-    for i in range(1, len(filtered_datalist)):
-        prevsplit = filtered_datalist[i-1].split(",")
-        nowsplit = filtered_datalist[i].split(",")
+    for i in range(1, len(object_list)):
+#        prevsplit = filtered_datalist[i-1].split(",")
+#        nowsplit = filtered_datalist[i].split(",")
 
-        prev_data = float(prevsplit[1])
-        now_data = float(nowsplit[1])
-        now_datetime = nowsplit[0]
+#        prev_data = float(prevsplit[1])
+#        now_data = float(nowsplit[1])
+#        now_datetime = nowsplit[0]
+        prev_data = object_list[i-1].data
+        now_data = object_list[i].data
+        now_datetime = object_list[i].posixdate
 
-        dhdt = now_data - prev_data
+        dhdt = float(now_data) - float(prev_data)
         if math.sqrt(math.pow(dhdt, 2)) > dhdt_threshold:
             dhdt = 0
 
@@ -211,6 +215,16 @@ def create_bins(objectlist):
         binned_data[bin_id].datalist.append(objectlist[i].data)
     return binned_data
 
+def convert_to_obj(list):
+    returnlist = []
+    for item in list:
+        datasplit = item.split(",")
+        date = datasplit[0]
+        data = datasplit[1]
+        dp = DPPlain(date, data)
+        returnlist.append(dp)
+    return returnlist
+
 # ##################################################
 #
 # S C R I P T   B E G I N S   H E R E
@@ -261,6 +275,13 @@ if __name__ == "__main__":
 
     # Median filter out the blips
     magnetometer_data = medianfilter(magnetometer_data)
+    
+    # Convert the list to objects
+    magnetometer_data = convert_to_obj(magnetometer_data)
+    
+    # Create the list of one-hour bins. Use a bin object that will allow us to hash on the posix dates
+    magnetometer_data = create_bins(magnetometer_data)
+    
 
     # Convert the data to dH/dt. CONVERT THE LIST TO A LIST OF OBJECTS
     dhdt_objects = create_dhdt(magnetometer_data)
@@ -270,11 +291,9 @@ if __name__ == "__main__":
     dhdt_objects = running_average(dhdt_objects, window)
     dhdt_objects = running_average(dhdt_objects, window)
 
-    # # Create the list of one-hour bins. Use a bin object that will allow us to hash on the posix dates
-    # magnetometer_bins = create_bins(dhdt_objects)
-
     # # Add the Storm Threshold and Aurora Sighting data
     #
     # # Save the data out as a CSV file for display in highcharts
     save_csv(dhdt_objects, "tg_objects.csv")
+    print("Finished")
 
