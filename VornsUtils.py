@@ -27,7 +27,9 @@ def csv_load(csvfilename):
 
 # convert the internal posx_date to UTC format
 def posix2utc(posix_string):
-    pass
+    utctime = time.gmtime(int(float(posix_string)))
+    utctime = time.strftime('%Y-%m-%d %H:%M', utctime)
+    return utctime
 
- def utc2posix(utcstring):
+def utc2posix(utcstring):
     pass

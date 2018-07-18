@@ -250,16 +250,15 @@ def running_average(input_array, averaging_interval):
     while len(input_array) > averaging_interval:
         for i in range(averaging_interval + 1, len(input_array)):
             datavalue = 0
-            datetime = input_array[i].posix_date
+            datetime = input_array[i].posixdate
 
             for j in range(0, averaging_interval):
-                newdata = input_array[i-j].data_value
-                datavalue = datavalue + newdata
+                newdata = input_array[i-j].data
+                datavalue = float(datavalue) + float(newdata)
 
             datavalue = round((datavalue / averaging_interval), 3)
-            appendvalue = DhdtData(datetime, datavalue)
+            appendvalue = DP_Initial(datetime, datavalue)
             displayarray.append(appendvalue)
-
     return displayarray
 
 # ##################################################
@@ -268,7 +267,6 @@ def running_average(input_array, averaging_interval):
 #
 # ##################################################
 # using the list of files, open each logfile into the main array
-
 if __name__ == "__main__":
     # calculate the processing time
     starttime = datetime.now()
@@ -352,11 +350,11 @@ if __name__ == "__main__":
         dp = DP_Initial(date, data)
         templist2.append(dp)
 
-    dhdt_list = create_bins(templist2)
-
     # ######################################################
     # SMooth the list before final plotting
-    dhdt_list = running_average(dhdt_list, 6)
+    dhdt_list = running_average(templist2, 6)
+
+    dhdt_list = create_bins(templist2)
 
     # ######################################################
     # create the final set of datapoints for publishing
@@ -366,8 +364,6 @@ if __name__ == "__main__":
         datavalue = item.dhdt_datalist()
         dp = DP_Publish(datetime, datavalue)
         finallist.append(dp)
-
-
 
     # Append the Aurora and Storm threshold info
     finallist = storm_threshold(finallist)
