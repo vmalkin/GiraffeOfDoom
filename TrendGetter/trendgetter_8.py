@@ -5,7 +5,7 @@ from time import mktime
 import re
 import math
 
-BIN_SIZE = 60 * 60 # the number of seconds wide a bin is
+BIN_SIZE = 60 * 10 # the number of seconds wide a bin is
 BIN_NUMBER = int(31536000 / BIN_SIZE)  # how many bins we want in total
 STORM_THRESHOLD = 14
 aurora_sightings_list = "sightings.csv"
@@ -28,7 +28,6 @@ class Bin():
     def __init__(self, posixdate):
         self.posixdate = posixdate
         self.datalist = []
-        self.data = self.average_datalist()
 
     def average_datalist(self):
         avgvalue = 0
@@ -154,8 +153,8 @@ def create_dhdt(object_list):
 #        prev_data = float(prevsplit[1])
 #        now_data = float(nowsplit[1])
 #        now_datetime = nowsplit[0]
-        prev_data = object_list[i-1].data
-        now_data = object_list[i].data
+        prev_data = object_list[i-1].average_datalist()
+        now_data = object_list[i].average_datalist()
         now_datetime = object_list[i].posixdate
 
         dhdt = float(now_data) - float(prev_data)
@@ -186,6 +185,7 @@ def running_average(input_array, averaging_interval):
             datavalue = round((datavalue / averaging_interval), 3)
             appendvalue = DPPlain(datetime, datavalue)
             displayarray.append(appendvalue)
+            print("Smoothing: "+ str(i) + " / " + str(len(input_array)))
     return displayarray
 
 
@@ -233,8 +233,7 @@ def convert_to_obj(list):
 # using the list of files, open each logfile into the main array
 if __name__ == "__main__":
     # calculate the processing time
-    starttime = datetime.now()
-    starttime = mktime(starttime.timetuple())
+    starttime = time.time()
 
     CSVlist = "files.txt"
     CSVFilenames = []
@@ -278,12 +277,12 @@ if __name__ == "__main__":
     
     # Convert the list to objects
     magnetometer_data = convert_to_obj(magnetometer_data)
-    
+
     # Create the list of one-hour bins. Use a bin object that will allow us to hash on the posix dates
     magnetometer_data = create_bins(magnetometer_data)
-    
+    save_csv(magnetometer_data, "tg_rawmagdata.csv")
 
-    # Convert the data to dH/dt. CONVERT THE LIST TO A LIST OF OBJECTS
+    # Convert the data to dH/dt.
     dhdt_objects = create_dhdt(magnetometer_data)
 
     # Smooth the dhdt data
@@ -295,5 +294,8 @@ if __name__ == "__main__":
     #
     # # Save the data out as a CSV file for display in highcharts
     save_csv(dhdt_objects, "tg_objects.csv")
-    print("Finished")
+
+    finishtime = time.time()
+    elapsed = str(round((finishtime - starttime), 1))
+    print("\nFinished. Time to process: " + elapsed + " seconds")
 
