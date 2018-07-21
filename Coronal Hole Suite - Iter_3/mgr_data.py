@@ -135,5 +135,5 @@ class DataManager:
     # W R A P P E R   F U N C T I O N
     # ################################
     def process_new_data(self):
-        self._prune_datalist(self.master_data)
+        self.master_data = self._prune_datalist(self.master_data)
         self._save_datapoint(self.master_data, self.data_save_file)
