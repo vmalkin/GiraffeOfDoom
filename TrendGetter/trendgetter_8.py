@@ -51,9 +51,11 @@ class DPPublish():
         self.null = "#n/a"
         self.posixdate = posixdate
         self.data = data
+        self.adjusteddata = 0
         self.storm_threshold = self.null
         self.aurora_sighted = self.null
         self.carrington_point = self.null
+
 
     def posix2utc(self):
         utctime = time.gmtime(int(float(self.posixdate)))
@@ -61,7 +63,7 @@ class DPPublish():
         return utctime
 
     def print_values(self):
-        returnstring = str(self.posix2utc()) + "," + str(self.data) + "," + str(self.storm_threshold) + "," + str(self.aurora_sighted) + "," + str(self.carrington_point)
+        returnstring = str(self.posix2utc()) + "," + str(self.adjusteddata) + "," + str(self.storm_threshold) + "," + str(self.aurora_sighted) + "," + str(self.carrington_point)
         return returnstring
     def print_labels(self):
         returnstring = "UTC Time, dH/dt, Computed Storm, Aurora Sighted, Carrington Marker"
@@ -278,6 +280,17 @@ def plot_carringtons(publish_objects):
         print(i)
 
 
+# ##################################################
+# convert a list to a list of DPPublist objects.
+# ##################################################
+def adjusted_data(publish_list):
+    for i in range(1, len(publish_list)):
+        temp = []
+        temp.append(publish_list[i-1].data)
+        temp.append(publish_list[i].data)
+        temp.sort()
+        publish_list[i].adjusteddata = round((float(temp[1]) - float(temp[0])),2)
+    return publish_list
 
 # ##################################################
 #
@@ -347,6 +360,9 @@ if __name__ == "__main__":
     # Create the final list for presentation
     # uses DPPublish object
     dhdt_objects = create_presentation(dhdt_objects)
+
+    # Adjust the dhdt to be from zero upwards
+    dhdt_objects = adjusted_data(dhdt_objects)
 
     # Add the Storm Threshold, Aurora Sighting data, carrinton markers
     storm(dhdt_objects)
