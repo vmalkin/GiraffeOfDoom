@@ -252,13 +252,14 @@ def create_presentation(dhdt_objects):
 # convert a list to a list of DPPublist objects.
 # ##################################################
 def storm(Publish_objects):
-    storm_threshold = 2.5
+    storm_threshold = 1.7
+    plotpoint = 1.5
 
     for item in Publish_objects:
         if item.data > storm_threshold:
-            item.storm_threshold = storm_threshold
+            item.storm_threshold = plotpoint
         if item.data < storm_threshold * -1:
-            item.storm_threshold = storm_threshold
+            item.storm_threshold = plotpoint
 
 
 # ##################################################
