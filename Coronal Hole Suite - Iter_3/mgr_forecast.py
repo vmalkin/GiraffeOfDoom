@@ -178,10 +178,12 @@ class Forecaster:
             coverage = self._CH_match_launchdate(CH_data, item[0])
             date = int(item[0])
             windspeed = item[1]
+
             # If we have NO wind data, then we should not add this to the final list
             if windspeed > 0:
-                appenditem = str(date) + "," + str(coverage) + "," + str(windspeed)
-                coverage_data.append(appenditem)
+                if coverage > 0:
+                    appenditem = str(date) + "," + str(coverage) + "," + str(windspeed)
+                    coverage_data.append(appenditem)
             else:
                 pass
 
