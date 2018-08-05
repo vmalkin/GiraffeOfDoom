@@ -5,7 +5,7 @@ from time import mktime
 import re
 import math
 
-BIN_SIZE = 60 * 10 # the number of seconds wide a bin is
+BIN_SIZE = 60 * 60 # the number of seconds wide a bin is
 BIN_NUMBER = int(31536000 / BIN_SIZE)  # how many bins we want in total
 STORM_THRESHOLD = 14
 aurora_sightings_list = "sightings.csv"
@@ -173,6 +173,14 @@ def create_dhdt(object_list):
         returnlist.append(dp)
     return returnlist
 
+def create_averages(object_list):
+    returnlist = []
+    for item in object_list:
+        datetime = item.posixdate
+        datavalue = item.average_datalist()
+        dp = DPPlain(datetime, datavalue)
+        returnlist.append(dp)
+    return returnlist
 
 # #################################################################################
 # Create the smoothed data array and write out the files for plotting.
@@ -187,7 +195,7 @@ def running_average(input_array, averaging_interval):
             datavalue = 0
             datetime = input_array[i].posixdate
             for j in range(0, averaging_interval):
-                newdata = input_array[i-j].
+                newdata = input_array[i-j].data
                 datavalue = float(datavalue) + float(newdata)
 
             datavalue = round((datavalue / averaging_interval), 3)
@@ -291,7 +299,7 @@ def adjusted_data(publish_list):
         temp.append(publish_list[i-1].data)
         temp.append(publish_list[i].data)
         temp.sort()
-        publish_list[i].adjusteddata = round((float(temp[1]) - float(temp[0])),2)
+        publish_list[i].adjusteddata = round((float(temp[1]) - float(temp[0])),5)
     return publish_list
 
 # ##################################################
@@ -352,19 +360,20 @@ if __name__ == "__main__":
     # save_csv(magnetometer_data, "tg_rawmagdata.csv")
 
     # Convert the data to dH/dt.
+#    dhdt_objects = create_averages(magnetometer_data)
     dhdt_objects = create_dhdt(magnetometer_data)
 
-    # Smooth the dhdt data
-    window = 2
-    dhdt_objects = running_average(magnetometer_data, window)
-    dhdt_objects = running_average(dhdt_objects, window)
+#    # Smooth the dhdt data
+#    window = 5
+#    dhdt_objects = running_average(dhdt_objects, window)
+#    dhdt_objects = running_average(dhdt_objects, window)
 
-#    # Create the final list for presentation
-#    # uses DPPublish object
-#    dhdt_objects = create_presentation(dhdt_objects)
-#
-#    # Adjust the dhdt to be from zero upwards
-#    dhdt_objects = adjusted_data(dhdt_objects)
+    # Create the final list for presentation
+    # uses DPPublish object
+    dhdt_objects = create_presentation(dhdt_objects)
+
+    # Adjust the dhdt to be from zero upwards
+    dhdt_objects = adjusted_data(dhdt_objects)
 #
 #    # Add the Storm Threshold, Aurora Sighting data, carrinton markers
 #    storm(dhdt_objects)
