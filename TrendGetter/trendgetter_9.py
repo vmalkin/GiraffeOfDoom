@@ -11,21 +11,14 @@ BIN_NUMBER = int(31536000 / BIN_SIZE)  # how many bins we want in total
 STORM_THRESHOLD = 14
 aurora_sightings_list = "sightings.csv"
 
-
-# A plain datapoint
-class DPPlain():
+class DatapointPlain():
     def __init__(self, posixdate, data):
         self.posixdate = posixdate
         self.data = data
 
-    # allow an object to return it's values
     def print_values(self):
-        values = str(self.posixdate) + "," + str(self.data)
-        return values
-
-    def print_labels(self):
-        returnstring = "POSX Time, dH/dt"
-        return returnstring
+        valuestring = str(self.posixdate) + "," + str(self.data)
+        return valuestring
 
 
 # A bin object, used to collate data that falls in the same datetime
@@ -48,15 +41,23 @@ class Bin():
             avgvalue = 0
         return avgvalue
 
+    def minmax_datalist(self):
+        temp = sorted(self.datalist)
+        if len(temp) > 0:
+            rangevalue = float(temp[len(temp)-1]) - float(temp[0])
+        else:
+            rangevalue = 0
+        return rangevalue
+
     def print_values(self):
-        returnstring = str(self.posixdate) + "," + str(self.average_datalist())
+        returnstring = str(self.posixdate) + "," + str(self.minmax_datalist())
         return returnstring
 
 
 # Object used to create the final aggregated list
 class DPPublish():
     def __init__(self, posixdate, data):
-        self.null = "#n/a"
+        self.null = ""
         self.posixdate = posixdate
         self.data = data
         self.adjusteddata = 0
@@ -65,12 +66,11 @@ class DPPublish():
         self.carrington_point = self.null
 
     def posix2utc(self):
-        utctime = time.gmtime(int(float(self.posixdate)))
-        utctime = time.strftime('%Y-%m-%d %H:%M', utctime)
+        utctime = datetime.fromtimestamp(int(self.posixdate)).strftime('%Y-%m-%d %H:%M:')
         return utctime
 
     def print_values(self):
-        returnstring = str(self.posix2utc()) + "," + str(self.adjusteddata) + "," + str(self.storm_threshold) + "," + str(self.aurora_sighted) + "," + str(self.carrington_point)
+        returnstring = str(self.posix2utc()) + "," + str(self.data) + "," + str(self.storm_threshold) + "," + str(self.aurora_sighted) + "," + str(self.carrington_point)
         return returnstring
 
     def print_labels(self):
@@ -157,30 +157,6 @@ def medianfilter(datalist):
     return returnlist
 
 
-# ##################################################
-# Convert the list to dh/dt
-# ##################################################
-def create_dhdt(object_list):
-    returnlist = []
-    dhdt_threshold = 5
-
-    for i in range(1, len(object_list)):
-        now_datetime = object_list[i].posixdate
-        now_dhdt = float(object_list[i].data) - float(object_list[i-1].data)
-        if math.sqrt(math.pow(now_dhdt, 2)) > dhdt_threshold:
-            now_dhdt = 0
-        dp = DPPlain(now_datetime, now_dhdt)
-        returnlist.append(dp)
-    return returnlist
-
-def create_averages(object_list):
-    returnlist = []
-    for item in object_list:
-        datetime = item.posixdate
-        datavalue = item.average_datalist()
-        dp = DPPlain(datetime, datavalue)
-        returnlist.append(dp)
-    return returnlist
 
 
 # #################################################################################
@@ -200,9 +176,9 @@ def running_average(input_array, averaging_interval):
                 datavalue = float(datavalue) + float(newdata)
 
             datavalue = round((datavalue / averaging_interval), 3)
-            appendvalue = DPPlain(datetime, datavalue)
+            appendvalue = DatapointPlain(datetime, datavalue)
             displayarray.append(appendvalue)
-            # print("Smoothing: "+ str(i) + " / " + str(len(input_array)))
+            print("Smoothing: "+ str(i) + " / " + str(len(input_array)))
     return displayarray
 
 
@@ -234,29 +210,6 @@ def create_bins(objectlist):
     return binned_data
 
 
-# ##################################################
-# convert a list to a list of objects.
-# ##################################################
-def convert_to_obj(list):
-    returnlist = []
-    for item in list:
-        datasplit = item.split(",")
-        date = datasplit[0]
-        data = datasplit[1]
-        dp = DPPlain(date, data)
-        returnlist.append(dp)
-    return returnlist
-
-
-# ##################################################
-# convert a list to a list of DPPublist objects.
-# ##################################################
-def create_presentation(dhdt_objects):
-    returnarray = []
-    for item in dhdt_objects:
-        dp = DPPublish(item.posixdate, item.data)
-        returnarray.append(dp)
-    return returnarray
 
 
 # ##################################################
@@ -264,7 +217,7 @@ def create_presentation(dhdt_objects):
 # ##################################################
 def storm(publish_objects):
     storm_threshold = 1.7
-    plotpoint = 1.5
+    plotpoint = -0.1
 
     for item in publish_objects:
         if item.data > storm_threshold:
@@ -289,29 +242,44 @@ def plot_carringtons(publish_objects):
     cc = 2356586 / BIN_SIZE
     cc = int(round(cc, 0))
     for i in range(0, len(publish_objects), cc):
-        publish_objects[i].carrington_point = 0
+        publish_objects[i].carrington_point = -0.05
         print(i)
 
 
-# ##################################################
-# convert a list to a list of DPPublist objects.
-# ##################################################
-def adjusted_data(publish_list):
-    for i in range(1, len(publish_list)):
-        temp = []
-        temp.append(publish_list[i-1].data)
-        temp.append(publish_list[i].data)
-        temp.sort()
-        publish_list[i].adjusteddata = round((float(temp[1]) - float(temp[0])),5)
-    return publish_list
+def convert_to_objects(magnetometer_data):
+    returnlist = []
+    for item in magnetometer_data:
+        datasplit = item.split(",")
+        date = datasplit[0]
+        data = datasplit[1]
+        dp = DatapointPlain(date, data)
+        returnlist.append(dp)
+    return returnlist
 
+def dhdt(magnetometer_data):
+    returnlist = []
+    for i in range(1, len(objectlist)):
+        date = objectlist[i].posixdate
+        data = float(objectlist[i].data) - float(objectlist[i-1].data)
+        dp = DatapointPlain(date, data)
+        returnlist.append(dp)
+    return returnlist
+
+def create_publishlist(objectlist):
+    returnlist = []
+    for item in objectlist:
+        dp = DPPublish(item.posixdate, item.data)
+        returnlist.append(dp)
+    return returnlist
 
 # ##################################################
 #
 # S C R I P T   B E G I N S   H E R E
 #
 # ##################################################
-# using the list of files, open each logfile into the main array
+
+
+
 if __name__ == "__main__":
     # calculate the processing time
     starttime = time.time()
@@ -357,34 +325,24 @@ if __name__ == "__main__":
     magnetometer_data = medianfilter(magnetometer_data)
     
     # Convert the list to objects
-    magnetometer_data = convert_to_obj(magnetometer_data)
+    objectlist = convert_to_objects(magnetometer_data)
 
-    # Convert the data to dH/dt.
-    #    dhdt_objects = create_averages(magnetometer_data)
-    dhdt_objects = create_dhdt(magnetometer_data)
+    # calculate dh/dt
+    objectlist = dhdt(objectlist)
 
     # Smooth the dhdt data
-    window = 25
-    dhdt_objects = running_average(dhdt_objects, window)
-    dhdt_objects = running_average(dhdt_objects, window)
+    window = 20
+    objectlist = running_average(objectlist, window)
+    objectlist = running_average(objectlist, window)
 
-    # # Create the list of one-hour bins. Use a bin object that will allow us to hash on the posix dates
-    # magnetometer_data = create_bins(magnetometer_data)
-    # # save_csv(magnetometer_data, "tg_rawmagdata.csv")
 
-    # # Create the final list for presentation
-    # # uses DPPublish object
-    # dhdt_objects = create_presentation(dhdt_objects)
-
-    # # Adjust the dhdt to be from zero upwards
-    # dhdt_objects = adjusted_data(dhdt_objects)
-    #
-    # # Add the Storm Threshold, Aurora Sighting data, carrinton markers
+    # Add the Storm Threshold, Aurora Sighting data, carrinton markers
     # storm(dhdt_objects)
     # plot_carringtons(dhdt_objects)
 
     # Save the data out as a CSV file for display in highcharts
-    save_csv(dhdt_objects, "aurora_activity.csv")
+    objectlist = create_publishlist(objectlist)
+    save_csv(objectlist, "aurora_activity.csv")
 
     finishtime = time.time()
     elapsed = str(round((finishtime - starttime), 1))
