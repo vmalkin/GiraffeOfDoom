@@ -1,0 +1,5 @@
+* read in a list of values
+* calculate dH/dt
+* Bin activity by user defined value (min/max for the bin)
+* append aurora sighting data
+* calculate storm threshold value.
