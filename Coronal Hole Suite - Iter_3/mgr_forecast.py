@@ -5,6 +5,25 @@ import time
 from decimal import *
 import common_data
 
+# median filter on (posicdate, data) list
+def median_filter(prediction_list):
+    returnlist = []
+    for i in range(1, len(prediction_list)-1):
+        datalist = []
+        ds1 = prediction_list[i-1].split(",")
+        ds2 = prediction_list[i].split(",")
+        ds3 = prediction_list[i + 1].split(",")
+        datetime = ds2[0]
+        datalist.append(ds1[1])
+        datalist.append(ds2[1])
+        datalist.append(ds3[1])
+        datalist.sort()
+        datavalue = datalist[1]
+        dp = datetime + "," + datavalue
+        returnlist.append(dp)
+    return returnlist
+
+
 class Forecaster:
     def __init__(self):
         pass
@@ -209,6 +228,9 @@ class Forecaster:
             futurearrival = int(item.posix_date) + int(transittime)
             prediction = str(futurearrival) + "," + str(predict_speed)
             prediction_list.append(prediction)
+
+        # remove spikes - Median Filter.
+        prediction_list = median_filter(prediction_list)
 
         with open("prediction.csv", 'w') as w:
             for item in prediction_list:
