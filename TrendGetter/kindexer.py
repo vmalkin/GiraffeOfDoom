@@ -7,35 +7,88 @@ Created on Sun Aug 19 13:05:05 2018
 """
 import re
 from datetime import datetime
-from time import mktime
+from time import mktime, time
+import os
 
+BIN_SIZE = 60 * 60 # the number of seconds wide a bin is
+BIN_NUMBER = int(31536000 / BIN_SIZE)  # how many bins we want in total
 
 class DPsimple:
     def __init__ (self, posixdate, datavalue):
         self.posixdate = posixdate
         self.datavalue = datavalue
         
-#     def __str__ (self):
-#        return self.posixdate + "," + self.datavalue
-        
-        
-# Gets data from source, returns CSV list [utc_date, data, data, etc]
+    def print_values(self):
+        return str(self.posixdate) + "," + str(self.datavalue)
+
+# A bin object, used to collate data that falls in the same datetime
+class Bin():
+    """DataBin - This objects allows us to crate a bin of values.
+    Calculates the average value of the bin"""
+    def __init__(self, posixdate):
+        self.posixdate = posixdate
+        self.datalist = []
+
+    def average_datalist(self):
+        avgvalue = 0
+        if len(self.datalist) > 0:
+            for item in self.datalist:
+                avgvalue = float(avgvalue) + float(item)
+
+            avgvalue = avgvalue / float(len(self.datalist))
+            avgvalue = round(avgvalue, 2)
+        else:
+            avgvalue = 0
+        return avgvalue
+
+    def minmax_datalist(self):
+        temp = sorted(self.datalist)
+        if len(temp) > 0:
+            rangevalue = float(temp[len(temp)-1]) - float(temp[0])
+        else:
+            rangevalue = 0
+        return rangevalue
+
+    def print_values(self):
+        returnstring = str(self.posixdate) + "," + str(self.minmax_datalist())
+        return returnstring
+
+
 def get_csv_data():
-    returndata = [] 
-    returndata.append("Date/Time (UTC), Raw X, Raw Y, Raw Z")
-    returndata.append("2018-08-03 00:00:20.94,68.676,0,0")
-    returndata.append("2018-08-03 00:00:36.03,68.654,0,0")
-    returndata.append("2018-08-03 00:00:51.10,68.647,0,0")
-    returndata.append("2018-0t8-03 00:01:06.18,68.771,0,0")
-    returndata.append("2018-0ytujr8-03 00:01:21.25,68.944,0,0")
-    returndata.append("2018-08-03 00:01:36.34,68.800,0,0")
-    returndata.append("2018-08-03 00:01:51.41,68.661,0,0")
-    returndata.append("2018-08-03 00:02:06.49,68.943,0,0")
-    returndata.append("2018-08-03 00:02:21.58,68.671,0,0")
-    returndata.append("2018-08-03 00:02:36.65,68.793,0,0")
-    returndata.append("2018-08-03 00:02:51.72,68.908,0,0")
-    returndata.append("2018-08-03 00:03:06.80,68.814,0,0")
-    return returndata
+    CSVlist = "files.txt"
+    CSVFilenames = []
+    rawdatalist = []
+    print("Loading list of logfiles...")
+    # load in the list of CSV files to process
+    if os.path.isfile(CSVlist):
+        try:
+            with open(CSVlist) as e:
+                for line in e:
+                    line = line.strip()  # remove any trailing whitespace chars like CR and NL
+                    CSVFilenames.append(line)
+
+        except IOError:
+            print("List of logfiles appears to be present, but cannot be accessed at this time. ")
+
+    print("Adding logfile data...")
+    # Parse thru the CSVfilelist, Append values to our raw data list
+    for item in CSVFilenames:
+        firstline = True
+        try:
+            with open(item) as e:
+                print("Processing " + item)
+                # Skip the first line in each file as it's a header
+                for line in e:
+                    if firstline is True:
+                        # print("Header identified, skipping...")
+                        firstline = False
+                    else:
+                        line = line.strip()  # remove any trailing whitespace chars like CR and NL
+                        rawdatalist.append(line)
+
+        except IOError:
+            print("A logfile appears to be present, but cannot be accessed at this time. ")
+    return rawdatalist
 
 # parse thru list and return [utc_date, data] only
 def clean_csv_data(raw_csv_list):
@@ -107,14 +160,14 @@ def medianfilter(datalist):
         returnlist.append(dp)
     return returnlist
 
-#def dhdt(objectlist):
-#    returnlist = []
-#    for i in range(1, len(objectlist)):
-#        datetime = objectlist[i].posixdate
-#        datavalue = float(objectlist[i].datavalue - float(objectlist[i-1].datavalue)
-#        dp = DPsimple(datetime, datavalue)
-#        returnlist.append(dp)
-#    return returnlist
+def dhdt(objectlist):
+    returnlist = []
+    for i in range(1, len(objectlist)):
+        datetime = objectlist[i].posixdate
+        datavalue = float(objectlist[i].datavalue) - float(objectlist[i-1].datavalue)
+        dp = DPsimple(datetime, datavalue)
+        returnlist.append(dp)
+    return returnlist
 
 # #################################################################################
 # Create the smoothed data array and write out the files for plotting.
@@ -135,8 +188,50 @@ def running_average(input_array, averaging_interval):
             datavalue = round((datavalue / averaging_interval), 3)
             appendvalue = DPsimple(datetime, datavalue)
             displayarray.append(appendvalue)
-            print("Smoothing: "+ str(i) + " / " + str(len(input_array)))
+            # print("Smoothing: "+ str(i) + " / " + str(len(input_array)))
     return displayarray
+
+# ##################################################
+# Write out values to file.
+# ##################################################
+def save_csv(arraydata, savefile):
+    try:
+        os.remove(savefile)
+    except:
+        print("Error deleting old file")
+
+    for item in arraydata:
+        try:
+            with open(savefile, 'a') as f:
+                f.write(item.print_values() + "\n")
+
+        except IOError:
+            print("WARNING: There was a problem accessing heatmap file")
+
+# ##################################################
+# Binning - this is essentially a hash function based
+# on the posix datetime
+# ##################################################
+def create_bins(objectlist):
+    date_now = int(time())
+
+    # just while we work with the short dataset. Otherwise comment out
+    # date_now = int(1528934391)
+
+    date_start = date_now - 31536000
+
+    binned_data = []
+    for i in range(date_start, date_now, BIN_SIZE):
+        dp = Bin(i)
+        binned_data.append(dp)
+
+    # THis is the hashing function to drop data into the correct bins
+    # according to the date.
+    for i in range(0, len(objectlist)):
+        bin_id = (float(objectlist[i].posixdate) - float(date_start)) / BIN_SIZE
+        bin_id = int(round(bin_id, 0))
+        binned_data[bin_id].datalist.append(objectlist[i].datavalue)
+    return binned_data
 
 
 if __name__ == "__main__":
@@ -153,7 +248,15 @@ if __name__ == "__main__":
     # Create the object list
     object_list = create_object_list(clean_data, dateformat)
     dhdt_list = object_list
+
     # Convert to dH/dt, then smooth.
-#    dhdt_list = dhdt(object_list)
-    dhdt_list = running_average(dhdt_list, 2)
-    dhdt_list = running_average(dhdt_list, 2)
+    dhdt_list = dhdt(object_list)
+    dhdt_list = running_average(dhdt_list, 30)
+    dhdt_list = running_average(dhdt_list, 30)
+    save_csv(dhdt_list, "dhdt.csv")
+
+    binned_objects = create_bins(dhdt_list)
+
+    save_csv(binned_objects, "magnetogram.csv")
+    # Bin according to user preference and calc the range of the bin values
+    print("Finished")
