@@ -247,13 +247,23 @@ class Station:
         return binned_data
 
     def set_aurorasighting(self, objectlist):
-        return objectlist
+        posixdates = []
+        with open(aurora_sightings_list) as e:
+            for line in e:
+                date = line.strip()  # remove any trailing whitespace chars like CR and NL
+                dt = utc_2_unix(date)
+                posixdates.append(dt)
+
 
     def set_stormthreshold(self, objectlist):
         for item in objectlist:
             range = item.minmax_datalist()
             if range >= STORMTHRESHOLD:
                 item.stormthreshold = 0.02
+
+    # designed to give
+    def parse_startistics(self, objectlist):
+        pass
 
     # Wrapper function to process data in an orderly fashion!
     def process_data(self):

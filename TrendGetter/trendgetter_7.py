@@ -166,8 +166,6 @@ def aurora_sightings(dhdtlist):
             date = line.strip()  # remove any trailing whitespace chars like CR and NL
             dt = utc_2_unix(date)
             posixdates.append(dt)
-
-
     return returnlist
 
 # ##################################################
