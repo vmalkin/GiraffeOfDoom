@@ -7,11 +7,13 @@ Created on Sun Aug 19 13:05:05 2018
 """
 import re
 from datetime import datetime
-from time import mktime, time
+import time
 import os
 
-BIN_SIZE = 60 * 60 # the number of seconds wide a bin is
-BIN_NUMBER = int(31536000 / BIN_SIZE)  # how many bins we want in total
+BIN_SIZE = 60 * 60 * 2# the number of seconds wide a bin is
+DURATION = 60*60*24*100
+BIN_NUMBER = int(DURATION / BIN_SIZE)  # how many bins we want in total
+STORMTHRESHOLD = 0.07
 
 class DPsimple:
     def __init__ (self, posixdate, datavalue):
@@ -28,6 +30,10 @@ class Bin():
     def __init__(self, posixdate):
         self.posixdate = posixdate
         self.datalist = []
+        # <<--SNIP-->>
+        self.aurorasighting = ""
+        self.stormthreshold = ""
+        # <<--SNIP-->>
 
     def average_datalist(self):
         avgvalue = 0
@@ -47,45 +53,17 @@ class Bin():
             rangevalue = float(temp[len(temp)-1]) - float(temp[0])
         else:
             rangevalue = 0
+        rangevalue = round(rangevalue, 5)
         return rangevalue
 
+    def posix2utc(self):
+        utctime = time.gmtime(int(float(self.posixdate)))
+        utctime = time.strftime('%Y-%m-%d %H:%M', utctime)
+        return utctime
+
     def print_values(self):
-        returnstring = str(self.posixdate) + "," + str(self.minmax_datalist())
+        returnstring = str(self.posix2utc()) + "," + str(self.minmax_datalist()) + "," + str(self.stormthreshold) + "," + str(self.aurorasighting)
         return returnstring
-
-def utc_to_posix(utcdate, formatstring):
-    newdatetime = datetime.strptime(utcdate, formatstring)
-    newdatetime = mktime(newdatetime.timetuple())
-    newdatetime = int(newdatetime)
-    return newdatetime
-
-
-
-
-
-
-# #################################################################################
-# Create the smoothed data array and write out the files for plotting.
-# We will do a running average based on the running average time in minutes and the number
-# readings per minute
-# Data format is a list of DP_Plain objects
-# #################################################################################
-def running_average(input_array, averaging_interval):
-    displayarray = []
-    if len(input_array) > averaging_interval:
-        for i in range(averaging_interval + 1, len(input_array)):
-            datavalue = 0
-            datetime = input_array[i].posixdate
-            for j in range(0, averaging_interval):
-                newdata = input_array[i-j].datavalue
-                datavalue = float(datavalue) + float(newdata)
-
-            datavalue = round((datavalue / averaging_interval), 3)
-            appendvalue = DPsimple(datetime, datavalue)
-            displayarray.append(appendvalue)
-            # print("Smoothing: "+ str(i) + " / " + str(len(input_array)))
-    return displayarray
-
 
 
 
@@ -93,30 +71,11 @@ def running_average(input_array, averaging_interval):
 # Binning - this is essentially a hash function based
 # on the posix datetime
 # ##################################################
-def create_bins(objectlist):
-    date_now = int(time())
 
-    # just while we work with the short dataset. Otherwise comment out
-    # date_now = int(1528934391)
-
-    date_start = date_now - 31536000
-
-    binned_data = []
-    for i in range(date_start, date_now, BIN_SIZE):
-        dp = Bin(i)
-        binned_data.append(dp)
-
-    # THis is the hashing function to drop data into the correct bins
-    # according to the date.
-    for i in range(0, len(objectlist)):
-        bin_id = (float(objectlist[i].posixdate) - float(date_start)) / BIN_SIZE
-        bin_id = int(round(bin_id, 0))
-        binned_data[bin_id].datalist.append(objectlist[i].datavalue)
-    return binned_data
 
 
 class Station:
-    def __init__(self, data_source, station_name, regex_time, dateformat):
+    def __init__(self, station_name, data_source,  regex_time, dateformat):
         self.stationname = station_name
         self.datasource = data_source
         self.regex = regex_time
@@ -155,6 +114,13 @@ class Station:
             except IOError:
                 print("A logfile appears to be present, but cannot be accessed at this time. ")
         return rawdatalist
+
+
+    def utc_to_posix(self, utcdate, formatstring):
+        newdatetime = datetime.strptime(utcdate, formatstring)
+        newdatetime = time.mktime(newdatetime.timetuple())
+        newdatetime = int(newdatetime)
+        return newdatetime
 
     # Use Object list
     def dhdt(self, objectlist):
@@ -220,6 +186,7 @@ class Station:
 
     # Use an object list
     def running_average(self, input_array, averaging_interval):
+        print("Smoothing data")
         displayarray = []
         if len(input_array) > averaging_interval:
             for i in range(averaging_interval + 1, len(input_array)):
@@ -241,13 +208,14 @@ class Station:
             datasplit = item.split(",")
             datetime = datasplit[0]
             datavalue = datasplit[1]
-            posixvalue = utc_to_posix(datetime, formatstring)
+            posixvalue = self.utc_to_posix(datetime, formatstring)
             dp = DPsimple(posixvalue, datavalue)
             return_object_list.append(dp)
         return return_object_list
 
     # use an object list
     def save_csv(self, arraydata, savefile):
+        print("Saving file " + savefile)
         try:
             os.remove(savefile)
         except:
@@ -260,6 +228,33 @@ class Station:
             except IOError:
                 print("WARNING: There was a problem saving your data")
 
+
+    def create_bins(self, objectlist):
+        date_now = int(time.time())
+        date_start = date_now - DURATION
+
+        binned_data = []
+        for i in range(date_start, date_now, BIN_SIZE):
+            dp = Bin(i)
+            binned_data.append(dp)
+
+        # THis is the hashing function to drop data into the correct bins
+        # according to the date.
+        for i in range(0, len(objectlist)):
+            bin_id = (float(objectlist[i].posixdate) - float(date_start)) / BIN_SIZE
+            bin_id = int(round(bin_id, 0))
+            binned_data[bin_id].datalist.append(objectlist[i].datavalue)
+        return binned_data
+
+    def set_aurorasighting(self, objectlist):
+        return objectlist
+
+    def set_stormthreshold(self, objectlist):
+        for item in objectlist:
+            range = item.minmax_datalist()
+            if range >= STORMTHRESHOLD:
+                item.stormthreshold = 0.02
+
     # Wrapper function to process data in an orderly fashion!
     def process_data(self):
         raw_data = self.get_raw_data(self.datasource)
@@ -267,10 +262,19 @@ class Station:
         clean_data = self.clean_csv_data(clean_data)
         clean_data = self.medianfilter(clean_data)
         clean_objects = self.create_object_list(clean_data, self.dateformat)
-        self.save_csv(clean_objects, "data.csv")
+        clean_objects = self.dhdt(clean_objects)
+        clean_objects = self.running_average(clean_objects, 20)
+        clean_objects = self.running_average(clean_objects, 20)
+        clean_objects = self.create_bins(clean_objects)
+        # <<--SNIP-->>
+        self.set_aurorasighting(clean_objects)
+        self.set_stormthreshold(clean_objects)
+        # <<--SNIP-->>
+        self.save_csv(clean_objects, self.stationname+".csv")
 
 
 if __name__ == "__main__":
+    starttime = time.time()
     stationlist = []
     station1 = Station("teststation", "files.txt", "\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d.\d\d", "%Y-%m-%d %H:%M:%S.%f")
     stationlist.append(station1)
@@ -278,4 +282,6 @@ if __name__ == "__main__":
     for station in stationlist:
         station.process_data()
 
-
+    finishtime = time.time()
+    elapsed = str(round((finishtime - starttime), 1))
+    print("\nFinished. Time to process: " + elapsed + " seconds")
