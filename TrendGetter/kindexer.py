@@ -9,11 +9,12 @@ import re
 from datetime import datetime
 import time
 import os
+import math
 
 BIN_SIZE = 60 * 60 * 2# the number of seconds wide a bin is
-DURATION = 60*60*24*100
+DURATION = 60*60*24*365
 BIN_NUMBER = int(DURATION / BIN_SIZE)  # how many bins we want in total
-STORMTHRESHOLD = 0.07
+STORMTHRESHOLD = 0.25
 
 class DPsimple:
     def __init__ (self, posixdate, datavalue):
@@ -125,9 +126,13 @@ class Station:
     # Use Object list
     def dhdt(self, objectlist):
         returnlist = []
+        BLIP = float(3)
         for i in range(1, len(objectlist)):
             datetime = objectlist[i].posixdate
             datavalue = float(objectlist[i].datavalue) - float(objectlist[i - 1].datavalue)
+            if math.sqrt(math.pow(datavalue,2)) > BLIP:
+                print("Blip!")
+                datavalue = 0
             dp = DPsimple(datetime, datavalue)
             returnlist.append(dp)
         return returnlist
@@ -246,13 +251,13 @@ class Station:
             binned_data[bin_id].datalist.append(objectlist[i].datavalue)
         return binned_data
 
-    def set_aurorasighting(self, objectlist):
-        posixdates = []
-        with open(aurora_sightings_list) as e:
-            for line in e:
-                date = line.strip()  # remove any trailing whitespace chars like CR and NL
-                dt = utc_2_unix(date)
-                posixdates.append(dt)
+##    def set_aurorasighting(self, objectlist):
+##        posixdates = []
+##        with open(aurora_sightings_list) as e:
+##            for line in e:
+##                date = line.strip()  # remove any trailing whitespace chars like CR and NL
+##                dt = utc_2_unix(date)
+##                posixdates.append(dt)
 
 
     def set_stormthreshold(self, objectlist):
@@ -260,7 +265,7 @@ class Station:
             range = item.minmax_datalist()
             if range >= STORMTHRESHOLD:
                 item.stormthreshold = 0.02
-
+                
     # designed to give
     def parse_startistics(self, objectlist):
         pass
@@ -273,11 +278,12 @@ class Station:
         clean_data = self.medianfilter(clean_data)
         clean_objects = self.create_object_list(clean_data, self.dateformat)
         clean_objects = self.dhdt(clean_objects)
+        # self.save_csv(clean_objects, "dhdt.csv")
         clean_objects = self.running_average(clean_objects, 20)
         clean_objects = self.running_average(clean_objects, 20)
         clean_objects = self.create_bins(clean_objects)
         # <<--SNIP-->>
-        self.set_aurorasighting(clean_objects)
+        # self.set_aurorasighting(clean_objects)
         self.set_stormthreshold(clean_objects)
         # <<--SNIP-->>
         self.save_csv(clean_objects, self.stationname+".csv")
@@ -286,7 +292,7 @@ class Station:
 if __name__ == "__main__":
     starttime = time.time()
     stationlist = []
-    station1 = Station("teststation", "files.txt", "\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d.\d\d", "%Y-%m-%d %H:%M:%S.%f")
+    station1 = Station("aurora_activity", "files.txt", "\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d.\d\d", "%Y-%m-%d %H:%M:%S.%f")
     stationlist.append(station1)
 
     for station in stationlist:
