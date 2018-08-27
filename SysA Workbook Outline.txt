@@ -1,7 +1,36 @@
+Each week is 10 hours of material plus extra challenge material.
+
+The workbook should be more detailed and step by step at the start and tail off towards the end of the 6 weeks. 
+
 Week 1
+Assignment 1 - Proposal Issued
+- What is Systems Analysis?
+- Use Cases and Business Requirements.
+- Relational Databases - MS Access. WHY relational databsses and why we're using them in SA?
+- Getting Started - Flat File DB. 
+- Creating Tables 
+- Setting Field Properties 
+– Using Queries
+
 
 Week 2
+Assignment 1 - Proposal Due
+- Entities and Entity Relationship Diagrams. (Old Problem Domain stuff) Logical and Physical designs
+- Software Design Methodologies, 
+- Building a relational database. Tables, Primary and Foreign Keys. USing an ERD as a plan.
+- Queries. More advanced queries. (Qry across several tables. Advanced criteria.).
 
 Week 3
+- Relational Database, intro to SQL
+- Simple Database Normalisation
+-  Interpreting a brief: identify Use Cases. Identify Entities. Create ERD. Build simple database to solve a problem. 
 
 Week 4
+Assignment 2 - Design and Build Issued
+- Simple Blueprinting - Data Dictionary
+- ERD traps and errors
+
+
+Week 5
+
+Week 6
