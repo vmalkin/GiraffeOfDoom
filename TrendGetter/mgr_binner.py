@@ -83,6 +83,7 @@ class Station:
         self.regex = regex_time
         self.dateformat = dateformat
 
+    # this function will need to be customised accordingly
     def get_raw_data(self, csvdatafile):
         rawdatalist = []
         
@@ -221,8 +222,8 @@ class Station:
 
 
     def create_bins(self, objectlist):
-#        date_now = int(time.time())
-        date_now = 1535322670
+        date_now = int(time.time())
+#        date_now = 1535322670
         date_start = date_now - DURATION
 
         binned_data = []
@@ -252,9 +253,9 @@ class Station:
         clean_data = self.medianfilter(clean_data)
         clean_objects = self.create_object_list(clean_data, self.dateformat)
         clean_objects = self.dhdt(clean_objects)
-        # self.save_csv(clean_objects, "dhdt.csv")
         clean_objects = self.running_average(clean_objects, 20)
         clean_objects = self.running_average(clean_objects, 20)
+#        self.save_csv(clean_objects, "dhdt.csv")
         clean_objects = self.create_bins(clean_objects)
 #        # <<--SNIP-->>
 #        # self.set_aurorasighting(clean_objects)
