@@ -85,25 +85,19 @@ class Station:
     def get_raw_data(self, csvdatafile):
         rawdatalist = []
         
-        for i in range(1, len(csvdatafile)):
-            line = csvdatafile[i].strip()  # remove any trailing whitespace chars like CR and NL
-            rawdatalist.append(line)
-                            
-#        for item in csvdatafile:
-#            firstline = True
-#            try:
-#                with open(item) as e:
-#                    print("Processing " + item)
-#                    # Skip the first line in each file as it's a header
-#                    for line in e:
-#                        if firstline is True:
-#                            # print("Header identified, skipping...")
-#                            firstline = False
-#                        else:
-#                            line = line.strip()  # remove any trailing whitespace chars like CR and NL
-#                            rawdatalist.append(line)
-#            except IOError:
-#                print("A logfile appears to be present, but cannot be accessed at this time. ")
+        firstline = True
+        try:
+            with open(csvdatafile) as e:
+                # Skip the first line in each file as it's a header
+                for line in e:
+                    if firstline is True:
+                        # print("Header identified, skipping...")
+                        firstline = False
+                    else:
+                        line = line.strip()  # remove any trailing whitespace chars like CR and NL
+                        rawdatalist.append(line)
+        except IOError:
+            print("A logfile appears to be present, but cannot be accessed at this time. ")
         return rawdatalist
 
 
@@ -203,7 +197,8 @@ class Station:
             datasplit = item.split(",")
             datetime = datasplit[0]
             datavalue = datasplit[1]
-            posixvalue = self.utc_to_posix(datetime, formatstring)
+            posixvalue = datetime
+#            posixvalue = self.utc_to_posix(datetime, formatstring)
             dp = DPsimple(posixvalue, datavalue)
             return_object_list.append(dp)
         return return_object_list
@@ -225,8 +220,8 @@ class Station:
 
 
     def create_bins(self, objectlist):
-#        date_now = int(time.time())
-        date_now = 1535322667
+        date_now = int(time.time())
+#        date_now = 1535322670
         date_start = date_now - DURATION
 
         binned_data = []
@@ -236,9 +231,10 @@ class Station:
 
         # THis is the hashing function to drop data into the correct bins
         # according to the date.
-        for i in range(0, len(objectlist)):
+        for i in range(0, len(objectlist)):  
             bin_id = (float(objectlist[i].posixdate) - float(date_start)) / BIN_SIZE
             bin_id = int(round(bin_id, 0))
+            print(str(bin_id))
             binned_data[bin_id].datalist.append(objectlist[i].datavalue)
         return binned_data
 

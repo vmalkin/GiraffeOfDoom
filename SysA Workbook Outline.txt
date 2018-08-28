@@ -2,35 +2,57 @@ Each week is 10 hours of material plus extra challenge material.
 
 The workbook should be more detailed and step by step at the start and tail off towards the end of the 6 weeks. 
 
+Workbook needs to include links to material that helps explain the lessons in different ways, videos, tutorials, etc, and goes into more depth.
+
 Week 1
 Assignment 1 - Proposal Issued
 - What is Systems Analysis?
-- Use Cases and Business Requirements.
+- Use Cases and Business Requirements <-- RELATES TO PROPOSAL
 - Relational Databases - MS Access. WHY relational databsses and why we're using them in SA?
 - Getting Started - Flat File DB. 
 - Creating Tables 
 - Setting Field Properties 
 – Using Queries
 
+- Simple relational db. Queries across 2 - 3 tables. Simple query criteria. 
+- Intro to Lynda.com videos.
+
 
 Week 2
 Assignment 1 - Proposal Due
-- Entities and Entity Relationship Diagrams. (Old Problem Domain stuff) Logical and Physical designs
-- Software Design Methodologies, 
+- Heuristic for identifying things in the problem domain --> Entities and Attributes. How to resolve. 
+- Entities and Entity Relationship Diagrams.  Logical and Physical designs. Cardinality esp many to many
 - Building a relational database. Tables, Primary and Foreign Keys. USing an ERD as a plan.
-- Queries. More advanced queries. (Qry across several tables. Advanced criteria.).
+- Queries. More advanced queries. (Qry across several tables. Advanced criteria. inner and outer joins, Crosstab queries??, sub-queries).
+
+CHALLENGE
+- ERD design patterns for common scenarios?
+- Lynda.com videos
 
 Week 3
 - Relational Database, intro to SQL
 - Simple Database Normalisation
 -  Interpreting a brief: identify Use Cases. Identify Entities. Create ERD. Build simple database to solve a problem. 
+- Start Drawing UML domain model class diagrams of Prog 2 material
 
 Week 4
 Assignment 2 - Design and Build Issued
 - Simple Blueprinting - Data Dictionary
 - ERD traps and errors
-
+- Relational Databases, advanced SQL.
+- Begin brainstorming and planning to build your system
+- Start Drawing UML domain model class diagrams of Prog 2 material
 
 Week 5
+- Workshop
+- Start Drawing UML domain model class diagrams of Prog 2 material
 
 Week 6
+- Workshop
+
+Week 7
+- Workshop
+
+Week 8
+- UML
+- Software Design Methodologies,
