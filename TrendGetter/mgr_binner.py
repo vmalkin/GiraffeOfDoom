@@ -31,10 +31,10 @@ class Bin():
     def __init__(self, posixdate):
         self.posixdate = posixdate
         self.datalist = []
-        # <<--SNIP-->>
-        self.aurorasighting = ""
-        self.stormthreshold = ""
-        # <<--SNIP-->>
+#        # <<--SNIP-->>
+#        self.aurorasighting = ""
+#        self.stormthreshold = ""
+#        # <<--SNIP-->>
 
     def average_datalist(self):
         avgvalue = 0
@@ -63,7 +63,8 @@ class Bin():
         return utctime
 
     def print_values(self):
-        returnstring = str(self.posix2utc()) + "," + str(self.minmax_datalist()) + "," + str(self.stormthreshold) + "," + str(self.aurorasighting)
+#        returnstring = str(self.posix2utc()) + "," + str(self.minmax_datalist()) + "," + str(self.stormthreshold) + "," + str(self.aurorasighting)
+        returnstring = str(self.posix2utc()) + "," + str(self.minmax_datalist())
         return returnstring
 
 
@@ -220,8 +221,8 @@ class Station:
 
 
     def create_bins(self, objectlist):
-        date_now = int(time.time())
-#        date_now = 1535322670
+#        date_now = int(time.time())
+        date_now = 1535322670
         date_start = date_now - DURATION
 
         binned_data = []
@@ -234,24 +235,10 @@ class Station:
         for i in range(0, len(objectlist)):  
             bin_id = (float(objectlist[i].posixdate) - float(date_start)) / BIN_SIZE
             bin_id = int(round(bin_id, 0))
-            print(str(bin_id))
-            binned_data[bin_id].datalist.append(objectlist[i].datavalue)
+            if bin_id >= 0 and bin_id < BIN_NUMBER:         
+                binned_data[bin_id].datalist.append(objectlist[i].datavalue)
         return binned_data
 
-##    def set_aurorasighting(self, objectlist):
-##        posixdates = []
-##        with open(aurora_sightings_list) as e:
-##            for line in e:
-##                date = line.strip()  # remove any trailing whitespace chars like CR and NL
-##                dt = utc_2_unix(date)
-##                posixdates.append(dt)
-
-
-    def set_stormthreshold(self, objectlist):
-        for item in objectlist:
-            range = item.minmax_datalist()
-            if range >= STORMTHRESHOLD:
-                item.stormthreshold = 0.02
                 
     # designed to give
     def parse_startistics(self, objectlist):
@@ -269,10 +256,10 @@ class Station:
         clean_objects = self.running_average(clean_objects, 20)
         clean_objects = self.running_average(clean_objects, 20)
         clean_objects = self.create_bins(clean_objects)
-        # <<--SNIP-->>
-        # self.set_aurorasighting(clean_objects)
-        self.set_stormthreshold(clean_objects)
-        # <<--SNIP-->>
+#        # <<--SNIP-->>
+#        # self.set_aurorasighting(clean_objects)
+#        self.set_stormthreshold(clean_objects)
+#        # <<--SNIP-->>
         self.save_csv(clean_objects, self.stationname+".csv")
 
 
