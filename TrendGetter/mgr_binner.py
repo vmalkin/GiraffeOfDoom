@@ -31,10 +31,7 @@ class Bin():
     def __init__(self, posixdate):
         self.posixdate = posixdate
         self.datalist = []
-#        # <<--SNIP-->>
-#        self.aurorasighting = ""
-#        self.stormthreshold = ""
-#        # <<--SNIP-->>
+
 
     def average_datalist(self):
         avgvalue = 0
@@ -68,14 +65,6 @@ class Bin():
         return returnstring
 
 
-
-# ##################################################
-# Binning - this is essentially a hash function based
-# on the posix datetime
-# ##################################################
-
-
-
 class Station:
     def __init__(self, station_name, data_source,  regex_time, dateformat):
         self.stationname = station_name
@@ -101,7 +90,6 @@ class Station:
         except IOError:
             print("A logfile appears to be present, but cannot be accessed at this time. ")
         return rawdatalist
-
 
     def utc_to_posix(self, utcdate, formatstring):
         newdatetime = datetime.strptime(utcdate, formatstring)
@@ -220,7 +208,6 @@ class Station:
             except IOError:
                 print("WARNING: There was a problem saving your data")
 
-
     def create_bins(self, objectlist):
         date_now = int(time.time())
 #        date_now = 1535322670
@@ -240,11 +227,6 @@ class Station:
                 binned_data[bin_id].datalist.append(objectlist[i].datavalue)
         return binned_data
 
-                
-    # designed to give
-    def parse_startistics(self, objectlist):
-        pass
-
     # Wrapper function to process data in an orderly fashion!
     def process_data(self):
         raw_data = self.get_raw_data(self.datasource)
@@ -257,10 +239,6 @@ class Station:
         clean_objects = self.running_average(clean_objects, 20)
 #        self.save_csv(clean_objects, "dhdt.csv")
         clean_objects = self.create_bins(clean_objects)
-#        # <<--SNIP-->>
-#        # self.set_aurorasighting(clean_objects)
-#        self.set_stormthreshold(clean_objects)
-#        # <<--SNIP-->>
         self.save_csv(clean_objects, self.stationname+".csv")
 
 
