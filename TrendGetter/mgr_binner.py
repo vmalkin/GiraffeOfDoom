@@ -245,7 +245,7 @@ class Station:
 if __name__ == "__main__":
     starttime = time.time()
     stationlist = []
-    station1 = Station("kindex", "test.csv", "\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d.\d\d", "%Y-%m-%d %H:%M:%S.%f")
+    station1 = Station("kindex", "arraysave.csv", "\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d.\d\d", "%Y-%m-%d %H:%M:%S.%f")
     stationlist.append(station1)
 
     for station in stationlist:
