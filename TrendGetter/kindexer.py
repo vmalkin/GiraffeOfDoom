@@ -14,7 +14,7 @@ import math
 BIN_SIZE = 60 * 60 * 2# the number of seconds wide a bin is
 DURATION = 60*60*24*365
 BIN_NUMBER = int(DURATION / BIN_SIZE)  # how many bins we want in total
-STORMTHRESHOLD = 0.25
+STORMTHRESHOLD = 0.25   # geomagnetic activity over this number constitutes a storm
 
 class DPsimple:
     def __init__ (self, posixdate, datavalue):
@@ -251,19 +251,20 @@ class Station:
             binned_data[bin_id].datalist.append(objectlist[i].datavalue)
         return binned_data
 
-##    def set_aurorasighting(self, objectlist):
-##        posixdates = []
-##        with open(aurora_sightings_list) as e:
-##            for line in e:
-##                date = line.strip()  # remove any trailing whitespace chars like CR and NL
-##                dt = utc_2_unix(date)
-##                posixdates.append(dt)
+   def set_aurorasighting(self, object_list, date_list_file):
+       posixdates = []
+       with open(date_list_file) as e:
+           for line in e:
+               date = line.strip()  # remove any trailing whitespace chars like CR and NL
+               dt = utc_2_unix(date)
+               posixdates.append(dt)
 
 
     def set_stormthreshold(self, objectlist):
         for item in objectlist:
             range = item.minmax_datalist()
             if range >= STORMTHRESHOLD:
+                # the datapoint is plotted at this position.
                 item.stormthreshold = 0.02
                 
     # designed to give
@@ -283,7 +284,7 @@ class Station:
         clean_objects = self.running_average(clean_objects, 20)
         clean_objects = self.create_bins(clean_objects)
         # <<--SNIP-->>
-        # self.set_aurorasighting(clean_objects)
+        self.set_aurorasighting(clean_objects, "sightings.csv")
         self.set_stormthreshold(clean_objects)
         # <<--SNIP-->>
         self.save_csv(clean_objects, self.stationname+".csv")
