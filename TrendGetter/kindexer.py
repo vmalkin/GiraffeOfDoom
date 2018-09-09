@@ -251,13 +251,13 @@ class Station:
             binned_data[bin_id].datalist.append(objectlist[i].datavalue)
         return binned_data
 
-   def set_aurorasighting(self, object_list, date_list_file):
-       posixdates = []
-       with open(date_list_file) as e:
-           for line in e:
-               date = line.strip()  # remove any trailing whitespace chars like CR and NL
-               dt = utc_2_unix(date)
-               posixdates.append(dt)
+    # def set_aurorasighting(self, object_list, date_list_file):
+    #    posixdates = []
+    #    with open(date_list_file) as e:
+    #        for line in e:
+    #            date = line.strip()  # remove any trailing whitespace chars like CR and NL
+    #            dt = utc_2_unix(date)
+    #            posixdates.append(dt)
 
 
     def set_stormthreshold(self, objectlist):
@@ -266,7 +266,7 @@ class Station:
             if range >= STORMTHRESHOLD:
                 # the datapoint is plotted at this position.
                 item.stormthreshold = 0.02
-                
+
     # designed to give
     def parse_startistics(self, objectlist):
         pass

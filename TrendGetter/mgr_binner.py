@@ -111,46 +111,67 @@ class Station:
             returnlist.append(dp)
         return returnlist
 
-    # Use CSV list
-    def check_valid_utc(self, raw_csv_list, regex):
-        returnlist = []
-        errorcount = 0
-        for item in raw_csv_list:
-            itemsplit = item.split(",")
-            utcdate = itemsplit[0]
+    # # Use CSV list
+    # def check_valid_utc(self, raw_csv_list, regex):
+    #     returnlist = []
+    #     errorcount = 0
+    #     for item in raw_csv_list:
+    #         itemsplit = item.split(",")
+    #         utcdate = itemsplit[0]
+    #
+    #         if re.match(regex, utcdate):
+    #             returnlist.append(item)
+    #         else:
+    #             errorcount = errorcount + 1
+    #     print(str(errorcount) + " errors in datetime encountered")
+    #     return returnlist
 
-            if re.match(regex, utcdate):
-                returnlist.append(item)
-            else:
-                errorcount = errorcount + 1
-        print(str(errorcount) + " errors in datetime encountered")
-        return returnlist
+    # # Use CSV. Return [utc_date, data] only
+    # def clean_csv_data(self, raw_csv_list):
+    #     returnlist = []
+    #     # Ignore the first line as it should contain the header
+    #     for i in range(1, len(raw_csv_list)):
+    #         datasplit = raw_csv_list[i].split(",")
+    #         datavalue = datasplit[1]
+    #         datetime = datasplit[0]
+    #         dp = datetime + "," + datavalue
+    #         returnlist.append(dp)
+    #     return returnlist
 
-    # Use CSV. Return [utc_date, data] only
-    def clean_csv_data(self, raw_csv_list):
-        returnlist = []
-        # Ignore the first line as it should contain the header
-        for i in range(1, len(raw_csv_list)):
-            datasplit = raw_csv_list[i].split(",")
-            datavalue = datasplit[1]
-            datetime = datasplit[0]
-            dp = datetime + "," + datavalue
-            returnlist.append(dp)
-        return returnlist
+    # # Use CSV data
+    # def medianfilter(self, datalist):
+    #     returnlist = []
+    #     for i in range(1, len(datalist) - 1):
+    #         templist = []
+    #         datasplit_v1 = datalist[i - 1].split(",")
+    #         datasplit_v2 = datalist[i].split(",")
+    #         datasplit_v3 = datalist[i + 1].split(",")
+    #
+    #         v1 = datasplit_v1[1]
+    #         v2 = datasplit_v2[1]
+    #         datetime = datasplit_v2[0]
+    #         v3 = datasplit_v3[1]
+    #
+    #         templist.append(v1)
+    #         templist.append(v2)
+    #         templist.append(v3)
+    #         templist.sort()
+    #
+    #         datavalue = templist[1]
+    #         dp = datetime + "," + datavalue
+    #
+    #         returnlist.append(dp)
+    #     return returnlist
 
-    # Use CSV data
-    def medianfilter(self, datalist):
+    # Use objectV data
+    def object_medianfilter(self, objectlist):
         returnlist = []
-        for i in range(1, len(datalist) - 1):
+        for i in range(1, len(objectlist) - 1):
             templist = []
-            datasplit_v1 = datalist[i - 1].split(",")
-            datasplit_v2 = datalist[i].split(",")
-            datasplit_v3 = datalist[i + 1].split(",")
-
-            v1 = datasplit_v1[1]
-            v2 = datasplit_v2[1]
-            datetime = datasplit_v2[0]
-            v3 = datasplit_v3[1]
+            datetime = objectlist[i].posixdate
+            v1 = objectlist[i-1].data
+            v2 = objectlist[i].data
+            v3 = objectlist[i + 1].data
 
             templist.append(v1)
             templist.append(v2)
@@ -158,7 +179,7 @@ class Station:
             templist.sort()
 
             datavalue = templist[1]
-            dp = datetime + "," + datavalue
+            dp = DPsimple(datetime, datavalue)
 
             returnlist.append(dp)
         return returnlist
@@ -229,11 +250,11 @@ class Station:
 
     # Wrapper function to process data in an orderly fashion!
     def process_data(self):
-        raw_data = self.get_raw_data(self.datasource)
-#        clean_data = self.check_valid_utc(raw_data, self.regex)
-        clean_data = self.clean_csv_data(raw_data)
-        clean_data = self.medianfilter(clean_data)
-        clean_objects = self.create_object_list(clean_data, self.dateformat)
+        raw_data = self.datasource
+        # clean_data = self.check_valid_utc(raw_data, self.regex)
+        # clean_data = self.clean_csv_data(raw_data)
+        clean_objects = self.object_medianfilter(raw_data)
+        # clean_objects = self.create_object_list(clean_data, self.dateformat)
         clean_objects = self.dhdt(clean_objects)
         clean_objects = self.running_average(clean_objects, 20)
         clean_objects = self.running_average(clean_objects, 20)
@@ -242,15 +263,15 @@ class Station:
         self.save_csv(clean_objects, self.stationname+".csv")
 
 
-if __name__ == "__main__":
-    starttime = time.time()
-    stationlist = []
-    station1 = Station("kindex", "arraysave.csv", "\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d.\d\d", "%Y-%m-%d %H:%M:%S.%f")
-    stationlist.append(station1)
-
-    for station in stationlist:
-        station.process_data()
-
-    finishtime = time.time()
-    elapsed = str(round((finishtime - starttime), 1))
-    print("\nFinished. Time to process: " + elapsed + " seconds")
+# if __name__ == "__main__":
+#     starttime = time.time()
+#     stationlist = []
+#     station1 = Station("kindex", "arraysave.csv", "\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d.\d\d", "%Y-%m-%d %H:%M:%S.%f")
+#     stationlist.append(station1)
+#
+#     for station in stationlist:
+#         station.process_data()
+#
+#     finishtime = time.time()
+#     elapsed = str(round((finishtime - starttime), 1))
+#     print("\nFinished. Time to process: " + elapsed + " seconds")
