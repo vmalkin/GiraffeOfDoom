@@ -32,7 +32,6 @@ class Bin():
         self.posixdate = posixdate
         self.datalist = []
 
-
     def average_datalist(self):
         avgvalue = 0
         if len(self.datalist) > 0:
@@ -72,24 +71,24 @@ class Station:
         self.regex = regex_time
         self.dateformat = dateformat
 
-    # this function will need to be customised accordingly
-    def get_raw_data(self, csvdatafile):
-        rawdatalist = []
-        
-        firstline = True
-        try:
-            with open(csvdatafile) as e:
-                # Skip the first line in each file as it's a header
-                for line in e:
-                    if firstline is True:
-                        # print("Header identified, skipping...")
-                        firstline = False
-                    else:
-                        line = line.strip()  # remove any trailing whitespace chars like CR and NL
-                        rawdatalist.append(line)
-        except IOError:
-            print("A logfile appears to be present, but cannot be accessed at this time. ")
-        return rawdatalist
+    # # this function will need to be customised accordingly
+    # def get_raw_data(self, csvdatafile):
+    #     rawdatalist = []
+    #
+    #     firstline = True
+    #     try:
+    #         with open(csvdatafile) as e:
+    #             # Skip the first line in each file as it's a header
+    #             for line in e:
+    #                 if firstline is True:
+    #                     # print("Header identified, skipping...")
+    #                     firstline = False
+    #                 else:
+    #                     line = line.strip()  # remove any trailing whitespace chars like CR and NL
+    #                     rawdatalist.append(line)
+    #     except IOError:
+    #         print("A logfile appears to be present, but cannot be accessed at this time. ")
+    #     return rawdatalist
 
     def utc_to_posix(self, utcdate, formatstring):
         newdatetime = datetime.strptime(utcdate, formatstring)
