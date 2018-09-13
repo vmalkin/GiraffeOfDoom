@@ -11,7 +11,7 @@ import time
 import os
 import math
 
-BIN_SIZE = 60 * 60 * 2# the number of seconds wide a bin is
+BIN_SIZE = 60 * 60  # the number of seconds wide a bin is
 DURATION = 60*60*24*365
 BIN_NUMBER = int(DURATION / BIN_SIZE)  # how many bins we want in total
 STORMTHRESHOLD = 0.25   # geomagnetic activity over this number constitutes a storm
@@ -152,14 +152,27 @@ class Station:
         print(str(errorcount) + " errors in datetime encountered")
         return returnlist
 
+    # data is in format [utcdate, datavalue]
+    def utc_to_posix(self, utc_data, formatstring):
+        returnlist = []
+        for item in utc_data:
+            datasplit = item.split(",")
+            posixvalue = self.utc_to_posix(datasplit[0], formatstring)
+            datavalue = datasplit[1]
+            dp = posixvalue + "," + datavalue
+            returnlist.append(dp)
+        return returnlist
+
+
     # Use CSV. Return [utc_date, data] only
+    # Here is where we need to adjust which values are date and data
     def clean_csv_data(self, raw_csv_list):
         returnlist = []
         # Ignore the first line as it should contain the header
         for i in range(1, len(raw_csv_list)):
             datasplit = raw_csv_list[i].split(",")
-            datavalue = datasplit[1]
-            datetime = datasplit[0]
+            datavalue = datasplit[2]
+            datetime = datasplit[1]
             dp = datetime + "," + datavalue
             returnlist.append(dp)
         return returnlist
@@ -200,21 +213,19 @@ class Station:
                 for j in range(0, averaging_interval):
                     newdata = input_array[i - j].datavalue
                     datavalue = float(datavalue) + float(newdata)
-
                 datavalue = round((datavalue / averaging_interval), 3)
                 appendvalue = DPsimple(datetime, datavalue)
                 displayarray.append(appendvalue)
         return displayarray
 
     # pass in CSV list
-    def create_object_list(self, clean_csv, formatstring):
+    def create_object_list(self, clean_csv):
         return_object_list = []
         for item in clean_csv:
             datasplit = item.split(",")
             datetime = datasplit[0]
             datavalue = datasplit[1]
-            posixvalue = self.utc_to_posix(datetime, formatstring)
-            dp = DPsimple(posixvalue, datavalue)
+            dp = DPsimple(datetime, datavalue)
             return_object_list.append(dp)
         return return_object_list
 
@@ -278,7 +289,8 @@ class Station:
         # clean_data = self.check_valid_utc(raw_data, self.regex)
         clean_data = self.clean_csv_data(raw_data)
         clean_data = self.medianfilter(clean_data)
-        clean_objects = self.create_object_list(clean_data, self.dateformat)
+        # clean_data = self.utc_to_posix(clean_data, self.dateformat)
+        clean_objects = self.create_object_list(clean_data)
         clean_objects = self.dhdt(clean_objects)
         # self.save_csv(clean_objects, "dhdt.csv")
         clean_objects = self.running_average(clean_objects, 20)
