@@ -275,8 +275,8 @@ class Station:
     # Wrapper function to process data in an orderly fashion!
     def process_data(self):
         raw_data = self.get_raw_data(self.datasource)
-        clean_data = self.check_valid_utc(raw_data, self.regex)
-        clean_data = self.clean_csv_data(clean_data)
+        # clean_data = self.check_valid_utc(raw_data, self.regex)
+        clean_data = self.clean_csv_data(raw_data)
         clean_data = self.medianfilter(clean_data)
         clean_objects = self.create_object_list(clean_data, self.dateformat)
         clean_objects = self.dhdt(clean_objects)
@@ -285,7 +285,7 @@ class Station:
         clean_objects = self.running_average(clean_objects, 20)
         clean_objects = self.create_bins(clean_objects)
         # <<--SNIP-->>
-        self.set_aurorasighting(clean_objects, "sightings.csv")
+        # self.set_aurorasighting(clean_objects, "sightings.csv")
         self.set_stormthreshold(clean_objects)
         # <<--SNIP-->>
         self.save_csv(clean_objects, self.stationname+".csv")
