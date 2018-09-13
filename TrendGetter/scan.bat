@@ -2,6 +2,6 @@
 
 dir 2*.csv /b > files.txt
 
-python trendGetter_8.py
+python kindexer.py
 
 pause
