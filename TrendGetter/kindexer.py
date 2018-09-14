@@ -11,10 +11,14 @@ import time
 import os
 import math
 
-BIN_SIZE = 60 * 60  # the number of seconds wide a bin is
+BIN_SIZE = 60 * 60 *2 # the number of seconds wide a bin is
 DURATION = 60*60*24*365
 BIN_NUMBER = int(DURATION / BIN_SIZE)  # how many bins we want in total
 STORMTHRESHOLD = 0.25   # geomagnetic activity over this number constitutes a storm
+CSV_SPLITLENGTH = 3   # The number of CSV elements in a line from our source data.
+CSV_UTCPOSITION = 0
+CSV_POSIXPOSITION = 1
+CSV_DATAPOSITION = 2
 
 class DPsimple:
     def __init__ (self, posixdate, datavalue):
@@ -143,7 +147,7 @@ class Station:
         errorcount = 0
         for item in raw_csv_list:
             itemsplit = item.split(",")
-            utcdate = itemsplit[0]
+            utcdate = itemsplit[CSV_UTCPOSITION]
 
             if re.match(regex, utcdate):
                 returnlist.append(item)
@@ -171,10 +175,11 @@ class Station:
         # Ignore the first line as it should contain the header
         for i in range(1, len(raw_csv_list)):
             datasplit = raw_csv_list[i].split(",")
-            datavalue = datasplit[2]
-            datetime = datasplit[1]
-            dp = datetime + "," + datavalue
-            returnlist.append(dp)
+            if len(datasplit) == CSV_SPLITLENGTH:
+                datavalue = datasplit[2]
+                datetime = datasplit[1]
+                dp = datetime + "," + datavalue
+                returnlist.append(dp)
         return returnlist
 
     # Use CSV data
@@ -285,11 +290,24 @@ class Station:
 
     # Wrapper function to process data in an orderly fashion!
     def process_data(self):
+        # Get the raw data
+        # From raw data get [UTC, data] --> list
+        # Check UTC format. Reject malformed time values
+        # Convert list to [posix, data]
+        # Convert list to object_list
+
+        
+
         raw_data = self.get_raw_data(self.datasource)
-        # clean_data = self.check_valid_utc(raw_data, self.regex)
+
+        # get data into format of UTC, Data
+        clean_data = self.check_valid_utc(raw_data, self.regex)
+
         clean_data = self.clean_csv_data(raw_data)
         clean_data = self.medianfilter(clean_data)
         # clean_data = self.utc_to_posix(clean_data, self.dateformat)
+
+
         clean_objects = self.create_object_list(clean_data)
         clean_objects = self.dhdt(clean_objects)
         # self.save_csv(clean_objects, "dhdt.csv")
