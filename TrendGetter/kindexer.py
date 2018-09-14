@@ -121,11 +121,18 @@ class Station:
         return rawdatalist
 
 
-    def utc_to_posix(self, utcdate, formatstring):
-        newdatetime = datetime.strptime(utcdate, formatstring)
-        newdatetime = time.mktime(newdatetime.timetuple())
-        newdatetime = int(newdatetime)
-        return newdatetime
+    def utc_to_posix(self,datalist, formatstring):
+        returnlist = []
+        for item in datalist:
+            datasplit = item.split(",")
+            utcdate = datasplit[0]
+            data = datasplit[1]
+            newdatetime = datetime.strptime(utcdate, formatstring)
+            newdatetime = time.mktime(newdatetime.timetuple())
+            newdatetime = int(newdatetime)
+            dp = newdatetime + "," + data
+            returnlist.append(dp)
+        return returnlist
 
     # Use Object list
     def dhdt(self, objectlist):
@@ -147,7 +154,7 @@ class Station:
         errorcount = 0
         for item in raw_csv_list:
             itemsplit = item.split(",")
-            utcdate = itemsplit[CSV_UTCPOSITION]
+            utcdate = itemsplit[0]
 
             if re.match(regex, utcdate):
                 returnlist.append(item)
@@ -156,31 +163,42 @@ class Station:
         print(str(errorcount) + " errors in datetime encountered")
         return returnlist
 
-    # data is in format [utcdate, datavalue]
-    def utc_to_posix(self, utc_data, formatstring):
+    # parse raw data for only UTC and data values
+    def get_utc_data(self, raw_data):
         returnlist = []
-        for item in utc_data:
+        for item in raw_data:
             datasplit = item.split(",")
-            posixvalue = self.utc_to_posix(datasplit[0], formatstring)
-            datavalue = datasplit[1]
-            dp = posixvalue + "," + datavalue
+            utctime = datasplit[CSV_UTCPOSITION]
+            data = datasplit[CSV_DATAPOSITION]
+            dp = utctime + "," + data
             returnlist.append(dp)
         return returnlist
 
+    # # data is in format [utcdate, datavalue]
+    # def utc_to_posix(self, utc_data, formatstring):
+    #     returnlist = []
+    #     for item in utc_data:
+    #         datasplit = item.split(",")
+    #         posixvalue = self.utc_to_posix(datasplit[0], formatstring)
+    #         datavalue = datasplit[1]
+    #         dp = posixvalue + "," + datavalue
+    #         returnlist.append(dp)
+    #     return returnlist
 
-    # Use CSV. Return [utc_date, data] only
-    # Here is where we need to adjust which values are date and data
-    def clean_csv_data(self, raw_csv_list):
-        returnlist = []
-        # Ignore the first line as it should contain the header
-        for i in range(1, len(raw_csv_list)):
-            datasplit = raw_csv_list[i].split(",")
-            if len(datasplit) == CSV_SPLITLENGTH:
-                datavalue = datasplit[2]
-                datetime = datasplit[1]
-                dp = datetime + "," + datavalue
-                returnlist.append(dp)
-        return returnlist
+    #
+    # # Use CSV. Return [utc_date, data] only
+    # # Here is where we need to adjust which values are date and data
+    # def clean_csv_data(self, raw_csv_list):
+    #     returnlist = []
+    #     # Ignore the first line as it should contain the header
+    #     for i in range(1, len(raw_csv_list)):
+    #         datasplit = raw_csv_list[i].split(",")
+    #         if len(datasplit) == CSV_SPLITLENGTH:
+    #             datavalue = datasplit[2]
+    #             datetime = datasplit[1]
+    #             dp = datetime + "," + datavalue
+    #             returnlist.append(dp)
+    #     return returnlist
 
     # Use CSV data
     def medianfilter(self, datalist):
@@ -291,20 +309,29 @@ class Station:
     # Wrapper function to process data in an orderly fashion!
     def process_data(self):
         # Get the raw data
-        # From raw data get [UTC, data] --> list
-        # Check UTC format. Reject malformed time values
-        # Convert list to [posix, data]
-        # Convert list to object_list
-
-        
-
         raw_data = self.get_raw_data(self.datasource)
 
-        # get data into format of UTC, Data
-        clean_data = self.check_valid_utc(raw_data, self.regex)
+        # From raw data get [UTC, data] --> list
+        raw_data = self.get_utc_data(raw_data)
 
-        clean_data = self.clean_csv_data(raw_data)
+        # Check UTC format. Reject malformed time values
+        #Parse thru with a meian filter too!
+        clean_data = self.check_valid_utc(raw_data, self.regex)
         clean_data = self.medianfilter(clean_data)
+
+        # Convert list to [posix, data]
+        clean_data = self.utc_to_posix(clean_data)
+
+        # Convert list to object_list
+
+
+
+
+        # get data into format of UTC, Data
+
+
+        # clean_data = self.clean_csv_data(raw_data)
+
         # clean_data = self.utc_to_posix(clean_data, self.dateformat)
 
 
