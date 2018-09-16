@@ -288,8 +288,8 @@ class Station:
             binned_data[bin_id].datalist.append(objectlist[i].datavalue)
         return binned_data
 		
-	# If yyyy-mm-dd of the posix storm date equals yyyy-mm-dd of the object date
-	# then set the aurora sightings value of the object
+    # # If yyyy-mm-dd of the posix storm date equals yyyy-mm-dd of the object date
+    # # then set the aurora sightings value of the object
     # def set_aurorasighting(self, object_list, date_list_file):
     #     posixdates = []
     #     with open(date_list_file) as e:
@@ -318,27 +318,24 @@ class Station:
         raw_data = self.get_utc_data(raw_data)
 
         # Check UTC format. Reject malformed time values
-        #Parse thru with a median filter too!
         clean_data = self.check_valid_utc(raw_data, self.regex)
+
+        # Parse thru with a median filter too!
         clean_data = self.medianfilter(clean_data)
 
         # Convert list to [posix, data]
         clean_data = self.utc_to_posix(clean_data)
 
         # Convert list to object_list
-
-
-
+        clean_objects = self.create_object_list(clean_data)
 
         # get data into format of UTC, Data
-
 
         # clean_data = self.clean_csv_data(raw_data)
 
         # clean_data = self.utc_to_posix(clean_data, self.dateformat)
 
 
-        clean_objects = self.create_object_list(clean_data)
         clean_objects = self.dhdt(clean_objects)
         # self.save_csv(clean_objects, "dhdt.csv")
         clean_objects = self.running_average(clean_objects, 20)
