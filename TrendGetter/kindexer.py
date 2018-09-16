@@ -133,6 +133,9 @@ class Station:
             dp = newdatetime + "," + data
             returnlist.append(dp)
         return returnlist
+		
+	def posix_to_utc(self,datalist, formatstring):
+		pass
 
     # Use Object list
     def dhdt(self, objectlist):
@@ -284,7 +287,9 @@ class Station:
             bin_id = int(round(bin_id, 0))
             binned_data[bin_id].datalist.append(objectlist[i].datavalue)
         return binned_data
-    #
+		
+	# If yyyy-mm-dd of the posix storm date equals yyyy-mm-dd of the object date
+	# then set the aurora sightings value of the object
     # def set_aurorasighting(self, object_list, date_list_file):
     #     posixdates = []
     #     with open(date_list_file) as e:
@@ -292,8 +297,6 @@ class Station:
     #             date = line.strip()  # remove any trailing whitespace chars like CR and NL
     #             dt = utc_2_unix(date)
     #             posixdates.append(dt)
-
-
 
     def set_stormthreshold(self, objectlist):
         for item in objectlist:
@@ -315,7 +318,7 @@ class Station:
         raw_data = self.get_utc_data(raw_data)
 
         # Check UTC format. Reject malformed time values
-        #Parse thru with a meian filter too!
+        #Parse thru with a median filter too!
         clean_data = self.check_valid_utc(raw_data, self.regex)
         clean_data = self.medianfilter(clean_data)
 
