@@ -121,21 +121,15 @@ class Station:
         return rawdatalist
 
 
-    def utc_to_posix(self,datalist, formatstring):
-        returnlist = []
-        for item in datalist:
-            datasplit = item.split(",")
-            utcdate = datasplit[0]
-            data = datasplit[1]
-            newdatetime = datetime.strptime(utcdate, formatstring)
-            newdatetime = time.mktime(newdatetime.timetuple())
-            newdatetime = int(newdatetime)
-            dp = newdatetime + "," + data
-            returnlist.append(dp)
-        return returnlist
-		
-	def posix_to_utc(self,datalist, formatstring):
-		pass
+    def utc_to_posix(self, utcdate, formatstring):
+        posixtime = datetime.strptime(utcdate, formatstring)
+        posixtime = time.mktime(posixtime.timetuple())
+        return str(int(posixtime))
+
+    def posix_to_utc(self, posix_date, formatstring):
+        utcstring = datetime.utcfromtimestamp(posix_date).strftime(formatstring)
+        return utcstring
+
 
     # Use Object list
     def dhdt(self, objectlist):
@@ -171,37 +165,13 @@ class Station:
         returnlist = []
         for item in raw_data:
             datasplit = item.split(",")
-            utctime = datasplit[CSV_UTCPOSITION]
-            data = datasplit[CSV_DATAPOSITION]
-            dp = utctime + "," + data
-            returnlist.append(dp)
+            if len(datasplit) == CSV_SPLITLENGTH:
+                utctime = datasplit[CSV_UTCPOSITION]
+                data = datasplit[CSV_DATAPOSITION]
+                dp = utctime + "," + data
+                returnlist.append(dp)
         return returnlist
 
-    # # data is in format [utcdate, datavalue]
-    # def utc_to_posix(self, utc_data, formatstring):
-    #     returnlist = []
-    #     for item in utc_data:
-    #         datasplit = item.split(",")
-    #         posixvalue = self.utc_to_posix(datasplit[0], formatstring)
-    #         datavalue = datasplit[1]
-    #         dp = posixvalue + "," + datavalue
-    #         returnlist.append(dp)
-    #     return returnlist
-
-    #
-    # # Use CSV. Return [utc_date, data] only
-    # # Here is where we need to adjust which values are date and data
-    # def clean_csv_data(self, raw_csv_list):
-    #     returnlist = []
-    #     # Ignore the first line as it should contain the header
-    #     for i in range(1, len(raw_csv_list)):
-    #         datasplit = raw_csv_list[i].split(",")
-    #         if len(datasplit) == CSV_SPLITLENGTH:
-    #             datavalue = datasplit[2]
-    #             datetime = datasplit[1]
-    #             dp = datetime + "," + datavalue
-    #             returnlist.append(dp)
-    #     return returnlist
 
     # Use CSV data
     def medianfilter(self, datalist):
@@ -270,6 +240,17 @@ class Station:
             except IOError:
                 print("WARNING: There was a problem saving your data")
 
+    # uses a data list
+    def convert_to_posix(self, clean_data):
+        returnlist = []
+        for item in clean_data:
+            datasplit = item.split(",")
+            posix_date = self.utc_to_posix(datasplit[0], "%Y-%m-%d %H:%M:%S")
+            data = datasplit[1]
+            dp = posix_date + "," + data
+            returnlist.append(dp)
+        return returnlist
+
 
     def create_bins(self, objectlist):
         date_now = int(time.time())
@@ -288,15 +269,21 @@ class Station:
             binned_data[bin_id].datalist.append(objectlist[i].datavalue)
         return binned_data
 		
-    # # If yyyy-mm-dd of the posix storm date equals yyyy-mm-dd of the object date
-    # # then set the aurora sightings value of the object
-    # def set_aurorasighting(self, object_list, date_list_file):
-    #     posixdates = []
-    #     with open(date_list_file) as e:
-    #         for line in e:
-    #             date = line.strip()  # remove any trailing whitespace chars like CR and NL
-    #             dt = utc_2_unix(date)
-    #             posixdates.append(dt)
+    # If yyyy-mm-dd of the posix storm date equals yyyy-mm-dd of the object date
+    # then set the aurora sightings value of the object
+    def set_aurorasighting(self, object_list, date_list_file):
+        posixdates = []
+        with open(date_list_file) as e:
+            for line in e:
+                date = line.strip()  # remove any trailing whitespace chars like CR and NL
+                posix_date = self.utc_to_posix(date, "%d/%m/%Y")
+                posixdates.append(posix_date)
+
+        print("Iterating thru aurora sighting dates - this could take a while!")
+        for auroradate in posixdates:
+            for dataobject in object_list:
+                if self.posix_to_utc(auroradate, "%Y-%m-%d") == self.posix_to_utc(dataobject.posixdate, "%Y-%m-%d"):
+                    dataobject.aurorasighting = 0.03
 
     def set_stormthreshold(self, objectlist):
         for item in objectlist:
@@ -324,34 +311,26 @@ class Station:
         clean_data = self.medianfilter(clean_data)
 
         # Convert list to [posix, data]
-        clean_data = self.utc_to_posix(clean_data)
+        clean_data = self.convert_to_posix(clean_data)
 
         # Convert list to object_list
         clean_objects = self.create_object_list(clean_data)
-
-        # get data into format of UTC, Data
-
-        # clean_data = self.clean_csv_data(raw_data)
-
-        # clean_data = self.utc_to_posix(clean_data, self.dateformat)
-
-
         clean_objects = self.dhdt(clean_objects)
+
         # self.save_csv(clean_objects, "dhdt.csv")
         clean_objects = self.running_average(clean_objects, 20)
         clean_objects = self.running_average(clean_objects, 20)
         clean_objects = self.create_bins(clean_objects)
         # <<--SNIP-->>
-        # self.set_aurorasighting(clean_objects, "sightings.csv")
+        self.set_aurorasighting(clean_objects, "sightings.csv")
         self.set_stormthreshold(clean_objects)
         # <<--SNIP-->>
         self.save_csv(clean_objects, self.stationname+".csv")
 
-
 if __name__ == "__main__":
     starttime = time.time()
     stationlist = []
-    station1 = Station("aurora_activity", "files.txt", "\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d.\d\d", "%Y-%m-%d %H:%M:%S.%f")
+    station1 = Station("aurora_activity", "files.txt", "\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d", "%Y-%m-%d %H:%M:%S")
     stationlist.append(station1)
 
     for station in stationlist:
