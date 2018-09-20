@@ -281,10 +281,10 @@ class Station:
 
         print("Iterating thru aurora sighting dates - this could take a while!")
         for auroradate in posixdates:
+            one = (self.posix_to_utc(int(auroradate), "%Y-%m-%d"))
             for dataobject in object_list:
-                print(self.posix_to_utc(auroradate, "%Y-%m-%d"))
-                print(self.posix_to_utc(dataobject.posixdate, "%Y-%m-%d"))
-                if self.posix_to_utc(auroradate, "%Y-%m-%d") == self.posix_to_utc(dataobject.posixdate, "%Y-%m-%d"):
+                tother = (self.posix_to_utc(int(dataobject.posixdate), "%Y-%m-%d"))
+                if one == tother:
                     dataobject.aurorasighting = 0.03
 
     def set_stormthreshold(self, objectlist):
