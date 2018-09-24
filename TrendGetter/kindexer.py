@@ -11,8 +11,9 @@ import time
 import os
 import math
 
-BIN_SIZE = 60 * 60 *2 # the number of seconds wide a bin is
+BIN_SIZE = 60 * 60 # the number of seconds wide a bin is
 DURATION = 60*60*24*365
+CARRINGTON_ROTATION = int(60*60*24*27.2753)
 BIN_NUMBER = int(DURATION / BIN_SIZE)  # how many bins we want in total
 STORMTHRESHOLD = 0.25   # geomagnetic activity over this number constitutes a storm
 CSV_SPLITLENGTH = 3   # The number of CSV elements in a line from our source data.
@@ -38,6 +39,7 @@ class Bin():
         # <<--SNIP-->>
         self.aurorasighting = ""
         self.stormthreshold = ""
+        self.carrington_rotation = ""
         # <<--SNIP-->>
 
     def average_datalist(self):
@@ -66,8 +68,12 @@ class Bin():
         utctime = time.strftime('%Y-%m-%d %H:%M', utctime)
         return utctime
 
+    def print_csv_header(self):
+        returnstring = "Date/Time(UTC), Geomagnetic Activity, Storm Detected, Aurora Sighted, Carrington Rotation Marker"
+        return returnstring
+
     def print_values(self):
-        returnstring = str(self.posix2utc()) + "," + str(self.minmax_datalist()) + "," + str(self.stormthreshold) + "," + str(self.aurorasighting)
+        returnstring = str(self.posix2utc()) + "," + str(self.minmax_datalist()) + "," + str(self.stormthreshold) + "," + str(self.aurorasighting) + "," + str(self.carrington_rotation)
         return returnstring
 
 
@@ -233,6 +239,13 @@ class Station:
         except:
             print("Error deleting old file")
 
+        header = Bin(10)
+        try:
+            with open(savefile, 'a') as f:
+                f.write(header.print_csv_header() + "\n")
+        except IOError:
+            print("WARNING: Unable to write header to CSV file")
+
         for item in arraydata:
             try:
                 with open(savefile, 'a') as f:
@@ -245,7 +258,7 @@ class Station:
         returnlist = []
         for item in clean_data:
             datasplit = item.split(",")
-            posix_date = self.utc_to_posix(datasplit[0], "%Y-%m-%d %H:%M:%S")
+            posix_date = self.utc_to_posix(datasplit[0], self.dateformat)
             data = datasplit[1]
             dp = posix_date + "," + data
             returnlist.append(dp)
@@ -285,7 +298,12 @@ class Station:
             for dataobject in object_list:
                 tother = (self.posix_to_utc(int(dataobject.posixdate), "%Y-%m-%d"))
                 if one == tother:
-                    dataobject.aurorasighting = 0.03
+                    dataobject.aurorasighting = 0.2
+
+    def set_carringtons(self, object_list):
+        carrington_count = int(CARRINGTON_ROTATION / BIN_SIZE)
+        for i in range(0, len(object_list), carrington_count):
+            object_list[i].carrington_rotation = 0.04
 
     def set_stormthreshold(self, objectlist):
         for item in objectlist:
@@ -326,6 +344,7 @@ class Station:
         # <<--SNIP-->>
         self.set_aurorasighting(clean_objects, "sightings.csv")
         self.set_stormthreshold(clean_objects)
+        self.set_carringtons(clean_objects)
         # <<--SNIP-->>
         self.save_csv(clean_objects, self.stationname+".csv")
 
