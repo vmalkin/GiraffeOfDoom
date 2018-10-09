@@ -29,13 +29,14 @@ class PlotPoint:
         self.series1value = NULL
         self.series2value = NULL
         self.series3value = NULL
+        self.series4value = NULL
 
     def printvalues(self):
-        value = str(self.utcdate) + "," + str(self.series1value) + "," + str(self.series2value) + "," + str(self.series3value)
+        value = str(self.utcdate) + "," + str(self.series1value) + "," + str(self.series2value) + "," + str(self.series3value) + "," + str(self.series4value)
         return value
 
     def printlabels(self):
-        value = "Date/Time UTC, Speed - Actual, Speed - Forecast, Carrington Rotation Marker"
+        value = "Date/Time UTC, Speed - Actual, Speed - Forecast, Carrington Rotation Marker, Particle Density Warning"
         return value
 
     # convert the internal posx_date to UTC format
@@ -121,8 +122,24 @@ class Plotter:
 
         # SERIES 3 - Markers for Carrington Rotations. (655 hrs approx)
         for i in range(0, len(predictionlist), 655):
-            predictionlist[i].series3value = 240
+            predictionlist[i].series3value = 500
 
+        # SERIES 4 - Markers for Particle Density over 10p/cm^3
+        for item in self._reading_actual:
+            DENSITY_THRESHOLD = 10
+            itemsplit = item.split(",")
+            date = int(itemsplit[0])
+            particle_density = float(itemsplit[3])
+
+            if particle_density == "0":
+                particle_density = NULL
+
+            for i in range(1, len(predictionlist)):
+                if date <= int(predictionlist[i].posix_date) and date > int(predictionlist[i - 1].posix_date):
+                    if float(particle_density) > float(DENSITY_THRESHOLD):
+                        predictionlist[i].series4value = particle_density
+                    else:
+                        predictionlist[i].series4value = NULL
 
         # Save out as a CSV file for display
         try:
