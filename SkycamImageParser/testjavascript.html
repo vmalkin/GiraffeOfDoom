@@ -1,0 +1,51 @@
+<html>
+<head>
+
+<style>
+img
+{
+	width: 30%;
+}
+</style>
+
+</head>
+<body>
+
+	<div id="img1"><img src="00-20-49-66utc.png"><p>00-20-49-66utc.png<br><br>
+	<button onclick="img1()">Keep this file</button>
+	
+	<script type="text/javascript">
+	function img1()
+	{
+		document.getElementById("del1").style.display = "none"; // do not display DIV
+		document.getElementById("img1").style.backgroundColor="#009000";
+	}
+	</script>
+	
+	</div>
+	
+	<div id="img2"><img src="01-06-54-31utc.png"><p>01-06-54-31utc.png<br><br>
+	<button onclick="img2()">Keep this file</button>
+
+	<script type="text/javascript">
+	function img2()
+	{
+		document.getElementById("del2").style.display = "none"; // do not display DIV
+		document.getElementById("img2").style.backgroundColor="#009000";
+	}
+	</script>
+	
+	</div>
+	
+	<div id=""><img src="11-04-31-59utc.png"><p>11-04-31-59utc.png<br><br>
+	</div>
+	
+	<h2>Batch script commands</h2>
+	<div id="del1">del 1</div>
+	<div id="del2">del 2</div>
+	<div id="del3">del 3</div>
+
+
+
+</body>
+</html>

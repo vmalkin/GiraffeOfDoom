@@ -31,18 +31,14 @@ class PictureToProcess:
 
 def imgtag(filename):
     with open("images.html", "a") as html:
-        appendstring = r'<div><img style = "width: 30%;" src="' + filename + '">' + '<p>' + filename + "<br><br></div>"
+        appendstring = r'<div><img src="' + filename + '">' + '<p>' + filename + "<br><br></div>"
         html.write(appendstring + "\n")
 
-def delfile(filename):
-    with open("delete_files.bat", "a") as d:
-        appendstring = "delete " + filename
-        d.write(appendstring + "\n")
+
 
 if __name__ == "__main__":
     try:
         os.remove("images.html")
-        os.remove("delete_files.bat")
     except:
         pass
 
@@ -60,23 +56,25 @@ if __name__ == "__main__":
         except:
             print("ERROR in parsing image")
 
-    for pic in picturelist:
+    img_html = []
+    del_html = []
+    for i in range[0, len(picturelist)]:
+
         # print(pic.imagename + " " + pic.pixelvalues)
-        rd = int(pic.pixelvalues[0])
-        gr = int(pic.pixelvalues[1])
-        bl = int(pic.pixelvalues[2])
+        rd = int(picturelist[i].pixelvalues[0])
+        gr = int(picturelist[i].pixelvalues[1])
+        bl = int(picturelist[i].pixelvalues[2])
 
         # sodium light pollution on clouds at night
         if  rd >= gr > bl:
-            print(pic.imagename + " Light pollution at night")
-            imgtag(pic.imagename)
-            delfile(pic.imagename)
+            print(picturelist[i].imagename + " Light pollution at night")
+            imgtag(picturelist[i].imagename)
 
         # high cloud
         threshold = 140
         if rd > threshold:
             if gr > threshold:
                 if bl > threshold:
-                    print(pic.imagename + " Overcast sky")
-                    imgtag(pic.imagename)
-                    delfile(pic.imagename)
+                    print(picturelist[i].imagename + " Overcast sky")
+                    imgtag(picturelist[i].imagename)
+
