@@ -29,10 +29,21 @@ class PictureToProcess:
         return returnlist
 
 
-def imgtag(filename):
-    with open("images.html", "a") as html:
-        appendstring = r'<div><img src="' + filename + '">' + '<p>' + filename + "<br><br></div>"
-        html.write(appendstring + "\n")
+def imgtag(filename, index_value, img_list, del_list):
+    index_value = str(index_value)
+    appendstring = r'<div id="img' + index_value + r'"><img src="' + filename + r'"><p>' + filename + r'<br><br>'
+    appendstring = appendstring + r'<button onclick="img' + index_value + r'()">Keep this file</button>'
+    appendstring = appendstring + r'<script type="text/javascript"> function img' + index_value + r'()'
+    appendstring = appendstring + r'document.getElementById("del' + index_value + r'").style.display = "none";'
+    appendstring = appendstring + r'document.getElementById("img' + index_value + r'").style.backgroundColor="#009000";'
+    appendstring = appendstring + r'}</script></div>'
+    appendstring = appendstring + '\n'
+    img_html.append(appendstring)
+
+    delstring = r'<div id="del' + index_value + r'">del ' + filename + r'</div>'
+    delstring = delstring + '\n'
+    del_list.append(delstring)
+
 
 
 
@@ -58,8 +69,8 @@ if __name__ == "__main__":
 
     img_html = []
     del_html = []
-    for i in range[0, len(picturelist)]:
 
+    for i in range(0, len(picturelist)):
         # print(pic.imagename + " " + pic.pixelvalues)
         rd = int(picturelist[i].pixelvalues[0])
         gr = int(picturelist[i].pixelvalues[1])
@@ -68,7 +79,7 @@ if __name__ == "__main__":
         # sodium light pollution on clouds at night
         if  rd >= gr > bl:
             print(picturelist[i].imagename + " Light pollution at night")
-            imgtag(picturelist[i].imagename)
+            imgtag(picturelist[i].imagename, i, img_html, del_html)
 
         # high cloud
         threshold = 140
@@ -76,5 +87,5 @@ if __name__ == "__main__":
             if gr > threshold:
                 if bl > threshold:
                     print(picturelist[i].imagename + " Overcast sky")
-                    imgtag(picturelist[i].imagename)
-
+                    imgtag(picturelist[i].imagename, i, img_html, del_html)
+        
