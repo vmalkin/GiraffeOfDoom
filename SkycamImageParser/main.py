@@ -33,9 +33,9 @@ def imgtag(filename, index_value, img_list, del_list):
     index_value = str(index_value)
     appendstring = r'<div id="img' + index_value + r'"><img src="' + filename + r'"><p>' + filename + r'<br><br>'
     appendstring = appendstring + r'<button onclick="img' + index_value + r'()">Keep this file</button>'
-    appendstring = appendstring + r'<script type="text/javascript"> function img' + index_value + r'()'
-    appendstring = appendstring + r'document.getElementById("del' + index_value + r'").style.display = "none";'
-    appendstring = appendstring + r'document.getElementById("img' + index_value + r'").style.backgroundColor="#009000";'
+    appendstring = appendstring + r'<script type="text/javascript"> function img' + index_value + r'(){' + '\n'
+    appendstring = appendstring + r'document.getElementById("del' + index_value + r'").style.display = "none";' + '\n'
+    appendstring = appendstring + r'document.getElementById("img' + index_value + r'").style.backgroundColor="#009000";' + '\n'
     appendstring = appendstring + r'}</script></div>'
     appendstring = appendstring + '\n'
     img_html.append(appendstring)
@@ -48,8 +48,9 @@ def imgtag(filename, index_value, img_list, del_list):
 
 
 if __name__ == "__main__":
+    htmlfile = "images.html"
     try:
-        os.remove("images.html")
+        os.remove(htmlfile)
     except:
         pass
 
@@ -88,4 +89,16 @@ if __name__ == "__main__":
                 if bl > threshold:
                     print(picturelist[i].imagename + " Overcast sky")
                     imgtag(picturelist[i].imagename, i, img_html, del_html)
-        
+
+    page_header = r'<html><head><style>img{width: 30%;}</style></head><body>'
+    page_footer = r'</body></html>'
+
+    with open(htmlfile, "a") as h:
+        h.write(page_header + "\n")
+        for item in img_html:
+            h.write(item)
+        for item in del_html:
+            h.write(item)
+        h.write(page_footer)
+
+    print("Finished")
