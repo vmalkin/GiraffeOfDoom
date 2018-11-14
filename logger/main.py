@@ -1,7 +1,9 @@
 # Automatically create a folder based on UTC date and copy all jpegs to it.
-
-from shutil import copy
+import os
+import shutil
 import datetime
+import glob
+
 
 def get_directory():
     returnvalue = datetime.datetime.utcnow().strftime("%Y-%m-%d")
@@ -10,4 +12,7 @@ def get_directory():
 
 if __name__ == "__main__":
     current_directory = get_directory()
-    copy("*.jpg", current_directory)
+    os.makedirs(current_directory, exist_ok=True)
+
+    for data in glob.glob("*.jpg"):
+        shutil.move(data, current_directory)
