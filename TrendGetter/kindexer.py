@@ -11,14 +11,16 @@ import time
 import os
 import math
 
-BIN_SIZE = 60 * 60 *2 # the number of seconds wide a bin is
-DURATION = 60*60*24*365
+BIN_SIZE = 60 * 60 # the number of seconds wide a bin is
+DURATION = 60*60*24
+CARRINGTON_ROTATION = int(60*60*24*27.2753)
 BIN_NUMBER = int(DURATION / BIN_SIZE)  # how many bins we want in total
 STORMTHRESHOLD = 0.25   # geomagnetic activity over this number constitutes a storm
 CSV_SPLITLENGTH = 3   # The number of CSV elements in a line from our source data.
 CSV_UTCPOSITION = 0
-CSV_POSIXPOSITION = 1
-CSV_DATAPOSITION = 2
+CSV_POSIXPOSITION = 0
+CSV_DATAPOSITION = 1
+BLIP = float(50000)
 
 class DPsimple:
     def __init__ (self, posixdate, datavalue):
@@ -38,6 +40,7 @@ class Bin():
         # <<--SNIP-->>
         self.aurorasighting = ""
         self.stormthreshold = ""
+        self.carrington_rotation = ""
         # <<--SNIP-->>
 
     def average_datalist(self):
@@ -66,8 +69,16 @@ class Bin():
         utctime = time.strftime('%Y-%m-%d %H:%M', utctime)
         return utctime
 
+    # def print_csv_header(self):
+    #     returnstring = "Date/Time(UTC), Geomagnetic Activity, Storm Detected, Aurora Sighted, Carrington Rotation Marker"
+    #     return returnstring
+
+    def print_csv_header(self):
+        returnstring = "Date/Time(UTC), Geomagnetic Activity"
+        return returnstring
+
     def print_values(self):
-        returnstring = str(self.posix2utc()) + "," + str(self.minmax_datalist()) + "," + str(self.stormthreshold) + "," + str(self.aurorasighting)
+        returnstring = str(self.posix2utc()) + "," + str(self.minmax_datalist()) + "," + str(self.stormthreshold) + "," + str(self.aurorasighting) + "," + str(self.carrington_rotation)
         return returnstring
 
 
@@ -86,39 +97,42 @@ class Station:
         self.regex = regex_time
         self.dateformat = dateformat
 
-    def get_raw_data(self, CSVlist):
-        CSVFilenames = []
-        rawdatalist = []
-        print("Loading list of logfiles...")
-        # load in the list of CSV files to process
-        if os.path.isfile(CSVlist):
-            try:
-                with open(CSVlist) as e:
-                    for line in e:
-                        line = line.strip()  # remove any trailing whitespace chars like CR and NL
-                        CSVFilenames.append(line)
+    def get_raw_data(self, posixlist):
+        return posixlist
 
-            except IOError:
-                print("List of logfiles appears to be present, but cannot be accessed at this time. ")
-
-        print("Adding logfile data...")
-        # Parse thru the CSVfilelist, Append values to our raw data list
-        for item in CSVFilenames:
-            firstline = True
-            try:
-                with open(item) as e:
-                    print("Processing " + item)
-                    # Skip the first line in each file as it's a header
-                    for line in e:
-                        if firstline is True:
-                            # print("Header identified, skipping...")
-                            firstline = False
-                        else:
-                            line = line.strip()  # remove any trailing whitespace chars like CR and NL
-                            rawdatalist.append(line)
-            except IOError:
-                print("A logfile appears to be present, but cannot be accessed at this time. ")
-        return rawdatalist
+    # def get_raw_data(self, CSVlist):
+    #     CSVFilenames = []
+    #     rawdatalist = []
+    #     print("Loading list of logfiles...")
+    #     # load in the list of CSV files to process
+    #     if os.path.isfile(CSVlist):
+    #         try:
+    #             with open(CSVlist) as e:
+    #                 for line in e:
+    #                     line = line.strip()  # remove any trailing whitespace chars like CR and NL
+    #                     CSVFilenames.append(line)
+    #
+    #         except IOError:
+    #             print("List of logfiles appears to be present, but cannot be accessed at this time. ")
+    #
+    #     print("Adding logfile data...")
+    #     # Parse thru the CSVfilelist, Append values to our raw data list
+    #     for item in CSVFilenames:
+    #         firstline = True
+    #         try:
+    #             with open(item) as e:
+    #                 print("Processing " + item)
+    #                 # Skip the first line in each file as it's a header
+    #                 for line in e:
+    #                     if firstline is True:
+    #                         # print("Header identified, skipping...")
+    #                         firstline = False
+    #                     else:
+    #                         line = line.strip()  # remove any trailing whitespace chars like CR and NL
+    #                         rawdatalist.append(line)
+    #         except IOError:
+    #             print("A logfile appears to be present, but cannot be accessed at this time. ")
+    #     return rawdatalist
 
 
     def utc_to_posix(self, utcdate, formatstring):
@@ -134,7 +148,6 @@ class Station:
     # Use Object list
     def dhdt(self, objectlist):
         returnlist = []
-        BLIP = float(3)
         for i in range(1, len(objectlist)):
             datetime = objectlist[i].posixdate
             datavalue = float(objectlist[i].datavalue) - float(objectlist[i - 1].datavalue)
@@ -233,6 +246,13 @@ class Station:
         except:
             print("Error deleting old file")
 
+        header = Bin(10)
+        try:
+            with open(savefile, 'a') as f:
+                f.write(header.print_csv_header() + "\n")
+        except IOError:
+            print("WARNING: Unable to write header to CSV file")
+
         for item in arraydata:
             try:
                 with open(savefile, 'a') as f:
@@ -245,7 +265,7 @@ class Station:
         returnlist = []
         for item in clean_data:
             datasplit = item.split(",")
-            posix_date = self.utc_to_posix(datasplit[0], "%Y-%m-%d %H:%M:%S")
+            posix_date = self.utc_to_posix(datasplit[0], self.dateformat)
             data = datasplit[1]
             dp = posix_date + "," + data
             returnlist.append(dp)
@@ -265,7 +285,7 @@ class Station:
         # according to the date.
         for i in range(0, len(objectlist)):
             bin_id = (float(objectlist[i].posixdate) - float(date_start)) / BIN_SIZE
-            bin_id = int(round(bin_id, 0))
+            bin_id = int(round(bin_id, 0))-1
             binned_data[bin_id].datalist.append(objectlist[i].datavalue)
         return binned_data
 		
@@ -281,9 +301,16 @@ class Station:
 
         print("Iterating thru aurora sighting dates - this could take a while!")
         for auroradate in posixdates:
+            one = (self.posix_to_utc(int(auroradate), "%Y-%m-%d"))
             for dataobject in object_list:
-                if self.posix_to_utc(auroradate, "%Y-%m-%d") == self.posix_to_utc(dataobject.posixdate, "%Y-%m-%d"):
-                    dataobject.aurorasighting = 0.03
+                tother = (self.posix_to_utc(int(dataobject.posixdate), "%Y-%m-%d"))
+                if one == tother:
+                    dataobject.aurorasighting = 0.2
+
+    def set_carringtons(self, object_list):
+        carrington_count = int(CARRINGTON_ROTATION / BIN_SIZE)
+        for i in range(0, len(object_list), carrington_count):
+            object_list[i].carrington_rotation = 0.04
 
     def set_stormthreshold(self, objectlist):
         for item in objectlist:
@@ -302,16 +329,16 @@ class Station:
         raw_data = self.get_raw_data(self.datasource)
 
         # From raw data get [UTC, data] --> list
-        raw_data = self.get_utc_data(raw_data)
+        # raw_data = self.get_utc_data(raw_data)
 
         # Check UTC format. Reject malformed time values
-        clean_data = self.check_valid_utc(raw_data, self.regex)
+        # clean_data = self.check_valid_utc(raw_data, self.regex)
 
         # Parse thru with a median filter too!
-        clean_data = self.medianfilter(clean_data)
+        clean_data = self.medianfilter(raw_data)
 
-        # Convert list to [posix, data]
-        clean_data = self.convert_to_posix(clean_data)
+        # # Convert list to [posix, data]
+        # clean_data = self.convert_to_posix(clean_data)
 
         # Convert list to object_list
         clean_objects = self.create_object_list(clean_data)
@@ -321,10 +348,11 @@ class Station:
         clean_objects = self.running_average(clean_objects, 20)
         clean_objects = self.running_average(clean_objects, 20)
         clean_objects = self.create_bins(clean_objects)
-        # <<--SNIP-->>
-        self.set_aurorasighting(clean_objects, "sightings.csv")
-        self.set_stormthreshold(clean_objects)
-        # <<--SNIP-->>
+        # # <<--SNIP-->>
+        # self.set_aurorasighting(clean_objects, "sightings.csv")
+        # self.set_stormthreshold(clean_objects)
+        # self.set_carringtons(clean_objects)
+        # # <<--SNIP-->>
         self.save_csv(clean_objects, self.stationname+".csv")
 
 if __name__ == "__main__":
