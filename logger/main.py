@@ -11,8 +11,12 @@ def get_directory():
 
 
 if __name__ == "__main__":
-    current_directory = get_directory()
-    os.makedirs(current_directory, exist_ok=True)
 
-    for data in glob.glob("*.jpg"):
-        shutil.move(data, current_directory)
+    while True:
+        current_directory = get_directory()
+        os.makedirs(current_directory, exist_ok=True)
+
+        for data in glob.glob("*.jpg"):
+            shutil.move(data, current_directory)
+
+        sleep(60*60)
