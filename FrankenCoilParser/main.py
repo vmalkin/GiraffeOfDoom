@@ -24,6 +24,17 @@ class Datapoint:
         return returnstring
 
 def running_average(object_list):
+    object_list.reverse()
+    
+    for i in range(0, len(object_list) - running_avg_window):
+        avg_value = 0
+        for j in range(0, running_avg_window):
+            avg_value = avg_value + float(object_list[i+j].reading)
+        
+        avg_value = avg_value / running_avg_window
+        object_list[i].running_average = avg_value
+            
+    object_list.reverse()
     
     return object_list
 
