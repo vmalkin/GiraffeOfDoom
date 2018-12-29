@@ -56,7 +56,8 @@ if __name__ == "__main__":
         f.close()
         
         # perform the running average and update the datapoint property
-        storage_array = running_average(storage_array)
+        if len(storage_array) > running_avg_window:
+            storage_array = running_average(storage_array)
         
         # create the daily CSV logfile
         with open(frankenCoil_current_datafile, "w") as f:
