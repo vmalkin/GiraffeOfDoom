@@ -5,6 +5,8 @@ import math
 spectrumlab_data = "z://temp//test.csv"
 frankencoil_data = "working.csv"
 running_avg_window = 20
+null_value = "#N/A"
+reading_threshold = -115
 
 # raw data should have the format "utcdate, avg noise, avg reading"
 
@@ -13,10 +15,10 @@ class Datapoint:
         self.datetime = datetime
         self.noise = avg_noise
         self.reading = avg_reading
-        self.running_average = 0
+        self.running_average = null_value
         
     def print_labels(self):
-        labelstring = "UTC Date/Time,Magnetic noise,Reading (dB),Average"
+        labelstring = "UTC Date/Time,Magnetic noise,Reading (dB),Average Amplitude"
         return labelstring
         
     def print_values(self):
@@ -24,15 +26,18 @@ class Datapoint:
         return returnstring
 
 def running_average(object_list):
-    object_list.reverse()
+    half_window = int(round((running_avg_window / 2),0))
     
-    for i in range(0, len(object_list) - running_avg_window):
-        avg_value = 0
-        for j in range(0, running_avg_window):
-            avg_value = avg_value + float(object_list[i+j].reading)
-        
-        avg_value = round((avg_value / running_avg_window), 4)
-        object_list[i].running_average = avg_value
+    for i in range(half_window, len(object_list) - half_window):
+        if float(object_list[i].reading) < float(reading_threshold):
+            avg_value = 0
+            for j in range(half_window * -1, half_window):
+                avg_value = avg_value + float(object_list[i+j].reading)
+
+            avg_value = round((avg_value / running_avg_window), 4)
+            object_list[i].running_average = avg_value
+        else:
+            object_list[i].running_average = null_value
             
     object_list.reverse()
     
