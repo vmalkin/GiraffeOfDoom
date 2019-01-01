@@ -37,10 +37,7 @@ def running_average(object_list):
             avg_value = round((avg_value / running_avg_window), 4)
             object_list[i].running_average = avg_value
         else:
-            object_list[i].running_average = null_value
-            
-    object_list.reverse()
-    
+            object_list[i].running_average = null_value    
     return object_list
 
 if __name__ == "__main__":
