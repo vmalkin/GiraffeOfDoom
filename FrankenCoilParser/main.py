@@ -20,7 +20,7 @@ class Datapoint:
         return labelstring
         
     def print_values(self):
-        returnstring = self.datetime + "," + self.noise + "," + self.reading + "," + self.running_average
+        returnstring = str(self.datetime) + "," + str(self.noise) + "," + str(self.reading) + "," + str(self.running_average)
         return returnstring
 
 def running_average(object_list):
@@ -31,7 +31,7 @@ def running_average(object_list):
         for j in range(0, running_avg_window):
             avg_value = avg_value + float(object_list[i+j].reading)
         
-        avg_value = avg_value / running_avg_window
+        avg_value = round((avg_value / running_avg_window), 4)
         object_list[i].running_average = avg_value
             
     object_list.reverse()
@@ -51,7 +51,8 @@ if __name__ == "__main__":
                 line = line.strip()
                 datasplit = line.split(" ")
                 if datasplit[0] == UTC_date:
-                    dp = Datapoint(datasplit[0], datasplit[1], datasplit[2])
+                    ds = line.split(",")
+                    dp = Datapoint(ds[0], ds[1], ds[2])
                     storage_array.append(dp)
         f.close()
         
@@ -61,7 +62,7 @@ if __name__ == "__main__":
         
         # create the daily CSV logfile
         with open(frankenCoil_current_datafile, "w") as f:
-            f.write(dp.print_labels + "\n")
+            f.write(dp.print_labels() + "\n")
             for dp in storage_array:
                 f.write(dp.print_values() + "\n")
         f.close()
