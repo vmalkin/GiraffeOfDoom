@@ -1,44 +1,56 @@
 import datetime
 import os
 import shutil
-import math
 spectrumlab_data = "z://temp//test.csv"
 frankencoil_data = "working.csv"
 running_avg_window = 20
-null_value = "#N/A"
+null_value = ""
 reading_threshold = -115
 
 # raw data should have the format "utcdate, avg noise, avg reading"
+
 
 class Datapoint:
     def __init__(self, datetime, avg_noise, avg_reading):
         self.datetime = datetime
         self.noise = avg_noise
         self.reading = avg_reading
+        self.reading_db = null_value
         self.running_average = null_value
         
     def print_labels(self):
         labelstring = "UTC Date/Time,Magnetic noise,Reading (dB),Average Amplitude"
+        # labelstring = "UTC Date/Time,Magnetic noise,Reading (dB),deblipped, Average Amplitude"
         return labelstring
         
     def print_values(self):
         returnstring = str(self.datetime) + "," + str(self.noise) + "," + str(self.reading) + "," + str(self.running_average)
+        # returnstring = str(self.datetime) + "," + str(self.noise) + "," + str(self.reading) + "," + str(self.reading_db) + "," + str(self.running_average)
         return returnstring
 
+
+def deblip_readings(object_list):
+    for i in range(0, len(object_list)):
+        if float(object_list[i].reading) < float(reading_threshold):
+            object_list[i].reading_db = object_list[i].reading
+
+
+# uses deblipped readings
 def running_average(object_list):
-    half_window = int(round((running_avg_window / 2),0))
+    half_window = int(round((running_avg_window / 2), 0))
     
     for i in range(half_window, len(object_list) - half_window):
-        if float(object_list[i].reading) < float(reading_threshold):
-            avg_value = 0
-            for j in range(half_window * -1, half_window):
-                avg_value = avg_value + float(object_list[i+j].reading)
+        avg_value = float(0)
+        divider = 0
+        for j in range(half_window * -1, half_window):
+            if object_list[i+j].reading_db != null_value:
+                avg_value = avg_value + float(object_list[i+j].reading_db)
+                divider = divider + 1
 
-            avg_value = round((avg_value / running_avg_window), 4)
-            object_list[i].running_average = avg_value
-        else:
-            object_list[i].running_average = null_value    
-    return object_list
+        avg_value = round((avg_value / divider), 4)
+        object_list[i].running_average = avg_value
+
+
 
 if __name__ == "__main__":
     if os.path.isfile(spectrumlab_data):
@@ -59,12 +71,14 @@ if __name__ == "__main__":
         f.close()
         
         # perform the running average and update the datapoint property
+        deblip_readings(storage_array)
         if len(storage_array) > running_avg_window:
-            storage_array = running_average(storage_array)
+            running_average(storage_array)
         
         # create the daily CSV logfile
         with open(frankenCoil_current_datafile, "w") as f:
-            f.write(dp.print_labels() + "\n")
+            f.write(storage_array[0].print_labels() + "\n")
+
             for dp in storage_array:
                 f.write(dp.print_values() + "\n")
         f.close()
