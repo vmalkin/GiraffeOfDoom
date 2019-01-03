@@ -7,6 +7,7 @@ running_avg_window = 20
 null_value = ""
 reading_threshold = -115
 noise_threshold = -108.1
+__version__ = "0.2"
 
 # raw data should have the format "utcdate, avg noise, avg reading"
 
@@ -22,13 +23,11 @@ class Datapoint:
         self.average_noise = null_value
         
     def print_labels(self):
-        labelstring = "UTC Date/Time,Magnetic noise,Reading (dB),Average Magnetic Amplitude,Average Magnetic Noise"
-        # labelstring = "UTC Date/Time,Magnetic noise,Reading (dB),deblipped, Average Amplitude"
+        labelstring = "UTC Date/Time,Magnetic noise, Induced Signal(dB),Average Magnetic Noise,Average Induced Signal"
         return labelstring
         
     def print_values(self):
-        returnstring = str(self.datetime) + "," + str(self.noise) + "," + str(self.reading) + "," + str(self.average_reading) + "," + str(self.average_noise)
-        # returnstring = str(self.datetime) + "," + str(self.noise) + "," + str(self.reading) + "," + str(self.reading_db) + "," + str(self.average_reading)
+        returnstring = str(self.datetime) + "," + str(self.noise) + "," + str(self.reading) + "," + str(self.average_noise) + "," + str(self.average_reading)
         return returnstring
 
 
@@ -73,6 +72,7 @@ def average_noise(object_list):
         object_list[i].average_noise = avg_value
 
 if __name__ == "__main__":
+    print("FrankenCoil Parser Version " + __version__ + "\n")
     if os.path.isfile(spectrumlab_data):
         shutil.copyfile(spectrumlab_data, frankencoil_data)
         UTC_date = datetime.datetime.utcnow().strftime("%Y-%m-%d")
@@ -107,6 +107,7 @@ if __name__ == "__main__":
         
         # this is the copy that gets updated to the website
         shutil.copyfile(frankenCoil_current_datafile, "frankencoil.csv")
+        print("Finished Parsing")
             
     else:
         print("FrankenCoil data is not accessible - Aborting!")
