@@ -53,8 +53,9 @@ def average_reading(object_list):
                 avg_value = avg_value + float(object_list[i+j].reading_db)
                 divider = divider + 1
 
-        avg_value = round((avg_value / divider), 4)
-        object_list[i].average_reading = avg_value
+        if divider > 0:
+            avg_value = round((avg_value / divider), 4)
+            object_list[i].average_reading = avg_value
 
 
 def average_noise(object_list):
@@ -68,8 +69,10 @@ def average_noise(object_list):
                 avg_value = avg_value + float(object_list[i + j].noise_db)
                 divider = divider + 1
 
-        avg_value = round((avg_value / divider), 4)
-        object_list[i].average_noise = avg_value
+        if divider > 0:
+            avg_value = round((avg_value / divider), 4)
+            object_list[i].average_reading = avg_value
+            
 
 if __name__ == "__main__":
     print("FrankenCoil Parser Version " + __version__ + "\n")
