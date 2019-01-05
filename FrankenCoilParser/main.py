@@ -1,4 +1,4 @@
-import datetime
+from datetime import datetime, timedelta
 import os
 import shutil
 spectrumlab_data = "c://temp//test.csv"
@@ -53,8 +53,9 @@ def average_reading(object_list):
                 avg_value = avg_value + float(object_list[i+j].reading_db)
                 divider = divider + 1
 
-        avg_value = round((avg_value / divider), 4)
-        object_list[i].average_reading = avg_value
+        if divider > 0:
+            avg_value = round((avg_value / divider), 4)
+            object_list[i].average_reading = avg_value
 
 
 def average_noise(object_list):
@@ -68,15 +69,18 @@ def average_noise(object_list):
                 avg_value = avg_value + float(object_list[i + j].noise_db)
                 divider = divider + 1
 
-        avg_value = round((avg_value / divider), 4)
-        object_list[i].average_noise = avg_value
+        if divider > 0:
+            avg_value = round((avg_value / divider), 4)
+            object_list[i].average_noise = avg_value
 
 if __name__ == "__main__":
     print("FrankenCoil Parser Version " + __version__ + "\n")
     if os.path.isfile(spectrumlab_data):
         shutil.copyfile(spectrumlab_data, frankencoil_data)
-        UTC_date = datetime.datetime.utcnow().strftime("%Y-%m-%d")
-        frankenCoil_current_datafile = "FrankenCoil_" + UTC_date + ".csv"
+        UTC_date_1 = datetime.utcnow().strftime("%Y-%m-%d")
+        UTC_date_0 = datetime.utcnow() - timedelta(days=1)
+        UTC_date_0 = UTC_date_0.strftime("%Y-%m-%d")
+        frankenCoil_current_datafile = "FrankenCoil_" + UTC_date_1 + ".csv"
 
         # Parse out the current daily data from Spectrum Lab's generic csv file
         storage_array = []
@@ -84,7 +88,7 @@ if __name__ == "__main__":
             for line in f:
                 line = line.strip()
                 datasplit = line.split(" ")
-                if datasplit[0] == UTC_date:
+                if (datasplit[0] == UTC_date_0) or (datasplit[0] == UTC_date_1):
                     ds = line.split(",")
                     dp = Datapoint(ds[0], ds[1], ds[2])
                     storage_array.append(dp)
