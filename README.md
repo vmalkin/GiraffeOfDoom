@@ -13,6 +13,9 @@ This project correlates coronal hole coverage to solar wind speed. It corrects f
 
 The next version of this software will look for events that repeat across Carrington rotations to provide a long term guestimate of active conditions.
 
+###FrankenCoil
+Quick and dirty python script to parse "Spectrum Lab" csv data from an experimental induction coil magnetometer. Produces daily log files and csv data for use with Highcharts graphs
+
 ### DataFusionProject
 Simple project to combine log-file data from different magnetometers according to a common time-stamp. Was going to form the basis for "actual" sensor/data fusion to try and increase accuracy of readings across a network of magnetometers
 
