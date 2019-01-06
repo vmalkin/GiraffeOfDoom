@@ -19,8 +19,10 @@ class Datapoint:
         self.datetime = datetime
         self.noise = avg_noise
         self.reading = avg_reading
+        
         self.reading_db = null_value
         self.noise_db = 0
+        
         self.average_reading = null_value
         self.average_noise = null_value
         
