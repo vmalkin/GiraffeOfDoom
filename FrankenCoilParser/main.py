@@ -1,12 +1,14 @@
 from datetime import datetime, timedelta
 import os
 import shutil
+import math
 spectrumlab_data = "c://temp//test.csv"
 frankencoil_data = "working.csv"
 running_avg_window = 20
 null_value = ""
 reading_threshold = -115
 noise_threshold = -108.1
+mag_noise_dhdt = 0.15
 __version__ = "0.2"
 
 # raw data should have the format "utcdate, avg noise, avg reading"
@@ -21,6 +23,7 @@ class Datapoint:
         self.noise_db = null_value
         self.average_reading = null_value
         self.average_noise = null_value
+        self.dndt = 0
         
     def print_labels(self):
         labelstring = "UTC Date/Time,Magnetic noise, Induced Signal(dB),Average Magnetic Noise,Average Induced Signal"
@@ -40,6 +43,17 @@ def deblip_noise(object_list):
     for i in range(0, len(object_list)):
         if float(object_list[i].noise) < float(noise_threshold):
             object_list[i].noise_db = object_list[i].noise
+
+def deblip_magnetic_noise(object_list):
+    for i in range (1, len(object_list)):
+        dndt = object_list[i].noise - object_list[i-1].noise
+        if math.sqrt(dndt**2) > mag_noise_dhdt:
+            object_list[i].dndt = dndt
+            
+    object_list[0].average_noise = object_list[0].noise
+    for i in range(1, len(object_list)):
+        object_list[i].average_noise = object_list[i-1].average_noise + object_list[i].dndt
+        
 
 # uses deblipped readings
 def average_reading(object_list):
