@@ -20,10 +20,9 @@ class Datapoint:
         self.noise = avg_noise
         self.reading = avg_reading
         self.reading_db = null_value
-        self.noise_db = null_value
+        self.noise_db = 0
         self.average_reading = null_value
         self.average_noise = null_value
-        self.dndt = 0
         
     def print_labels(self):
         labelstring = "UTC Date/Time,Magnetic noise, Induced Signal(dB),Average Magnetic Noise,Average Induced Signal"
@@ -50,9 +49,9 @@ def deblip_magnetic_noise(object_list):
         if math.sqrt(dndt**2) > mag_noise_dhdt:
             object_list[i].dndt = dndt
             
-    object_list[0].average_noise = object_list[0].noise
+    object_list[0].noise_db = object_list[0].noise
     for i in range(1, len(object_list)):
-        object_list[i].average_noise = object_list[i-1].average_noise + object_list[i].dndt
+        object_list[i].noise_db = object_list[i-1].noise_db + object_list[i].dndt
         
 
 # uses deblipped readings
