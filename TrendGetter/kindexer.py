@@ -26,7 +26,11 @@ class DPsimple:
     def __init__ (self, posixdate, datavalue):
         self.posixdate = posixdate
         self.datavalue = datavalue
-        
+
+    def print_csv_header(self):
+        returnstring = "Date/Time(UTC), Geomagnetic Activity"
+        return returnstring
+
     def print_values(self):
         return str(self.posixdate) + "," + str(self.datavalue)
 
@@ -246,7 +250,7 @@ class Station:
         except:
             print("Error deleting old file")
 
-        header = Bin(10)
+        header = arraydata[10]
         try:
             with open(savefile, 'a') as f:
                 f.write(header.print_csv_header() + "\n")
@@ -328,6 +332,7 @@ class Station:
         # Get the raw data
         raw_data = self.get_raw_data(self.datasource)
 
+
         # From raw data get [UTC, data] --> list
         raw_data = self.get_utc_data(raw_data)
 
@@ -335,14 +340,16 @@ class Station:
         clean_data = self.check_valid_utc(raw_data, self.regex)
 
         # Parse thru with a median filter too!
+        # Save a copy of the raw data as aggregated
         clean_data = self.medianfilter(raw_data)
 
         # Convert list to [posix, data]
         clean_data = self.convert_to_posix(clean_data)
-        print(str(len(clean_data)))
+
         # Convert list to object_list
         clean_objects = self.create_object_list(clean_data)
-        self.save_csv(clean_objects, "test.csv")
+        # self.save_csv(clean_objects, "aggregated_data.csv")
+
         clean_objects = self.dhdt(clean_objects)
 
 
