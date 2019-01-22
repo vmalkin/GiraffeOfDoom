@@ -287,6 +287,8 @@ class Station:
 
         # THis is the hashing function to drop data into the correct bins
         # according to the date.
+
+
         for i in range(0, len(objectlist)):
             bin_id = (float(objectlist[i].posixdate) - float(date_start)) / BIN_SIZE
             bin_id = int(round(bin_id, 0))-1
