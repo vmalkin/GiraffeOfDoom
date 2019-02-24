@@ -350,7 +350,7 @@ class Station:
 
         # Convert list to object_list
         clean_objects = self.create_object_list(clean_data)
-        # self.save_csv(clean_objects, "aggregated_data.csv")
+        self.save_csv(clean_objects, "aggregated_data.csv")
 
         clean_objects = self.dhdt(clean_objects)
 
