@@ -1,7 +1,5 @@
 """
-Instrumentation. This file contains  parent/child objects to deal with the getting data from instrumentation
-in multiple ways. Instrument is the abstract class. Each child class is contains the unique methods for getting
-data from each different kind of device eg: local file, http, COM port, etc.
+we will use abstraction to eal with instruments that offer the same data but have differing access methods
 """
 
 
@@ -23,7 +21,7 @@ class Instrument:
 
 
 class Magnetometer(Instrument):
-    """A Magnetometer inherits properties/methods from the Instrument class"""
+    """child class of instrument"""
     def __init__(self, name, location, owner):
         Instrument.__init__(self, name, location, owner)
 
