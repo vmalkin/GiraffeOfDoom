@@ -2,6 +2,7 @@ from datetime import datetime, timedelta
 import os
 import shutil
 import math
+
 spectrumlab_data = "c://temp//test.csv"
 frankencoil_data = "working.csv"
 running_avg_window = 20
@@ -10,8 +11,6 @@ reading_threshold = -115
 noise_threshold = -108.1
 mag_noise_dhdt = 0.15
 __version__ = "0.2"
-
-# raw data should have the format "utcdate, avg noise, avg reading"
 
 
 class Datapoint:
@@ -87,6 +86,7 @@ def average_noise(object_list):
         if divider > 0:
             avg_value = round((avg_value / divider), 4)
             object_list[i].average_noise = avg_value
+
 
 if __name__ == "__main__":
     print("FrankenCoil Parser Version " + __version__ + "\n")
