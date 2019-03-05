@@ -4,13 +4,12 @@ in multiple ways. Instrument is the abstract class. Each child class is contains
 data from each different kind of device eg: local file, http, COM port, etc.
 """
 import constants as k
-import logging
-import os
-import datetime,time
+import logging, os, datetime, time
 
 errorloglevel = logging.DEBUG
 logging.basicConfig(filename=k.errorfile, format='%(asctime)s %(message)s', level=errorloglevel)
 logging.info("Created error log for this session")
+
 
 class Datapoint:
     def __init__(self, posix_time, data):
@@ -32,10 +31,9 @@ class Instrument:
         self.datasource = datasource
 
         self.logfile_dir = self.name + "_logfiles"
-        self.running_array_savefile = self.name + ".csv"
+        self.array24hr_savefile = self.name + ".csv"
 
-        self.load_dynamic_parameters()
-        self.runningarray = self.running_array_load(self.running_array_savefile)
+        self.array24hr = self.array24hr_load(self.array24hr_savefile)
         self.setup_paths()
 
     def setup_paths(self):
@@ -50,7 +48,7 @@ class Instrument:
                     print("Unable to create log directory")
                     logging.critical("CRITICAL ERROR: Unable to create logs directory")
 
-    def running_array_load(self, savefile):
+    def array24hr_load(self, savefile):
         returnarray = []
         if os.path.exists(savefile):
             with open(savefile, "r") as s:
@@ -62,9 +60,9 @@ class Instrument:
                 logging.debug("Running array loaded for " + self.name)
         return returnarray
 
-    def running_array_save(self, runningarray):
-        with open(self.running_array_savefile, "w") as w:
-            for data_point in runningarray:
+    def array24hr_save(self):
+        with open(self.array24hr_savefile, "w") as w:
+            for data_point in self.array24hr:
                 w.write(data_point.print_values() + "\n")
 
     def utc_2_posic(self, utctime, dateformat, regex):
@@ -72,32 +70,30 @@ class Instrument:
         # dateformat = "%Y-%m-%d %H:%M:%S.%f"
         # dateformat = '"%Y-%m-%d %H:%M:%S"'
         # dateformat = '%Y-%m-%d %H:%M'
-        posixtime = datetime.strptime(utctime, dateformat)
+        posixtime = datetime.datetime.strptime(utctime, dateformat)
         posixtime = time.mktime(posixtime.timetuple())
         return str(int(posixtime))
 
-    def load_dynamic_parameters(self):
-        """An instrument can load it's unique parameters"""
-        pass
-
-    def calculate_dynamic_parameters(self):
-        """Calculate current values for unique instrument parameters"""
-        pass
-
-    def save_dynamic_parameters(self):
-        """An instrument can save it's unique parameters"""
-        pass
-
     def get_data(self):
         """load current data"""
-        pass
+        raise NotImplementedError
 
-    def append_new_data(self):
-        """Aggregate to internal list"""
-        pass
-
-    def prune_current_data(self):
+    def array24hr_prune(self, array24hr):
         """Prune off the oldest entries - last 24 hours"""
+        returnarray = []
+        cutoffdate = int(time.time()) - (60*60*24)
+        for dp in array24hr:
+            if dp.posix_time > cutoffdate:
+                returnarray.append(dp)
+        return returnarray
+
+    def convert_data(self):
+        pass
+
+    def append_raw_data(self, rawdata):
+        pass
+
+    def parse_dates(self, dpdata, dateregex):
         pass
 
     def save_logfile(self):
@@ -109,28 +105,21 @@ class Instrument:
         raise NotImplementedError
 
 
-class MagnetometerLocalCSV(Instrument):
-    """Child class of Instrument"""
-    def __init__(self, name, location, owner, date_regex_string, datasource):
-        Instrument.__init__(self, name, location, owner, date_regex_string, datasource)
-
-    def process_data(self):
-        print("Processing local magnetometer")
-
-
-class MagnetometerGOES(Instrument):
-    """Child class of Instrument - GOES satellite data from URL"""
-    def __init__(self, name, location, owner, date_regex_string, datasource):
-        Instrument.__init__(self, name, location, owner, date_regex_string, datasource)
-
-    def process_data(self):
-        print("Processing GOES satellite magnetometer")
-
-
-class MagnetometerURL(Instrument):
+class MagnetometerWebCSV(Instrument):
     """Child class of Instrument - data from URL"""
     def __init__(self, name, location, owner, date_regex_string, datasource):
         Instrument.__init__(self, name, location, owner, date_regex_string, datasource)
 
+    def get_data(self):
+        pass
+
     def process_data(self):
-        print("Processing URL data")
+        raw_data = self.get_data()
+        dp_data = self.convert_data(raw_data)
+        dp_data = self.parse_dates(dp_data, self.date_regex_string)
+
+        self.array24hr = self.append_raw_data(dp_data)
+        self.array24hr = self.array24hr_prune(self.array24hr)
+        self.array24hr_save()
+        self.save_logfile()
+

@@ -8,7 +8,7 @@ WARNING
 ERROR
 CRITICAL
 """
-from instruments import MagnetometerLocalCSV, MagnetometerURL
+from instruments import MagnetometerWebCSV
 import time
 import constants as k
 import logging
@@ -21,13 +21,11 @@ UPDATE_DELAY = 300
 
 # Set up the list of sensors here
 logging.debug("Setting up magnetometer stations")
-rapid_run = MagnetometerLocalCSV("Ruru_Rapidrun", "Vaughn", "Dunedin", "NULL", "C://test.csv")
-goes = MagnetometerURL("GOES", "Vaughn", "Dunedin", "NULL", "http://www.test.com")
+rapid_run = MagnetometerWebCSV("Ruru_Rapidrun", "Vaughn", "Dunedin", "NULL", "C://test.csv")
 
 logging.debug("appending to list")
 instrument_list = []
 instrument_list.append(rapid_run)
-instrument_list.append(goes)
 
 if __name__ == "__main__":
     while True:
