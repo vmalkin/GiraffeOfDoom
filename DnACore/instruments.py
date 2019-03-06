@@ -118,10 +118,10 @@ class Instrument:
         most_recent_index = len(self.array24hr) - 1
 
         if most_recent_index > 0:
-             most_recent_datapoint = self.array24hr[most_recent_index]
-             for dpobject in rawdata:
-                 if int(dpobject.posix_time) > int(most_recent_datapoint.posix_time):
-                     self.array24hr.append(dpobject)
+            most_recent_datapoint = self.array24hr[most_recent_index]
+            for dpobject in rawdata:
+                if int(dpobject.posix_time) > int(most_recent_datapoint.posix_time):
+                    self.array24hr.append(dpobject)
         else:
             self.array24hr = rawdata
         print("24 hr running array for " + self.name + " is " + str(len(self.array24hr)) + " records long.")
@@ -161,11 +161,11 @@ class MagnetometerWebCSV(Instrument):
             def parse_raw_data(self, webdata):
                 returndata = []
                 for line in webdata:
-                    logData = str(line, 'ascii').strip()
-                    logData = logData.split(",")
-                    # print(str(logData) + " " + str(linecount))
-                    dp_datetime = logData[0]
-                    dp_data = logData[1]
+                    logdata = str(line, 'ascii').strip()
+                    logdata = logdata.split(",")
+                    # print(str(logdata) + " " + str(linecount))
+                    dp_datetime = logdata[0]
+                    dp_data = logdata[1]
                     dp = dp_datetime + "," + dp_data
                     returndata.append(dp)
                 return returndata
@@ -187,13 +187,13 @@ class MagnetometerWebGOES(Instrument):
         for line in webdata:
             linecount = linecount + 1
             if linecount > 21:
-                logData = str(line, 'ascii').strip()
-                logData = logData.split()
-                # print(str(logData) + " " + str(linecount))
-                dp_date = logData[0] + "-" + logData[1] + "-" + logData[2]
-                dp_time = logData[3][:2] + ":" + logData[3][2:]
+                logdata = str(line, 'ascii').strip()
+                logdata = logdata.split()
+                # print(str(logdata) + " " + str(linecount))
+                dp_date = logdata[0] + "-" + logdata[1] + "-" + logdata[2]
+                dp_time = logdata[3][:2] + ":" + logdata[3][2:]
 
-                dp_data = logData[9]
+                dp_data = logdata[9]
                 dp_data = dp_data.split("e")
                 dp_data = dp_data[0]
 
