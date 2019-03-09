@@ -85,7 +85,7 @@ class Instrument:
                 w.write(data_point.print_values() + "\n")
 
     def get_raw_data(self):
-        """load current data from original source"""
+        """load current data from original source. Should return a string "NULL" if getting fails"""
         raise NotImplementedError
 
     def parse_raw_data(self, rawdata):
@@ -137,15 +137,19 @@ class Instrument:
         pass
 
     def process_data(self):
-        """Wrapper function to process this instruments data gathering and parameter updating"""
+        """Wrapper function to process this instruments data gathering and parameter updating
+            get_raw_data() should return a "NULL" if the get was unsuccessful
+        """
         raw_data = self.get_raw_data()
-        raw_data = self.parse_raw_data(raw_data)
-        datapoint_list = self.convert_data(raw_data, self.dt_regex)
 
-        self.append_raw_data(datapoint_list)
-        self.array24hr = self.array24hr_prune(self.array24hr)
-        self.array24hr_save()
-        # self.save_logfile()
+        if raw_data != "NULL":
+            raw_data = self.parse_raw_data(raw_data)
+            datapoint_list = self.convert_data(raw_data, self.dt_regex)
+
+            self.append_raw_data(datapoint_list)
+            self.array24hr = self.array24hr_prune(self.array24hr)
+            self.array24hr_save()
+            # self.save_logfile()
 
 
 class MagnetometerWebCSV(Instrument):
@@ -154,8 +158,12 @@ class MagnetometerWebCSV(Instrument):
                 Instrument.__init__(self, name, location, owner, dt_regex, dt_format, datasource)
 
             def get_raw_data(self):
-                request = urllib.request.Request(self.datasource, headers=self.headers)
-                webdata = urllib.request.urlopen(request)
+                try:
+                    request = urllib.request.Request(self.datasource, headers=self.headers)
+                    webdata = urllib.request.urlopen(request)
+                except:
+                    logging.error("ERROR: unable to get web data for " + self.name)
+                    webdata = "NULL"
                 return webdata
 
             def parse_raw_data(self, webdata):
@@ -177,8 +185,12 @@ class MagnetometerWebGOES(Instrument):
         Instrument.__init__(self, name, location, owner, dt_regex, dt_format, datasource)
 
     def get_raw_data(self):
-        request = urllib.request.Request(self.datasource, headers=self.headers)
-        webdata = urllib.request.urlopen(request)
+        try:
+            request = urllib.request.Request(self.datasource, headers=self.headers)
+            webdata = urllib.request.urlopen(request)
+        except:
+            logging.error("ERROR: unable to get web data for " + self.name)
+            webdata = "NULL"
         return webdata
 
     def parse_raw_data(self, webdata):
