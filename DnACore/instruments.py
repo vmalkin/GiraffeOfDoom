@@ -24,12 +24,13 @@ class Datapoint:
         utctime = datetime.datetime.fromtimestamp(int(posixvalue)).strftime('%Y-%m-%d %H:%M:%S')
         return utctime
 
-    def print_values(self):
+    def print_values_posix(self):
         returnstring = str(self.posix_time) + "," + str(self.data)
         return returnstring
 
-    def print_logvalues(self):
-        returnstring = str(self.posix2utc(self.posix_time)) + "," + str(self.data)
+    def print_values_utc(self):
+        timestamp = self.posix2utc(self.posix_time)
+        returnstring = str(timestamp) + "," + str(self.data)
         return returnstring
 
 
@@ -82,7 +83,7 @@ class Instrument:
         """Save the 24hr running array"""
         with open(self.array24hr_savefile, "w") as w:
             for data_point in self.array24hr:
-                w.write(data_point.print_values() + "\n")
+                w.write(data_point.print_values_posix() + "\n")
 
     def get_raw_data(self):
         """load current data from original source. Should return a string "NULL" if getting fails"""
@@ -132,9 +133,11 @@ class Instrument:
 
     def save_logfile(self):
         """Save the current data to CSV logfile"""
-        # RawlogName = datetime.datetime.utcnow().strftime('%Y-%m-%d')
-        # RawlogName = self.logfile_dir + "/" + RawlogName + '.csv'
-        pass
+        RawlogName = datetime.datetime.utcnow().strftime('%Y-%m-%d')
+        RawlogName = self.logfile_dir + "/" + RawlogName + '.csv'
+        with open(RawlogName, "w") as w:
+            for data_point in self.array24hr:
+                w.write(data_point.print_values_utc() + "\n")
 
     def process_data(self):
         """Wrapper function to process this instruments data gathering and parameter updating
@@ -149,7 +152,7 @@ class Instrument:
             self.append_raw_data(datapoint_list)
             self.array24hr = self.array24hr_prune(self.array24hr)
             self.array24hr_save()
-            # self.save_logfile()
+            self.save_logfile()
 
 
 class MagnetometerWebCSV(Instrument):
