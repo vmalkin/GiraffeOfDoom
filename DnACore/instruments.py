@@ -10,8 +10,9 @@ import datetime, time
 import urllib.request
 import re
 import calendar
+import json
 
-errorloglevel = logging.ERROR
+errorloglevel = logging.DEBUG
 logging.basicConfig(filename=k.errorfile, format='%(asctime)s %(message)s', level=errorloglevel)
 logging.info("Created error log for this session")
 
@@ -111,13 +112,16 @@ class Instrument:
     def convert_data(self, rawdata, datetime_regex):
         """Convert CSV or JSON data to datapoint objects"""
         object_list = []
-        for item in rawdata:
-            item = item.split(",")
-            if re.match(datetime_regex, item[0]):
-                date_obj = datetime.datetime.strptime(item[0], self.dt_format)
-                posixtime = calendar.timegm(date_obj.timetuple())
-                dp = Datapoint(posixtime, item[1])
-                object_list.append(dp)
+        try:
+            for item in rawdata:
+                item = item.split(",")
+                if re.match(datetime_regex, item[0]):
+                    date_obj = datetime.datetime.strptime(item[0], self.dt_format)
+                    posixtime = calendar.timegm(date_obj.timetuple())
+                    dp = Datapoint(posixtime, item[1])
+                    object_list.append(dp)
+        except:
+            logging.warning("WARNING: Appears to be no data for " + str(self.name) + ". Ubnable to convert timestamps.")
         return object_list
 
     def append_raw_data(self, rawdata):
@@ -225,13 +229,37 @@ class MagnetometerWebGOES(Instrument):
                 returndata.append(dp)
         return returndata
 
+class Discovr_Density_JSON(Instrument):
+    def __init__(self, name, location, owner, dt_regex, dt_format, datasource):
+        Instrument.__init__(self, name, location, owner, dt_regex, dt_format, datasource)
+
+    def get_raw_data(self):
+        try:
+            request = urllib.request.Request(self.datasource, headers=self.headers)
+            webdata = urllib.request.urlopen(request)
+        except:
+            logging.error("ERROR: unable to get web data for " + self.name)
+            webdata = "NULL"
+        return webdata
+
+    def parse_raw_data(self, rawdata):
+        returndata = []
+        json_data = json.loads(rawdata.read().decode('utf-8'))
+        for tple in json_data:
+            time_tag = tple[0]
+            density = tple[1]
+            dp = time_tag + "," + density
+            returndata.append(dp)
+        return returndata
+
 
 # class MagnetometerDefault(Instrument):
-#     def __init__(self, name, location, owner, date_regex_string, datasource):
-#         Instrument.__init__(self, name, location, owner, date_regex_string, datasource)
+#     def __init__(self, name, location, owner, dt_regex, dt_format, datasource):
+#         Instrument.__init__(self, name, location, owner, dt_regex, dt_format, datasource)
 #
 #     def get_raw_data(self):
 #         pass
 #
-#     def convert_data(self):
-#         pass
+#     def parse_raw_data(self):
+#         returndata = []
+#         return returndata
