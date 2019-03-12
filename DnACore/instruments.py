@@ -9,6 +9,7 @@ import os
 import datetime, time
 import urllib.request
 import re
+import calendar
 
 errorloglevel = logging.ERROR
 logging.basicConfig(filename=k.errorfile, format='%(asctime)s %(message)s', level=errorloglevel)
@@ -21,7 +22,8 @@ class Datapoint:
         self.data = data
 
     def posix2utc(self, posixvalue):
-        utctime = datetime.datetime.fromtimestamp(int(posixvalue)).strftime('%Y-%m-%d %H:%M:%S')
+        # utctime = datetime.datetime.fromtimestamp(int(posixvalue)).strftime('%Y-%m-%d %H:%M:%S')
+        utctime = datetime.datetime.utcfromtimestamp(int(posixvalue)).strftime('%Y-%m-%d %H:%M:%S')
         return utctime
 
     def print_values_posix(self):
@@ -81,9 +83,12 @@ class Instrument:
 
     def array24hr_save(self):
         """Save the 24hr running array"""
-        with open(self.array24hr_savefile, "w") as w:
-            for data_point in self.array24hr:
-                w.write(data_point.print_values_posix() + "\n")
+        try:
+            with open(self.array24hr_savefile, "w") as w:
+                for data_point in self.array24hr:
+                    w.write(data_point.print_values_posix() + "\n")
+        except PermissionError:
+            logging.critical("CRITICAL: Unable to save 24 hr running array for " + str(self.name))
 
     def get_raw_data(self):
         """load current data from original source. Should return a string "NULL" if getting fails"""
@@ -97,6 +102,7 @@ class Instrument:
         """Prune off the oldest entries - last 24 hours"""
         returnarray = []
         cutoffdate = int(time.time()) - (60*60*24)
+        # print(datetime.datetime.utcfromtimestamp(int(cutoffdate)).strftime('%Y-%m-%d %H:%M:%S'))
         for dp in array24hr:
             if int(dp.posix_time) > cutoffdate:
                 returnarray.append(dp)
@@ -108,8 +114,8 @@ class Instrument:
         for item in rawdata:
             item = item.split(",")
             if re.match(datetime_regex, item[0]):
-                posixtime = datetime.datetime.strptime(item[0], self.dt_format)
-                posixtime = int(time.mktime(posixtime.timetuple()))
+                date_obj = datetime.datetime.strptime(item[0], self.dt_format)
+                posixtime = calendar.timegm(date_obj.timetuple())
                 dp = Datapoint(posixtime, item[1])
                 object_list.append(dp)
         return object_list
@@ -135,9 +141,12 @@ class Instrument:
         """Save the current data to CSV logfile"""
         RawlogName = datetime.datetime.utcnow().strftime('%Y-%m-%d')
         RawlogName = self.logfile_dir + "/" + RawlogName + '.csv'
-        with open(RawlogName, "w") as w:
-            for data_point in self.array24hr:
-                w.write(data_point.print_values_utc() + "\n")
+        try:
+            with open(RawlogName, "w") as w:
+                for data_point in self.array24hr:
+                    w.write(data_point.print_values_utc() + "\n")
+        except PermissionError:
+            logging.error("ERROR: Permission error - unable to write logfile for " + str(self.name))
 
     def process_data(self):
         """Wrapper function to process this instruments data gathering and parameter updating
