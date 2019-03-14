@@ -244,12 +244,15 @@ class Discovr_Density_JSON(Instrument):
 
     def parse_raw_data(self, rawdata):
         returndata = []
-        json_data = json.loads(rawdata.read().decode('utf-8'))
-        for tple in json_data:
-            time_tag = tple[0]
-            density = tple[1]
-            dp = time_tag + "," + density
-            returndata.append(dp)
+        try:
+            json_data = json.loads(rawdata.read().decode('utf-8'))
+            for tple in json_data:
+                time_tag = tple[0]
+                density = tple[1]
+                dp = time_tag + "," + density
+                returndata.append(dp)
+        except ValueError:
+            logging.error("ERROR: no valid JSON data for " + str(self.name))
         return returndata
 
 
