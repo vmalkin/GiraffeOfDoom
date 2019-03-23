@@ -96,7 +96,9 @@ class Instrument:
         raise NotImplementedError
 
     def parse_raw_data(self, rawdata):
-        """Converts raw data into a array with [date, data] layout. """
+        """Converts raw data into a array with [date, data] layout.
+           If parsing FAILS we should abort the rest of the processing.
+        """
         raise NotImplementedError
 
     def array24hr_prune(self, array24hr):
@@ -160,6 +162,9 @@ class Instrument:
 
         if raw_data != "NULL":
             raw_data = self.parse_raw_data(raw_data)
+
+            # there should be a test if parsing fails, then the rest of the process should abort
+
             datapoint_list = self.convert_data(raw_data, self.dt_regex)
 
             self.append_raw_data(datapoint_list)
@@ -261,8 +266,10 @@ class Discovr_Density_JSON(Instrument):
 #         Instrument.__init__(self, name, location, owner, dt_regex, dt_format, datasource)
 #
 #     def get_raw_data(self):
+#         # try/except on get issue. Return a NULL if except
 #         pass
 #
 #     def parse_raw_data(self):
+#         # try/except on parsing issue. Return a NULL if except
 #         returndata = []
 #         return returndata
