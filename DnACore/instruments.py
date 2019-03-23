@@ -164,17 +164,21 @@ class Instrument:
             raw_data = self.parse_raw_data(raw_data)
 
             # there should be a test if parsing fails, then the rest of the process should abort
+            if raw_data != "NULL":
+                datapoint_list = self.convert_data(raw_data, self.dt_regex)
 
-            datapoint_list = self.convert_data(raw_data, self.dt_regex)
-
-            self.append_raw_data(datapoint_list)
-            self.array24hr = self.array24hr_prune(self.array24hr)
-            self.array24hr_save()
-            self.save_logfile()
+                self.append_raw_data(datapoint_list)
+                self.array24hr = self.array24hr_prune(self.array24hr)
+                self.array24hr_save()
+                self.save_logfile()
+            else:
+                logging.error("ERROR: unable to PARSE data for " + str(self.name))
+        else:
+            logging.error("ERROR: unable to GET data for " + str(self.name))
 
 
 class MagnetometerWebCSV(Instrument):
-            """Child class of Instrument - data from URL"""
+            """Child class of Instrument - data from URL with CSV"""
             def __init__(self, name, location, owner, dt_regex, dt_format, datasource):
                 Instrument.__init__(self, name, location, owner, dt_regex, dt_format, datasource)
 
@@ -201,7 +205,7 @@ class MagnetometerWebCSV(Instrument):
 
 
 class MagnetometerWebGOES(Instrument):
-    """Child class of Instrument - data from URL"""
+    """Child class of Instrument - data from the GOES satellites"""
     def __init__(self, name, location, owner, dt_regex, dt_format, datasource):
         Instrument.__init__(self, name, location, owner, dt_regex, dt_format, datasource)
 
@@ -235,6 +239,7 @@ class MagnetometerWebGOES(Instrument):
         return returndata
 
 class Discovr_Density_JSON(Instrument):
+    """Child class of Instrument for the DISCOVR satellite solar wind data in JSON format"""
     def __init__(self, name, location, owner, dt_regex, dt_format, datasource):
         Instrument.__init__(self, name, location, owner, dt_regex, dt_format, datasource)
 
