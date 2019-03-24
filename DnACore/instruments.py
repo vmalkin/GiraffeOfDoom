@@ -179,8 +179,9 @@ class MagnetometerWebCSV(Instrument):
 
             def get_raw_data(self):
                 try:
-                    request = urllib.request.Request(self.datasource, headers=self.headers)
-                    webdata = urllib.request.urlopen(request)
+                    response = requests.get(self.datasource)
+                    webdata = response.content.decode('utf-8')
+                    webdata = webdata.split("\n")
                 except:
                     logging.error("ERROR: unable to get web data for " + self.name)
                     webdata = "NULL"
@@ -189,13 +190,15 @@ class MagnetometerWebCSV(Instrument):
             def parse_raw_data(self, webdata):
                 returndata = []
                 for line in webdata:
-                    logdata = str(line, 'ascii').strip()
+                    # print(line)
+                    logdata = line.strip()
                     logdata = logdata.split(",")
-                    # print(str(logdata) + " " + str(linecount))
-                    dp_datetime = logdata[0]
-                    dp_data = logdata[1]
-                    dp = dp_datetime + "," + dp_data
-                    returndata.append(dp)
+                    if (len(logdata) > 1):
+                        # print(str(logdata) + " " + str(linecount))
+                        dp_datetime = logdata[0]
+                        dp_data = logdata[1]
+                        dp = dp_datetime + "," + dp_data
+                        returndata.append(dp)
                 return returndata
 
 
@@ -207,7 +210,8 @@ class MagnetometerWebGOES(Instrument):
     def get_raw_data(self):
         try:
             response = requests.get(self.datasource)
-            webdata = response.text
+            webdata = response.content.decode('utf-8')
+            webdata = webdata.split("\n")
         except:
             logging.error("ERROR: unable to get web data for " + self.name)
             webdata = "NULL"
@@ -218,19 +222,19 @@ class MagnetometerWebGOES(Instrument):
         linecount = 0
         for line in webdata:
             linecount = linecount + 1
+            line.strip()
             if linecount > 21:
-                # logdata = line.split("")
-                print(line)
-                # print(str(logdata) + " " + str(linecount))
-            #     dp_date = logdata[0] + "-" + logdata[1] + "-" + logdata[2]
-            #     dp_time = logdata[3][:2] + ":" + logdata[3][2:]
-            #
-            #     dp_data = logdata[9]
-            #     dp_data = dp_data.split("e")
-            #     dp_data = dp_data[0]
-            #
-            #     dp = dp_date + " " + dp_time + "," + dp_data
-            #     returndata.append(dp)
+                logdata = line.split()
+                if len(logdata) > 0:
+                    dp_date = logdata[0] + "-" + logdata[1] + "-" + logdata[2]
+                    dp_time = logdata[3][:2] + ":" + logdata[3][2:]
+
+                    dp_data = logdata[9]
+                    dp_data = dp_data.split("e")
+                    dp_data = dp_data[0]
+
+                    dp = dp_date + " " + dp_time + "," + dp_data
+                    returndata.append(dp)
         return returndata
 
 

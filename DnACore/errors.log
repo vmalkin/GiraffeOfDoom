@@ -1,253 +1,78 @@
-2019-03-12 22:01:20,940 Created error log for this session
-2019-03-12 22:01:20,941 Created error log for this session
-2019-03-12 22:01:20,941 Setting up magnetometer stations
-2019-03-12 22:01:20,951 Running array loaded for Ruru_Rapidrun
-2019-03-12 22:01:20,952 Running array loaded for GOES_Primary
-2019-03-12 22:01:20,953 Running array loaded for GOES_Secondary
-2019-03-12 22:01:20,953 Running array loaded for DISCOVR
-2019-03-12 22:01:20,953 appending to list
-2019-03-12 22:01:25,255 WARNING: Appears to be no data for DISCOVR. Ubnable to convert timestamps.
-2019-03-12 22:03:23,532 Created error log for this session
-2019-03-12 22:03:23,533 Created error log for this session
-2019-03-12 22:03:23,533 Setting up magnetometer stations
-2019-03-12 22:03:23,543 Running array loaded for Ruru_Rapidrun
-2019-03-12 22:03:23,544 Running array loaded for GOES_Primary
-2019-03-12 22:03:23,544 Running array loaded for GOES_Secondary
-2019-03-12 22:03:23,545 Running array loaded for DISCOVR
-2019-03-12 22:03:23,545 appending to list
-2019-03-12 22:03:27,695 WARNING: Appears to be no data for DISCOVR. Ubnable to convert timestamps.
-2019-03-12 22:08:31,682 WARNING: Appears to be no data for DISCOVR. Ubnable to convert timestamps.
-2019-03-12 22:13:35,669 WARNING: Appears to be no data for DISCOVR. Ubnable to convert timestamps.
-2019-03-12 22:31:05,077 Created error log for this session
-2019-03-12 22:31:05,078 Created error log for this session
-2019-03-12 22:31:05,078 Setting up magnetometer stations
-2019-03-12 22:31:05,088 Running array loaded for Ruru_Rapidrun
-2019-03-12 22:31:05,089 Running array loaded for GOES_Primary
-2019-03-12 22:31:05,090 Running array loaded for GOES_Secondary
-2019-03-12 22:31:05,090 Running array loaded for DISCOVR
-2019-03-12 22:31:05,090 appending to list
-2019-03-12 22:35:18,579 Created error log for this session
-2019-03-12 22:35:18,579 Created error log for this session
-2019-03-12 22:35:18,579 Setting up magnetometer stations
-2019-03-12 22:35:18,590 Running array loaded for Ruru_Rapidrun
-2019-03-12 22:35:18,591 Running array loaded for GOES_Primary
-2019-03-12 22:35:18,592 Running array loaded for GOES_Secondary
-2019-03-12 22:35:18,592 Running array loaded for DISCOVR
-2019-03-12 22:35:18,592 appending to list
-2019-03-12 22:51:40,068 Created error log for this session
-2019-03-12 22:51:40,069 Created error log for this session
-2019-03-12 22:51:40,069 Setting up magnetometer stations
-2019-03-12 22:51:40,081 Running array loaded for Ruru_Rapidrun
-2019-03-12 22:51:40,082 Running array loaded for GOES_Primary
-2019-03-12 22:51:40,083 Running array loaded for GOES_Secondary
-2019-03-12 22:51:40,084 Running array loaded for DISCOVR
-2019-03-12 22:51:40,084 appending to list
-2019-03-14 17:28:32,738 Created error log for this session
-2019-03-14 17:28:32,738 Created error log for this session
-2019-03-14 17:28:32,738 Setting up magnetometer stations
-2019-03-14 17:28:32,812 Running array loaded for Ruru_Rapidrun
-2019-03-14 17:28:32,815 Running array loaded for GOES_Primary
-2019-03-14 17:28:32,817 Running array loaded for GOES_Secondary
-2019-03-14 17:28:32,820 Running array loaded for DISCOVR
-2019-03-14 17:28:32,820 appending to list
-2019-03-14 17:29:46,604 Created error log for this session
-2019-03-14 17:29:46,604 Created error log for this session
-2019-03-14 17:29:46,604 Setting up magnetometer stations
-2019-03-14 17:29:46,618 Running array loaded for Ruru_Rapidrun
-2019-03-14 17:29:46,620 Running array loaded for GOES_Primary
-2019-03-14 17:29:46,622 Running array loaded for GOES_Secondary
-2019-03-14 17:29:46,623 Running array loaded for DISCOVR
-2019-03-14 17:29:46,623 appending to list
-2019-03-14 17:31:25,175 Created error log for this session
-2019-03-14 17:31:25,175 Created error log for this session
-2019-03-14 17:31:25,175 Setting up magnetometer stations
-2019-03-14 17:31:25,190 Running array loaded for Ruru_Rapidrun
-2019-03-14 17:31:25,191 Running array loaded for GOES_Primary
-2019-03-14 17:31:25,192 Running array loaded for GOES_Secondary
-2019-03-14 17:31:25,193 Running array loaded for DISCOVR
-2019-03-14 17:31:25,193 appending to list
-2019-03-14 18:28:29,091 Created error log for this session
-2019-03-14 18:28:29,091 Created error log for this session
-2019-03-14 18:28:29,091 Setting up magnetometer stations
-2019-03-14 18:28:29,092 appending to list
-2019-03-15 02:28:33,253 ERROR: no valid JSON data for DISCOVR
-2019-03-15 04:51:56,213 ERROR: no valid JSON data for DISCOVR
-2019-03-15 08:12:03,707 ERROR: Permission error - unable to write logfile for GOES_Secondary
-2019-03-15 12:28:50,658 ERROR: no valid JSON data for DISCOVR
-2019-03-16 11:23:47,874 ERROR: no valid JSON data for DISCOVR
-2019-03-24 16:16:34,556 Created error log for this session
-2019-03-24 16:16:34,571 Created error log for this session
-2019-03-24 16:16:34,571 Setting up magnetometer stations
-2019-03-24 16:16:34,574 Running array loaded for DISCOVR
-2019-03-24 16:16:34,574 appending to list
-2019-03-24 16:16:34,578 Starting new HTTPS connection (1): services.swpc.noaa.gov:443
-2019-03-24 16:16:36,113 https://services.swpc.noaa.gov:443 "GET /products/solar-wind/plasma-2-hour.json HTTP/1.1" 200 5931
-2019-03-24 16:17:37,322 Created error log for this session
-2019-03-24 16:17:37,323 Created error log for this session
-2019-03-24 16:17:37,323 Setting up magnetometer stations
-2019-03-24 16:17:37,325 Running array loaded for DISCOVR
-2019-03-24 16:17:37,326 appending to list
-2019-03-24 16:17:37,329 Starting new HTTPS connection (1): services.swpc.noaa.gov:443
-2019-03-24 16:17:38,971 https://services.swpc.noaa.gov:443 "GET /products/solar-wind/plasma-2-hour.json HTTP/1.1" 200 None
-2019-03-24 16:18:00,042 Created error log for this session
-2019-03-24 16:18:00,042 Created error log for this session
-2019-03-24 16:18:00,042 Setting up magnetometer stations
-2019-03-24 16:18:00,045 Running array loaded for DISCOVR
-2019-03-24 16:18:00,045 appending to list
-2019-03-24 16:18:00,049 Starting new HTTPS connection (1): services.swpc.noaa.gov:443
-2019-03-24 16:18:01,434 https://services.swpc.noaa.gov:443 "GET /products/solar-wind/plasma-2-hour.json HTTP/1.1" 200 None
-2019-03-24 16:21:21,517 Created error log for this session
-2019-03-24 16:21:21,517 Created error log for this session
-2019-03-24 16:21:21,517 Setting up magnetometer stations
-2019-03-24 16:21:21,520 Running array loaded for DISCOVR
-2019-03-24 16:21:21,520 appending to list
-2019-03-24 16:21:21,524 Starting new HTTPS connection (1): services.swpc.noaa.gov:443
-2019-03-24 16:21:23,135 https://services.swpc.noaa.gov:443 "GET /products/solar-wind/plasma-2-hour.json HTTP/1.1" 200 None
-2019-03-24 16:21:57,995 Created error log for this session
-2019-03-24 16:21:57,996 Created error log for this session
-2019-03-24 16:21:57,996 Setting up magnetometer stations
-2019-03-24 16:21:57,996 Running array loaded for DISCOVR
-2019-03-24 16:21:57,996 appending to list
-2019-03-24 16:21:58,000 Starting new HTTPS connection (1): services.swpc.noaa.gov:443
-2019-03-24 16:21:59,538 https://services.swpc.noaa.gov:443 "GET /products/solar-wind/plasma-2-hour.json HTTP/1.1" 200 None
-2019-03-24 16:22:17,189 Created error log for this session
-2019-03-24 16:22:17,189 Created error log for this session
-2019-03-24 16:22:17,189 Setting up magnetometer stations
-2019-03-24 16:22:17,190 Running array loaded for DISCOVR
-2019-03-24 16:22:17,190 appending to list
-2019-03-24 16:22:17,193 Starting new HTTPS connection (1): services.swpc.noaa.gov:443
-2019-03-24 16:22:18,562 https://services.swpc.noaa.gov:443 "GET /products/solar-wind/plasma-2-hour.json HTTP/1.1" 200 None
-2019-03-24 16:23:58,253 Created error log for this session
-2019-03-24 16:23:58,253 Created error log for this session
-2019-03-24 16:23:58,254 Setting up magnetometer stations
-2019-03-24 16:23:58,254 Running array loaded for DISCOVR
-2019-03-24 16:23:58,254 appending to list
-2019-03-24 16:23:58,258 Starting new HTTPS connection (1): services.swpc.noaa.gov:443
-2019-03-24 16:23:59,615 https://services.swpc.noaa.gov:443 "GET /products/solar-wind/plasma-2-hour.json HTTP/1.1" 200 None
-2019-03-24 16:24:18,788 Created error log for this session
-2019-03-24 16:24:18,788 Created error log for this session
-2019-03-24 16:24:18,788 Setting up magnetometer stations
-2019-03-24 16:24:18,788 Running array loaded for DISCOVR
-2019-03-24 16:24:18,789 appending to list
-2019-03-24 16:24:18,792 Starting new HTTPS connection (1): services.swpc.noaa.gov:443
-2019-03-24 16:24:20,169 https://services.swpc.noaa.gov:443 "GET /products/solar-wind/plasma-2-hour.json HTTP/1.1" 200 None
-2019-03-24 16:26:09,264 Created error log for this session
-2019-03-24 16:26:09,265 Created error log for this session
-2019-03-24 16:26:09,265 Setting up magnetometer stations
-2019-03-24 16:26:09,279 Running array loaded for GOES_Secondary
-2019-03-24 16:26:09,280 Running array loaded for DISCOVR
-2019-03-24 16:26:09,280 appending to list
-2019-03-24 16:26:09,283 Starting new HTTPS connection (1): services.swpc.noaa.gov:443
-2019-03-24 16:26:10,757 https://services.swpc.noaa.gov:443 "GET /text/goes-magnetometer-secondary.txt HTTP/1.1" 200 1659
-2019-03-24 16:27:19,207 Created error log for this session
-2019-03-24 16:27:19,207 Created error log for this session
-2019-03-24 16:27:19,207 Setting up magnetometer stations
-2019-03-24 16:27:19,210 Running array loaded for GOES_Secondary
-2019-03-24 16:27:19,210 Running array loaded for DISCOVR
-2019-03-24 16:27:19,211 appending to list
-2019-03-24 16:27:19,214 Starting new HTTPS connection (1): services.swpc.noaa.gov:443
-2019-03-24 16:27:21,031 https://services.swpc.noaa.gov:443 "GET /text/goes-magnetometer-secondary.txt HTTP/1.1" 200 1662
-2019-03-24 16:33:38,742 Created error log for this session
-2019-03-24 16:33:38,742 Created error log for this session
-2019-03-24 16:33:38,742 Setting up magnetometer stations
-2019-03-24 16:33:38,745 Running array loaded for GOES_Secondary
-2019-03-24 16:33:38,745 Running array loaded for DISCOVR
-2019-03-24 16:33:38,745 appending to list
-2019-03-24 16:33:38,749 Starting new HTTPS connection (1): services.swpc.noaa.gov:443
-2019-03-24 16:33:40,183 https://services.swpc.noaa.gov:443 "GET /text/goes-magnetometer-secondary.txt HTTP/1.1" 200 1672
-2019-03-24 16:33:40,189 Starting new HTTPS connection (1): services.swpc.noaa.gov:443
-2019-03-24 16:33:41,197 https://services.swpc.noaa.gov:443 "GET /products/solar-wind/plasma-2-hour.json HTTP/1.1" 200 None
-2019-03-24 16:34:02,106 Created error log for this session
-2019-03-24 16:34:02,107 Created error log for this session
-2019-03-24 16:34:02,107 Setting up magnetometer stations
-2019-03-24 16:34:02,107 Running array loaded for GOES_Secondary
-2019-03-24 16:34:02,108 Running array loaded for DISCOVR
-2019-03-24 16:34:02,108 appending to list
-2019-03-24 16:34:02,112 Starting new HTTPS connection (1): services.swpc.noaa.gov:443
-2019-03-24 16:34:03,496 https://services.swpc.noaa.gov:443 "GET /text/goes-magnetometer-secondary.txt HTTP/1.1" 200 1680
-2019-03-24 16:34:03,557 Starting new HTTPS connection (1): services.swpc.noaa.gov:443
-2019-03-24 16:34:04,493 https://services.swpc.noaa.gov:443 "GET /products/solar-wind/plasma-2-hour.json HTTP/1.1" 200 None
-2019-03-24 16:34:22,153 Created error log for this session
-2019-03-24 16:34:22,154 Created error log for this session
-2019-03-24 16:34:22,154 Setting up magnetometer stations
-2019-03-24 16:34:22,154 Running array loaded for GOES_Secondary
-2019-03-24 16:34:22,154 Running array loaded for DISCOVR
-2019-03-24 16:34:22,155 appending to list
-2019-03-24 16:34:22,158 Starting new HTTPS connection (1): services.swpc.noaa.gov:443
-2019-03-24 16:34:24,674 https://services.swpc.noaa.gov:443 "GET /text/goes-magnetometer-secondary.txt HTTP/1.1" 200 1672
-2019-03-24 16:34:24,716 Starting new HTTPS connection (1): services.swpc.noaa.gov:443
-2019-03-24 16:34:25,688 https://services.swpc.noaa.gov:443 "GET /products/solar-wind/plasma-2-hour.json HTTP/1.1" 200 None
-2019-03-24 16:36:17,301 Created error log for this session
-2019-03-24 16:36:17,301 Created error log for this session
-2019-03-24 16:36:17,301 Setting up magnetometer stations
-2019-03-24 16:36:17,302 Running array loaded for GOES_Secondary
-2019-03-24 16:36:17,302 Running array loaded for DISCOVR
-2019-03-24 16:36:17,303 appending to list
-2019-03-24 16:36:17,306 Starting new HTTPS connection (1): services.swpc.noaa.gov:443
-2019-03-24 16:36:19,147 https://services.swpc.noaa.gov:443 "GET /text/goes-magnetometer-secondary.txt HTTP/1.1" 200 1683
-2019-03-24 16:40:45,553 Created error log for this session
-2019-03-24 16:40:45,553 Created error log for this session
-2019-03-24 16:40:45,553 Setting up magnetometer stations
-2019-03-24 16:40:45,554 Running array loaded for GOES_Secondary
-2019-03-24 16:40:45,554 Running array loaded for DISCOVR
-2019-03-24 16:40:45,555 appending to list
-2019-03-24 16:40:45,558 Starting new HTTPS connection (1): services.swpc.noaa.gov:443
-2019-03-24 16:40:47,181 https://services.swpc.noaa.gov:443 "GET /text/goes-magnetometer-secondary.txt HTTP/1.1" 200 1680
-2019-03-24 16:41:13,870 Created error log for this session
-2019-03-24 16:41:13,870 Created error log for this session
-2019-03-24 16:41:13,870 Setting up magnetometer stations
-2019-03-24 16:41:13,871 Running array loaded for GOES_Secondary
-2019-03-24 16:41:13,871 Running array loaded for DISCOVR
-2019-03-24 16:41:13,872 appending to list
-2019-03-24 16:41:13,876 Starting new HTTPS connection (1): services.swpc.noaa.gov:443
-2019-03-24 16:41:15,221 https://services.swpc.noaa.gov:443 "GET /text/goes-magnetometer-secondary.txt HTTP/1.1" 200 1677
-2019-03-24 16:41:15,274 Starting new HTTPS connection (1): services.swpc.noaa.gov:443
-2019-03-24 16:41:16,290 https://services.swpc.noaa.gov:443 "GET /products/solar-wind/plasma-2-hour.json HTTP/1.1" 200 None
-2019-03-24 16:42:09,886 Created error log for this session
-2019-03-24 16:42:09,886 Created error log for this session
-2019-03-24 16:42:09,886 Setting up magnetometer stations
-2019-03-24 16:42:09,886 Running array loaded for GOES_Secondary
-2019-03-24 16:42:09,887 Running array loaded for DISCOVR
-2019-03-24 16:42:09,887 appending to list
-2019-03-24 16:42:09,890 Starting new HTTPS connection (1): services.swpc.noaa.gov:443
-2019-03-24 16:42:11,545 https://services.swpc.noaa.gov:443 "GET /text/goes-magnetometer-secondary.txt HTTP/1.1" 200 1685
-2019-03-24 16:42:28,713 Created error log for this session
-2019-03-24 16:42:28,714 Created error log for this session
-2019-03-24 16:42:28,714 Setting up magnetometer stations
-2019-03-24 16:42:28,714 Running array loaded for GOES_Secondary
-2019-03-24 16:42:28,715 Running array loaded for DISCOVR
-2019-03-24 16:42:28,715 appending to list
-2019-03-24 16:42:28,718 Starting new HTTPS connection (1): services.swpc.noaa.gov:443
-2019-03-24 16:42:30,159 https://services.swpc.noaa.gov:443 "GET /text/goes-magnetometer-secondary.txt HTTP/1.1" 200 1685
-2019-03-24 16:42:30,216 Starting new HTTPS connection (1): services.swpc.noaa.gov:443
-2019-03-24 16:42:31,166 https://services.swpc.noaa.gov:443 "GET /products/solar-wind/plasma-2-hour.json HTTP/1.1" 200 None
-2019-03-24 17:38:10,414 Created error log for this session
-2019-03-24 17:38:10,414 Created error log for this session
-2019-03-24 17:38:10,414 Setting up magnetometer stations
-2019-03-24 17:38:10,415 Running array loaded for GOES_Secondary
-2019-03-24 17:38:10,415 Running array loaded for DISCOVR
-2019-03-24 17:38:10,415 appending to list
-2019-03-24 17:38:10,419 Starting new HTTPS connection (1): services.swpc.noaa.gov:443
-2019-03-24 17:38:11,792 https://services.swpc.noaa.gov:443 "GET /text/goes-magnetometer-secondary.txt HTTP/1.1" 200 1656
-2019-03-24 17:38:11,848 Starting new HTTPS connection (1): services.swpc.noaa.gov:443
-2019-03-24 17:38:13,430 https://services.swpc.noaa.gov:443 "GET /products/solar-wind/plasma-2-hour.json HTTP/1.1" 200 None
-2019-03-24 17:39:02,946 Created error log for this session
-2019-03-24 17:39:02,946 Created error log for this session
-2019-03-24 17:39:02,946 Setting up magnetometer stations
-2019-03-24 17:39:02,946 Running array loaded for GOES_Secondary
-2019-03-24 17:39:02,947 Running array loaded for DISCOVR
-2019-03-24 17:39:02,947 appending to list
-2019-03-24 17:39:02,950 Starting new HTTPS connection (1): services.swpc.noaa.gov:443
-2019-03-24 17:39:04,900 https://services.swpc.noaa.gov:443 "GET /text/goes-magnetometer-secondary.txt HTTP/1.1" 200 1656
-2019-03-24 17:39:04,941 Starting new HTTPS connection (1): services.swpc.noaa.gov:443
-2019-03-24 17:39:05,940 https://services.swpc.noaa.gov:443 "GET /products/solar-wind/plasma-2-hour.json HTTP/1.1" 200 5978
-2019-03-24 17:39:19,677 Created error log for this session
-2019-03-24 17:39:19,678 Created error log for this session
-2019-03-24 17:39:19,678 Setting up magnetometer stations
-2019-03-24 17:39:19,678 Running array loaded for GOES_Secondary
-2019-03-24 17:39:19,679 Running array loaded for DISCOVR
-2019-03-24 17:39:19,679 appending to list
-2019-03-24 17:39:19,682 Starting new HTTPS connection (1): services.swpc.noaa.gov:443
-2019-03-24 17:39:21,035 https://services.swpc.noaa.gov:443 "GET /text/goes-magnetometer-secondary.txt HTTP/1.1" 200 1656
-2019-03-24 17:39:21,076 Starting new HTTPS connection (1): services.swpc.noaa.gov:443
-2019-03-24 17:39:22,010 https://services.swpc.noaa.gov:443 "GET /products/solar-wind/plasma-2-hour.json HTTP/1.1" 200 None
+2019-03-24 19:58:29,483 Created error log for this session
+2019-03-24 19:58:29,484 Created error log for this session
+2019-03-24 19:58:29,484 Setting up magnetometer stations
+2019-03-24 19:58:29,486 appending to list
+2019-03-24 19:58:29,490 Starting new HTTP connection (1): services.swpc.noaa.gov:80
+2019-03-24 19:58:29,839 http://services.swpc.noaa.gov:80 "GET /text/goes-magnetometer-primary.txt HTTP/1.1" 301 183
+2019-03-24 19:58:29,841 Starting new HTTPS connection (1): services.swpc.noaa.gov:443
+2019-03-24 19:58:31,468 https://services.swpc.noaa.gov:443 "GET /text/goes-magnetometer-primary.txt HTTP/1.1" 200 1522
+2019-03-24 19:58:31,481 Starting new HTTPS connection (1): services.swpc.noaa.gov:443
+2019-03-24 19:58:32,766 https://services.swpc.noaa.gov:443 "GET /text/goes-magnetometer-secondary.txt HTTP/1.1" 200 1721
+2019-03-24 19:58:32,775 Starting new HTTPS connection (1): services.swpc.noaa.gov:443
+2019-03-24 19:58:33,757 https://services.swpc.noaa.gov:443 "GET /products/solar-wind/plasma-2-hour.json HTTP/1.1" 200 None
+2019-03-24 20:03:33,807 Starting new HTTP connection (1): services.swpc.noaa.gov:80
+2019-03-24 20:03:34,521 http://services.swpc.noaa.gov:80 "GET /text/goes-magnetometer-primary.txt HTTP/1.1" 301 183
+2019-03-24 20:03:34,523 Starting new HTTPS connection (1): services.swpc.noaa.gov:443
+2019-03-24 20:03:35,527 https://services.swpc.noaa.gov:443 "GET /text/goes-magnetometer-primary.txt HTTP/1.1" 200 1525
+2019-03-24 20:03:35,536 Starting new HTTPS connection (1): services.swpc.noaa.gov:443
+2019-03-24 20:03:36,769 https://services.swpc.noaa.gov:443 "GET /text/goes-magnetometer-secondary.txt HTTP/1.1" 200 1713
+2019-03-24 20:03:36,778 Starting new HTTPS connection (1): services.swpc.noaa.gov:443
+2019-03-24 20:03:37,741 https://services.swpc.noaa.gov:443 "GET /products/solar-wind/plasma-2-hour.json HTTP/1.1" 200 None
+2019-03-24 20:03:54,343 Created error log for this session
+2019-03-24 20:03:54,343 Created error log for this session
+2019-03-24 20:03:54,343 Setting up magnetometer stations
+2019-03-24 20:03:54,344 Running array loaded for GOES_Primary
+2019-03-24 20:03:54,344 Running array loaded for GOES_Secondary
+2019-03-24 20:03:54,345 Running array loaded for DISCOVR
+2019-03-24 20:03:54,345 appending to list
+2019-03-24 20:03:54,348 Starting new HTTP connection (1): www.ruruobservatory.org.nz:80
+2019-03-24 20:03:55,203 http://www.ruruobservatory.org.nz:80 "GET /dr01_1hr.csv HTTP/1.1" 200 91825
+2019-03-24 20:05:07,601 Created error log for this session
+2019-03-24 20:05:07,601 Created error log for this session
+2019-03-24 20:05:07,601 Setting up magnetometer stations
+2019-03-24 20:05:07,602 Running array loaded for GOES_Primary
+2019-03-24 20:05:07,602 Running array loaded for GOES_Secondary
+2019-03-24 20:05:07,603 Running array loaded for DISCOVR
+2019-03-24 20:05:07,603 appending to list
+2019-03-24 20:05:07,606 Starting new HTTP connection (1): www.ruruobservatory.org.nz:80
+2019-03-24 20:05:08,129 http://www.ruruobservatory.org.nz:80 "GET /dr01_1hr.csv HTTP/1.1" 200 91825
+2019-03-24 20:05:38,651 Created error log for this session
+2019-03-24 20:05:38,651 Created error log for this session
+2019-03-24 20:05:38,651 Setting up magnetometer stations
+2019-03-24 20:05:38,651 Running array loaded for Ruru_Rapidrun
+2019-03-24 20:05:38,652 Running array loaded for GOES_Primary
+2019-03-24 20:05:38,652 Running array loaded for GOES_Secondary
+2019-03-24 20:05:38,653 Running array loaded for DISCOVR
+2019-03-24 20:05:38,653 appending to list
+2019-03-24 20:05:38,657 Starting new HTTP connection (1): www.ruruobservatory.org.nz:80
+2019-03-24 20:05:39,185 http://www.ruruobservatory.org.nz:80 "GET /dr01_1hr.csv HTTP/1.1" 200 91825
+2019-03-24 20:05:57,320 Created error log for this session
+2019-03-24 20:05:57,320 Created error log for this session
+2019-03-24 20:05:57,320 Setting up magnetometer stations
+2019-03-24 20:05:57,321 Running array loaded for Ruru_Rapidrun
+2019-03-24 20:05:57,321 Running array loaded for GOES_Primary
+2019-03-24 20:05:57,322 Running array loaded for GOES_Secondary
+2019-03-24 20:05:57,323 Running array loaded for DISCOVR
+2019-03-24 20:05:57,323 appending to list
+2019-03-24 20:05:57,326 Starting new HTTP connection (1): www.ruruobservatory.org.nz:80
+2019-03-24 20:05:57,845 http://www.ruruobservatory.org.nz:80 "GET /dr01_1hr.csv HTTP/1.1" 200 91825
+2019-03-24 20:06:10,055 Created error log for this session
+2019-03-24 20:06:10,056 Created error log for this session
+2019-03-24 20:06:10,056 Setting up magnetometer stations
+2019-03-24 20:06:10,056 Running array loaded for Ruru_Rapidrun
+2019-03-24 20:06:10,056 Running array loaded for GOES_Primary
+2019-03-24 20:06:10,057 Running array loaded for GOES_Secondary
+2019-03-24 20:06:10,058 Running array loaded for DISCOVR
+2019-03-24 20:06:10,058 appending to list
+2019-03-24 20:06:10,061 Starting new HTTP connection (1): www.ruruobservatory.org.nz:80
+2019-03-24 20:06:10,590 http://www.ruruobservatory.org.nz:80 "GET /dr01_1hr.csv HTTP/1.1" 200 91825
+2019-03-24 20:06:54,010 Created error log for this session
+2019-03-24 20:06:54,010 Created error log for this session
+2019-03-24 20:06:54,010 Setting up magnetometer stations
+2019-03-24 20:06:54,011 Running array loaded for Ruru_Rapidrun
+2019-03-24 20:06:54,011 Running array loaded for GOES_Primary
+2019-03-24 20:06:54,012 Running array loaded for GOES_Secondary
+2019-03-24 20:06:54,012 Running array loaded for DISCOVR
+2019-03-24 20:06:54,012 appending to list
+2019-03-24 20:06:54,015 Starting new HTTP connection (1): www.ruruobservatory.org.nz:80
+2019-03-24 20:06:54,542 http://www.ruruobservatory.org.nz:80 "GET /dr01_1hr.csv HTTP/1.1" 200 91825
