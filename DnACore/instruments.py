@@ -7,7 +7,7 @@ import constants as k
 import logging
 import os
 import datetime, time
-import urllib.request
+import requests
 import re
 import calendar
 import json
@@ -206,8 +206,8 @@ class MagnetometerWebGOES(Instrument):
 
     def get_raw_data(self):
         try:
-            request = urllib.request.Request(self.datasource, headers=self.headers)
-            webdata = urllib.request.urlopen(request)
+            response = requests.get(self.datasource)
+            webdata = response.text
         except:
             logging.error("ERROR: unable to get web data for " + self.name)
             webdata = "NULL"
@@ -219,19 +219,20 @@ class MagnetometerWebGOES(Instrument):
         for line in webdata:
             linecount = linecount + 1
             if linecount > 21:
-                logdata = str(line, 'ascii').strip()
-                logdata = logdata.split()
+                # logdata = line.split("")
+                print(line)
                 # print(str(logdata) + " " + str(linecount))
-                dp_date = logdata[0] + "-" + logdata[1] + "-" + logdata[2]
-                dp_time = logdata[3][:2] + ":" + logdata[3][2:]
-
-                dp_data = logdata[9]
-                dp_data = dp_data.split("e")
-                dp_data = dp_data[0]
-
-                dp = dp_date + " " + dp_time + "," + dp_data
-                returndata.append(dp)
+            #     dp_date = logdata[0] + "-" + logdata[1] + "-" + logdata[2]
+            #     dp_time = logdata[3][:2] + ":" + logdata[3][2:]
+            #
+            #     dp_data = logdata[9]
+            #     dp_data = dp_data.split("e")
+            #     dp_data = dp_data[0]
+            #
+            #     dp = dp_date + " " + dp_time + "," + dp_data
+            #     returndata.append(dp)
         return returndata
+
 
 class Discovr_Density_JSON(Instrument):
     """Child class of Instrument for the DISCOVR satellite solar wind data in JSON format"""
@@ -239,22 +240,19 @@ class Discovr_Density_JSON(Instrument):
         Instrument.__init__(self, name, location, owner, dt_regex, dt_format, datasource)
 
     def get_raw_data(self):
-        request = urllib.request.Request(self.datasource, headers=self.headers)
-        # request = urllib.request.Request(self.datasource)
-        webdata = urllib.request.urlopen(request)
-
+        response = requests.get(self.datasource)
+        webdata = response.json()
         return webdata
 
     def parse_raw_data(self, rawdata):
         returndata = []
         try:
-            json_data = json.loads(rawdata.read().decode('utf-8'))
+            json_data = rawdata
             for tple in json_data:
                 time_tag = tple[0]
                 density = tple[1]
                 dp = time_tag + "," + density
                 returndata.append(dp)
-                print(dp)
         except ValueError:
             logging.error("ERROR: no valid JSON data for " + str(self.name))
             print("ERROR: no valid JSON data for " + str(self.name))
