@@ -244,8 +244,12 @@ class Discovr_Density_JSON(Instrument):
         Instrument.__init__(self, name, location, owner, dt_regex, dt_format, datasource)
 
     def get_raw_data(self):
-        response = requests.get(self.datasource)
-        webdata = response.json()
+        webdata = "NULL"
+        try:
+            response = requests.get(self.datasource)
+            webdata = response.json()
+        except ValueError:
+            logging.error("ERROR: error getting data from " + str(self.name))
         return webdata
 
     def parse_raw_data(self, rawdata):
