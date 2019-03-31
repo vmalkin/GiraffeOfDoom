@@ -57,7 +57,10 @@ except:
 if __name__ == "__main__":
     while True:
         for instrument in instrument_list:
-            instrument.process_data()
+            try:
+                instrument.process_data()
+            except:
+                logging.error("ERROR: unable to implement process_data() for " + instrument.name)
 
         print("\nUpdate completed...")
         for i in range(0, UPDATE_DELAY):

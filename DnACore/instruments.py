@@ -10,9 +10,8 @@ import datetime, time
 import requests
 import re
 import calendar
-import json
 
-errorloglevel = logging.DEBUG
+errorloglevel = logging.WARNING
 logging.basicConfig(filename=k.errorfile, format='%(asctime)s %(message)s', level=errorloglevel)
 logging.info("Created error log for this session")
 
@@ -248,7 +247,7 @@ class Discovr_Density_JSON(Instrument):
         try:
             response = requests.get(self.datasource)
             webdata = response.json()
-        except ValueError:
+        except:
             logging.error("ERROR: error getting data from " + str(self.name))
         return webdata
 
