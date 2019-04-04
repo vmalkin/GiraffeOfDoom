@@ -10,9 +10,8 @@ import datetime, time
 import requests
 import re
 import calendar
-import json
 
-errorloglevel = logging.DEBUG
+errorloglevel = logging.WARNING
 logging.basicConfig(filename=k.errorfile, format='%(asctime)s %(message)s', level=errorloglevel)
 logging.info("Created error log for this session")
 
@@ -244,8 +243,12 @@ class Discovr_Density_JSON(Instrument):
         Instrument.__init__(self, name, location, owner, dt_regex, dt_format, datasource)
 
     def get_raw_data(self):
-        response = requests.get(self.datasource)
-        webdata = response.json()
+        webdata = "NULL"
+        try:
+            response = requests.get(self.datasource)
+            webdata = response.json()
+        except:
+            logging.error("ERROR: error getting data from " + str(self.name))
         return webdata
 
     def parse_raw_data(self, rawdata):
