@@ -7,12 +7,7 @@ import constants as k
 import logging
 import os
 import datetime, time
-<<<<<<< HEAD
-import urllib.request
-
-=======
 import requests
->>>>>>> c03cd527915166f9b9779870a979cf06ae6bb59d
 import re
 import calendar
 
