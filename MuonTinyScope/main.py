@@ -1,18 +1,17 @@
 import cv2
 import numpy
-import time
+
 
 cap = cv2.VideoCapture(0)
-
 
 def setup_cam():
     # Change the camera setting using the set() function
     cap.set(cv2.CAP_PROP_GAIN, 4.0)
-    cap.set(cv2.CAP_PROP_BRIGHTNESS, 144.0)
+    cap.set(cv2.CAP_PROP_BRIGHTNESS, 140.0)
     cap.set(cv2.CAP_PROP_CONTRAST, 27.0)
-    cap.set(cv2.CAP_PROP_HUE, 13.0)  # 13.0
+    cap.set(cv2.CAP_PROP_HUE, 13)  # 13.0
     cap.set(cv2.CAP_PROP_SATURATION, 28.0)
-    cap.set(cv2.CAP_PROP_EXPOSURE, 0.99)
+    cap.set(cv2.CAP_PROP_EXPOSURE, 1)
 
 if __name__ == ("__main__"):
     setup_cam()
@@ -42,7 +41,11 @@ if __name__ == ("__main__"):
     print("Gain: ", gain)
     print("Exposure: ", exposure)
 
-    ret, img = cap.read()
-    # cv2.imshow("Image", img)
-    cv2.imwrite("detect.png", img)
-    time.sleep(5)
+    while True:
+        ret, img = cap.read()
+        greyimg = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        count_b = cv2.countNonZero(greyimg)
+        print("Non black pixels: " + str(count_b))
+        # cv2.imwrite("image.png", greyimg)
+
+    cap.release()
