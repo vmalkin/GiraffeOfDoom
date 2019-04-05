@@ -6,6 +6,7 @@ cap = cv2.VideoCapture(0)
 
 def setup_cam():
     # Change the camera setting using the set() function
+    print(cv2.CAP_PROP_XI_DEVICE_SN)
     cap.set(cv2.CAP_PROP_GAIN, 4.0)
     cap.set(cv2.CAP_PROP_BRIGHTNESS, 140.0)
     cap.set(cv2.CAP_PROP_CONTRAST, 27.0)
