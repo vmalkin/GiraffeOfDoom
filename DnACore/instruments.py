@@ -52,6 +52,7 @@ class Instrument:
         self.headers['User-Agent'] = "Mozilla/5.0 (X11; Ubuntu; Linux i686; rv:48.0) Gecko/20100101 Firefox/48.0"
 
         self.array24hr = self.array24hr_load(self.array24hr_savefile)
+        self.array_cleaned_data = []
         self.setup_paths()
 
     def setup_paths(self):
@@ -144,14 +145,16 @@ class Instrument:
 
     def save_logfile(self):
         """Save the current data to CSV logfile"""
-        RawlogName = datetime.datetime.utcnow().strftime('%Y-%m-%d')
-        RawlogName = self.logfile_dir + "/" + RawlogName + '.csv'
+        logname = datetime.datetime.utcnow().strftime('%Y-%m-%d')
+        logname = self.logfile_dir + "/" + logname + '.csv'
         try:
-            with open(RawlogName, "w") as w:
+            with open(logname, "w") as w:
                 for data_point in self.array24hr:
                     w.write(data_point.print_values_utc() + "\n")
         except PermissionError:
             logging.error("ERROR: Permission error - unable to write logfile for " + str(self.name))
+
+
 
     def process_data(self):
         """Wrapper function to process this instruments data gathering and parameter updating
@@ -192,7 +195,7 @@ class MagnetometerWebCSV(Instrument):
                     # print(line)
                     logdata = line.strip()
                     logdata = logdata.split(",")
-                    if (len(logdata) > 1):
+                    if len(logdata) > 1:
                         # print(str(logdata) + " " + str(linecount))
                         dp_datetime = logdata[0]
                         dp_data = logdata[1]
