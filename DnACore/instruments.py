@@ -181,7 +181,7 @@ class MagnetometerWebCSV(Instrument):
 
             def get_raw_data(self):
                 try:
-                    response = requests.get(self.datasource)
+                    response = requests.get(self.datasource, timeout = 20)
                     webdata = response.content.decode('utf-8')
                     webdata = webdata.split("\n")
                 except:
@@ -211,7 +211,7 @@ class MagnetometerWebGOES(Instrument):
 
     def get_raw_data(self):
         try:
-            response = requests.get(self.datasource)
+            response = requests.get(self.datasource, timeout = 20)
             webdata = response.content.decode('utf-8')
             webdata = webdata.split("\n")
         except:
@@ -248,9 +248,9 @@ class Discovr_Density_JSON(Instrument):
     def get_raw_data(self):
         webdata = "NULL"
         try:
-            response = requests.get(self.datasource)
+            response = requests.get(self.datasource, timeout = 20)
             webdata = response.json()
-        except:
+        except :
             logging.error("ERROR: error getting data from " + str(self.name))
         return webdata
 
