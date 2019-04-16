@@ -12,6 +12,7 @@ from instruments import Datapoint, MagnetometerWebCSV, MagnetometerWebGOES, Disc
 import time
 import constants as k
 import logging
+import json
 
 errorloglevel = logging.WARNING
 logging.basicConfig(filename=k.errorfile, format='%(asctime)s %(message)s', level=errorloglevel)
@@ -21,6 +22,15 @@ UPDATE_DELAY = 300
 
 # Set up the list of sensors here
 logging.debug("Setting up magnetometer stations")
+
+ruruJSON = '{"name":"Ruru_Rapidrun",' \
+            '"location" : "Dunedin",' \
+            '"owner" : "Ruru Observatory", ' \
+            '"regex_value" : "\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d", ' \
+            '"dt_format" : "%Y-%m-%d %H:%M:%S", ' \
+            '"data_source" : "http://www.ruruobservatory.org.nz/dr01_1hr.csv"}'
+ruruJSON = json.loads(ruruJSON)
+
 rapid_run = MagnetometerWebCSV("Ruru_Rapidrun", "Dunedin", "Ruru Observatory", r"\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d", "%Y-%m-%d %H:%M:%S", "http://www.ruruobservatory.org.nz/dr01_1hr.csv")
 goes1 = MagnetometerWebGOES("GOES_Primary", "Geostationary Orbit", "NASA", r"\d\d\d\d-\d\d-\d\d \d\d:\d\d", "%Y-%m-%d %H:%M", "http://services.swpc.noaa.gov/text/goes-magnetometer-primary.txt")
 goes2 = MagnetometerWebGOES("GOES_Secondary", "Geostationary Orbit", "NASA", r"\d\d\d\d-\d\d-\d\d \d\d:\d\d", "%Y-%m-%d %H:%M", "https://services.swpc.noaa.gov/text/goes-magnetometer-secondary.txt")
@@ -111,11 +121,18 @@ if __name__ == "__main__":
         for instrument in instrument_list:
             if len(instrument.array24hr) > 10:
                 startvalue = instrument.array24hr[0].data
-                cleanfile = "clean_" + instrument.name + ".csv"
                 filteredlist = filter_median(instrument.array24hr)
+                #
+                # dvdt_file = "fltr_" + instrument.name + ".csv"
+                # save_logfile(dvdt_file, filteredlist)
+
+                # Unfortunatly, applying a median filter to dv/dt data is
+                # skewing the reconstructed values. esp for GOES satellite
                 filteredlist = filter_dvdt(filteredlist)
                 filteredlist = filter_median(filteredlist)
+
                 reconstructed_data = filter_reconstruction(startvalue, filteredlist)
+                cleanfile = "cln_" + instrument.name + ".csv"
                 save_logfile(cleanfile, reconstructed_data)
 
         print("\nUpdate completed...")
