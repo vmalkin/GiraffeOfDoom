@@ -23,12 +23,14 @@ UPDATE_DELAY = 300
 # Set up the list of sensors here
 logging.debug("Setting up magnetometer stations")
 
-ruruJSON = '{"name":"Ruru_Rapidrun",' \
-            '"location" : "Dunedin",' \
-            '"owner" : "Ruru Observatory", ' \
-            '"regex_value" : "\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d", ' \
-            '"dt_format" : "%Y-%m-%d %H:%M:%S", ' \
-            '"data_source" : "http://www.ruruobservatory.org.nz/dr01_1hr.csv"}'
+ruruJSON = '{"name":"Ruru_Rapidrun", ' \
+           '"location" : "Dunedin", ' \
+           '"owner" : "Ruru Observatory", ' \
+           '"dt_regex" : "\\\\d\\\\d\\\\d\\\\d-\\\\d\\\\d-\\\\d\\\\d \\\\d\\\\d:\\\\d\\\\d:\\\\d\\\\d", ' \
+           '"timeformat_string" : "%Y-%m-%d %H:%M:%S", ' \
+            '"data_source" : "http://www.ruruobservatory.org.nz/dr01_1hr.csv", ' \
+            '"blip_value" : 0' \
+           '}'
 ruruJSON = json.loads(ruruJSON)
 
 rapid_run = MagnetometerWebCSV("Ruru_Rapidrun", "Dunedin", "Ruru Observatory", r"\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d", "%Y-%m-%d %H:%M:%S", "http://www.ruruobservatory.org.nz/dr01_1hr.csv")
