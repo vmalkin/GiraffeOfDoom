@@ -9,10 +9,11 @@ ERROR
 CRITICAL
 """
 from instruments import Datapoint, MagnetometerWebCSV, MagnetometerWebGOES, Discovr_Density_JSON
-import time
+from time import sleep
 import constants as k
+import processor
 import logging
-import json
+import math
 
 errorloglevel = logging.WARNING
 logging.basicConfig(filename=k.errorfile, format='%(asctime)s %(message)s', level=errorloglevel)
@@ -23,20 +24,37 @@ UPDATE_DELAY = 300
 # Set up the list of sensors here
 logging.debug("Setting up magnetometer stations")
 
-ruruJSON = '{"name":"Ruru_Rapidrun", ' \
-           '"location" : "Dunedin", ' \
-           '"owner" : "Ruru Observatory", ' \
-           '"dt_regex" : "\\\\d\\\\d\\\\d\\\\d-\\\\d\\\\d-\\\\d\\\\d \\\\d\\\\d:\\\\d\\\\d:\\\\d\\\\d", ' \
-           '"timeformat_string" : "%Y-%m-%d %H:%M:%S", ' \
-            '"data_source" : "http://www.ruruobservatory.org.nz/dr01_1hr.csv", ' \
-            '"blip_value" : 0' \
-           '}'
-ruruJSON = json.loads(ruruJSON)
+rapid_run = MagnetometerWebCSV("Ruru_Rapidrun",
+                               "Dunedin",
+                               "Ruru Observatory",
+                               r"\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d",
+                               "%Y-%m-%d %H:%M:%S",
+                               3,
+                               "http://www.ruruobservatory.org.nz/dr01_1hr.csv")
 
-rapid_run = MagnetometerWebCSV("Ruru_Rapidrun", "Dunedin", "Ruru Observatory", r"\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d", "%Y-%m-%d %H:%M:%S", "http://www.ruruobservatory.org.nz/dr01_1hr.csv")
-goes1 = MagnetometerWebGOES("GOES_Primary", "Geostationary Orbit", "NASA", r"\d\d\d\d-\d\d-\d\d \d\d:\d\d", "%Y-%m-%d %H:%M", "http://services.swpc.noaa.gov/text/goes-magnetometer-primary.txt")
-goes2 = MagnetometerWebGOES("GOES_Secondary", "Geostationary Orbit", "NASA", r"\d\d\d\d-\d\d-\d\d \d\d:\d\d", "%Y-%m-%d %H:%M", "https://services.swpc.noaa.gov/text/goes-magnetometer-secondary.txt")
-dscovr = Discovr_Density_JSON("DISCOVR", "Geostationary Orbit", "NASA", r"\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d.\d\d\d", "%Y-%m-%d %H:%M:%S.%f", "https://services.swpc.noaa.gov/products/solar-wind/plasma-2-hour.json")
+goes1 = MagnetometerWebGOES("GOES_Primary",
+                            "Geostationary Orbit",
+                            "NASA",
+                            r"\d\d\d\d-\d\d-\d\d \d\d:\d\d",
+                            "%Y-%m-%d %H:%M",
+                            1,
+                            "http://services.swpc.noaa.gov/text/goes-magnetometer-primary.txt")
+
+goes2 = MagnetometerWebGOES("GOES_Secondary",
+                            "Geostationary Orbit",
+                            "NASA",
+                            r"\d\d\d\d-\d\d-\d\d \d\d:\d\d",
+                            "%Y-%m-%d %H:%M",
+                            1,
+                            "https://services.swpc.noaa.gov/text/goes-magnetometer-secondary.txt")
+
+dscovr = Discovr_Density_JSON("DISCOVR",
+                              "Geostationary Orbit",
+                              "NASA",
+                              r"\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d.\d\d\d",
+                              "%Y-%m-%d %H:%M:%S.%f",
+                              9,
+                              "https://services.swpc.noaa.gov/products/solar-wind/plasma-2-hour.json")
 
 logging.debug("appending to list")
 instrument_list = []
@@ -93,6 +111,18 @@ def filter_dvdt(array_to_parse):
     return returnlist
 
 
+def filter_deblip(dvdtdata, blipsize):
+    returnarray = []
+    for item in dvdtdata:
+        testdata = math.sqrt(math.pow(item.data, 2))
+        if testdata > blipsize:
+            dp = Datapoint(item.posix_time, 0)
+        else:
+            dp = Datapoint(item.posix_time, item.data)
+        returnarray.append(dp)
+    return returnarray
+
+
 def filter_reconstruction(startvalue, dvdtlist):
     returnlist = []
     currentdata = startvalue
@@ -120,24 +150,30 @@ if __name__ == "__main__":
         for instrument in instrument_list:
             instrument.process_data()
 
+        # process raw data to remove spikes, blips, etc, for display,
+        # creation of indices, etc
+        cleaned_data = []
         for instrument in instrument_list:
             if len(instrument.array24hr) > 10:
                 startvalue = instrument.array24hr[0].data
                 filteredlist = filter_median(instrument.array24hr)
-                #
-                # dvdt_file = "fltr_" + instrument.name + ".csv"
-                # save_logfile(dvdt_file, filteredlist)
-
-                # Unfortunatly, applying a median filter to dv/dt data is
-                # skewing the reconstructed values. esp for GOES satellite
                 filteredlist = filter_dvdt(filteredlist)
-                filteredlist = filter_median(filteredlist)
-
+                filteredlist = filter_deblip(filteredlist, instrument.blipsize)
                 reconstructed_data = filter_reconstruction(startvalue, filteredlist)
+
+                # Save reconstructed data here to perform analysis
+                # GOES data still seems to be off, but the shape is more consistent
+                new_dp = [instrument.name, reconstructed_data]
+                cleaned_data.append(new_dp)
+
                 cleanfile = "cln_" + instrument.name + ".csv"
                 save_logfile(cleanfile, reconstructed_data)
 
+        # now we have cleaned data, perform some initial processing to provide basic indices
+        # and simple display of trends, etc.
+
+        #Done! wait for next iteration
         print("\nUpdate completed...")
         for i in range(0, UPDATE_DELAY):
             print(str(UPDATE_DELAY - i) + " seconds until next pass")
-            time.sleep(1)
+            sleep(1)

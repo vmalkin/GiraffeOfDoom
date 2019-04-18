@@ -38,16 +38,17 @@ class Datapoint:
 
 class Instrument:
     """Abstract Class of instrument"""
-    def __init__(self, name, location, owner, dt_regex, dt_format, datasource):
+    def __init__(self, name, location, owner, dt_regex, dt_format, blipsize, datasource):
         self.name = name
         self.location = location
         self.owner = owner
         self.dt_regex = dt_regex
         self.dt_format = dt_format
+        self.blipsize = blipsize
         self.datasource = datasource
 
-        self.logfile_dir = self.name + "_raw_logs"
-        self.array24hr_savefile = self.name + ".csv"
+        self.logfile_dir = "24hrlog_unprocessed_" + self.name
+        self.array24hr_savefile = "running_" + self.name + ".csv"
         self.headers = {}
         self.headers['User-Agent'] = "Mozilla/5.0 (X11; Ubuntu; Linux i686; rv:48.0) Gecko/20100101 Firefox/48.0"
 
@@ -154,8 +155,6 @@ class Instrument:
         except PermissionError:
             logging.error("ERROR: Permission error - unable to write logfile for " + str(self.name))
 
-
-
     def process_data(self):
         """Wrapper function to process this instruments data gathering and parameter updating
             get_raw_data() should return a "NULL" if the get was unsuccessful
@@ -176,8 +175,8 @@ class Instrument:
 
 class MagnetometerWebCSV(Instrument):
             """Child class of Instrument - data from URL with CSV"""
-            def __init__(self, name, location, owner, dt_regex, dt_format, datasource):
-                Instrument.__init__(self, name, location, owner, dt_regex, dt_format, datasource)
+            def __init__(self, name, location, owner, dt_regex, dt_format, blipsize, datasource):
+                Instrument.__init__(self, name, location, owner, dt_regex, dt_format, blipsize, datasource)
 
             def get_raw_data(self):
                 try:
@@ -206,8 +205,8 @@ class MagnetometerWebCSV(Instrument):
 
 class MagnetometerWebGOES(Instrument):
     """Child class of Instrument - data from the GOES satellites"""
-    def __init__(self, name, location, owner, dt_regex, dt_format, datasource):
-        Instrument.__init__(self, name, location, owner, dt_regex, dt_format, datasource)
+    def __init__(self, name, location, owner, dt_regex, dt_format, blipsize, datasource):
+        Instrument.__init__(self, name, location, owner, dt_regex, dt_format, blipsize, datasource)
 
     def get_raw_data(self):
         try:
@@ -242,8 +241,8 @@ class MagnetometerWebGOES(Instrument):
 
 class Discovr_Density_JSON(Instrument):
     """Child class of Instrument for the DISCOVR satellite solar wind data in JSON format"""
-    def __init__(self, name, location, owner, dt_regex, dt_format, datasource):
-        Instrument.__init__(self, name, location, owner, dt_regex, dt_format, datasource)
+    def __init__(self, name, location, owner, dt_regex, dt_format, blipsize, datasource):
+        Instrument.__init__(self, name, location, owner, dt_regex, dt_format, blipsize, datasource)
 
     def get_raw_data(self):
         webdata = "NULL"
@@ -270,8 +269,8 @@ class Discovr_Density_JSON(Instrument):
 
 
 # class MagnetometerDefault(Instrument):
-#     def __init__(self, name, location, owner, dt_regex, dt_format, datasource):
-#         Instrument.__init__(self, name, location, owner, dt_regex, dt_format, datasource)
+#     def __init__(self, name, location, owner, dt_regex, dt_format, blipsize, datasource):
+#         Instrument.__init__(self, name, location, owner, dt_regex, dt_format, blipsize, datasource)
 #
 #     def get_raw_data(self):
 #         # try/except on get issue. Return a NULL if except
