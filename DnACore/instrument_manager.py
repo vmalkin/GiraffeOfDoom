@@ -9,17 +9,50 @@ ERROR
 CRITICAL
 """
 from instruments import Datapoint, MagnetometerWebCSV, MagnetometerWebGOES, Discovr_Density_JSON
-from time import sleep
+from time import sleep, time
+import datetime
 import constants as k
 import processor
 import logging
 import math
+import os
 
 errorloglevel = logging.WARNING
 logging.basicConfig(filename=k.errorfile, format='%(asctime)s %(message)s', level=errorloglevel)
 logging.info("Created error log for this session")
 
 UPDATE_DELAY = 300
+
+
+class DPhashtable:
+    def __init__(self, posixtime):
+        self.posix_time = posixtime
+        self.values = []
+
+    def avg_values(self):
+        returnvalue = 0
+        if len(self.values) > 0:
+            for i in range(0, len(self.values)):
+                returnvalue = returnvalue + self.values[i]
+            returnvalue = float(returnvalue / len(self.values))
+        else:
+            returnvalue = ""
+        return returnvalue
+
+
+    def posix2utc(self, posixvalue):
+        utctime = datetime.datetime.utcfromtimestamp(int(posixvalue)).strftime('%Y-%m-%d %H:%M:%S')
+        return utctime
+
+    def print_values_posix(self):
+        returnstring = str(self.posix_time) + "," + str(self.avg_values())
+        return returnstring
+
+    def print_values_utc(self):
+        timestamp = self.posix2utc(self.posix_time)
+        returnstring = str(timestamp) + "," + str(self.avg_values())
+        return returnstring
+
 
 # Set up the list of sensors here
 logging.debug("Setting up magnetometer stations")
@@ -134,6 +167,21 @@ def filter_reconstruction(startvalue, dvdtlist):
     return returnlist
 
 
+def filter_hashtable(datapoint_values, binvalue):
+    starttime = int(time()) - (24*60*60)
+    hashlist = []
+
+    for i in range(starttime, int(time()), binvalue):
+        dp = DPhashtable(i)
+        hashlist.append(dp)
+
+    for item in datapoint_values:
+        index = int((int(item.posix_time) - starttime) / binvalue)
+        hashlist[index].values.append(item.data)
+
+    return hashlist
+
+
 def save_logfile(filename, data):
     """Save the current data to CSV logfile"""
     try:
@@ -161,13 +209,15 @@ if __name__ == "__main__":
                 filteredlist = filter_deblip(filteredlist, instrument.blipsize)
                 reconstructed_data = filter_reconstruction(startvalue, filteredlist)
 
+                # apply a hash filter to convert all data to one minute intervals.
+                bins_1min = filter_hashtable(reconstructed_data, 60)
+                cleanfile = "1mins_" + instrument.name + ".csv"
+                save_logfile(cleanfile, bins_1min)
+
                 # Save reconstructed data here to perform analysis
                 # GOES data still seems to be off, but the shape is more consistent
-                new_dp = [instrument.name, reconstructed_data]
+                new_dp = [instrument.name, bins_1min]
                 cleaned_data.append(new_dp)
-
-                cleanfile = "cln_" + instrument.name + ".csv"
-                save_logfile(cleanfile, reconstructed_data)
 
         # now we have cleaned data, perform some initial processing to provide basic indices
         # and simple display of trends, etc.
