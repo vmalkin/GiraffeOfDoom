@@ -8,7 +8,7 @@ WARNING
 ERROR
 CRITICAL
 """
-from instruments import Datapoint, MagnetometerWebCSV, MagnetometerWebGOES, Discovr_Density_JSON
+from instruments import Datapoint, MagnetometerWebCSV, MagnetometerWebGOES, Discovr_Bz_JSON
 from time import sleep, time
 import datetime
 import constants as k
@@ -81,13 +81,21 @@ goes2 = MagnetometerWebGOES("GOES_Secondary",
                             1,
                             "https://services.swpc.noaa.gov/text/goes-magnetometer-secondary.txt")
 
-dscovr = Discovr_Density_JSON("DISCOVR",
+# dscovrPLS = Discovr_Density_JSON("DISCOVR",
+#                               "Geostationary Orbit",
+#                               "NASA",
+#                               r"\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d.\d\d\d",
+#                               "%Y-%m-%d %H:%M:%S.%f",
+#                               9,
+#                               "https://services.swpc.noaa.gov/products/solar-wind/plasma-2-hour.json")
+
+dscovr_bz = Discovr_Bz_JSON("DISCOVR_Bz",
                               "Geostationary Orbit",
                               "NASA",
                               r"\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d.\d\d\d",
                               "%Y-%m-%d %H:%M:%S.%f",
-                              9,
-                              "https://services.swpc.noaa.gov/products/solar-wind/plasma-2-hour.json")
+                            9,
+                              "https://services.swpc.noaa.gov/products/solar-wind/mag-2-hour.json")
 
 logging.debug("appending to list")
 instrument_list = []
@@ -111,7 +119,7 @@ except:
     print("Unable to load GOES 2")
 
 try:
-    instrument_list.append(dscovr)
+    instrument_list.append(dscovr_bz)
 except:
     logging.WARNING("Unable to load DISCOVR")
     print("Unable to load DISCOVR")

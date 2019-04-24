@@ -35,7 +35,9 @@ class Datapoint:
         returnstring = str(timestamp) + "," + str(self.data)
         return returnstring
 
-
+# #########################
+# Abstract Instrument Class
+# #########################
 class Instrument:
     """Abstract Class of instrument"""
     def __init__(self, name, location, owner, dt_regex, dt_format, blipsize, datasource):
@@ -167,12 +169,14 @@ class Instrument:
             self.append_raw_data(datapoint_list)
             self.array24hr = self.array24hr_prune(self.array24hr)
             self.array24hr_save()
-            self.save_logfile()
+            # self.save_logfile()
         else:
             logging.error("ERROR: unable to GET data for " + str(self.name))
             print("ERROR: unable to GET data for " + str(self.name))
 
-
+# ##########################################################
+# Child Instrument Class - Magnetometer producing CSV data
+# ##########################################################
 class MagnetometerWebCSV(Instrument):
             """Child class of Instrument - data from URL with CSV"""
             def __init__(self, name, location, owner, dt_regex, dt_format, blipsize, datasource):
@@ -202,7 +206,9 @@ class MagnetometerWebCSV(Instrument):
                         returndata.append(dp)
                 return returndata
 
-
+# ##########################################################
+# Child Instrument Class - Satellite GOES mag data
+# ##########################################################
 class MagnetometerWebGOES(Instrument):
     """Child class of Instrument - data from the GOES satellites"""
     def __init__(self, name, location, owner, dt_regex, dt_format, blipsize, datasource):
@@ -238,7 +244,9 @@ class MagnetometerWebGOES(Instrument):
                     returndata.append(dp)
         return returndata
 
-
+# ##########################################################
+# Child Instrument Class - Satellite DISCOVR solar wind data
+# ##########################################################
 class Discovr_Density_JSON(Instrument):
     """Child class of Instrument for the DISCOVR satellite solar wind data in JSON format"""
     def __init__(self, name, location, owner, dt_regex, dt_format, blipsize, datasource):
@@ -267,6 +275,36 @@ class Discovr_Density_JSON(Instrument):
             print("ERROR: no valid JSON data for " + str(self.name))
         return returndata
 
+# ##########################################################
+# Child Instrument Class - Satellite DISCOVR mag data
+# ##########################################################
+class Discovr_Bz_JSON(Instrument):
+    """Child class of Instrument for the DISCOVR satellite solar wind data in JSON format"""
+    def __init__(self, name, location, owner, dt_regex, dt_format, blipsize, datasource):
+        Instrument.__init__(self, name, location, owner, dt_regex, dt_format, blipsize, datasource)
+
+    def get_raw_data(self):
+        webdata = "NULL"
+        try:
+            response = requests.get(self.datasource, timeout = 20)
+            webdata = response.json()
+        except :
+            logging.error("ERROR: error getting data from " + str(self.name))
+        return webdata
+
+    def parse_raw_data(self, rawdata):
+        returndata = []
+        try:
+            json_data = rawdata
+            for tple in json_data:
+                time_tag = tple[0]
+                bz = tple[3]
+                dp = time_tag + "," + bz
+                returndata.append(dp)
+        except ValueError:
+            logging.error("ERROR: no valid JSON data for " + str(self.name))
+            print("ERROR: no valid JSON data for " + str(self.name))
+        return returndata
 
 # class MagnetometerDefault(Instrument):
 #     def __init__(self, name, location, owner, dt_regex, dt_format, blipsize, datasource):

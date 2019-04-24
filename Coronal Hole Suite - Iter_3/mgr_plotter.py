@@ -152,3 +152,15 @@ class Plotter:
                     f.write(plotpt.printvalues() + '\n')
         except:
             print("Unable to write forecast data to file")
+
+        # Save out as mini CSV file for 7 days display
+        try:
+            with open("mini_4cast.csv", "w") as f:
+                # create the CSV labels
+                null_point = PlotPoint(0)
+                f.write(null_point.printlabels() + '\n')
+
+                for i in range(len(predictionlist) - 168, len(predictionlist)):
+                    f.write(predictionlist[i].printvalues() + '\n')
+        except:
+            print("Unable to write forecast data to file")
