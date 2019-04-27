@@ -36,7 +36,7 @@ class DPhashtable:
                 returnvalue = returnvalue + self.values[i]
             returnvalue = float(returnvalue / len(self.values))
         else:
-            returnvalue = ""
+            returnvalue = k.null_output_value
         return returnvalue
 
 
@@ -62,7 +62,7 @@ rapid_run = MagnetometerWebCSV("Ruru_Rapidrun",
                                "Ruru Observatory",
                                r"\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d",
                                "%Y-%m-%d %H:%M:%S",
-                               3,
+                               1,
                                "http://www.ruruobservatory.org.nz/dr01_1hr.csv")
 
 goes1 = MagnetometerWebGOES("GOES_Primary",
@@ -94,7 +94,7 @@ dscovr_bz = Discovr_Bz_JSON("DISCOVR_Bz",
                               "NASA",
                               r"\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d.\d\d\d",
                               "%Y-%m-%d %H:%M:%S.%f",
-                            9,
+                            5,
                               "https://services.swpc.noaa.gov/products/solar-wind/mag-2-hour.json")
 
 logging.debug("appending to list")
@@ -212,8 +212,8 @@ if __name__ == "__main__":
         for instrument in instrument_list:
             if len(instrument.array24hr) > 10:
                 startvalue = instrument.array24hr[0].data
-                filteredlist = filter_median(instrument.array24hr)
-                filteredlist = filter_dvdt(filteredlist)
+                # filteredlist = filter_median(instrument.array24hr)
+                filteredlist = filter_dvdt(instrument.array24hr)
                 filteredlist = filter_deblip(filteredlist, instrument.blipsize)
                 reconstructed_data = filter_reconstruction(startvalue, filteredlist)
 
@@ -227,8 +227,7 @@ if __name__ == "__main__":
                 new_dp = [instrument.name, bins_1min]
                 cleaned_data.append(new_dp)
 
-        # now we have cleaned data, perform some initial processing to provide basic indices
-        # and simple display of trends, etc.
+        # cleaned_data[] now contains a fairly clean representation of data, at one minute intervals
 
         #Done! wait for next iteration
         print("\nUpdate completed...")
