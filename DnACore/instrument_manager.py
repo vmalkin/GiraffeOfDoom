@@ -8,7 +8,14 @@ WARNING
 ERROR
 CRITICAL
 """
-from instruments import Datapoint, MagnetometerWebCSV, MagnetometerWebGOES, Discovr_Bz_JSON
+from instruments import Datapoint
+from instruments import MagnetometerWebCSV
+from instruments import MagnetometerWebGOES
+from instruments import Discovr_Bz_JSON
+from instruments import Discovr_SolarWind_JSON
+from instruments import CSVFile_Windspeed
+from instruments import CSVFile_Density
+
 from time import sleep, time
 import datetime
 import constants as k
@@ -17,11 +24,12 @@ import logging
 import math
 import os
 
+
 errorloglevel = logging.WARNING
 logging.basicConfig(filename=k.errorfile, format='%(asctime)s %(message)s', level=errorloglevel)
 logging.info("Created error log for this session")
 
-UPDATE_DELAY = 300
+UPDATE_DELAY = 60 * 7
 
 
 class DPhashtable:
@@ -65,6 +73,14 @@ rapid_run = MagnetometerWebCSV("Ruru_Rapidrun",
                                1,
                                "http://www.ruruobservatory.org.nz/dr01_1hr.csv")
 
+induction = MagnetometerWebCSV("Induction_GIC",
+                               "Dunedin",
+                               "Dunedin Aurora",
+                               r"\d\d\d\d-\d\d-\d\d \d\d:\d\d",
+                               "%Y-%m-%d %H:%M",
+                               1,
+                               "http://www.ruruobservatory.org.nz/induction_gic.csv")
+
 goes1 = MagnetometerWebGOES("GOES_Primary",
                             "Geostationary Orbit",
                             "NASA",
@@ -81,13 +97,25 @@ goes2 = MagnetometerWebGOES("GOES_Secondary",
                             1,
                             "https://services.swpc.noaa.gov/text/goes-magnetometer-secondary.txt")
 
-# dscovrPLS = Discovr_Density_JSON("DISCOVR",
-#                               "Geostationary Orbit",
-#                               "NASA",
-#                               r"\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d.\d\d\d",
-#                               "%Y-%m-%d %H:%M:%S.%f",
-#                               9,
-#                               "https://services.swpc.noaa.gov/products/solar-wind/plasma-2-hour.json")
+proxy_solarwind = Discovr_SolarWind_JSON("DISCOVR solar wind","","","","",9,
+                              "https://services.swpc.noaa.gov/products/solar-wind/plasma-2-hour.json")
+
+ds_windspeed = CSVFile_Windspeed("sw_speed",
+                                 "",
+                                 "NASA",
+                                 r"\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d.\d\d\d",
+                                 "%Y-%m-%d %H:%M:%S.%f",
+                                 9,
+                                 "discovr_solarwind_json.csv")
+
+ds_winddens = CSVFile_Density("sw_density",
+                                 "",
+                                 "NASA",
+                                 r"\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d.\d\d\d",
+                                 "%Y-%m-%d %H:%M:%S.%f",
+                                 9,
+                                 "discovr_solarwind_json.csv")
+
 
 dscovr_bz = Discovr_Bz_JSON("DISCOVR_Bz",
                               "Geostationary Orbit",
@@ -107,6 +135,12 @@ except:
     print("Unable to load Ruru Observatory")
 
 try:
+    instrument_list.append(induction)
+except:
+    logging.WARNING("Unable to load induction coil data")
+    print("Unable to load induction coil data")
+
+try:
     instrument_list.append(goes1)
 except:
     logging.WARNING("Unable to load GOES 1")
@@ -117,6 +151,24 @@ try:
 except:
     logging.WARNING("Unable to load GOES 2")
     print("Unable to load GOES 2")
+
+try:
+    instrument_list.append(proxy_solarwind)
+except:
+    logging.WARNING("Unable to load proxy solar wind data")
+    print("Unable to load DISCOVR")
+
+try:
+    instrument_list.append(ds_windspeed)
+except:
+    logging.WARNING("Unable to load solar wind speed")
+    print("Unable to load DISCOVR")
+
+try:
+    instrument_list.append(ds_winddens)
+except:
+    logging.WARNING("Unable to load solar wind density")
+    print("Unable to load DISCOVR")
 
 try:
     instrument_list.append(dscovr_bz)
@@ -185,7 +237,11 @@ def filter_hashtable(datapoint_values, binvalue):
 
     for item in datapoint_values:
         index = int((int(item.posix_time) - starttime) / binvalue)
-        hashlist[index].values.append(item.data)
+        try:
+            hashlist[index].values.append(item.data)
+        except IndexError:
+            print("Index error with instrument_manager.filter_hashtable()")
+            logging.error("ERROR: Index error with instrument_manager.filter_hashtable()")
 
     return hashlist
 
@@ -228,6 +284,11 @@ if __name__ == "__main__":
                 cleaned_data.append(new_dp)
 
         # cleaned_data[] now contains a fairly clean representation of data, at one minute intervals
+        for thang in cleaned_data:
+            name = thang[0]
+            data = thang[1]
+            last_item = data[len(data)-1].print_values_utc()
+            print(name + " " + last_item)
 
         #Done! wait for next iteration
         print("\nUpdate completed...")

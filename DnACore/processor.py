@@ -1,10 +1,11 @@
 import datetime
+import constants as k
 
 class DP_processed():
-    def __init__(self):
-        self.posix_time = 0
-        self.data = 0
-        self.sr = 0
+    def __init__(self, posixtime, datavalue):
+        self.posix_time = posixtime
+        self.data = datavalue
+        self.sr = k.null_output_value
 
     def calculate_residual(self):
         residual = self.data - self.sr
@@ -14,18 +15,24 @@ class DP_processed():
         utctime = datetime.datetime.utcfromtimestamp(int(posixvalue)).strftime('%Y-%m-%d %H:%M:%S')
         return utctime
 
-    def print_values_utc(self):
-        returnstring = str(self.posix2utc(self.posix_time)) + "," + str(self.calculate_residual())
-        return returnstring
 
-def processor_sr1(data_array):
+def processor_dvdt(data_array):
     """
-    This function takes an array of readings in [posix_time, data] format and calculate Sr - the diurnal curve.
-    It returns an array that
+    This function takes an array of readings in [posix_time, data] format and calculate simple dv/dt,
+    with a smoothed curve on a 10min window
     :return:
     """
     returnarray = []
+    for i in range(1, len(data_array)):
+        dvdt = data_array[i].data - data_array[i-1].data
+        datetime = data_array[i].posix_time
+        dp = DP_processed(datetime, dvdt)
+        returnarray.append(dp)
     return returnarray
+
+def processor_smooth(datarray):
+    returnarray = []
+
 
 
 def processor_wrapperfunction(data_array):
