@@ -38,13 +38,13 @@ class DPhashtable:
         self.values = []
 
     def avg_values(self):
-        returnvalue = 0
+        returnvalue = k.null_output_value
         if len(self.values) > 0:
+            returnvalue = float(0)
             for i in range(0, len(self.values)):
-                returnvalue = returnvalue + self.values[i]
-            returnvalue = float(returnvalue / len(self.values))
-        else:
-            returnvalue = k.null_output_value
+                returnvalue = returnvalue + float(self.values[i])
+            returnvalue = round((float(returnvalue) / len(self.values)),2)
+
         return returnvalue
 
 
@@ -127,6 +127,7 @@ dscovr_bz = Discovr_Bz_JSON("DISCOVR_Bz",
 
 logging.debug("appending to list")
 instrument_list = []
+solarwind_list = []
 
 try:
     instrument_list.append(rapid_run)
@@ -153,19 +154,19 @@ except:
     print("Unable to load GOES 2")
 
 try:
-    instrument_list.append(proxy_solarwind)
+    solarwind_list.append(proxy_solarwind)
 except:
     logging.WARNING("Unable to load proxy solar wind data")
     print("Unable to load DISCOVR")
 
 try:
-    instrument_list.append(ds_windspeed)
+    solarwind_list.append(ds_windspeed)
 except:
     logging.WARNING("Unable to load solar wind speed")
     print("Unable to load DISCOVR")
 
 try:
-    instrument_list.append(ds_winddens)
+    solarwind_list.append(ds_winddens)
 except:
     logging.WARNING("Unable to load solar wind density")
     print("Unable to load DISCOVR")
@@ -283,12 +284,10 @@ if __name__ == "__main__":
                 new_dp = [instrument.name, bins_1min]
                 cleaned_data.append(new_dp)
 
-        # cleaned_data[] now contains a fairly clean representation of data, at one minute intervals
-        for thang in cleaned_data:
-            name = thang[0]
-            data = thang[1]
-            last_item = data[len(data)-1].print_values_utc()
-            print(name + " " + last_item)
+        # Process the solar wind data separatly
+        for instrument in solarwind_list:
+            instrument.process_data()
+            processor.average_20mins(instrument.name, instrument.array24hr)
 
         #Done! wait for next iteration
         print("\nUpdate completed...")
