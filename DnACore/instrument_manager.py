@@ -78,7 +78,7 @@ induction = MagnetometerWebCSV("Induction_GIC",
                                "Dunedin Aurora",
                                r"\d\d\d\d-\d\d-\d\d \d\d:\d\d",
                                "%Y-%m-%d %H:%M",
-                               1,
+                               9,
                                "http://www.ruruobservatory.org.nz/induction_gic.csv")
 
 goes1 = MagnetometerWebGOES("GOES_Primary",
