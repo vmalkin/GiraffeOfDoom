@@ -44,9 +44,7 @@ class DPhashtable:
             for i in range(0, len(self.values)):
                 returnvalue = returnvalue + float(self.values[i])
             returnvalue = round((float(returnvalue) / len(self.values)),2)
-
         return returnvalue
-
 
     def posix2utc(self, posixvalue):
         utctime = datetime.datetime.utcfromtimestamp(int(posixvalue)).strftime('%Y-%m-%d %H:%M:%S')
