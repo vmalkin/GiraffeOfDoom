@@ -1,0 +1,4 @@
+2019-06-13 18:11:32,802 WARNING: Appears to be no data for DISCOVR solar wind. Ubnable to convert timestamps.
+2019-06-13 18:23:23,869 ERROR: Permission error - unable to write logfile 1mins_sw_speed.csv
+2019-06-13 18:30:34,410 ERROR: Permission error - unable to write logfile 1mins_sw_speed.csv
+2019-06-13 18:35:44,969 ERROR: Permission error - unable to write logfile 1mins_sw_speed.csv

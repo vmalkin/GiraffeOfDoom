@@ -120,12 +120,11 @@ dscovr_bz = Discovr_Bz_JSON("DISCOVR_Bz",
                               "NASA",
                               r"\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d.\d\d\d",
                               "%Y-%m-%d %H:%M:%S.%f",
-                            5,
+                            9,
                               "https://services.swpc.noaa.gov/products/solar-wind/mag-2-hour.json")
 
 logging.debug("appending to list")
 instrument_list = []
-solarwind_list = []
 
 try:
     instrument_list.append(rapid_run)
@@ -152,6 +151,13 @@ except:
     print("Unable to load GOES 2")
 
 try:
+    instrument_list.append(dscovr_bz)
+except:
+    logging.WARNING("Unable to load DISCOVR")
+    print("Unable to load DISCOVR")
+
+solarwind_list = []
+try:
     solarwind_list.append(proxy_solarwind)
 except:
     logging.WARNING("Unable to load proxy solar wind data")
@@ -168,13 +174,6 @@ try:
 except:
     logging.WARNING("Unable to load solar wind density")
     print("Unable to load DISCOVR")
-
-try:
-    instrument_list.append(dscovr_bz)
-except:
-    logging.WARNING("Unable to load DISCOVR")
-    print("Unable to load DISCOVR")
-
 
 def filter_median(array_to_parse):
     returnlist = []
@@ -285,6 +284,18 @@ if __name__ == "__main__":
         # Process the solar wind data separatly
         for instrument in solarwind_list:
             instrument.process_data()
+            if len(instrument.array24hr) > 10:
+                # startvalue = instrument.array24hr[0].data
+                filteredlist = filter_median(instrument.array24hr)
+                # filteredlist = filter_dvdt(instrument.array24hr)
+                # filteredlist = filter_deblip(filteredlist, instrument.blipsize)
+                # reconstructed_data = filter_reconstruction(startvalue, filteredlist)
+
+                # apply a hash filter to convert all data to one minute intervals.
+                bins_1min = filter_hashtable(filteredlist, 60)
+                cleanfile = "1mins_" + instrument.name + ".csv"
+                save_logfile(cleanfile, bins_1min)
+
             processor.average_20mins(instrument.name, instrument.array24hr)
 
         #Done! wait for next iteration
