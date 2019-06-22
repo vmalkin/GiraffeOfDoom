@@ -43,12 +43,12 @@ class ChartThread(Thread):
                 print("1 min bins grapher failed")
                 logging.error("1 min bins grapher failed")
 
-            # Create the dH/dt display data
-            try:
-                mgr_dhdt.process_differences(datamanager.data_array)
-            except:
-                print("dH/dt processor failed")
-                logging.error("dH/dt processor failed")
+            # # Create the dH/dt display data
+            # try:
+            #     mgr_dhdt.process_differences(datamanager.data_array)
+            # except:
+            #     print("dH/dt processor failed")
+            #     logging.error("dH/dt processor failed")
 
 if __name__ == "__main__":
     print("Pything Data Logger")

@@ -216,7 +216,7 @@ def process_differences(data_array):
         # be accessed after software restarts.
 
         # caluclate the shortdiffs file.
-        calculate_shortdiffs(avg_background_value)
+        calculate_shortdiffs(diffs_data)
 
         # add the CSV file headers
         headerstring = "Date/time UTC, Min for hour, Max for hour, dH/dt"
