@@ -24,7 +24,10 @@ void loop() {
     Serial.println(micros() - current_timer);
     current_timer = micros();
     }
-
+  else
+  {
+    current_timer = 0;
+    }
 }
 
 int sensor_reading()
