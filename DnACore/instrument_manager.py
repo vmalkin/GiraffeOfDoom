@@ -283,19 +283,21 @@ if __name__ == "__main__":
 
         # Process the solar wind data separatly
         for instrument in solarwind_list:
-            instrument.process_data()
-            if len(instrument.array24hr) > 10:
-                # startvalue = instrument.array24hr[0].data
-                filteredlist = filter_median(instrument.array24hr)
-                # filteredlist = filter_dvdt(instrument.array24hr)
-                # filteredlist = filter_deblip(filteredlist, instrument.blipsize)
-                # reconstructed_data = filter_reconstruction(startvalue, filteredlist)
+            try:
+                instrument.process_data()
+                if len(instrument.array24hr) > 10:
+                    # startvalue = instrument.array24hr[0].data
+                    filteredlist = filter_median(instrument.array24hr)
+                    # filteredlist = filter_dvdt(instrument.array24hr)
+                    # filteredlist = filter_deblip(filteredlist, instrument.blipsize)
+                    # reconstructed_data = filter_reconstruction(startvalue, filteredlist)
 
-                # apply a hash filter to convert all data to one minute intervals.
-                bins_1min = filter_hashtable(filteredlist, 60)
-                cleanfile = "1mins_" + instrument.name + ".csv"
-                save_logfile(cleanfile, bins_1min)
-
+                    # apply a hash filter to convert all data to one minute intervals.
+                    bins_1min = filter_hashtable(filteredlist, 60)
+                    cleanfile = "1mins_" + instrument.name + ".csv"
+                    save_logfile(cleanfile, bins_1min)
+            except:
+                logging.error("ERROR: Unable to process solar wind data.")
             processor.average_20mins(instrument.name, instrument.array24hr)
 
         #Done! wait for next iteration
