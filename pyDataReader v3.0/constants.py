@@ -6,7 +6,7 @@ station_id = "dna_fgm_1"   # ID of magnetometer station
 FILE_4DIFFS = "diffs.csv"
 
 # Comm port parameters - uncomment and change one of the portNames depending on your OS
-portName = 'Com20' # Windows
+portName = 'Com13' # Windows
 # portName = '/dev/tty.usbserial-A702O0K9' #MacOS
 # portName = '/dev/ttyUSB0'
 baudrate = 9600

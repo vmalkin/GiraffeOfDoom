@@ -274,10 +274,10 @@ class Discovr_SolarWind_JSON(Instrument):
         returndata = []
         try:
             json_data = rawdata
-            for tple in json_data:
-                time_tag = tple[0]
-                density = tple[1]
-                speed = tple[2]
+            for i in range(1, len(json_data)):
+                time_tag = json_data[i][0]
+                density = json_data[i][1]
+                speed = json_data[i][2]
                 dp = time_tag + "," + speed + "," + density
                 returndata.append(dp)
         except ValueError:
