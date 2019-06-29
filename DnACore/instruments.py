@@ -264,7 +264,7 @@ class Discovr_SolarWind_JSON(Instrument):
     def get_raw_data(self):
         webdata = "NULL"
         try:
-            response = requests.get(self.datasource, timeout=20)
+            response = requests.get(self.datasource, timeout=20, verify=False)
             webdata = response.json()
         except:
             logging.error("ERROR: error getting data from " + str(self.name))

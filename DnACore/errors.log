@@ -1,4 +1,10 @@
-2019-06-13 18:11:32,802 WARNING: Appears to be no data for DISCOVR solar wind. Ubnable to convert timestamps.
-2019-06-13 18:23:23,869 ERROR: Permission error - unable to write logfile 1mins_sw_speed.csv
-2019-06-13 18:30:34,410 ERROR: Permission error - unable to write logfile 1mins_sw_speed.csv
-2019-06-13 18:35:44,969 ERROR: Permission error - unable to write logfile 1mins_sw_speed.csv
+2019-06-29 21:05:01,930 ERROR: error getting data from DISCOVR solar wind
+2019-06-29 21:05:01,930 ERROR: unable to GET data for DISCOVR solar wind
+2019-06-29 21:05:01,930 ERROR: unable to GET data for sw_speed
+2019-06-29 21:05:01,930 ERROR: unable to GET data for sw_density
+2019-06-29 21:06:33,547 ERROR: error getting data from DISCOVR solar wind
+2019-06-29 21:06:33,547 ERROR: unable to GET data for DISCOVR solar wind
+2019-06-29 21:26:22,702 ERROR: error getting data from DISCOVR solar wind
+2019-06-29 21:26:22,702 ERROR: unable to GET data for DISCOVR solar wind
+2019-06-29 21:30:13,702 ERROR: error getting data from DISCOVR solar wind
+2019-06-29 21:30:13,702 ERROR: unable to GET data for DISCOVR solar wind
