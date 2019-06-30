@@ -52,7 +52,7 @@ class ChartThread(Thread):
 
 if __name__ == "__main__":
     print("Pything Data Logger")
-    print("(c) Vaughn Malkin, 2015 - 2018")
+    print("(c) Vaughn Malkin, 2015 - 2019")
     print("Version " + __version__)
 
     comport = mgr_serialport.SerialManager(k.portName,k.baudrate,k.bytesize,k.parity,k.stopbits,k.timeout,k.xonxoff,k.rtscts,k.writeTimeout,k.dsrdtr,k.interCharTimeout)

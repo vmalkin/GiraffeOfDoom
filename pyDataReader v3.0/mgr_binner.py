@@ -3,6 +3,7 @@ import math
 import logging
 import os
 import sys
+import constants as k
 
 errorloglevel = logging.DEBUG
 logging.basicConfig(filename="errors.log", format='%(asctime)s %(message)s', level=errorloglevel)
@@ -71,7 +72,7 @@ class Binner():
                 index = math.floor((float(itemtime) - float(t_start)) / float(self._binsize))
                 final_data_bins[index].data_values.append(itemdata)
 
-        savefile = "graphing/RuruRapid.1minbins.csv"
+        savefile = k.publish_folder + "/" + k.station_id + "_1minbins.csv"
         # get each BinDatapoint to spit out the avg of it's stored data, as well as the UTC time.
         try:
             os.remove(savefile)

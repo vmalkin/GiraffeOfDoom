@@ -8,6 +8,7 @@ from decimal import Decimal
 import os
 import logging
 import datapoint as dp
+import constants as k
 
 errorloglevel = logging.ERROR
 logging.basicConfig(filename="errors.log", format='%(asctime)s %(message)s', level=errorloglevel)
@@ -44,28 +45,16 @@ class Grapher():
     def _running_average(self, input_array, averaging_interval):
 
         displayarray = []
-
-        # This figure MUST be an even number. Check your constants.
-        AVERAGING_TIME = int(averaging_interval)
-        AVERAGING_TIME_HALF = int(AVERAGING_TIME / 2)
+        recursive_constant = 0.5
 
         # NOW average the cumulative array, smooth out the blips
-        if len(input_array) > AVERAGING_TIME:
-            for i in range(AVERAGING_TIME_HALF, len(input_array) - AVERAGING_TIME_HALF):
-                xvalue = Decimal(0)
-                jdatadate = input_array[i].posix_time
-
-                # This is where we average for the time i before and after i.
-                for j in range(0, AVERAGING_TIME):
-                    datavalue = input_array[(i - AVERAGING_TIME_HALF) + j].data_1
-
-                    xvalue = xvalue + Decimal(datavalue)
-
-                xvalue = Decimal(xvalue / AVERAGING_TIME)
-
-                displaypoint = dp.DataPoint(jdatadate, str(xvalue))
-                displayarray.append(displaypoint)
-
+        if len(input_array) > 20:
+            prev_data = input_array[0].data_1
+            for i in range(1, len(input_array)):
+                newdata = (recursive_constant * input_array[i].data_1) + ((1 - recursive_constant) * prev_data)
+                datap = dp.DataPoint(input_array[i].posix_time, newdata)
+                displayarray.append(datap)
+                prev_data = newdata
         else:
             displayarray = input_array
 
@@ -110,8 +99,8 @@ class Grapher():
 
         # Create the CSV display files
         splitvalue = self._mag_read_freq * 60 * 1
-        self._create_hichart_datafile(revised_data, splitvalue, "../publish/dr01_1hr.csv")
+        self._create_hichart_datafile(revised_data, splitvalue, k.publish_folder + "/" + k.station_id + "_60mins.csv")
 
         # to get the last 24 hours the split value is mag read frequency * 60 * 24
         splitvalue = self._mag_read_freq * 60 * 24
-        self._create_hichart_datafile(revised_data, splitvalue, "../publish/dr01_24hr.csv")
+        self._create_hichart_datafile(revised_data, splitvalue, k.publish_folder + "/" + k.station_id + "_24hrs.csv")

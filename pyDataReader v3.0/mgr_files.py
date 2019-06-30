@@ -8,7 +8,7 @@ logging.basicConfig(filename="errors.log", format='%(asctime)s %(message)s', lev
 class FileManager:
     def __init__(self):
         self.path_logs = "logs"
-        self.path_charting = "highcharts"
+        self.path_charting = "publish"
 
         self.setup_paths()
 
