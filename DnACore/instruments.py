@@ -10,6 +10,7 @@ import datetime, time
 import requests
 import re
 import calendar
+import ssl
 
 errorloglevel = logging.WARNING
 logging.basicConfig(filename=k.errorfile, format='%(asctime)s %(message)s', level=errorloglevel)
@@ -69,7 +70,7 @@ class Instrument:
             except:
                 if not os.path.isdir(self.logfile_dir):
                     print("Unable to create log directory")
-                    logging.critical("CRITICAL ERROR: Unable to create logs directory")
+                    logging.critical("CRITICAL ERROR - instruments.py: Unable to create logs directory")
 
     def array24hr_load(self, savefile):
         """load the 24hr running array"""
@@ -93,7 +94,7 @@ class Instrument:
                 for data_point in data_24hr:
                     w.write(data_point.print_values_posix() + "\n")
         except PermissionError:
-            logging.critical("CRITICAL: Unable to save 24 hr running array for " + str(self.name))
+            logging.critical("CRITICAL - instruments.py: Unable to save 24 hr running array for " + str(self.name))
 
     def get_raw_data(self):
         """load current data from original source. Should return a string "NULL" if getting fails"""
@@ -127,7 +128,7 @@ class Instrument:
                     dp = Datapoint(posixtime, item[1])
                     object_list.append(dp)
         except:
-            logging.warning("WARNING: Appears to be no data for " + str(self.name) + ". Ubnable to convert timestamps.")
+            logging.warning("WARNING - instruments.py: Appears to be no data for " + str(self.name) + ". Ubnable to convert timestamps.")
         return object_list
 
     def append_raw_data(self, currentlist, rawdata):
@@ -158,7 +159,7 @@ class Instrument:
                 for data_point in array_24hr:
                     w.write(data_point.print_values_utc() + "\n")
         except PermissionError:
-            logging.error("ERROR: Permission error - unable to write logfile for " + str(self.name))
+            logging.error("ERROR - instruments.py: Permission error - unable to write logfile for " + str(self.name))
 
     def process_data(self):
         """Wrapper function to process this instruments data gathering and parameter updating
@@ -174,7 +175,7 @@ class Instrument:
             self.array24hr_save(self.array24hr)
             self.save_logfile(self.array24hr)
         else:
-            logging.error("ERROR: unable to GET data for " + str(self.name))
+            logging.error("ERROR - instruments.py: unable to GET data for " + str(self.name))
             print("ERROR: unable to GET data for " + str(self.name))
 
 
@@ -192,7 +193,7 @@ class MagnetometerWebCSV(Instrument):
                     webdata = response.content.decode('utf-8')
                     webdata = webdata.split("\n")
                 except:
-                    logging.error("ERROR: unable to get web data for " + self.name)
+                    logging.error("ERROR - instruments.py: unable to get web data for " + self.name)
                     webdata = "NULL"
                 return webdata
 
@@ -225,7 +226,7 @@ class MagnetometerWebGOES(Instrument):
             webdata = response.content.decode('utf-8')
             webdata = webdata.split("\n")
         except:
-            logging.error("ERROR: unable to get web data for " + self.name)
+            logging.error("ERROR - instruments.py: unable to get web data for " + self.name)
             webdata = "NULL"
         return webdata
 
@@ -267,7 +268,7 @@ class Discovr_SolarWind_JSON(Instrument):
             response = requests.get(self.datasource, timeout=20, verify=False)
             webdata = response.json()
         except:
-            logging.error("ERROR: error getting data from " + str(self.name))
+            logging.error("ERROR - instruments.py: error getting data from " + str(self.name))
         return webdata
 
     def parse_raw_data(self, rawdata):
@@ -281,7 +282,7 @@ class Discovr_SolarWind_JSON(Instrument):
                 dp = time_tag + "," + speed + "," + density
                 returndata.append(dp)
         except ValueError:
-            logging.error("ERROR: no valid JSON data for " + str(self.name))
+            logging.error("ERROR - instruments.py: no valid JSON data for " + str(self.name))
             print("ERROR: no valid JSON data for " + str(self.name))
         return returndata
 
@@ -304,7 +305,7 @@ class Discovr_SolarWind_JSON(Instrument):
             raw_data = self.parse_raw_data(raw_data)
             self.save_logfile(raw_data)
         else:
-            logging.error("ERROR: unable to GET data for " + str(self.name))
+            logging.error("ERROR - instruments.py: unable to GET data for " + str(self.name))
             print("ERROR: unable to GET data for " + str(self.name))
 
 # ##########################################################
@@ -321,7 +322,7 @@ class Discovr_Bz_JSON(Instrument):
             response = requests.get(self.datasource, timeout=20)
             webdata = response.json()
         except:
-            logging.error("ERROR: error getting data from " + str(self.name))
+            logging.error("ERROR - instruments.py: error getting data from " + str(self.name))
         return webdata
 
     def parse_raw_data(self, rawdata):
@@ -334,7 +335,7 @@ class Discovr_Bz_JSON(Instrument):
                 dp = time_tag + "," + bz
                 returndata.append(dp)
         except ValueError:
-            logging.error("ERROR: no valid JSON data for " + str(self.name))
+            logging.error("ERROR - instruments.py: no valid JSON data for " + str(self.name))
             print("ERROR: no valid JSON data for " + str(self.name))
         return returndata
 
