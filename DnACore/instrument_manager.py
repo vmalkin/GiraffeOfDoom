@@ -282,7 +282,6 @@ if __name__ == "__main__":
                 new_dp = [instrument.name, bins_1min]
                 cleaned_data.append(new_dp)
 
-<<<<<<< HEAD
         # # Process the solar wind data separatly
         # for instrument in solarwind_list:
         #     instrument.process_data()
@@ -294,22 +293,6 @@ if __name__ == "__main__":
         #         cleanfile = "1mins_" + instrument.name + ".csv"
         #         save_logfile(cleanfile, bins_1min)
         #         processor.average_20mins(instrument.name, instrument.array24hr)
-=======
-        # Process the solar wind data separatly
-        for instrument in solarwind_list:
-            instrument.process_data()
-            if len(instrument.array24hr) > 10:
-                try:
-                    filteredlist = filter_median(instrument.array24hr)
-
-                    # apply a hash filter to convert all data to one minute intervals.
-                    bins_1min = filter_hashtable(filteredlist, 60)
-                    cleanfile = "1mins_" + instrument.name + ".csv"
-                    save_logfile(cleanfile, bins_1min)
-                    processor.average_20mins(instrument.name, instrument.array24hr)
-                except:
-                    print("There is still a problem with processing the solar wind data")
->>>>>>> 312322a8f657621c1a54f3b0dfa88a962dca5583
 
         #Done! wait for next iteration
         print("\nUpdate completed...")
