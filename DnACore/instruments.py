@@ -265,7 +265,7 @@ class Discovr_SolarWind_JSON(Instrument):
     def get_raw_data(self):
         webdata = "NULL"
         try:
-            response = requests.get(self.datasource, timeout=20, verify=False)
+            response = requests.get(self.datasource, timeout=20)
             webdata = response.json()
         except:
             logging.error("ERROR - instruments.py: error getting data from " + str(self.name))
@@ -279,8 +279,9 @@ class Discovr_SolarWind_JSON(Instrument):
                 time_tag = json_data[i][0]
                 density = json_data[i][1]
                 speed = json_data[i][2]
-                dp = time_tag + "," + speed + "," + density
+                dp = str(time_tag) + "," + str(speed) + "," + str(density)
                 returndata.append(dp)
+
         except ValueError:
             logging.error("ERROR - instruments.py: no valid JSON data for " + str(self.name))
             print("ERROR: no valid JSON data for " + str(self.name))

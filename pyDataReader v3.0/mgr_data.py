@@ -28,7 +28,7 @@ class DataList:
             print("WARNING: There was a problem accessing " + self._savefile)
             logging.warning("WARNING: File IO Exception raised whilst accessing file: " + self._savefile)
     
-    # load the data_array  of datapoints from the savefile
+    # load the data_array  of datapoints from the savefile on initialisation of the data manager
     def list_load(self):
         readings = []
         # Check if exists CurrentUTC file. If exists, load up Datapoint Array.
