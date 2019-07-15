@@ -17,7 +17,7 @@ class DataPoint:
     
     # create a string of labels
     def print_labels(self):
-        return "Date/Time, Data value, POSIX timestamp"
+        return "Date/Time, POSIX timestamp, Data value"
 
     # return the values of this datapoint as a astring
     def print_values(self, value_type):
