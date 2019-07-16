@@ -25,18 +25,15 @@ class ChartThread(Thread):
             time.sleep(60)
             # create the CSV files for general display
             print("Create Highcharts")
-            try:
-                templist = mgr_grapher.deblip(datamanager.data_array)
-            except:
-                print("Simple grapher failed")
-                logging.error("Simple grapher failed")
-            
-            # # Create the dH/dt display data
             # try:
-            #     mgr_dhdt.process_differences(datamanager.data_array)
+            templist = mgr_grapher.deblip(datamanager.data_array)
+            binlist = mgr_grapher.BinBinlist(60, templist, k.publish_folder + "/1minbins.csv")
+            binlist.process_datalist()
+            binlist.save_file()
             # except:
-            #     print("dH/dt processor failed")
-            #     logging.error("dH/dt processor failed")
+            #     print("Simple grapher failed")
+            #     logging.error("Simple grapher failed")
+
 
 if __name__ == "__main__":
     print("Pything Data Logger")

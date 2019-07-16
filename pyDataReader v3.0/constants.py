@@ -7,7 +7,7 @@ FILE_4DIFFS = "diffs.csv"
 publish_folder = "publish"
 
 # Comm port parameters - uncomment and change one of the portNames depending on your OS
-portName = 'Com13' # Windows
+portName = 'Com17' # Windows
 # portName = '/dev/tty.usbserial-A702O0K9' #MacOS
 # portName = '/dev/ttyUSB0'
 baudrate = 9600
