@@ -25,7 +25,7 @@ class BinDatapoint:
                 returnvalue = returnvalue + float(item)
             returnvalue = round((returnvalue / len(self.datavalues)), 2)
         else:
-            returnvalue = 0
+            returnvalue = ""
         return returnvalue
 
     def print_values(self):
@@ -39,16 +39,16 @@ class BinBinlist:
         self.savefilename = savefilename
         self.datalist = datalist
         self.binwidth = binwidth
-        self._posix_end = time.time()
-        self._posix_start = self._posix_end - (60 * 60 * 24)
+        self._posix_end = int(math.floor(time.time()))
+        self._posix_start = int(self._posix_end - (60 * 60 * 24))
 
         self.binlist = []
-        for i in range[self._posix_start, self._posix_end + self.binwidth, self.binwidth]:
+        for i in range(self._posix_start, self._posix_end + self.binwidth, self.binwidth):
             dp = BinDatapoint(i)
             self.binlist.append(dp)
 
     def _binlist_index(self, posixtime):
-        index = int(math.floor((posixtime - self._posix_start) / self.binwidth))
+        index = math.floor((float(posixtime) - float(self._posix_start)) / self.binwidth)
         return index
 
     def process_datalist(self):
@@ -72,9 +72,8 @@ def deblip(datalist):
     primedata = datalist[0].data_1
     primedate = datalist[0].posix_time
 
-    for i in range[1, len(datalist)]:
-        dhdt = datalist[i].data_1 - datalist[i-1].data_1
-
+    for i in range(1, len(datalist)):
+        dhdt = float(datalist[i].data_1) - float(datalist[i-1].data_1)
         if math.sqrt(dhdt**2) >= k.noise_spike:
             dhdt = 0
 
@@ -87,7 +86,7 @@ def deblip(datalist):
 
     for magdata in workinglist:
         newdate = magdata.posix_time
-        newdata = magdata.data_1 + returnlist[len(returnlist)-1].data_1
+        newdata = magdata.data_1 + float(returnlist[len(returnlist)-1].data_1)
         dp = DataPoint(newdate, newdata)
         returnlist.append(dp)
     return returnlist

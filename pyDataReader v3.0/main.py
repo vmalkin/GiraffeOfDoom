@@ -4,6 +4,7 @@ import mgr_serialport
 import mgr_grapher
 import datapoint
 import time
+import math
 import logging
 import re
 import sys
@@ -27,7 +28,8 @@ class ChartThread(Thread):
             print("Create Highcharts")
             # try:
             templist = mgr_grapher.deblip(datamanager.data_array)
-            binlist = mgr_grapher.BinBinlist(60, templist, k.publish_folder + "/1minbins.csv")
+
+            binlist = mgr_grapher.BinBinlist(60, templist, k.publish_folder + "/dna_fgm1.csv")
             binlist.process_datalist()
             binlist.save_file()
             # except:
@@ -65,7 +67,7 @@ if __name__ == "__main__":
         if re.match(r'-?\d+', magnetometer_reading):
 
             # get the current POSIX time
-            reading_time = time.time()
+            reading_time = math.floor(time.time())
 
             # create the datapoint. Print the values for the user.
             data_point = datapoint.DataPoint(reading_time, magnetometer_reading)
