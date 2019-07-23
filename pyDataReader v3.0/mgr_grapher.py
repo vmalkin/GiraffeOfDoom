@@ -73,7 +73,7 @@ def deblip(datalist):
         test_value = float(datalist[i].data_1) - float(datalist[i - 1].data_1)
         time_value = datalist[i].posix_time
 
-        if math.sqrt(test_value**2) >= k.noise_spike:
+        if float(math.sqrt(test_value**2)) > float(k.noise_spike):
             test_value = 0
 
         dp = DataPoint(time_value, test_value)
@@ -83,10 +83,10 @@ def deblip(datalist):
     startvalue = float(datalist[0].data_1)
     for item in workinglist:
         datetime = item.posix_time
-        startvalue = startvalue + float(item.data_1)
+        startvalue = startvalue + item.data_1
         dp = DataPoint(datetime, startvalue)
         returnlist.append(dp)
 
-    return returnlist
+    return workinglist
 
 
