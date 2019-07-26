@@ -26,15 +26,16 @@ class ChartThread(Thread):
             time.sleep(60)
             # create the CSV files for general display
             print("Create Highcharts")
-            # try:
-            templist = mgr_grapher.deblip(datamanager.data_array)
+            try:
+                templist = mgr_grapher.median(datamanager.data_array)
+                templist = mgr_grapher.recursive_filter(templist)
 
-            binlist = mgr_grapher.BinBinlist(60, templist, k.publish_folder + "/dna_fgm1.csv")
-            binlist.process_datalist()
-            binlist.save_file()
-            # except:
-            #     print("Simple grapher failed")
-            #     logging.error("Simple grapher failed")
+                binlist = mgr_grapher.BinBinlist(60, templist, k.publish_folder + "/dna_fgm1.csv")
+                binlist.process_datalist()
+                binlist.save_file()
+            except:
+                print("Simple grapher failed")
+                logging.error("Simple grapher failed")
 
 
 if __name__ == "__main__":

@@ -66,27 +66,36 @@ class BinBinlist:
             logging.warning("WARNING: File IO Exception raised whilst accessing file: " + self.savefilename)
 
 
-def deblip(datalist):
-    """Deblips data according to the blip value stored in constants.py"""
-    workinglist = []
-    for i in range(1, len(datalist)):
-        test_value = float(datalist[i].data_1) - float(datalist[i - 1].data_1)
-        time_value = datalist[i].posix_time
+def median(datalist):
+    returnlist = datalist
+    if len(datalist) > 10:
+        returnlist = []
+        for i in range(1, len(datalist) - 2):
+            sortlist = []
+            sortlist.append(datalist[i - 1].data_1)
+            sortlist.append(datalist[i].data_1)
+            sortlist.append(datalist[i + 1].data_1)
+            sortlist.sort()
+            data = sortlist[1]
+            datetime = datalist[i].posix_time
+            dp = DataPoint(datetime, data)
+            returnlist.append(dp)
+    return returnlist
 
-        if float(math.sqrt(test_value**2)) > float(k.noise_spike):
-            test_value = 0
 
-        dp = DataPoint(time_value, test_value)
-        workinglist.append(dp)
 
-    returnlist = []
-    startvalue = float(datalist[0].data_1)
-    for item in workinglist:
-        datetime = item.posix_time
-        startvalue = startvalue + item.data_1
-        dp = DataPoint(datetime, startvalue)
-        returnlist.append(dp)
+def recursive_filter(datalist):
+    returnlist = datalist
+    if len(datalist) > 2:
+        returnlist = []
+        prev_value = float(datalist[0].data_1)
+        for i in range(1, len(datalist)):
+            new_data_1 = (float(k.recursive_constant) * float(datalist[i].data_1)) + ((1 - k.recursive_constant) * prev_value)
+            dp = DataPoint(datalist[i].posix_time, new_data_1)
+            returnlist.append(dp)
+            prev_value = new_data_1
+    return returnlist
 
-    return workinglist
+
 
 
