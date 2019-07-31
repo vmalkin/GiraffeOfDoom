@@ -8,6 +8,7 @@ errorloglevel = logging.DEBUG
 logging.basicConfig(filename="errors.log", format='%(asctime)s %(message)s', level=errorloglevel)
 
 class BinDatapoint:
+    """The datapoint used when binning data"""
     def __init__(self, posixtime):
         self.posix_time = posixtime
         self.datavalues = []
@@ -66,7 +67,8 @@ class BinBinlist:
             logging.warning("WARNING: File IO Exception raised whilst accessing file: " + self.savefilename)
 
 
-def median(datalist):
+def median_filter(datalist):
+    """Simple median_filter filter - window sized fixed at 3 datapoints"""
     returnlist = datalist
     if len(datalist) > 10:
         returnlist = []
@@ -82,9 +84,26 @@ def median(datalist):
             returnlist.append(dp)
     return returnlist
 
+def median_window_filter(datalist, half_window_size):
+    """Median Filter w/flexible window size"""
+    returnlist = []
+    iterations = 2 * half_window_size + 1
+    if len(datalist) > iterations:
+        for i in range(half_window_size, len(datalist) - half_window_size):
+            templist = []
+            datetime = datalist[i].posix_time
+            for j in range(0, iterations):
+                data = datalist[i+j].data_1
+                templist.append(data)
+            templist.sort()
+            data = templist[half_window_size]
+            dp = DataPoint(datetime, data)
+            returnlist.append(dp)
+    return returnlist
 
 
 def recursive_filter(datalist):
+    """Recursive filter"""
     returnlist = datalist
     if len(datalist) > 2:
         returnlist = []

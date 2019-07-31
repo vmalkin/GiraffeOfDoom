@@ -27,7 +27,7 @@ class ChartThread(Thread):
             # create the CSV files for general display
             print("Create Highcharts")
             try:
-                templist = mgr_grapher.median(datamanager.data_array)
+                templist = mgr_grapher.median_filter(datamanager.data_array)
                 templist = mgr_grapher.recursive_filter(templist)
 
                 binlist = mgr_grapher.BinBinlist(60, templist, k.publish_folder + "/dna_fgm1.csv")
