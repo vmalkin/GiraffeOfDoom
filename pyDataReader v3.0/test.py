@@ -10,6 +10,6 @@ templist = mgr_grapher.median_filter(datamanager.data_array)
 # templist = mgr_grapher.median_window_filter(datamanager.data_array, 5)
 templist = mgr_grapher.recursive_filter(templist)
 
-binlist = mgr_grapher.BinBinlist(60, templist, k.publish_folder + "/dna_fgm1.csv")
+binlist = mgr_grapher.BinBinlist(600, templist, k.publish_folder + "/dna_fgm1.csv")
 binlist.process_datalist()
 binlist.save_file()
