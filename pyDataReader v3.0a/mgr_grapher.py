@@ -55,7 +55,8 @@ class BinBinlist:
     def process_datalist(self):
         for data in self.datalist:
             indexvalue = self._binlist_index(data.posix_time)
-            self.binlist[indexvalue].datavalues.append(data.data_1)
+            if indexvalue > 0:
+                self.binlist[indexvalue].datavalues.append(data.data_1)
 
     def save_file(self):
         try:
