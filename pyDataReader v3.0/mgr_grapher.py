@@ -55,7 +55,8 @@ class BinBinlist:
     def process_datalist(self):
         for data in self.datalist:
             indexvalue = self._binlist_index(data.posix_time)
-            self.binlist[indexvalue].datavalues.append(data.data_1)
+            if indexvalue >= 0:
+                self.binlist[indexvalue].datavalues.append(data.data_1)
 
     def save_file(self):
         try:
@@ -74,9 +75,9 @@ def median_filter(datalist):
         returnlist = []
         for i in range(1, len(datalist) - 2):
             sortlist = []
-            sortlist.append(datalist[i - 1].data_1)
-            sortlist.append(datalist[i].data_1)
-            sortlist.append(datalist[i + 1].data_1)
+            sortlist.append(float(datalist[i - 1].data_1))
+            sortlist.append(float(datalist[i].data_1))
+            sortlist.append(float(datalist[i + 1].data_1))
             sortlist.sort()
             data = sortlist[1]
             datetime = datalist[i].posix_time
@@ -87,13 +88,13 @@ def median_filter(datalist):
 def median_window_filter(datalist, half_window_size):
     """Median Filter w/flexible window size"""
     returnlist = []
-    if len(datalist) > half_window_size:
+    if len(datalist) > int(half_window_size):
         for i in range(half_window_size, len(datalist) - half_window_size):
             templist = []
             datetime = datalist[i].posix_time
             for j in range(half_window_size * -1 , half_window_size):
                 # print(str(i) + " " + str(j))
-                data = datalist[i+j].data_1
+                data = float(datalist[i+j].data_1)
                 templist.append(data)
             templist.sort()
             data = templist[half_window_size]
