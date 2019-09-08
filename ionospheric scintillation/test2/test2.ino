@@ -1,5 +1,5 @@
 #include <Wire.h> //Needed for I2C to GPS
-#include "SparkFun_Ublox_Arduino_Library.h" //http://librarymanager/All#SparkFun_Ublox_GPS
+#include "SparkFun_Ublox_Arduino_Library.h" 
 SFE_UBLOX_GPS gps;
 
 String nmea_sentence = "";
@@ -26,8 +26,6 @@ void loop()
 
 //This function gets called from the SparkFun Ublox Arduino Library
 //As each NMEA character comes in you can specify what to do with it
-//Useful for passing to other libraries like tinyGPS, MicroNMEA, or even
-//a buffer, radio, etc.
 void SFE_UBLOX_GPS::processNMEA(char incoming)
 {
   nmea_sentence = nmea_sentence + incoming;
