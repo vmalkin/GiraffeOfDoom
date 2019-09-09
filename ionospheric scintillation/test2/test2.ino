@@ -28,6 +28,7 @@ void loop()
 //As each NMEA character comes in you can specify what to do with it
 void SFE_UBLOX_GPS::processNMEA(char incoming)
 {
+//  Serial.print(incoming);
   nmea_sentence = nmea_sentence + incoming;
 
   if (incoming == '\r')
