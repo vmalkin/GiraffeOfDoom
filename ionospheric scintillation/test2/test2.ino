@@ -21,14 +21,13 @@ void setup()
 void loop()
 {
   gps.checkUblox(); //See if new data is available. Process bytes as they come in.
-  delay(1000); //Don't pound too hard on the I2C bus
+  delay(250); //Don't pound too hard on the I2C bus
 }
 
 //This function gets called from the SparkFun Ublox Arduino Library
 //As each NMEA character comes in you can specify what to do with it
 void SFE_UBLOX_GPS::processNMEA(char incoming)
 {
-//  Serial.print(incoming);
   nmea_sentence = nmea_sentence + incoming;
 
   if (incoming == '\r')
