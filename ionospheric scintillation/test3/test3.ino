@@ -2,9 +2,10 @@
 #include "SparkFun_Ublox_Arduino_Library.h" 
 SFE_UBLOX_GPS gps;
 
-int sentence_size = 82;
-char nmea_sentence[sentence_size];
-int input_index = 0;
+//char nmea_sentence[90];
+//int input_index = 0;
+
+String nmea_sentence;
 
 void setup()
 {
@@ -23,25 +24,24 @@ void setup()
 void loop()
 {
   gps.checkUblox(); //See if new data is available. Process bytes as they come in.
-  delay(250); //Don't pound too hard on the I2C bus
+  delay(1000); //Don't pound too hard on the I2C bus
 }
+
 
 //This function gets called from the SparkFun Ublox Arduino Library
 //As each NMEA character comes in you can specify what to do with it
 void SFE_UBLOX_GPS::processNMEA(char incoming)
 {
-  while (nmea_sentence[input_index] != '\r')
+  if (incoming != '\r')
   {
-    nmea_sentence[i] = incoming;
-    i++
+    nmea_sentence = nmea_sentence + incoming;
     }
-
-  // if nmea_sentence[5] == 'V'
-  // print only GSV sentence
-
-  //Reset 
-  memset(nmea_sentence, 0, sizeof(nmea_sentence));
-  i = 0;
-}
-
-
+  else
+  {
+    if (nmea_sentence[6] == 'V')
+    {
+      Serial.print(nmea_sentence);
+      }
+    nmea_sentence = "";
+    }
+  }
