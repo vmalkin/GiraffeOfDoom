@@ -16,8 +16,10 @@ class SatelliteCollator(Thread):
         Thread.__init__(self, name="SatelliteCollator")
     def run(self):
         while True:
-            print("Satellite List Size: " + str(sys.getsizeof(constellation)))
-
+            for i in range (0, len(constellation)):
+                if len(constellation[i].datalist) > 0:
+                    print("Satellite " + str(i) + " datalist is " + str(len(constellation[i].datalist)) + " records.")
+            print("\n")
             time.sleep(60)
 
 # aliases for the different constellations so we can make a hash table.
@@ -36,10 +38,13 @@ if __name__ == "__main__":
     except:
         print("Unable to start Satellite Collator")
 
+    print("Starting GPS collection...")
+
     while True:
         # $GLGSV,3,1,10,68,09,163,,69,33,118,,70,25,051,,74,08,348,*62
         # ['GLGSV', '76', '48', '296', '41', '77', '32', '221', '18', '85', '36', '123', '18', '86', '62', '219', '29']
         line = com.data_recieve()
+
         line = line[1:]
         line = line[:-3]
         line = line.split(",")
@@ -57,37 +62,37 @@ if __name__ == "__main__":
             prefix = glgsv
 
         try:
-            s1_nam = line[1]
-            # s1_alt = line[2]
-            # s1_azm = line[3]
-            # s1_snr = line[4]
-            constellation[prefix + s1_nam].speak(prefix + s1_nam)
+            s1_nam = int(line[1])
+            s1_alt = int(line[2])
+            s1_azm = int(line[3])
+            s1_snr = int(line[4])
+            constellation[prefix + s1_nam].datalist.append(mgr_satellites.Datapoint(posix_time, s1_alt, s1_azm,s1_snr))
         except:
-            print("Unable to add satellite " + str(prefix) + "No 1")
+            pass
 
         try:
-            s2_nam = line[5]
-            # s2_alt = line[6]
-            # s2_azm = line[7]
-            # s2_snr = line[8]
-            constellation[prefix + s2_nam].speak(prefix + s2_nam)
+            s2_nam = int(line[5])
+            s2_alt = int(line[6])
+            s2_azm = int(line[7])
+            s2_snr = int(line[8])
+            constellation[prefix + s2_nam].datalist.append(mgr_satellites.Datapoint(posix_time, s2_alt, s2_azm,s2_snr))
         except:
-            print("Unable to add satellite " + str(prefix) + "No 2")
+            pass
 
         try:
-            s3_nam = line[9]
-            # s3_alt = line[10]
-            # s3_azm = line[11]
-            # s3_snr = line[12]
-            constellation[prefix + s3_nam].speak(prefix + s3_nam)
+            s3_nam = int(line[9])
+            s3_alt = int(line[10])
+            s3_azm = int(line[11])
+            s3_snr = int(line[12])
+            constellation[prefix + s3_nam].datalist.append(mgr_satellites.Datapoint(posix_time, s3_alt, s3_azm, s3_snr))
         except:
-            print("Unable to add satellite " + str(prefix) + "No 3")
+            pass
 
         try:
-            s4_nam = line[13]
-            # s4_alt = line[14]
-            # s4_azm = line[15]
-            # s4_snr = line[16]
-            constellation[prefix + s4_nam].speak(prefix + s4_nam)
+            s4_nam = int(line[13])
+            s4_alt = int(line[14])
+            s4_azm = int(line[15])
+            s4_snr = int(line[16])
+            constellation[prefix + s4_nam].datalist.append(mgr_satellites.Datapoint(posix_time, s4_alt, s4_azm, s4_snr))
         except:
-            print("Unable to add satellite " + str(prefix) + "No 4")
+            pass

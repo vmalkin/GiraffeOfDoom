@@ -1,16 +1,16 @@
 #include <Wire.h> //I2C Arduino Library
-#include <avr/wdt.h>
+//#include <avr/wdt.h>
 #define addr 0x1E //I2C Address for The HMC5883
 
 int x,y,z; //triple axis data;
 double final_x, final_y, final_z;
 double counter = 0;
-#define output_delay 100
+#define output_delay 1500
 #define station_name "Ruru Observatory rapid-run No2"
 
 void setup(){
   // Enable the watchdog timer
-  wdt_enable(WDTO_8S);
+  //wdt_enable(WDTO_8S);
   
   Serial.begin(9600);
   Serial.println(station_name);
@@ -73,7 +73,5 @@ void loop(){
     }
 
     //Pat the dog...
-    wdt_reset();
+    //wdt_reset();
 }
-
-

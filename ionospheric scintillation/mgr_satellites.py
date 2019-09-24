@@ -8,6 +8,3 @@ class Datapoint:
 class Satellite:
     def __init__(self):
         self.datalist = []
-
-    def speak(self, name):
-        print("I am " + str(name))
