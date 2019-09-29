@@ -2,7 +2,7 @@ import re
 import time
 import calendar
 import datetime
-
+from statistics import mean, median
 
 # datafile = "/home/vmalkin/.wine/drive_c/Spectrum/screenshots/SID.csv"
 datafile = "SID.csv"
@@ -15,10 +15,10 @@ datalist = []
 
 
 class DataPoint:
-    def __init__(self, utc_time, data1, data2):
+    def __init__(self, utc_time, data1):
         self.utc_time = utc_time
         self.data1 = data1
-        self.data2 = data2
+
 
     def utc_to_posix(self):
         date_obj = datetime.datetime.strptime(self.utc_time, dt_format)
@@ -26,11 +26,55 @@ class DataPoint:
         return posixtime
 
     def print_header(self):
-        return "DateTime UTC, NWC, HWU)"
+        return "DateTime UTC, NWC"
 
     def print_values(self):
-        returnstring = str(self.utc_time) + "," + str(self.data1) + "," + str(self.data2)
+        returnstring = str(self.utc_time) + "," + str(self.data1)
         return returnstring
+
+
+def filter_median(object_list):
+    """Takes in a list of DataPoints and performs a median filter on the object's datavalue"""
+    filterwindow = 3
+    returnlist = []
+
+    for i in range(filterwindow, len(object_list) - 1):
+        data_store = []
+        time = object_list[i].utc_time
+
+        for j in range(0, filterwindow - 1):
+            k = i - j
+            data = float(object_list[k].data1)
+            data_store.append(data)
+
+        if len(data_store) > 0:
+            data = median(data_store)
+            dp = DataPoint(time, data)
+            returnlist.append(dp)
+
+    return returnlist
+
+
+def filter_binner(object_list):
+    """Takes in a list of DataPoints and bins the data"""
+    filterwindow = 6
+    returnlist = []
+
+    for i in range(filterwindow, len(object_list) - 1, filterwindow):
+        data_store = []
+        time = object_list[i].utc_time
+
+        for j in range(0, filterwindow - 1):
+            k = i - j
+            data = float(object_list[k].data1)
+            data_store.append(data)
+
+        if len(data_store) > 0:
+            data = round(mean(data_store), 3)
+            dp = DataPoint(time, data)
+            returnlist.append(dp)
+
+    return returnlist
 
 
 if __name__ == "__main__":
@@ -40,7 +84,7 @@ if __name__ == "__main__":
             line.strip("\n")
             line = line.split(",")
             if len(line) == 4:
-                dp = DataPoint(line[0], line[1], line[2].strip())
+                dp = DataPoint(line[0], line[1].strip())
                 if re.match(regex, line[0]):
                     datalist.append(dp)
 
@@ -50,9 +94,14 @@ if __name__ == "__main__":
     starttime = int(endtime - 86400)
 
     for dp in datalist:
-        print(str(dp.utc_to_posix()) + " " + str(starttime))
         if dp.utc_to_posix() > starttime:
             returnlist.append(dp)
+
+    # median filter
+    returnlist = filter_median(returnlist)
+
+    # one minute bins
+    returnlist = filter_binner(returnlist)
 
     # create the display file for upload to DunedinAurora.NZ
     with open(outputfile, "w") as g:
