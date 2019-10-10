@@ -6,10 +6,13 @@ import pickle
 from statistics import mean, median, stdev
 import os
 
-datafile = "broad_noise.csv"
+datafile = "vlf_ampl.csv"
 regex = r"\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d"
 dt_format = "%Y-%m-%d %H:%M:%S"
-
+stationname = "vtx"
+mean_file = stationname + "_mean.pkl"
+stdev_file = stationname + "_stdev.pkl"
+graphing_file = stationname + "_graph.csv"
 
 class DataPoint:
     def __init__(self, utc_time, data, median_value = 0, stdev_value = 0 ):
@@ -38,7 +41,7 @@ class DataPoint:
 
 def filter_median(object_list):
     """Takes in a list of DataPoints and performs a median filter on the object's datavalue"""
-    filterwindow = 150
+    filterwindow = 3
     returnlist = []
 
     for i in range(filterwindow, len(object_list) - 1):
@@ -47,7 +50,7 @@ def filter_median(object_list):
 
         for j in range(0, filterwindow - 1):
             k = i - j
-            data = object_list[k].data
+            data = float(object_list[k].data)
             data_store.append(data)
 
         if len(data_store) > 0:
@@ -55,6 +58,21 @@ def filter_median(object_list):
             dp = DataPoint(time, data)
             returnlist.append(dp)
 
+    return returnlist
+
+
+def filter_average(object_list):
+    returnlist = []
+    half_window = 20
+    for i in range(half_window, len(object_list) - half_window):
+        templist = []
+        datetime = object_list[i].utc_time
+        for j in range(-1 * half_window, half_window):
+            data = float(object_list[i+j].data)
+            templist.append(data)
+        avg_data = mean(templist)
+        dp = DataPoint(datetime, avg_data)
+        returnlist.append(dp)
     return returnlist
 
 
@@ -87,22 +105,28 @@ if __name__ == "__main__":
     mean_list = []
     stdev_list = []
 
-    if os.path.isfile("mean_list.pkl"):
-        mean_list = pickle.load(open("mean_list.pkl", "rb"))
+    if os.path.isfile(mean_file):
+        mean_list = pickle.load(open(mean_file, "rb"))
         print("List is " + str(len(mean_list)) + " records long")
 
-    if os.path.isfile("stdev_list.pkl"):
-        stdev_list = pickle.load(open("stdev_list.pkl", "rb"))
+    if os.path.isfile(stdev_file):
+        stdev_list = pickle.load(open(stdev_file, "rb"))
         print("List is " + str(len(stdev_list)) + " records long")
 
+    # ***********************************************************************************
+    # for master lists with several columns, parse out the data column, ignore the others
+    # ***********************************************************************************
     with open(datafile, "r") as c:
         for line in c:
             line.strip("\n")
             line = line.split(",")
-            dp = DataPoint(line[0], line[1].strip())
-            if re.match(regex, line[0]):
+            datething = line[0]
+            datathing = line[2].strip()  # Change this as needed
+            dp = DataPoint(datething, datathing)
+
+            if re.match(regex, datething):
                 datalist.append(dp)
-                temp_reading.append(float(line[1].strip()))
+                temp_reading.append(float(datathing))
 
     # calc median, std dev.
     # append med, stddev to lists. Calc median values of each
@@ -127,6 +151,7 @@ if __name__ == "__main__":
     endtime = time.time()
     starttime = endtime - 86400
 
+
     for dp in datalist:
         if dp.utc_to_posix() > starttime:
             returnlist.append(dp)
@@ -135,9 +160,12 @@ if __name__ == "__main__":
     returnlist = filter_median(returnlist)
     print("Median filter...")
 
-    # one minute bins
-    returnlist = filter_binner(returnlist)
-    print("Binning values...")
+    returnlist = filter_average(returnlist)
+    print("Smoothing data...")
+
+    # # one minute bins
+    # returnlist = filter_binner(returnlist)
+    # print("Binning values...")
 
     # add median and +/- 1xSD and 2xSD values
     finished_data = []
@@ -146,7 +174,7 @@ if __name__ == "__main__":
         finished_data.append(dp2)
 
     # create the display file for upload to DunedinAurora.NZ
-    with open("mag_noise.csv", "w") as g:
+    with open(graphing_file, "w") as g:
         g.write(finished_data[0].print_header() + "\n")
 
         for dp in finished_data:
@@ -154,8 +182,8 @@ if __name__ == "__main__":
     g.close()
     print("Data files created")
 
-    pickle.dump(mean_list, open("mean_list.pkl", "wb"),0)
-    pickle.dump(stdev_list, open("stdev_list.pkl", "wb"),0)
+    pickle.dump(mean_list, open(mean_file, "wb"),0)
+    pickle.dump(stdev_list, open(stdev_file, "wb"),0)
     print(mean_list)
     print(stdev_list)
     print("Stats data saved - FINISHED")
