@@ -111,4 +111,11 @@ if __name__ == "__main__":
 
             count = count + 1
 
+        for satellite in constellation:
+            satellite.satellite_print_values()
+            satellite.list_posix = []
+            satellite.list_snr = []
+            satellite.list_altitude = []
+            satellite.list_azimuth = []
+        print("Satellites reset for next count")
 
