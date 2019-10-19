@@ -39,7 +39,7 @@ if __name__ == "__main__":
 
 
     while True:
-        count  = 0
+        count = 0
         while count <= 60:
             # $GLGSV,3,1,10,68,09,163,,69,33,118,,70,25,051,,74,08,348,*62
             # ['GLGSV', '76', '48', '296', '41', '77', '32', '221', '18', '85', '36', '123', '18', '86', '62', '219', '29']
@@ -112,7 +112,7 @@ if __name__ == "__main__":
             count = count + 1
 
         for satellite in constellation:
-            satellite.satellite_print_values()
+            print(str(satellite.satellite_print_values()))
             satellite.list_posix = []
             satellite.list_snr = []
             satellite.list_altitude = []

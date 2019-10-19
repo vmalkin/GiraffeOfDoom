@@ -37,9 +37,12 @@ class Satellite:
         return mean_value
 
     def satellite_print_values(self):
-        ivaluelist = self.return_i_values()
-        stdevi = self.value_stdev(ivaluelist)
-        meani = self.value_mean(ivaluelist)
-        s4 = stdevi / meani
-        returnstring = self.mean_time() + "," + self.mean_altitude() + "," + self.mean_azimuth() + "," + s4
+        returnstring = ""
+        if len(self.list_altitude) > 2:
+            if self.mean_altitude() > 20:
+                if len(self.list_snr) > 2:
+                    ivalues = self.return_i_values()
+                    s4 = round((self.value_stdev(ivalues) / self.value_mean(ivalues)), 4)
+                    timestamp = round(self.mean_time(), 0)
+                    returnstring = str(timestamp) + "," + str(s4)
         return returnstring
