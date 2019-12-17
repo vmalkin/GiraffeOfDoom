@@ -54,24 +54,22 @@ class DPhashtable:
 
 # Set up the list of sensors here
 logging.debug("Setting up magnetometer stations")
-
-rapid_run = MagnetometerWebCSV("Ruru_Rapidrun",
+induction = MagnetometerWebCSV("Induction_GIC",
                                "Dunedin",
-                               "Ruru Observatory",
-                               r"\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d",
-                               "%Y-%m-%d %H:%M:%S",
-                               1,
-                               "http://www.ruruobservatory.org.nz/dr01_1hr.csv")
+                               "Dunedin Aurora",
+                               r"\d\d\d\d-\d\d-\d\d \d\d:\d\d",
+                               "%Y-%m-%d %H:%M",
+                               9,
+                               "http://www.ruruobservatory.org.nz/induction_gic.csv")
 
 logging.debug("appending to list")
 instrument_list = []
 
 try:
-    instrument_list.append(rapid_run)
+    instrument_list.append(induction)
 except:
-    logging.WARNING("Unable to load Ruru Observatory")
-    print("Unable to load Ruru Observatory")
-
+    logging.WARNING("Unable to load induction coil data")
+    print("Unable to load induction coil data")
 
 def filter_median(array_to_parse):
     returnlist = []
