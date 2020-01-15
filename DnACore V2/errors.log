@@ -1,0 +1,40 @@
+2020-01-15 17:46:06,008 ERROR - instruments.py: error getting data from DISCOVR solar wind
+2020-01-15 17:46:06,011 ERROR - instruments.py: unable to GET data for DISCOVR solar wind
+2020-01-15 17:46:06,012 ERROR - instruments.py: unable to GET data for sw_speed
+2020-01-15 17:46:06,012 ERROR - instruments.py: unable to GET data for sw_density
+2020-01-15 17:48:21,753 ERROR - instruments.py: error getting data from DISCOVR solar wind
+2020-01-15 17:48:21,755 ERROR - instruments.py: unable to GET data for DISCOVR solar wind
+2020-01-15 17:48:21,755 ERROR - instruments.py: unable to GET data for sw_speed
+2020-01-15 17:48:21,755 ERROR - instruments.py: unable to GET data for sw_density
+2020-01-15 17:53:22,137 ERROR - instruments.py: error getting data from DISCOVR solar wind
+2020-01-15 17:53:22,140 ERROR - instruments.py: unable to GET data for DISCOVR solar wind
+2020-01-15 17:53:22,140 ERROR - instruments.py: unable to GET data for sw_speed
+2020-01-15 17:53:22,140 ERROR - instruments.py: unable to GET data for sw_density
+2020-01-15 17:53:36,061 ERROR - instruments.py: error getting data from DISCOVR solar wind
+2020-01-15 17:53:36,064 ERROR - instruments.py: unable to GET data for DISCOVR solar wind
+2020-01-15 17:53:36,064 ERROR - instruments.py: unable to GET data for sw_speed
+2020-01-15 17:53:36,064 ERROR - instruments.py: unable to GET data for sw_density
+2020-01-15 17:59:38,608 ERROR - instruments.py: error getting data from DISCOVR solar wind
+2020-01-15 17:59:38,611 ERROR - instruments.py: unable to GET data for DISCOVR solar wind
+2020-01-15 17:59:38,611 ERROR - instruments.py: unable to GET data for sw_speed
+2020-01-15 17:59:38,612 ERROR - instruments.py: unable to GET data for sw_density
+2020-01-15 17:59:50,012 ERROR - instruments.py: error getting data from DISCOVR solar wind
+2020-01-15 17:59:50,015 ERROR - instruments.py: unable to GET data for DISCOVR solar wind
+2020-01-15 17:59:50,015 ERROR - instruments.py: unable to GET data for sw_speed
+2020-01-15 17:59:50,015 ERROR - instruments.py: unable to GET data for sw_density
+2020-01-15 18:11:24,180 ERROR - instruments.py: error getting data from DISCOVR solar wind
+2020-01-15 18:11:24,183 ERROR - instruments.py: unable to GET data for DISCOVR solar wind
+2020-01-15 18:13:47,788 ERROR - instruments.py: error getting data from DISCOVR solar wind
+2020-01-15 18:13:47,790 ERROR - instruments.py: unable to GET data for DISCOVR solar wind
+2020-01-15 18:15:10,387 ERROR - instruments.py: error getting data from DISCOVR solar wind
+2020-01-15 18:16:25,623 ERROR - instruments.py: error getting data from DISCOVR solar wind
+2020-01-15 18:27:45,142 ERROR - instruments.py: error getting data from DISCOVR solar wind
+2020-01-15 18:28:38,456 ERROR - instruments.py: error getting data from DISCOVR solar wind
+2020-01-15 18:28:46,940 ERROR - instruments.py: error getting data from DISCOVR solar wind
+2020-01-15 18:40:07,303 ERROR - instruments.py: error getting data from DISCOVR solar wind
+2020-01-15 18:44:46,634 ERROR - instruments.py: error getting data from DISCOVR solar wind
+2020-01-15 18:44:46,637 ERROR - instruments.py: unable to GET data for DISCOVR solar wind
+2020-01-15 19:15:32,754 ERROR - instruments.py: error getting data from DISCOVR solar wind
+2020-01-15 19:15:32,756 ERROR - instruments.py: unable to GET data for DISCOVR solar wind
+2020-01-15 19:22:41,765 ERROR - instruments.py: error getting data from DISCOVR_Bz
+2020-01-15 19:22:41,777 ERROR - instruments.py: unable to GET data for DISCOVR_Bz

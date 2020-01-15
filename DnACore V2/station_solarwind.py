@@ -88,17 +88,17 @@ except:
     logging.WARNING("Unable to load proxy solar wind data")
     print("Unable to load DISCOVR")
 
-try:
-    solarwind_list.append(ds_windspeed)
-except:
-    logging.WARNING("Unable to load solar wind speed")
-    print("Unable to load DISCOVR")
-
-try:
-    solarwind_list.append(ds_winddens)
-except:
-    logging.WARNING("Unable to load solar wind density")
-    print("Unable to load DISCOVR")
+# try:
+#     solarwind_list.append(ds_windspeed)
+# except:
+#     logging.WARNING("Unable to load solar wind speed")
+#     print("Unable to load DISCOVR")
+#
+# try:
+#     solarwind_list.append(ds_winddens)
+# except:
+#     logging.WARNING("Unable to load solar wind density")
+#     print("Unable to load DISCOVR")
 
 
 def filter_median(array_to_parse):
@@ -189,32 +189,32 @@ if __name__ == "__main__":
     # process raw data to remove spikes, blips, etc, for display,
     # creation of indices, etc
     cleaned_data = []
-    for instrument in instrument_list:
-        if len(instrument.array24hr) > 10:
-            startvalue = instrument.array24hr[0].data
-            # filteredlist = filter_median(instrument.array24hr)
-            filteredlist = filter_dvdt(instrument.array24hr)
-            filteredlist = filter_deblip(filteredlist, instrument.blipsize)
-            reconstructed_data = filter_reconstruction(startvalue, filteredlist)
-
-            # apply a hash filter to convert all data to one minute intervals.
-            bins_1min = filter_hashtable(reconstructed_data, 60)
-            cleanfile = "1mins_" + instrument.name + ".csv"
-            save_logfile(cleanfile, bins_1min)
-
-            # Save reconstructed data here to perform analysis
-            # GOES data still seems to be off, but the shape is more consistent
-            new_dp = [instrument.name, bins_1min]
-            cleaned_data.append(new_dp)
-
-    # # Process the solar wind data separatly
-    # for instrument in solarwind_list:
-    #     instrument.process_data()
+    # for instrument in instrument_list:
     #     if len(instrument.array24hr) > 10:
-    #         filteredlist = filter_median(instrument.array24hr)
+    #         startvalue = instrument.array24hr[0].data
+    #         # filteredlist = filter_median(instrument.array24hr)
+    #         filteredlist = filter_dvdt(instrument.array24hr)
+    #         filteredlist = filter_deblip(filteredlist, instrument.blipsize)
+    #         reconstructed_data = filter_reconstruction(startvalue, filteredlist)
     #
     #         # apply a hash filter to convert all data to one minute intervals.
-    #         bins_1min = filter_hashtable(filteredlist, 60)
+    #         bins_1min = filter_hashtable(reconstructed_data, 60)
     #         cleanfile = "1mins_" + instrument.name + ".csv"
     #         save_logfile(cleanfile, bins_1min)
-    #         processor.average_20mins(instrument.name, instrument.array24hr)
+    #
+    #         # Save reconstructed data here to perform analysis
+    #         # GOES data still seems to be off, but the shape is more consistent
+    #         new_dp = [instrument.name, bins_1min]
+    #         cleaned_data.append(new_dp)
+
+    # Process the solar wind data separatly
+    for instrument in solarwind_list:
+        instrument.process_data()
+        if len(instrument.array24hr) > 10:
+            filteredlist = filter_median(instrument.array24hr)
+
+            # apply a hash filter to convert all data to one minute intervals.
+            bins_1min = filter_hashtable(filteredlist, 60)
+            cleanfile = "1mins_" + instrument.name + ".csv"
+            save_logfile(cleanfile, bins_1min)
+            # processor.average_20mins(instrument.name, instrument.array24hr)
