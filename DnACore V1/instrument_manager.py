@@ -126,54 +126,54 @@ dscovr_bz = Discovr_Bz_JSON("DISCOVR_Bz",
 logging.debug("appending to list")
 instrument_list = []
 
-try:
-    instrument_list.append(rapid_run)
-except:
-    logging.WARNING("Unable to load Ruru Observatory")
-    print("Unable to load Ruru Observatory")
+# try:
+#     instrument_list.append(rapid_run)
+# except:
+#     logging.WARNING("Unable to load Ruru Observatory")
+#     print("Unable to load Ruru Observatory")
+#
+# try:
+#     instrument_list.append(induction)
+# except:
+#     logging.WARNING("Unable to load induction coil data")
+#     print("Unable to load induction coil data")
+#
+# try:
+#     instrument_list.append(goes1)
+# except:
+#     logging.WARNING("Unable to load GOES 1")
+#     print("Unable to load GOES 1")
+#
+# try:
+#     instrument_list.append(goes2)
+# except:
+#     logging.WARNING("Unable to load GOES 2")
+#     print("Unable to load GOES 2")
+#
+# try:
+#     instrument_list.append(dscovr_bz)
+# except:
+#     logging.WARNING("Unable to load DISCOVR")
+#     print("Unable to load DISCOVR")
 
+solarwind_list = []
 try:
-    instrument_list.append(induction)
+    solarwind_list.append(proxy_solarwind)
 except:
-    logging.WARNING("Unable to load induction coil data")
-    print("Unable to load induction coil data")
-
-try:
-    instrument_list.append(goes1)
-except:
-    logging.WARNING("Unable to load GOES 1")
-    print("Unable to load GOES 1")
-
-try:
-    instrument_list.append(goes2)
-except:
-    logging.WARNING("Unable to load GOES 2")
-    print("Unable to load GOES 2")
-
-try:
-    instrument_list.append(dscovr_bz)
-except:
-    logging.WARNING("Unable to load DISCOVR")
+    logging.WARNING("Unable to load proxy solar wind data")
     print("Unable to load DISCOVR")
 
-# solarwind_list = []
-# try:
-#     solarwind_list.append(proxy_solarwind)
-# except:
-#     logging.WARNING("Unable to load proxy solar wind data")
-#     print("Unable to load DISCOVR")
-#
-# try:
-#     solarwind_list.append(ds_windspeed)
-# except:
-#     logging.WARNING("Unable to load solar wind speed")
-#     print("Unable to load DISCOVR")
-#
-# try:
-#     solarwind_list.append(ds_winddens)
-# except:
-#     logging.WARNING("Unable to load solar wind density")
-#     print("Unable to load DISCOVR")
+try:
+    solarwind_list.append(ds_windspeed)
+except:
+    logging.WARNING("Unable to load solar wind speed")
+    print("Unable to load DISCOVR")
+
+try:
+    solarwind_list.append(ds_winddens)
+except:
+    logging.WARNING("Unable to load solar wind density")
+    print("Unable to load DISCOVR")
 
 def filter_median(array_to_parse):
     returnlist = []
@@ -282,17 +282,17 @@ if __name__ == "__main__":
                 new_dp = [instrument.name, bins_1min]
                 cleaned_data.append(new_dp)
 
-        # # Process the solar wind data separatly
-        # for instrument in solarwind_list:
-        #     instrument.process_data()
-        #     if len(instrument.array24hr) > 10:
-        #         filteredlist = filter_median(instrument.array24hr)
-        #
-        #         # apply a hash filter to convert all data to one minute intervals.
-        #         bins_1min = filter_hashtable(filteredlist, 60)
-        #         cleanfile = "1mins_" + instrument.name + ".csv"
-        #         save_logfile(cleanfile, bins_1min)
-        #         processor.average_20mins(instrument.name, instrument.array24hr)
+        # Process the solar wind data separatly
+        for instrument in solarwind_list:
+            instrument.process_data()
+            if len(instrument.array24hr) > 10:
+                filteredlist = filter_median(instrument.array24hr)
+        
+                # apply a hash filter to convert all data to one minute intervals.
+                bins_1min = filter_hashtable(filteredlist, 60)
+                cleanfile = "1mins_" + instrument.name + ".csv"
+                save_logfile(cleanfile, bins_1min)
+                processor.average_20mins(instrument.name, instrument.array24hr)
 
         #Done! wait for next iteration
         print("\nUpdate completed...")
