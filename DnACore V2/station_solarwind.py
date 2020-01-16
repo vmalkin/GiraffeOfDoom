@@ -88,17 +88,17 @@ except:
     logging.WARNING("Unable to load proxy solar wind data")
     print("Unable to load DISCOVR")
 
-# try:
-#     solarwind_list.append(ds_windspeed)
-# except:
-#     logging.WARNING("Unable to load solar wind speed")
-#     print("Unable to load DISCOVR")
-#
-# try:
-#     solarwind_list.append(ds_winddens)
-# except:
-#     logging.WARNING("Unable to load solar wind density")
-#     print("Unable to load DISCOVR")
+try:
+    solarwind_list.append(ds_windspeed)
+except:
+    logging.WARNING("Unable to load solar wind speed")
+    print("Unable to load DISCOVR")
+
+try:
+    solarwind_list.append(ds_winddens)
+except:
+    logging.WARNING("Unable to load solar wind density")
+    print("Unable to load DISCOVR")
 
 
 def filter_median(array_to_parse):
