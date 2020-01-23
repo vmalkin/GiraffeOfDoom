@@ -10,10 +10,10 @@ import pickle
 from statistics import mean, median, stdev
 import os
 
-datafile = "mag_riometer.csv"
+datafile = "power_harmonics.csv"
 regex = r"\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d"
 dt_format = "%Y-%m-%d %H:%M:%S"
-stationname = "mag_riometer"
+stationname = "dna_power_harmonics"
 mean_file = stationname + "_mean.pkl"
 stdev_file = stationname + "_stdev.pkl"
 graphing_file = stationname + "_graph.csv"

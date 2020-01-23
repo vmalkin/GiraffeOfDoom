@@ -9,18 +9,14 @@ ERROR
 CRITICAL
 """
 from instruments import Datapoint
-from instruments import MagnetometerWebCSV
-from instruments import MagnetometerWebGOES
 from instruments import Discovr_Bz_JSON
-from instruments import Discovr_SolarWind_JSON
-from instruments import CSVFile_Windspeed
-from instruments import CSVFile_Density
 
 from time import sleep, time
 import datetime
 import constants as k
 import logging
 import math
+import json
 
 
 errorloglevel = logging.WARNING
@@ -185,3 +181,15 @@ if __name__ == "__main__":
             # GOES data still seems to be off, but the shape is more consistent
             new_dp = [instrument.name, bins_1min]
             cleaned_data.append(new_dp)
+
+    return_dict = {}
+    for instrument in instrument_list:
+        if len(instrument.array24hr) > 0:
+            lastindex = len(instrument.array24hr) - 1
+            return_dict["name"] = instrument.name
+            return_dict["posix_time"] = instrument.array24hr[lastindex].posix_time
+            return_dict["data"] = instrument.array24hr[lastindex].data
+        jsonfile = instrument.name + ".json"
+        with open(jsonfile, 'w') as j:
+            json.dump(return_dict, j)
+        print(return_dict)

@@ -18,6 +18,7 @@ import datetime
 import constants as k
 import logging
 import math
+import json
 
 
 errorloglevel = logging.WARNING
@@ -186,27 +187,6 @@ if __name__ == "__main__":
     for instrument in instrument_list:
         instrument.process_data()
 
-    # process raw data to remove spikes, blips, etc, for display,
-    # creation of indices, etc
-    cleaned_data = []
-    # for instrument in instrument_list:
-    #     if len(instrument.array24hr) > 10:
-    #         startvalue = instrument.array24hr[0].data
-    #         # filteredlist = filter_median(instrument.array24hr)
-    #         filteredlist = filter_dvdt(instrument.array24hr)
-    #         filteredlist = filter_deblip(filteredlist, instrument.blipsize)
-    #         reconstructed_data = filter_reconstruction(startvalue, filteredlist)
-    #
-    #         # apply a hash filter to convert all data to one minute intervals.
-    #         bins_1min = filter_hashtable(reconstructed_data, 60)
-    #         cleanfile = "1mins_" + instrument.name + ".csv"
-    #         save_logfile(cleanfile, bins_1min)
-    #
-    #         # Save reconstructed data here to perform analysis
-    #         # GOES data still seems to be off, but the shape is more consistent
-    #         new_dp = [instrument.name, bins_1min]
-    #         cleaned_data.append(new_dp)
-
     # Process the solar wind data separatly
     for instrument in solarwind_list:
         instrument.process_data()
@@ -217,4 +197,15 @@ if __name__ == "__main__":
             bins_1min = filter_hashtable(filteredlist, 60)
             cleanfile = "1mins_" + instrument.name + ".csv"
             save_logfile(cleanfile, bins_1min)
-            # processor.average_20mins(instrument.name, instrument.array24hr)
+
+    return_dict = {}
+    for instrument in solarwind_list:
+        if len(instrument.array24hr) > 0:
+            lastindex = len(instrument.array24hr) - 1
+            return_dict["name"] = instrument.name
+            return_dict["posix_time"] = instrument.array24hr[lastindex].posix_time
+            return_dict["data"] = instrument.array24hr[lastindex].data
+        jsonfile = instrument.name + ".json"
+        with open(jsonfile, 'w') as j:
+            json.dump(return_dict, j)
+        print(return_dict)

@@ -279,10 +279,16 @@ class Discovr_SolarWind_JSON(Instrument):
                 time_tag = json_data[i][0]
                 density = json_data[i][1]
                 speed = json_data[i][2]
-                if density == "None":
+                if re.match(r"^[0-9]*[0-9.]*$", density):
+                    pass
+                else:
                     density = ""
-                if speed == "None":
+
+                if re.match(r"^[0-9]*[0-9.]*$", speed):
+                    pass
+                else:
                     speed = ""
+
                 dp = str(time_tag) + "," + str(speed) + "," + str(density)
                 returndata.append(dp)
 
