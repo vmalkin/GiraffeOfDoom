@@ -211,6 +211,44 @@ class MagnetometerWebCSV(Instrument):
                         returndata.append(dp)
                 return returndata
 
+# ##########################################################
+# Child Instrument Class - Satellite GOES JSON format data
+# ##########################################################
+class MagGOES_16(Instrument):
+    """Child class of Instrument - data from the GOES satellites"""
+    def __init__(self, name, location, owner, dt_regex, dt_format, blipsize, datasource):
+        Instrument.__init__(self, name, location, owner, dt_regex, dt_format, blipsize, datasource)
+
+    def get_raw_data(self):
+        jsondata = "NULL"
+        try:
+            jsondata = requests.get(self.datasource, timeout=20).json()
+        except:
+            logging.error("ERROR - instruments.py: error getting data from " + str(self.name))
+        return jsondata
+
+    def parse_raw_data(self, jsondata):
+        returndata = []
+        try:
+            json_data = jsondata
+            for i in range(1, len(json_data)):
+                time_tag = json_data[i]['time_tag']
+                arcjet_flag = str(json_data[i]['arcjet_flag'])
+                hp = str(round(json_data[i]['Hp'], 4))
+
+                if re.match("False", arcjet_flag):
+                    if re.match(r"^[0-9]*[0-9.]*$", hp):
+                        t = time_tag.split("Z")
+                        t = t[0].split("T")
+                        dt = t[0] + " " + t[1]
+                        dp = str(dt) + "," + str(hp)
+
+                        returndata.append(dp)
+        except ValueError:
+            logging.error("ERROR - instruments.py: no valid JSON data for " + str(self.name))
+            print("ERROR: no valid JSON data for " + str(self.name))
+        print(returndata)
+        return returndata
 
 # ##########################################################
 # Child Instrument Class - Satellite GOES mag data
