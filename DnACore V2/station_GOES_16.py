@@ -59,11 +59,10 @@ logging.debug("Setting up magnetometer stations")
 goes16 = MagGOES_16("GOES_16",
                             "Geostationary Orbit",
                             "NASA",
-                            r"\d\d\d\d-\d\d-\d\d \d\d:\d\d",
-                            "%Y-%m-%d %H:%M",
+                            r"\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d",
+                            "%Y-%m-%d %H:%M:%S",
                             1,
                             "https://services.swpc.noaa.gov/json/goes/primary/magnetometers-6-hour.json")
-
 
 def filter_median(array_to_parse):
     returnlist = []
@@ -156,7 +155,7 @@ if __name__ == "__main__":
         startvalue = goes16.array24hr[0].data
         filteredlist = filter_median(goes16.array24hr)
         # filteredlist = filter_dvdt(instrument.array24hr)
-        # filteredlist = filter_deblip(filteredlist, instrument.blipsize)
+        # filteredlist = filter_deblip(filteredlist, goes16.blipsize)
         # # reconstructed_data = filter_reconstruction(startvalue, filteredlist)
 
         # apply a hash filter to convert all data to one minute intervals.

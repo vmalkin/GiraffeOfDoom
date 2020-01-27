@@ -119,16 +119,18 @@ class Instrument:
     def convert_data(self, rawdata, datetime_regex):
         """Convert CSV or JSON data to datapoint objects"""
         object_list = []
-        try:
-            for item in rawdata:
-                item = item.split(",")
-                if re.match(datetime_regex, item[0]):
-                    date_obj = datetime.datetime.strptime(item[0], self.dt_format)
-                    posixtime = calendar.timegm(date_obj.timetuple())
-                    dp = Datapoint(posixtime, item[1])
-                    object_list.append(dp)
-        except:
-            logging.warning("WARNING - instruments.py: Appears to be no data for " + str(self.name) + ". Ubnable to convert timestamps.")
+        # try:
+        for item in rawdata:
+            item = item.split(",")
+            if re.match(datetime_regex, item[0]):
+                date_obj = datetime.datetime.strptime(item[0], self.dt_format)
+                posixtime = calendar.timegm(date_obj.timetuple())
+                dp = Datapoint(posixtime, item[1])
+                object_list.append(dp)
+            else:
+                print("Regex fail on datetime in instrument.convert_data()")
+        # except:
+        #     logging.warning("WARNING - instruments.py: Appears to be no data for " + str(self.name) + ". Ubnable to convert timestamps.")
         return object_list
 
     def append_raw_data(self, currentlist, rawdata):
@@ -242,12 +244,13 @@ class MagGOES_16(Instrument):
                         t = t[0].split("T")
                         dt = t[0] + " " + t[1]
                         dp = str(dt) + "," + str(hp)
-
                         returndata.append(dp)
+                else:
+                    print("Arcjet Active")
+
         except ValueError:
             logging.error("ERROR - instruments.py: no valid JSON data for " + str(self.name))
             print("ERROR: no valid JSON data for " + str(self.name))
-        print(returndata)
         return returndata
 
 # ##########################################################
