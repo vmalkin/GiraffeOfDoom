@@ -1,3 +1,4 @@
+
 drop table if exists station;
 drop table if exists station_data;
 PRAGMA foreign_keys = ON;

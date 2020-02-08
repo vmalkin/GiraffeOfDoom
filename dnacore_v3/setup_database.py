@@ -1,8 +1,7 @@
 import sqlite3
+import constants as k
 
-dbfile = "dna_core.db"
-
-dna_core = sqlite3.connect(dbfile)
+dna_core = sqlite3.connect(k.dbfile)
 
 # PRAGMA foreign_keys = ON; for each NEW instance of a connector, otherwise FK constraints
 #  are not enforced.
@@ -32,7 +31,7 @@ for station in stations:
     db.execute("insert into station(station_id) values (?)", (station,))
 
 dna_core.commit()
-#
+
 # for row in db.execute('select * from station'):
 #     print(row)
 
