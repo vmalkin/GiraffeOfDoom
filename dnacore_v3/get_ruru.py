@@ -17,11 +17,36 @@ logging.info("Created error log for this session")
 
 class State:
     """State Class - a series of states for this FSM"""
-    s_data_append = "data_append"
-    s_data_connect = "data_connect"
     s_initialise = "initialise"
+    s_data_connect = "data_connect"
+    s_data_append = "data_append"
     s_error = "error"
     s_exit = "exit"
+
+    def do_initialise(self):
+        pass
+
+    def do_data_connect(self):
+        print("Connecting...")
+        returnmessage = "success"
+        return returnmessage
+
+    def do_data_append(self):
+        print("Appending...")
+        returnmessage = "success"
+        return returnmessage
+
+    def do_error(self, errormessage="error"):
+        print("AN error occurred")
+        returnmessage = "success"
+        try:
+            logging.error(errormessage)
+        except Exception:
+            returnmessage = "success"
+        return returnmessage
+
+    def do_exit(self):
+        pass
 
 
 dna_core = sqlite3.connect(k.dbfile)
@@ -39,31 +64,32 @@ def exit_app():
 if __name__ == "__main__":
     while True:
         # #######################################
-        # perform state action
-        if machine_state == state.s_initialise:
-            print(machine_state)
-
-        if machine_state == state.s_exit:
-            print(machine_state)
-
-        # #######################################
         # test to see if we can change state
         if machine_state == state.s_initialise:
-            print("init --> Data connect")
+            result = state.do_initialise()
             machine_state = state.s_data_connect
 
         if machine_state == state.s_data_connect:
-            machine_state = state.s_data_append
+            result = state.do_data_connect()
+            if result == "success":
+                machine_state = state.s_data_append
+            elif result == "fail":
+                machine_state = state.s_error
 
         if machine_state == state.s_data_append:
-            machine_state = state.s_exit
+            result = state.do_data_append()
+            if result == "success":
+                machine_state = state.s_exit
+            elif result == "fail":
+                machine_state = state.s_error
 
         if machine_state == state.s_error:
-            machine_state == state.s_exit
+            state.do_error()
+            machine_state = state.s_exit
 
         if machine_state == state.s_exit:
-            print(machine_state)
             break
 
+    print("Closing database and exiting")
     dna_core.commit()
     db.close()
