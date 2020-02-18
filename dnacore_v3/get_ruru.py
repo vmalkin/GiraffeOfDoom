@@ -1,6 +1,8 @@
 import sqlite3
 import constants as k
 import logging
+import requests
+import datetime, time
 
 """
 logging levels in order of least --> most severity:
@@ -14,81 +16,61 @@ errorloglevel = logging.WARNING
 logging.basicConfig(filename=k.error_log, format='%(asctime)s %(message)s', level=errorloglevel)
 logging.info("Created error log for this session")
 
-
-class State:
-    """State Class - a series of states for this FSM"""
-    s_initialise = "initialise"
-    s_data_connect = "data_connect"
-    s_data_append = "data_append"
-    s_error = "error"
-    s_exit = "exit"
-
-    def do_initialise(self):
-        pass
-
-    def do_data_connect(self):
-        print("Connecting...")
-        returnmessage = "success"
-        return returnmessage
-
-    def do_data_append(self):
-        print("Appending...")
-        returnmessage = "success"
-        return returnmessage
-
-    def do_error(self, errormessage="error"):
-        print("AN error occurred")
-        returnmessage = "success"
-        try:
-            logging.error(errormessage)
-        except Exception:
-            returnmessage = "success"
-        return returnmessage
-
-    def do_exit(self):
-        pass
-
-
 dna_core = sqlite3.connect(k.dbfile)
 db = dna_core.cursor()
-state = State()
-
-machine_state = state.s_initialise
-error_string = ""
+datasource = "http://www.ruruobservatory.org.nz/dr01_1hr.csv"
 
 
-def exit_app():
-    pass
+def posix2utc(self, posixvalue):
+    # utctime = datetime.datetime.fromtimestamp(int(posixvalue)).strftime('%Y-%m-%d %H:%M:%S')
+    utctime = datetime.datetime.utcfromtimestamp(int(posixvalue)).strftime('%Y-%m-%d %H:%M:%S')
+    return utctime
 
+def utc2posix(utc_dt):
+    utc_dt = "2020-02-18 09:50:00"
+    dt = datetime.datetime.strptime(utc_dt, '%Y-%m-%d %H:%M:%S').utctimetuple()
+    print(time.time())
+    print(time.mktime(dt))
 
 if __name__ == "__main__":
-    while True:
-        # #######################################
-        # test to see if we can change state
-        if machine_state == state.s_initialise:
-            result = state.do_initialise()
-            machine_state = state.s_data_connect
+    # connect if necessary
+    # get data. If none, abort
+    try:
+        result = requests.get(datasource, timeout=20)
+    except Exception:
+        logging.error("Unable to get data from URL")
 
-        if machine_state == state.s_data_connect:
-            result = state.do_data_connect()
-            if result == "success":
-                machine_state = state.s_data_append
-            elif result == "fail":
-                machine_state = state.s_error
+    if result.status_code == 200:
+        # else parse for datetime, data
+        result = result.content.decode('utf-8')
+        webdata = result.split('\n')
 
-        if machine_state == state.s_data_append:
-            result = state.do_data_append()
-            if result == "success":
-                machine_state = state.s_exit
-            elif result == "fail":
-                machine_state = state.s_error
+        # the first line is just header data
+        webdata.pop(0)
 
-        if machine_state == state.s_error:
-            state.do_error()
-            machine_state = state.s_exit
+        # convert datetime to posix values
+        templist = []
+        for row in webdata:
+            r = row.split(',')
+            posix_dt = utc2posix(r[0])
+            dp = posix_dt + "," + r[1]
+            templist.append(dp)
+    else:
+        logging.error("ERROR: Could not get data from URL")
 
-        if machine_state == state.s_exit:
-            break
+    if len(templist) > 0:
+        # get latest datetime for the observatory from database, if none, just append current data
+        try:
+            db_result = db.execute('select * from station_data where station_id = "ruru_obs";')
+            if len(db_result) == 0:
+                for row in templist:
+                    db.execute('insert into station_data(station_id, posix_time, data_value) values ("ruru_obs", ?, ?)', row[0], row[1])
+        except Exception:
+            logging.critical("CRITICAL ERROR: Cannot connect to database to get datetime value")
+        # from data, only keep values younger than most recent datetime from database
+        # append data to database
+    else:
+        logging.error("ERROR: No data after parsing datetimes")
 
     print("Closing database and exiting")
     dna_core.commit()
