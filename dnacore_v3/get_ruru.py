@@ -26,11 +26,11 @@ def posix2utc(self, posixvalue):
     utctime = datetime.datetime.utcfromtimestamp(int(posixvalue)).strftime('%Y-%m-%d %H:%M:%S')
     return utctime
 
-def utc2posix(utc_dt):
-    utc_dt = "2020-02-18 09:50:00"
-    dt = datetime.datetime.strptime(utc_dt, '%Y-%m-%d %H:%M:%S').utctimetuple()
-    print(time.time())
+
+def utc2posix(utc_string):
+    dt = datetime.datetime.strptime(utc_string, '%Y-%m-%d %H:%M:%S').utctimetuple()
     print(time.mktime(dt))
+
 
 if __name__ == "__main__":
     # connect if necessary
