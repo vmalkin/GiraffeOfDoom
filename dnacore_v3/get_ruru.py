@@ -29,7 +29,8 @@ def posix2utc(self, posixvalue):
 
 def utc2posix(utc_string):
     dt = datetime.datetime.strptime(utc_string, '%Y-%m-%d %H:%M:%S').utctimetuple()
-    print(time.mktime(dt))
+    return(int(time.mktime(dt)))
+    # print(time.time())
 
 
 if __name__ == "__main__":
@@ -51,22 +52,27 @@ if __name__ == "__main__":
         # convert datetime to posix values
         templist = []
         for row in webdata:
-            r = row.split(',')
-            posix_dt = utc2posix(r[0])
-            dp = posix_dt + "," + r[1]
-            templist.append(dp)
+            try:
+                r = row.split(',')
+                posix_dt = utc2posix(r[0])
+                value = round(float(r[1]), 3)
+                dp = str(posix_dt) + "," + str(value)
+                templist.append(dp)
+            except IndexError:
+                logging.error("ERROR: list index out of range")
     else:
         logging.error("ERROR: Could not get data from URL")
 
+    print(templist)
+
+    for row in templist:
+        row = row.split(",")
+        print('insert into station_data(station_id, posix_time, data_value) values ("ruru_obs", {0}, {1});'.format(row[0], row[1]))
+
     if len(templist) > 0:
+        # for row in templist:
+        pass
         # get latest datetime for the observatory from database, if none, just append current data
-        try:
-            db_result = db.execute('select * from station_data where station_id = "ruru_obs";')
-            if len(db_result) == 0:
-                for row in templist:
-                    db.execute('insert into station_data(station_id, posix_time, data_value) values ("ruru_obs", ?, ?)', row[0], row[1])
-        except Exception:
-            logging.critical("CRITICAL ERROR: Cannot connect to database to get datetime value")
         # from data, only keep values younger than most recent datetime from database
         # append data to database
     else:
