@@ -54,6 +54,7 @@ if __name__ == "__main__":
         for row in webdata:
             try:
                 r = row.split(',')
+                print(row)
                 posix_dt = utc2posix(r[0])
                 value = round(float(r[1]), 3)
                 dp = str(posix_dt) + "," + str(value)
@@ -69,14 +70,14 @@ if __name__ == "__main__":
         row = row.split(",")
         print('insert into station_data(station_id, posix_time, data_value) values ("ruru_obs", {0}, {1});'.format(row[0], row[1]))
 
-    if len(templist) > 0:
-        # for row in templist:
-        pass
-        # get latest datetime for the observatory from database, if none, just append current data
-        # from data, only keep values younger than most recent datetime from database
-        # append data to database
-    else:
-        logging.error("ERROR: No data after parsing datetimes")
+    # if len(templist) > 0:
+    #     # for row in templist:
+    #     pass
+    #     # get latest datetime for the observatory from database, if none, just append current data
+    #     # from data, only keep values younger than most recent datetime from database
+    #     # append data to database
+    # else:
+    #     logging.error("ERROR: No data after parsing datetimes")
 
     print("Closing database and exiting")
     dna_core.commit()
