@@ -37,7 +37,10 @@ class State:
         self.s_exit = "exit"
         self.mag_data = ""
 
-s
+    def do_initialise(self):
+        result = "fail"
+        return result
+        pass
 
 state = State()
 machine_state = state.s_initialise
@@ -58,6 +61,9 @@ if __name__ == "__main__":
                 machine_state = state.s_data_get
             elif result == "fail":
                 machine_state = state.s_error
+
+        if counter == 100:
+            machine_state = state.s_exit
 
     print("Closing database and exiting")
     dna_core.commit()
