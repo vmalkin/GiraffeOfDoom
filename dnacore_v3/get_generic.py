@@ -28,9 +28,8 @@ class State:
     def __init__(self):
         """State Class - a series of states for this FSM"""
         self.s_initialise = "initialise"
-        self.s_data_connect = "data_connect"
-        self.s_data_get = "data_get"
         self.s_get_date = "get_date"
+        self.s_convert_data = "convert_data"
         self.s_parse_data = "parse_data"
         self.s_data_append = "data_append"
         self.s_error = "error"
@@ -41,15 +40,11 @@ class State:
         result = "success"
         return result
 
-    def do_data_connect(self):
-        result = "success"
-        return result
-
-    def do_data_get(self):
-        result = "success"
-        return result
-
     def do_get_date(self):
+        result = "fail"
+        return result
+
+    def do_convert_data(self):
         result = "success"
         return result
 
@@ -61,7 +56,8 @@ class State:
         result = "success"
         return result
 
-    def do_error(self):
+    def do_error(self, error_statement):
+        logging.error(error_statement)
         result = "success"
         return result
 
@@ -81,10 +77,36 @@ if __name__ == "__main__":
         # #######################################
         # test to see if we can change state
         if machine_state == state.s_initialise:
-            result = state.do_initialise()
-            machine_state = state.s_data_connect
+            machine_state = state.s_get_date
+
+        if machine_state == state.s_get_date:
+            result = state.do_get_date()
+            if result == "success":
+                machine_state = state.do_parse_data()
+            elif result == "fail":
+                machine_state = state.s_error
+                print("ERROR: unable to get data")
+                state.do_error("ERROR: unable to get data")
+            else:
+                machine_state = state.s_error
+                print("ERROR: Serious failure of data get")
+                state.do_error("ERROR: Serious failure of data get")
+
+
+        if machine_state == state.s_get_date:
+            pass
+
+        if machine_state == state.s_parse_data:
+            pass
+
+        if machine_state == state.s_data_append:
+            pass
+
+        if machine_state == state.s_error:
+            machine_state = state.s_exit
 
         if counter == 100:
+            print("Counter Triggered")
             machine_state = state.s_exit
 
     print("Closing database and exiting")
