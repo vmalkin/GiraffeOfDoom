@@ -37,25 +37,52 @@ class State:
         self.s_exit = "exit"
         self.mag_data = ""
 
+    def do_initialise(self):
+        result = "success"
+        return result
+
+    def do_data_connect(self):
+        result = "success"
+        return result
+
+    def do_data_get(self):
+        result = "success"
+        return result
+
+    def do_get_date(self):
+        result = "success"
+        return result
+
+    def do_parse_data(self):
+        result = "success"
+        return result
+
+    def do_data_append(self):
+        result = "success"
+        return result
+
+    def do_error(self):
+        result = "success"
+        return result
+
+    def do_exit(self):
+        result = "success"
+        print("Exiting FSM")
+        return result
+
 state = State()
 machine_state = state.s_initialise
 
 if __name__ == "__main__":
+    counter = 0
     #  This loop needs to run until we reach the exit state.
     while machine_state != state.s_exit:
-        counter = 0
+        counter = counter + 1
         # #######################################
         # test to see if we can change state
         if machine_state == state.s_initialise:
             result = state.do_initialise()
             machine_state = state.s_data_connect
-
-        if machine_state == state.s_data_connect:
-            result = state.do_data_connect()
-            if result == "success":
-                machine_state = state.s_data_get
-            elif result == "fail":
-                machine_state = state.s_error
 
         if counter == 100:
             machine_state = state.s_exit
