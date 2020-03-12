@@ -37,7 +37,6 @@ class State:
         self.s_exit = "exit"
         self.mag_data = ""
 
-s
 
 state = State()
 machine_state = state.s_initialise
