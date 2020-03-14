@@ -35,15 +35,31 @@ class State:
     def __init__(self):
         """State Class - a series of states for this FSM"""
         self.s_initialise = 1
-        self.s_get_date = 1
+        self.s_get_data = 1
         self.s_parse_data = 1
-        self.s_recent_date = 1
+        self.s_most_recent_date = 1
         self.s_data_append = 1
         self.s_error = 1
         self.s_exit = 1
 
         self.mag_data = ""
 
+    def do_initialise(self):
+        result = "success"
+        return result
+
+    def do_get_data(self):
+        result = "fail"
+        return result
+
+    def do_parse_data(self):
+        pass
+
+    def do_most_recent_date(self):
+        pass
+
+    def do_data_append(self):
+        pass
 
 
 state = State()
@@ -56,7 +72,22 @@ if __name__ == "__main__":
         counter = counter + 1
         # #######################################
         # test to see if we can change state
-        state.s_
+        if machine_state == state.s_initialise:
+            if state.do_initialise() == "success":
+                machine_state = state.s_get_data
+            elif machine_state == "fail":
+                machine_state = state.s_error
+                logging.error("ERROR: unable to init FSM")
+            else:
+                machine_state = state.s_error
+                logging.error("ERROR: Init process FAILED")
+
+        if machine_state == state.s_get_data:
+            result = state.do
+
+        if machine_state == state.s_error:
+            logging.error("ERROR: Final error state reached")
+            machine_state = state.s_exit
 
         if counter == 100:
             print("Counter Triggered")
