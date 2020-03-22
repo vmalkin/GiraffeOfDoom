@@ -14,7 +14,7 @@ import os
 datafile = "1mins_Ruru_Rapidrun.csv"
 regex = r"\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d"
 dt_format = "%Y-%m-%d %H:%M:%S"
-stationname = "dna_noise"
+stationname = "ruru"
 graphing_file = stationname + "_graphing.csv"
 stdev_file = stationname + "_stdev.pkl"
 
