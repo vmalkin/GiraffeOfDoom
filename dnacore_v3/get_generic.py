@@ -37,12 +37,12 @@ class State:
     def __init__(self):
         """State Class - a series of states for this FSM"""
         self.s_initialise = 1
-        self.s_get_data = 1
-        self.s_parse_data = 1
-        self.s_most_recent_date = 1
-        self.s_data_append = 1
-        self.s_error = 1
-        self.s_exit = 1
+        self.s_get_data = 2
+        self.s_parse_data = 3
+        self.s_most_recent_date = 4
+        self.s_data_append = 5
+        self.s_error = 6
+        self.s_exit = 7
 
         self.mag_data = []
 
@@ -54,6 +54,7 @@ class State:
         result = "fail"
         try:
             webdata = requests.get(datasource, timeout=20)
+
         except Exception:
             logging.error("Unable to get data from URL")
 
@@ -64,17 +65,21 @@ class State:
 
             # the first line is just header data
             webdata.pop(0)
-
+            print(webdata[0])
             # convert datetime to posix values
             for row in webdata:
                 try:
                     r = row.split(',')
-                    print(row)
-                    posix_dt = self.utc2posix(r[0])
-                    value = round(float(r[1]), 3)
-                    dp = str(posix_dt) + "," + str(value)
-                    self.mag_data.append(dp)
-                    result = "success"
+                    # print(row)
+                    try:
+                        posix_dt = self.utc2posix(r[0])
+                        value = round(float(r[1]), 3)
+                        dp = str(posix_dt) + "," + str(value)
+                        self.mag_data.append(dp)
+                        result = "success"
+                    except Exception:
+                        print("ERROR: unable to parse time")
+                        logging.error("ERROR: unable to parse time")
                 except IndexError:
                     logging.error("ERROR: list index out of range")
                     result = "fail"
@@ -110,6 +115,7 @@ machine_state = state.s_initialise
 
 if __name__ == "__main__":
     counter = 0
+    # print(machine_state)
     #  This loop needs to run until we reach the exit state.
     while machine_state != state.s_exit:
         counter = counter + 1
@@ -119,36 +125,45 @@ if __name__ == "__main__":
             transition = state.do_initialise()
             if transition == "success":
                 machine_state = state.s_get_data
+                print("INFO: get data")
                 logging.info("INFO: get data")
             elif transition == "fail":
                 machine_state = state.s_error
+                print("ERROR: unable to get data")
                 logging.error("ERROR: unable to get data")
             else:
                 machine_state = state.s_error
+                print("ERROR: get data process FAILED")
                 logging.error("ERROR: get data process FAILED")
 
         if machine_state == state.s_get_data:
             transition = state.do_get_data()
             if transition == "success":
                 machine_state = state.s_most_recent_date
+                print("INFO: get most recent date from databse")
                 logging.info("INFO: get most recent date from databse")
             elif transition == "fail":
                 machine_state = state.s_error
+                print("ERROR: unable to get most recent date from DB")
                 logging.error("ERROR: unable to get most recent date from DB")
             else:
                 machine_state = state.s_error
+                print("ERROR: get most recent date FAILED")
                 logging.error("ERROR: get most recent date FAILED")
 
         if machine_state == state.s_most_recent_date:
             transition = state.do_most_recent_date()
             if transition == "success":
                 machine_state = state.s_data_append
+                print("INFO: Appending new data to DB")
                 logging.info("INFO: Appending new data to DB")
             elif transition == "fail":
                 machine_state = state.s_error
+                print("ERROR: unable to append data to DB")
                 logging.error("ERROR: unable to append data to DB")
             else:
                 machine_state = state.s_error
+                print("ERROR: append to db FAILED")
                 logging.error("ERROR: append to db FAILED")
 
 
@@ -156,18 +171,22 @@ if __name__ == "__main__":
             transition = state.do_data_append()
             if transition == "success":
                 machine_state = state.s_exit
+                print("INFO: Process finished normally. Exiting.")
                 logging.info("INFO: Process finished normally. Exiting.")
             elif transition == "fail":
                 machine_state = state.s_error
+                print("CRITICAL ERROR: unable to exit FSM")
                 logging.critical("CRITICAL ERROR: unable to exit FSM")
             else:
                 machine_state = state.s_error
+                print("CRITICAL ERROR: Init process FAILED")
                 logging.error("CRITICAL ERROR: Init process FAILED")
 
         if machine_state == state.s_exit:
             break
 
         if machine_state == state.s_error:
+            print("ERROR: Final error state reached")
             logging.error("ERROR: Final error state reached")
             machine_state = state.s_exit
 

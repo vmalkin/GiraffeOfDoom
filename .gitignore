@@ -18,3 +18,4 @@ Coronal Hole Suite/index.html
 *.csv
 *.csv
 .DS_Store
+dnacore_v3/error.log
