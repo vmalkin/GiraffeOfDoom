@@ -37,15 +37,15 @@ class State:
     """
     def __init__(self):
         """State Class - a series of states for this FSM"""
-        self.s_initialise = 1
-        self.s_get_data = 2
-        self.s_parse_data = 3
-        self.s_most_recent_date = 4
-        self.s_data_append = 5
-        self.s_error = 6
-        self.s_exit = 7
+        self.s_initialise = "s_initialise"
+        self.s_get_data = "s_get_data"
+        self.s_parse_data = "s_parse_data"
+        self.s_most_recent_date = "s_most_recent_date"
+        self.s_data_append = "s_data_append"
+        self.s_error = "s_error"
+        self.s_exit = "s_exit"
 
-        self.nowdate = int(time.time())
+        self.nowdate = 0
         self.mag_data = []
 
     def do_initialise(self):
@@ -79,10 +79,10 @@ class State:
                         dp = str(posix_dt) + "," + str(value)
                         self.mag_data.append(dp)
                     except Exception:
-                        print("ERROR: unable to parse time")
-                        logging.error("ERROR: unable to parse time")
+                        print("WARNING: unable to parse time")
+                        logging.warning("WARNING: unable to parse a time value: " + str(posix_dt))
                 except IndexError:
-                    logging.error("ERROR: list index out of range")
+                    logging.warning("WARNING: list index out of range")
                     result = "fail"
         else:
             logging.error("ERROR: Could not get data from URL")
@@ -99,8 +99,16 @@ class State:
         tempdata = []
         for row in self.mag_data:
             row = row.split(",")
-
-
+            # print(row)
+            dt = int(row[0])
+            data = row[1]
+            if dt > int(self.nowdate):
+                dp = str(dt) + ", " + str(data)
+                tempdata.append(dp)
+        if len(tempdata) > 0:
+            self.mag_data = tempdata
+            result = "success"
+        # print(self.nowdate)
         return result
 
     def do_most_recent_date(self):
@@ -108,14 +116,25 @@ class State:
         # select max(posix_time) from station_data where station_data.station_id = "Ruru_Obs" order by posix_time asc;
         # query_result = db.execute("select max(posix_time) from station_data where station_data.station_id = ""Ruru_Obs"" order by posix_time asc")
         query_result = db.execute("select max(posix_time) from station_data order by posix_time asc")
-        if query_result.arraysize > 0:
-            self.nowdate = query_result.fetchone()
-            self.nowdate = self.nowdate[0]
+        tempdate = query_result.fetchone()
+        tempdate = tempdate[0]
+        # print(tempdate)
+        if tempdate != None:
+            self.nowdate = int(tempdate)
+        else:
+            pass
         return result
 
     def do_data_append(self):
         """Append the magdata to the database."""
         result = "fail"
+        try:
+            for item in self.mag_data:
+                itemsplit = item.split(",")
+                db.execute("insert into station_data(station_id, posix_time, data_value) values (?, ?, ?)", itemsplit)
+            result = "success"
+        except:
+            pass
         return result
 
     def posix2utc(self, posixvalue):
@@ -133,10 +152,10 @@ machine_state = state.s_initialise
 
 if __name__ == "__main__":
     counter = 0
-    # print(machine_state)
     #  This loop needs to run until we reach the exit state.
     while machine_state != state.s_exit:
         counter = counter + 1
+        print("Machine State: " + machine_state)
         # #######################################
         # test to see if we can change state
         if machine_state == state.s_initialise:
@@ -188,7 +207,11 @@ if __name__ == "__main__":
             transition = state.do_parse_data()
             if transition == "success":
                 machine_state = state.s_data_append
-            if transition == "fail":
+            elif transition == "fail":
+                machine_state = state.s_error
+                print("ERROR: Unable to parse device data")
+                logging.error("ERROR: Unable to parse device data")
+            else:
                 machine_state = state.s_error
                 print("ERROR: Unable to parse device data")
                 logging.error("ERROR: Unable to parse device data")
@@ -197,18 +220,19 @@ if __name__ == "__main__":
             transition = state.do_data_append()
             if transition == "success":
                 machine_state = state.s_exit
-                print("INFO: Process finished normally. Exiting.")
-                logging.info("INFO: Process finished normally. Exiting.")
+                print("INFO: Data appended to DB.")
+                logging.info("INFO: Data appended to DB.")
             elif transition == "fail":
                 machine_state = state.s_error
-                print("CRITICAL ERROR: unable to exit FSM")
-                logging.critical("CRITICAL ERROR: unable to exit FSM")
+                print("CRITICAL ERROR: Unable to add data to DB")
+                logging.critical("CRITICAL ERROR: Unable to add data to DB")
             else:
                 machine_state = state.s_error
-                print("CRITICAL ERROR: Init process FAILED")
-                logging.error("CRITICAL ERROR: Init process FAILED")
+                print("CRITICAL ERROR: Unable to add data to DB")
+                logging.error("CRITICAL ERROR: Unable to add data to DB")
 
         if machine_state == state.s_exit:
+            print("Exiting...")
             break
 
         if machine_state == state.s_error:
