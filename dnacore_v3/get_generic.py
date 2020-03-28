@@ -96,6 +96,11 @@ class State:
     def do_parse_data(self):
         """Parse the magdata from the most recent date."""
         result = "fail"
+        tempdata = []
+        for row in self.mag_data:
+            row = row.split(",")
+
+
         return result
 
     def do_most_recent_date(self):
@@ -167,7 +172,7 @@ if __name__ == "__main__":
         if machine_state == state.s_most_recent_date:
             transition = state.do_most_recent_date()
             if transition == "success":
-                machine_state = state.s_data_append
+                machine_state = state.s_parse_data
                 print("INFO: Appending new data to DB")
                 logging.info("INFO: Appending new data to DB")
             elif transition == "fail":
@@ -182,7 +187,7 @@ if __name__ == "__main__":
         if machine_state == state.s_parse_data:
             transition = state.do_parse_data()
             if transition == "success":
-                pass
+                machine_state = state.s_data_append
             if transition == "fail":
                 machine_state = state.s_error
                 print("ERROR: Unable to parse device data")

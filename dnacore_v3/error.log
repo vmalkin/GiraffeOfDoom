@@ -180,3 +180,17 @@
 2020-03-28 14:20:52,525 INFO: Appending new data to DB
 2020-03-28 14:20:52,525 CRITICAL ERROR: unable to exit FSM
 2020-03-28 14:20:52,525 ERROR: Final error state reached
+2020-03-28 14:45:29,017 Created error log for this session
+2020-03-28 14:45:29,017 INFO: get data
+2020-03-28 14:45:30,515 ERROR: unable to parse time
+2020-03-28 14:45:30,515 INFO: get most recent date from databse
+2020-03-28 14:45:30,515 INFO: Appending new data to DB
+2020-03-28 14:45:30,516 CRITICAL ERROR: unable to exit FSM
+2020-03-28 14:45:30,516 ERROR: Final error state reached
+2020-03-28 14:46:37,628 Created error log for this session
+2020-03-28 14:46:37,628 INFO: get data
+2020-03-28 14:46:39,113 ERROR: unable to parse time
+2020-03-28 14:46:39,113 INFO: get most recent date from databse
+2020-03-28 14:46:39,113 INFO: Appending new data to DB
+2020-03-28 14:46:39,118 ERROR: Unable to parse device data
+2020-03-28 14:46:39,118 ERROR: Final error state reached
