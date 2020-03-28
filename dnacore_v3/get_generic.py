@@ -192,16 +192,16 @@ if __name__ == "__main__":
             transition = state.do_most_recent_date()
             if transition == "success":
                 machine_state = state.s_parse_data
-                print("INFO: Appending new data to DB")
-                logging.info("INFO: Appending new data to DB")
+                print("INFO: Retrieved most recent date from database")
+                logging.info("INFO: Retrieved most recent date from database")
             elif transition == "fail":
                 machine_state = state.s_error
-                print("ERROR: unable to append data to DB")
-                logging.error("ERROR: unable to append data to DB")
+                print("ERROR: Failed to retrieve most recent date from database")
+                logging.error("ERROR: Failed to retrieve most recent date from database")
             else:
                 machine_state = state.s_error
-                print("ERROR: append to db FAILED")
-                logging.error("ERROR: append to db FAILED")
+                print("ERROR: Failed to retrieve most recent date from database")
+                logging.error("ERROR: Failed to retrieve most recent date from database")
 
         if machine_state == state.s_parse_data:
             transition = state.do_parse_data()
