@@ -20,6 +20,7 @@ logging.info("Created error log for this session")
 dna_core = sqlite3.connect(k.dbfile)
 db = dna_core.cursor()
 datasource = "http://www.ruruobservatory.org.nz/dr01_1hr.csv"
+station_id = "Ruru_Obs"
 
 
 class State:
@@ -44,17 +45,19 @@ class State:
         self.s_error = 6
         self.s_exit = 7
 
+        self.nowdate = int(time.time())
         self.mag_data = []
 
     def do_initialise(self):
+        """Initialise the FSM. DO if necessary"""
         result = "success"
         return result
 
     def do_get_data(self):
+        """Get data"""
         result = "fail"
         try:
             webdata = requests.get(datasource, timeout=20)
-
         except Exception:
             logging.error("Unable to get data from URL")
 
@@ -65,7 +68,6 @@ class State:
 
             # the first line is just header data
             webdata.pop(0)
-            print(webdata[0])
             # convert datetime to posix values
             for row in webdata:
                 try:
@@ -76,7 +78,6 @@ class State:
                         value = round(float(r[1]), 3)
                         dp = str(posix_dt) + "," + str(value)
                         self.mag_data.append(dp)
-                        result = "success"
                     except Exception:
                         print("ERROR: unable to parse time")
                         logging.error("ERROR: unable to parse time")
@@ -86,17 +87,29 @@ class State:
         else:
             logging.error("ERROR: Could not get data from URL")
             result = "fail"
+
+        if len(self.mag_data) > 2:
+            result = "success"
+        # print(self.mag_data)
         return result
 
     def do_parse_data(self):
+        """Parse the magdata from the most recent date."""
         result = "fail"
         return result
 
     def do_most_recent_date(self):
-        result = "fail"
+        result = "success"
+        # select max(posix_time) from station_data where station_data.station_id = "Ruru_Obs" order by posix_time asc;
+        # query_result = db.execute("select max(posix_time) from station_data where station_data.station_id = ""Ruru_Obs"" order by posix_time asc")
+        query_result = db.execute("select max(posix_time) from station_data order by posix_time asc")
+        if query_result.arraysize > 0:
+            self.nowdate = query_result.fetchone()
+            self.nowdate = self.nowdate[0]
         return result
 
     def do_data_append(self):
+        """Append the magdata to the database."""
         result = "fail"
         return result
 
@@ -166,6 +179,14 @@ if __name__ == "__main__":
                 print("ERROR: append to db FAILED")
                 logging.error("ERROR: append to db FAILED")
 
+        if machine_state == state.s_parse_data:
+            transition = state.do_parse_data()
+            if transition == "success":
+                pass
+            if transition == "fail":
+                machine_state = state.s_error
+                print("ERROR: Unable to parse device data")
+                logging.error("ERROR: Unable to parse device data")
 
         if machine_state == state.s_data_append:
             transition = state.do_data_append()
