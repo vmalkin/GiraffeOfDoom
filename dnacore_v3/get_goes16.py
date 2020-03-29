@@ -14,7 +14,7 @@ WARNING
 ERROR
 CRITICAL
 """
-errorloglevel = logging.INFO
+errorloglevel = logging.WARNING
 logging.basicConfig(filename=k.error_log, format='%(asctime)s %(message)s', level=errorloglevel)
 logging.info("Created error log for this session")
 
@@ -86,21 +86,6 @@ class State:
             logging.error("ERROR - instruments.py: no valid JSON data for " + str(self.name))
             print("ERROR: no valid JSON data for " + str(self.name))
 
-            # for row in webdata:
-            #     try:
-            #         r = row.split(',')
-            #         # print(row)
-            #         try:
-            #             posix_dt = self.utc2posix(r[0])
-            #             value = round(float(r[1]), 3)
-            #             dp = str(posix_dt) + "," + str(value)
-            #             self.mag_data.append(dp)
-            #         except Exception:
-            #             print("WARNING: unable to parse time")
-            #             logging.warning(station_id + " WARNING: unable to parse a time value: " + str(posix_dt))
-            #     except IndexError:
-            #         logging.warning(station_id + " WARNING: list index out of range")
-            #         result = "fail"
         else:
             logging.error(station_id + " ERROR: Could not get data from URL")
             result = "fail"
