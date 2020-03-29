@@ -18,7 +18,7 @@ db.execute('create table station ('
 
 db.execute('create table station_data('
            'station_id text, '
-           'posix_time text, '
+           'posix_time integer, '
            'data_value text, '
            'foreign key (station_id) references station(station_id)'
            ');'

@@ -30,3 +30,9 @@ insert into station_data(station_id, posix_time, data_value) values ("GOES_16", 
 insert into station_data(station_id, posix_time, data_value) values ("GOES_16", "1585307911", "140.176");
 insert into station_data(station_id, posix_time, data_value) values ("GOES_16", "1585307914", "140.174");
 insert into station_data(station_id, posix_time, data_value) values ("GOES_16", "1585307916", "140.168");
+
+select station_data.station_id, station_data.posix_time, station_data.data_value from station_data 
+where station_data.station_id = "Ruru_Obs" and station_data.posix_time > 1585374065;
+
+select station_data.station_id, station_data.posix_time, station_data.data_value from station_data 
+where station_data.posix_time > 1585374065
