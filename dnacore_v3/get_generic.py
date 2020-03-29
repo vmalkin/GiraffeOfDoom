@@ -59,7 +59,7 @@ class State:
         try:
             webdata = requests.get(datasource, timeout=20)
         except Exception:
-            logging.error("Unable to get data from URL")
+            logging.error(station_id + " Unable to get data from URL")
 
         if webdata.status_code == 200:
             # else parse for datetime, data
@@ -80,12 +80,12 @@ class State:
                         self.mag_data.append(dp)
                     except Exception:
                         print("WARNING: unable to parse time")
-                        logging.warning("WARNING: unable to parse a time value: " + str(posix_dt))
+                        logging.warning(station_id + " WARNING: unable to parse a time value: " + str(posix_dt))
                 except IndexError:
-                    logging.warning("WARNING: list index out of range")
+                    logging.warning(station_id + " WARNING: list index out of range")
                     result = "fail"
         else:
-            logging.error("ERROR: Could not get data from URL")
+            logging.error(station_id + " ERROR: Could not get data from URL")
             result = "fail"
 
         if len(self.mag_data) > 2:
@@ -135,8 +135,8 @@ class State:
                 db.execute("insert into station_data(station_id, posix_time, data_value) values (?, ?, ?)", [station_id, itemsplit[0], itemsplit[1]])
             result = "success"
         except sqlite3.ProgrammingError:
-            print("ERROR: Error with query")
-            logging.error("ERROR: Error with query")
+            print(station_id + " ERROR: Error with query")
+            logging.error(station_id + " ERROR: Error with query")
         return result
 
     def posix2utc(self, posixvalue):
@@ -164,46 +164,46 @@ if __name__ == "__main__":
             transition = state.do_initialise()
             if transition == "success":
                 machine_state = state.s_get_data
-                print("INFO: get data")
-                logging.info("INFO: get data")
+                print(station_id + " INFO: get data")
+                logging.info(station_id + " INFO: get data")
             elif transition == "fail":
                 machine_state = state.s_error
-                print("ERROR: unable to get data")
-                logging.error("ERROR: unable to get data")
+                print(station_id + " ERROR: unable to get data")
+                logging.error(station_id + " ERROR: unable to get data")
             else:
                 machine_state = state.s_error
-                print("ERROR: get data process FAILED")
-                logging.error("ERROR: get data process FAILED")
+                print(station_id + " ERROR: get data process FAILED")
+                logging.error(station_id + " ERROR: get data process FAILED")
 
         if machine_state == state.s_get_data:
             transition = state.do_get_data()
             if transition == "success":
                 machine_state = state.s_most_recent_date
-                print("INFO: get most recent date from databse")
-                logging.info("INFO: get most recent date from databse")
+                print(station_id + " INFO: get most recent date from databse")
+                logging.info(station_id + " INFO: get most recent date from databse")
             elif transition == "fail":
                 machine_state = state.s_error
-                print("ERROR: unable to get most recent date from DB")
-                logging.error("ERROR: unable to get most recent date from DB")
+                print(station_id + " ERROR: unable to get most recent date from DB")
+                logging.error(station_id + " ERROR: unable to get most recent date from DB")
             else:
                 machine_state = state.s_error
-                print("ERROR: get most recent date FAILED")
-                logging.error("ERROR: get most recent date FAILED")
+                print(station_id + " ERROR: get most recent date FAILED")
+                logging.error(station_id + " ERROR: get most recent date FAILED")
 
         if machine_state == state.s_most_recent_date:
             transition = state.do_most_recent_date()
             if transition == "success":
                 machine_state = state.s_parse_data
-                print("INFO: Retrieved most recent date from database")
-                logging.info("INFO: Retrieved most recent date from database")
+                print(station_id + " INFO: Retrieved most recent date from database")
+                logging.info(station_id + " INFO: Retrieved most recent date from database")
             elif transition == "fail":
                 machine_state = state.s_error
-                print("ERROR: Failed to retrieve most recent date from database")
-                logging.error("ERROR: Failed to retrieve most recent date from database")
+                print(station_id + " ERROR: Failed to retrieve most recent date from database")
+                logging.error(station_id + " ERROR: Failed to retrieve most recent date from database")
             else:
                 machine_state = state.s_error
-                print("ERROR: Failed to retrieve most recent date from database")
-                logging.error("ERROR: Failed to retrieve most recent date from database")
+                print(station_id + " ERROR: Failed to retrieve most recent date from database")
+                logging.error(station_id + " ERROR: Failed to retrieve most recent date from database")
 
         if machine_state == state.s_parse_data:
             transition = state.do_parse_data()
@@ -211,39 +211,39 @@ if __name__ == "__main__":
                 machine_state = state.s_data_append
             elif transition == "fail":
                 machine_state = state.s_error
-                print("ERROR: Unable to parse device data")
-                logging.error("ERROR: Unable to parse device data")
+                print(station_id + " ERROR: Unable to parse device data")
+                logging.error(station_id + " ERROR: Unable to parse device data")
             else:
                 machine_state = state.s_error
-                print("ERROR: Unable to parse device data")
-                logging.error("ERROR: Unable to parse device data")
+                print(station_id + " ERROR: Unable to parse device data")
+                logging.error(station_id + " ERROR: Unable to parse device data")
 
         if machine_state == state.s_data_append:
             transition = state.do_data_append()
             if transition == "success":
                 machine_state = state.s_exit
-                print("INFO: Data appended to DB.")
-                logging.info("INFO: Data appended to DB.")
+                print(station_id + " INFO: Data appended to DB.")
+                logging.info(station_id + " INFO: Data appended to DB.")
             elif transition == "fail":
                 machine_state = state.s_error
-                print("CRITICAL ERROR: Unable to add data to DB")
-                logging.critical("CRITICAL ERROR: Unable to add data to DB")
+                print(station_id + " CRITICAL ERROR: Unable to add data to DB")
+                logging.critical(station_id + " CRITICAL ERROR: Unable to add data to DB")
             else:
                 machine_state = state.s_error
-                print("CRITICAL ERROR: Final Exception - Unable to add data to DB")
-                logging.error("CRITICAL ERROR: Final Exception - Unable to add data to DB")
+                print(station_id + " CRITICAL ERROR: Final Exception - Unable to add data to DB")
+                logging.error(station_id + " CRITICAL ERROR: Final Exception - Unable to add data to DB")
 
         if machine_state == state.s_exit:
             print("Exiting...")
             break
 
         if machine_state == state.s_error:
-            print("ERROR: Final error state reached")
-            logging.error("ERROR: Final error state reached")
+            print(station_id + " ERROR: Final error state reached")
+            logging.error(station_id + " ERROR: Final error state reached")
             machine_state = state.s_exit
 
         if counter == 100:
-            print("Counter Triggered")
+            print(station_id + " Counter Triggered")
             machine_state = state.s_exit
 
     print("Closing database and exiting")

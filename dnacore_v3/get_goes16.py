@@ -4,6 +4,7 @@ import logging
 import requests
 import time
 import datetime
+import re
 
 """
 logging levels in order of least --> most severity:
@@ -56,36 +57,52 @@ class State:
     def do_get_data(self):
         """Get data"""
         result = "fail"
+        # try:
+        webdata = requests.get(datasource, timeout=20).json()
+        # except Exception:
+        #     logging.error(station_id + " Unable to get data from URL")
+
+        returndata = []
         try:
-            webdata = requests.get(datasource, timeout=20)
-        except Exception:
-            logging.error("Unable to get data from URL")
+            json_data = webdata
+            for i in range(1, len(json_data)):
+                time_tag = json_data[i]['time_tag']
+                arcjet_flag = str(json_data[i]['arcjet_flag'])
+                hp = str(round(json_data[i]['Hp'], 4))
 
-        if webdata.status_code == 200:
-            # else parse for datetime, data
-            webdata = webdata.content.decode('utf-8')
-            webdata = webdata.split('\n')
+                if re.match("False", arcjet_flag):
+                    if re.match(r"^[0-9]*[0-9.]*$", hp):
+                        t = time_tag.split("Z")
+                        t = t[0].split("T")
+                        dt = t[0] + " " + t[1]
+                        dt = self.utc2posix(dt)
+                        dp = str(dt) + "," + str(hp)
+                        returndata.append(dp)
+                else:
+                    print("Arcjet Active")
+            self.mag_data = returndata
 
-            # the first line is just header data
-            webdata.pop(0)
-            # convert datetime to posix values
-            for row in webdata:
-                try:
-                    r = row.split(',')
-                    # print(row)
-                    try:
-                        posix_dt = self.utc2posix(r[0])
-                        value = round(float(r[1]), 3)
-                        dp = str(posix_dt) + "," + str(value)
-                        self.mag_data.append(dp)
-                    except Exception:
-                        print("WARNING: unable to parse time")
-                        logging.warning("WARNING: unable to parse a time value: " + str(posix_dt))
-                except IndexError:
-                    logging.warning("WARNING: list index out of range")
-                    result = "fail"
+        except ValueError:
+            logging.error("ERROR - instruments.py: no valid JSON data for " + str(self.name))
+            print("ERROR: no valid JSON data for " + str(self.name))
+
+            # for row in webdata:
+            #     try:
+            #         r = row.split(',')
+            #         # print(row)
+            #         try:
+            #             posix_dt = self.utc2posix(r[0])
+            #             value = round(float(r[1]), 3)
+            #             dp = str(posix_dt) + "," + str(value)
+            #             self.mag_data.append(dp)
+            #         except Exception:
+            #             print("WARNING: unable to parse time")
+            #             logging.warning(station_id + " WARNING: unable to parse a time value: " + str(posix_dt))
+            #     except IndexError:
+            #         logging.warning(station_id + " WARNING: list index out of range")
+            #         result = "fail"
         else:
-            logging.error("ERROR: Could not get data from URL")
+            logging.error(station_id + " ERROR: Could not get data from URL")
             result = "fail"
 
         if len(self.mag_data) > 2:
@@ -135,8 +152,8 @@ class State:
                 db.execute("insert into station_data(station_id, posix_time, data_value) values (?, ?, ?)", [station_id, itemsplit[0], itemsplit[1]])
             result = "success"
         except sqlite3.ProgrammingError:
-            print("ERROR: Error with query")
-            logging.error("ERROR: Error with query")
+            print(station_id + " ERROR: Error with query")
+            logging.error(station_id + " ERROR: Error with query")
         return result
 
     def posix2utc(self, posixvalue):
@@ -145,7 +162,7 @@ class State:
         return utctime
 
     def utc2posix(self, utc_string):
-        dt = datetime.datetime.strptime(utc_string, timeformat).utctimetuple()
+        dt = datetime.datetime.strptime(utc_string, '%Y-%m-%d %H:%M:%S').utctimetuple()
         return(int(time.mktime(dt)))
 
 
@@ -164,46 +181,46 @@ if __name__ == "__main__":
             transition = state.do_initialise()
             if transition == "success":
                 machine_state = state.s_get_data
-                print("INFO: get data")
-                logging.info("INFO: get data")
+                print(station_id + " INFO: get data")
+                logging.info(station_id + " INFO: get data")
             elif transition == "fail":
                 machine_state = state.s_error
-                print("ERROR: unable to get data")
-                logging.error("ERROR: unable to get data")
+                print(station_id + " ERROR: unable to get data")
+                logging.error(station_id + " ERROR: unable to get data")
             else:
                 machine_state = state.s_error
-                print("ERROR: get data process FAILED")
-                logging.error("ERROR: get data process FAILED")
+                print(station_id + " ERROR: get data process FAILED")
+                logging.error(station_id + " ERROR: get data process FAILED")
 
         if machine_state == state.s_get_data:
             transition = state.do_get_data()
             if transition == "success":
                 machine_state = state.s_most_recent_date
-                print("INFO: get most recent date from databse")
-                logging.info("INFO: get most recent date from databse")
+                print(station_id + " INFO: get most recent date from databse")
+                logging.info(station_id + " INFO: get most recent date from databse")
             elif transition == "fail":
                 machine_state = state.s_error
-                print("ERROR: unable to get most recent date from DB")
-                logging.error("ERROR: unable to get most recent date from DB")
+                print(station_id + " ERROR: unable to get most recent date from DB")
+                logging.error(station_id + " ERROR: unable to get most recent date from DB")
             else:
                 machine_state = state.s_error
-                print("ERROR: get most recent date FAILED")
-                logging.error("ERROR: get most recent date FAILED")
+                print(station_id + " ERROR: get most recent date FAILED")
+                logging.error(station_id + " ERROR: get most recent date FAILED")
 
         if machine_state == state.s_most_recent_date:
             transition = state.do_most_recent_date()
             if transition == "success":
                 machine_state = state.s_parse_data
-                print("INFO: Retrieved most recent date from database")
-                logging.info("INFO: Retrieved most recent date from database")
+                print(station_id + " INFO: Retrieved most recent date from database")
+                logging.info(station_id + " INFO: Retrieved most recent date from database")
             elif transition == "fail":
                 machine_state = state.s_error
-                print("ERROR: Failed to retrieve most recent date from database")
-                logging.error("ERROR: Failed to retrieve most recent date from database")
+                print(station_id + " ERROR: Failed to retrieve most recent date from database")
+                logging.error(station_id + " ERROR: Failed to retrieve most recent date from database")
             else:
                 machine_state = state.s_error
-                print("ERROR: Failed to retrieve most recent date from database")
-                logging.error("ERROR: Failed to retrieve most recent date from database")
+                print(station_id + " ERROR: Failed to retrieve most recent date from database")
+                logging.error(station_id + " ERROR: Failed to retrieve most recent date from database")
 
         if machine_state == state.s_parse_data:
             transition = state.do_parse_data()
@@ -211,39 +228,39 @@ if __name__ == "__main__":
                 machine_state = state.s_data_append
             elif transition == "fail":
                 machine_state = state.s_error
-                print("ERROR: Unable to parse device data")
-                logging.error("ERROR: Unable to parse device data")
+                print(station_id + " ERROR: Unable to parse device data")
+                logging.error(station_id + " ERROR: Unable to parse device data")
             else:
                 machine_state = state.s_error
-                print("ERROR: Unable to parse device data")
-                logging.error("ERROR: Unable to parse device data")
+                print(station_id + " ERROR: Unable to parse device data")
+                logging.error(station_id + " ERROR: Unable to parse device data")
 
         if machine_state == state.s_data_append:
             transition = state.do_data_append()
             if transition == "success":
                 machine_state = state.s_exit
-                print("INFO: Data appended to DB.")
-                logging.info("INFO: Data appended to DB.")
+                print(station_id + " INFO: Data appended to DB.")
+                logging.info(station_id + " INFO: Data appended to DB.")
             elif transition == "fail":
                 machine_state = state.s_error
-                print("CRITICAL ERROR: Unable to add data to DB")
-                logging.critical("CRITICAL ERROR: Unable to add data to DB")
+                print(station_id + " CRITICAL ERROR: Unable to add data to DB")
+                logging.critical(station_id + " CRITICAL ERROR: Unable to add data to DB")
             else:
                 machine_state = state.s_error
-                print("CRITICAL ERROR: Final Exception - Unable to add data to DB")
-                logging.error("CRITICAL ERROR: Final Exception - Unable to add data to DB")
+                print(station_id + " CRITICAL ERROR: Final Exception - Unable to add data to DB")
+                logging.error(station_id + " CRITICAL ERROR: Final Exception - Unable to add data to DB")
 
         if machine_state == state.s_exit:
             print("Exiting...")
             break
 
         if machine_state == state.s_error:
-            print("ERROR: Final error state reached")
-            logging.error("ERROR: Final error state reached")
+            print(station_id + " ERROR: Final error state reached")
+            logging.error(station_id + " ERROR: Final error state reached")
             machine_state = state.s_exit
 
         if counter == 100:
-            print("Counter Triggered")
+            print(station_id + " Counter Triggered")
             machine_state = state.s_exit
 
     print("Closing database and exiting")
