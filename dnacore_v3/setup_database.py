@@ -24,11 +24,9 @@ db.execute('create table station_data('
            ');'
            '')
 
-stations = ["Ruru_Obs", "Dn_Aurora", "GOES_16", "Geomag_Bz", "SW_speed", "SW_Density"]
-
 # Watch the syntax for the value to be passed into the query!
 # https://stackoverflow.com/questions/16856647/sqlite3-programmingerror-incorrect-number-of-bindings-supplied-the-current-sta#16856730
-for station in stations:
+for station in k.stations:
     db.execute("insert into station(station_id) values (?)", (station,))
 
 dna_core.commit()
