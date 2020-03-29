@@ -19,9 +19,9 @@ logging.info("Created error log for this session")
 
 dna_core = sqlite3.connect(k.dbfile)
 db = dna_core.cursor()
-datasource = "http://www.ruruobservatory.org.nz/dr01_1hr.csv"
-station_id = "Ruru_Obs"
-timeformat = '%Y-%m-%d %H:%M:%S'
+datasource = "https://services.swpc.noaa.gov/json/goes/primary/magnetometers-6-hour.json"
+station_id = "GOES_16"
+timeformat = '%Y-%m-%dT%H:%M:%SZ'
 
 class State:
     """
@@ -141,11 +141,11 @@ class State:
 
     def posix2utc(self, posixvalue):
         # utctime = datetime.datetime.fromtimestamp(int(posixvalue)).strftime('%Y-%m-%d %H:%M:%S')
-        utctime = datetime.datetime.utcfromtimestamp(int(posixvalue)).strftime('%Y-%m-%d %H:%M:%S')
+        utctime = datetime.datetime.utcfromtimestamp(int(posixvalue)).strftime(timeformat)
         return utctime
 
     def utc2posix(self, utc_string):
-        dt = datetime.datetime.strptime(utc_string, '%Y-%m-%d %H:%M:%S').utctimetuple()
+        dt = datetime.datetime.strptime(utc_string, timeformat).utctimetuple()
         return(int(time.mktime(dt)))
 
 

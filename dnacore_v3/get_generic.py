@@ -21,7 +21,7 @@ dna_core = sqlite3.connect(k.dbfile)
 db = dna_core.cursor()
 datasource = "http://www.ruruobservatory.org.nz/dr01_1hr.csv"
 station_id = "Ruru_Obs"
-
+timeformat = '%Y-%m-%d %H:%M:%S'
 
 class State:
     """
@@ -94,7 +94,7 @@ class State:
         return result
 
     def do_parse_data(self):
-        """Parse the magdata from the most recent date."""
+        """Parse the magdata from the most recent date. Data should have format of posixtime, datavalue. """
         result = "fail"
         tempdata = []
         for row in self.mag_data:
@@ -108,14 +108,14 @@ class State:
         if len(tempdata) > 0:
             self.mag_data = tempdata
             result = "success"
-        # print(self.nowdate)
+        print("Number of records to append: " + str(len(tempdata)))
         return result
 
     def do_most_recent_date(self):
         result = "success"
         # select max(posix_time) from station_data where station_data.station_id = "Ruru_Obs" order by posix_time asc;
-        # query_result = db.execute("select max(posix_time) from station_data where station_data.station_id = ""Ruru_Obs"" order by posix_time asc")
-        query_result = db.execute("select max(posix_time) from station_data order by posix_time asc")
+        query_result = db.execute("select max(posix_time) from station_data where station_data.station_id = ? order by posix_time asc", [station_id])
+        # query_result = db.execute("select max(posix_time) from station_data order by posix_time asc")
         tempdate = query_result.fetchone()
         tempdate = tempdate[0]
         # print(tempdate)
@@ -123,6 +123,7 @@ class State:
             self.nowdate = int(tempdate)
         else:
             pass
+        print("Most recent date: " + str(self.nowdate))
         return result
 
     def do_data_append(self):
@@ -131,15 +132,16 @@ class State:
         try:
             for item in self.mag_data:
                 itemsplit = item.split(",")
-                db.execute("insert into station_data(station_id, posix_time, data_value) values (?, ?, ?)", itemsplit)
+                db.execute("insert into station_data(station_id, posix_time, data_value) values (?, ?, ?)", [station_id, itemsplit[0], itemsplit[1]])
             result = "success"
-        except:
-            pass
+        except sqlite3.ProgrammingError:
+            print("ERROR: Error with query")
+            logging.error("ERROR: Error with query")
         return result
 
     def posix2utc(self, posixvalue):
         # utctime = datetime.datetime.fromtimestamp(int(posixvalue)).strftime('%Y-%m-%d %H:%M:%S')
-        utctime = datetime.datetime.utcfromtimestamp(int(posixvalue)).strftime('%Y-%m-%d %H:%M:%S')
+        utctime = datetime.datetime.utcfromtimestamp(int(posixvalue)).strftime(timeformat)
         return utctime
 
     def utc2posix(self, utc_string):
@@ -228,8 +230,8 @@ if __name__ == "__main__":
                 logging.critical("CRITICAL ERROR: Unable to add data to DB")
             else:
                 machine_state = state.s_error
-                print("CRITICAL ERROR: Unable to add data to DB")
-                logging.error("CRITICAL ERROR: Unable to add data to DB")
+                print("CRITICAL ERROR: Final Exception - Unable to add data to DB")
+                logging.error("CRITICAL ERROR: Final Exception - Unable to add data to DB")
 
         if machine_state == state.s_exit:
             print("Exiting...")
