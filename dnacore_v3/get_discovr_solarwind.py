@@ -20,9 +20,9 @@ logging.info("Created error log for this session")
 
 dna_core = sqlite3.connect(k.dbfile)
 db = dna_core.cursor()
-datasource = "https://services.swpc.noaa.gov/json/goes/primary/magnetometers-6-hour.json"
-station_id = "GOES_16"
-timeformat = '%Y-%m-%dT%H:%M:%SZ'
+datasource = "https://services.swpc.noaa.gov/products/solar-wind/plasma-2-hour.json"
+station_id = "DISCOVR"
+timeformat = '%Y-%m-%d %H:%M:%S.%f'
 
 class State:
     """
@@ -57,42 +57,43 @@ class State:
     def do_get_data(self):
         """Get data"""
         result = "fail"
-        # try:
         webdata = requests.get(datasource, timeout=20).json()
-        # except Exception:
-        #     logging.error(station_id + " Unable to get data from URL")
 
         returndata = []
         try:
             json_data = webdata
             for i in range(1, len(json_data)):
-                time_tag = json_data[i]['time_tag']
-                arcjet_flag = str(json_data[i]['arcjet_flag'])
-                hp = str(round(json_data[i]['Hp'], 4))
-
-                if re.match("False", arcjet_flag):
-                    if re.match(r"^[0-9]*[0-9.]*$", hp):
-                        t = time_tag.split("Z")
-                        t = t[0].split("T")
-                        dt = t[0] + " " + t[1]
-                        dt = self.utc2posix(dt)
-                        dp = str(dt) + "," + str(hp)
-                        returndata.append(dp)
+                time_tag = json_data[i][0]
+                density = json_data[i][1]
+                speed = json_data[i][2]
+                if re.match(r"^[0-9]*[0-9.]*$", density):
+                    pass
                 else:
-                    print("Arcjet Active")
+                    density = ""
+
+                if re.match(r"^[0-9]*[0-9.]*$", speed):
+                    pass
+                else:
+                    speed = ""
+
+                dp = str(time_tag) + "," + str(speed) + "," + str(density)
+                returndata.append(dp)
             self.mag_data = returndata
 
         except ValueError:
             logging.error("ERROR - instruments.py: no valid JSON data for " + str(self.name))
             print("ERROR: no valid JSON data for " + str(self.name))
-
         finally:
             logging.error(station_id + " ERROR: Could not get data from URL")
             result = "fail"
 
         if len(self.mag_data) > 2:
             result = "success"
-        # print(self.mag_data)
+            # print(self.mag_data)
+        return result
+
+        if len(self.mag_data) > 2:
+            result = "success"
         return result
 
     def do_parse_data(self):
