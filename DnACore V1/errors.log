@@ -1,0 +1,20 @@
+2019-06-30 12:42:35,981 ERROR - instruments.py: unable to get web data for GOES_Primary
+2019-06-30 12:42:35,981 ERROR - instruments.py: unable to GET data for GOES_Primary
+2019-06-30 12:42:56,051 ERROR - instruments.py: unable to get web data for GOES_Secondary
+2019-06-30 12:42:56,051 ERROR - instruments.py: unable to GET data for GOES_Secondary
+2019-06-30 12:43:13,503 ERROR - instruments.py: error getting data from DISCOVR_Bz
+2019-06-30 12:43:13,506 ERROR - instruments.py: unable to GET data for DISCOVR_Bz
+2019-06-30 12:43:27,839 ERROR - instruments.py: error getting data from DISCOVR solar wind
+2019-06-30 12:43:27,839 ERROR - instruments.py: unable to GET data for DISCOVR solar wind
+2019-06-30 12:43:27,840 ERROR - instruments.py: unable to GET data for sw_speed
+2019-06-30 12:43:27,840 ERROR - instruments.py: unable to GET data for sw_density
+2019-06-30 12:48:14,100 ERROR - instruments.py: unable to get web data for GOES_Primary
+2019-06-30 12:48:14,100 ERROR - instruments.py: unable to GET data for GOES_Primary
+2019-06-30 12:48:34,169 ERROR - instruments.py: unable to get web data for GOES_Secondary
+2019-06-30 12:48:34,170 ERROR - instruments.py: unable to GET data for GOES_Secondary
+2019-06-30 12:48:54,249 ERROR - instruments.py: error getting data from DISCOVR_Bz
+2019-06-30 12:48:54,250 ERROR - instruments.py: unable to GET data for DISCOVR_Bz
+2019-06-30 12:49:10,676 ERROR - instruments.py: error getting data from DISCOVR solar wind
+2019-06-30 12:49:10,676 ERROR - instruments.py: unable to GET data for DISCOVR solar wind
+2019-06-30 12:49:10,676 ERROR - instruments.py: unable to GET data for sw_speed
+2019-06-30 12:49:10,676 ERROR - instruments.py: unable to GET data for sw_density

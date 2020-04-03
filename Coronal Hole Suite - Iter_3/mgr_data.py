@@ -32,6 +32,7 @@ class DataPoint:
         self.coronal_hole_coverage = Decimal(coronal_hole_coverage)
         self.wind_speed = Decimal(wind_speed)
         self.wind_density = Decimal(wind_density)
+        self.process_flag = True
 
         # A datapoint can also calculate the corrected launchtime of the current wind data, knowing the speed
         # and the size of an astronomical unit

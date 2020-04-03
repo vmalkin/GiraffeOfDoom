@@ -17,3 +17,8 @@ Coronal Hole Suite/index.html
 *.csv
 *.csv
 *.csv
+.DS_Store
+dnacore_v3/error.log
+dnacore_v3/error.log
+dnacore_v3/error.log
+dnacore_v3/dna_core.db

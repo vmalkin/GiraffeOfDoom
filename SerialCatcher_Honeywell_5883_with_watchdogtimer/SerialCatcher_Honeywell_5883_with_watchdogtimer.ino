@@ -5,8 +5,8 @@
 int x,y,z; //triple axis data;
 double final_x, final_y, final_z;
 double counter = 0;
-#define output_delay 100
-#define station_name "Ruru Observatory rapid-run No2"
+#define output_delay 1500
+#define station_name "Ruru Observatory Main"
 
 void setup(){
   // Enable the watchdog timer
@@ -56,7 +56,7 @@ void loop(){
 //    final_z = final_z / counter;
     
     // Show Values
-    Serial.println(x,4);
+    Serial.println(final_x,4);
 //    Serial.print(",");
 //    Serial.print(final_y,3);
 //    Serial.print(",");
@@ -75,5 +75,3 @@ void loop(){
     //Pat the dog...
     wdt_reset();
 }
-
-
