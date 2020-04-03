@@ -5,7 +5,7 @@ Mostly python, and mostly about my home magnetometer/sky-camera project (http://
 
 This repo is a bit of a mess - the significant folders are:
 
-###DnACore
+### DnACore
 This is the main aggregation service for Dunedin Aurora. This is a total rewrite based on lessons learned from the current bodge that is running at the moment. DnACore will support basic fetching of data updates from selected instruments, and basic logging of the data. Helper classes will add functionality like parsing data for trends, identifying when activity has exceed threshold levels, maintenance of instrument constants, generate a wide variety of outputs (Web and social media), etc. 
 
 ### pyDataReader
