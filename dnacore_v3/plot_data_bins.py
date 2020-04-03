@@ -4,6 +4,7 @@ import logging
 import time
 import datetime
 import os
+from statistics import mean
 """
 logging levels in order of least --> most severity:
 DEBUG
@@ -19,7 +20,32 @@ logging.info("Created error log for this session")
 dna_core = sqlite3.connect(k.dbfile)
 db = dna_core.cursor()
 timeformat = '%Y-%m-%d %H:%M:%S'
-stations = ["Ruru_Obs", "GOES_16", "Geomag_Bz", "SW_speed", "SW_Density"]
+stations = k.stations
+
+finish_time = int(time.time())
+start_time = finish_time - (60 * 60 * 24)
+binsize = 60  # in seconds
+
+class Bins:
+    def __init__(self, posixtime):
+        self.datalist = []
+        self.posixtime = posixtime
+
+    def return_avg(self):
+        return mean(self.datalist)
+
+    def return_posix(self):
+        return self.posixtime
+
+binlist = []
+for i in range(0, 86400, binsize):
+    b = Bins(start_time)
+    binlist.append(bin)
+    start_time = start_time + i
+
+def binindex(posixdate):
+    indexnumber = int((posixdate - start_time) / binsize)
+    return indexnumber
 
 def posix2utc(posixvalue):
     # utctime = datetime.datetime.fromtimestamp(int(posixvalue)).strftime('%Y-%m-%d %H:%M:%S')
@@ -38,9 +64,6 @@ def check_create_folders():
             print("Some kind of error happened creating the directory for " + station)
 
 def save_logfiles():
-    finish_time = int(time.time())
-    start_time = finish_time - (60 * 60 * 24)
-
     # result = db.execute("select station_data.posix_time, station_data.data_value from station_data")
     # print(result.fetchall())
     for station in stations:
@@ -48,7 +71,6 @@ def save_logfiles():
                             "where station_data.station_id = ? and station_data.posix_time > ?", [station, start_time])
 
         current_stationdata = result.fetchall()
-
         # Setup for saving basic log files
         savefile = station + "//" + datetime.datetime.fromtimestamp(int(time.time())).strftime('%Y-%m-%d') + ".csv"
         nowfile = station + ".csv"
@@ -68,8 +90,13 @@ def save_logfiles():
         s.close()
 
         # Bin the data into one minute bins then save
+        print("Bin the data into one minute bins then save")
         for item in current_stationdata:
-            pass
+            date = item[0]
+            data = item[1]
+            index = binindex(date)
+            print(date)
+
 
         with open(nowfile, "w") as n:
             for item in tempfile:

@@ -1,0 +1,57 @@
+2020-03-30 16:39:45,561 DISCOVR ERROR: Could not get data from URL
+2020-03-30 16:40:15,720 WARNING: unable to parse a time value: 1585496234
+2020-03-30 16:40:17,387 GOES_16 ERROR: Could not get data from URL
+2020-04-02 15:43:22,375 DISCOVR ERROR: Could not get data from URL
+2020-04-02 16:31:25,097 DISCOVR ERROR: Could not get data from URL
+2020-04-02 16:32:01,322 DISCOVR ERROR: Could not get data from URL
+2020-04-02 16:32:28,726 DISCOVR ERROR: Could not get data from URL
+2020-04-02 16:35:34,204 DISCOVR ERROR: Could not get data from URL
+2020-04-02 16:36:20,733 DISCOVR ERROR: Could not get data from URL
+2020-04-02 16:36:34,326 DISCOVR ERROR: Could not get data from URL
+2020-04-03 13:35:28,515 SW_speed ERROR: Could not get data from URL
+2020-04-03 13:35:28,515 SW_speed ERROR: unable to get most recent date from DB
+2020-04-03 13:35:28,515 SW_speed ERROR: Final error state reached
+2020-04-03 13:37:38,593 SW_speed ERROR: Could not get data from URL
+2020-04-03 13:37:38,593 SW_speed ERROR: unable to get most recent date from DB
+2020-04-03 13:37:38,593 SW_speed ERROR: Final error state reached
+2020-04-03 13:39:15,650 SW_speed ERROR: Could not get data from URL
+2020-04-03 13:39:37,659 SW_speed ERROR: Could not get data from URL
+2020-04-03 13:40:01,464 SW_speed ERROR: Could not get data from URL
+2020-04-03 13:44:34,434 SW_speed ERROR: Could not get data from URL
+2020-04-03 13:45:41,599 SW_Density ERROR: Could not get data from URL
+2020-04-03 13:47:05,400 WARNING: unable to parse a time value: 1585831480
+2020-04-03 13:47:06,915 GOES_16 ERROR: Could not get data from URL
+2020-04-03 13:47:07,882 SW_speed ERROR: Could not get data from URL
+2020-04-03 13:47:08,600 SW_Density ERROR: Could not get data from URL
+2020-04-03 13:48:12,263 WARNING: unable to parse a time value: 1585831480
+2020-04-03 13:48:12,263 ERROR: Unable to parse device data
+2020-04-03 13:48:12,263 ERROR: Final error state reached
+2020-04-03 13:48:13,434 GOES_16 ERROR: Could not get data from URL
+2020-04-03 13:48:14,136 SW_speed ERROR: Could not get data from URL
+2020-04-03 13:48:14,870 SW_Density ERROR: Could not get data from URL
+2020-04-03 13:48:19,194 SW_Density ERROR: Could not get data from URL
+2020-04-03 13:48:19,194 SW_Density ERROR: Unable to parse device data
+2020-04-03 13:48:19,194 SW_Density ERROR: Final error state reached
+2020-04-03 13:49:22,517 WARNING: unable to parse a time value: 1585831622
+2020-04-03 13:49:23,938 GOES_16 ERROR: Could not get data from URL
+2020-04-03 13:49:24,797 SW_speed ERROR: Could not get data from URL
+2020-04-03 13:49:25,468 SW_Density ERROR: Could not get data from URL
+2020-04-03 13:54:26,763 WARNING: unable to parse a time value: 1585831904
+2020-04-03 13:54:28,745 GOES_16 ERROR: Could not get data from URL
+2020-04-03 13:54:29,462 SW_speed ERROR: Could not get data from URL
+2020-04-03 13:54:30,133 SW_Density ERROR: Could not get data from URL
+2020-04-03 13:59:31,725 WARNING: unable to parse a time value: 1585832188
+2020-04-03 13:59:33,848 SW_speed ERROR: Could not get data from URL
+2020-04-03 13:59:34,566 SW_Density ERROR: Could not get data from URL
+2020-04-03 14:00:50,302 WARNING: unable to parse a time value: 1585832330
+2020-04-03 14:00:51,068 GOES_16 ERROR: Could not get data from URL
+2020-04-03 14:00:51,740 SW_speed ERROR: Could not get data from URL
+2020-04-03 14:00:52,504 SW_Density ERROR: Could not get data from URL
+2020-04-03 14:05:53,740 WARNING: unable to parse a time value: 1585832682
+2020-04-03 14:05:55,098 GOES_16 ERROR: Could not get data from URL
+2020-04-03 14:05:56,065 SW_speed ERROR: Could not get data from URL
+2020-04-03 14:05:56,767 SW_Density ERROR: Could not get data from URL
+2020-04-03 14:10:57,706 WARNING: unable to parse a time value: 1585832966
+2020-04-03 14:10:58,611 GOES_16 ERROR: Could not get data from URL
+2020-04-03 14:10:59,297 SW_speed ERROR: Could not get data from URL
+2020-04-03 14:10:59,953 SW_Density ERROR: Could not get data from URL
