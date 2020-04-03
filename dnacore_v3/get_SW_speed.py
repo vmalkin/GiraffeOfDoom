@@ -21,7 +21,7 @@ logging.info("Created error log for this session")
 dna_core = sqlite3.connect(k.dbfile)
 db = dna_core.cursor()
 datasource = "https://services.swpc.noaa.gov/products/solar-wind/plasma-2-hour.json"
-station_id = "DISCOVR"
+station_id = "SW_speed"
 timeformat = '%Y-%m-%d %H:%M:%S.%f'
 
 class State:
@@ -58,42 +58,34 @@ class State:
         """Get data"""
         result = "fail"
         webdata = requests.get(datasource, timeout=20).json()
-
         returndata = []
         try:
             json_data = webdata
             for i in range(1, len(json_data)):
-                time_tag = json_data[i][0]
+                time_tag = self.utc2posix(json_data[i][0])
                 density = json_data[i][1]
                 speed = json_data[i][2]
-                if re.match(r"^[0-9]*[0-9.]*$", density):
-                    pass
-                else:
-                    density = ""
 
                 if re.match(r"^[0-9]*[0-9.]*$", speed):
                     pass
                 else:
                     speed = ""
 
-                dp = str(time_tag) + "," + str(speed) + "," + str(density)
+                dp = str(time_tag) + "," + str(speed)
                 returndata.append(dp)
             self.mag_data = returndata
 
         except ValueError:
             logging.error("ERROR - instruments.py: no valid JSON data for " + str(self.name))
             print("ERROR: no valid JSON data for " + str(self.name))
+
         finally:
             logging.error(station_id + " ERROR: Could not get data from URL")
             result = "fail"
 
         if len(self.mag_data) > 2:
             result = "success"
-            # print(self.mag_data)
-        return result
-
-        if len(self.mag_data) > 2:
-            result = "success"
+        # print(self.mag_data)
         return result
 
     def do_parse_data(self):
@@ -148,7 +140,7 @@ class State:
         return utctime
 
     def utc2posix(self, utc_string):
-        dt = datetime.datetime.strptime(utc_string, '%Y-%m-%d %H:%M:%S').utctimetuple()
+        dt = datetime.datetime.strptime(utc_string, timeformat).utctimetuple()
         return(int(time.mktime(dt)))
 
 

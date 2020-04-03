@@ -3,7 +3,7 @@ import constants as k
 import logging
 import time
 import datetime
-
+import os
 """
 logging levels in order of least --> most severity:
 DEBUG
@@ -27,6 +27,16 @@ def posix2utc(posixvalue):
     utctime = datetime.datetime.utcfromtimestamp(int(posixvalue)).strftime(timeformat)
     return utctime
 
+def check_create_folders():
+    for station in stations:
+        try:
+            if not os.path.exists(station):
+                print("Create directory for " + station)
+                os.makedirs(station)
+            else:
+                print("Directory exists for " + station)
+        except Exception:
+            print("Some kind of error happened creating the directory for " + station)
 
 def save_logfiles():
     finish_time = int(time.time())
@@ -41,7 +51,7 @@ def save_logfiles():
         current_stationdata = result.fetchall()
 
         # Setup for saving basic log files
-        savefile = station + "_" + datetime.datetime.fromtimestamp(int(time.time())).strftime('%Y-%m-%d') + ".csv"
+        savefile = station + "//" + datetime.datetime.fromtimestamp(int(time.time())).strftime('%Y-%m-%d') + ".csv"
         nowfile = station + ".csv"
         tempfile = []
         header = station + ", data"
@@ -65,6 +75,7 @@ def save_logfiles():
 
 
 if __name__ == "__main__":
+    check_create_folders()
     save_logfiles()
 
     print("Closing database and exiting")
