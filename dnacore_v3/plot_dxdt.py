@@ -32,30 +32,19 @@ number_bins = int((finish_time - start_time) / binsize) + 2
 null_value = ""
 half_window = 90
 
-class Residual:
-    def __init__(self, posixdatetime, datavalue, avgdatavalue, std_dev=0):
-        self.posixdatetime = posixdatetime
-        self.datavalue = datavalue
-        self.avgdatavalue = avgdatavalue
-        self.std_dev = float(std_dev)
-
-    def calc_residual(self):
-        returnvalue = (self.datavalue - self.avgdatavalue)
-        if self.avgdatavalue == 0:
-            returnvalue = null_value
-        return returnvalue
+class Dxdt_datapoint:
+    def __init__(self, posixtime, value):
+        self.posixtime = posixtime
+        self.value = value
+        self.last10min_avg = 0
 
     def posix2utc(self):
         # utctime = datetime.datetime.fromtimestamp(int(posixvalue)).strftime('%Y-%m-%d %H:%M:%S')
-        utctime = datetime.datetime.utcfromtimestamp(int(self.posixdatetime)).strftime(timeformat)
+        utctime = datetime.datetime.utcfromtimestamp(int(self.posixtime)).strftime(timeformat)
         return utctime
 
-    def printheader(self):
-        return "UTC, Value, +1SD, -1SD, +2SD, -2SD"
-
     def printdata(self):
-        # returnstring = str(self.posix2utc()) +","+ str(self.calc_residual())
-        returnstring = str(self.posix2utc()) + "," + str(self.calc_residual()) + "," + str(self.std_dev * 1) + "," + str(self.std_dev * -1) + "," + str(self.std_dev * 2) + "," + str(self.std_dev * -2)
+        returnstring = str(self.posix2utc()) + "," + str(self.value) + "," + str(self.last10min_avg)
         return returnstring
 
 class DataPoint:
@@ -138,9 +127,7 @@ def parse_querydata(querydata):
 
 
 def save_logfiles(filename, datalist):
-    d = Residual(0,0,0)
     with open(filename, "w") as n:
-        n.write(d.printheader() + "\n")
         for item in datalist:
             n.write(item.printdata() + "\n")
     n.close()
@@ -172,59 +159,31 @@ def bin_data(tempdata):
     return binned_data
 
 
-def calc_average_curve(datapoint_list):
-    returnlist = []
-    for item in datapoint_list:
-        if item[1] != null_value:
-            dp = Residual(item[0], item[1], 0)
-            returnlist.append(dp)
+def calc_dxdt(bindata):
+    templist = []
+    for i in range(1, len(bindata)):
+        timestamp = bindata[i][0]
+        datavalue = bindata[i-1][1] - bindata[i][1]
+        dp = (timestamp, datavalue)
+        templist.append(dp)
+    return templist
 
-    for i in range(half_window, len(returnlist) - half_window):
-        templist = []
-        for j in range(-1 * half_window, half_window):
-            d = float(returnlist[i + j].datavalue)
-            templist.append(d)
-        meanvalue = mean(templist)
-        returnlist[i].avgdatavalue = meanvalue
+
+def avg_last10mins(tuplelist):
+    returnlist = []
+    for i in range(9, len(tuplelist)):
+        timevalue = tuplelist[i][0]
+        currentdata = tuplelist[i][1]
+        temp = []
+        for j in range(0, 9):
+            temp.append(tuplelist[i-j][1])
+        meandata = mean(temp)
+        dp = Dxdt_datapoint(timevalue, currentdata)
+        dp.last10min_avg = meandata
+        returnlist.append(dp)
     return returnlist
 
 
-def calc_stddev(residuals):
-    datavalues = []
-    for item in residuals:
-        if item.calc_residual() != null_value:
-            datavalues.append(item.calc_residual())
-    # print(station)
-    # print(datavalues)
-    std_dev = stdev(datavalues)
-    # print(std_dev)
-    return std_dev
-
-
-def writetoDB_std_dev(new_std_dev):
-    db.execute("insert into station_statistics (station_id, std_dev) values (?, ?)", [station, new_std_dev])
-
-
-def get_stdev_db_stdev():
-    std_dev = 0
-    result = db.execute("select std_dev from station_statistics where station_statistics.station_id = ?", [station])
-    query_result = result.fetchall()
-
-    if len(query_result) > 2:
-        # invert the list, most recent at the top
-        query_result.reverse()
-        temp = []
-        counter = 0
-        for line in query_result:
-            temp.append(line[0])
-            counter += 1
-            # we only want the first 1000 readings for this
-            if counter >= 1000:
-                break
-        # get the middlemost value from the range of SDs that have been calculated
-        std_dev = mean(temp)
-        print(str(counter) + " " + str(std_dev))
-    return std_dev
 
 
 if __name__ == "__main__":
@@ -232,28 +191,16 @@ if __name__ == "__main__":
     for station in stations:
         current_stationdata = get_data(station)
         tempdata = parse_querydata(current_stationdata)  # a list
-        tempdata = filter_median(tempdata)  # a list
+        tempdata = filter_median(tempdata)  # a tuple list
         tempdata = bin_data(tempdata)  # a list - one minute bins
+        tempdata = calc_dxdt(tempdata)  # a tuple list
+        tempdata = avg_last10mins(tempdata)
 
         # All other calculations are worked on data at 1 minute intervals,
         # incl calculation of K-index, etc.
-        # create the 3 hour curve, and calculate the residuals
-        residual_data = calc_average_curve(tempdata)
 
-        # get the standard deviation of the current data
-        new_std_dev = calc_stddev(residual_data)
-
-        # Add this to the database
-        writetoDB_std_dev(new_std_dev)
-
-        # get the mean of the last 1000 standard deviations
-        std_dev = get_stdev_db_stdev()
-
-        for item in residual_data:
-            item.std_dev = std_dev
-
-        nowfile = station + "_dtrn.csv"
-        save_logfiles(nowfile, residual_data)
+        nowfile = station + "_dxdt.csv"
+        save_logfiles(nowfile, tempdata)
 
     print("Closing database and exiting")
     dna_core.commit()
