@@ -8,7 +8,7 @@ python get_bz.py
 python plot_bins.py
 
 rem specialised plotting files.
-rem python plot_dxdt.py
+python plot_dxdt_v3.py
 
 timeout 300
 goto start
