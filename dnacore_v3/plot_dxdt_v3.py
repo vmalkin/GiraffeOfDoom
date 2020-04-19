@@ -182,20 +182,21 @@ def db_get_middle_min():
     result = db.execute("select data_value from station_statistics where station_id = ? and type = ?", [station, "min"])
     query_result = result.fetchall()
     query_result.reverse()
-    t = []
-    median_result = 1
+    values = []
+    counter = 0
+    for item in query_result:
+        values.append(item[0])
+        counter = counter + 1
+        if counter > 1000:
+            break
+    values.sort()
 
-    if len(query_result) >= 1000:
-        for i in range(0, 1000):
-            t.append(query_result[i])
-        median_result = median(t)
-    else:
-        if len(query_result) > 2:
-            for item in query_result:
-                t.append(item[0])
-            median_result = median(t)
-    print(str(station) + " results, min values: " + str(len(query_result)) + " " + str(median_result))
-    return median_result
+    result = round(median(values), 3)
+
+    print("Average value for " + str(station) + " " + str(result))
+    print(values)
+    return result
+
 
 
 if __name__ == "__main__":
@@ -204,23 +205,30 @@ if __name__ == "__main__":
         current_stationdata = get_data(station)
         tempdata = parse_querydata(current_stationdata)  # a list
         tempdata = filter_median(tempdata)  # a tuple list
-        tempdata = bin_data(tempdata)  # a list - one hour bins
+        tempdata = bin_data(tempdata)  # a list - one hour bins of the rate of change
         tempdata = convert_time(tempdata)
-
-        s = []
-        for item in tempdata:
-            s.append(item[1])
-        data_min = min(s)
-        db_add_min(data_min)
-        tempmin = db_get_middle_min()
-
-        t = []
-        for item in tempdata:
-            dt = item[0]
-            dv = item[1]
-            scaled_data = round((dv / tempmin), 3)
-            dp = (dv, scaled_data)
-            t.append(dp)
+        # print(tempdata)
+        #
+        # s = []
+        # for item in tempdata:
+        #     s.append(item[1])
+        # data_min = min(s)
+        # print(data_min)
+        #
+        # if data_min > 0:
+        #     db_add_min(data_min)
+        #
+        # tempmin = db_get_middle_min()
+        #
+        # t = []
+        # for item in tempdata:
+        #     dt = item[0]
+        #     dv = item[1]
+        #     scaled_data = round((dv / tempmin), 3)
+        #     dp = (dt, scaled_data)
+        #     t.append(dp)
+        # # print(t)
+        # tempdata = t
 
         # All other calculations are worked on data at 1 minute intervals,
         # incl calculation of K-index, etc.
