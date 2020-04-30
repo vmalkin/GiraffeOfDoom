@@ -108,7 +108,7 @@ def posix2utc(posixtime):
 
 
 def parse_querydata(querydata):
-    # turn the readings into rate of change.
+    #  COnvert the query data into a datetime, data tuple.
     tempdata = []
     for i in range(1, len(querydata)):
         date = int(querydata[i][0])
@@ -136,6 +136,7 @@ def bin_data(tempdata):
         datapoint_list.append(dp)
         timestamp = timestamp + binsize
 
+    # Drop data into the relevant bins
     for item in tempdata:
         try:
             index = bin_indexvalue(item[0])
@@ -144,6 +145,7 @@ def bin_data(tempdata):
         except IndexError:
             print("Index error in datapoint list")
 
+    # Get the max/min values in the bin, and calc the range between them
     binned_data = []
     for item in datapoint_list:
         timevalue = item.timevalue
@@ -198,41 +200,23 @@ def db_get_middle_min():
     return result
 
 
-
 if __name__ == "__main__":
     # check_create_folders()
     for station in stations:
-        current_stationdata = get_data(station)
-        tempdata = parse_querydata(current_stationdata)  # a list
-        tempdata = filter_median(tempdata)  # a tuple list
+        current_stationdata = get_data(station)  # Get query result from database
+        tempdata = parse_querydata(current_stationdata)  # a datetime,data list
+        tempdata = filter_median(tempdata)  # apply median filter.
+        tempdata = calc_dxdt(tempdata)
         tempdata = bin_data(tempdata)  # a list - one hour bins of the rate of change
+        # We need to rescale the data, based on the quiet days.
+        # We want the last 24 hours of data
         tempdata = convert_time(tempdata)
-        # print(tempdata)
-        #
-        # s = []
-        # for item in tempdata:
-        #     s.append(item[1])
-        # data_min = min(s)
-        # print(data_min)
-        #
-        # if data_min > 0:
-        #     db_add_min(data_min)
-        #
-        # tempmin = db_get_middle_min()
-        #
-        # t = []
-        # for item in tempdata:
-        #     dt = item[0]
-        #     dv = item[1]
-        #     scaled_data = round((dv / tempmin), 3)
-        #     dp = (dt, scaled_data)
-        #     t.append(dp)
-        # # print(t)
-        # tempdata = t
+
+
 
         # All other calculations are worked on data at 1 minute intervals,
         # incl calculation of K-index, etc.
-        nowfile = station + "_1hrdx.csv"
+        nowfile = station + "_test.csv"
         save_logfiles(nowfile, tempdata)
 
     print("Closing database and exiting")
