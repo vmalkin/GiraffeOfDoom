@@ -27,7 +27,7 @@ stations = ["Ruru_Obs", "GOES_16"]
 # stations = k.stations
 
 finish_time = int(time.time())
-start_time = finish_time - (60 * 60 * 24)
+start_time = finish_time - (60 * 60 * 24 * 20) #Last 20 days
 binsize = 60 * 60
 number_bins = int((finish_time - start_time) / binsize) + 2
 null_value = ""
