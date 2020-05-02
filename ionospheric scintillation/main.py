@@ -29,13 +29,13 @@ for i in range(100, max_array):
 com = mgr_comport.SerialManager(k.portName,k.baudrate, k.bytesize, k.parity, k.stopbits, k.timeout, k.xonxoff, k.rtscts, k.writeTimeout, k.dsrdtr, k.interCharTimeout)
 
 if __name__ == "__main__":
-    sat_collation = SatelliteCollator()
-    try:
-        sat_collation.start()
-    except:
-        print("Unable to start Satellite Collator")
-
-    print("Starting GPS collection...")
+    # sat_collation = SatelliteCollator()
+    # try:
+    #     sat_collation.start()
+    # except:
+    #     print("Unable to start Satellite Collator")
+    #
+    # print("Starting GPS collection...")
 
 
     while True:
@@ -102,20 +102,21 @@ if __name__ == "__main__":
                 s4_alt = int(line[14])
                 s4_azm = int(line[15])
                 s4_snr = int(line[16])
-                constellation[prefix + s4_snr].list_posix.append(posix_time)
-                constellation[prefix + s4_snr].list_altitude.append(s4_alt)
-                constellation[prefix + s4_snr].list_azimuth.append(s4_azm)
-                constellation[prefix + s4_snr].list_snr.append(s4_snr)
+                constellation[prefix + s4_nam].list_posix.append(posix_time)
+                constellation[prefix + s4_nam].list_altitude.append(s4_alt)
+                constellation[prefix + s4_nam].list_azimuth.append(s4_azm)
+                constellation[prefix + s4_nam].list_snr.append(s4_snr)
             except:
                 pass
 
             count = count + 1
 
         for satellite in constellation:
-            print(str(satellite.satellite_print_values()))
-            satellite.list_posix = []
-            satellite.list_snr = []
-            satellite.list_altitude = []
-            satellite.list_azimuth = []
+            if len(satellite.satellite_print_values()) > 0:
+                print(str(satellite.satellite_print_values()))
+                satellite.list_posix = []
+                satellite.list_snr = []
+                satellite.list_altitude = []
+                satellite.list_azimuth = []
         print("Satellites reset for next count")
 
