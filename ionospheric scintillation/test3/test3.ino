@@ -10,13 +10,14 @@ String nmea_sentence;
 void setup()
 {
   Serial.begin(115200);
-  Serial.println("SparkFun Ublox Example");
+  //Serial.println("SparkFun Ublox Example");
 
   Wire.begin();
 
   if (gps.begin() == false)
   {
-    Serial.println(F("Ublox GPS not detected at default I2C address. Please check wiring. Freezing."));
+    //Serial.println(F("Ublox GPS not detected at default I2C address. Please check wiring. Freezing."));
+    Serial.println(F("GPS_FAULT"));
     while (1);
   }
 }
