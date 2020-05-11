@@ -4,7 +4,7 @@ import time
 from threading import Thread
 import os
 import sqlite3
-from statistics import mean
+from statistics import mean, stdev
 
 com = mgr_comport.SerialManager(k.portName,k.baudrate, k.bytesize, k.parity, k.stopbits, k.timeout, k.xonxoff, k.rtscts, k.writeTimeout, k.dsrdtr, k.interCharTimeout)
 
@@ -18,7 +18,7 @@ class GPSSatellite():
         self.posixtime = ''
         self.alt = []
         self.az = []
-        self.snr = []
+        self.intensity = []
 
     def set_alt(self, value):
         if value == '':
@@ -34,12 +34,12 @@ class GPSSatellite():
             appendvalue = int(value)
         self.az.append(appendvalue)
 
-    def set_snr(self, value):
+    def set_intensity(self, value):
         if value == '':
             appendvalue = 0
         else:
-            appendvalue = int(value)
-        self.snr.append(appendvalue)
+            appendvalue = self.calc_intensity(value)
+        self.intensity.append(appendvalue)
 
     def return_alt(self):
         returnvalue = 0
@@ -53,17 +53,26 @@ class GPSSatellite():
             returnvalue = round(mean(self.az), 3)
         return returnvalue
 
+    def calc_intensity(self,snr):
+        snr = int(snr)
+        intensity = 0
+        if snr != 0:
+            intensity = pow(10, (snr/10))
+        return intensity
+
     def s4_index(self):
         returnvalue = 0
-        if len(self.snr) > 2:
-            returnvalue = round(mean(self.snr), 3)
+        if sum(self.intensity) > 0:
+            avg_intensity = mean(self.intensity)
+            sigma = stdev(self.intensity)
+            returnvalue = round((sigma / avg_intensity), 3)
         return returnvalue
 
     def reset(self):
         self.posixtime = ''
         self.alt = []
         self.az = []
-        self.snr = []
+        self.intensity = []
 
 
 class SatelliteCollator(Thread):
@@ -86,7 +95,7 @@ def create_database():
                    'posixtime integer,'
                    'alt integer,'
                    'az integer,'
-                   'snr integer'
+                   'intensity integer'
                    ')')
         db.close()
 
@@ -146,16 +155,18 @@ if __name__ == "__main__":
             for i in range(0, max_iter):
                 # Append current sentence to a satellite
                 # print(posix_time, constellation + "_" + sentence[s_id], sentence[s_alt], sentence[s_az],sentence[s_snr])
-
+                index_value = int(sentence[s_id])
                 if constellation == "GPGSV":
-                    GPGSV[s_id].set_alt(sentence[s_alt])
-                    GPGSV[s_id].set_az(sentence[s_az])
-                    GPGSV[s_id].set_snr(sentence[s_snr])
+                    GPGSV[index_value].posixtime = posix_time
+                    GPGSV[index_value].set_alt(sentence[s_alt])
+                    GPGSV[index_value].set_az(sentence[s_az])
+                    GPGSV[index_value].set_intensity(sentence[s_snr])
 
                 if constellation == "GLGSV":
-                    GLGSV[s_id].set_alt(sentence[s_alt])
-                    GLGSV[s_id].set_az(sentence[s_az])
-                    GLGSV[s_id].set_snr(sentence[s_snr])
+                    GLGSV[index_value].posixtime = posix_time
+                    GLGSV[index_value].set_alt(sentence[s_alt])
+                    GLGSV[index_value].set_az(sentence[s_az])
+                    GLGSV[index_value].set_intensity(sentence[s_snr])
 
                 # Grab the next satellite in the sentence
                 s_id = s_id + recordlength
@@ -165,10 +176,11 @@ if __name__ == "__main__":
 
         #  Store the satellite data to the database, once per minute
         # db = gpsdb.cursor()
-        # db.execute('insert into satdata(sat_id, posixtime, alt, az, snr) values (?, ?, ?, ?, ?)',[sat_name, posix_time, sentence[s_alt], sentence[s_az], sentence[s_snr]])
+        # db.execute('insert into satdata(sat_id, posixtime, alt, az, intensity) values (?, ?, ?, ?, ?)',[sat_name, posix_time, sentence[s_alt], sentence[s_az], sentence[s_snr]])
         # gpsdb.commit()
         # db.close()
-        if counter >= 60:
+
+        if counter >= 600:
             for sat in GPGSV:
                 if sat.s4_index() > 0:
                     print(sat.name, sat.posixtime, sat.return_alt(), sat.return_az(), sat.s4_index())
