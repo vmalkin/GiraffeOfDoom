@@ -9,8 +9,8 @@ from statistics import mean, stdev
 com = mgr_comport.SerialManager(k.portName,k.baudrate, k.bytesize, k.parity, k.stopbits, k.timeout, k.xonxoff, k.rtscts, k.writeTimeout, k.dsrdtr, k.interCharTimeout)
 
 sat_database = "gps_satellites.db"
-gpsdb = sqlite3.connect(sat_database)
-db = gpsdb.cursor()
+
+# db = gpsdb.cursor()
 
 class GPSSatellite():
     def __init__(self, sat_name):
@@ -81,24 +81,36 @@ class SatelliteCollator(Thread):
 
     def run(self):
         while True:
-            pass  # do something here
+            parse_database()
             time.sleep(60)
 
 
 def create_database():
-    if not os.path.exists(sat_database):
-        print("No database, creating file")
+    print("No database, creating file")
+    gpsdb = sqlite3.connect(sat_database)
+    db = gpsdb.cursor()
+    db.execute('drop table if exists satdata;')
+    msg = db.execute('create table satdata ('
+               'sat_id text,'
+               'posixtime integer,'
+               'alt real,'
+               'az real,'
+               's4 real'
+               ');')
+    gpsdb.commit()
+    db.close()
 
-        db.execute('drop table if exists satdata')
-        db.execute('create table satdata('
-                   'sat_id text,'
-                   'posixtime integer,'
-                   'alt integer,'
-                   'az integer,'
-                   'intensity integer'
-                   ')')
-        db.close()
 
+def parse_database():
+    starttime = int(time.time()) - 60*5
+    print("Parsing database...")
+    gpsdb = sqlite3.connect(sat_database)
+    db = gpsdb.cursor()
+    result = db.execute('select sat_id, max(s4), min(s4) from satdata where satdata.posixtime > ? group by sat_id;',[starttime])
+    for item in result:
+        print(item)
+    gpsdb.commit()
+    db.close()
 
 def nmea_sentence(sentence):
     sentence = sentence[1:]
@@ -109,18 +121,24 @@ def nmea_sentence(sentence):
 
 if __name__ == "__main__":
     # will create the database if it exists
-    create_database()
+    if os.path.isfile(sat_database) is False:
+        print("No database file, initialising")
+        create_database()
+    if os.path.isfile(sat_database) is True:
+        print("Database file exists")
+
+    # create_database()
     counter = 0
 
     GPGSV = []
     for i in range(0,101):
-        name = 'gpgsv_' + str(i)
+        name = 'gps_' + str(i)
         gps = GPSSatellite(name)
         GPGSV.append(gps)
 
     GLGSV = []
     for i in range(0,101):
-        name = 'glgsv_' + str(i)
+        name = 'glonass_' + str(i)
         gps = GPSSatellite(name)
         GLGSV.append(gps)
 
@@ -183,11 +201,23 @@ if __name__ == "__main__":
         if counter >= 600:
             for sat in GPGSV:
                 if sat.s4_index() > 0:
-                    print(sat.name, sat.posixtime, sat.return_alt(), sat.return_az(), sat.s4_index())
+                    # print(sat.name, sat.posixtime, sat.return_alt(), sat.return_az(), sat.s4_index())
+                    # Store the satellite data to the database, once per minute
+                    gpsdb = sqlite3.connect(sat_database)
+                    db = gpsdb.cursor()
+                    db.execute('insert into satdata (sat_id, posixtime, alt, az, s4) values (?, ?, ?, ?, ?);',[sat.name, sat.posixtime, sat.return_alt(), sat.return_az(), sat.s4_index()])
+                    gpsdb.commit()
+                    db.close()
 
             for sat in GLGSV:
                 if sat.s4_index() > 0:
-                    print(sat.name, sat.posixtime, sat.return_alt(), sat.return_az(), sat.s4_index())
+                    # print(sat.name, sat.posixtime, sat.return_alt(), sat.return_az(), sat.s4_index())
+                    # Store the satellite data to the database, once per minute
+                    gpsdb = sqlite3.connect(sat_database)
+                    db = gpsdb.cursor()
+                    db.execute('insert into satdata (sat_id, posixtime, alt, az, s4) values (?, ?, ?, ?, ?);',[sat.name, sat.posixtime, sat.return_alt(), sat.return_az(), sat.s4_index()])
+                    gpsdb.commit()
+                    db.close()
 
             for sat in GPGSV:
                 sat.reset()
@@ -196,3 +226,4 @@ if __name__ == "__main__":
                 sat.reset()
 
             counter = 0
+            print(" ")
