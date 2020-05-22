@@ -20,13 +20,13 @@ void setup()
     Serial.println(F("GPS_FAULT"));
     while (1);
   }
-  gps.setNavigationFrequency(1);
+  //gps.setNavigationFrequency(1);
 }
 
 void loop()
 {
   gps.checkUblox(); //See if new data is available. Process bytes as they come in.
-  //delay(1000); //Don't pound too hard on the I2C bus
+  delay(1000); //Don't pound too hard on the I2C bus
 }
 
 
