@@ -8,6 +8,7 @@ from statistics import mean, stdev
 import datetime
 import logging
 
+
 errorloglevel = logging.DEBUG
 logging.basicConfig(filename="errors.log", format='%(asctime)s %(message)s', level=errorloglevel)
 
@@ -196,96 +197,100 @@ if __name__ == "__main__":
         counter = counter + 1
         posix_time = int(time.time())
 
-        line = com.data_recieve()
+        try:
+            line = com.data_recieve()
 
-        sentence = nmea_sentence(line)
-        constellation = sentence[0]
-        s_id = 4
-        s_alt = 5
-        s_az = 6
-        s_snr = 7
+            sentence = nmea_sentence(line)
+            constellation = sentence[0]
+            s_id = 4
+            s_alt = 5
+            s_az = 6
+            s_snr = 7
 
-        # to determine how many records there are in the sentence. Minus the 4 slots at the front, div by four
-        # to create the range for the FOR loop
-        max_iter = int(((len(sentence) - 4) / 4) )
+            # to determine how many records there are in the sentence. Minus the 4 slots at the front, div by four
+            # to create the range for the FOR loop
+            max_iter = int(((len(sentence) - 4) / 4) )
+            print(max_iter)
+            # only if we have a sentence long enough
+            if len(sentence) > recordlength + 4:
+                for i in range(0, max_iter):
+                    # Append current sentence to a satellite
+                    # print(posix_time, constellation + "_" + sentence[s_id], sentence[s_alt], sentence[s_az],sentence[s_snr])
+                    try:
+                        index_value = int(sentence[s_id])
+                        if constellation == "GPGSV":
+                            GPGSV[index_value].posixtime = posix_time
+                            GPGSV[index_value].set_alt(sentence[s_alt])
+                            GPGSV[index_value].set_az(sentence[s_az])
+                            GPGSV[index_value].set_intensity(sentence[s_snr])
 
-        # only if we have a sentence long enough
-        if len(sentence) > recordlength + 4:
-            for i in range(0, max_iter):
-                # Append current sentence to a satellite
-                # print(posix_time, constellation + "_" + sentence[s_id], sentence[s_alt], sentence[s_az],sentence[s_snr])
-                try:
-                    index_value = int(sentence[s_id])
-                    if constellation == "GPGSV":
-                        GPGSV[index_value].posixtime = posix_time
-                        GPGSV[index_value].set_alt(sentence[s_alt])
-                        GPGSV[index_value].set_az(sentence[s_az])
-                        GPGSV[index_value].set_intensity(sentence[s_snr])
+                        if constellation == "GLGSV":
+                            GLGSV[index_value].posixtime = posix_time
+                            GLGSV[index_value].set_alt(sentence[s_alt])
+                            GLGSV[index_value].set_az(sentence[s_az])
+                            GLGSV[index_value].set_intensity(sentence[s_snr])
 
-                    if constellation == "GLGSV":
-                        GLGSV[index_value].posixtime = posix_time
-                        GLGSV[index_value].set_alt(sentence[s_alt])
-                        GLGSV[index_value].set_az(sentence[s_az])
-                        GLGSV[index_value].set_intensity(sentence[s_snr])
+                        if constellation == "GAGSV":
+                            GAGSV[index_value].posixtime = posix_time
+                            GAGSV[index_value].set_alt(sentence[s_alt])
+                            GAGSV[index_value].set_az(sentence[s_az])
+                            GAGSV[index_value].set_intensity(sentence[s_snr])
 
-                    if constellation == "GAGSV":
-                        GAGSV[index_value].posixtime = posix_time
-                        GAGSV[index_value].set_alt(sentence[s_alt])
-                        GAGSV[index_value].set_az(sentence[s_az])
-                        GAGSV[index_value].set_intensity(sentence[s_snr])
+                    except ValueError:
+                        logging.debug("DEBUG: String as integer in satellite ID: " + str(sentence[s_id]))
 
-                except ValueError:
-                    logging.debug("DEBUG: String as integer in satellite ID: " + str(sentence[s_id]))
+                    # Grab the next satellite in the sentence
+                    s_id = s_id + recordlength
+                    s_alt = s_alt + recordlength
+                    s_az = s_az + recordlength
+                    s_snr = s_snr + recordlength
 
-                # Grab the next satellite in the sentence
-                s_id = s_id + recordlength
-                s_alt = s_alt + recordlength
-                s_az = s_az + recordlength
-                s_snr = s_snr + recordlength
+            if counter >= 600:
+                satellitelist = []
+                for sat in GPGSV:
+                    if sat.s4_index() > 0:
+                        satellitelist.append((sat.name, sat.posixtime, sat.return_alt(), sat.return_az(), sat.s4_index()))
+                        # Store the satellite data to the database, once per minute
+                        gpsdb = sqlite3.connect(sat_database)
+                        db = gpsdb.cursor()
+                        db.execute('insert into satdata (sat_id, posixtime, alt, az, s4) values (?, ?, ?, ?, ?);',[sat.name, sat.posixtime, sat.return_alt(), sat.return_az(), sat.s4_index()])
+                        gpsdb.commit()
+                        db.close()
 
-        if counter >= 600:
-            satellitelist = []
-            for sat in GPGSV:
-                if sat.s4_index() > 0:
-                    satellitelist.append((sat.name, sat.posixtime, sat.return_alt(), sat.return_az(), sat.s4_index()))
-                    # Store the satellite data to the database, once per minute
-                    gpsdb = sqlite3.connect(sat_database)
-                    db = gpsdb.cursor()
-                    db.execute('insert into satdata (sat_id, posixtime, alt, az, s4) values (?, ?, ?, ?, ?);',[sat.name, sat.posixtime, sat.return_alt(), sat.return_az(), sat.s4_index()])
-                    gpsdb.commit()
-                    db.close()
+                for sat in GLGSV:
+                    if sat.s4_index() > 0:
+                        satellitelist.append((sat.name, sat.posixtime, sat.return_alt(), sat.return_az(), sat.s4_index()))
+                        # Store the satellite data to the database, once per minute
+                        gpsdb = sqlite3.connect(sat_database)
+                        db = gpsdb.cursor()
+                        db.execute('insert into satdata (sat_id, posixtime, alt, az, s4) values (?, ?, ?, ?, ?);',[sat.name, sat.posixtime, sat.return_alt(), sat.return_az(), sat.s4_index()])
+                        gpsdb.commit()
+                        db.close()
 
-            for sat in GLGSV:
-                if sat.s4_index() > 0:
-                    satellitelist.append((sat.name, sat.posixtime, sat.return_alt(), sat.return_az(), sat.s4_index()))
-                    # Store the satellite data to the database, once per minute
-                    gpsdb = sqlite3.connect(sat_database)
-                    db = gpsdb.cursor()
-                    db.execute('insert into satdata (sat_id, posixtime, alt, az, s4) values (?, ?, ?, ?, ?);',[sat.name, sat.posixtime, sat.return_alt(), sat.return_az(), sat.s4_index()])
-                    gpsdb.commit()
-                    db.close()
+                for sat in GAGSV:
+                    if sat.s4_index() > 0:
+                        satellitelist.append((sat.name, sat.posixtime, sat.return_alt(), sat.return_az(), sat.s4_index()))
+                        # Store the satellite data to the database, once per minute
+                        gpsdb = sqlite3.connect(sat_database)
+                        db = gpsdb.cursor()
+                        db.execute('insert into satdata (sat_id, posixtime, alt, az, s4) values (?, ?, ?, ?, ?);',[sat.name, sat.posixtime, sat.return_alt(), sat.return_az(), sat.s4_index()])
+                        gpsdb.commit()
+                        db.close()
 
-            for sat in GAGSV:
-                if sat.s4_index() > 0:
-                    satellitelist.append((sat.name, sat.posixtime, sat.return_alt(), sat.return_az(), sat.s4_index()))
-                    # Store the satellite data to the database, once per minute
-                    gpsdb = sqlite3.connect(sat_database)
-                    db = gpsdb.cursor()
-                    db.execute('insert into satdata (sat_id, posixtime, alt, az, s4) values (?, ?, ?, ?, ?);',[sat.name, sat.posixtime, sat.return_alt(), sat.return_az(), sat.s4_index()])
-                    gpsdb.commit()
-                    db.close()
+                for sat in GPGSV:
+                    sat.reset()
 
-            for sat in GPGSV:
-                sat.reset()
+                for sat in GLGSV:
+                    sat.reset()
 
-            for sat in GLGSV:
-                sat.reset()
+                for sat in GAGSV:
+                    sat.reset()
 
-            for sat in GAGSV:
-                sat.reset()
+                counter = 0
+                for s in satellitelist:
+                    print(s)
+                print(" ")
 
-            counter = 0
-            for s in satellitelist:
-                print(s)
-            print(" ")
+        except UnicodeDecodeError:
+            logging.error("Error with com port output")
 
