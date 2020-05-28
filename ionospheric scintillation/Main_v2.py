@@ -15,15 +15,6 @@ logging.basicConfig(filename="errors.log", format='%(asctime)s %(message)s', lev
 com = mgr_comport.SerialManager(k.portName,k.baudrate, k.bytesize, k.parity, k.stopbits, k.timeout, k.xonxoff, k.rtscts, k.writeTimeout, k.dsrdtr, k.interCharTimeout)
 timeformat = '%Y-%m-%d %H:%M:%S'
 sat_database = "gps_satellites.db"
-line = ""
-
-class State:
-    def __init__(self):
-        self.s_get_com_data = "s_get_com_data"
-        self.s_parse_com_data = "s_parse_com_data"
-        self.s_append_database = "s_append_database"
-        self.s_fail = "s_fail"
-
 
 class SatelliteCollator(Thread):
     def __init__(self):
@@ -108,7 +99,7 @@ def create_database():
     gpsdb = sqlite3.connect(sat_database)
     db = gpsdb.cursor()
     db.execute('drop table if exists satdata;')
-    msg = db.execute('create table satdata ('
+    db.execute('create table satdata ('
                'sat_id text,'
                'posixtime integer,'
                'alt real,'
@@ -161,17 +152,51 @@ def create_csv(resultlist):
     except PermissionError:
         print("CSV file being used by another app. Update next time")
 
+
+def create_satellite_list(constellationname):
+    returnlist = []
+    for i in range(0, 101):
+        name = constellationname + str(i)
+        gps = GPSSatellite(name)
+        returnlist.append(gps)
+    return returnlist
+
+
 if __name__ == "__main__":
     # initial setup including satellite lists
     # if database not exists, create database
+    if os.path.isfile(sat_database) is False:
+        print("No database file, initialising")
+        create_database()
+    if os.path.isfile(sat_database) is True:
+        print("Database file exists")
+
+    GPGSV = create_satellite_list("gps_")
+    GLGSV = create_satellite_list("glonass_")
+    GAGSV = create_satellite_list("galileo_")
+
     # begin graphing thread
+    sat_collation = SatelliteCollator()
+    try:
+        sat_collation.start()
+    except:
+        print("Unable to start Satellite Collator")
+
+    counter = 0
+    regex_expression = "\A$GPGSV"
+
     # main loop starts here run every second...
-        # get current posix time, if not FAIL
+    while True:
+        counter = counter + 1
+        posix_time = int(time.time())
+
         # Get com data
+        line = com.data_recieve()
+
         # Parse com data for valid data GSV sentence ???GSV,
-        # GSV sentence, parse out the satellite data
-        # if valid data, sppend to satellite in lists
-        # after 60 seconds, get summarised data and S4 values fron satellites and append to database
-        # reset satellite lists
+        if re.match(regex_expression, line) is True:
+            # GSV sentence, parse out the satellite data
+            # if valid data, sppend to satellite in lists
+            # after 60 seconds, get summarised data and S4 values fron satellites and append to database
+            # reset satellite lists
         # end loop
-    pass
