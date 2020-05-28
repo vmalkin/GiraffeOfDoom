@@ -28,5 +28,6 @@ class SerialManager():
 
     def data_recieve(self):
         logData = self.com.readline()  # logData is a byte array, not a string at this point
-        logData = str(logData, 'ascii').strip()  # convert the byte array to string. strip off unnecessary whitespace
+        # logData = str(logData, 'ascii').strip()  # convert the byte array to string. strip off unnecessary whitespace
+        logData = str(logData, 'latin1').strip()  # convert the byte array to string. strip off unnecessary whitespace
         return logData
