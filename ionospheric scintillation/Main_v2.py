@@ -8,13 +8,21 @@ from statistics import mean, stdev
 import datetime
 import logging
 import re
+from matplotlib import pyplot as plt
+
+
 
 errorloglevel = logging.DEBUG
 logging.basicConfig(filename="errors.log", format='%(asctime)s %(message)s', level=errorloglevel)
 
 com = mgr_comport.SerialManager(k.portName,k.baudrate, k.bytesize, k.parity, k.stopbits, k.timeout, k.xonxoff, k.rtscts, k.writeTimeout, k.dsrdtr, k.interCharTimeout)
-timeformat = '%Y-%m-%d %H:%M:%S'
+# timeformat = '%Y-%m-%d %H:%M:%S'
+timeformat = '%Y-%m-%d %H:%M'
 sat_database = "gps_satellites.db"
+
+
+
+
 
 class SatelliteCollator(Thread):
     def __init__(self):
@@ -24,6 +32,7 @@ class SatelliteCollator(Thread):
         while True:
             resultlist = parse_database()
             create_csv(resultlist)
+            create_matplot(resultlist)
             time.sleep(60*5)
 
 
@@ -162,6 +171,41 @@ def create_satellite_list(constellationname):
     return returnlist
 
 
+def create_matplot(resultlist):
+    x = []
+    y = []
+    xtick_interval = []
+    ytick_interval = []
+
+    for i in range(0, 24*28, 10):
+        xtick_interval.append(i)
+    for i in range(0, 20, 2):
+        ytick_interval.append(i/10)
+
+    for line in resultlist:
+        x_val = posix2utc(line[1])
+        y_val = line[4]
+        x.append(x_val)
+        y.append(y_val)
+
+    plt.figure(num="s4", figsize=[20, 9], dpi=100)
+    plt.xlabel("Time UTC")
+    plt.ylabel("S4 Index")
+    plt.title("S4 Ionospheric Scintillation")
+    plt.scatter(x, y, alpha=0.2, color=['black'])
+
+    plt.grid(True, color="#ccb3b3")
+    plt.ylim(0, 2)
+    plt.xticks(xtick_interval, rotation=85)
+    plt.yticks(ytick_interval)
+
+    plt.subplots_adjust(left=0.06, right=0.99, bottom=0.26)
+
+    # plt.show()
+    plt.savefig("s4.png")
+    plt.close("s4")
+
+
 if __name__ == "__main__":
     # initial setup including satellite lists
     # if database not exists, create database
@@ -193,6 +237,8 @@ if __name__ == "__main__":
 
         # Get com data
         line = com.data_recieve()
+
+
         # print(line)
         # Parse com data for valid data GSV sentence ???GSV,
         if re.match(regex_expression, line):

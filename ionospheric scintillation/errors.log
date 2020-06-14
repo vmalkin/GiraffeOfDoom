@@ -14,3 +14,5 @@
 2020-05-27 16:50:03,649 Error with com port output
 2020-05-27 16:50:03,679 Error with com port output
 2020-05-27 16:52:02,061 Error with com port output
+2020-06-12 15:03:04,437 CRITICAL ERROR: Unable to open com port. Please check com port parameters and/or hardware!!
+2020-06-12 15:03:21,480 CRITICAL ERROR: Unable to open com port. Please check com port parameters and/or hardware!!
