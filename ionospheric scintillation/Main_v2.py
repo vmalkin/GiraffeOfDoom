@@ -187,23 +187,28 @@ def create_matplot(resultlist):
         y_val = line[4]
         x.append(x_val)
         y.append(y_val)
+    try:
+        plt.figure(num="s4", figsize=[20, 9], dpi=100)
+        plt.xlabel("Time UTC")
+        plt.ylabel("S4 Index")
+        plt.title("S4 Ionospheric Scintillation")
+        plt.scatter(x, y, alpha=0.2, color=['black'])
 
-    plt.figure(num="s4", figsize=[20, 9], dpi=100)
-    plt.xlabel("Time UTC")
-    plt.ylabel("S4 Index")
-    plt.title("S4 Ionospheric Scintillation")
-    plt.scatter(x, y, alpha=0.2, color=['black'])
+        plt.grid(True, color="#ccb3b3")
+        plt.ylim(0, 1)
+        plt.xticks(xtick_interval, rotation=85)
+        # plt.yticks(ytick_interval)
 
-    plt.grid(True, color="#ccb3b3")
-    plt.ylim(0, 2)
-    plt.xticks(xtick_interval, rotation=85)
-    plt.yticks(ytick_interval)
+        plt.subplots_adjust(left=0.06, right=0.99, bottom=0.26)
 
-    plt.subplots_adjust(left=0.06, right=0.99, bottom=0.26)
+        # plt.show()
+        plt.savefig("s4.png")
+        plt.close("s4")
+        print("S4 plot created")
+    except Exception:
+        print("Plotting fail")
+        logging.critical("FAIL: tkinter and matplotlib error")
 
-    # plt.show()
-    plt.savefig("s4.png")
-    plt.close("s4")
 
 
 if __name__ == "__main__":
