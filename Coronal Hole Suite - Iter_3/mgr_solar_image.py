@@ -60,7 +60,7 @@ class SolarImageProcessor:
         # This is crude at the moment, but it basically works
         # We will probabbly want to check the histogram for the image to define this
         # correctly. See original paper.
-        ret, outputimg = cv2.threshold(image_to_process, 15,255, cv2.THRESH_BINARY)
+        ret, outputimg = cv2.threshold(image_to_process, 8, 255, cv2.THRESH_BINARY)
         return outputimg
 
     def _erode_dilate_img(self, image_to_process):
