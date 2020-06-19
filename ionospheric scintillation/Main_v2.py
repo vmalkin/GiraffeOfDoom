@@ -9,6 +9,7 @@ import datetime
 import logging
 import re
 from matplotlib import pyplot as plt
+from math import sqrt
 
 
 
@@ -89,9 +90,19 @@ class GPSSatellite:
         returnvalue = 0
         if len(self.intensity) > self.min_array_len:
             try:
-                avg_intensity = mean(self.intensity)
-                sigma = stdev(self.intensity)
-                returnvalue = round((sigma / avg_intensity), 3)
+                sumI2 = 0
+                sumI_2 = 0
+
+                for i in self.intensity:
+                    sumI2 = sumI2 + (i*i)
+                sumI_2 = pow(sum(self.intensity), 2)
+
+                s4 = (sumI2 - sumI_2) / sumI_2
+                s4 = sqrt(s4)
+                returnvalue = s4
+                # avg_intensity = mean(self.intensity)
+                # sigma = stdev(self.intensity)
+                # returnvalue = round((sigma / avg_intensity), 3)
             except Exception:
                 logging.debug("Statistics exception")
         return returnvalue
