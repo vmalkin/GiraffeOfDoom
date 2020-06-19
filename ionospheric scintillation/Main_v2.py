@@ -177,7 +177,9 @@ def create_matplot(resultlist):
     xtick_interval = []
     ytick_interval = []
 
-    for i in range(0, 24*28, 10):
+## for dunedin aurora
+##    for i in range(0, 24*40, 10):
+    for i in range(0, 24*64, 10):
         xtick_interval.append(i)
     for i in range(0, 20, 2):
         ytick_interval.append(i/10)
@@ -192,10 +194,10 @@ def create_matplot(resultlist):
         plt.xlabel("Time UTC")
         plt.ylabel("S4 Index")
         plt.title("S4 Ionospheric Scintillation")
-        plt.scatter(x, y, alpha=0.2, color=['black'])
+        plt.scatter(x, y, alpha=0.1, color=['black'])
 
         plt.grid(True, color="#ccb3b3")
-        plt.ylim(0, 1)
+        plt.ylim(0, 0.4)
         plt.xticks(xtick_interval, rotation=85)
         # plt.yticks(ytick_interval)
 
@@ -237,12 +239,12 @@ if __name__ == "__main__":
 
     # main loop starts here run every second...
     while True:
-        counter = counter + 1
         posix_time = int(time.time())
 
         # Get com data
         line = com.data_recieve()
 
+        counter = counter + 1
 
         # print(line)
         # Parse com data for valid data GSV sentence ???GSV,
@@ -293,7 +295,7 @@ if __name__ == "__main__":
 
 
             # after 60 seconds, get summarised data and S4 values fron satellites and append to database
-            if counter >= 600:
+            if counter >= 100:
                 satellitelist = []
                 for sat in GPGSV:
                     if sat.s4_index() > 0:

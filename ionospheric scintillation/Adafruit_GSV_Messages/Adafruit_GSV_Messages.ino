@@ -18,7 +18,7 @@
 // Connect the GPS RX (receive) pin to Digital 7
 
 // You can change the pin numbers to match your wiring:
-SoftwareSerial mySerial(8, 7);
+SoftwareSerial mySerial(3, 2);
 
 #define PMTK_SET_NMEA_UPDATE_1HZ  "$PMTK220,1000*1F"
 #define PMTK_SET_NMEA_UPDATE_5HZ  "$PMTK220,200*2C"
@@ -40,7 +40,7 @@ SoftwareSerial mySerial(8, 7);
 void setup() {
   while (!Serial); // wait for Serial to be ready
 
-  Serial.begin(115200); // this baud rate doesn't actually matter!
+  Serial.begin(230400); // this baud rate doesn't actually matter!
   mySerial.begin(9600);
   delay(2000);
   Serial.println("Get version!");
@@ -51,7 +51,7 @@ void setup() {
 //  mySerial.println(PMTK_SET_NMEA_OUTPUT_ALLDATA);
 //  mySerial.println(PMTK_RESET);
   mySerial.println(PMTK_SET_NMEA_OUTPUT_GSV);
-  mySerial.println(PMTK_SET_NMEA_UPDATE_1HZ);
+  mySerial.println(PMTK_SET_NMEA_UPDATE_10HZ);
  }
 
 

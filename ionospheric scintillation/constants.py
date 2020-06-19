@@ -2,7 +2,8 @@
 portName = 'Com35' # Windows
 # portName = '/dev/tty.usbserial-A702O0K9' #MacOS
 # portName = '/dev/ttyUSB0'
-baudrate = 115200
+##baudrate = 115200
+baudrate = 230400
 bytesize = 8
 parity = 'N'
 stopbits = 1
