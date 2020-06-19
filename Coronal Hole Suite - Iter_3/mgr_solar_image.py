@@ -58,7 +58,7 @@ class SolarImageProcessor:
     def _threshold_img(self, image_to_process):
         # Identify dark coronal hole areas from the solar surface...
         # This is crude at the moment, but it basically works
-        # We will probabbly want to check the histogram for the image to define this
+        # We will probably want to check the histogram for the image to define this
         # correctly. See original paper.
         ret, outputimg = cv2.threshold(image_to_process, 8, 255, cv2.THRESH_BINARY)
         return outputimg
