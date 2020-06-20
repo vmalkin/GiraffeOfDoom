@@ -44,7 +44,7 @@ class GPSSatellite:
         self.alt = []
         self.az = []
         self.intensity = []
-        self.min_array_len = 6
+        self.min_array_len = 3
 
     def set_alt(self, value):
         if value == '':
@@ -87,22 +87,26 @@ class GPSSatellite:
         return intensity
 
     def s4_index(self):
+        # print(self.intensity)
         returnvalue = 0
-        if len(self.intensity) > self.min_array_len:
+
+        if len(self.intensity) > self.min_array_len and sum(self.intensity) > 0:
             try:
-                sumI2 = 0
-                sumI_2 = 0
-
-                for i in self.intensity:
-                    sumI2 = sumI2 + (i*i)
-                sumI_2 = pow(sum(self.intensity), 2)
-
-                s4 = (sumI2 - sumI_2) / sumI_2
-                s4 = sqrt(s4)
-                returnvalue = s4
-                # avg_intensity = mean(self.intensity)
-                # sigma = stdev(self.intensity)
-                # returnvalue = round((sigma / avg_intensity), 3)
+                # self.intensity = [2,5,5,8,8,8,11,11,14]
+                # sI2s = float(0)
+                # sIs2 = float(0)
+                # for i in self.intensity:
+                #     sI2s = sI2s + (i*i)
+                #
+                # sIs2 = pow(sum(self.intensity), 2)
+                #
+                # s4 = (sI2s - sIs2) / sIs2
+                # # s4 = round(sqrt(s4), 3)
+                # print(s4)
+                # returnvalue = s4
+                avg_intensity = mean(self.intensity)
+                sigma = stdev(self.intensity)
+                returnvalue = round((sigma / avg_intensity), 3)
             except Exception:
                 logging.debug("Statistics exception")
         return returnvalue
@@ -256,7 +260,7 @@ if __name__ == "__main__":
         line = com.data_recieve()
 
         counter = counter + 1
-
+        # print(counter)
         # print(line)
         # Parse com data for valid data GSV sentence ???GSV,
         if re.match(regex_expression, line):
