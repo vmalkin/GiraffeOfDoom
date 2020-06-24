@@ -9,7 +9,8 @@ import datetime
 import logging
 import re
 from matplotlib import pyplot as plt
-from math import sqrt
+from matplotlib import ticker as ticker
+
 
 
 
@@ -25,16 +26,19 @@ sat_database = "gps_satellites.db"
 
 
 
-class SatelliteCollator(Thread):
-    def __init__(self):
-        Thread.__init__(self, name="SatelliteCollator")
-
-    def run(self):
-        while True:
-            resultlist = parse_database()
-            create_csv(resultlist)
-            create_matplot(resultlist)
-            time.sleep(60*5)
+# class SatelliteCollator(Thread):
+#     def __init__(self):
+#         Thread.__init__(self, name="SatelliteCollator")
+#
+#     def run(self):
+#         while True:
+#             resultlist = parse_database()
+#             create_csv(resultlist)
+#             create_matplot(resultlist, 0, 1, "s4_1.png")
+#             # create_matplot(resultlist, 0.5, "s4_05.png")
+#             create_matplot(resultlist, 0, 0.2, "s4_02.png")
+#             create_matplot(resultlist, 0.1, 0.14, "line.png")
+#             time.sleep(60*5)
 
 
 class GPSSatellite:
@@ -70,13 +74,13 @@ class GPSSatellite:
     def return_alt(self):
         returnvalue = 0
         if len(self.alt) > self.min_array_len:
-            returnvalue = round(mean(self.alt), 3)
+            returnvalue = round(mean(self.alt), 5)
         return returnvalue
 
     def return_az(self):
         returnvalue = 0
         if len(self.az) > self.min_array_len:
-            returnvalue = round(mean(self.az), 3)
+            returnvalue = round(mean(self.az), 5)
         return returnvalue
 
     def calc_intensity(self, snr):
@@ -106,7 +110,7 @@ class GPSSatellite:
                 # returnvalue = s4
                 avg_intensity = mean(self.intensity)
                 sigma = stdev(self.intensity)
-                returnvalue = round((sigma / avg_intensity), 3)
+                returnvalue = round((sigma / avg_intensity), 5)
             except Exception:
                 logging.debug("Statistics exception")
         return returnvalue
@@ -142,7 +146,7 @@ def posix2utc(posixtime):
 
 
 def parse_database():
-    starttime = int(time.time()) - 60*60*28
+    starttime = int(time.time()) - 60*60*24
     print("Parsing database...")
     gpsdb = sqlite3.connect(sat_database)
     db = gpsdb.cursor()
@@ -186,18 +190,12 @@ def create_satellite_list(constellationname):
     return returnlist
 
 
-def create_matplot(resultlist):
+def create_matplot(resultlist, ylow, ymax, filename):
+    savefile = filename
+    ylow = ylow
+    ymax = ymax
     x = []
     y = []
-    xtick_interval = []
-    ytick_interval = []
-
-## for dunedin aurora
-##    for i in range(0, 24*40, 10):
-    for i in range(0, 24*64, 10):
-        xtick_interval.append(i)
-    for i in range(0, 20, 2):
-        ytick_interval.append(i/10)
 
     for line in resultlist:
         x_val = posix2utc(line[1])
@@ -205,27 +203,28 @@ def create_matplot(resultlist):
         x.append(x_val)
         y.append(y_val)
     try:
-        plt.figure(num="s4", figsize=[20, 9], dpi=100)
-        plt.xlabel("Time UTC")
-        plt.ylabel("S4 Index")
-        plt.title("S4 Ionospheric Scintillation")
-        plt.scatter(x, y, alpha=0.1, color=['black'])
+        s4, ax = plt.subplots(figsize=[20, 9], dpi=100)
+        ax.scatter(x, y, alpha=0.1, color=['black'])
+        ax.set_ylim(ylow, ymax)
+        ax.grid(True, color="#ccb3b3")
 
-        plt.grid(True, color="#ccb3b3")
-        plt.ylim(0, 0.4)
-        plt.xticks(xtick_interval, rotation=85)
-        # plt.yticks(ytick_interval)
+        tic_space = 30
+        ax.xaxis.set_major_locator(ticker.MultipleLocator(tic_space))
 
-        plt.subplots_adjust(left=0.06, right=0.99, bottom=0.26)
+        ax.tick_params(axis='x', labelrotation=90)
+        ax.set_xlabel("Time UTC")
+        ax.set_ylabel("S4 Index", labelpad=5)
+        s4.tight_layout()
 
         # plt.show()
-        plt.savefig("s4.png")
-        plt.close("s4")
+        # plt.xlabel("Time, UTC")
+        # plt.ylabel("S4 index values")
+        plt.title("S4 Ionospheric Index")
+        plt.savefig(savefile)
+        plt.close('all')
         print("S4 plot created")
     except Exception:
-        print("Plotting fail")
-        logging.critical("FAIL: tkinter and matplotlib error")
-
+        print("Unable to save file")
 
 
 if __name__ == "__main__":
@@ -241,12 +240,12 @@ if __name__ == "__main__":
     GLGSV = create_satellite_list("glonass_")
     GAGSV = create_satellite_list("galileo_")
 
-    # begin graphing thread
-    sat_collation = SatelliteCollator()
-    try:
-        sat_collation.start()
-    except:
-        print("Unable to start Satellite Collator")
+    # # begin graphing thread
+    # sat_collation = SatelliteCollator()
+    # try:
+    #     sat_collation.start()
+    # except:
+    #     print("Unable to start Satellite Collator")
 
     counter = 0
     regex_expression = "(\$\w\wGSV),.+"
@@ -310,7 +309,7 @@ if __name__ == "__main__":
 
 
             # after 60 seconds, get summarised data and S4 values fron satellites and append to database
-            if counter >= 100:
+            if counter >= 60*4:
                 satellitelist = []
                 for sat in GPGSV:
                     if sat.s4_index() > 0:
@@ -356,4 +355,12 @@ if __name__ == "__main__":
                 for s in satellitelist:
                     print(s)
                 print(" ")
+
+                # THis was in a thread but pyplot is an arse. Should only consume a few seconds of time
+                resultlist = parse_database()
+                create_csv(resultlist)
+                create_matplot(resultlist, 0, 1, "s4_1.png")
+                create_matplot(resultlist, 0, 0.25, "s4_02.png")
+                # create_matplot(resultlist, 0.1, 0.2, "line.png")
+                print("Done!")
 

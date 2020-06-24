@@ -40,7 +40,7 @@ SoftwareSerial mySerial(3, 2);
 void setup() {
   while (!Serial); // wait for Serial to be ready
 
-  Serial.begin(230400); // this baud rate doesn't actually matter!
+  Serial.begin(115200); // this baud rate doesn't actually matter!
   mySerial.begin(9600);
   delay(2000);
   Serial.println("Get version!");
