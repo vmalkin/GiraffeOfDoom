@@ -12,8 +12,6 @@ from matplotlib import pyplot as plt
 from matplotlib import ticker as ticker
 
 
-
-
 errorloglevel = logging.DEBUG
 logging.basicConfig(filename="errors.log", format='%(asctime)s %(message)s', level=errorloglevel)
 
@@ -21,9 +19,6 @@ com = mgr_comport.SerialManager(k.portName,k.baudrate, k.bytesize, k.parity, k.s
 # timeformat = '%Y-%m-%d %H:%M:%S'
 timeformat = '%Y-%m-%d %H:%M'
 sat_database = "gps_satellites.db"
-
-
-
 
 
 # class SatelliteCollator(Thread):
