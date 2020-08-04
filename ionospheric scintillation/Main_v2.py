@@ -12,8 +12,6 @@ from matplotlib import pyplot as plt
 from matplotlib import ticker as ticker
 
 
-
-
 errorloglevel = logging.DEBUG
 logging.basicConfig(filename="errors.log", format='%(asctime)s %(message)s', level=errorloglevel)
 
