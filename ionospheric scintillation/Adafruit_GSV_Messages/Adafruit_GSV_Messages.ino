@@ -14,11 +14,11 @@
 
 // Connect the GPS Power pin to 5V
 // Connect the GPS Ground pin to ground
-// Connect the GPS TX (transmit) pin to Digital 8
-// Connect the GPS RX (receive) pin to Digital 7
+// Connect the GPS TX (transmit) pin to Digital 7
+// Connect the GPS RX (receive) pin to Digital 8
 
 // You can change the pin numbers to match your wiring:
-SoftwareSerial mySerial(3, 2);
+SoftwareSerial mySerial(8,7);
 
 #define PMTK_SET_NMEA_UPDATE_1HZ  "$PMTK220,1000*1F"
 #define PMTK_SET_NMEA_UPDATE_5HZ  "$PMTK220,200*2C"
@@ -29,7 +29,7 @@ SoftwareSerial mySerial(3, 2);
 // turn on GPRMC and GGA
 //#define PMTK_SET_NMEA_OUTPUT_RMCGGA "$PMTK314,0,1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0*28"
 // turn on ALL THE DATA
-//#define PMTK_SET_NMEA_OUTPUT_ALLDATA "$PMTK314,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0*28"
+#define PMTK_SET_NMEA_OUTPUT_ALLDATA "$PMTK314,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0*28"
 #define PMTK_RESET "$PMTK314,-1*04"
 #define PMTK_SET_NMEA_OUTPUT_GSV "$PMTK314,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0*29"
 // turn off output
@@ -40,18 +40,18 @@ SoftwareSerial mySerial(3, 2);
 void setup() {
   while (!Serial); // wait for Serial to be ready
 
-  Serial.begin(115200); // this baud rate doesn't actually matter!
+  Serial.begin(57600); // this baud rate doesn't actually matter!
   mySerial.begin(9600);
   delay(2000);
   Serial.println("Get version!");
   mySerial.println(PMTK_Q_RELEASE);
-
+  
+  mySerial.println(PMTK_RESET);
   // you can send various commands to get it started
   //mySerial.println(PMTK_SET_NMEA_OUTPUT_RMCGGA);
 //  mySerial.println(PMTK_SET_NMEA_OUTPUT_ALLDATA);
-//  mySerial.println(PMTK_RESET);
   mySerial.println(PMTK_SET_NMEA_OUTPUT_GSV);
-  mySerial.println(PMTK_SET_NMEA_UPDATE_10HZ);
+//  mySerial.println(PMTK_SET_NMEA_UPDATE_10HZ);
  }
 
 
