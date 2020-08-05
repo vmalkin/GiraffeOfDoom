@@ -266,37 +266,40 @@ def create_s4_sigmas(resultlist):
         for result in resultlist:
             index = int((result[1] - starttime) / 60)
             buckets[index].data.append(result[4])
-        #  write out the median of each bucket's data array to a new list
 
+        #  write out the median of each bucket's data array to a new list
         templist = []
         for item in buckets:
-            templist.append(item.return_median())
-        minvalue = min(templist)
-        sigma = stdev(templist)
+            data = float(item.return_median())
+            if data > 0:
+                templist.append(data)
+
+        minvalue = float(min(templist))
+        sigma = float(stdev(templist))
+        print(minvalue, sigma)
 
         returnlist = []
         for b in buckets:
-            s1, s2, s3, s4 = 0, 0, 0, 0
+            s_value = 0
             if b.return_median() == 0:
                 data = nullvalue
             else:
                 data = str(b.return_median())
 
-                if float(data) > minvalue + sigma:
-                    s1 = 1
-                elif float(data) > (minvalue + sigma) and float(data) < (minvalue + 2 * sigma):
-                    s2 = 2
-                elif float(data) > (minvalue + 2 * sigma) and float(data) < (minvalue + 3 * sigma):
-                    s3 = 3
-                elif float(data) > (minvalue + 3 * sigma):
-                    s4 = 4
+                if float(data) >= (minvalue + sigma):
+                    s_value = 1
+                if float(data) >= (minvalue + (2 * sigma)):
+                    s_value = 2
+                if float(data) >= (minvalue + (3 * sigma)):
+                    s_value = 3
 
             dt = str(posix2utc(b.posixtime))
-            dp = dt + "," + str(data) + "," + str(s1) + "," + str(s2) + "," + str(s3) + "," + str(s4)
+            dp = dt + "," + str(data) + "," + str(s_value)
             returnlist.append(dp)
 
         try:
             with open(filename, 'w') as f:
+                f.write("Datetime UTC, S4 Scintillation Index, Sigmas" + '\n')
                 for result in returnlist:
                     f.write(result + '\n')
             f.close()
