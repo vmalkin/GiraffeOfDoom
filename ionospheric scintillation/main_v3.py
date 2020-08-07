@@ -287,11 +287,15 @@ def create_s4_sigmas(resultlist):
                 data = str(b.return_median())
 
                 if float(data) >= (minvalue + sigma):
-                    s_value = 1
-                if float(data) >= (minvalue + (2 * sigma)):
                     s_value = 2
-                if float(data) >= (minvalue + (3 * sigma)):
+                if float(data) >= (minvalue + (2 * sigma)):
                     s_value = 3
+                if float(data) >= (minvalue + (3 * sigma)):
+                    s_value = 4
+                if float(data) >= (minvalue + (4 * sigma)):
+                    s_value = 5
+                if float(data) >= (minvalue + (5 * sigma)):
+                    s_value = 6
 
             dt = str(posix2utc(b.posixtime))
             dp = dt + "," + str(data) + "," + str(s_value)
