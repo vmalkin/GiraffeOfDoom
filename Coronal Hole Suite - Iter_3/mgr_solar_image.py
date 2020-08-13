@@ -119,7 +119,8 @@ class SolarImageProcessor:
             common_data.report_string = common_data.report_string + "Unable to get syntopic map from NOAA.\n"
 
         try:
-            self._save_image_from_url("https://sdo.gsfc.nasa.gov/assets/img/latest/latest_512_0193.jpg", "sun.jpg")
+            # self._save_image_from_url("https://sdo.gsfc.nasa.gov/assets/img/latest/latest_512_0193.jpg", "sun.jpg")
+            self._save_image_from_url("https://services.swpc.noaa.gov/images/suvi-primary-195.png", "sun.jpg")
 
             img = self._image_read('sun.jpg')
 
@@ -128,8 +129,10 @@ class SolarImageProcessor:
             # nowtime_posix = get_posix_time()
 
             # when saved in paint, a 16bit bmp seems ok
-            mask_full = self._make_mask('mask_full.bmp')
-            mask_segment = self._make_mask('mask_meridian.bmp')
+            # mask_full = self._make_mask('mask_full.bmp')
+            # mask_segment = self._make_mask('mask_meridian.bmp')
+            mask_full = self._make_mask('mask_full_goes.bmp')
+            mask_segment = self._make_mask('mask_meridian_goes.bmp')
 
             # # print mask parameters for debugging purposes.
             # print(str(mask_full.dtype) + " " + str(mask_full.shape))
