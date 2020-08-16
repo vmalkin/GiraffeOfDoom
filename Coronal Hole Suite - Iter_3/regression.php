@@ -1,3 +1,2 @@
-Unable to calculate coronal hole coverage.
-<br>Insufficient time has passed to begin forecasting. 4.995 days remaining
+<br>Insufficient time has passed to begin forecasting. 5.0 days remaining
 

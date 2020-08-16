@@ -16,8 +16,10 @@ import common_data
 errorloglevel = logging.DEBUG
 logging.basicConfig(filename="errors.log", format='%(asctime)s %(message)s', level=errorloglevel)
 
-READING_PREDICTED = "prediction.csv"
-READING_ACTUAL = "log.csv"
+# READING_PREDICTED = "prediction.csv"
+# READING_ACTUAL = "log.csv"
+READING_PREDICTED = common_data.reading_predicted
+READING_ACTUAL = common_data.reading_actual
 NULL = ""
 
 # A plot point, used to aggregate multiple data series for final display.
@@ -143,7 +145,8 @@ class Plotter:
 
         # Save out as a CSV file for display
         try:
-            with open("forecast.csv", "w") as f:
+            # with open("forecast.csv", "w") as f:
+            with open("forecast_goes.csv", "w") as f:
                 # create the CSV labels
                 null_point = PlotPoint(0)
                 f.write(null_point.printlabels() + '\n')
@@ -155,7 +158,8 @@ class Plotter:
 
         # Save out as mini CSV file for 7 days display
         try:
-            with open("mini_4cast.csv", "w") as f:
+            # with open("mini_4cast.csv", "w") as f:
+            with open("mini_4cast_goes.csv", "w") as f:
                 # create the CSV labels
                 null_point = PlotPoint(0)
                 f.write(null_point.printlabels() + '\n')

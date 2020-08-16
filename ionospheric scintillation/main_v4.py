@@ -19,9 +19,10 @@ com = mgr_comport.SerialManager(k.portName,k.baudrate, k.bytesize, k.parity, k.s
 # timeformat = '%Y-%m-%d %H:%M:%S'
 timeformat = '%Y-%m-%d %H:%M'
 sat_database = "gps_satellites.db"
-integration_time = 60
+integration_time = 20
 duration = 60*60*24
 nullvalue = ""
+logfiles = "logfiles"
 
 
 # class SatelliteCollator(Thread):
@@ -252,10 +253,10 @@ def create_s4_line(resultlist):
         except PermissionError:
             print("CSV file being used by another app. Update next time")
 
-def create_s4_sigmas(resultlist):
+def create_s4_sigmas(resultlist, filename):
     starttime = resultlist[0][1]
     endtime = resultlist[len(resultlist) - 1][1]
-    filename = "std_dev.csv"
+    # filename = "std_dev.csv"
     buckets = []
 
     # Set up the bin list
@@ -314,71 +315,6 @@ def create_s4_sigmas(resultlist):
             print("CSV file being used by another app. Update next time")
 
 
-# def create_s4_dxdt(resultlist):
-#     starttime = resultlist[0][1]
-#     endtime = resultlist[len(resultlist) - 1][1]
-#     filename = "s4_dxdt.csv"
-#     halfwindow = 40
-#     buckets = []
-#
-#     # Set up the bin list
-#     if len(resultlist) > 180:
-#         for i in range(starttime, endtime, 60):
-#             buckets.append(BucketBin(i))
-#         # add data to each bins array
-#         for result in resultlist:
-#             index = int((result[1] - starttime) / 60)
-#             buckets[index].data.append(result[4])
-#
-#         #  write out the median of each bucket's data array to a new list
-#         t1 = []
-#         for b in buckets:
-#             dp = [b.posixtime, b.return_median()]
-#             t1.append(dp)
-#
-#         # calculate dx/dt
-#         t2 = []
-#         for i in range (1, len(t1)):
-#             dt = t1[i][0]
-#             dx = t1[i][1] - t1[i-1][1]
-#             dp = [dt, dx]
-#             t2.append(dp)
-#
-#         # Smooth dxdt
-#         t3 = []
-#         for i in range(halfwindow, len(t2) - 1 - halfwindow):
-#             avg = []
-#             dt = t2[i][0]
-#             for j in range(halfwindow * -1, halfwindow):
-#                 data = t2[i + j][1]
-#                 avg.append(data)
-#             avg_data = mean(avg)
-#             dp = [dt, avg_data]
-#             t3.append(dp)
-#
-#         try:
-#             with open(filename, 'w') as f:
-#                 for result in t3:
-#                     f.write(posix2utc(result[0]) + "," + str(result[1]) + '\n')
-#             f.close()
-#             print("CSV file written")
-#         except PermissionError:
-#             print("CSV file being used by another app. Update next time")
-
-
-# def create_snr(resultlist):
-#     filename = "snr.csv"
-#     try:
-#         with open(filename, 'w') as f:
-#             for result in resultlist:
-#                 dp = str(result[0]) + "," + str(posix2utc(result[1])) + "," +  str(result[2]) + "," +  str(result[3]) + "," +  str(result[4])
-#                 f.write(dp + '\n')
-#         f.close()
-#         print("CSV file written")
-#     except PermissionError:
-#         print("CSV file being used by another app. Update next time")
-
-
 def create_satellite_list(constellationname):
     returnlist = []
     for i in range(0, 300):
@@ -426,6 +362,16 @@ def create_matplot(resultlist, ylow, ymax, filename):
         plt.close('all')
 
 
+def create_logfile_directory():
+    try:
+        os.makedirs(logfiles)
+        print("Logfile directory created.")
+    except:
+        if not os.path.isdir(logfiles):
+            print("Unable to create log directory")
+            logging.critical("CRITICAL ERROR: Unable to create logs directory")
+
+
 if __name__ == "__main__":
     # initial setup including satellite lists
     # if database not exists, create database
@@ -434,6 +380,10 @@ if __name__ == "__main__":
         create_database()
     if os.path.isfile(sat_database) is True:
         print("Database file exists")
+
+    if os.path.isdir(logfiles) is False:
+        print("Creating log file directory...")
+        create_logfile_directory()
 
     GPGSV = create_satellite_list("gps_")
     GLGSV = create_satellite_list("glonass_")
@@ -569,19 +519,24 @@ if __name__ == "__main__":
                 # THis was in a thread but pyplot is an arse. Should only consume a few seconds of time
                 ########################################################################################
                 resultlist = parse_database()
-                snr_list = parse_snr()
+                # snr_list = parse_snr()
 
                 # create_csv(resultlist)
                 create_s4_line(resultlist)
-                create_s4_sigmas(resultlist)
+                create_s4_sigmas(resultlist, "std_dev.csv")
                 # create_s4_dxdt(resultlist)
                 # create_snr(snr_list)
 
-                # create_matplot(resultlist, 0, 5, "s4_12.png")
-                create_matplot(resultlist, 0, 1, "s4_01.png")
-                # create_matplot(resultlist, 0, 0.25, "s4_02.png")
-                # create_matplot(resultlist, 0.1, 0.13, "line.png")
-                print("Done!")
+                # We recycle the create_sigmas function to generate a 24hr CSV logfile
+                dt = posix2utc(posix_time).split(" ")
+                name = dt[0] + ".csv"
+                filepath = logfiles + "/" + name
+                create_s4_sigmas(resultlist, filepath)
+
+                # create_matplot(resultlist, 0, 1, "s4_01.png")
+                
+                # finally...
                 posix_time = int(time.time())
+                print("Completed task at: " + posix2utc(posix_time))
                 itercount = 0
 
