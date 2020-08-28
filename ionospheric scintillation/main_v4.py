@@ -19,7 +19,7 @@ com = mgr_comport.SerialManager(k.portName,k.baudrate, k.bytesize, k.parity, k.s
 # timeformat = '%Y-%m-%d %H:%M:%S'
 timeformat = '%Y-%m-%d %H:%M'
 sat_database = "gps_satellites.db"
-integration_time = 20
+integration_time = 60
 duration = 60*60*24
 nullvalue = ""
 logfiles = "logfiles"
@@ -287,19 +287,29 @@ def create_s4_sigmas(resultlist, filename):
             else:
                 data = str(b.return_median())
 
-##                if float(data) < (minvalue + sigma):
-##                    s_value = 1
+                # if float(data) < (minvalue + sigma):
+                #     s_value = 1
                 if float(data) >= (minvalue + sigma):
                     s_value = 2
                 if float(data) >= (minvalue + (2 * sigma)):
                     s_value = 3
+##                if float(data) >= (minvalue + (2.5 * sigma)):
+##                    s_value = 2.5
                 if float(data) >= (minvalue + (3 * sigma)):
                     s_value = 4
+##                if float(data) >= (minvalue + (3.5 * sigma)):
+##                    s_value = 3.5
                 if float(data) >= (minvalue + (4 * sigma)):
                     s_value = 5
+##                if float(data) >= (minvalue + (4.5 * sigma)):
+##                    s_value = 4.5
                 if float(data) >= (minvalue + (5 * sigma)):
                     s_value = 6
-
+##                if float(data) >= (minvalue + (5.5 * sigma)):
+##                    s_value = 5.5
+                if float(data) >= (minvalue + (6 * sigma)):
+                    s_value = 7
+                    
             dt = str(posix2utc(b.posixtime))
             dp = dt + "," + str(data) + "," + str(s_value)
             returnlist.append(dp)
@@ -522,7 +532,7 @@ if __name__ == "__main__":
                 # snr_list = parse_snr()
 
                 # create_csv(resultlist)
-                create_s4_line(resultlist)
+                # create_s4_line(resultlist)
                 create_s4_sigmas(resultlist, "std_dev.csv")
                 # create_s4_dxdt(resultlist)
                 # create_snr(snr_list)
@@ -533,7 +543,7 @@ if __name__ == "__main__":
                 filepath = logfiles + "/" + name
                 create_s4_sigmas(resultlist, filepath)
 
-                # create_matplot(resultlist, 0, 1, "s4_01.png")
+                create_matplot(resultlist, 0, 1, "s4_01.png")
                 
                 # finally...
                 posix_time = int(time.time())
