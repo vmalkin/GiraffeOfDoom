@@ -1,18 +1,35 @@
-from matplotlib import pyplot as plt
-import numpy as np
+import matplotlib.pyplot as plt
 
-# THis would be from a JSON file list of data in [hour, value] format
-data = [[0,4],[0,4],[0,6],[0,8]]
+# Create a array of marks in different subjects scored by different students
+marks = [[1.63365,
+1.05394,
+0.642,
+0.81116,
+1.86754,
+3.10922,
+2.68027,
+0.8069,
+0.89013,
+1.60795,
+0.73464,
+0.66922,
+1.11647,
+0.79267,
+1.69789,
+2.87578,
+1.71079,
+2.22781,
+4.17875,
+12,
+3.77927,
+2.16104,
+1.72438
+]]
+# name of students
+# names = ['Sumit', 'Ashu', 'Sonu', 'Kajal', 'Kavita', 'Naman']
+# # name of subjects
+hours = [10,11,12,13,14,15,16,17,18,19,20,21,22,23,0,1,2,3,4,5,6,7,8,9]
 
-x = []
-y = []
 
-for line in data:
-        x.append(line[0])
-        y.append(line[1])
-
-fig, ax = plt.subplots()
-im = ax.imshow(data)
-fig.tight_layout()
-
+plt.imshow(marks, cmap='Greens', interpolation="none")
 plt.show()
