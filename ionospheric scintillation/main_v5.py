@@ -4,12 +4,13 @@ import time
 from threading import Thread
 import os
 import sqlite3
-from statistics import mean, stdev
+from statistics import mean, stdev, median
 import datetime
 import logging
 import re
 from matplotlib import pyplot as plt
 from matplotlib import ticker as ticker
+import pickle
 
 
 errorloglevel = logging.DEBUG
@@ -23,6 +24,7 @@ integration_time = 60
 duration = 60*60*24
 nullvalue = ""
 logfiles = "logfiles"
+stdev_file = "stdev.pkl"
 
 
 # class SatelliteCollator(Thread):
@@ -253,6 +255,29 @@ def create_s4_line(resultlist):
         except PermissionError:
             print("CSV file being used by another app. Update next time")
 
+
+def store_sigma(stdev_value):
+    stdev_list = []
+    if os.path.isfile(stdev_file):
+        stdev_list = pickle.load(open(stdev_file, "rb"))
+    stdev_list.append(stdev_value)
+
+    # list is larger than one carrington rotation, delete and append current mean, start again
+    carrington_rotation = int((29 * 24 * 60 * 60) / integration_time)
+    if len(stdev_list) > carrington_rotation:
+        stdev_list = []
+        stdev_list.append(stdev_value)
+    print("STDev list is " + str(len(stdev_list)) + " " + str(carrington_rotation))
+    pickle.dump(stdev_list, open(stdev_file, "wb"), 0)
+
+
+def return_median_sigma():
+    stdev_list = pickle.load(open(stdev_file, "rb"))
+    returnvalue = median(stdev_list)
+    print("STDev: " + str(returnvalue))
+    return returnvalue
+
+
 def create_s4_sigmas(resultlist, filename):
     starttime = resultlist[0][1]
     endtime = resultlist[len(resultlist) - 1][1]
@@ -276,8 +301,14 @@ def create_s4_sigmas(resultlist, filename):
                 templist.append(data)
 
         minvalue = float(min(templist))
-        sigma = float(stdev(templist))
-        print(minvalue, sigma)
+        sigma = round(float(stdev(templist)), 4)
+
+        # Store the latest sigma in the list of sigmas
+        store_sigma(sigma)
+        # get the median value for the last 29 days
+        sigma = return_median_sigma()
+
+        # print(minvalue, sigma)
 
         returnlist = []
         for b in buckets:

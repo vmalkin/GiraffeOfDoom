@@ -1,6 +1,14 @@
 import matplotlib.pyplot as plt
-import numpy as np
-# Create a array of marks in different subjects scored by different students
+
+data = []
+with open("Ruru_Obs_1hrdx.csv", "r") as f:
+    dp = f.read()
+    dp = dp.strip()
+    data.append(dp + "\n")
+
+print(data)
+
+
 marks = [[1.63365,
     1.05394,
     0.642,
@@ -20,18 +28,20 @@ marks = [[1.63365,
     1.71079,
     2.22781,
     4.17875,
-    2,
+    8,
     3.77927,
     2.16104,
     1.72438
     ]]
+minvalue = 0
+maxvalue = 9
+hours = ["10","" ,"12","","14","","16","","18","","20","","22","","0","","2","","4","","6","","8",""]
 
+# draw the heatmap
 fig, ax = plt.subplots()
-hours = ["10","11","12","13","14","15","16","17","18","19","20","21","22","23","0","1","2","3","4","5","6","7","8","9"]
-
 ax.set_xticks(range(len(hours)))
 ax.set_xticklabels(hours)
-
-ax.imshow(marks, cmap='Greens', interpolation="hanning")
+ax.set_yticks([])
+ax.imshow(marks, cmap='viridis', interpolation="hanning", vmin=minvalue, vmax=maxvalue)
 fig.tight_layout()
 plt.show()
