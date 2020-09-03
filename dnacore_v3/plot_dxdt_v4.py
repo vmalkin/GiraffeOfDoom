@@ -5,6 +5,8 @@ import time
 import datetime
 import os
 from statistics import mean, median, stdev
+import matplotlib.pyplot as plt
+
 """
 logging levels in order of least --> most severity:
 DEBUG
@@ -19,7 +21,8 @@ logging.info("Created error log for this session")
 
 dna_core = sqlite3.connect(k.dbfile)
 db = dna_core.cursor()
-timeformat = '%Y-%m-%d %H:%M:%S'
+# timeformat = '%Y-%m-%d %H:%M:%S'
+timeformat = '%H'
 
 # Only specific station data makes sense as detrended readings.
 stations = ["Ruru_Obs", "GOES_16"]
@@ -200,6 +203,7 @@ def db_get_middle_min():
     return result
 
 
+
 if __name__ == "__main__":
     # check_create_folders()
     for station in stations:
@@ -214,10 +218,11 @@ if __name__ == "__main__":
 
 
 
-        # All other calculations are worked on data at 1 minute intervals,
-        # incl calculation of K-index, etc.
-        nowfile = station + "_1hrdx.csv"
-        save_logfiles(nowfile, tempdata)
+
+        # # All other calculations are worked on data at 1 minute intervals,
+        # # incl calculation of K-index, etc.
+        # nowfile = station + "_1hrdx.csv"
+        # save_logfiles(nowfile, tempdata)
 
     print("Closing database and exiting")
     dna_core.commit()
