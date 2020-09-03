@@ -1,7 +1,6 @@
 import matplotlib.pyplot as plt
 from datetime import datetime
 
-marks = []
 minvalue = 0
 maxvalue = 3
 data = []
@@ -36,3 +35,4 @@ ax.set_yticks([])
 ax.imshow(data, cmap='viridis', interpolation="hanning", vmin=minvalue, vmax=maxvalue)
 fig.tight_layout()
 plt.show()
+plt.savefig

@@ -216,8 +216,30 @@ if __name__ == "__main__":
         # We want the last 24 hours of data
         tempdata = convert_time(tempdata)
 
+        minvalue = 0
+        maxvalue = 3
+        data = []
+        hours = []
 
+        dd = []
+        for line in tempdata:
+            d = line.strip("\n")
+            d = d.split(",")
+            hr = d[0]
+            da = float(d[1])
+            dd.append(da)
+            hours.append(hr)
+        data.append(dd)
 
+        # draw the heatmap
+        fig, ax = plt.subplots()
+        ax.set_xticks(range(len(hours)))
+        ax.set_xticklabels(hours)
+        ax.set_yticks([])
+        ax.imshow(data, cmap='viridis', interpolation="hanning", vmin=minvalue, vmax=maxvalue)
+        fig.tight_layout()
+        fname = station + ".jpg"
+        plt.savefig(fname)
 
         # # All other calculations are worked on data at 1 minute intervals,
         # # incl calculation of K-index, etc.
