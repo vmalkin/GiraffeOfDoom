@@ -89,7 +89,6 @@ class GPSSatellite:
         return intensity
 
     def s4_index(self):
-        # print(self.intensity)
         returnvalue = 0
 
         if len(self.intensity) > self.min_array_len and sum(self.intensity) > 0:
@@ -186,59 +185,6 @@ def nmea_sentence(sentence):
     return sentence
 
 
-def create_csv(resultlist):
-    filename = "s4.csv"
-    try:
-        with open(filename, 'w') as f:
-            for result in resultlist:
-                if result[4] == 0:
-                    data = nullvalue
-                else:
-                    data = result[4]
-                dt = posix2utc(result[1])
-                dp = str(dt + "," + data)
-                f.write(dp + '\n')
-        f.close()
-        print("CSV file written")
-    except PermissionError:
-        print("CSV file being used by another app. Update next time")
-
-
-def create_s4_line(resultlist):
-    starttime = resultlist[0][1]
-    endtime = resultlist[len(resultlist) - 1][1]
-    filename = "linechart.csv"
-    buckets = []
-
-    # Set up the bin list
-    if len(resultlist) > 180:
-        for i in range(starttime, endtime, 60):
-            buckets.append(BucketBin(i))
-        # add data to each bins array
-        for result in resultlist:
-            index = int((result[1] - starttime) / 60)
-            buckets[index].data.append(result[4])
-        #  write out the median of each bucket's data array to a new list
-        returnlist = []
-        for b in buckets:
-            if b.return_median() == 0:
-                data = nullvalue
-            else:
-                data = str(b.return_median())
-            dt = str(posix2utc(b.posixtime))
-            dp = dt + "," + data
-            returnlist.append(dp)
-
-        try:
-            with open(filename, 'w') as f:
-                for result in returnlist:
-                    f.write(result + '\n')
-            f.close()
-            print("CSV file written")
-        except PermissionError:
-            print("CSV file being used by another app. Update next time")
-
-
 def store_sigma(stdev_value):
     stdev_list = []
     if os.path.isfile(stdev_file):
@@ -248,7 +194,7 @@ def store_sigma(stdev_value):
     # list is larger than one carrington rotation, delete and append current mean, start again
     carrington_rotation = int((29 * 24 * 60 * 60) / integration_time)
     if len(stdev_list) > carrington_rotation:
-        stdev_list = []
+        stdev_list.pop(0)
         stdev_list.append(stdev_value)
     print("STDev list is " + str(len(stdev_list)) + " " + str(carrington_rotation))
     pickle.dump(stdev_list, open(stdev_file, "wb"), 0)
@@ -317,7 +263,7 @@ def create_s4_sigmas(resultlist):
 
                 if float(data) >= (minvalue + (6 * sigma)):
                     s_value = 7
-                    
+
             dt = str(posix2utc(b.posixtime))
             dp = dt + "," + str(data) + "," + str(s_value)
             returnlist.append(dp)
@@ -361,9 +307,6 @@ def create_matplot(resultlist, ylow, ymax, filename):
         ax.set_ylabel("S4 Index", labelpad=5)
         s4.tight_layout()
 
-        # plt.show()
-        # plt.xlabel("Time, UTC")
-        # plt.ylabel("S4 index values")
         plt.title("S4 Ionospheric Index")
         plt.savefig(savefile)
         plt.close('all')
@@ -412,13 +355,6 @@ if __name__ == "__main__":
     GLGSV = create_satellite_list("glonass_")
     GAGSV = create_satellite_list("galileo_")
 
-    # # begin graphing thread
-    # sat_collation = SatelliteCollator()
-    # try:
-    #     sat_collation.start()
-    # except:
-    #     print("Unable to start Satellite Collator")
-
     counter = 0
     regex_expression = "(\$\w\wGSV),.+"
     recordlength = 4
@@ -431,8 +367,6 @@ if __name__ == "__main__":
         # Get com data
         line = com.data_recieve()
 
-        # print(counter)
-        # print(line)
         # Parse com data for valid data GSV sentence ???GSV,
         if re.match(regex_expression, line):
             # print(line)
@@ -540,13 +474,6 @@ if __name__ == "__main__":
                 # THis was in a thread but pyplot is an arse. Should only consume a few seconds of time
                 ########################################################################################
                 resultlist = parse_database()
-                # snr_list = parse_snr()
-
-                # create_csv(resultlist)
-                # create_s4_line(resultlist)
-                # create_s4_sigmas(resultlist)
-                # create_s4_dxdt(resultlist)
-                # create_snr(snr_list)
 
                 # We recycle the create_sigmas function to generate a 24hr CSV logfile
                 dt = posix2utc(posix_time).split(" ")
