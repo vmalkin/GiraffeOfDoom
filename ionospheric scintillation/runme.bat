@@ -1,4 +1,4 @@
 title [GPS Satellite Data Gatherer]
 :start
-python main_v5.py
+python main_v6.py
 goto start

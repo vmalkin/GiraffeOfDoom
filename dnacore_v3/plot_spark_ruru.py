@@ -5,6 +5,8 @@ minvalue = 0
 maxvalue = 3
 data = []
 hours = []
+title = "Ruru Observatory"
+savefile = "spark_ruru.png"
 
 tempdata = []
 
@@ -28,11 +30,14 @@ with open("Ruru_Obs_1hrdx.csv", "r") as f:
 
 
 # draw the heatmap
-fig, ax = plt.subplots()
+# plt.figure(figsize=(5,1))
+fig, ax = plt.subplots(figsize=(7,2))
 ax.set_xticks(range(len(hours)))
 ax.set_xticklabels(hours)
 ax.set_yticks([])
-ax.imshow(data, cmap='viridis', interpolation="hanning", vmin=minvalue, vmax=maxvalue)
+ax.set_xlabel("UTC Hour")
+ax.set_title(title)
+ax.imshow(data, cmap='viridis', interpolation="hanning", vmin=minvalue, vmax=maxvalue, extent=(0,24,0,3))
 fig.tight_layout()
-plt.show()
-plt.savefig
+plt.savefig(savefile)
+plt.close('all')

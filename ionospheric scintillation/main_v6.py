@@ -267,9 +267,7 @@ def create_s4_sigmas(resultlist):
             dt = str(posix2utc(b.posixtime))
             dp = dt + "," + str(data) + "," + str(s_value)
             returnlist.append(dp)
-    return returnlist
-
-
+        return returnlist
 
 
 def create_satellite_list(constellationname):
@@ -483,11 +481,14 @@ if __name__ == "__main__":
 
                 create_matplot(resultlist, 0, 1, "s4_01.png")
 
-                save_s4_file(final_s4_list, filepath)
-                save_s4_file(final_s4_list, "std_dev.csv")
+                try:
+                    save_s4_file(final_s4_list, filepath)
+                    save_s4_file(final_s4_list, "std_dev.csv")
+                except TypeError:
+                    print("S4 file not large enough to process just yet")
 
                 # finally...
                 posix_time = int(time.time())
-                print("Completed task at: " + posix2utc(posix_time))
+                print("Completed task at: " + posix2utc(posix_time) + "\n")
                 itercount = 0
 
