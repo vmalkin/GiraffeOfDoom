@@ -38,6 +38,7 @@ ax.set_yticks([])
 ax.set_xlabel("UTC Hour")
 ax.set_title(title)
 ax.imshow(data, cmap='viridis', interpolation="hanning", vmin=minvalue, vmax=maxvalue, extent=(0,24,0,3))
+
 fig.tight_layout()
 plt.savefig(savefile)
 plt.close('all')
