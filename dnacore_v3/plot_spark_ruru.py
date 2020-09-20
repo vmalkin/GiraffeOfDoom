@@ -1,4 +1,5 @@
 import matplotlib.pyplot as plt
+import PIL
 from datetime import datetime
 
 minvalue = 0
@@ -38,7 +39,9 @@ ax.set_yticks([])
 ax.set_xlabel("UTC Hour")
 ax.set_title(title)
 b = ax.imshow(data, cmap='viridis', interpolation="hanning", vmin=minvalue, vmax=maxvalue, extent=(0,24,0,3))
-plt.colorbar(b)
+
+# b = ax.imshow(data, cmap='viridis', interpolation="hanning", vmin=minvalue, vmax=maxvalue)
+# plt.colorbar(b)
 fig.tight_layout()
 plt.savefig(savefile)
 plt.close('all')
