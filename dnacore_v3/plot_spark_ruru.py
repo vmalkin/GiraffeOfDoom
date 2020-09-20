@@ -18,8 +18,8 @@ def convert_datetime_to_hour(datetimestring):
     return hr
 
 with open("Ruru_Obs_1hrdx.csv", "r") as f:
-    dd = []
     for line in f:
+        dd = []
         d = line.strip("\n")
         d = d.split(",")
         hr = d[0]
@@ -27,20 +27,22 @@ with open("Ruru_Obs_1hrdx.csv", "r") as f:
         dd.append(da)
         hr = convert_datetime_to_hour(hr)
         hours.append(hr)
-    data.append(dd)
-
+        data.append(dd)
+print(data)
 
 # draw the heatmap
 # plt.figure(figsize=(5,1))
-fig, ax = plt.subplots(figsize=(7,2))
-ax.set_xticks(range(len(hours)))
-ax.set_xticklabels(hours)
-ax.set_yticks([])
-ax.set_xlabel("UTC Hour")
+fig, ax = plt.subplots(figsize=(3,7))
+ax.set_yticks(range(len(hours)))
+ax.set_yticklabels(hours)
+ax.set_xticks([])
+ax.set_ylabel("UTC Hour")
 ax.set_title(title)
-b = ax.imshow(data, cmap='viridis', interpolation="hanning", vmin=minvalue, vmax=maxvalue, extent=(0,24,0,3))
 
-# b = ax.imshow(data, cmap='viridis', interpolation="hanning", vmin=minvalue, vmax=maxvalue)
+b = ax.imshow(data, cmap='viridis', interpolation="hanning", vmin=minvalue, vmax=maxvalue, extent=(0,7,0,24))
+cbar = ax.figure.colorbar(b, ax=ax)
+cbar.ax.set_ylabel("x background level")
+
 # plt.colorbar(b)
 fig.tight_layout()
 plt.savefig(savefile)

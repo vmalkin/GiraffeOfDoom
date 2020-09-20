@@ -17,8 +17,8 @@ def convert_datetime_to_hour(datetimestring):
     return hr
 
 with open("GOES_16_1hrdx.csv", "r") as f:
-    dd = []
     for line in f:
+        dd = []
         d = line.strip("\n")
         d = d.split(",")
         hr = d[0]
@@ -26,7 +26,7 @@ with open("GOES_16_1hrdx.csv", "r") as f:
         dd.append(da)
         hr = convert_datetime_to_hour(hr)
         hours.append(hr)
-    data.append(dd)
+        data.append(dd)
 
 
 # draw the heatmap
