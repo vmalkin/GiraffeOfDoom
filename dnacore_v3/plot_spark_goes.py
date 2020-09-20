@@ -30,7 +30,6 @@ with open("GOES_16_1hrdx.csv", "r") as f:
 hours.reverse()
 
 # draw the heatmap
-# plt.figure(figsize=(5,1))
 fig, ax = plt.subplots(figsize=(3,7))
 ax.set_yticks(range(len(hours)))
 ax.set_yticklabels(hours)
