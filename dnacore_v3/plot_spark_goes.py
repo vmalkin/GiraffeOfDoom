@@ -28,15 +28,20 @@ with open("GOES_16_1hrdx.csv", "r") as f:
         hours.append(hr)
         data.append(dd)
 
-
 # draw the heatmap
 # plt.figure(figsize=(5,1))
-fig, ax = plt.subplots(figsize=(5,1))
-ax.set_xticks(range(len(hours)))
-ax.set_xticklabels(hours)
-ax.set_yticks([])
+fig, ax = plt.subplots(figsize=(3,7))
+ax.set_yticks(range(len(hours)))
+ax.set_yticklabels(hours)
+ax.set_xticks([])
+ax.set_ylabel("UTC Hour")
 ax.set_title(title)
-ax.imshow(data, cmap='viridis', interpolation="hanning", vmin=minvalue, vmax=maxvalue)
+
+b = ax.imshow(data, cmap='viridis', interpolation="hanning", vmin=minvalue, vmax=maxvalue, extent=(0,5,0,24))
+cbar = ax.figure.colorbar(b, ax=ax)
+cbar.ax.set_ylabel("x background level")
+
+# plt.colorbar(b)
 fig.tight_layout()
 plt.savefig(savefile)
 plt.close('all')

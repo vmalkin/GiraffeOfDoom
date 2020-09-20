@@ -39,7 +39,7 @@ ax.set_xticks([])
 ax.set_ylabel("UTC Hour")
 ax.set_title(title)
 
-b = ax.imshow(data, cmap='viridis', interpolation="hanning", vmin=minvalue, vmax=maxvalue, extent=(0,7,0,24))
+b = ax.imshow(data, cmap='viridis', interpolation="hanning", vmin=minvalue, vmax=maxvalue, extent=(0,5,0,24))
 cbar = ax.figure.colorbar(b, ax=ax)
 cbar.ax.set_ylabel("x background level")
 
