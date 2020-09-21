@@ -5,7 +5,7 @@ minvalue = 0
 maxvalue = 5
 data = []
 hours = []
-title = "DnA No 1"
+title = "Ground Magnetometer No 1"
 savefile = "spark_ruru.png"
 
 tempdata = []
