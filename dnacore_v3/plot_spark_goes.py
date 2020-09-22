@@ -5,7 +5,7 @@ minvalue = 0
 maxvalue = 17
 data = []
 hours = []
-title = "GOES 16"
+title = "GOES East"
 savefile = "spark_goes.png"
 
 tempdata = []

@@ -5,7 +5,7 @@ minvalue = 0
 maxvalue = 4
 data = []
 hours = []
-title = "Ground Magnetometer No 1"
+title = "Dunedin Aurora No 1"
 savefile = "spark_ruru.png"
 
 tempdata = []
