@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 from datetime import datetime
 
 minvalue = 0
-maxvalue = 4
+maxvalue = 3
 data = []
 hours = []
 title = "Dunedin Aurora No 1"
