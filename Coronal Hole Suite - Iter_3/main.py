@@ -55,7 +55,7 @@ if __name__ == "__main__":
     else:
         common_data.report_string = common_data.report_string + ("<br>Insufficient time has passed to begin forecasting. " + str(timeleft)[:5] + " days remaining" + "\n")
         print(common_data.report_string)
-        with open("regression.php", 'w') as w:
+        with open(common_data.regression_ouput, 'w') as w:
             w.write(common_data.report_string + '\n')
 
         # Pause for an hour

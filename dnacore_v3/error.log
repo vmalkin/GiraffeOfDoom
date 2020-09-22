@@ -1,0 +1,771 @@
+2020-03-30 16:39:45,561 DISCOVR ERROR: Could not get data from URL
+2020-03-30 16:40:15,720 WARNING: unable to parse a time value: 1585496234
+2020-03-30 16:40:17,387 GOES_16 ERROR: Could not get data from URL
+2020-04-02 15:43:22,375 DISCOVR ERROR: Could not get data from URL
+2020-04-02 16:31:25,097 DISCOVR ERROR: Could not get data from URL
+2020-04-02 16:32:01,322 DISCOVR ERROR: Could not get data from URL
+2020-04-02 16:32:28,726 DISCOVR ERROR: Could not get data from URL
+2020-04-02 16:35:34,204 DISCOVR ERROR: Could not get data from URL
+2020-04-02 16:36:20,733 DISCOVR ERROR: Could not get data from URL
+2020-04-02 16:36:34,326 DISCOVR ERROR: Could not get data from URL
+2020-04-03 13:35:28,515 SW_speed ERROR: Could not get data from URL
+2020-04-03 13:35:28,515 SW_speed ERROR: unable to get most recent date from DB
+2020-04-03 13:35:28,515 SW_speed ERROR: Final error state reached
+2020-04-03 13:37:38,593 SW_speed ERROR: Could not get data from URL
+2020-04-03 13:37:38,593 SW_speed ERROR: unable to get most recent date from DB
+2020-04-03 13:37:38,593 SW_speed ERROR: Final error state reached
+2020-04-03 13:39:15,650 SW_speed ERROR: Could not get data from URL
+2020-04-03 13:39:37,659 SW_speed ERROR: Could not get data from URL
+2020-04-03 13:40:01,464 SW_speed ERROR: Could not get data from URL
+2020-04-03 13:44:34,434 SW_speed ERROR: Could not get data from URL
+2020-04-03 13:45:41,599 SW_Density ERROR: Could not get data from URL
+2020-04-03 13:47:05,400 WARNING: unable to parse a time value: 1585831480
+2020-04-03 13:47:06,915 GOES_16 ERROR: Could not get data from URL
+2020-04-03 13:47:07,882 SW_speed ERROR: Could not get data from URL
+2020-04-03 13:47:08,600 SW_Density ERROR: Could not get data from URL
+2020-04-03 13:48:12,263 WARNING: unable to parse a time value: 1585831480
+2020-04-03 13:48:12,263 ERROR: Unable to parse device data
+2020-04-03 13:48:12,263 ERROR: Final error state reached
+2020-04-03 13:48:13,434 GOES_16 ERROR: Could not get data from URL
+2020-04-03 13:48:14,136 SW_speed ERROR: Could not get data from URL
+2020-04-03 13:48:14,870 SW_Density ERROR: Could not get data from URL
+2020-04-03 13:48:19,194 SW_Density ERROR: Could not get data from URL
+2020-04-03 13:48:19,194 SW_Density ERROR: Unable to parse device data
+2020-04-03 13:48:19,194 SW_Density ERROR: Final error state reached
+2020-04-03 13:49:22,517 WARNING: unable to parse a time value: 1585831622
+2020-04-03 13:49:23,938 GOES_16 ERROR: Could not get data from URL
+2020-04-03 13:49:24,797 SW_speed ERROR: Could not get data from URL
+2020-04-03 13:49:25,468 SW_Density ERROR: Could not get data from URL
+2020-04-03 13:54:26,763 WARNING: unable to parse a time value: 1585831904
+2020-04-03 13:54:28,745 GOES_16 ERROR: Could not get data from URL
+2020-04-03 13:54:29,462 SW_speed ERROR: Could not get data from URL
+2020-04-03 13:54:30,133 SW_Density ERROR: Could not get data from URL
+2020-04-03 13:59:31,725 WARNING: unable to parse a time value: 1585832188
+2020-04-03 13:59:33,848 SW_speed ERROR: Could not get data from URL
+2020-04-03 13:59:34,566 SW_Density ERROR: Could not get data from URL
+2020-04-03 14:00:50,302 WARNING: unable to parse a time value: 1585832330
+2020-04-03 14:00:51,068 GOES_16 ERROR: Could not get data from URL
+2020-04-03 14:00:51,740 SW_speed ERROR: Could not get data from URL
+2020-04-03 14:00:52,504 SW_Density ERROR: Could not get data from URL
+2020-04-03 14:05:53,740 WARNING: unable to parse a time value: 1585832682
+2020-04-03 14:05:55,098 GOES_16 ERROR: Could not get data from URL
+2020-04-03 14:05:56,065 SW_speed ERROR: Could not get data from URL
+2020-04-03 14:05:56,767 SW_Density ERROR: Could not get data from URL
+2020-04-03 14:10:57,706 WARNING: unable to parse a time value: 1585832966
+2020-04-03 14:10:58,611 GOES_16 ERROR: Could not get data from URL
+2020-04-03 14:10:59,297 SW_speed ERROR: Could not get data from URL
+2020-04-03 14:10:59,953 SW_Density ERROR: Could not get data from URL
+2020-04-04 11:53:21,394 WARNING: unable to parse a time value: 1585911116
+2020-04-04 11:53:22,659 GOES_16 ERROR: Could not get data from URL
+2020-04-04 11:53:23,435 SW_speed ERROR: Could not get data from URL
+2020-04-04 11:53:24,165 SW_Density ERROR: Could not get data from URL
+2020-04-04 11:57:23,151 WARNING: unable to parse a time value: 1585911258
+2020-04-04 11:57:23,159 ERROR: Unable to parse device data
+2020-04-04 11:57:23,159 ERROR: Final error state reached
+2020-04-04 11:57:24,388 GOES_16 ERROR: Could not get data from URL
+2020-04-04 11:57:24,397 GOES_16 ERROR: Unable to parse device data
+2020-04-04 11:57:24,398 GOES_16 ERROR: Final error state reached
+2020-04-04 11:57:25,277 SW_speed ERROR: Could not get data from URL
+2020-04-04 11:57:25,287 SW_speed ERROR: Unable to parse device data
+2020-04-04 11:57:25,288 SW_speed ERROR: Final error state reached
+2020-04-04 11:57:25,943 SW_Density ERROR: Could not get data from URL
+2020-04-04 11:57:25,951 SW_Density ERROR: Unable to parse device data
+2020-04-04 11:57:25,952 SW_Density ERROR: Final error state reached
+2020-04-04 11:57:27,986 WARNING: unable to parse a time value: 1585911258
+2020-04-04 11:57:27,995 ERROR: Unable to parse device data
+2020-04-04 11:57:27,995 ERROR: Final error state reached
+2020-04-04 11:57:28,642 GOES_16 ERROR: Could not get data from URL
+2020-04-04 11:57:28,649 GOES_16 ERROR: Unable to parse device data
+2020-04-04 11:57:28,650 GOES_16 ERROR: Final error state reached
+2020-04-04 11:57:29,303 SW_speed ERROR: Could not get data from URL
+2020-04-04 11:57:29,312 SW_speed ERROR: Unable to parse device data
+2020-04-04 11:57:29,312 SW_speed ERROR: Final error state reached
+2020-04-04 11:57:29,962 SW_Density ERROR: Could not get data from URL
+2020-04-04 11:57:29,969 SW_Density ERROR: Unable to parse device data
+2020-04-04 11:57:29,969 SW_Density ERROR: Final error state reached
+2020-04-04 11:57:31,989 WARNING: unable to parse a time value: 1585911258
+2020-04-04 11:57:31,999 ERROR: Unable to parse device data
+2020-04-04 11:57:31,999 ERROR: Final error state reached
+2020-04-04 11:57:32,620 GOES_16 ERROR: Could not get data from URL
+2020-04-04 11:57:32,627 GOES_16 ERROR: Unable to parse device data
+2020-04-04 11:57:32,627 GOES_16 ERROR: Final error state reached
+2020-04-04 11:57:33,284 SW_speed ERROR: Could not get data from URL
+2020-04-04 11:57:33,291 SW_speed ERROR: Unable to parse device data
+2020-04-04 11:57:33,291 SW_speed ERROR: Final error state reached
+2020-04-04 11:57:33,951 SW_Density ERROR: Could not get data from URL
+2020-04-04 11:57:33,957 SW_Density ERROR: Unable to parse device data
+2020-04-04 11:57:33,958 SW_Density ERROR: Final error state reached
+2020-04-04 11:57:36,187 WARNING: unable to parse a time value: 1585911258
+2020-04-04 11:57:36,196 ERROR: Unable to parse device data
+2020-04-04 11:57:36,196 ERROR: Final error state reached
+2020-04-04 11:58:02,316 WARNING: unable to parse a time value: 1585911398
+2020-04-04 11:58:02,324 ERROR: Unable to parse device data
+2020-04-04 11:58:02,324 ERROR: Final error state reached
+2020-04-04 11:58:03,713 GOES_16 ERROR: Could not get data from URL
+2020-04-04 11:58:03,722 GOES_16 ERROR: Unable to parse device data
+2020-04-04 11:58:03,722 GOES_16 ERROR: Final error state reached
+2020-04-04 11:58:04,510 SW_speed ERROR: Could not get data from URL
+2020-04-04 11:58:04,520 SW_speed ERROR: Unable to parse device data
+2020-04-04 11:58:04,521 SW_speed ERROR: Final error state reached
+2020-04-04 11:58:05,159 SW_Density ERROR: Could not get data from URL
+2020-04-04 11:58:05,170 SW_Density ERROR: Unable to parse device data
+2020-04-04 11:58:05,171 SW_Density ERROR: Final error state reached
+2020-04-04 11:58:25,653 WARNING: unable to parse a time value: 1585911398
+2020-04-04 11:58:25,661 ERROR: Unable to parse device data
+2020-04-04 11:58:25,662 ERROR: Final error state reached
+2020-04-04 11:58:26,525 GOES_16 ERROR: Could not get data from URL
+2020-04-04 11:58:26,531 GOES_16 ERROR: Unable to parse device data
+2020-04-04 11:58:26,531 GOES_16 ERROR: Final error state reached
+2020-04-04 11:58:27,150 SW_speed ERROR: Could not get data from URL
+2020-04-04 11:58:27,156 SW_speed ERROR: Unable to parse device data
+2020-04-04 11:58:27,156 SW_speed ERROR: Final error state reached
+2020-04-04 11:58:27,970 SW_Density ERROR: Could not get data from URL
+2020-04-04 11:58:27,977 SW_Density ERROR: Unable to parse device data
+2020-04-04 11:58:27,977 SW_Density ERROR: Final error state reached
+2020-04-04 12:03:06,777 WARNING: unable to parse a time value: 1585911682
+2020-04-04 12:03:06,786 ERROR: Unable to parse device data
+2020-04-04 12:03:06,786 ERROR: Final error state reached
+2020-04-04 12:03:07,996 GOES_16 ERROR: Could not get data from URL
+2020-04-04 12:03:08,002 GOES_16 ERROR: Unable to parse device data
+2020-04-04 12:03:08,003 GOES_16 ERROR: Final error state reached
+2020-04-04 12:03:08,839 SW_speed ERROR: Could not get data from URL
+2020-04-04 12:03:08,845 SW_speed ERROR: Unable to parse device data
+2020-04-04 12:03:08,845 SW_speed ERROR: Final error state reached
+2020-04-04 12:03:09,479 SW_Density ERROR: Could not get data from URL
+2020-04-04 12:03:09,486 SW_Density ERROR: Unable to parse device data
+2020-04-04 12:03:09,486 SW_Density ERROR: Final error state reached
+2020-04-04 12:03:29,688 WARNING: unable to parse a time value: 1585911682
+2020-04-04 12:03:29,697 ERROR: Unable to parse device data
+2020-04-04 12:03:29,697 ERROR: Final error state reached
+2020-04-04 12:03:30,778 GOES_16 ERROR: Could not get data from URL
+2020-04-04 12:03:30,784 GOES_16 ERROR: Unable to parse device data
+2020-04-04 12:03:30,784 GOES_16 ERROR: Final error state reached
+2020-04-04 12:03:31,619 SW_speed ERROR: Could not get data from URL
+2020-04-04 12:03:31,624 SW_speed ERROR: Unable to parse device data
+2020-04-04 12:03:31,624 SW_speed ERROR: Final error state reached
+2020-04-04 12:03:32,244 SW_Density ERROR: Could not get data from URL
+2020-04-04 12:03:32,250 SW_Density ERROR: Unable to parse device data
+2020-04-04 12:03:32,251 SW_Density ERROR: Final error state reached
+2020-04-04 12:08:10,747 WARNING: unable to parse a time value: 1585911966
+2020-04-04 12:08:10,755 ERROR: Unable to parse device data
+2020-04-04 12:08:10,755 ERROR: Final error state reached
+2020-04-04 12:08:11,963 GOES_16 ERROR: Could not get data from URL
+2020-04-04 12:08:11,970 GOES_16 ERROR: Unable to parse device data
+2020-04-04 12:08:11,970 GOES_16 ERROR: Final error state reached
+2020-04-04 12:08:12,888 SW_speed ERROR: Could not get data from URL
+2020-04-04 12:08:12,895 SW_speed ERROR: Unable to parse device data
+2020-04-04 12:08:12,895 SW_speed ERROR: Final error state reached
+2020-04-04 12:08:13,525 SW_Density ERROR: Could not get data from URL
+2020-04-04 12:08:13,533 SW_Density ERROR: Unable to parse device data
+2020-04-04 12:08:13,533 SW_Density ERROR: Final error state reached
+2020-04-04 12:08:33,677 WARNING: unable to parse a time value: 1585911966
+2020-04-04 12:08:33,686 ERROR: Unable to parse device data
+2020-04-04 12:08:33,686 ERROR: Final error state reached
+2020-04-04 12:08:34,848 GOES_16 ERROR: Could not get data from URL
+2020-04-04 12:08:34,853 GOES_16 ERROR: Unable to parse device data
+2020-04-04 12:08:34,853 GOES_16 ERROR: Final error state reached
+2020-04-04 12:08:35,480 SW_speed ERROR: Could not get data from URL
+2020-04-04 12:08:35,486 SW_speed ERROR: Unable to parse device data
+2020-04-04 12:08:35,487 SW_speed ERROR: Final error state reached
+2020-04-04 12:08:36,107 SW_Density ERROR: Could not get data from URL
+2020-04-04 12:08:36,128 SW_Density ERROR: Unable to parse device data
+2020-04-04 12:08:36,128 SW_Density ERROR: Final error state reached
+2020-04-04 12:13:14,682 WARNING: unable to parse a time value: 1585912319
+2020-04-04 12:13:14,690 ERROR: Unable to parse device data
+2020-04-04 12:13:14,690 ERROR: Final error state reached
+2020-04-04 12:13:15,995 GOES_16 ERROR: Could not get data from URL
+2020-04-04 12:13:16,001 GOES_16 ERROR: Unable to parse device data
+2020-04-04 12:13:16,001 GOES_16 ERROR: Final error state reached
+2020-04-04 12:13:16,885 SW_speed ERROR: Could not get data from URL
+2020-04-04 12:13:16,891 SW_speed ERROR: Unable to parse device data
+2020-04-04 12:13:16,891 SW_speed ERROR: Final error state reached
+2020-04-04 12:13:17,555 SW_Density ERROR: Could not get data from URL
+2020-04-04 12:13:17,560 SW_Density ERROR: Unable to parse device data
+2020-04-04 12:13:17,561 SW_Density ERROR: Final error state reached
+2020-04-04 12:13:37,860 WARNING: unable to parse a time value: 1585912319
+2020-04-04 12:13:37,868 ERROR: Unable to parse device data
+2020-04-04 12:13:37,868 ERROR: Final error state reached
+2020-04-04 12:13:38,971 GOES_16 ERROR: Could not get data from URL
+2020-04-04 12:13:38,977 GOES_16 ERROR: Unable to parse device data
+2020-04-04 12:13:38,977 GOES_16 ERROR: Final error state reached
+2020-04-04 12:13:39,832 SW_speed ERROR: Could not get data from URL
+2020-04-04 12:13:39,838 SW_speed ERROR: Unable to parse device data
+2020-04-04 12:13:39,838 SW_speed ERROR: Final error state reached
+2020-04-04 12:13:40,489 SW_Density ERROR: Could not get data from URL
+2020-04-04 12:13:40,495 SW_Density ERROR: Unable to parse device data
+2020-04-04 12:13:40,495 SW_Density ERROR: Final error state reached
+2020-04-04 12:18:18,683 WARNING: unable to parse a time value: 1585912603
+2020-04-04 12:18:18,691 ERROR: Unable to parse device data
+2020-04-04 12:18:18,692 ERROR: Final error state reached
+2020-04-04 12:18:19,767 GOES_16 ERROR: Could not get data from URL
+2020-04-04 12:18:19,772 GOES_16 ERROR: Unable to parse device data
+2020-04-04 12:18:19,772 GOES_16 ERROR: Final error state reached
+2020-04-04 12:18:20,656 SW_speed ERROR: Could not get data from URL
+2020-04-04 12:18:20,661 SW_speed ERROR: Unable to parse device data
+2020-04-04 12:18:20,661 SW_speed ERROR: Final error state reached
+2020-04-04 12:18:21,331 SW_Density ERROR: Could not get data from URL
+2020-04-04 12:18:21,336 SW_Density ERROR: Unable to parse device data
+2020-04-04 12:18:21,337 SW_Density ERROR: Final error state reached
+2020-04-04 12:18:41,722 WARNING: unable to parse a time value: 1585912603
+2020-04-04 12:18:41,731 ERROR: Unable to parse device data
+2020-04-04 12:18:41,731 ERROR: Final error state reached
+2020-04-04 12:18:42,644 GOES_16 ERROR: Could not get data from URL
+2020-04-04 12:18:42,650 GOES_16 ERROR: Unable to parse device data
+2020-04-04 12:18:42,650 GOES_16 ERROR: Final error state reached
+2020-04-04 12:18:44,183 SW_speed ERROR: Could not get data from URL
+2020-04-04 12:18:44,189 SW_speed ERROR: Unable to parse device data
+2020-04-04 12:18:44,189 SW_speed ERROR: Final error state reached
+2020-04-04 12:18:44,808 SW_Density ERROR: Could not get data from URL
+2020-04-04 12:18:44,814 SW_Density ERROR: Unable to parse device data
+2020-04-04 12:18:44,814 SW_Density ERROR: Final error state reached
+2020-04-04 12:23:22,948 WARNING: unable to parse a time value: 1585912885
+2020-04-04 12:23:22,957 ERROR: Unable to parse device data
+2020-04-04 12:23:22,957 ERROR: Final error state reached
+2020-04-04 12:23:24,013 GOES_16 ERROR: Could not get data from URL
+2020-04-04 12:23:24,019 GOES_16 ERROR: Unable to parse device data
+2020-04-04 12:23:24,019 GOES_16 ERROR: Final error state reached
+2020-04-04 12:23:24,643 SW_speed ERROR: Could not get data from URL
+2020-04-04 12:23:24,649 SW_speed ERROR: Unable to parse device data
+2020-04-04 12:23:24,649 SW_speed ERROR: Final error state reached
+2020-04-04 12:23:25,486 SW_Density ERROR: Could not get data from URL
+2020-04-04 12:23:25,492 SW_Density ERROR: Unable to parse device data
+2020-04-04 12:23:25,492 SW_Density ERROR: Final error state reached
+2020-04-04 12:23:45,713 WARNING: unable to parse a time value: 1585912885
+2020-04-04 12:23:45,722 ERROR: Unable to parse device data
+2020-04-04 12:23:45,722 ERROR: Final error state reached
+2020-04-04 12:23:46,972 GOES_16 ERROR: Could not get data from URL
+2020-04-04 12:23:46,978 GOES_16 ERROR: Unable to parse device data
+2020-04-04 12:23:46,978 GOES_16 ERROR: Final error state reached
+2020-04-04 12:23:47,772 SW_speed ERROR: Could not get data from URL
+2020-04-04 12:23:47,778 SW_speed ERROR: Unable to parse device data
+2020-04-04 12:23:47,778 SW_speed ERROR: Final error state reached
+2020-04-04 12:23:48,372 SW_Density ERROR: Could not get data from URL
+2020-04-04 12:23:48,378 SW_Density ERROR: Unable to parse device data
+2020-04-04 12:23:48,378 SW_Density ERROR: Final error state reached
+2020-04-04 12:28:26,771 WARNING: unable to parse a time value: 1585913169
+2020-04-04 12:28:26,780 ERROR: Unable to parse device data
+2020-04-04 12:28:26,780 ERROR: Final error state reached
+2020-04-04 12:28:28,720 GOES_16 ERROR: Could not get data from URL
+2020-04-04 12:28:28,726 GOES_16 ERROR: Unable to parse device data
+2020-04-04 12:28:28,726 GOES_16 ERROR: Final error state reached
+2020-04-04 12:28:29,361 SW_speed ERROR: Could not get data from URL
+2020-04-04 12:28:29,367 SW_speed ERROR: Unable to parse device data
+2020-04-04 12:28:29,367 SW_speed ERROR: Final error state reached
+2020-04-04 12:28:29,961 SW_Density ERROR: Could not get data from URL
+2020-04-04 12:28:29,967 SW_Density ERROR: Unable to parse device data
+2020-04-04 12:28:29,968 SW_Density ERROR: Final error state reached
+2020-04-04 12:28:49,666 WARNING: unable to parse a time value: 1585913169
+2020-04-04 12:28:49,674 ERROR: Unable to parse device data
+2020-04-04 12:28:49,675 ERROR: Final error state reached
+2020-04-04 12:28:50,932 GOES_16 ERROR: Could not get data from URL
+2020-04-04 12:28:50,937 GOES_16 ERROR: Unable to parse device data
+2020-04-04 12:28:50,938 GOES_16 ERROR: Final error state reached
+2020-04-04 12:28:51,772 SW_speed ERROR: Could not get data from URL
+2020-04-04 12:28:51,778 SW_speed ERROR: Unable to parse device data
+2020-04-04 12:28:51,778 SW_speed ERROR: Final error state reached
+2020-04-04 12:28:52,406 SW_Density ERROR: Could not get data from URL
+2020-04-04 12:28:52,412 SW_Density ERROR: Unable to parse device data
+2020-04-04 12:28:52,412 SW_Density ERROR: Final error state reached
+2020-04-04 12:33:30,883 WARNING: unable to parse a time value: 1585913453
+2020-04-04 12:33:30,894 ERROR: Unable to parse device data
+2020-04-04 12:33:30,894 ERROR: Final error state reached
+2020-04-04 12:33:32,517 GOES_16 ERROR: Could not get data from URL
+2020-04-04 12:33:32,523 GOES_16 ERROR: Unable to parse device data
+2020-04-04 12:33:32,523 GOES_16 ERROR: Final error state reached
+2020-04-04 12:33:33,353 SW_speed ERROR: Could not get data from URL
+2020-04-04 12:33:33,359 SW_speed ERROR: Unable to parse device data
+2020-04-04 12:33:33,359 SW_speed ERROR: Final error state reached
+2020-04-04 12:33:34,026 SW_Density ERROR: Could not get data from URL
+2020-04-04 12:33:34,032 SW_Density ERROR: Unable to parse device data
+2020-04-04 12:33:34,032 SW_Density ERROR: Final error state reached
+2020-04-04 12:33:53,761 WARNING: unable to parse a time value: 1585913595
+2020-04-04 12:33:53,770 ERROR: Unable to parse device data
+2020-04-04 12:33:53,770 ERROR: Final error state reached
+2020-04-04 12:33:55,188 GOES_16 ERROR: Could not get data from URL
+2020-04-04 12:33:55,193 GOES_16 ERROR: Unable to parse device data
+2020-04-04 12:33:55,193 GOES_16 ERROR: Final error state reached
+2020-04-04 12:33:56,105 SW_speed ERROR: Could not get data from URL
+2020-04-04 12:33:56,110 SW_speed ERROR: Unable to parse device data
+2020-04-04 12:33:56,110 SW_speed ERROR: Final error state reached
+2020-04-04 12:33:56,768 SW_Density ERROR: Could not get data from URL
+2020-04-04 12:33:56,774 SW_Density ERROR: Unable to parse device data
+2020-04-04 12:33:56,774 SW_Density ERROR: Final error state reached
+2020-04-04 12:38:35,735 WARNING: unable to parse a time value: 1585913876
+2020-04-04 12:38:35,745 ERROR: Unable to parse device data
+2020-04-04 12:38:35,745 ERROR: Final error state reached
+2020-04-04 12:38:36,559 GOES_16 ERROR: Could not get data from URL
+2020-04-04 12:38:36,566 GOES_16 ERROR: Unable to parse device data
+2020-04-04 12:38:36,566 GOES_16 ERROR: Final error state reached
+2020-04-04 12:38:37,180 SW_speed ERROR: Could not get data from URL
+2020-04-04 12:38:37,187 SW_speed ERROR: Unable to parse device data
+2020-04-04 12:38:37,187 SW_speed ERROR: Final error state reached
+2020-04-04 12:38:37,803 SW_Density ERROR: Could not get data from URL
+2020-04-04 12:38:37,809 SW_Density ERROR: Unable to parse device data
+2020-04-04 12:38:37,810 SW_Density ERROR: Final error state reached
+2020-04-04 14:11:21,617 SW_Density ERROR: Could not get data from URL
+2020-04-04 14:11:21,623 SW_Density ERROR: Unable to parse device data
+2020-04-04 14:11:21,623 SW_Density ERROR: Final error state reached
+2020-04-04 14:11:48,534 bz ERROR: Could not get data from URL
+2020-04-04 14:31:17,759 bz ERROR: Could not get data from URL
+2020-04-04 14:31:58,956 bz ERROR: Could not get data from URL
+2020-04-04 14:32:42,583 bz ERROR: Could not get data from URL
+2020-04-04 14:38:31,732 WARNING: unable to parse a time value: 1585921026
+2020-04-04 14:38:31,741 ERROR: Unable to parse device data
+2020-04-04 14:38:31,741 ERROR: Final error state reached
+2020-04-04 14:38:33,175 GOES_16 ERROR: Could not get data from URL
+2020-04-04 14:38:33,182 GOES_16 ERROR: Unable to parse device data
+2020-04-04 14:38:33,183 GOES_16 ERROR: Final error state reached
+2020-04-04 14:38:34,044 SW_speed ERROR: Could not get data from URL
+2020-04-04 14:38:34,052 SW_speed ERROR: Unable to parse device data
+2020-04-04 14:38:34,053 SW_speed ERROR: Final error state reached
+2020-04-04 14:38:34,716 SW_Density ERROR: Could not get data from URL
+2020-04-04 14:38:34,724 SW_Density ERROR: Unable to parse device data
+2020-04-04 14:38:34,725 SW_Density ERROR: Final error state reached
+2020-04-04 14:38:35,388 bz ERROR: Could not get data from URL
+2020-04-04 14:40:21,755 WARNING: unable to parse a time value: 1585921168
+2020-04-04 14:40:21,768 ERROR: Unable to parse device data
+2020-04-04 14:40:21,769 ERROR: Final error state reached
+2020-04-04 14:40:22,770 GOES_16 ERROR: Could not get data from URL
+2020-04-04 14:40:22,778 GOES_16 ERROR: Unable to parse device data
+2020-04-04 14:40:22,778 GOES_16 ERROR: Final error state reached
+2020-04-04 14:40:23,443 SW_speed ERROR: Could not get data from URL
+2020-04-04 14:40:23,451 SW_speed ERROR: Unable to parse device data
+2020-04-04 14:40:23,451 SW_speed ERROR: Final error state reached
+2020-04-04 14:40:24,111 SW_Density ERROR: Could not get data from URL
+2020-04-04 14:40:24,118 SW_Density ERROR: Unable to parse device data
+2020-04-04 14:40:24,119 SW_Density ERROR: Final error state reached
+2020-04-04 14:40:24,770 Geomag_Bz ERROR: Could not get data from URL
+2020-04-05 09:36:05,467 WARNING: unable to parse a time value: 1585992804
+2020-04-05 09:36:06,958 GOES_16 ERROR: Could not get data from URL
+2020-04-05 09:36:07,696 SW_speed ERROR: Could not get data from URL
+2020-04-05 09:36:08,388 SW_Density ERROR: Could not get data from URL
+2020-04-05 09:36:09,709 Geomag_Bz ERROR: Could not get data from URL
+2020-04-09 15:41:05,231 WARNING: unable to parse a time value: 1586360390
+2020-04-09 15:41:07,500 GOES_16 ERROR: Could not get data from URL
+2020-04-09 15:41:08,231 SW_speed ERROR: Could not get data from URL
+2020-04-09 15:41:08,964 SW_Density ERROR: Could not get data from URL
+2020-04-09 15:41:09,673 Geomag_Bz ERROR: Could not get data from URL
+2020-04-09 15:46:11,758 WARNING: unable to parse a time value: 1586360674
+2020-04-09 15:46:13,816 GOES_16 ERROR: Could not get data from URL
+2020-04-09 15:46:14,808 SW_speed ERROR: Could not get data from URL
+2020-04-09 15:46:15,591 SW_Density ERROR: Could not get data from URL
+2020-04-09 15:46:16,348 Geomag_Bz ERROR: Could not get data from URL
+2020-04-09 15:50:13,265 WARNING: unable to parse a time value: 1586360956
+2020-04-09 15:50:32,070 GOES_16 ERROR: Could not get data from URL
+2020-04-09 15:50:32,998 SW_speed ERROR: Could not get data from URL
+2020-04-09 15:50:33,724 SW_Density ERROR: Could not get data from URL
+2020-04-09 15:50:34,887 Geomag_Bz ERROR: Could not get data from URL
+2020-04-09 15:52:53,492 WARNING: unable to parse a time value: 1586361098
+2020-04-09 15:52:54,984 GOES_16 ERROR: Could not get data from URL
+2020-04-09 15:52:55,860 SW_speed ERROR: Could not get data from URL
+2020-04-09 15:52:56,555 SW_Density ERROR: Could not get data from URL
+2020-04-09 15:52:57,340 Geomag_Bz ERROR: Could not get data from URL
+2020-04-09 15:56:54,964 WARNING: unable to parse a time value: 1586361240
+2020-04-09 15:56:56,593 GOES_16 ERROR: Could not get data from URL
+2020-04-09 15:56:57,651 SW_speed ERROR: Could not get data from URL
+2020-04-09 15:56:58,355 SW_Density ERROR: Could not get data from URL
+2020-04-09 15:56:59,216 Geomag_Bz ERROR: Could not get data from URL
+2020-04-09 15:58:32,447 WARNING: unable to parse a time value: 1586361382
+2020-04-09 15:58:33,987 GOES_16 ERROR: Could not get data from URL
+2020-04-09 15:58:34,879 SW_speed ERROR: Could not get data from URL
+2020-04-09 15:58:35,594 SW_Density ERROR: Could not get data from URL
+2020-04-09 15:58:36,502 Geomag_Bz ERROR: Could not get data from URL
+2020-04-09 16:03:37,712 WARNING: unable to parse a time value: 1586361666
+2020-04-09 16:03:39,273 GOES_16 ERROR: Could not get data from URL
+2020-04-09 16:03:40,377 SW_speed ERROR: Could not get data from URL
+2020-04-09 16:03:41,185 SW_Density ERROR: Could not get data from URL
+2020-04-09 16:03:42,132 Geomag_Bz ERROR: Could not get data from URL
+2020-04-09 16:08:43,821 WARNING: unable to parse a time value: 1586361948
+2020-04-09 16:08:45,129 GOES_16 ERROR: Could not get data from URL
+2020-04-09 16:08:45,939 SW_speed ERROR: Could not get data from URL
+2020-04-09 16:08:46,626 SW_Density ERROR: Could not get data from URL
+2020-04-09 16:08:47,740 Geomag_Bz ERROR: Could not get data from URL
+2020-04-09 16:13:49,679 WARNING: unable to parse a time value: 1586361158
+2020-04-09 16:13:51,701 GOES_16 ERROR: Could not get data from URL
+2020-04-09 16:13:52,432 SW_speed ERROR: Could not get data from URL
+2020-04-09 16:13:53,230 SW_Density ERROR: Could not get data from URL
+2020-04-09 16:13:53,924 Geomag_Bz ERROR: Could not get data from URL
+2020-04-09 16:18:55,716 WARNING: unable to parse a time value: 1586362655
+2020-04-09 16:18:58,062 GOES_16 ERROR: Could not get data from URL
+2020-04-09 16:18:58,795 SW_speed ERROR: Could not get data from URL
+2020-04-09 16:18:59,505 SW_Density ERROR: Could not get data from URL
+2020-04-09 16:19:00,241 Geomag_Bz ERROR: Could not get data from URL
+2020-04-09 16:24:01,906 WARNING: unable to parse a time value: 1586362939
+2020-04-09 16:24:03,371 GOES_16 ERROR: Could not get data from URL
+2020-04-09 16:24:04,207 SW_speed ERROR: Could not get data from URL
+2020-04-09 16:24:04,914 SW_Density ERROR: Could not get data from URL
+2020-04-09 16:24:05,634 Geomag_Bz ERROR: Could not get data from URL
+2020-04-09 16:26:58,337 WARNING: unable to parse a time value: 1586363081
+2020-04-09 16:26:59,686 GOES_16 ERROR: Could not get data from URL
+2020-04-09 16:27:00,625 SW_speed ERROR: Could not get data from URL
+2020-04-09 16:27:01,490 SW_Density ERROR: Could not get data from URL
+2020-04-09 16:27:02,207 Geomag_Bz ERROR: Could not get data from URL
+2020-04-09 16:32:03,845 WARNING: unable to parse a time value: 1586363365
+2020-04-09 16:32:05,521 GOES_16 ERROR: Could not get data from URL
+2020-04-09 16:32:06,496 SW_speed ERROR: Could not get data from URL
+2020-04-09 16:32:07,335 SW_Density ERROR: Could not get data from URL
+2020-04-09 16:32:08,215 Geomag_Bz ERROR: Could not get data from URL
+2020-04-09 16:37:09,703 WARNING: unable to parse a time value: 1586363647
+2020-04-09 16:37:10,987 GOES_16 ERROR: Could not get data from URL
+2020-04-09 16:37:12,103 SW_speed ERROR: Could not get data from URL
+2020-04-09 16:37:12,836 SW_Density ERROR: Could not get data from URL
+2020-04-09 16:37:13,795 Geomag_Bz ERROR: Could not get data from URL
+2020-04-09 16:42:15,711 WARNING: unable to parse a time value: 1586363931
+2020-04-09 16:42:17,041 GOES_16 ERROR: Could not get data from URL
+2020-04-09 16:42:17,791 SW_speed ERROR: Could not get data from URL
+2020-04-09 16:42:18,695 SW_Density ERROR: Could not get data from URL
+2020-04-09 16:42:19,621 Geomag_Bz ERROR: Could not get data from URL
+2020-04-09 16:47:20,802 WARNING: unable to parse a time value: 1586364355
+2020-04-09 16:47:20,845 ERROR: Unable to parse device data
+2020-04-09 16:47:20,845 ERROR: Final error state reached
+2020-04-09 16:47:22,182 GOES_16 ERROR: Could not get data from URL
+2020-04-09 16:47:22,212 GOES_16 ERROR: Unable to parse device data
+2020-04-09 16:47:22,212 GOES_16 ERROR: Final error state reached
+2020-04-09 16:47:22,820 SW_speed ERROR: Could not get data from URL
+2020-04-09 16:47:22,854 SW_speed ERROR: Unable to parse device data
+2020-04-09 16:47:22,854 SW_speed ERROR: Final error state reached
+2020-04-09 16:47:23,448 SW_Density ERROR: Could not get data from URL
+2020-04-09 16:47:23,478 SW_Density ERROR: Unable to parse device data
+2020-04-09 16:47:23,478 SW_Density ERROR: Final error state reached
+2020-04-09 16:47:24,144 Geomag_Bz ERROR: Could not get data from URL
+2020-04-09 16:47:24,173 Geomag_Bz ERROR: Unable to parse device data
+2020-04-09 16:47:24,174 Geomag_Bz ERROR: Final error state reached
+2020-04-09 16:52:26,672 WARNING: unable to parse a time value: 1586364639
+2020-04-09 16:52:26,711 ERROR: Unable to parse device data
+2020-04-09 16:52:26,712 ERROR: Final error state reached
+2020-04-09 16:52:27,890 GOES_16 ERROR: Could not get data from URL
+2020-04-09 16:52:27,917 GOES_16 ERROR: Unable to parse device data
+2020-04-09 16:52:27,917 GOES_16 ERROR: Final error state reached
+2020-04-09 16:52:28,519 SW_speed ERROR: Could not get data from URL
+2020-04-09 16:52:28,547 SW_speed ERROR: Unable to parse device data
+2020-04-09 16:52:28,548 SW_speed ERROR: Final error state reached
+2020-04-09 16:52:29,136 SW_Density ERROR: Could not get data from URL
+2020-04-09 16:52:29,164 SW_Density ERROR: Unable to parse device data
+2020-04-09 16:52:29,164 SW_Density ERROR: Final error state reached
+2020-04-09 16:52:30,303 Geomag_Bz ERROR: Could not get data from URL
+2020-04-09 16:52:30,331 Geomag_Bz ERROR: Unable to parse device data
+2020-04-09 16:52:30,332 Geomag_Bz ERROR: Final error state reached
+2020-04-10 13:10:34,330 WARNING: unable to parse a time value: 1586437761
+2020-04-10 13:10:34,379 ERROR: Unable to parse device data
+2020-04-10 13:10:34,379 ERROR: Final error state reached
+2020-04-10 13:10:35,443 GOES_16 ERROR: Could not get data from URL
+2020-04-10 13:10:35,475 GOES_16 ERROR: Unable to parse device data
+2020-04-10 13:10:35,475 GOES_16 ERROR: Final error state reached
+2020-04-10 13:10:36,528 SW_speed ERROR: Could not get data from URL
+2020-04-10 13:10:36,561 SW_speed ERROR: Unable to parse device data
+2020-04-10 13:10:36,561 SW_speed ERROR: Final error state reached
+2020-04-10 13:10:38,072 SW_Density ERROR: Could not get data from URL
+2020-04-10 13:10:38,105 SW_Density ERROR: Unable to parse device data
+2020-04-10 13:10:38,105 SW_Density ERROR: Final error state reached
+2020-04-10 13:10:45,569 Geomag_Bz ERROR: Could not get data from URL
+2020-04-10 13:10:45,602 Geomag_Bz ERROR: Unable to parse device data
+2020-04-10 13:10:45,603 Geomag_Bz ERROR: Final error state reached
+2020-04-10 13:10:57,789 WARNING: unable to parse a time value: 1586437761
+2020-04-10 13:10:57,836 ERROR: Unable to parse device data
+2020-04-10 13:10:57,837 ERROR: Final error state reached
+2020-04-10 13:10:59,915 GOES_16 ERROR: Could not get data from URL
+2020-04-10 13:10:59,949 GOES_16 ERROR: Unable to parse device data
+2020-04-10 13:10:59,950 GOES_16 ERROR: Final error state reached
+2020-04-10 13:11:01,159 SW_speed ERROR: Could not get data from URL
+2020-04-10 13:11:01,193 SW_speed ERROR: Unable to parse device data
+2020-04-10 13:11:01,194 SW_speed ERROR: Final error state reached
+2020-04-10 13:11:02,019 SW_Density ERROR: Could not get data from URL
+2020-04-10 13:11:02,053 SW_Density ERROR: Unable to parse device data
+2020-04-10 13:11:02,053 SW_Density ERROR: Final error state reached
+2020-04-10 13:11:02,970 Geomag_Bz ERROR: Could not get data from URL
+2020-04-10 13:11:03,006 Geomag_Bz ERROR: Unable to parse device data
+2020-04-10 13:11:03,006 Geomag_Bz ERROR: Final error state reached
+2020-04-10 13:16:04,730 WARNING: unable to parse a time value: 1586438045
+2020-04-10 13:16:04,776 ERROR: Unable to parse device data
+2020-04-10 13:16:04,776 ERROR: Final error state reached
+2020-04-10 13:16:06,340 GOES_16 ERROR: Could not get data from URL
+2020-04-10 13:16:06,373 GOES_16 ERROR: Unable to parse device data
+2020-04-10 13:16:06,374 GOES_16 ERROR: Final error state reached
+2020-04-10 13:16:07,619 SW_speed ERROR: Could not get data from URL
+2020-04-10 13:16:07,652 SW_speed ERROR: Unable to parse device data
+2020-04-10 13:16:07,653 SW_speed ERROR: Final error state reached
+2020-04-10 13:16:08,874 SW_Density ERROR: Could not get data from URL
+2020-04-10 13:16:08,908 SW_Density ERROR: Unable to parse device data
+2020-04-10 13:16:08,909 SW_Density ERROR: Final error state reached
+2020-04-10 13:16:09,891 Geomag_Bz ERROR: Could not get data from URL
+2020-04-10 13:16:09,925 Geomag_Bz ERROR: Unable to parse device data
+2020-04-10 13:16:09,925 Geomag_Bz ERROR: Final error state reached
+2020-04-10 13:21:10,761 WARNING: unable to parse a time value: 1586438329
+2020-04-10 13:21:10,810 ERROR: Unable to parse device data
+2020-04-10 13:21:10,810 ERROR: Final error state reached
+2020-04-10 13:21:12,353 GOES_16 ERROR: Could not get data from URL
+2020-04-10 13:21:12,387 GOES_16 ERROR: Unable to parse device data
+2020-04-10 13:21:12,388 GOES_16 ERROR: Final error state reached
+2020-04-10 13:21:13,805 SW_speed ERROR: Could not get data from URL
+2020-04-10 13:21:13,839 SW_speed ERROR: Unable to parse device data
+2020-04-10 13:21:13,839 SW_speed ERROR: Final error state reached
+2020-04-10 13:21:14,712 SW_Density ERROR: Could not get data from URL
+2020-04-10 13:21:14,746 SW_Density ERROR: Unable to parse device data
+2020-04-10 13:21:14,747 SW_Density ERROR: Final error state reached
+2020-04-10 13:21:15,567 Geomag_Bz ERROR: Could not get data from URL
+2020-04-10 13:21:15,602 Geomag_Bz ERROR: Unable to parse device data
+2020-04-10 13:21:15,603 Geomag_Bz ERROR: Final error state reached
+2020-04-10 13:26:17,024 WARNING: unable to parse a time value: 1586438611
+2020-04-10 13:26:17,071 ERROR: Unable to parse device data
+2020-04-10 13:26:17,071 ERROR: Final error state reached
+2020-04-10 13:26:18,344 GOES_16 ERROR: Could not get data from URL
+2020-04-10 13:26:18,378 GOES_16 ERROR: Unable to parse device data
+2020-04-10 13:26:18,379 GOES_16 ERROR: Final error state reached
+2020-04-10 13:26:19,236 SW_speed ERROR: Could not get data from URL
+2020-04-10 13:26:19,269 SW_speed ERROR: Unable to parse device data
+2020-04-10 13:26:19,270 SW_speed ERROR: Final error state reached
+2020-04-10 13:26:19,905 SW_Density ERROR: Could not get data from URL
+2020-04-10 13:26:19,938 SW_Density ERROR: Unable to parse device data
+2020-04-10 13:26:19,938 SW_Density ERROR: Final error state reached
+2020-04-10 13:26:20,834 Geomag_Bz ERROR: Could not get data from URL
+2020-04-10 13:26:20,867 Geomag_Bz ERROR: Unable to parse device data
+2020-04-10 13:26:20,867 Geomag_Bz ERROR: Final error state reached
+2020-04-10 13:31:21,700 WARNING: unable to parse a time value: 1586439037
+2020-04-10 13:31:21,746 ERROR: Unable to parse device data
+2020-04-10 13:31:21,747 ERROR: Final error state reached
+2020-04-10 13:31:23,066 GOES_16 ERROR: Could not get data from URL
+2020-04-10 13:31:23,099 GOES_16 ERROR: Unable to parse device data
+2020-04-10 13:31:23,099 GOES_16 ERROR: Final error state reached
+2020-04-10 13:31:23,707 SW_speed ERROR: Could not get data from URL
+2020-04-10 13:31:23,741 SW_speed ERROR: Unable to parse device data
+2020-04-10 13:31:23,741 SW_speed ERROR: Final error state reached
+2020-04-10 13:31:24,341 SW_Density ERROR: Could not get data from URL
+2020-04-10 13:31:24,375 SW_Density ERROR: Unable to parse device data
+2020-04-10 13:31:24,376 SW_Density ERROR: Final error state reached
+2020-04-10 13:31:25,181 Geomag_Bz ERROR: Could not get data from URL
+2020-04-10 13:31:25,215 Geomag_Bz ERROR: Unable to parse device data
+2020-04-10 13:31:25,215 Geomag_Bz ERROR: Final error state reached
+2020-04-10 13:36:26,759 WARNING: unable to parse a time value: 1586439318
+2020-04-10 13:36:26,805 ERROR: Unable to parse device data
+2020-04-10 13:36:26,805 ERROR: Final error state reached
+2020-04-10 13:36:27,975 GOES_16 ERROR: Could not get data from URL
+2020-04-10 13:36:28,009 GOES_16 ERROR: Unable to parse device data
+2020-04-10 13:36:28,009 GOES_16 ERROR: Final error state reached
+2020-04-10 13:36:28,596 SW_speed ERROR: Could not get data from URL
+2020-04-10 13:36:28,629 SW_speed ERROR: Unable to parse device data
+2020-04-10 13:36:28,630 SW_speed ERROR: Final error state reached
+2020-04-10 13:36:29,239 SW_Density ERROR: Could not get data from URL
+2020-04-10 13:36:29,272 SW_Density ERROR: Unable to parse device data
+2020-04-10 13:36:29,272 SW_Density ERROR: Final error state reached
+2020-04-10 13:36:29,918 Geomag_Bz ERROR: Could not get data from URL
+2020-04-10 13:36:29,951 Geomag_Bz ERROR: Unable to parse device data
+2020-04-10 13:36:29,952 Geomag_Bz ERROR: Final error state reached
+2020-04-10 13:36:52,093 WARNING: unable to parse a time value: 1586439318
+2020-04-10 13:36:52,139 ERROR: Unable to parse device data
+2020-04-10 13:36:52,139 ERROR: Final error state reached
+2020-04-10 13:41:30,699 WARNING: unable to parse a time value: 1586439602
+2020-04-10 13:41:30,746 ERROR: Unable to parse device data
+2020-04-10 13:41:30,746 ERROR: Final error state reached
+2020-04-10 13:41:32,095 GOES_16 ERROR: Could not get data from URL
+2020-04-10 13:41:32,129 GOES_16 ERROR: Unable to parse device data
+2020-04-10 13:41:32,130 GOES_16 ERROR: Final error state reached
+2020-04-10 13:41:32,922 SW_speed ERROR: Could not get data from URL
+2020-04-10 13:41:32,955 SW_speed ERROR: Unable to parse device data
+2020-04-10 13:41:32,956 SW_speed ERROR: Final error state reached
+2020-04-10 13:41:33,581 SW_Density ERROR: Could not get data from URL
+2020-04-10 13:41:33,614 SW_Density ERROR: Unable to parse device data
+2020-04-10 13:41:33,614 SW_Density ERROR: Final error state reached
+2020-04-10 13:41:34,439 Geomag_Bz ERROR: Could not get data from URL
+2020-04-10 13:41:34,472 Geomag_Bz ERROR: Unable to parse device data
+2020-04-10 13:41:34,473 Geomag_Bz ERROR: Final error state reached
+2020-04-10 13:46:35,703 WARNING: unable to parse a time value: 1586439886
+2020-04-10 13:46:35,750 ERROR: Unable to parse device data
+2020-04-10 13:46:35,750 ERROR: Final error state reached
+2020-04-10 13:46:36,869 GOES_16 ERROR: Could not get data from URL
+2020-04-10 13:46:36,902 GOES_16 ERROR: Unable to parse device data
+2020-04-10 13:46:36,903 GOES_16 ERROR: Final error state reached
+2020-04-10 13:46:37,732 SW_speed ERROR: Could not get data from URL
+2020-04-10 13:46:37,766 SW_speed ERROR: Unable to parse device data
+2020-04-10 13:46:37,766 SW_speed ERROR: Final error state reached
+2020-04-10 13:46:38,390 SW_Density ERROR: Could not get data from URL
+2020-04-10 13:46:38,423 SW_Density ERROR: Unable to parse device data
+2020-04-10 13:46:38,423 SW_Density ERROR: Final error state reached
+2020-04-10 13:46:39,046 Geomag_Bz ERROR: Could not get data from URL
+2020-04-10 13:46:39,079 Geomag_Bz ERROR: Unable to parse device data
+2020-04-10 13:46:39,079 Geomag_Bz ERROR: Final error state reached
+2020-04-10 13:51:40,713 WARNING: unable to parse a time value: 1586440168
+2020-04-10 13:51:40,760 ERROR: Unable to parse device data
+2020-04-10 13:51:40,760 ERROR: Final error state reached
+2020-04-10 13:51:41,960 GOES_16 ERROR: Could not get data from URL
+2020-04-10 13:51:41,993 GOES_16 ERROR: Unable to parse device data
+2020-04-10 13:51:41,993 GOES_16 ERROR: Final error state reached
+2020-04-10 13:51:42,778 SW_speed ERROR: Could not get data from URL
+2020-04-10 13:51:42,813 SW_speed ERROR: Unable to parse device data
+2020-04-10 13:51:42,813 SW_speed ERROR: Final error state reached
+2020-04-10 13:51:43,420 SW_Density ERROR: Could not get data from URL
+2020-04-10 13:51:43,454 SW_Density ERROR: Unable to parse device data
+2020-04-10 13:51:43,454 SW_Density ERROR: Final error state reached
+2020-04-10 13:51:44,048 Geomag_Bz ERROR: Could not get data from URL
+2020-04-10 13:51:44,082 Geomag_Bz ERROR: Unable to parse device data
+2020-04-10 13:51:44,082 Geomag_Bz ERROR: Final error state reached
+2020-04-10 13:56:46,011 WARNING: unable to parse a time value: 1586440452
+2020-04-10 13:56:46,058 ERROR: Unable to parse device data
+2020-04-10 13:56:46,059 ERROR: Final error state reached
+2020-04-10 13:56:47,653 GOES_16 ERROR: Could not get data from URL
+2020-04-10 13:56:47,687 GOES_16 ERROR: Unable to parse device data
+2020-04-10 13:56:47,687 GOES_16 ERROR: Final error state reached
+2020-04-10 13:56:48,572 SW_speed ERROR: Could not get data from URL
+2020-04-10 13:56:48,606 SW_speed ERROR: Unable to parse device data
+2020-04-10 13:56:48,607 SW_speed ERROR: Final error state reached
+2020-04-10 13:56:49,965 SW_Density ERROR: Could not get data from URL
+2020-04-10 13:56:49,998 SW_Density ERROR: Unable to parse device data
+2020-04-10 13:56:49,998 SW_Density ERROR: Final error state reached
+2020-04-10 13:56:50,831 Geomag_Bz ERROR: Could not get data from URL
+2020-04-10 13:56:50,864 Geomag_Bz ERROR: Unable to parse device data
+2020-04-10 13:56:50,865 Geomag_Bz ERROR: Final error state reached
+2020-04-10 14:01:51,889 WARNING: unable to parse a time value: 1586440734
+2020-04-10 14:01:51,939 ERROR: Unable to parse device data
+2020-04-10 14:01:51,939 ERROR: Final error state reached
+2020-04-10 14:01:53,224 GOES_16 ERROR: Could not get data from URL
+2020-04-10 14:01:53,257 GOES_16 ERROR: Unable to parse device data
+2020-04-10 14:01:53,258 GOES_16 ERROR: Final error state reached
+2020-04-10 14:01:54,042 SW_speed ERROR: Could not get data from URL
+2020-04-10 14:01:54,076 SW_speed ERROR: Unable to parse device data
+2020-04-10 14:01:54,077 SW_speed ERROR: Final error state reached
+2020-04-10 14:01:54,664 SW_Density ERROR: Could not get data from URL
+2020-04-10 14:01:54,698 SW_Density ERROR: Unable to parse device data
+2020-04-10 14:01:54,698 SW_Density ERROR: Final error state reached
+2020-04-10 14:01:55,510 Geomag_Bz ERROR: Could not get data from URL
+2020-04-10 14:01:55,544 Geomag_Bz ERROR: Unable to parse device data
+2020-04-10 14:01:55,544 Geomag_Bz ERROR: Final error state reached
+2020-04-10 14:06:56,786 WARNING: unable to parse a time value: 1586441160
+2020-04-10 14:06:56,832 ERROR: Unable to parse device data
+2020-04-10 14:06:56,832 ERROR: Final error state reached
+2020-04-10 14:06:57,965 GOES_16 ERROR: Could not get data from URL
+2020-04-10 14:06:57,998 GOES_16 ERROR: Unable to parse device data
+2020-04-10 14:06:57,998 GOES_16 ERROR: Final error state reached
+2020-04-10 14:06:58,760 SW_speed ERROR: Could not get data from URL
+2020-04-10 14:06:58,794 SW_speed ERROR: Unable to parse device data
+2020-04-10 14:06:58,794 SW_speed ERROR: Final error state reached
+2020-04-10 14:06:59,403 SW_Density ERROR: Could not get data from URL
+2020-04-10 14:06:59,436 SW_Density ERROR: Unable to parse device data
+2020-04-10 14:06:59,437 SW_Density ERROR: Final error state reached
+2020-04-10 14:07:00,043 Geomag_Bz ERROR: Could not get data from URL
+2020-04-10 14:07:00,077 Geomag_Bz ERROR: Unable to parse device data
+2020-04-10 14:07:00,077 Geomag_Bz ERROR: Final error state reached
+2020-04-10 14:12:01,909 WARNING: unable to parse a time value: 1586441442
+2020-04-10 14:12:01,969 ERROR: Unable to parse device data
+2020-04-10 14:12:01,970 ERROR: Final error state reached
+2020-04-10 14:12:03,423 GOES_16 ERROR: Could not get data from URL
+2020-04-10 14:12:03,469 GOES_16 ERROR: Unable to parse device data
+2020-04-10 14:12:03,469 GOES_16 ERROR: Final error state reached
+2020-04-10 14:12:04,501 SW_speed ERROR: Could not get data from URL
+2020-04-10 14:12:04,547 SW_speed ERROR: Unable to parse device data
+2020-04-10 14:12:04,548 SW_speed ERROR: Final error state reached
+2020-04-10 14:12:05,378 SW_Density ERROR: Could not get data from URL
+2020-04-10 14:12:05,430 SW_Density ERROR: Unable to parse device data
+2020-04-10 14:12:05,432 SW_Density ERROR: Final error state reached
+2020-04-10 14:12:06,094 Geomag_Bz ERROR: Could not get data from URL
+2020-04-10 14:12:06,133 Geomag_Bz ERROR: Unable to parse device data
+2020-04-10 14:12:06,133 Geomag_Bz ERROR: Final error state reached
+2020-04-10 14:17:07,944 WARNING: unable to parse a time value: 1586441726
+2020-04-10 14:17:08,002 ERROR: Unable to parse device data
+2020-04-10 14:17:08,002 ERROR: Final error state reached
+2020-04-10 14:17:09,851 GOES_16 ERROR: Could not get data from URL
+2020-04-10 14:17:09,912 GOES_16 ERROR: Unable to parse device data
+2020-04-10 14:17:09,923 GOES_16 ERROR: Final error state reached
+2020-04-10 14:17:11,096 SW_speed ERROR: Could not get data from URL
+2020-04-10 14:17:11,134 SW_speed ERROR: Unable to parse device data
+2020-04-10 14:17:11,135 SW_speed ERROR: Final error state reached
+2020-04-10 14:17:11,827 SW_Density ERROR: Could not get data from URL
+2020-04-10 14:17:11,862 SW_Density ERROR: Unable to parse device data
+2020-04-10 14:17:11,862 SW_Density ERROR: Final error state reached
+2020-04-10 14:17:16,857 Geomag_Bz ERROR: Could not get data from URL
+2020-04-10 14:17:16,893 Geomag_Bz ERROR: Unable to parse device data
+2020-04-10 14:17:16,894 Geomag_Bz ERROR: Final error state reached
+2020-04-10 14:22:18,594 WARNING: unable to parse a time value: 1586442008
+2020-04-10 14:22:18,672 ERROR: Unable to parse device data
+2020-04-10 14:22:18,673 ERROR: Final error state reached
+2020-04-10 14:22:20,177 GOES_16 ERROR: Could not get data from URL
+2020-04-10 14:22:20,226 GOES_16 ERROR: Unable to parse device data
+2020-04-10 14:22:20,228 GOES_16 ERROR: Final error state reached
+2020-04-10 14:22:21,057 SW_speed ERROR: Could not get data from URL
+2020-04-10 14:22:21,111 SW_speed ERROR: Unable to parse device data
+2020-04-10 14:22:21,124 SW_speed ERROR: Final error state reached
+2020-04-10 14:22:21,939 SW_Density ERROR: Could not get data from URL
+2020-04-10 14:22:22,004 SW_Density ERROR: Unable to parse device data
+2020-04-10 14:22:22,005 SW_Density ERROR: Final error state reached
+2020-04-10 14:22:22,720 Geomag_Bz ERROR: Could not get data from URL
+2020-04-10 14:22:22,764 Geomag_Bz ERROR: Unable to parse device data
+2020-04-10 14:22:22,765 Geomag_Bz ERROR: Final error state reached
+2020-04-19 14:32:27,220 WARNING: unable to parse a time value: 1587220255
+2020-04-19 14:32:28,543 GOES_16 ERROR: Could not get data from URL
+2020-04-19 14:32:29,355 SW_speed ERROR: Could not get data from URL
+2020-04-19 14:32:30,138 SW_Density ERROR: Could not get data from URL
+2020-04-19 14:32:31,077 Geomag_Bz ERROR: Could not get data from URL
+2020-04-19 14:32:59,817 WARNING: unable to parse a time value: 1587220255
+2020-04-19 14:33:00,959 GOES_16 ERROR: Could not get data from URL
+2020-04-19 14:33:01,727 SW_speed ERROR: Could not get data from URL
+2020-04-19 14:33:02,321 SW_Density ERROR: Could not get data from URL
+2020-04-19 14:33:03,057 Geomag_Bz ERROR: Could not get data from URL
+2020-04-19 14:34:13,632 WARNING: unable to parse a time value: 1587220395
+2020-04-19 14:34:15,034 GOES_16 ERROR: Could not get data from URL
+2020-04-19 14:34:15,817 SW_speed ERROR: Could not get data from URL
+2020-04-19 14:34:16,521 SW_Density ERROR: Could not get data from URL
+2020-04-19 14:34:17,486 Geomag_Bz ERROR: Could not get data from URL
+2020-04-19 14:35:12,135 WARNING: unable to parse a time value: 1587220395
+2020-04-19 14:35:12,137 ERROR: Unable to parse device data
+2020-04-19 14:35:12,138 ERROR: Final error state reached
+2020-04-19 14:35:13,323 GOES_16 ERROR: Could not get data from URL
+2020-04-19 14:35:14,057 SW_speed ERROR: Could not get data from URL
+2020-04-19 14:35:14,922 SW_Density ERROR: Could not get data from URL
+2020-04-19 14:35:15,798 Geomag_Bz ERROR: Could not get data from URL
+2020-04-19 14:40:17,737 WARNING: unable to parse a time value: 1587220679
+2020-04-19 14:40:18,916 GOES_16 ERROR: Could not get data from URL
+2020-04-19 14:40:19,673 SW_speed ERROR: Could not get data from URL
+2020-04-19 14:40:20,444 SW_Density ERROR: Could not get data from URL
+2020-04-19 14:40:21,419 Geomag_Bz ERROR: Could not get data from URL
+2020-04-19 14:45:22,727 WARNING: unable to parse a time value: 1587220963
+2020-04-19 14:45:23,821 GOES_16 ERROR: Could not get data from URL
+2020-04-19 14:45:24,751 SW_speed ERROR: Could not get data from URL
+2020-04-19 14:45:25,483 SW_Density ERROR: Could not get data from URL
+2020-04-19 14:45:26,194 Geomag_Bz ERROR: Could not get data from URL
+2020-04-19 14:50:27,733 WARNING: unable to parse a time value: 1587221245
+2020-04-19 14:50:28,893 GOES_16 ERROR: Could not get data from URL
+2020-04-19 14:50:29,621 SW_speed ERROR: Could not get data from URL
+2020-04-19 14:50:30,388 SW_Density ERROR: Could not get data from URL
+2020-04-19 14:50:31,256 Geomag_Bz ERROR: Could not get data from URL
+2020-04-19 14:55:32,758 WARNING: unable to parse a time value: 1587221671
+2020-04-19 14:55:34,323 GOES_16 ERROR: Could not get data from URL
+2020-04-19 14:55:35,224 SW_speed ERROR: Could not get data from URL
+2020-04-19 14:55:35,952 SW_Density ERROR: Could not get data from URL
+2020-04-19 14:55:36,735 Geomag_Bz ERROR: Could not get data from URL
+2020-04-19 15:00:39,189 WARNING: unable to parse a time value: 1587221953
+2020-04-19 15:00:40,573 GOES_16 ERROR: Could not get data from URL
+2020-04-19 15:00:41,806 SW_speed ERROR: Could not get data from URL
+2020-04-19 15:00:42,573 SW_Density ERROR: Could not get data from URL
+2020-04-19 15:00:43,593 Geomag_Bz ERROR: Could not get data from URL
+2020-04-19 15:03:05,394 WARNING: unable to parse a time value: 1587222095
+2020-04-19 15:03:06,964 GOES_16 ERROR: Could not get data from URL
+2020-04-19 15:03:07,879 SW_speed ERROR: Could not get data from URL
+2020-04-19 15:03:08,815 SW_Density ERROR: Could not get data from URL
+2020-04-19 15:03:09,527 Geomag_Bz ERROR: Could not get data from URL
+2020-04-19 15:03:51,771 WARNING: unable to parse a time value: 1587222095
+2020-04-19 15:03:51,775 ERROR: Unable to parse device data
+2020-04-19 15:03:51,775 ERROR: Final error state reached
+2020-04-19 15:03:52,906 GOES_16 ERROR: Could not get data from URL
+2020-04-19 15:03:53,634 SW_speed ERROR: Could not get data from URL
+2020-04-19 15:03:53,637 SW_speed ERROR: Unable to parse device data
+2020-04-19 15:03:53,637 SW_speed ERROR: Final error state reached
+2020-04-19 15:03:54,653 SW_Density ERROR: Could not get data from URL
+2020-04-19 15:03:54,656 SW_Density ERROR: Unable to parse device data
+2020-04-19 15:03:54,656 SW_Density ERROR: Final error state reached
+2020-04-19 15:03:55,543 Geomag_Bz ERROR: Could not get data from URL
+2020-04-19 15:04:58,591 WARNING: unable to parse a time value: 1587222095
+2020-04-19 15:04:58,594 ERROR: Unable to parse device data
+2020-04-19 15:04:58,594 ERROR: Final error state reached
+2020-04-19 15:04:59,724 GOES_16 ERROR: Could not get data from URL
+2020-04-19 15:05:00,661 SW_speed ERROR: Could not get data from URL
+2020-04-19 15:05:01,389 SW_Density ERROR: Could not get data from URL
+2020-04-19 15:05:02,311 Geomag_Bz ERROR: Could not get data from URL
+2020-04-19 15:13:34,070 WARNING: unable to parse a time value: 1587222661
+2020-04-19 15:13:36,062 GOES_16 ERROR: Could not get data from URL
+2020-04-19 15:13:36,853 SW_speed ERROR: Could not get data from URL
+2020-04-19 15:13:37,585 SW_Density ERROR: Could not get data from URL
+2020-04-19 15:13:38,708 Geomag_Bz ERROR: Could not get data from URL
+2020-08-31 14:41:18,389 Created error log for this session
+2020-08-31 14:41:18,390 Ruru_Obs INFO: get data
+2020-08-31 14:41:19,001 Ruru_Obs WARNING: unable to parse a time value: 1598798282
+2020-08-31 14:41:19,002 Ruru_Obs INFO: get most recent date from databse
+2020-08-31 14:41:19,257 Ruru_Obs INFO: Retrieved most recent date from database
+2020-08-31 14:41:19,264 Ruru_Obs INFO: Data appended to DB.

@@ -1,9 +1,13 @@
 # This will contain the forecasting algorithm
-ASTRONOMICAL_UNIT_KM = 149597900
 import math
 import time
 from decimal import *
 import common_data
+
+ASTRONOMICAL_UNIT_KM = 149597900
+# prediction_output = "prediction.csv"
+prediction_output = common_data.prediction_output
+regression_output = common_data.regression_ouput
 
 # median filter on (posicdate, data) list
 def median_filter(prediction_list):
@@ -232,7 +236,7 @@ class Forecaster:
         # remove spikes - Median Filter.
         prediction_list = median_filter(prediction_list)
 
-        with open("prediction.csv", 'w') as w:
+        with open(prediction_output, 'w') as w:
             for item in prediction_list:
                 w.write(str(item) + '\n')
 
@@ -245,5 +249,5 @@ class Forecaster:
         common_data.report_string = common_data.report_string + ("<br>Space weather transit time is " + str(delay_days) + " days")
 
         print(common_data.report_string)
-        with open("regression.php", 'w') as w:
+        with open(regression_output, 'w') as w:
             w.write(common_data.report_string + '\n')

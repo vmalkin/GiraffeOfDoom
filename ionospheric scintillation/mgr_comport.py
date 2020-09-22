@@ -27,6 +27,11 @@ class SerialManager():
             print("\n\n" + str(sys.exc_info()))
 
     def data_recieve(self):
-        logData = self.com.readline()  # logData is a byte array, not a string at this point
-        logData = str(logData, 'ascii').strip()  # convert the byte array to string. strip off unnecessary whitespace
+        try:
+            logData = self.com.readline()  # logData is a byte array, not a string at this point
+            # logData = str(logData, 'ascii').strip()  # convert the byte array to string. strip off unnecessary whitespace
+            logData = str(logData, 'latin1').strip()  # convert the byte array to string. strip off unnecessary whitespace
+        except serial.serialutil.SerialException:
+            logData = ""
+            logging.error("Serial port error " + serial.serialutil.SerialException)
         return logData

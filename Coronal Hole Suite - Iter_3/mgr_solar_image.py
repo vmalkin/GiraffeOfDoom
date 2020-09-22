@@ -58,9 +58,9 @@ class SolarImageProcessor:
     def _threshold_img(self, image_to_process):
         # Identify dark coronal hole areas from the solar surface...
         # This is crude at the moment, but it basically works
-        # We will probabbly want to check the histogram for the image to define this
+        # We will probably want to check the histogram for the image to define this
         # correctly. See original paper.
-        ret, outputimg = cv2.threshold(image_to_process, 15,255, cv2.THRESH_BINARY)
+        ret, outputimg = cv2.threshold(image_to_process, 8, 255, cv2.THRESH_BINARY)
         return outputimg
 
     def _erode_dilate_img(self, image_to_process):
@@ -119,7 +119,8 @@ class SolarImageProcessor:
             common_data.report_string = common_data.report_string + "Unable to get syntopic map from NOAA.\n"
 
         try:
-            self._save_image_from_url("https://sdo.gsfc.nasa.gov/assets/img/latest/latest_512_0193.jpg", "sun.jpg")
+            # self._save_image_from_url("https://sdo.gsfc.nasa.gov/assets/img/latest/latest_512_0193.jpg", "sun.jpg")
+            self._save_image_from_url("https://services.swpc.noaa.gov/images/suvi-primary-195.png", "sun.jpg")
 
             img = self._image_read('sun.jpg')
 
@@ -128,8 +129,12 @@ class SolarImageProcessor:
             # nowtime_posix = get_posix_time()
 
             # when saved in paint, a 16bit bmp seems ok
-            mask_full = self._make_mask('mask_full.bmp')
-            mask_segment = self._make_mask('mask_meridian.bmp')
+            # # SDO masks
+            # mask_full = self._make_mask('mask_full.bmp')
+            # mask_segment = self._make_mask('mask_meridian.bmp')
+            # GOES masks
+            mask_full = self._make_mask('mask_full_goes.bmp')
+            mask_segment = self._make_mask('mask_meridian_goes.bmp')
 
             # # print mask parameters for debugging purposes.
             # print(str(mask_full.dtype) + " " + str(mask_full.shape))
@@ -150,7 +155,9 @@ class SolarImageProcessor:
 
             # Start grabbing all processed images and save as jpg
             try:
-                filename = "sun_jpegs/" + str(int(time.time())) + ".jpg"
+                time_now = str(datetime.datetime.utcnow().strftime("%Y_%m_%d_%H_%M"))
+                filename = "sun_jpegs/" + time_now + ".jpg"
+                # filename = "sun_jpegs/" + str(int(time.time())) + ".jpg"
                 self._image_write(filename, outputimg1)
             except:
                 logging.error("Unable to process running solar image in JPG folder")
@@ -168,7 +175,7 @@ class SolarImageProcessor:
             self.coverage = self._count_pixels(outputimg2, mask_segment)
 
             # It is extremely unlikely that we will ever get 100% coronal hole coverage on the meridian
-            # Most ikely it is a glitched image from SDO - se we get less statistical grief if we reset the value
+            # Most ikely it is a glitched image from SDO - so we get less statistical grief if we reset the value
             # to a zero.
             if self.coverage == 1:
                 self.coverage = 0
