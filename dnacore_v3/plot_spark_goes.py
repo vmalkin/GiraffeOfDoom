@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 from datetime import datetime
 
 minvalue = 0
-maxvalue = 10
+maxvalue = 13
 data = []
 hours = []
 title = "GOES 16"
