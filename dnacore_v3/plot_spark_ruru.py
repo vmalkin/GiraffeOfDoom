@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 from datetime import datetime
 
 minvalue = 0
-maxvalue = 5
+maxvalue = 4
 data = []
 hours = []
 title = "Ground Magnetometer No 1"
