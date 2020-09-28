@@ -28,10 +28,10 @@ with open("Geomag_Bz_spark.csv", "r") as f:
         d = d.split(",")
         hr = d[0]
         da = float(d[1])
-        if da > 0:
+        if da > 0 and i % hour_label_spacing == 0:
             d_hi.append((da))
             d_lo.append(null_value)
-        if da <= 0:
+        if da <= 0 and i % hour_label_spacing == 0:
             d_hi.append(null_value)
             d_lo.append((da))
 
@@ -41,10 +41,14 @@ with open("Geomag_Bz_spark.csv", "r") as f:
         if i % hour_label_spacing == 0:
             hours.append(hr)
             # ticks.append(i)
-        else:
-            hours.append("")
+        # else:
+        #     hours.append("")
             # ticks.append(i)
         i = i + 1
+
+print((hours))
+print(len(d_hi))
+print(len(d_lo))
 
 fig, ax = plt.subplots(figsize=(4, 7))
 
@@ -58,7 +62,7 @@ ax.set_title(title)
 ax.barh(y=hours, width=d_hi, color='#509050')
 ax.barh(y=hours, width=d_lo, color='red')
 plt.grid(color='#95a5a6', linestyle='-', linewidth=1, axis='x', alpha=0.7)
-plt.grid(color='#95a5a6', linestyle='-', linewidth=1, axis='y', alpha=0.7)
+# plt.grid(color='#95a5a6', linestyle='-', linewidth=1, axis='y', alpha=0.7)
 
 fig.tight_layout()
 plt.yticks(ticks=hours, labels=hours, rotation=0)
