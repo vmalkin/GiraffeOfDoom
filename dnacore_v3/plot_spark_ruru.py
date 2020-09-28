@@ -41,9 +41,10 @@ ax.annotate('Now', xy=(0,0.5), xytext=(0.5, 0.5), color ="white")
 ax.annotate('24 hours ago', xy=(0,23), xytext=(0.5, 23), color ="white")
 
 b = ax.imshow(data, cmap='viridis', interpolation="hanning", vmin=minvalue, vmax=maxvalue, extent=(0,5,-0.5,23.5))
-# cbar = ax.figure.colorbar(b, ax=ax)
-# cbar.ax.set_ylabel("x background level")
-# plt.colorbar(b)
+cbar = ax.figure.colorbar(b, ax=ax)
+cbar_labels = ['MIN', 'MAX']
+cbar.set_ticks([minvalue, maxvalue])
+cbar.set_ticklabels(cbar_labels)
 
 fig.tight_layout()
 plt.savefig(savefile)
