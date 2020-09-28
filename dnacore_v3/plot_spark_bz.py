@@ -45,7 +45,7 @@ with open("Geomag_Bz_spark.csv", "r") as f:
         #     hours.append("")
             # ticks.append(i)
         i = i + 1
-
+hours.reverse()
 d_lo.reverse()
 d_hi.reverse()
 
