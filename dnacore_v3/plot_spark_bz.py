@@ -49,7 +49,7 @@ with open("Geomag_Bz_spark.csv", "r") as f:
 d_lo.reverse()
 d_hi.reverse()
 
-fig, ax = plt.subplots(figsize=(4, 7))
+fig, ax = plt.subplots(figsize=(4, 6))
 
 ax.set_xticks([-9,-9,-7,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,7,8,9])
 ax.set_ylabel("UTC Hour")
@@ -61,7 +61,7 @@ ax.set_title(title)
 ax.barh(y=hours, width=d_hi, color='#509050')
 ax.barh(y=hours, width=d_lo, color='red')
 plt.grid(color='#95a5a6', linestyle='-', linewidth=1, axis='x', alpha=0.7)
-# plt.grid(color='#95a5a6', linestyle='-', linewidth=1, axis='y', alpha=0.7)
+plt.grid(color='#95a5a6', linestyle='-', linewidth=1, axis='y', alpha=0.7)
 
 fig.tight_layout()
 plt.yticks(ticks=hours, labels=hours, rotation=0)
