@@ -38,23 +38,23 @@ with open("Geomag_Bz_spark.csv", "r") as f:
 # draw the heatmap
 
 # fig, ax = plt.subplots(figsize=(10,3))
-fig, ax = plt.subplots()
+fig, ax = plt.subplots(figsize=(10, 4))
 ax.set_xticks(range(len(hours)))
 
-tick_space = 1
+tick_space = 30
 ax.set_xticklabels(hours)
-# ax.xaxis.set_major_locator(ticker.MultipleLocator(tick_space))
+ax.xaxis.set_major_locator(ticker.MultipleLocator(tick_space))
 
 ax.set_yticks([-9,-9,-7,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,7,8,9])
 ax.set_xlabel("UTC Hour")
 ax.set_title(title)
-ax.bar(x=hours, height=d_hi, color='green')
-ax.bar(x=hours, height=d_lo, color='orange')
+ax.bar(x=hours, height=d_hi, color='#509050')
+ax.bar(x=hours, height=d_lo, color='red')
 plt.grid(color='#95a5a6', linestyle='-', linewidth=1, axis='y', alpha=0.7)
 
-# fig.tight_layout()
+fig.tight_layout()
 plt.xticks(rotation=90)
 
-plt.show()
-# plt.savefig(savefile)
+# plt.show()
+plt.savefig(savefile)
 plt.close('all')
