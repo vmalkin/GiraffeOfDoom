@@ -5,7 +5,7 @@ from datetime import datetime
 minvalue = 0
 maxvalue = 3
 null_value = 0
-hour_label_spacing = 3
+hour_label_spacing = 6
 title = "IMF Bz"
 savefile = "bz.png"
 
@@ -46,18 +46,23 @@ with open("Geomag_Bz_spark.csv", "r") as f:
             ticks.append(i)
         i = i + 1
 
-fig, ax = plt.subplots(figsize=(10, 4))
+fig, ax = plt.subplots(figsize=(4, 10))
 
-ax.set_yticks([-9,-9,-7,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,7,8,9])
-ax.set_xlabel("UTC Hour")
-ax.set_ylabel("Bz - nT")
-# ax.set_title(title)
-ax.bar(x=ticks, height=d_hi, color='#509050')
-ax.bar(x=ticks, height=d_lo, color='red')
-plt.grid(color='#95a5a6', linestyle='-', linewidth=1, axis='y', alpha=0.7)
+ax.set_xticks([-9,-9,-7,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,7,8,9])
+ax.set_ylabel("UTC Hour")
+ax.set_xlabel("Bz - nT")
+ax.set_title(title)
+# ax.bar(x=ticks, height=d_hi, color='#509050')
+# ax.bar(x=ticks, height=d_lo, color='red')
+
+ax.barh(y=ticks, width=d_hi, color='#509050')
+ax.barh(y=ticks, width=d_lo, color='red')
+plt.grid(color='#95a5a6', linestyle='-', linewidth=1, axis='x', alpha=0.7)
+
 fig.tight_layout()
-plt.xticks(ticks=ticks, labels=hours, rotation=90)
+plt.yticks(ticks=ticks, labels=hours, rotation=0)
 fig.subplots_adjust(bottom=0.17)
+
 # plt.show()
 plt.savefig(savefile)
 plt.close('all')
