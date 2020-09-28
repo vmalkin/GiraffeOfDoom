@@ -46,9 +46,8 @@ with open("Geomag_Bz_spark.csv", "r") as f:
             # ticks.append(i)
         i = i + 1
 
-print((hours))
-print(len(d_hi))
-print(len(d_lo))
+d_lo.reverse()
+d_hi.reverse()
 
 fig, ax = plt.subplots(figsize=(4, 7))
 
