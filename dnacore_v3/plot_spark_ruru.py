@@ -13,7 +13,7 @@ tempdata = []
 def convert_datetime_to_hour(datetimestring):
     timeformat = "%Y-%m-%d %H:%M:%S"
     dateobject = datetime.strptime(datetimestring, timeformat)
-    hr = datetime.strftime(dateobject, "%H")
+    hr = datetime.strftime(dateobject, "%H:%M")
     return hr
 
 with open("Ruru_Obs_1hrdx.csv", "r") as f:
@@ -41,10 +41,10 @@ ax.annotate('Now', xy=(0,0.5), xytext=(0.5, 0.5), color ="white")
 ax.annotate('24 hours ago', xy=(0,23), xytext=(0.5, 23), color ="white")
 
 b = ax.imshow(data, cmap='viridis', interpolation="hanning", vmin=minvalue, vmax=maxvalue, extent=(0,5,-0.5,23.5))
-cbar = ax.figure.colorbar(b, ax=ax)
-cbar_labels = ['MIN', 'MAX']
-cbar.set_ticks([minvalue, maxvalue])
-cbar.set_ticklabels(cbar_labels)
+# cbar = ax.figure.colorbar(b, ax=ax)
+# cbar_labels = ['MIN', 'MAX']
+# cbar.set_ticks([minvalue, maxvalue])
+# cbar.set_ticklabels(cbar_labels)
 
 fig.tight_layout()
 plt.savefig(savefile)
