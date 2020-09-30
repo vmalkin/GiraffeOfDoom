@@ -38,7 +38,7 @@ minvalue = 0
 maxvalue = 22
 null_value = 0
 title = "GOES East"
-savefile = "TESTspark_goes.png"
+savefile = "spark_goes.png"
 
 
 class DataPoint:

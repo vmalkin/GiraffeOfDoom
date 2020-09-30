@@ -38,7 +38,7 @@ minvalue = 0
 maxvalue = 5
 null_value = 0
 title = "Dunedin Aurora No 1"
-savefile = "TESTspark_ruru.png"
+savefile = "spark_ruru.png"
 
 
 class DataPoint:
