@@ -2,11 +2,9 @@ import sqlite3
 import constants as k
 import logging
 import time
-from datetime import datetime, timedelta
+import datetime
 import os
-from statistics import mean, median
-import matplotlib.pyplot as plt
-import math
+from statistics import mean, median, stdev
 """
 logging levels in order of least --> most severity:
 DEBUG
@@ -24,22 +22,30 @@ db = dna_core.cursor()
 timeformat = '%Y-%m-%d %H:%M:%S'
 
 # Only specific station data makes sense as detrended readings.
-stations = ["GOES_16"]
+stations = ["Ruru_Obs", "GOES_16", "Geomag_Bz"]
 # stations = k.stations
 
 finish_time = int(time.time())
 start_time = finish_time - (60 * 60 * 24)
-binsize = 60 * 60
-number_bins = int((finish_time - start_time) / binsize)
+binsize = 60
+number_bins = int((finish_time - start_time) / binsize) + 2
 null_value = ""
 half_window = 90
 
-minvalue = 0
-maxvalue = 22
-null_value = 0
-title = "GOES East"
-savefile = "TESTspark_goes.png"
+class Dxdt_datapoint:
+    def __init__(self, posixtime, value):
+        self.posixtime = posixtime
+        self.value = value
+        self.last10min_avg = 0
 
+    def posix2utc(self):
+        # utctime = datetime.datetime.fromtimestamp(int(posixvalue)).strftime('%Y-%m-%d %H:%M:%S')
+        utctime = datetime.datetime.utcfromtimestamp(int(self.posixtime)).strftime(timeformat)
+        return utctime
+
+    def printdata(self):
+        returnstring = str(self.posix2utc()) + "," + str(self.value) + "," + str(self.last10min_avg)
+        return returnstring
 
 class DataPoint:
     def __init__(self, timevalue):
@@ -104,14 +110,9 @@ def check_create_folders():
 def get_data(station):
     result = db.execute("select station_data.posix_time, station_data.data_value from station_data "
                         "where station_data.station_id = ? and station_data.posix_time > ?", [station, start_time])
+
     query_result = result.fetchall()
     return query_result
-
-
-def posix2utc(posixtime):
-    # utctime = datetime.datetime.fromtimestamp(int(posixvalue)).strftime('%Y-%m-%d %H:%M:%S')
-    utctime = datetime.utcfromtimestamp(int(posixtime)).strftime(timeformat)
-    return utctime
 
 
 def parse_querydata(querydata):
@@ -128,10 +129,7 @@ def parse_querydata(querydata):
 def save_logfiles(filename, datalist):
     with open(filename, "w") as n:
         for item in datalist:
-            da = str(item[0])
-            dt = str(item[1])
-            dp = da + "," + dt + "\n"
-            n.write(dp)
+            n.write(item.printdata() + "\n")
     n.close()
 
 
@@ -165,88 +163,45 @@ def calc_dxdt(bindata):
     templist = []
     for i in range(1, len(bindata)):
         timestamp = bindata[i][0]
-        datavalue = float(bindata[i-1][1]) - float(bindata[i][1])
+        datavalue = bindata[i-1][1] - bindata[i][1]
         dp = (timestamp, datavalue)
         templist.append(dp)
     return templist
 
 
-def convert_time(tempdata):
-    td = []
-    for item in tempdata:
-        dt = posix2utc(item[0])
-        da = item[1]
-        dp = (dt, da)
-        td.append(dp)
-    return td
+def avg_last10mins(tuplelist):
+    returnlist = []
+    for i in range(9, len(tuplelist)):
+        timevalue = tuplelist[i][0]
+        currentdata = tuplelist[i][1]
+        temp = []
+        for j in range(0, 9):
+            temp.append(tuplelist[i-j][1])
+        meandata = mean(temp)
+        dp = Dxdt_datapoint(timevalue, currentdata)
+        dp.last10min_avg = meandata
+        returnlist.append(dp)
+    return returnlist
 
-def convert_datetime_to_hour(datetimestring):
-    timeformat = "%Y-%m-%d %H:%M:%S"
-    # Add one hour to the actual bin time value, so it looks current on the graph.
-    # the bin value is correct, this is making the time look current
-    dateobject = datetime.strptime(datetimestring, timeformat) + timedelta(hours=1)
-    hr = datetime.strftime(dateobject, "%H:%M")
-    return hr
 
-def zeroed(tempdata):
-    returndata = []
-    d = []
 
-    for line in tempdata:
-        d.append(line[1])
-    minvalue = min(d)
-
-    for line in tempdata:
-        datetime = line[0]
-        datavalue = line[1] - minvalue
-        dp = (datetime, datavalue)
-        returndata.append(dp)
-    return returndata
 
 if __name__ == "__main__":
+    # check_create_folders()
     for station in stations:
         current_stationdata = get_data(station)
-        db.close()
-
         tempdata = parse_querydata(current_stationdata)  # a list
         tempdata = filter_median(tempdata)  # a tuple list
         tempdata = bin_data(tempdata)  # a list - one minute bins
-        tempdata = calc_dxdt(tempdata)
-        tempdata = zeroed(tempdata)
-        tempdata = convert_time(tempdata)
+        tempdata = calc_dxdt(tempdata)  # a tuple list
+        tempdata = avg_last10mins(tempdata)
 
-        data = []
-        hours = []
+        # All other calculations are worked on data at 1 minute intervals,
+        # incl calculation of K-index, etc.
 
-        for dp in tempdata:
-            dd = []
-            hr = dp[0]
-            da = float(dp[1])
-            dd.append(da)
-            hr = convert_datetime_to_hour(hr)
-            hours.append(hr)
-            data.append(dd)
-    hours.reverse()
+        nowfile = station + "_dxdt.csv"
+        save_logfiles(nowfile, tempdata)
 
-    # print(data)
-    # draw the heatmap
-    fig, ax = plt.subplots(figsize=(3, 7))
-    ax.set_yticks(range(len(hours)))
-    ax.set_yticklabels(hours)
-    ax.set_xticks([])
-    ax.set_ylabel("UTC Hour")
-    ax.set_title(title)
-
-    ax.annotate('Now', xy=(0, 0.5), xytext=(0.5, 0.5), color="white")
-    ax.annotate('24 hours ago', xy=(0, 23), xytext=(0.5, 23), color="white")
-
-    b = ax.imshow(data, cmap='viridis', interpolation="hanning", vmin=minvalue, vmax=maxvalue,
-                  extent=(0, 5, -0.5, 23.5))
-    # cbar = ax.figure.colorbar(b, ax=ax)
-    # cbar_labels = ['MIN', 'MAX']
-    # cbar.set_ticks([minvalue, maxvalue])
-    # cbar.set_ticklabels(cbar_labels)
-
-    fig.tight_layout()
-    plt.savefig(savefile)
-    plt.close('all')
+    print("Closing database and exiting")
+    dna_core.commit()
+    db.close()

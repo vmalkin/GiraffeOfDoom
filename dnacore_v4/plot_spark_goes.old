@@ -7,7 +7,7 @@ maxvalue = 17
 data = []
 hours = []
 title = "GOES East"
-savefile = "spark_goes.png"
+savefile = "TESTspark_goes.png"
 
 tempdata = []
 

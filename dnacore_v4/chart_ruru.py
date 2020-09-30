@@ -6,6 +6,7 @@ from datetime import datetime, timedelta
 import os
 from statistics import mean, median
 import matplotlib.pyplot as plt
+import math
 """
 logging levels in order of least --> most severity:
 DEBUG
@@ -23,7 +24,7 @@ db = dna_core.cursor()
 timeformat = '%Y-%m-%d %H:%M:%S'
 
 # Only specific station data makes sense as detrended readings.
-stations = ["Geomag_Bz"]
+stations = ["Ruru_Obs"]
 # stations = k.stations
 
 finish_time = int(time.time())
@@ -34,10 +35,10 @@ null_value = ""
 half_window = 90
 
 minvalue = 0
-maxvalue = 3.2
+maxvalue = 5
 null_value = 0
-title = "IMF Bz"
-savefile = "bz.png"
+title = "Dunedin Aurora No 1"
+savefile = "TESTspark_ruru.png"
 
 
 class DataPoint:
@@ -164,7 +165,7 @@ def calc_dxdt(bindata):
     templist = []
     for i in range(1, len(bindata)):
         timestamp = bindata[i][0]
-        datavalue = bindata[i-1][1] - bindata[i][1]
+        datavalue = float(bindata[i][1]) - float(bindata[i-1][1])
         dp = (timestamp, datavalue)
         templist.append(dp)
     return templist
@@ -187,6 +188,23 @@ def convert_datetime_to_hour(datetimestring):
     hr = datetime.strftime(dateobject, "%H:%M")
     return hr
 
+
+def zeroed(tempdata):
+    returndata = []
+    d = []
+
+    for line in tempdata:
+        d.append(line[1])
+    minvalue = min(d)
+
+    for line in tempdata:
+        datetime = line[0]
+        datavalue = line[1] - minvalue
+        dp = (datetime, datavalue)
+        returndata.append(dp)
+    return returndata
+
+
 if __name__ == "__main__":
     for station in stations:
         current_stationdata = get_data(station)
@@ -195,39 +213,41 @@ if __name__ == "__main__":
         tempdata = parse_querydata(current_stationdata)  # a list
         tempdata = filter_median(tempdata)  # a tuple list
         tempdata = bin_data(tempdata)  # a list - one minute bins
+        tempdata = calc_dxdt(tempdata)
+        tempdata = zeroed(tempdata)
         tempdata = convert_time(tempdata)
 
-        d_hi = []
-        d_lo = []
+        data = []
         hours = []
+
         for dp in tempdata:
+            dd = []
             hr = dp[0]
-            hr = convert_datetime_to_hour(hr)
             da = float(dp[1])
-            if da > 0:
-                d_hi.append((da))
-                d_lo.append(null_value)
-            if da <= 0:
-                d_hi.append(null_value)
-                d_lo.append((da))
+            dd.append(da)
+            hr = convert_datetime_to_hour(hr)
             hours.append(hr)
-
+            data.append(dd)
     hours.reverse()
-    d_lo.reverse()
-    d_hi.reverse()
 
-    fig, ax = plt.subplots(figsize=(4, 6))
-    ax.set_xlim(-10, 10)
+    # draw the heatmap
+    fig, ax = plt.subplots(figsize=(3, 7))
+    ax.set_yticks(range(len(hours)))
+    ax.set_yticklabels(hours)
+    ax.set_xticks([])
     ax.set_ylabel("UTC Hour")
-    ax.set_xlabel("Bz - nT")
     ax.set_title(title)
 
-    ax.barh(y=hours, width=d_hi, color='#509050')
-    ax.barh(y=hours, width=d_lo, color='red')
-    plt.grid(color='#95a5a6', linestyle='-', linewidth=1, axis='x', alpha=0.7)
-    plt.grid(color='#95a5a6', linestyle='-', linewidth=1, axis='y', alpha=0.7)
+    ax.annotate('Now', xy=(0, 0.5), xytext=(0.5, 0.5), color="white")
+    ax.annotate('24 hours ago', xy=(0, 23), xytext=(0.5, 23), color="white")
+
+    b = ax.imshow(data, cmap='viridis', interpolation="hanning", vmin=minvalue, vmax=maxvalue,
+                  extent=(0, 5, -0.5, 23.5))
+    # cbar = ax.figure.colorbar(b, ax=ax)
+    # cbar_labels = ['MIN', 'MAX']
+    # cbar.set_ticks([minvalue, maxvalue])
+    # cbar.set_ticklabels(cbar_labels)
 
     fig.tight_layout()
-    plt.yticks(ticks=hours, labels=hours, rotation=0)
     plt.savefig(savefile)
     plt.close('all')

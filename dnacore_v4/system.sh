@@ -8,6 +8,7 @@ do
  python3.5 get_bz.py
  
  python3.5 save_logfiles.py
+ python3.5 chart_dxdt.py
  python3.5 chart_bz.py
  python3.5 chart_goes.py
  python3.5 chart_ruru.py
