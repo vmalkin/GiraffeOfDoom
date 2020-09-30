@@ -2,9 +2,10 @@ import sqlite3
 import constants as k
 import logging
 import time
-import datetime
+from datetime import datetime, timedelta
 import os
-from statistics import mean, median, stdev
+from statistics import mean, median
+import matplotlib.pyplot as plt
 """
 logging levels in order of least --> most severity:
 DEBUG
@@ -22,16 +23,21 @@ db = dna_core.cursor()
 timeformat = '%Y-%m-%d %H:%M:%S'
 
 # Only specific station data makes sense as detrended readings.
-stations = ["Ruru_Obs", "GOES_16"]
-# stations = ["GOES_16", "Ruru_Obs"]
+stations = ["GOES_16"]
 # stations = k.stations
 
 finish_time = int(time.time())
 start_time = finish_time - (60 * 60 * 24)
 binsize = 60 * 60
-number_bins = int((finish_time - start_time) / binsize) + 2
+number_bins = int((finish_time - start_time) / binsize)
 null_value = ""
 half_window = 90
+
+minvalue = 0
+maxvalue = 0.4
+null_value = 0
+title = "GOES East"
+savefile = "spark_goes.png"
 
 
 class DataPoint:
@@ -103,7 +109,7 @@ def get_data(station):
 
 def posix2utc(posixtime):
     # utctime = datetime.datetime.fromtimestamp(int(posixvalue)).strftime('%Y-%m-%d %H:%M:%S')
-    utctime = datetime.datetime.utcfromtimestamp(int(posixtime)).strftime(timeformat)
+    utctime = datetime.utcfromtimestamp(int(posixtime)).strftime(timeformat)
     return utctime
 
 
@@ -111,8 +117,8 @@ def parse_querydata(querydata):
     # turn the readings into rate of change.
     tempdata = []
     for i in range(1, len(querydata)):
-        date = int(querydata[i][0])
-        newdata = float(querydata[i][1])
+        date = querydata[i][0]
+        newdata = querydata[i][1]
         dp = (date, newdata)
         tempdata.append(dp)
     return tempdata
@@ -148,7 +154,7 @@ def bin_data(tempdata):
     for item in datapoint_list:
         timevalue = item.timevalue
         if item.avg_data() != null_value:
-            datavalue = round(item.max_data() - item.min_data(), 3)
+            datavalue = round(item.avg_data(), 3)
             dp = (timevalue, datavalue)
             binned_data.append(dp)
     return binned_data
@@ -158,7 +164,7 @@ def calc_dxdt(bindata):
     templist = []
     for i in range(1, len(bindata)):
         timestamp = bindata[i][0]
-        datavalue = bindata[i-1][1] - bindata[i][1]
+        datavalue = float(bindata[i-1][1]) - float(bindata[i][1])
         dp = (timestamp, datavalue)
         templist.append(dp)
     return templist
@@ -173,61 +179,58 @@ def convert_time(tempdata):
         td.append(dp)
     return td
 
-
-def db_add_min(data_min):
-    db.execute("insert into station_statistics (station_id, data_value, type) values (?,?,?)", [station, data_min, "min"])
-
-
-def db_get_middle_min():
-    result = db.execute("select data_value from station_statistics where station_id = ? and type = ?", [station, "min"])
-    query_result = result.fetchall()
-    query_result.reverse()
-    t = []
-    median_result = 1
-
-    if len(query_result) >= 1000:
-        for i in range(0, 1000):
-            t.append(query_result[i])
-        median_result = median(t)
-    else:
-        if len(query_result) > 2:
-            for item in query_result:
-                t.append(item[0])
-            median_result = median(t)
-    print(str(len(query_result)) + " " + str(median_result))
-    return median_result
-
+def convert_datetime_to_hour(datetimestring):
+    timeformat = "%Y-%m-%d %H:%M:%S"
+    # Add one hour to the actual bin time value, so it looks current on the graph.
+    # the bin value is correct, this is making the time look current
+    dateobject = datetime.strptime(datetimestring, timeformat) + timedelta(hours=1)
+    hr = datetime.strftime(dateobject, "%H:%M")
+    return hr
 
 if __name__ == "__main__":
-    # check_create_folders()
     for station in stations:
         current_stationdata = get_data(station)
+        db.close()
+
         tempdata = parse_querydata(current_stationdata)  # a list
-        print(current_stationdata)
         tempdata = filter_median(tempdata)  # a tuple list
-        tempdata = bin_data(tempdata)  # a list - one hour bins
+        tempdata = calc_dxdt(tempdata)
+        tempdata = bin_data(tempdata)  # a list - one minute bins
         tempdata = convert_time(tempdata)
 
-        s = []
-        for item in tempdata:
-            s.append(item[1])
-        data_min = min(s)
-        db_add_min(data_min)
-        tempmin = db_get_middle_min()
+        data = []
+        hours = []
 
-        t = []
-        for item in tempdata:
-            dt = item[0]
-            dv = item[1]
-            scaled_data = round((dv / tempmin), 3)
-            dp = (dv, scaled_data)
-            t.append(dp)
+        for dp in tempdata:
+            dd = []
+            hr = dp[0]
+            da = float(dp[1])
+            dd.append(da)
+            hr = convert_datetime_to_hour(hr)
+            hours.append(hr)
+            data.append(dd)
+    hours.reverse()
+    print(hours)
+    print(data)
 
-        # All other calculations are worked on data at 1 minute intervals,
-        # incl calculation of K-index, etc.
-        nowfile = station + "_1hrdx.csv"
-        save_logfiles(nowfile, tempdata)
+    # draw the heatmap
+    fig, ax = plt.subplots(figsize=(3, 7))
+    ax.set_yticks(range(len(hours)))
+    ax.set_yticklabels(hours)
+    ax.set_xticks([])
+    ax.set_ylabel("UTC Hour")
+    ax.set_title(title)
 
-    print("Closing database and exiting")
-    dna_core.commit()
-    db.close()
+    ax.annotate('Now', xy=(0, 0.5), xytext=(0.5, 0.5), color="white")
+    ax.annotate('24 hours ago', xy=(0, 23), xytext=(0.5, 23), color="white")
+
+    b = ax.imshow(data, cmap='viridis', interpolation="hanning", vmin=minvalue, vmax=maxvalue,
+                  extent=(0, 5, -0.5, 23.5))
+    # cbar = ax.figure.colorbar(b, ax=ax)
+    # cbar_labels = ['MIN', 'MAX']
+    # cbar.set_ticks([minvalue, maxvalue])
+    # cbar.set_ticklabels(cbar_labels)
+
+    fig.tight_layout()
+    plt.savefig(savefile)
+    plt.close('all')

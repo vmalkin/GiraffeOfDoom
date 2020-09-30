@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
-from datetime import datetime
+from datetime import datetime, timedelta
 
 minvalue = 0
 maxvalue = 3
@@ -13,7 +13,7 @@ tempdata = []
 
 def convert_datetime_to_hour(datetimestring):
     timeformat = "%Y-%m-%d %H:%M:%S"
-    dateobject = datetime.strptime(datetimestring, timeformat)
+    dateobject = datetime.strptime(datetimestring, timeformat) + timedelta(hours=1)
     hr = datetime.strftime(dateobject, "%H:%M")
     return hr
 

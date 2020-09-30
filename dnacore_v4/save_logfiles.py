@@ -1,3 +1,6 @@
+"""
+This program creates 24hour logfiles. These are saved independent of any database
+"""
 import sqlite3
 import constants as k
 import logging

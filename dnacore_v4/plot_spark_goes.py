@@ -3,6 +3,7 @@ from datetime import datetime
 
 minvalue = 0
 maxvalue = 17
+
 data = []
 hours = []
 title = "GOES East"

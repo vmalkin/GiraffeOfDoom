@@ -2,9 +2,10 @@ import sqlite3
 import constants as k
 import logging
 import time
-import datetime
+from datetime import datetime, timedelta
 import os
-from statistics import mean, median, stdev
+from statistics import mean, median
+import matplotlib.pyplot as plt
 """
 logging levels in order of least --> most severity:
 DEBUG
@@ -22,31 +23,21 @@ db = dna_core.cursor()
 timeformat = '%Y-%m-%d %H:%M:%S'
 
 # Only specific station data makes sense as detrended readings.
-stations = ["Ruru_Obs", "GOES_16", "Geomag_Bz"]
+stations = ["Geomag_Bz"]
 # stations = k.stations
 
 finish_time = int(time.time())
 start_time = finish_time - (60 * 60 * 24)
-binsize = 60
+binsize = 60 * 60
 number_bins = int((finish_time - start_time) / binsize) + 2
 null_value = ""
 half_window = 90
 
-
-class Dxdt_datapoint:
-    def __init__(self, posixtime, value):
-        self.posixtime = posixtime
-        self.value = value
-        self.last10min_avg = 0
-
-    def posix2utc(self):
-        # utctime = datetime.datetime.fromtimestamp(int(posixvalue)).strftime('%Y-%m-%d %H:%M:%S')
-        utctime = datetime.datetime.utcfromtimestamp(int(self.posixtime)).strftime(timeformat)
-        return utctime
-
-    def printdata(self):
-        returnstring = str(self.posix2utc()) + "," + str(self.value) + "," + str(self.last10min_avg)
-        return returnstring
+minvalue = 0
+maxvalue = 3.2
+null_value = 0
+title = "IMF Bz"
+savefile = "bz.png"
 
 
 class DataPoint:
@@ -112,9 +103,14 @@ def check_create_folders():
 def get_data(station):
     result = db.execute("select station_data.posix_time, station_data.data_value from station_data "
                         "where station_data.station_id = ? and station_data.posix_time > ?", [station, start_time])
-
     query_result = result.fetchall()
     return query_result
+
+
+def posix2utc(posixtime):
+    # utctime = datetime.datetime.fromtimestamp(int(posixvalue)).strftime('%Y-%m-%d %H:%M:%S')
+    utctime = datetime.utcfromtimestamp(int(posixtime)).strftime(timeformat)
+    return utctime
 
 
 def parse_querydata(querydata):
@@ -131,7 +127,10 @@ def parse_querydata(querydata):
 def save_logfiles(filename, datalist):
     with open(filename, "w") as n:
         for item in datalist:
-            n.write(item.printdata() + "\n")
+            da = str(item[0])
+            dt = str(item[1])
+            dp = da + "," + dt + "\n"
+            n.write(dp)
     n.close()
 
 
@@ -171,39 +170,64 @@ def calc_dxdt(bindata):
     return templist
 
 
-def avg_last10mins(tuplelist):
-    returnlist = []
-    for i in range(9, len(tuplelist)):
-        timevalue = tuplelist[i][0]
-        currentdata = tuplelist[i][1]
-        temp = []
-        for j in range(0, 9):
-            temp.append(tuplelist[i-j][1])
-        meandata = mean(temp)
-        dp = Dxdt_datapoint(timevalue, currentdata)
-        dp.last10min_avg = meandata
-        returnlist.append(dp)
-    return returnlist
+def convert_time(tempdata):
+    td = []
+    for item in tempdata:
+        dt = posix2utc(item[0])
+        da = item[1]
+        dp = (dt, da)
+        td.append(dp)
+    return td
 
+def convert_datetime_to_hour(datetimestring):
+    timeformat = "%Y-%m-%d %H:%M:%S"
+    # Add one hour to the actual bin time value, so it looks current on the graph.
+    # the bin value is correct, this is making the time look current
+    dateobject = datetime.strptime(datetimestring, timeformat) + timedelta(hours=1)
+    hr = datetime.strftime(dateobject, "%H:%M")
+    return hr
 
 if __name__ == "__main__":
-    # check_create_folders()
     for station in stations:
         current_stationdata = get_data(station)
+        db.close()
+
         tempdata = parse_querydata(current_stationdata)  # a list
         tempdata = filter_median(tempdata)  # a tuple list
         tempdata = bin_data(tempdata)  # a list - one minute bins
-        tempdata = calc_dxdt(tempdata)  # a tuple list
-        tempdata = avg_last10mins(tempdata)
+        tempdata = convert_time(tempdata)
 
+        d_hi = []
+        d_lo = []
+        hours = []
+        for dp in tempdata:
+            hr = dp[0]
+            hr = convert_datetime_to_hour(hr)
+            da = float(dp[1])
+            if da > 0:
+                d_hi.append((da))
+                d_lo.append(null_value)
+            if da <= 0:
+                d_hi.append(null_value)
+                d_lo.append((da))
+            hours.append(hr)
 
+    hours.reverse()
+    d_lo.reverse()
+    d_hi.reverse()
 
-        # All other calculations are worked on data at 1 minute intervals,
-        # incl calculation of K-index, etc.
+    fig, ax = plt.subplots(figsize=(4, 6))
+    ax.set_xlim(-10, 10)
+    ax.set_ylabel("UTC Hour")
+    ax.set_xlabel("Bz - nT")
+    ax.set_title(title)
 
-        nowfile = station + "_dxdt.csv"
-        save_logfiles(nowfile, tempdata)
+    ax.barh(y=hours, width=d_hi, color='#509050')
+    ax.barh(y=hours, width=d_lo, color='red')
+    plt.grid(color='#95a5a6', linestyle='-', linewidth=1, axis='x', alpha=0.7)
+    plt.grid(color='#95a5a6', linestyle='-', linewidth=1, axis='y', alpha=0.7)
 
-    print("Closing database and exiting")
-    dna_core.commit()
-    db.close()
+    fig.tight_layout()
+    plt.yticks(ticks=hours, labels=hours, rotation=0)
+    plt.savefig(savefile)
+    plt.close('all')
