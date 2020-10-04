@@ -483,7 +483,7 @@ if __name__ == "__main__":
 
                 try:
                     save_s4_file(final_s4_list, filepath)
-                    save_s4_file(final_s4_list, "std_dev.csv")
+                    save_s4_file(final_s4_list, "std_dev2.csv")
                 except TypeError:
                     print("S4 file not large enough to process just yet")
 

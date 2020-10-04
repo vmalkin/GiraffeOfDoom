@@ -1,9 +1,9 @@
 # Comm port parameters - uncomment and change one of the portNames depending on your OS
-portName = 'Com37' # Windows
+portName = 'Com39' # Windows
 # portName = '/dev/tty.usbserial-A702O0K9' #MacOS
 # portName = '/dev/ttyUSB0'
 ##baudrate = 115200
-baudrate = 115200
+baudrate = 57600
 bytesize = 8
 parity = 'N'
 stopbits = 1

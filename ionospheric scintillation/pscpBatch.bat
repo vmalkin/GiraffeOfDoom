@@ -18,7 +18,7 @@ rem This code will run in a continuous loop
 REM Upload file fragment for each file
 date /t
 time /t
-set uploadfile="s4.csv"
+set uploadfile="*.csv"
 IF EXIST %uploadfile% PSCP -v -pw %server_pwd% %uploadfile% vaughn@dunedinaurora.nz:/var/www/html
 rem del %uploadfile%
 set uploadfile=""
