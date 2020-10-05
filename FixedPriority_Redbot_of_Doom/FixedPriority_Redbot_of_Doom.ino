@@ -79,12 +79,14 @@ void do_action(state)
 // *****************************************************************
 // Sensor tests to see if we can change state
 // *****************************************************************
- 
+
 String doublePhoto(int state)
 {
   return state;
   }
 
+// If a photosensor is broken, we have to work differently. Without knowing which one is dead, we have to
+// guide the robot to the light source. 
 String singlePhoto(int state)
 {
   return state;
@@ -95,11 +97,15 @@ String doubleEcho(int state)
   return state;
   }
 
+// If an echosensor is broken, we have to work differently. Without knowing which one is dead, we have to
+// guide the robot away from obstacles. 
 String singleEcho(int state)
 {
   return state;
   }
 
+// All sensors are dead, or we can't verify their accuracy. We will implement purely ballistic behaviours
+// that _eventually_ would guide our robot somewhere!
 String drunkWalk(int state)
 {
   return state;
