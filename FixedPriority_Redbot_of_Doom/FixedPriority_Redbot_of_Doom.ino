@@ -21,7 +21,6 @@ void setup() {
 
 void loop() {
   // Fall thru the possible tests for robot state.
-  robot_state = pauseStart(robot_state)
   robot_state = doublePhoto(robot_state); // Low priority
   robot_state = singlePhoto(robot_state); //     |
   robot_state = doubleEcho(robot_state);  //     |
@@ -30,12 +29,32 @@ void loop() {
 
   // Perform action for current state.
   do_action(state);
-
 }
 
 void do_action(state)
 {
+  switch(state)
+  {
+    case S_DRIVE:
+      motors_drive();
+      break;
+      
+    case S_LEFT:
+      motors_left();  
+      break;
   
+    case S_RIGHT:
+      motors_right();  
+      break; 
+
+    case S_STOP:
+      motors_stop();
+      break;
+
+    case S_REVERSE:
+      motors_reverse();
+      break;
+    }
   }
 
 // Sensor tests to see if we can change state
