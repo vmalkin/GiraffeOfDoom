@@ -7,11 +7,8 @@
 #include <NewPing.h>
 
 // The states for the robot. These are considered primitive behaviours. 
-#define S_DRIVE 0
-#define S_LEFT 1
-#define S_RIGHT 2
-#define S_REVERSE 3
-#define S_PAUSE 4
+enum states {S_DRIVE, S_LEFT, S_RIGHT, S_REVERSE, S_STOP};
+enum states robot_state;
 
 // Set up for sensors
 #define sonar_trig_left 3
@@ -25,7 +22,6 @@
 NewPing sonar_left (sonar_trig_left, sonar_echo_left, range);
 NewPing sonar_right (sonar_trig_right, sonar_echo_right, range);
 
-int robot_state;
 int motorspeed = 180;
 RedBotMotors motors;
 
@@ -38,19 +34,19 @@ void setup() {
 void loop() {
   // Fall thru the possible tests for robot state.
   robot_state = doublePhoto(robot_state); // Low priority
-  robot_state = singlePhoto(robot_state); //     |
-  robot_state = doubleEcho(robot_state);  //     |
-  robot_state = singleEcho(robot_state);  //     V
-  robot_state = drunkWalk(robot_state);   // High priority
+//  robot_state = singlePhoto(robot_state); //     |
+//  robot_state = doubleEcho(robot_state);  //     |
+//  robot_state = singleEcho(robot_state);  //     V
+//  robot_state = drunkWalk(robot_state);   // High priority
 
   // Perform action for current state.
-  do_action(state);
+  do_action(robot_state);
 }
 
 // *****************************************************************
 // Do the things...
 // *****************************************************************
-void do_action(state)
+void do_action(int state)
 {
   switch(state)
   {
@@ -79,37 +75,36 @@ void do_action(state)
 // *****************************************************************
 // Sensor tests to see if we can change state
 // *****************************************************************
-
-String doublePhoto(int state)
+states doublePhoto(states state)
 {
   return state;
   }
 
-// If a photosensor is broken, we have to work differently. Without knowing which one is dead, we have to
-// guide the robot to the light source. 
-String singlePhoto(int state)
-{
-  return state;
-  }
-
-String doubleEcho(int state)
-{
-  return state;
-  }
-
-// If an echosensor is broken, we have to work differently. Without knowing which one is dead, we have to
-// guide the robot away from obstacles. 
-String singleEcho(int state)
-{
-  return state;
-  }
-
-// All sensors are dead, or we can't verify their accuracy. We will implement purely ballistic behaviours
-// that _eventually_ would guide our robot somewhere!
-String drunkWalk(int state)
-{
-  return state;
-  }
+//// If a photosensor is broken, we have to work differently. Without knowing which one is dead, we have to
+//// guide the robot to the light source. 
+//String singlePhoto(int state)
+//{
+//  return state;
+//  }
+//
+//String doubleEcho(int state)
+//{
+//  return state;
+//  }
+//
+//// If an echosensor is broken, we have to work differently. Without knowing which one is dead, we have to
+//// guide the robot away from obstacles. 
+//String singleEcho(int state)
+//{
+//  return state;
+//  }
+//
+//// All sensors are dead, or we can't verify their accuracy. We will implement purely ballistic behaviours
+//// that _eventually_ would guide our robot somewhere!
+//String drunkWalk(int state)
+//{
+//  return state;
+//  }
 
 
 // *****************************************************************
@@ -124,13 +119,13 @@ void motors_drive()
 void motors_left()
 {
   motors.rightStop();
-  motors.leftMotor(motorspeed, motordelay);  
+  motors.leftMotor(motorspeed);  
   }
 
 void motors_right()
 {
   motors.leftStop();
-  motors.rightMotor(-1 * motorspeed, motordelay);
+  motors.rightMotor(-1 * motorspeed);
   }
 
 void motors_reverse()
