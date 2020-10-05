@@ -2,9 +2,9 @@
 // Robot is a photovore with collision avoidance
 // Control software accounts for failure of 1/4 sensors
 // Includes random drive if all else fails
-
 #include <RedBot.h>
 #include <RedBotSoftwareSerial.h>
+#include <NewPing.h>
 
 // The states for the robot. These are considered primitive behaviours. 
 #define S_DRIVE 0
@@ -13,10 +13,26 @@
 #define S_REVERSE 3
 #define S_PAUSE 4
 
-int robot_state
+// Set up for sensors
+#define sonar_trig_left 3
+#define sonar_echo_left 9
+#define sonar_trig_right 10
+#define sonar_echo_right 11
+#define eye_left A2
+#define eye_right A7
+
+#define range 30
+NewPing sonar_left (sonar_trig_left, sonar_echo_left, range);
+NewPing sonar_right (sonar_trig_right, sonar_echo_right, range);
+
+int robot_state;
+int motorspeed = 180;
+RedBotMotors motors;
+
 void setup() {
-  // put your setup code here, to run once:
-  robot_state = S_PAUSE;
+  
+  delay(2000);
+  robot_state = S_DRIVE;
 }
 
 void loop() {
@@ -31,6 +47,9 @@ void loop() {
   do_action(state);
 }
 
+// *****************************************************************
+// Do the things...
+// *****************************************************************
 void do_action(state)
 {
   switch(state)
@@ -56,16 +75,11 @@ void do_action(state)
       break;
     }
   }
-
-// Sensor tests to see if we can change state
-
-String pauseStart(int state)
-{
-  state = S_DRIVE;
-  delay(2000);
-  return state;
-  }
   
+// *****************************************************************
+// Sensor tests to see if we can change state
+// *****************************************************************
+ 
 String doublePhoto(int state)
 {
   return state;
@@ -92,19 +106,34 @@ String drunkWalk(int state)
   }
 
 
-
+// *****************************************************************
 // Motor Methods
+// *****************************************************************
 void motors_drive()
-{}
+{
+  motors.stop();
+  motors.drive(motorspeed);
+  }
 
 void motors_left()
-{}
+{
+  motors.rightStop();
+  motors.leftMotor(motorspeed, motordelay);  
+  }
 
 void motors_right()
-{}
+{
+  motors.leftStop();
+  motors.rightMotor(-1 * motorspeed, motordelay);
+  }
 
 void motors_reverse()
-{}
+{
+  motors.stop();
+  motors.drive(motorspeed * -1);
+  }
 
 void motors_stop()
-{}
+{
+  motors.stop();
+  }
