@@ -81,9 +81,22 @@ void do_action(int state)
 // *****************************************************************
 int doublePhoto(int state)
 {
-  Serial.print(analogRead(eye_left));
-  Serial.print(" ");
-  Serial.println(analogRead(eye_right));
+  int threshold = 5;
+  int eye_reading = (analogRead(eye_right) + eye_gain_right) - (analogRead(eye_left) + eye_gain_left);
+  if ((eye_reading < threshold) && (eye_reading > 0 - threshold))
+  {
+    state=S_DRIVE;
+    }
+  if (eye_reading > 0 + threshold)
+  {
+    state = S_RIGHT;
+    }
+
+  if (eye_reading < 0 - threshold)
+  {
+    state = S_LEFT;
+    }
+  Serial.println(eye_reading);
   return state;
   }
 
@@ -122,8 +135,7 @@ int doubleEcho(int state)
   {
     sensor_return = S_DRIVE;
     }
-  Serial.print(sensor_return);
-  Serial.print(" ");
+    
   return sensor_return;
   }
 
@@ -178,4 +190,16 @@ void motors_stop()
 // Calibrate the robot eyes
 // **********************************************************************
 void calibrateEyes()
-{}
+{
+  float lefty = 0;
+  float righty = 0
+  int i;
+  for (i = 0; i++; i = 100)
+  {
+    lefty = lefty + analogRead(eye_left);
+    righty = righty + analogRead(eye_right);
+    }
+  eye_gain_left = (int) righty / i;
+  eye_gain_right = (int) righty / i;
+ 
+  }
