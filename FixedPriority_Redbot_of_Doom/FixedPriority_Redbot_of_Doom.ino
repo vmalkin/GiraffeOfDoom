@@ -83,7 +83,7 @@ int doublePhoto(int state)
 {
   Serial.print(analogRead(eye_left));
   Serial.print(" ");
-  Serial.print(analogRead(eye_right));
+  Serial.println(analogRead(eye_right));
   return state;
   }
 
