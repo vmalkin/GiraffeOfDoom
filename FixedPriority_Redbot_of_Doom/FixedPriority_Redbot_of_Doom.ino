@@ -81,8 +81,9 @@ void do_action(int state)
 // *****************************************************************
 int doublePhoto(int state)
 {
-  int threshold = 5;
-  int eye_reading = (analogRead(eye_right) + eye_gain_right) - (analogRead(eye_left) + eye_gain_left);
+  int threshold = 10;
+  int eye_reading = (analogRead(eye_right) - eye_gain_right) - (analogRead(eye_left) - eye_gain_left);
+  
   if ((eye_reading < threshold) && (eye_reading > 0 - threshold))
   {
     state=S_DRIVE;
@@ -191,8 +192,9 @@ void motors_stop()
 // **********************************************************************
 void calibrateEyes()
 {
+  Serial.println("Calibrating eyes...");
   float lefty = 0;
-  float righty = 0
+  float righty = 0;
   int i;
   for (i = 0; i++; i = 100)
   {
