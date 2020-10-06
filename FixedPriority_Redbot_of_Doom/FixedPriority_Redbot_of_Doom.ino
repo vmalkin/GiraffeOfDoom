@@ -13,29 +13,33 @@ enum states robot_state;
 // Set up for sensors
 #define sonar_trig_left 3
 #define sonar_echo_left 9
-#define sonar_trig_right 10
-#define sonar_echo_right 11
-#define eye_left A2
-#define eye_right A7
+#define sonar_trig_right 11
+#define sonar_echo_right 10
+#define eye_left A0
+#define eye_right A1
 
 #define range 30
 NewPing sonar_left (sonar_trig_left, sonar_echo_left, range);
 NewPing sonar_right (sonar_trig_right, sonar_echo_right, range);
 
 int motorspeed = 180;
+int eye_gain_left = 0;
+int eye_gain_right= 0;
+
 RedBotMotors motors;
 
 void setup() {
-  
+  Serial.begin(9600);
   delay(2000);
   robot_state = S_DRIVE;
+  calibrateEyes();
 }
 
 void loop() {
   // Fall thru the possible tests for robot state.
   robot_state = doublePhoto(robot_state); // Low priority
 //  robot_state = singlePhoto(robot_state); //     |
-//  robot_state = doubleEcho(robot_state);  //     |
+  robot_state = doubleEcho(robot_state);  //     |
 //  robot_state = singleEcho(robot_state);  //     V
 //  robot_state = drunkWalk(robot_state);   // High priority
 
@@ -75,8 +79,11 @@ void do_action(int state)
 // *****************************************************************
 // Sensor tests to see if we can change state
 // *****************************************************************
-states doublePhoto(states state)
+int doublePhoto(int state)
 {
+  Serial.print(analogRead(eye_left));
+  Serial.print(" ");
+  Serial.print(analogRead(eye_right));
   return state;
   }
 
@@ -87,11 +94,39 @@ states doublePhoto(states state)
 //  return state;
 //  }
 //
-//String doubleEcho(int state)
-//{
-//  return state;
-//  }
-//
+int doubleEcho(int state)
+{
+  int threshold = 5;
+  int sensor_return;
+
+  int left = 100 - sonar_left.ping_cm();
+  delay(50);
+  int right = 100 - sonar_right.ping_cm();
+
+  int sensedata = left - right;
+  int threshold_test = sqrt((sensedata)^2);
+
+  // Object on Left, turn right
+  if (sensedata < 0)
+  {
+    sensor_return = S_RIGHT;
+    }
+    
+  // Object on Right, turn left
+  if (sensedata > 0)
+  {
+    sensor_return = S_LEFT;
+    }
+
+  if (sensedata == 0)
+  {
+    sensor_return = S_DRIVE;
+    }
+  Serial.print(sensor_return);
+  Serial.print(" ");
+  return sensor_return;
+  }
+
 //// If an echosensor is broken, we have to work differently. Without knowing which one is dead, we have to
 //// guide the robot away from obstacles. 
 //String singleEcho(int state)
@@ -138,3 +173,9 @@ void motors_stop()
 {
   motors.stop();
   }
+
+// **********************************************************************
+// Calibrate the robot eyes
+// **********************************************************************
+void calibrateEyes()
+{}
