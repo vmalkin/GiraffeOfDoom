@@ -22,29 +22,34 @@ enum states robot_state;
 NewPing sonar_left (sonar_trig_left, sonar_echo_left, range);
 NewPing sonar_right (sonar_trig_right, sonar_echo_right, range);
 
-int motorspeed = 180;
+int motorspeed = 110;
 int eye_gain_left = 0;
 int eye_gain_right= 0;
 
 RedBotMotors motors;
+RedBotAccel accel;
 
 void setup() {
   Serial.begin(9600);
   delay(2000);
-  robot_state = S_DRIVE;
   calibrateEyes();
+  robot_state = S_DRIVE;
 }
 
 void loop() {
+  robot_state = S_DRIVE;
   // Fall thru the possible tests for robot state.
   robot_state = doublePhoto(robot_state); // Low priority
 //  robot_state = singlePhoto(robot_state); //     |
-  robot_state = doubleEcho(robot_state);  //     |
+//
+//  robot_state = doubleEcho(robot_state);  //     |
 //  robot_state = singleEcho(robot_state);  //     V
+//  robot_state = bumpDetect(robot_state);
 //  robot_state = drunkWalk(robot_state);   // High priority
 
   // Perform action for current state.
   do_action(robot_state);
+
 }
 
 // *****************************************************************
@@ -79,51 +84,67 @@ void do_action(int state)
 // *****************************************************************
 // Sensor tests to see if we can change state
 // *****************************************************************
-int doublePhoto(int state)
+int doublePhoto(int state_value)
 {
-  int threshold = 10;
-  int eye_reading = (analogRead(eye_right) - eye_gain_right) - (analogRead(eye_left) - eye_gain_left);
+  int state = state_value;
+  int threshold = 20;
   
-  if ((eye_reading < threshold) && (eye_reading > 0 - threshold))
+  int iters = 20;
+  int lefty = 0;
+  int righty = 0;
+  for (int i = 0; i <= iters; i++)
   {
-    state=S_DRIVE;
+    lefty = lefty + analogRead(eye_left);
+    righty = righty + analogRead(eye_right);
     }
-  if (eye_reading > 0 + threshold)
+    
+  int left_value = lefty / iters;
+  int right_value = righty / iters;
+  
+  int eye_reading = (right_value - eye_gain_right) - (left_value - eye_gain_left);
+//  Serial.println(eye_reading);
+  
+//  if ((eye_reading < threshold) && (eye_reading > 0 - threshold))
+//  {
+//    state = S_DRIVE;
+//    }
+    
+  if (eye_reading > threshold)
   {
     state = S_RIGHT;
     }
 
-  if (eye_reading < 0 - threshold)
+  if (eye_reading < (-1 * threshold))
   {
     state = S_LEFT;
     }
-  Serial.println(eye_reading);
   return state;
   }
 
-//// If a photosensor is broken, we have to work differently. Without knowing which one is dead, we have to
-//// guide the robot to the light source. 
-//String singlePhoto(int state)
-//{
-//  return state;
-//  }
-//
-int doubleEcho(int state)
+// If a photosensor is broken, we have to work differently. Without knowing which one is dead, we have to
+// guide the robot to the light source. 
+int singlePhoto(int state_value)
 {
-  int threshold = 5;
-  int sensor_return;
+  return state_value;
+  }
+
+int doubleEcho(int state_value)
+{
+//  int threshold = 5;
+  int sensor_return = state_value;
 
   int left = 100 - sonar_left.ping_cm();
   delay(50);
   int right = 100 - sonar_right.ping_cm();
 
   int sensedata = left - right;
-  int threshold_test = sqrt((sensedata)^2);
+//  int threshold_test = sqrt((sensedata)^2);
 
   // Object on Left, turn right
   if (sensedata < 0)
   {
     sensor_return = S_RIGHT;
+//    sensor_return = S_LEFT;
     }
     
   // Object on Right, turn left
@@ -131,29 +152,38 @@ int doubleEcho(int state)
   {
     sensor_return = S_LEFT;
     }
-
-  if (sensedata == 0)
-  {
-    sensor_return = S_DRIVE;
-    }
     
   return sensor_return;
   }
 
-//// If an echosensor is broken, we have to work differently. Without knowing which one is dead, we have to
-//// guide the robot away from obstacles. 
-//String singleEcho(int state)
-//{
-//  return state;
-//  }
-//
-//// All sensors are dead, or we can't verify their accuracy. We will implement purely ballistic behaviours
-//// that _eventually_ would guide our robot somewhere!
-//String drunkWalk(int state)
-//{
-//  return state;
-//  }
+// If an echosensor is broken, we have to work differently. Without knowing which one is dead, we have to
+// guide the robot away from obstacles. 
+int singleEcho(int state_value)
+{
+  return state_value;
+  }
 
+// All sensors are dead, or we can't verify their accuracy. We will implement purely ballistic behaviours
+// that _eventually_ would guide our robot somewhere!
+int drunkWalk(int state_value)
+{
+  return state_value;
+  }
+
+int antiStuck(int state_value)
+{
+  int newstate = state_value;
+  
+  accel.read();
+  int h = sqrt((accel.x ^ 2) + (accel.y ^2));
+  Serial.println(h);
+  
+  // Ballistic behaviour
+  motors_reverse();
+  delay(2000);
+  motors_right();
+  delay(666);
+  }
 
 // *****************************************************************
 // Motor Methods
@@ -166,13 +196,13 @@ void motors_drive()
 
 void motors_left()
 {
-  motors.rightStop();
+  motors.stop();
   motors.leftMotor(motorspeed);  
   }
 
 void motors_right()
 {
-  motors.leftStop();
+  motors.stop();
   motors.rightMotor(-1 * motorspeed);
   }
 
@@ -196,12 +226,19 @@ void calibrateEyes()
   float lefty = 0;
   float righty = 0;
   int i;
-  for (i = 0; i++; i = 100)
+  for (i = 0; i < 100; i++)
   {
     lefty = lefty + analogRead(eye_left);
     righty = righty + analogRead(eye_right);
     }
-  eye_gain_left = (int) righty / i;
-  eye_gain_right = (int) righty / i;
- 
+  eye_gain_left = lefty / i;
+  eye_gain_right = righty / i;
+
+//  Serial.print(eye_gain_left);
+//  Serial.print(" ");
+//  Serial.println(analogRead(eye_left));
+//  
+//  Serial.println(eye_gain_right);
+//  Serial.print(" ");
+//  Serial.println(analogRead(eye_right));
   }
