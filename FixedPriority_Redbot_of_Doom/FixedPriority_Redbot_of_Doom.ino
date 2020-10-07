@@ -23,8 +23,8 @@ NewPing sonar_left (sonar_trig_left, sonar_echo_left, range);
 NewPing sonar_right (sonar_trig_right, sonar_echo_right, range);
 
 int motorspeed = 110;
-int eye_gain_left = 0;
-int eye_gain_right= 0;
+float eye_gain_left = 0;
+float eye_gain_right= 0;
 
 RedBotMotors motors;
 RedBotAccel accel;
@@ -87,22 +87,22 @@ void do_action(int state)
 int doublePhoto(int state_value)
 {
   int state = state_value;
-  int threshold = 20;
+  int threshold = 30;
   
   int iters = 20;
-  int lefty = 0;
-  int righty = 0;
+  float lefty = 0;
+  float righty = 0;
   for (int i = 0; i <= iters; i++)
   {
     lefty = lefty + analogRead(eye_left);
     righty = righty + analogRead(eye_right);
     }
     
-  int left_value = lefty / iters;
-  int right_value = righty / iters;
+  float left_value = lefty / iters;
+  float right_value = righty / iters;
   
-  int eye_reading = (right_value - eye_gain_right) - (left_value - eye_gain_left);
-//  Serial.println(eye_reading);
+  float eye_reading = (right_value * eye_gain_right) - (left_value * eye_gain_left);
+  //Serial.println(eye_reading);
   
 //  if ((eye_reading < threshold) && (eye_reading > 0 - threshold))
 //  {
@@ -118,6 +118,7 @@ int doublePhoto(int state_value)
   {
     state = S_LEFT;
     }
+  Serial.println(state);
   return state;
   }
 
@@ -226,19 +227,22 @@ void calibrateEyes()
   float lefty = 0;
   float righty = 0;
   int i;
-  for (i = 0; i < 100; i++)
+  
+  for (i = 0; i < 8000; i++)
   {
     lefty = lefty + analogRead(eye_left);
     righty = righty + analogRead(eye_right);
     }
-  eye_gain_left = lefty / i;
-  eye_gain_right = righty / i;
 
-//  Serial.print(eye_gain_left);
-//  Serial.print(" ");
-//  Serial.println(analogRead(eye_left));
-//  
-//  Serial.println(eye_gain_right);
-//  Serial.print(" ");
-//  Serial.println(analogRead(eye_right));
+  float leftreading = lefty / i;
+  float rightreading = righty / i;
+  float gain_value = (leftreading + rightreading) / 2;
+
+  // Remember to invert the lefts and rights to get the correct gain values for each eye
+  eye_gain_right = leftreading / gain_value;
+  eye_gain_left = rightreading / gain_value;
+  Serial.print(rightreading * eye_gain_right);
+  Serial.print(" - ");
+  Serial.print(leftreading * eye_gain_left);
+  delay(3000);
   }
