@@ -41,7 +41,6 @@ void setup() {
 
 void loop() {
   // Fall thru the possible tests for robot state.
-  robot_state = S_DRIVE;
   robot_state = doublePhoto(robot_state); // Low priority
 //  robot_state = singlePhoto(robot_state); //     |
 //
