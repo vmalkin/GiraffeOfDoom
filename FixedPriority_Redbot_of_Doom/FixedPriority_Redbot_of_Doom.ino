@@ -22,34 +22,38 @@ enum states robot_state;
 NewPing sonar_left (sonar_trig_left, sonar_echo_left, range);
 NewPing sonar_right (sonar_trig_right, sonar_echo_right, range);
 
-int motorspeed = 110;
+int motorspeed = 220;
+int threshold = 60;
 float eye_gain_left = 0;
-float eye_gain_right= 0;
+float eye_gain_right= 250;
 
 RedBotMotors motors;
 RedBotAccel accel;
 
+
+
 void setup() {
   Serial.begin(9600);
   delay(2000);
-  calibrateEyes();
+  randomSeed(analogRead(A1));
   robot_state = S_DRIVE;
 }
 
 void loop() {
-  robot_state = S_DRIVE;
   // Fall thru the possible tests for robot state.
+  robot_state = S_DRIVE;
   robot_state = doublePhoto(robot_state); // Low priority
 //  robot_state = singlePhoto(robot_state); //     |
 //
-//  robot_state = doubleEcho(robot_state);  //     |
+  robot_state = doubleEcho(robot_state);  //     |
 //  robot_state = singleEcho(robot_state);  //     V
-//  robot_state = bumpDetect(robot_state);
+//  antiStuck();
 //  robot_state = drunkWalk(robot_state);   // High priority
 
   // Perform action for current state.
   do_action(robot_state);
-
+//  Serial.print(robot_state);
+  Serial.println();
 }
 
 // *****************************************************************
@@ -80,16 +84,15 @@ void do_action(int state)
       break;
     }
   }
-  
+
 // *****************************************************************
 // Sensor tests to see if we can change state
 // *****************************************************************
 int doublePhoto(int state_value)
 {
   int state = state_value;
-  int threshold = 30;
   
-  int iters = 20;
+  int iters = 40;
   float lefty = 0;
   float righty = 0;
   for (int i = 0; i <= iters; i++)
@@ -98,27 +101,26 @@ int doublePhoto(int state_value)
     righty = righty + analogRead(eye_right);
     }
     
-  float left_value = lefty / iters;
-  float right_value = righty / iters;
+  float left_value = (lefty / iters) - eye_gain_left;
+  float right_value = (righty / iters) - eye_gain_right;
+  float diff = (left_value - right_value);
+  diff = diff * diff;
+  diff = sqrt(diff);
+
+  Serial.print(left_value);
+  Serial.print(" ");
+  Serial.println(right_value);
   
-  float eye_reading = (right_value * eye_gain_right) - (left_value * eye_gain_left);
-  //Serial.println(eye_reading);
-  
-//  if ((eye_reading < threshold) && (eye_reading > 0 - threshold))
-//  {
-//    state = S_DRIVE;
-//    }
-    
-  if (eye_reading > threshold)
+  if (right_value > left_value && diff > threshold)
   {
     state = S_RIGHT;
     }
 
-  if (eye_reading < (-1 * threshold))
+  if (left_value > right_value && diff > threshold)
   {
     state = S_LEFT;
     }
-  Serial.println(state);
+  
   return state;
   }
 
@@ -131,25 +133,33 @@ int singlePhoto(int state_value)
 
 int doubleEcho(int state_value)
 {
-//  int threshold = 5;
+  int echo_threshold = 5;
   int sensor_return = state_value;
 
-  int left = 100 - sonar_left.ping_cm();
+  int left = sonar_left.ping_cm();
   delay(50);
-  int right = 100 - sonar_right.ping_cm();
+  int right = sonar_right.ping_cm();
 
-  int sensedata = left - right;
-//  int threshold_test = sqrt((sensedata)^2);
+//  int sensedata = left - right;
+//  diff = sensedata * diffsensedata;
+//  diff = sqrt(diff);
 
   // Object on Left, turn right
-  if (sensedata < 0)
+  if (left > right )
   {
-    sensor_return = S_RIGHT;
-//    sensor_return = S_LEFT;
+    int i = random(0,3);    
+    if (i > 1)
+    {
+      sensor_return = S_RIGHT;
+      }
+    else
+    {
+       sensor_return = S_LEFT;
+      }
     }
     
   // Object on Right, turn left
-  if (sensedata > 0)
+  if (right > left)
   {
     sensor_return = S_LEFT;
     }
@@ -171,19 +181,33 @@ int drunkWalk(int state_value)
   return state_value;
   }
 
-int antiStuck(int state_value)
+// Ballistic behaviour to back up the robot if it seems to be stopped against something
+void antiStuck()
 {
-  int newstate = state_value;
+  float j;
+  float k;
   
-  accel.read();
-  int h = sqrt((accel.x ^ 2) + (accel.y ^2));
-  Serial.println(h);
-  
-  // Ballistic behaviour
-  motors_reverse();
-  delay(2000);
-  motors_right();
-  delay(666);
+  for (int i = 0; i <=1; i++)
+  {
+    accel.read();
+    j = accel.x;
+    delay(10);
+    accel.read();
+    k = accel.x;
+  }
+  float m = (j - k);
+  m = m * m;
+  m = sqrt(m);
+  Serial.print(m);
+  if (m < 500)
+  {
+    // Ballistic behaviour
+    motors_reverse();
+    delay(2000);
+    motors_right();
+    delay(666);
+    }
+
   }
 
 // *****************************************************************
@@ -198,13 +222,13 @@ void motors_drive()
 void motors_left()
 {
   motors.stop();
-  motors.leftMotor(motorspeed);  
+  motors.leftMotor(motorspeed + 20);  
   }
 
 void motors_right()
 {
   motors.stop();
-  motors.rightMotor(-1 * motorspeed);
+  motors.rightMotor(-1 * motorspeed + 20);
   }
 
 void motors_reverse()
