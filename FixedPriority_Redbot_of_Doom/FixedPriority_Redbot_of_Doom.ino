@@ -24,6 +24,12 @@ NewPing sonar_right (sonar_trig_right, sonar_echo_right, range);
 
 int motorspeed = 220;
 int threshold = 60;
+
+//// Hardware Room
+//float eye_gain_left = 0;
+//float eye_gain_right= 250;
+
+// my office
 float eye_gain_left = 0;
 float eye_gain_right= 250;
 
