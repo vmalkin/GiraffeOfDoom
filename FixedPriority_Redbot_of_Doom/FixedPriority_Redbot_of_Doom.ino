@@ -152,15 +152,7 @@ int doubleEcho(int state_value)
   // Object on Left, turn right
   if (left > right )
   {
-    int i = random(0,3);    
-    if (i > 1)
-    {
-      sensor_return = S_RIGHT;
-      }
-    else
-    {
-       sensor_return = S_LEFT;
-      }
+    sensor_return = S_LEFT;
     }
     
   // Object on Right, turn left
