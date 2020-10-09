@@ -49,7 +49,7 @@ void loop() {
   robot_state = S_DRIVE;
   robot_state = doublePhoto(robot_state); 
   robot_state = doubleEcho(robot_state);
-//  robot_state = antiThrash(robot_state);
+  robot_state = stuck(robot_state);
 
   do_action(robot_state);
   //  debugEyes();
@@ -152,34 +152,10 @@ int doubleEcho(int state_value)
   return sensor_return;
   }
 
-int antiThrash(int state)
+int stuck(int state)
 {
   int currentstate = state;
-  
-  float left_value = readLeftEye();
-  float right_value = readRightEye();
-  float diff = (left_value - right_value);
-  diff = diff * diff;
-  diff = sqrt(diff);
-  
-  int sonarleft = readLeftEcho();
-  delay(50);
-  int sonarright = readRightEcho();
-
-  if ((sonarleft > sonarright) && diff > eye_threshold)
-  {
-    motors.stop();
-    motors.drive(80);
-    delay(200);
-    currentstate = S_RIGHT;
-    }
-  if ((sonarleft < sonarright) && diff > eye_threshold)
-  {
-    motors.stop();
-    motors.drive(80);
-    delay(200);
-    currentstate = S_LEFT;
-    }
+  accel.read();
 
   return currentstate;
   }
