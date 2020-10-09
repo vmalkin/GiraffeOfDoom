@@ -48,7 +48,7 @@ void loop() {
   // Fall thru the possible tests for robot state.
   robot_state = S_DRIVE;
   robot_state = doublePhoto(robot_state); 
-  robot_state = doubleEcho(robot_state);  
+  robot_state = doubleEcho(robot_state);
 //  robot_state = antiThrash(robot_state);
 
   do_action(robot_state);
@@ -116,10 +116,10 @@ int doublePhoto(int state_value)
     state = S_LEFT;
     }
     
-  if (diff < eye_threshold)
-  {
-    state = S_DRIVE;
-    }
+//  if (diff < eye_threshold)
+//  {
+//    state = S_DRIVE;
+//    }
   return state;
   } 
 
@@ -143,6 +143,11 @@ int doubleEcho(int state_value)
   {
     sensor_return = S_LEFT;
     }
+
+//  if (right == left && left == 0)
+//  {
+//    sensor_return = S_DRIVE;
+//    }
 
   return sensor_return;
   }
