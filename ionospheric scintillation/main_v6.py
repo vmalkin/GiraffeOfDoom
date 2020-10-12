@@ -415,7 +415,7 @@ if __name__ == "__main__":
                     s_az = s_az + recordlength
                     s_snr = s_snr + recordlength
 
-            # after 60 seconds, get summarised data and S4 values fron satellites and append to database
+            # after integration time has elapsed, get summarised data and S4 values fron satellites and append to database
             if time.time() >= posix_time + integration_time:
                 satellitelist = []
                 for sat in GPGSV:
