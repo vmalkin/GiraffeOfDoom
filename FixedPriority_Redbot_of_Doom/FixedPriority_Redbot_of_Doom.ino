@@ -22,29 +22,43 @@ enum states robot_state;
 NewPing sonar_left (sonar_trig_left, sonar_echo_left, range);
 NewPing sonar_right (sonar_trig_right, sonar_echo_right, range);
 
-int motorspeed = 180;
-int eye_gain_left = 0;
-int eye_gain_right= 0;
+int motorspeed = 220;
+int threshold = 60;
+
+//// Hardware Room
+//float eye_gain_left = 0;
+//float eye_gain_right= 250;
+
+// my office
+float eye_gain_left = 0;
+float eye_gain_right= 250;
 
 RedBotMotors motors;
+RedBotAccel accel;
+
+
 
 void setup() {
   Serial.begin(9600);
   delay(2000);
+  randomSeed(analogRead(A1));
   robot_state = S_DRIVE;
-  calibrateEyes();
 }
 
 void loop() {
   // Fall thru the possible tests for robot state.
   robot_state = doublePhoto(robot_state); // Low priority
 //  robot_state = singlePhoto(robot_state); //     |
+//
   robot_state = doubleEcho(robot_state);  //     |
 //  robot_state = singleEcho(robot_state);  //     V
+//  antiStuck();
 //  robot_state = drunkWalk(robot_state);   // High priority
 
   // Perform action for current state.
   do_action(robot_state);
+//  Serial.print(robot_state);
+  Serial.println();
 }
 
 // *****************************************************************
@@ -75,85 +89,123 @@ void do_action(int state)
       break;
     }
   }
-  
+
 // *****************************************************************
 // Sensor tests to see if we can change state
 // *****************************************************************
-int doublePhoto(int state)
+int doublePhoto(int state_value)
 {
-  int threshold = 10;
-  int eye_reading = (analogRead(eye_right) - eye_gain_right) - (analogRead(eye_left) - eye_gain_left);
+  int state = state_value;
   
-  if ((eye_reading < threshold) && (eye_reading > 0 - threshold))
+  int iters = 40;
+  float lefty = 0;
+  float righty = 0;
+  for (int i = 0; i <= iters; i++)
   {
-    state=S_DRIVE;
+    lefty = lefty + analogRead(eye_left);
+    righty = righty + analogRead(eye_right);
     }
-  if (eye_reading > 0 + threshold)
+    
+  float left_value = (lefty / iters) - eye_gain_left;
+  float right_value = (righty / iters) - eye_gain_right;
+  float diff = (left_value - right_value);
+  diff = diff * diff;
+  diff = sqrt(diff);
+
+  Serial.print(left_value);
+  Serial.print(" ");
+  Serial.println(right_value);
+  
+  if (right_value > left_value && diff > threshold)
   {
     state = S_RIGHT;
     }
 
-  if (eye_reading < 0 - threshold)
+  if (left_value > right_value && diff > threshold)
   {
     state = S_LEFT;
     }
-  Serial.println(eye_reading);
+  
   return state;
   }
 
-//// If a photosensor is broken, we have to work differently. Without knowing which one is dead, we have to
-//// guide the robot to the light source. 
-//String singlePhoto(int state)
-//{
-//  return state;
-//  }
-//
-int doubleEcho(int state)
+// If a photosensor is broken, we have to work differently. Without knowing which one is dead, we have to
+// guide the robot to the light source. 
+int singlePhoto(int state_value)
 {
-  int threshold = 5;
-  int sensor_return;
+  return state_value;
+  }
 
-  int left = 100 - sonar_left.ping_cm();
+int doubleEcho(int state_value)
+{
+  int echo_threshold = 5;
+  int sensor_return = state_value;
+
+  int left = sonar_left.ping_cm();
   delay(50);
-  int right = 100 - sonar_right.ping_cm();
+  int right = sonar_right.ping_cm();
 
-  int sensedata = left - right;
-  int threshold_test = sqrt((sensedata)^2);
+//  int sensedata = left - right;
+//  diff = sensedata * diffsensedata;
+//  diff = sqrt(diff);
 
   // Object on Left, turn right
-  if (sensedata < 0)
-  {
-    sensor_return = S_RIGHT;
-    }
-    
-  // Object on Right, turn left
-  if (sensedata > 0)
+  if (left > right )
   {
     sensor_return = S_LEFT;
     }
-
-  if (sensedata == 0)
+    
+  // Object on Right, turn left
+  if (right > left)
   {
-    sensor_return = S_DRIVE;
+    sensor_return = S_LEFT;
     }
     
   return sensor_return;
   }
 
-//// If an echosensor is broken, we have to work differently. Without knowing which one is dead, we have to
-//// guide the robot away from obstacles. 
-//String singleEcho(int state)
-//{
-//  return state;
-//  }
-//
-//// All sensors are dead, or we can't verify their accuracy. We will implement purely ballistic behaviours
-//// that _eventually_ would guide our robot somewhere!
-//String drunkWalk(int state)
-//{
-//  return state;
-//  }
+// If an echosensor is broken, we have to work differently. Without knowing which one is dead, we have to
+// guide the robot away from obstacles. 
+int singleEcho(int state_value)
+{
+  return state_value;
+  }
 
+// All sensors are dead, or we can't verify their accuracy. We will implement purely ballistic behaviours
+// that _eventually_ would guide our robot somewhere!
+int drunkWalk(int state_value)
+{
+  return state_value;
+  }
+
+// Ballistic behaviour to back up the robot if it seems to be stopped against something
+void antiStuck()
+{
+  float j;
+  float k;
+  
+  for (int i = 0; i <=1; i++)
+  {
+    accel.read();
+    j = accel.x;
+    delay(10);
+    accel.read();
+    k = accel.x;
+  }
+  float m = (j - k);
+  m = m * m;
+  m = sqrt(m);
+  Serial.print(m);
+  if (m < 500)
+  {
+    // Ballistic behaviour
+    motors_reverse();
+    delay(2000);
+    motors_right();
+    delay(666);
+    }
+
+  }
 
 // *****************************************************************
 // Motor Methods
@@ -166,14 +218,14 @@ void motors_drive()
 
 void motors_left()
 {
-  motors.rightStop();
-  motors.leftMotor(motorspeed);  
+  motors.stop();
+  motors.leftMotor(motorspeed + 20);  
   }
 
 void motors_right()
 {
-  motors.leftStop();
-  motors.rightMotor(-1 * motorspeed);
+  motors.stop();
+  motors.rightMotor(-1 * motorspeed + 20);
   }
 
 void motors_reverse()
@@ -196,12 +248,22 @@ void calibrateEyes()
   float lefty = 0;
   float righty = 0;
   int i;
-  for (i = 0; i++; i = 100)
+  
+  for (i = 0; i < 8000; i++)
   {
     lefty = lefty + analogRead(eye_left);
     righty = righty + analogRead(eye_right);
     }
-  eye_gain_left = (int) righty / i;
-  eye_gain_right = (int) righty / i;
- 
+
+  float leftreading = lefty / i;
+  float rightreading = righty / i;
+  float gain_value = (leftreading + rightreading) / 2;
+
+  // Remember to invert the lefts and rights to get the correct gain values for each eye
+  eye_gain_right = leftreading / gain_value;
+  eye_gain_left = rightreading / gain_value;
+  Serial.print(rightreading * eye_gain_right);
+  Serial.print(" - ");
+  Serial.print(leftreading * eye_gain_left);
+  delay(3000);
   }
