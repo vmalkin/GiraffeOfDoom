@@ -49,6 +49,7 @@ void loop() {
   // Fall thru the possible tests for robot state.
   robot_state = S_DRIVE;
   robot_state = doublePhoto(robot_state); 
+  robot_state = singlePhoto(robot_state);
   robot_state = doubleEcho(robot_state);
   robot_state = stuck(robot_state);
 
@@ -124,7 +125,23 @@ int doublePhoto(int state_value)
   return state;
   } 
 
+// if one eye is dead, it will return a value under 100ish
+// THis function will try and turn the robot in the direction of the brightest light
+// source then set the robot state to S_DRIVE
+int singlePhoto(int statevalue)
+{
+  int currentstate = statevalue;
+  if (readLeftEye() < 100)
+  {
+    }
 
+  if (readRightEye() < 100)
+  {
+    }
+
+  return currentstate;
+  }
+  
 int doubleEcho(int state_value)
 {
   int sensor_return = state_value;
