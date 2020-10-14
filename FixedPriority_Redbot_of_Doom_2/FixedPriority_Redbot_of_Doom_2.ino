@@ -24,6 +24,7 @@ NewPing sonar_right (sonar_trig_right, sonar_echo_right, range);
 
 int motorspeed = 140;
 int eye_threshold = 50;
+float accel_reading = 0;
 
 //// Hardware Room
 //float eye_gain_left = 0;
@@ -52,8 +53,8 @@ void loop() {
   robot_state = stuck(robot_state);
 
   do_action(robot_state);
-  //  debugEyes();
-  Serial.print(robot_state);
+//  debugEyes();
+//  Serial.print(robot_state);
   Serial.println();
 }
 
@@ -156,7 +157,20 @@ int stuck(int state)
 {
   int currentstate = state;
   accel.read();
-
+  float k = 0.95;
+  int threshold = 500;
+  float accel_prev = accel_reading;
+  accel_reading = (k * accel.x) + ((1-k) * accel_prev);
+  float testvalue = accel_reading - accel_prev;
+  testvalue = sqrt(testvalue * testvalue);
+  if (testvalue < threshold)
+  {
+    motors_reverse();
+    delay(1000);
+    motors_left();
+    delay(500);
+    }
+//  Serial.print(testvalue);
   return currentstate;
   }
 
