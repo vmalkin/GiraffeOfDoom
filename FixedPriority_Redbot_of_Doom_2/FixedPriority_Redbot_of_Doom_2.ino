@@ -51,14 +51,21 @@ void loop() {
   robot_state = doublePhoto(robot_state); 
   robot_state = singlePhoto(robot_state);
   robot_state = doubleEcho(robot_state);
-  robot_state = stuck(robot_state);
+//  robot_state = stuck(robot_state);
 
   do_action(robot_state);
+  debugEcho();
 //  debugEyes();
 //  Serial.print(robot_state);
   Serial.println();
 }
 
+void debugEcho()
+{
+  Serial.print(readLeftEcho());
+  Serial.print(" ");
+  Serial.print(readRightEcho());
+  }
 
 void debugEyes()
 {
