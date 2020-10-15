@@ -27,7 +27,13 @@ void setup() {
 void loop(){
   Input = readRightEcho();
   myPID.Compute();
-  Serial.println(Output);
+  Serial.print(-25);
+  Serial.print(",");
+  Serial.print(0);
+  Serial.print(",");
+  Serial.print(Output);
+  Serial.print(",");
+  Serial.println(25);
 }
 
 // *****************************************************************
