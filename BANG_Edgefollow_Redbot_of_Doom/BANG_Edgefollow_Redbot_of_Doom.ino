@@ -11,8 +11,8 @@
 
 NewPing sonar_right (sonar_trig_right, sonar_echo_right, 100);
 RedBotMotors motors;
-int motorspeed = 130;
-int setpoint = 20;
+int motorspeed = 100;
+int setpoint = 30;
 int hysteresis = 5;
 
 
