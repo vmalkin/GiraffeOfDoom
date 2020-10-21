@@ -105,6 +105,7 @@ def get_data(station):
     result = db.execute("select station_data.posix_time, station_data.data_value from station_data "
                         "where station_data.station_id = ? and station_data.posix_time > ?", [station, start_time])
     query_result = result.fetchall()
+    db.close()
     return query_result
 
 
