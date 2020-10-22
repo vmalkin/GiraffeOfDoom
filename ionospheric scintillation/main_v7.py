@@ -22,7 +22,7 @@ integration_time = 60
 duration = 60*60*24
 nullvalue = ""
 logfiles = "logfiles"
-stdev_file = "stdev.pkl"
+stdev_file = "stdev_test.pkl"
 
 
 class GPSSatellite:
@@ -162,7 +162,7 @@ def parse_database():
 
 
 def parse_database_constellation(const_name):
-    constellation_searchstring = const_name + "*"
+    constellation_searchstring = str(const_name)
     starttime = int(time.time()) - (60 * 60 * 24)
     print("Parsing database...")
     gpsdb = sqlite3.connect(sat_database)
@@ -170,7 +170,8 @@ def parse_database_constellation(const_name):
     # result = db.execute(
     #     'select sat_id, posixtime, alt, az, s4 from satdata where posixtime > ? and alt > 20 order by posixtime asc',
     #     [starttime])
-    result = db.execute('select sat_id, posixtime, alt, az, s4 from satdata where posixtime > ? and alt > 20 and sat_id like ? order by posixtime asc', [starttime, constellation_searchstring])
+    criteria = [starttime, constellation_searchstring]
+    result = db.execute("""select sat_id, posixtime, alt, az, s4 from satdata where posixtime > ? and alt > 20 and sat_id like ? order by posixtime asc""", criteria)
     returnlist = []
     for item in result:
         dp = (item[0], item[1], item[2], item[3], item[4])
@@ -382,129 +383,130 @@ if __name__ == "__main__":
     itercount = 0
 
     while runloop == True:
-        # Get com data
-        line = com.data_recieve()
-
-        # Parse com data for valid data GSV sentence ???GSV,
-        if re.match(regex_expression, line):
-            # print(line)
-            # GSV sentence, parse out the satellite data
-            sentence = nmea_sentence(line)
-            constellation = sentence[0]
-            s_id = 4
-            s_alt = 5
-            s_az = 6
-            s_snr = 7
-            max_iter = int(((len(sentence) - 4) / 4))
-            itercount = itercount + max_iter
-
-            # if valid data, sppend to satellite in lists
-            if len(sentence) > recordlength + 4:
-                for i in range(0, max_iter):
-                    # Append current sentence to a satellite
-                    # print(posix_time, constellation + "_" + sentence[s_id], sentence[s_alt], sentence[s_az],sentence[s_snr])
-                    try:
-                        index_value = int(sentence[s_id])
-                        if constellation == "GPGSV":
-                            GPGSV[index_value].posixtime = posix_time
-                            GPGSV[index_value].set_alt(sentence[s_alt])
-                            GPGSV[index_value].set_az(sentence[s_az])
-                            GPGSV[index_value].set_snr(sentence[s_snr])
-                            GPGSV[index_value].set_intensity(sentence[s_snr])
-
-                        if constellation == "GLGSV":
-                            GLGSV[index_value].posixtime = posix_time
-                            GLGSV[index_value].set_alt(sentence[s_alt])
-                            GLGSV[index_value].set_az(sentence[s_az])
-                            GLGSV[index_value].set_snr(sentence[s_snr])
-                            GLGSV[index_value].set_intensity(sentence[s_snr])
-
-                        if constellation == "GAGSV":
-                            GAGSV[index_value].posixtime = posix_time
-                            GAGSV[index_value].set_alt(sentence[s_alt])
-                            GAGSV[index_value].set_az(sentence[s_az])
-                            GAGSV[index_value].set_snr(sentence[s_snr])
-                            GAGSV[index_value].set_intensity(sentence[s_snr])
-
-                    except ValueError:
-                        logging.debug("DEBUG: String as integer in satellite ID: " + str(sentence[s_id]))
-
-                    # Grab the next satellite in the sentence
-                    s_id = s_id + recordlength
-                    s_alt = s_alt + recordlength
-                    s_az = s_az + recordlength
-                    s_snr = s_snr + recordlength
-
-            # after integration time has elapsed, get summarised data and S4 values fron satellites and append to database
-            if time.time() >= posix_time + integration_time:
-                satellitelist = []
-                for sat in GPGSV:
-                    if sat.s4_index() > 0:
-                        satellitelist.append((sat.name, sat.posixtime, sat.return_alt(), sat.return_az(), sat.s4_index(), sat.return_snr()))
-                        # Store the satellite data to the database, once per minute
-                        gpsdb = sqlite3.connect(sat_database)
-                        db = gpsdb.cursor()
-                        db.execute('insert into satdata (sat_id, posixtime, alt, az, s4, snr) values (?, ?, ?, ?, ?, ?);',[sat.name, sat.posixtime, sat.return_alt(), sat.return_az(), sat.s4_index(), sat.return_snr()])
-                        gpsdb.commit()
-                        db.close()
-
-                for sat in GLGSV:
-                    if sat.s4_index() > 0:
-                        satellitelist.append((sat.name, sat.posixtime, sat.return_alt(), sat.return_az(), sat.s4_index(), sat.return_snr()))
-                        # Store the satellite data to the database, once per minute
-                        gpsdb = sqlite3.connect(sat_database)
-                        db = gpsdb.cursor()
-                        db.execute('insert into satdata (sat_id, posixtime, alt, az, s4, snr) values (?, ?, ?, ?, ?, ?);',[sat.name, sat.posixtime, sat.return_alt(), sat.return_az(), sat.s4_index(), sat.return_snr()])
-                        gpsdb.commit()
-                        db.close()
-
-                for sat in GAGSV:
-                    if sat.s4_index() > 0:
-                        satellitelist.append((sat.name, sat.posixtime, sat.return_alt(), sat.return_az(), sat.s4_index(), sat.return_snr()))
-                        # Store the satellite data to the database, once per minute
-                        gpsdb = sqlite3.connect(sat_database)
-                        db = gpsdb.cursor()
-                        db.execute('insert into satdata (sat_id, posixtime, alt, az, s4, snr) values (?, ?, ?, ?, ?, ?);',[sat.name, sat.posixtime, sat.return_alt(), sat.return_az(), sat.s4_index(), sat.return_snr()])
-                        gpsdb.commit()
-                        db.close()
-
-                # reset satellite lists
-                for sat in GPGSV:
-                    sat.reset()
-
-                for sat in GLGSV:
-                    sat.reset()
-
-                for sat in GAGSV:
-                    sat.reset()
-
-                if len(satellitelist) > 0:
-                    for s in satellitelist:
-                        print(s)
-                    print(" ")
-                    print("Satellite data processed: " + str(itercount) + " items.")
-                else:
-                    print(" WARNING - No Satellites being reported. Reboot Arduino??")
-                    print("Exiting program - reinitialise the comport")
-                    runloop = False
+        # # Get com data
+        # line = com.data_recieve()
+        #
+        # # Parse com data for valid data GSV sentence ???GSV,
+        # if re.match(regex_expression, line):
+        #     # print(line)
+        #     # GSV sentence, parse out the satellite data
+        #     sentence = nmea_sentence(line)
+        #     constellation = sentence[0]
+        #     s_id = 4
+        #     s_alt = 5
+        #     s_az = 6
+        #     s_snr = 7
+        #     max_iter = int(((len(sentence) - 4) / 4))
+        #     itercount = itercount + max_iter
+        #
+        #     # if valid data, sppend to satellite in lists
+        #     if len(sentence) > recordlength + 4:
+        #         for i in range(0, max_iter):
+        #             # Append current sentence to a satellite
+        #             # print(posix_time, constellation + "_" + sentence[s_id], sentence[s_alt], sentence[s_az],sentence[s_snr])
+        #             try:
+        #                 index_value = int(sentence[s_id])
+        #                 if constellation == "GPGSV":
+        #                     GPGSV[index_value].posixtime = posix_time
+        #                     GPGSV[index_value].set_alt(sentence[s_alt])
+        #                     GPGSV[index_value].set_az(sentence[s_az])
+        #                     GPGSV[index_value].set_snr(sentence[s_snr])
+        #                     GPGSV[index_value].set_intensity(sentence[s_snr])
+        #
+        #                 if constellation == "GLGSV":
+        #                     GLGSV[index_value].posixtime = posix_time
+        #                     GLGSV[index_value].set_alt(sentence[s_alt])
+        #                     GLGSV[index_value].set_az(sentence[s_az])
+        #                     GLGSV[index_value].set_snr(sentence[s_snr])
+        #                     GLGSV[index_value].set_intensity(sentence[s_snr])
+        #
+        #                 if constellation == "GAGSV":
+        #                     GAGSV[index_value].posixtime = posix_time
+        #                     GAGSV[index_value].set_alt(sentence[s_alt])
+        #                     GAGSV[index_value].set_az(sentence[s_az])
+        #                     GAGSV[index_value].set_snr(sentence[s_snr])
+        #                     GAGSV[index_value].set_intensity(sentence[s_snr])
+        #
+        #             except ValueError:
+        #                 logging.debug("DEBUG: String as integer in satellite ID: " + str(sentence[s_id]))
+        #
+        #             # Grab the next satellite in the sentence
+        #             s_id = s_id + recordlength
+        #             s_alt = s_alt + recordlength
+        #             s_az = s_az + recordlength
+        #             s_snr = s_snr + recordlength
+        #
+        #     # after integration time has elapsed, get summarised data and S4 values fron satellites and append to database
+        #     if time.time() >= posix_time + integration_time:
+        #         satellitelist = []
+        #         for sat in GPGSV:
+        #             if sat.s4_index() > 0:
+        #                 satellitelist.append((sat.name, sat.posixtime, sat.return_alt(), sat.return_az(), sat.s4_index(), sat.return_snr()))
+        #                 # Store the satellite data to the database, once per minute
+        #                 gpsdb = sqlite3.connect(sat_database)
+        #                 db = gpsdb.cursor()
+        #                 db.execute('insert into satdata (sat_id, posixtime, alt, az, s4, snr) values (?, ?, ?, ?, ?, ?);',[sat.name, sat.posixtime, sat.return_alt(), sat.return_az(), sat.s4_index(), sat.return_snr()])
+        #                 gpsdb.commit()
+        #                 db.close()
+        #
+        #         for sat in GLGSV:
+        #             if sat.s4_index() > 0:
+        #                 satellitelist.append((sat.name, sat.posixtime, sat.return_alt(), sat.return_az(), sat.s4_index(), sat.return_snr()))
+        #                 # Store the satellite data to the database, once per minute
+        #                 gpsdb = sqlite3.connect(sat_database)
+        #                 db = gpsdb.cursor()
+        #                 db.execute('insert into satdata (sat_id, posixtime, alt, az, s4, snr) values (?, ?, ?, ?, ?, ?);',[sat.name, sat.posixtime, sat.return_alt(), sat.return_az(), sat.s4_index(), sat.return_snr()])
+        #                 gpsdb.commit()
+        #                 db.close()
+        #
+        #         for sat in GAGSV:
+        #             if sat.s4_index() > 0:
+        #                 satellitelist.append((sat.name, sat.posixtime, sat.return_alt(), sat.return_az(), sat.s4_index(), sat.return_snr()))
+        #                 # Store the satellite data to the database, once per minute
+        #                 gpsdb = sqlite3.connect(sat_database)
+        #                 db = gpsdb.cursor()
+        #                 db.execute('insert into satdata (sat_id, posixtime, alt, az, s4, snr) values (?, ?, ?, ?, ?, ?);',[sat.name, sat.posixtime, sat.return_alt(), sat.return_az(), sat.s4_index(), sat.return_snr()])
+        #                 gpsdb.commit()
+        #                 db.close()
+        #
+        #         # reset satellite lists
+        #         for sat in GPGSV:
+        #             sat.reset()
+        #
+        #         for sat in GLGSV:
+        #             sat.reset()
+        #
+        #         for sat in GAGSV:
+        #             sat.reset()
+        #
+        #         if len(satellitelist) > 0:
+        #             for s in satellitelist:
+        #                 print(s)
+        #             print(" ")
+        #             print("Satellite data processed: " + str(itercount) + " items.")
+        #         else:
+        #             print(" WARNING - No Satellites being reported. Reboot Arduino??")
+        #             print("Exiting program - reinitialise the comport")
+        #             runloop = False
 
                 ########################################################################################
                 # THis was in a thread but pyplot is an arse. Should only consume a few seconds of time
                 ########################################################################################
-                resultlist = parse_database()
-                # resultlist = parse_database_constellation("gps")
+                # resultlist = parse_database()
+                resultlist = parse_database_constellation("glonass%")
+                print(resultlist)
 
                 # We recycle the create_sigmas function to generate a 24hr CSV logfile
                 dt = posix2utc(posix_time).split(" ")
-                name = dt[0] + ".csv"
+                name = dt[0] + "_test.csv"
                 filepath = logfiles + "/" + name
                 final_s4_list = create_s4_sigmas(resultlist)
 
-                create_matplot(resultlist, 0, 1, "s4_01.png")
+                create_matplot(resultlist, 0, 1, "s4_01_test.png")
 
                 try:
                     save_s4_file(final_s4_list, filepath)
-                    save_s4_file(final_s4_list, "std_dev2.csv")
+                    save_s4_file(final_s4_list, "std_dev2_test.csv")
                 except TypeError:
                     print("S4 file not large enough to process just yet")
 
