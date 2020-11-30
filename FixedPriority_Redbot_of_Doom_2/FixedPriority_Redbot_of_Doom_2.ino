@@ -51,7 +51,7 @@ void loop() {
   robot_state = doublePhoto(robot_state); 
   robot_state = singlePhoto(robot_state);
   robot_state = doubleEcho(robot_state);
-//  robot_state = stuck(robot_state);
+  robot_state = stuck(robot_state);
 
   do_action(robot_state);
   debugEcho();
@@ -182,7 +182,7 @@ int stuck(int state)
   int currentstate = state;
   accel.read();
   float k = 0.95;
-  int threshold = 500;
+  int threshold = 200;
   float accel_prev = accel_reading;
   accel_reading = (k * accel.x) + ((1-k) * accel_prev);
   float testvalue = accel_reading - accel_prev;
