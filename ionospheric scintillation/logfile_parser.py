@@ -1,8 +1,6 @@
 from matplotlib import pyplot as plt
 from matplotlib import ticker as ticker
-import datetime
-
-log = "logfiles//2020-10-04.csv"
+import os
 
 def open_logfile(logfile):
     """Opens logfile, returns an array"""
@@ -17,9 +15,9 @@ def open_logfile(logfile):
     return t
 
 
-def create_plot(data):
+def create_plot(data, filename):
     resultlist = data
-    savefile = "test.jpg"
+    savefile = filename
     x = []
     y = []
 
@@ -29,9 +27,9 @@ def create_plot(data):
         x.append(x_val)
         y.append(y_val)
     try:
-        s4, ax = plt.subplots(figsize=[20, 9], dpi=100)
-        ax.scatter(x, y, marker="o", s=9, alpha=0.1, color=['black'])
-        ax.grid(True, color="#ccb3b3")
+        s4, ax = plt.subplots(figsize=[10, 5])
+        ax.bar(x, y, color=['red'], width = 1)
+        # ax.grid(True, color="#ccb3b3")
 
         tic_space = 30
         ax.xaxis.set_major_locator(ticker.MultipleLocator(tic_space))
@@ -39,7 +37,7 @@ def create_plot(data):
         ax.tick_params(axis='x', labelrotation=90)
         ax.set_xlabel("Time UTC")
         ax.set_ylabel("S4 Index", labelpad=5)
-        s4.tight_layout()
+        # s4.tight_layout()
 
         plt.title("S4 Ionospheric Index")
         plt.savefig(savefile)
@@ -50,8 +48,31 @@ def create_plot(data):
         plt.close('all')
 
 
-data = open_logfile(log)
-create_plot(data)
+if __name__ == "__main__":
+    filedir = "logfiles/"
+    filelist = "files.txt"
+    files_to_process = filedir + filelist
+
+    try:
+        os.makedirs("images")
+        print("Logfile directory created.")
+    except:
+        if not os.path.isdir("images"):
+            print("Unable to create log directory")
+
+    with open(files_to_process, 'r') as f:
+        for item in f:
+            nomen = item.split(".")
+            nomen = nomen[0]
+            graph = "images//" + nomen + ".jpg"
+            data = nomen + ".csv"
+            filename = filedir + data
+            t = open_logfile(filename)
+            create_plot(t, graph)
+
+    print("FINISHED")
+
+
 
 
 
