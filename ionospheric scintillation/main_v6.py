@@ -8,7 +8,6 @@ import datetime
 import logging
 import re
 from matplotlib import pyplot as plt
-import mgr_satellite_plotter
 from matplotlib import ticker as ticker
 import pickle
 
@@ -23,7 +22,7 @@ integration_time = 60
 duration = 60*60*24
 nullvalue = ""
 logfiles = "logfiles"
-stdev_file = "stdev_test.pkl"
+stdev_file = "stdev.pkl"
 
 
 class GPSSatellite:
@@ -83,7 +82,7 @@ class GPSSatellite:
         return returnvalue
 
     def calc_intensity(self, snr):
-        snr = float(snr)
+        snr = int(snr)
         intensity = 0
         if snr != 0:
             intensity = pow(10, (snr/10))
@@ -96,9 +95,7 @@ class GPSSatellite:
             try:
                 avg_intensity = mean(self.intensity)
                 sigma = stdev(self.intensity)
-                variance = sigma * sigma
-                # returnvalue = round((variance / avg_intensity), 5)
-                returnvalue = round(((sigma / avg_intensity) * 100), 5)
+                returnvalue = round((sigma / avg_intensity), 5)
             except Exception:
                 logging.debug("Statistics exception")
         return returnvalue
@@ -153,28 +150,7 @@ def parse_database():
     gpsdb = sqlite3.connect(sat_database)
     db = gpsdb.cursor()
 
-    result = db.execute('select sat_id, posixtime, alt, az, s4, snr from satdata where posixtime > ? and alt > 20 order by posixtime asc', [starttime])
-    returnlist = []
-    for item in result:
-        dp = (item[0], item[1], item[2], item[3], item[4], item[5])
-        returnlist.append(dp)
-    print("current query " + str(len(returnlist)) + " records long")
-    gpsdb.commit()
-    db.close()
-    return returnlist
-
-
-def parse_database_constellation(const_name):
-    constellation_searchstring = str(const_name)
-    starttime = int(time.time()) - (60 * 60 * 24)
-    print("Parsing database...")
-    gpsdb = sqlite3.connect(sat_database)
-    db = gpsdb.cursor()
-    # result = db.execute(
-    #     'select sat_id, posixtime, alt, az, s4 from satdata where posixtime > ? and alt > 20 order by posixtime asc',
-    #     [starttime])
-    criteria = [starttime, constellation_searchstring]
-    result = db.execute("""select sat_id, posixtime, alt, az, s4 from satdata where posixtime > ? and alt > 20 and sat_id like ? order by posixtime asc""", criteria)
+    result = db.execute('select sat_id, posixtime, alt, az, s4 from satdata where posixtime > ? and alt > 20 order by posixtime asc', [starttime])
     returnlist = []
     for item in result:
         dp = (item[0], item[1], item[2], item[3], item[4])
@@ -320,19 +296,22 @@ def create_matplot(resultlist, ylow, ymax, filename):
         ax.scatter(x, y, marker="o", s=9, alpha=0.1, color=['black'])
         ax.set_ylim(ylow, ymax)
         ax.grid(True, color="#ccb3b3")
-        ax.set_xlabel("Time UTC")
-        ax.set_ylabel("S4 Index (%)", labelpad=5)
-        s4.tight_layout()
+
         tic_space = 30
         ax.xaxis.set_major_locator(ticker.MultipleLocator(tic_space))
+
         ax.tick_params(axis='x', labelrotation=90)
+        ax.set_xlabel("Time UTC")
+        ax.set_ylabel("S4 Index", labelpad=5)
+        s4.tight_layout()
+
         plt.title("S4 Ionospheric Index")
         plt.savefig(savefile)
         plt.close('all')
         print("S4 plot created")
     except Exception:
         print("Unable to save image file")
-    plt.close('all')
+        plt.close('all')
 
 
 def create_logfile_directory():
@@ -493,26 +472,20 @@ if __name__ == "__main__":
                 # THis was in a thread but pyplot is an arse. Should only consume a few seconds of time
                 ########################################################################################
                 resultlist = parse_database()
-                # resultlist = parse_database_constellation("glonass%")
-                # print(resultlist)
 
                 # We recycle the create_sigmas function to generate a 24hr CSV logfile
                 dt = posix2utc(posix_time).split(" ")
-                name = dt[0] + "_test.csv"
+                name = dt[0] + ".csv"
                 filepath = logfiles + "/" + name
                 final_s4_list = create_s4_sigmas(resultlist)
 
-                # CReate graphic plotfiles every 5 minutes.
-                create_matplot(resultlist, 0, 100, "s4_01_test.png")
-                mgr_satellite_plotter.create_individual_plots(resultlist)
+                create_matplot(resultlist, 0, 1, "s4_01.png")
 
                 try:
                     save_s4_file(final_s4_list, filepath)
-                    save_s4_file(final_s4_list, "std_dev2_test.csv")
+                    save_s4_file(final_s4_list, "std_dev2.csv")
                 except TypeError:
                     print("S4 file not large enough to process just yet")
-
-
 
                 # finally...
                 posix_time = int(time.time())

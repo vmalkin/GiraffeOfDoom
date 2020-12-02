@@ -1,13 +1,31 @@
 from matplotlib import pyplot as plt
+from matplotlib import ticker as ticker
+from datetime import datetime
+from time import time
+import os
+
+
+timeformat = '%H:%M'
+dateformat = '%Y-%m-%d'
+working_dir = "images"
+time_start = int(time())
+time_end = int(time_start - 86400)
+binsize = 60
 
 class GPSSatellite:
     def __init__(self, sat_name):
         self.name = sat_name
-        self.posixtime = []
-        self.alt = []
-        self.az = []
-        self.snr = []
-        self.s4 = []
+        self.satdata = self.init_satdata()
+        # self.alt = []
+        # self.az = []
+        # self.snr = []
+        # self.s4 = []
+
+    def init_satdata(self):
+        returnarray = []
+        for i in range(0, 1441):
+            returnarray.append([])
+        return returnarray
 
 
 def create_satellite_list(constellationname):
@@ -20,21 +38,57 @@ def create_satellite_list(constellationname):
 
 
 def create_chart(sat):
-    name = sat.name + ".jpg"
-    x = sat.posixtime
-    y1 = sat.alt
-    y2 = sat.snr
-    y3 = sat.s4
-    s4, ax = plt.subplots(figsize=[3,2], dpi=100)
-    plt.plot(x, y1, color = "red")
-    plt.plot(x, y2, color = "black")
-    plt.plot(x, y3, color = "blue")
-    plt.savefig(name)
+    try:
+        name = sat.name + ".jpg"
+        x = sat.posixtime
+        y1 = sat.alt
+        y2 = sat.snr
+        y3 = sat.s4
+        s4, ax = plt.subplots(figsize=[6,3], dpi=100)
+
+        tic_space = 30
+        ax.xaxis.set_major_locator(ticker.MultipleLocator(tic_space))
+        ax.tick_params(axis='x', labelrotation=45)
+        ax.set_ylim(0, 100)
+        ax.set_xlabel("Time UTC")
+        ax.set_ylabel("Altitude, S/N, S4 (deg, dB, %)")
+        plt.plot(x, y1, color="red")
+        plt.plot(x, y2, color="black")
+        plt.plot(x, y3, color="blue")
+        plt.rcParams.update({'font.size': 6})
+        filepath = working_dir + "//" + name
+        s4.tight_layout()
+        plt.savefig(filepath)
+    except:
+        print("Unable to save image file")
+    plt.close('all')
 
 
+def posix2utc(posixtime):
+    # print(posixtime)
+    # utctime = datetime.datetime.utcfromtimestamp(int(posixtime)).strftime(timeformat)
+    utctime = datetime.utcfromtimestamp(int(posixtime)).strftime(timeformat)
+    return utctime
 
+def get_index(currentposix):
+    indexvalue = (time_start - currentposix) / binsize
+    indexvalue = int(round(indexvalue,0))
+    return indexvalue
 
+def create_directory(directory):
+    try:
+        os.makedirs(directory)
+        print("Logfile directory created.")
+    except:
+        if not os.path.isdir(directory):
+            print("Unable to create log directory")
+
+# Wrapper
 def create_individual_plots(resultlist):
+    if os.path.isdir(working_dir) is False:
+        print("Creating log file directory...")
+        create_directory(working_dir)
+
     GPGSV = create_satellite_list("gps_")
     GLGSV = create_satellite_list("glonass_")
 
@@ -45,19 +99,14 @@ def create_individual_plots(resultlist):
         name = detail[0]
         number = int(detail[1])
         if name == "gps":
-            GPGSV[number].name = sat[0]
-            GPGSV[number].posixtime.append(sat[1])
-            GPGSV[number].alt.append(sat[2])
-            GPGSV[number].az.append(sat[3])
-            GPGSV[number].s4.append(sat[4])
-            GPGSV[number].snr.append(sat[5])
+            index = get_index(sat[1])
+            GPGSV[number].satdata[index].append([sat[0], posix2utc(sat[1]), sat[2], sat[3], sat[4], sat[5]])
         if name == "glonass":
-            GLGSV[number].name = sat[0]
-            GLGSV[number].posixtime.append(sat[1])
-            GLGSV[number].alt.append(sat[2])
-            GLGSV[number].az.append(sat[3])
-            GLGSV[number].s4.append(sat[4])
-            GLGSV[number].snr.append(sat[5])
+            index = get_index(sat[1])
+            GLGSV[number].satdata[index].append([sat[0], posix2utc(sat[1]), sat[2], sat[3], sat[4], sat[5]])
+
+    for sat in GPGSV:
+        print(sat.satdata)
 
     for sat in GPGSV:
         if len(sat.snr) > 1:
