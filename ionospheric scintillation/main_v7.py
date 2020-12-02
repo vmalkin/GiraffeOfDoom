@@ -8,6 +8,7 @@ import datetime
 import logging
 import re
 from matplotlib import pyplot as plt
+import mgr_satellite_plotter
 from matplotlib import ticker as ticker
 import pickle
 
@@ -82,7 +83,7 @@ class GPSSatellite:
         return returnvalue
 
     def calc_intensity(self, snr):
-        snr = int(snr)
+        snr = float(snr)
         intensity = 0
         if snr != 0:
             intensity = pow(10, (snr/10))
@@ -96,8 +97,8 @@ class GPSSatellite:
                 avg_intensity = mean(self.intensity)
                 sigma = stdev(self.intensity)
                 variance = sigma * sigma
-                returnvalue = round((variance / avg_intensity), 5)
-                # returnvalue = round((sigma / avg_intensity), 5)
+                # returnvalue = round((variance / avg_intensity), 5)
+                returnvalue = round(((sigma / avg_intensity) * 100), 5)
             except Exception:
                 logging.debug("Statistics exception")
         return returnvalue
@@ -152,10 +153,10 @@ def parse_database():
     gpsdb = sqlite3.connect(sat_database)
     db = gpsdb.cursor()
 
-    result = db.execute('select sat_id, posixtime, alt, az, s4 from satdata where posixtime > ? and alt > 20 order by posixtime asc', [starttime])
+    result = db.execute('select sat_id, posixtime, alt, az, s4, snr from satdata where posixtime > ? and alt > 20 order by posixtime asc', [starttime])
     returnlist = []
     for item in result:
-        dp = (item[0], item[1], item[2], item[3], item[4])
+        dp = (item[0], item[1], item[2], item[3], item[4], item[5])
         returnlist.append(dp)
     print("current query " + str(len(returnlist)) + " records long")
     gpsdb.commit()
@@ -318,7 +319,7 @@ def create_matplot(resultlist, ylow, ymax, filename):
         s4, ax = plt.subplots(figsize=[20, 9], dpi=100)
         ax.scatter(x, y, marker="o", s=9, alpha=0.1, color=['black'])
         ax.set_xlabel("Time UTC")
-        ax.set_ylabel("S4 Index", labelpad=5)
+        ax.set_ylabel("S4 Index (%)", labelpad=5)
         s4.tight_layout()
 
         plt.title("S4 Ionospheric Index")
@@ -498,12 +499,15 @@ if __name__ == "__main__":
                 final_s4_list = create_s4_sigmas(resultlist)
 
                 create_matplot(resultlist, 0, 1, "s4_01_test.png")
+                mgr_satellite_plotter.create_individual_plots(resultlist)
 
                 try:
                     save_s4_file(final_s4_list, filepath)
                     save_s4_file(final_s4_list, "std_dev2_test.csv")
                 except TypeError:
                     print("S4 file not large enough to process just yet")
+
+
 
                 # finally...
                 posix_time = int(time.time())
