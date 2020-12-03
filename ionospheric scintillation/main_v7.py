@@ -381,7 +381,7 @@ if __name__ == "__main__":
     # main loop starts here run every second...
     posix_time = int(time.time())
     itercount = 0
-    plotcounter = 0
+    plotcounter = 9
 
     while runloop == True:
         # Get com data

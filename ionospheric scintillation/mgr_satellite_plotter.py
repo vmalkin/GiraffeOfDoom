@@ -27,6 +27,9 @@ class GPSSatellite:
             returnarray.append([posix2utc(dt), nan, nan, nan])
             # returnarray.append([posix2utc(dt), "", "", ""])
             dt = dt + binsize
+        # We need this to trick matplot into displaying the full 24 hour span
+        returnarray[0][1] = 0
+        returnarray[1441][1] = 0
         return returnarray
 
 
