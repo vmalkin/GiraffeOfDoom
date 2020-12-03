@@ -6,11 +6,11 @@ from numpy import nan
 import os
 
 
-timeformat = '%m-%d  %H:%M'
+timeformat = '%d %H:%M'
 dateformat = '%Y-%m-%d'
 working_dir = "images"
-time_start = int(time())
-time_end = int(time_start - 86400)
+epoch_now = int(time())
+epoch_start = int(epoch_now - 86400)
 binsize = 60
 
 class GPSSatellite:
@@ -18,17 +18,14 @@ class GPSSatellite:
         self.name = sat_name
         self.available = False
         self.satdata = self.init_satdata()
-        # self.alt = []
-        # self.az = []
-        # self.snr = []
-        # self.s4 = []
 
     def init_satdata(self):
         returnarray = []
-        dt = time_start
-        for i in range(0, 1441):
+        dt = epoch_start
+        for i in range(0, 1442):
             # array is date, alt, snr, s4
-            returnarray.append([posix2utc(dt),nan,nan,nan])
+            returnarray.append([posix2utc(dt), nan, nan, nan])
+            # returnarray.append([posix2utc(dt), "", "", ""])
             dt = dt + binsize
         return returnarray
 
@@ -81,7 +78,7 @@ def posix2utc(posixtime):
     return utctime
 
 def get_index(currentposix):
-    indexvalue = (time_start - currentposix) / binsize
+    indexvalue = (currentposix - epoch_start) / binsize
     indexvalue = int(round(indexvalue,0))
     return indexvalue
 

@@ -19,7 +19,7 @@ logging.basicConfig(filename="errors.log", format='%(asctime)s %(message)s', lev
 com = mgr_comport.SerialManager(k.portName, k.baudrate, k.bytesize, k.parity, k.stopbits, k.timeout, k.xonxoff, k.rtscts, k.writeTimeout, k.dsrdtr, k.interCharTimeout)
 timeformat = '%Y-%m-%d %H:%M'
 sat_database = "gps_satellites.db"
-integration_time = 60
+integration_time = 55
 duration = 60*60*24
 nullvalue = ""
 logfiles = "logfiles"
@@ -381,6 +381,7 @@ if __name__ == "__main__":
     # main loop starts here run every second...
     posix_time = int(time.time())
     itercount = 0
+    plotcounter = 0
 
     while runloop == True:
         # Get com data
@@ -502,17 +503,19 @@ if __name__ == "__main__":
                 filepath = logfiles + "/" + name
                 final_s4_list = create_s4_sigmas(resultlist)
 
-                # CReate graphic plotfiles every 5 minutes.
-                create_matplot(resultlist, 0, 100, "s4_01_test.png")
-                mgr_satellite_plotter.create_individual_plots(resultlist)
+                # CReate graphic plotfiles every 10 minutes.
+                plotcounter = plotcounter + 1
+                if plotcounter >= 10:
+                    print("Creating matplot graphs!")
+                    create_matplot(resultlist, 0, 100, "s4_scatter.png")
+                    mgr_satellite_plotter.create_individual_plots(resultlist)
+                    plotcounter = 0
 
                 try:
                     save_s4_file(final_s4_list, filepath)
                     save_s4_file(final_s4_list, "std_dev2_test.csv")
                 except TypeError:
                     print("S4 file not large enough to process just yet")
-
-
 
                 # finally...
                 posix_time = int(time.time())
