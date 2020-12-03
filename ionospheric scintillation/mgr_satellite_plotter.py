@@ -22,14 +22,14 @@ class GPSSatellite:
     def init_satdata(self):
         returnarray = []
         dt = epoch_start
-        for i in range(0, 1442):
+        for i in range(0, 1445):
             # array is date, alt, snr, s4
             returnarray.append([posix2utc(dt), nan, nan, nan])
             # returnarray.append([posix2utc(dt), "", "", ""])
             dt = dt + binsize
         # We need this to trick matplot into displaying the full 24 hour span
         returnarray[0][1] = 0
-        returnarray[1441][1] = 0
+        returnarray[1444][1] = 0
         return returnarray
 
 
@@ -55,7 +55,7 @@ def create_chart(sat):
             y2.append(data[2])
             y3.append(data[3])
 
-        s4, ax = plt.subplots(figsize=[6,3], dpi=100)
+        s4, ax = plt.subplots(figsize=[8,4], dpi=100)
         tic_space = 30
         ax.xaxis.set_major_locator(ticker.MultipleLocator(tic_space))
         ax.tick_params(axis='x', labelrotation=45)
