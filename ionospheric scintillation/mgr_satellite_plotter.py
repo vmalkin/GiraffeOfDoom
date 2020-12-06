@@ -6,7 +6,7 @@ from numpy import nan
 import os
 
 
-timeformat = '%d %H:%M'
+timeformat = '%d  %H:%M'
 dateformat = '%Y-%m-%d'
 working_dir = "images"
 epoch_now = int(time())
@@ -22,14 +22,14 @@ class GPSSatellite:
     def init_satdata(self):
         returnarray = []
         dt = epoch_start
-        for i in range(0, 1445):
+        for i in range(0, 1501):
             # array is date, alt, snr, s4
             returnarray.append([posix2utc(dt), nan, nan, nan])
             # returnarray.append([posix2utc(dt), "", "", ""])
             dt = dt + binsize
         # We need this to trick matplot into displaying the full 24 hour span
         returnarray[0][1] = 0
-        returnarray[1444][1] = 0
+        returnarray[1500][1] = 0
         return returnarray
 
 
@@ -56,9 +56,9 @@ def create_chart(sat):
             y3.append(data[3])
 
         s4, ax = plt.subplots(figsize=[8,4], dpi=100)
-        tic_space = 30
+        tic_space = 60
         ax.xaxis.set_major_locator(ticker.MultipleLocator(tic_space))
-        ax.tick_params(axis='x', labelrotation=45)
+        ax.tick_params(axis='x', labelrotation=90)
         ax.set_ylim(0, 100)
         ax.set_xlabel("Time UTC")
         ax.set_ylabel("Altitude, S/N, S4 (deg, dB, %)")
@@ -81,8 +81,10 @@ def posix2utc(posixtime):
     return utctime
 
 def get_index(currentposix):
+    # div = (epoch_now - epoch_start) / binsize
     indexvalue = (currentposix - epoch_start) / binsize
-    indexvalue = int(round(indexvalue,0))
+    indexvalue = round(indexvalue, 0)
+    indexvalue = int(indexvalue)
     return indexvalue
 
 def create_directory(directory):
@@ -104,6 +106,13 @@ def create_individual_plots(resultlist):
 
     #  Resultlist should have the format
     # sat_id, posixtime, alt, az, s4, snr
+    sat_id = 0
+    sat_posixtime = 1
+    sat_alt = 2
+    sat_az = 3
+    sat_s4 = 4
+    sat_snr = 5
+
     for sat in resultlist:
         detail = sat[0].split("_")
         name = detail[0]
@@ -111,18 +120,25 @@ def create_individual_plots(resultlist):
         if name == "gps":
             # dp = (sat[0], posix2utc(sat[1]), sat[2], sat[3], sat[4], sat[5])
             index = get_index(sat[1])
+            # if index < 1441:
             GPGSV[number].available = True
-            GPGSV[number].satdata[index][1] = sat[2]
-            GPGSV[number].satdata[index][2] = sat[4]
-            GPGSV[number].satdata[index][3] = sat[5]
+            GPGSV[number].satdata[index][1] = sat[sat_alt]
+            GPGSV[number].satdata[index][2] = sat[sat_s4]
+            GPGSV[number].satdata[index][3] = sat[sat_snr]
+            # else:
+            #     print("Index larger than satellite list! - " + str(index))
 
         if name == "glonass":
-            # dp = (sat[0], posix2utc(sat[1]), sat[2], sat[3], sat[4], sat[5])
             index = get_index(sat[1])
-            GPGSV[number].available = True
-            GPGSV[number].satdata[index][1] = sat[2]
-            GPGSV[number].satdata[index][2] = sat[4]
-            GPGSV[number].satdata[index][3] = sat[5]
+            # if index < 1441:
+                # dp = (sat[0], posix2utc(sat[1]), sat[2], sat[3], sat[4], sat[5])
+            index = get_index(sat[1])
+            GLGSV[number].available = True
+            GLGSV[number].satdata[index][1] = sat[sat_alt]
+            GLGSV[number].satdata[index][2] = sat[sat_s4]
+            GLGSV[number].satdata[index][3] = sat[sat_snr]
+            # else:
+            #     print("Index larger than satellite list! - " + str(index))
 
     for sat in GPGSV:
         if sat.available == True:
