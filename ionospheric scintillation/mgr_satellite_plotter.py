@@ -55,16 +55,22 @@ def create_chart(sat):
             y2.append(data[2])
             y3.append(data[3])
 
-        s4, ax = plt.subplots(figsize=[8,4], dpi=100)
-        tic_space = 60
-        ax.xaxis.set_major_locator(ticker.MultipleLocator(tic_space))
+        s4, ax = plt.subplots(figsize=[12,4], dpi=100)
+        tic_major = 60
+        tic_minor = 15
+        ax.xaxis.set_major_locator(ticker.MultipleLocator(tic_major))
+        ax.xaxis.set_minor_locator(ticker.MultipleLocator(tic_minor))
+
         ax.tick_params(axis='x', labelrotation=90)
         ax.set_ylim(0, 100)
+        ax.grid(True, which='major', color="#ccb3b3")
+        ax.grid(True, which='minor', color="#e0e0e0")
+
         ax.set_xlabel("Time UTC")
         ax.set_ylabel("Altitude, S/N, S4 (deg, dB, %)")
-        plt.plot(x, y1, color="red")
-        plt.plot(x, y2, color="blue")
-        plt.plot(x, y3, color="black")
+        plt.plot(x, y1, color="red", linewidth=2)
+        plt.plot(x, y2, color="blue", linewidth=1, alpha=0.5)
+        plt.plot(x, y3, color="black", linewidth=2)
         plt.rcParams.update({'font.size': 6})
         filepath = working_dir + "//" + name
         s4.tight_layout()

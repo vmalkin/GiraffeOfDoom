@@ -9,6 +9,7 @@ import logging
 import re
 from matplotlib import pyplot as plt
 import mgr_satellite_plotter
+import mgr_snr_collator
 from matplotlib import ticker as ticker
 import pickle
 
@@ -509,6 +510,7 @@ if __name__ == "__main__":
                     print("Creating matplot graphs!")
                     create_matplot(resultlist, 0, 100, "s4_scatter.png")
                     mgr_satellite_plotter.create_individual_plots(resultlist)
+                    mgr_snr_collator.wrapper(resultlist)
                     plotcounter = 0
 
                 try:
