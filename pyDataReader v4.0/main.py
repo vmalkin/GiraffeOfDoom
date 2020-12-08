@@ -7,6 +7,7 @@ import sys
 from threading import Thread
 import os
 import sqlite3
+import mgr_publisher
 
 __version__ = "4.0"
 errorloglevel = logging.DEBUG
@@ -46,12 +47,13 @@ class ChartThread(Thread):
                 # Add extra methods here to create different types of charts. Create them as auxilliary classes.
                 print("Create logfiles")
                 create_logfile(current_data)
+                mgr_publisher.wrapper(current_data)
             except:
                 print("Simple grapher failed")
                 logging.error("Simple grapher failed")
 
 
-class SerialManager():
+class SerialManager:
     def __init__(self, portname, baudrate, bytesize, parity, stopbits, timeout, xonxoff, rtscts, writeTimeout, dsrdtr, interCharTimeout):
         self._portname = portname
         self._baudrate = baudrate
@@ -126,8 +128,8 @@ def database_add_data(timestamp, datavalue):
 def database_get_data():
     tempdata = []
     starttime = getposixtime() - 86400
+    db = sqlite3.connect(database)
     try:
-        db = sqlite3.connect(database)
         cursor = db.cursor()
         result = cursor.execute("select * from data where data.posixtime > ? order by data.posixtime asc", [starttime])
         for line in result:
