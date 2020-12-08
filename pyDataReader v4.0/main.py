@@ -41,13 +41,11 @@ class ChartThread(Thread):
 
     def run(self):
         while True:
-
-            sleep(60)
-            # create the CSV files for general display
-
+            sleep(300)
             try:
-                print("Create Highcharts")
-                print(current_data)
+                # Add extra methods here to create different types of charts. Create them as auxilliary classes.
+                print("Create logfiles")
+                create_logfile(current_data)
             except:
                 print("Simple grapher failed")
                 logging.error("Simple grapher failed")
@@ -80,13 +78,27 @@ class SerialManager():
         return logdata
 
 
+def create_logfile(current_data):
+    currentdate = datetime.utcfromtimestamp(int(time())).strftime("%Y-%m-%d")
+    savefile = logfile_dir + "//" + currentdate + ".csv"
+    with open(savefile, "w") as s:
+        s.write("UTC Datetime, Ambient Voltage" + "\n")
+        for item in current_data:
+            dt = posix2utc(item[0])
+            data = item[1]
+            dp = str(dt) + "," + str(data) + "\n"
+            s.write(dp)
+        s.close()
+
+
 def posix2utc(posixtime):
     timeformat = '%Y-%m-%d %H:%M:%S'
     utctime = datetime.utcfromtimestamp(int(posixtime)).strftime(timeformat)
     return utctime
 
+
 def getposixtime():
-    timevalue = round(time(), 0)
+    timevalue = int(time())
     return timevalue
 
 
@@ -128,6 +140,7 @@ def database_get_data():
         print("Database is locked, try again!")
     db.close()
     return tempdata
+
 
 def create_directory(path):
     try:
