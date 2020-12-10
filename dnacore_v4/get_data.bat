@@ -8,7 +8,15 @@ python get_bz.py
 python plot_bins.py
 
 rem specialised plotting files.
-python plot_dxdt_v3.py
+python save_logfiles.py
+ 
+python chart_dxdt.py
+ 
+python chart_bz.py
+ 
+python chart_goes.py
+ 
+python chart_ruru.py
 
 timeout 300
 goto start
