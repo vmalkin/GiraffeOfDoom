@@ -1,26 +1,28 @@
-from enum import Enum, auto
+class State():
+    def on_event(self):
+        """Events that can cause a transition out"""
+        pass
 
-class States(Enum):
-    s_drive = auto()
-    s_left = auto()
-    s_right = auto()
-
-
-robot_state = States.s_left
+    def __str__(self):
+        return self.__class__.__name__
 
 
-def test_transition(state):
-    """Test to see if the robot can change state, if so, change state"""
-    currentstate = state
+class StateDrive(State):
+    def on_event(self, event):
+        if event == 'obst_left':
+            return StateRight()
+        if event == 'obst_right':
+            return StateLeft()
 
-    return currentstate
+class StateRight(State):
+    def on_event(self, event):
+        if event == 'obst_null':
+            return StateDrive()
+
+class StateLeft(State):
+    def on_event(self, event):
+        if event == 'obst_null':
+            return StateDrive()
 
 
-def do_action(state):
-    """Perform the action for the current state"""
-    pass
 
-
-if __name__ == "__main__":
-    robot_state = test_transition(robot_state)
-    do_action(robot_state)
