@@ -5,7 +5,7 @@ import logging
 import re
 import sys
 from threading import Thread
-import os
+from os import path as path
 import sqlite3
 import mgr_publisher
 
@@ -45,13 +45,13 @@ class ChartThread(Thread):
 
     def run(self):
         while True:
+            # Chart data every five minutes
             sleep(300)
             try:
-                # Add extra methods here to create different types of charts. Create them as auxilliary classes.
+                # Add extra methods here to create different types of charts. IMPORT them as auxilliary classes.
                 print("Create logfiles")
                 # THIs is the basic plotting method that belongs to main.py
                 create_logfile(current_data)
-
                 # new user generated methods for plotting go here
                 mgr_publisher.wrapper(current_data)
             except:
@@ -180,15 +180,15 @@ if __name__ == "__main__":
         print(str(sys.exc_info()))
 
     # Check that we have folders and database in place
-    if os.path.isfile(database) is False:
+    if path.isfile(database) is False:
         print("No database file, initialising")
         database_create()
     
-    if os.path.isdir(logfile_dir) is False:
+    if path.isdir(logfile_dir) is False:
         print("Creating log file directory...")
         create_directory(logfile_dir)
         
-    if os.path.isdir(publish_dir) is False:
+    if path.isdir(publish_dir) is False:
         print("Creating log file directory...")
         create_directory(publish_dir)
 
