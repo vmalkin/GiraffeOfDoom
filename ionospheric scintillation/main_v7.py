@@ -323,7 +323,7 @@ def create_matplot(resultlist, ylow, ymax, filename):
         ax.grid(True, color="#ccb3b3")
         ax.set_xlabel("Time UTC")
         ax.set_ylabel("S4 Index (%)", labelpad=5)
-        s4.tight_layout()
+        # s4.tight_layout()
         tic_space = 30
         ax.xaxis.set_major_locator(ticker.MultipleLocator(tic_space))
         ax.tick_params(axis='x', labelrotation=90)

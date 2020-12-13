@@ -12,7 +12,10 @@ import mgr_publisher
 __version__ = "4.0"
 errorloglevel = logging.DEBUG
 logging.basicConfig(filename="errors.log", format='%(asctime)s %(message)s', level=errorloglevel)
+
+# should be set for decimal data only
 comport_regex = r'^(\d*\W\d*)$'
+
 station_id = "ruru"   # ID of magnetometer station
 database = "arraysave.db"
 logfile_dir = "dailylogs"
@@ -46,7 +49,10 @@ class ChartThread(Thread):
             try:
                 # Add extra methods here to create different types of charts. Create them as auxilliary classes.
                 print("Create logfiles")
+                # THIs is the basic plotting method that belongs to main.py
                 create_logfile(current_data)
+
+                # new user generated methods for plotting go here
                 mgr_publisher.wrapper(current_data)
             except:
                 print("Simple grapher failed")
@@ -173,6 +179,7 @@ if __name__ == "__main__":
         logging.critical("CRITICAL ERROR: Unable to shart Highcharts Thread")
         print(str(sys.exc_info()))
 
+    # Check that we have folders and database in place
     if os.path.isfile(database) is False:
         print("No database file, initialising")
         database_create()
@@ -188,7 +195,7 @@ if __name__ == "__main__":
     db = sqlite3.connect(database)
     cursor = db.cursor()
     db.close()
-    # The program begins here
+    # The plotting begins here
     while True:
         # single data value from com port
         reading = comport.data_recieve()

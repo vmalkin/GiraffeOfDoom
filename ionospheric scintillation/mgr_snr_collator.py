@@ -28,37 +28,37 @@ def posix2utc(posixtime):
 
 
 def create_chart(x_data, y_data):
-    try:
-        name = "snr.jpg"
-        x = x_data
-        y1 = y_data
+    # try:
+    name = "snr.png"
+    x = x_data
+    y1 = y_data
 
-        # for data in snrdata:
-        #     x.append(data[0])
-        #     y1.append(data[1])
-        # print(y1)
+    snr, ax = plt.subplots(figsize=[12,4], dpi=100)
+    tic_major = 60
+    tic_minor = 15
+    ax.xaxis.set_major_locator(ticker.MultipleLocator(tic_major))
+    ax.xaxis.set_minor_locator(ticker.MultipleLocator(tic_minor))
 
-        snr, ax = plt.subplots(figsize=[12,4], dpi=100)
-        tic_major = 60
-        tic_minor = 15
-        ax.xaxis.set_major_locator(ticker.MultipleLocator(tic_major))
-        ax.xaxis.set_minor_locator(ticker.MultipleLocator(tic_minor))
+    # ax.tick_params(axis='x', labelrotation=90)
+    # # ax.set_ylim(0, 50)
+    # ax.grid(True, which='major', color="#ccb3b3")
+    # ax.grid(True, which='minor', color="#e0e0e0")
 
-        ax.tick_params(axis='x', labelrotation=90)
-        # ax.set_ylim(0, 50)
-        ax.grid(True, which='major', color="#ccb3b3")
-        ax.grid(True, which='minor', color="#e0e0e0")
+    ax.set_xlabel("Time UTC")
+    ax.set_ylabel("S/N Ratio - dB")
 
-        ax.set_xlabel("Time UTC")
-        ax.set_ylabel("S/N Ratio - dB")
+    for line in y1:
+        plt.plot(x, line, color="black", linewidth=1)
+        print(max(line))
 
-        plt.plot(x, y1, color="black", linewidth=1)
-        # plt.rcParams.update({'font.size': 6})
-        filepath = working_dir + "//" + name
-        snr.tight_layout()
-        plt.savefig(filepath)
-    except:
-        print("Unable to save image file")
+    # plt.plot(x, y1, color="black", linewidth=1)
+
+    # plt.rcParams.update({'font.size': 6})
+    filepath = working_dir + "//" + name
+    # snr.tight_layout()
+    plt.savefig(filepath)
+    # except:
+    #     print("Unable to save image file")
     plt.close('all')
 
 def satellite_index_generator():
@@ -69,47 +69,41 @@ def satellite_index_generator():
     for i in range(0, satellite_index_size):
         name = sid1 + str(i)
         indices[name] = i
-
-    for i in range(0, satellite_index_size):
-        step = satellite_index_size
-        name = sid2 + str(i)
-        indices[name] = i + step
+    #
+    # for i in range(0, satellite_index_size):
+    #     step = satellite_index_size
+    #     name = sid2 + str(i)
+    #     indices[name] = i + step
     print("Length of satellite hash table is " + str(len(indices)) + " records")
     return indices
 
 # query results format:
 # sat_id, posixtime, alt, az, s4, snr
 def wrapper(queryresults):
+    # this becomes the x axis of the chart.
     datearray = []
     t = epoch_start
     for i in range(0, 1442):
         t = t + binsize
         datearray.append(posix2utc(t))
 
+    # array for data. posix value as an index determins the placement of this data for each satellite
     dataarray = []
     for i in range(0, 1442):
-        dataarray.append(nan)
+        dataarray.append(0)
 
+    # generate the hash table of satellite names and an index value to be used in the main list of satellites
     satelliteindex = satellite_index_generator()
-    satelite_list = []
+
+    # Create the empty list of satellites. Append an empty data array for each satellite.
+    satellite_list = []
     for i in range(0, (satellite_index_size * 2 + 1)):
-        satelite_list.append(dataarray)
+        satellite_list.append(dataarray)
 
     for line in queryresults:
         satid = satelliteindex[line[0]]
         dataid = get_index(line[1])
-        satelite_list[satid][dataid] = line[5]
+        satellite_list[satid][dataid] = line[5]
+        # print(satellite_list[satid][dataid])
 
-
-    for line in satelite_list:
-        print(line[1])
-
-
-
-
-
-
-
-
-
-
+    create_chart(dataarray, satellite_list)

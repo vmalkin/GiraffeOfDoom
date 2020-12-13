@@ -73,7 +73,7 @@ def create_chart(sat):
         plt.plot(x, y3, color="black", linewidth=2)
         plt.rcParams.update({'font.size': 6})
         filepath = working_dir + "//" + name
-        s4.tight_layout()
+        # s4.tight_layout()
         plt.savefig(filepath)
     except:
         print("Unable to save image file")
