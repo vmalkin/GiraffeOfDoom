@@ -5,8 +5,8 @@ def posix2utc(posixtime):
     utctime = datetime.utcfromtimestamp(int(posixtime)).strftime(timeformat)
     return utctime
 
-def wrapper(current_data):
-    savefile = "publish//dna_ambrf.csv"
+def wrapper(current_data, publishfolder, ):
+    savefile = publishfolder + "//dna_ambrf.csv"
     with open(savefile, "w") as s:
         s.write("UTC Datetime, Ambient Voltage" + "\n")
         for item in current_data:
