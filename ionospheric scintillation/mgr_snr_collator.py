@@ -49,11 +49,11 @@ def create_chart(x_data, y_data):
 
     for line in y1:
         plt.plot(x, line, color="black", linewidth=1)
-        print(max(line))
+        # print(max(line))
 
     # plt.plot(x, y1, color="black", linewidth=1)
 
-    # plt.rcParams.update({'font.size': 6})
+    plt.rcParams.update({'font.size': 6})
     filepath = working_dir + "//" + name
     # snr.tight_layout()
     plt.savefig(filepath)
@@ -80,30 +80,4 @@ def satellite_index_generator():
 # query results format:
 # sat_id, posixtime, alt, az, s4, snr
 def wrapper(queryresults):
-    # this becomes the x axis of the chart.
-    datearray = []
-    t = epoch_start
-    for i in range(0, 1442):
-        t = t + binsize
-        datearray.append(posix2utc(t))
-
-    # array for data. posix value as an index determins the placement of this data for each satellite
-    dataarray = []
-    for i in range(0, 1442):
-        dataarray.append(0)
-
-    # generate the hash table of satellite names and an index value to be used in the main list of satellites
-    satelliteindex = satellite_index_generator()
-
-    # Create the empty list of satellites. Append an empty data array for each satellite.
-    satellite_list = []
-    for i in range(0, (satellite_index_size * 2 + 1)):
-        satellite_list.append(dataarray)
-
-    for line in queryresults:
-        satid = satelliteindex[line[0]]
-        dataid = get_index(line[1])
-        satellite_list[satid][dataid] = line[5]
-        # print(satellite_list[satid][dataid])
-
-    create_chart(dataarray, satellite_list)
+    pass

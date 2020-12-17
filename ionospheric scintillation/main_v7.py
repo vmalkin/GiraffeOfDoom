@@ -495,8 +495,6 @@ if __name__ == "__main__":
                 # THis was in a thread but pyplot is an arse. Should only consume a few seconds of time
                 ########################################################################################
                 resultlist = parse_database()
-                # resultlist = parse_database_constellation("glonass%")
-                # print(resultlist)
 
                 # We recycle the create_sigmas function to generate a 24hr CSV logfile
                 dt = posix2utc(posix_time).split(" ")
@@ -509,6 +507,7 @@ if __name__ == "__main__":
                 if plotcounter >= 10:
                     print("Creating matplot graphs!")
                     create_matplot(resultlist, 0, 100, "s4_scatter.png")
+
                     mgr_satellite_plotter.create_individual_plots(resultlist)
                     mgr_snr_collator.wrapper(resultlist)
                     plotcounter = 0
