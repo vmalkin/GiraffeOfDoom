@@ -5,7 +5,7 @@ import logging
 import re
 import sys
 from threading import Thread
-from os import path as path
+import os
 import sqlite3
 import mgr_publisher
 import mgr_averager
@@ -23,7 +23,7 @@ logfile_dir = "dailylogs"
 publish_dir = "publish"
 
 # Comm port parameters - uncomment and change one of the portNames depending on your OS
-portName = 'Com41'  # Windows
+portName = 'Com42'  # Windows
 # portName = '/dev/tty.usbserial-A702O0K9' #MacOS
 # portName = '/dev/ttyUSB0'
 baudrate = 9600
@@ -54,7 +54,7 @@ class ChartThread(Thread):
                 # THIs is the basic plotting method that belongs to main.py
                 create_logfile(current_data)
                 # new user generated methods for plotting go here
-                mgr_publisher.wrapper(current_data)
+                mgr_publisher.wrapper(current_data, publish_dir)
                 mgr_averager.wrapper(current_data, publish_dir)
             except:
                 print("Simple grapher failed")
@@ -182,15 +182,15 @@ if __name__ == "__main__":
         print(str(sys.exc_info()))
 
     # Check that we have folders and database in place
-    if path.isfile(database) is False:
+    if os.path.isfile(database) is False:
         print("No database file, initialising")
         database_create()
     
-    if path.isdir(logfile_dir) is False:
+    if os.path.isdir(logfile_dir) is False:
         print("Creating log file directory...")
         create_directory(logfile_dir)
         
-    if path.isdir(publish_dir) is False:
+    if os.path.isdir(publish_dir) is False:
         print("Creating log file directory...")
         create_directory(publish_dir)
 

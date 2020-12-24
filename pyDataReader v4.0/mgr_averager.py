@@ -5,7 +5,7 @@ from statistics import mean
 half_window = 10
 
 def save_smoothed_data(current_data, publishfolder):
-    savefile = publishfolder + "//dna_ambrf.csv"
+    savefile = publishfolder + "//dna_smoothed.csv"
     with open(savefile, "w") as s:
         s.write("UTC Datetime, Smoothed Ambient Voltage" + "\n")
         for item in current_data:
@@ -28,7 +28,7 @@ def smooth_data(datavalues):
         scratch = []
         datetime = datavalues[i][0]
         for j in range(0 - half_window, half_window):
-            dv = datavalues[i + j][1]
+            dv = float(datavalues[i + j][1])
             scratch.append(dv)
         newdatavalue = mean(scratch)
         dp = [datetime, newdatavalue]
