@@ -17,8 +17,7 @@ errorloglevel = logging.WARNING
 logging.basicConfig(filename=k.error_log, format='%(asctime)s %(message)s', level=errorloglevel)
 logging.info("Created error log for this session")
 
-dna_core = sqlite3.connect(k.dbfile)
-db = dna_core.cursor()
+
 timeformat = '%Y-%m-%d %H:%M:%S'
 
 # Only specific station data makes sense as detrended readings.
@@ -108,6 +107,8 @@ def check_create_folders():
 
 
 def get_data(station):
+    dna_core = sqlite3.connect(k.dbfile)
+    db = dna_core.cursor()
     result = db.execute("select station_data.posix_time, station_data.data_value from station_data "
                         "where station_data.station_id = ? and station_data.posix_time > ?", [station, start_time])
 
@@ -204,5 +205,4 @@ if __name__ == "__main__":
         save_logfiles(nowfile, tempdata)
 
     print("Closing database and exiting")
-    dna_core.commit()
-    db.close()
+
