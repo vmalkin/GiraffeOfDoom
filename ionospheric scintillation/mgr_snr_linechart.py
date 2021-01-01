@@ -63,7 +63,7 @@ def create_snr_chart(satellites, times):
     ax.xaxis.set_minor_locator(ticker.MultipleLocator(tic_minor))
 
     ax.tick_params(axis='x', labelrotation=90)
-    ax.set_ylim(0, 100)
+    # ax.set_ylim(0, 100)
     ax.grid(True, which='major', color="#ccb3b3")
     ax.grid(True, which='minor', color="#e0e0e0")
 
@@ -101,11 +101,12 @@ def wrapper(queryresults):
     satellite_dictionary = create_satellite_dictionary()
     constellation = create_constellation()
 
-    print("Attempting to print satellite labels...")
     for entry in queryresults:
         satellite_name = satellite_dictionary[entry[0]]
-        data_index = get_index(entry[1])
-        datavalue = entry[4]
-        constellation[satellite_name].data[data_index] = datavalue
+        if satellite_name <= (2*constellation_count):
+            data_index = get_index(entry[1])
+            if data_index <= 1440:
+                datavalue = entry[4]
+                constellation[satellite_name].data[data_index] = datavalue
 
     create_snr_chart(constellation, timestamps)
