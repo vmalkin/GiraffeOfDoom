@@ -12,6 +12,7 @@ class Satellite:
     def __init__(self, name):
         self.name = name
         self.data = self.create_datastore()
+        self.
 
     def create_datastore(self):
         d = []
@@ -63,7 +64,7 @@ def create_snr_chart(satellites, times):
     ax.xaxis.set_minor_locator(ticker.MultipleLocator(tic_minor))
 
     ax.tick_params(axis='x', labelrotation=90)
-    # ax.set_ylim(0, 100)
+    ax.set_ylim(0, 100)
     ax.grid(True, which='major', color="#ccb3b3")
     ax.grid(True, which='minor', color="#e0e0e0")
 
@@ -102,11 +103,12 @@ def wrapper(queryresults):
     constellation = create_constellation()
 
     for entry in queryresults:
-        satellite_name = satellite_dictionary[entry[0]]
-        if satellite_name <= (2*constellation_count):
-            data_index = get_index(entry[1])
-            if data_index <= 1440:
-                datavalue = entry[4]
-                constellation[satellite_name].data[data_index] = datavalue
+        if entry[2] >= 40:
+            satellite_name = satellite_dictionary[entry[0]]
+            if satellite_name <= (2*constellation_count):
+                data_index = get_index(entry[1])
+                if data_index <= 1440:
+                    datavalue = entry[4]
+                    constellation[satellite_name].data[data_index] = datavalue
 
     create_snr_chart(constellation, timestamps)

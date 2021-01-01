@@ -505,7 +505,7 @@ if __name__ == "__main__":
 
                 # CReate graphic plotfiles every 10 minutes.
                 plotcounter = plotcounter + 1
-                if plotcounter >= 10:
+                if plotcounter >= 30:
                     print("Creating matplot graphs!")
                     # create_matplot(resultlist, 0, 100, "s4_scatter.png")
                     # mgr_satellite_plotter.create_individual_plots(resultlist)
