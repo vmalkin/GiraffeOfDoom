@@ -6,17 +6,17 @@ from time import time
 epoch_now = int(time())
 epoch_start = epoch_now - (60* 60 * 24)
 binsize = 60
-constellation_count = 300
+constellation_count = 200
 
 class Satellite:
-    def __init__(self):
-        # self.name = name
+    def __init__(self, name):
+        self.name = name
         self.data = self.create_datastore()
 
     def create_datastore(self):
         d = []
         for i in range(0, 1441):
-            d.append([NaN])
+            d.append(NaN)
         return d
 
 
@@ -54,20 +54,44 @@ def parse_query_to_satellite(queryresults):
     pass
 
 
-def create_snr_chart():
-    pass
+def create_snr_chart(satellites, times):
+    name = "test.jpg"
+    snr, ax = plt.subplots(figsize=[12, 4], dpi=100)
+    tic_major = 60
+    tic_minor = 15
+    ax.xaxis.set_major_locator(ticker.MultipleLocator(tic_major))
+    ax.xaxis.set_minor_locator(ticker.MultipleLocator(tic_minor))
+
+    ax.tick_params(axis='x', labelrotation=90)
+    ax.set_ylim(0, 100)
+    ax.grid(True, which='major', color="#ccb3b3")
+    ax.grid(True, which='minor', color="#e0e0e0")
+
+    ax.set_xlabel("Time UTC")
+    ax.set_ylabel("S/N Ratio")
+
+    for s in satellites:
+        r = []
+        for dp in s.data:
+            r.append(dp)
+        # print(r)
+        plt.plot(times, r, color="blue", linewidth=1, alpha=0.4)
+
+    plt.rcParams.update({'font.size': 6})
+    plt.savefig(name)
+    plt.close('all')
 
 
 def create_timestamps():
     ts = []
-    for i in range(epoch_start, epoch_now, binsize):
+    for i in range(epoch_start - binsize, epoch_now, binsize):
         ts.append(posix2utc(i))
     return ts
 
 def create_constellation():
     c = []
     for i in range(0, constellation_count*2):
-        c.append(Satellite)
+        c.append(Satellite(i))
     return c
 
 # query results format:
@@ -77,9 +101,11 @@ def wrapper(queryresults):
     satellite_dictionary = create_satellite_dictionary()
     constellation = create_constellation()
 
+    print("Attempting to print satellite labels...")
     for entry in queryresults:
-        print(entry[0])
+        satellite_name = satellite_dictionary[entry[0]]
+        data_index = get_index(entry[1])
+        datavalue = entry[4]
+        constellation[satellite_name].data[data_index] = datavalue
 
-
-    # parse_query_to_satellite(queryresults)
-    # create_snr_chart()
+    create_snr_chart(constellation, timestamps)
