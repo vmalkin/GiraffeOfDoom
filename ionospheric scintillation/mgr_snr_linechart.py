@@ -3,16 +3,18 @@ from matplotlib import ticker as ticker
 from numpy import NaN
 from datetime import datetime
 from time import time
+
 epoch_now = int(time())
 epoch_start = epoch_now - (60* 60 * 24)
 binsize = 60
 constellation_count = 200
+working_dir = "images"
 
 class Satellite:
     def __init__(self, name):
         self.name = name
         self.data = self.create_datastore()
-        self.
+        self.update_flag = False
 
     def create_datastore(self):
         d = []
@@ -56,28 +58,30 @@ def parse_query_to_satellite(queryresults):
 
 
 def create_snr_chart(satellites, times):
-    name = "test.jpg"
-    snr, ax = plt.subplots(figsize=[12, 4], dpi=100)
+    name = working_dir + "//test.jpg"
+    snr, ax = plt.subplots(figsize=[12, 5], dpi=100)
     tic_major = 60
     tic_minor = 15
     ax.xaxis.set_major_locator(ticker.MultipleLocator(tic_major))
     ax.xaxis.set_minor_locator(ticker.MultipleLocator(tic_minor))
 
     ax.tick_params(axis='x', labelrotation=90)
-    ax.set_ylim(0, 100)
+    ax.set_ylim(0, 50)
     ax.grid(True, which='major', color="#ccb3b3")
     ax.grid(True, which='minor', color="#e0e0e0")
 
-    ax.set_xlabel("Time UTC")
+    ax.set_title("S/N ratio of GPS satellites above 40deg altitiude.")
+    ax.set_xlabel("Date, UTC Time")
     ax.set_ylabel("S/N Ratio")
 
     for s in satellites:
-        r = []
-        for dp in s.data:
-            r.append(dp)
-        # print(r)
-        plt.plot(times, r, color="blue", linewidth=1, alpha=0.4)
-
+        if s.update_flag == True:
+            r = []
+            for dp in s.data:
+                r.append(dp)
+            # print(r)
+            plt.plot(times, r, color="black", linewidth=1, alpha=0.8)
+    plt.tight_layout()
     plt.rcParams.update({'font.size': 6})
     plt.savefig(name)
     plt.close('all')
@@ -108,7 +112,8 @@ def wrapper(queryresults):
             if satellite_name <= (2*constellation_count):
                 data_index = get_index(entry[1])
                 if data_index <= 1440:
-                    datavalue = entry[4]
+                    datavalue = entry[5]
                     constellation[satellite_name].data[data_index] = datavalue
+                    constellation[satellite_name].update_flag = True
 
     create_snr_chart(constellation, timestamps)
