@@ -383,7 +383,8 @@ if __name__ == "__main__":
     # main loop starts here run every second...
     posix_time = int(time.time())
     itercount = 0
-    plotcounter = 9
+    plot_delay_time = 20
+    plotcounter = plot_delay_time - 1
 
     while runloop == True:
         # Get com data
@@ -499,13 +500,13 @@ if __name__ == "__main__":
 
                 # We recycle the create_sigmas function to generate a 24hr CSV logfile
                 dt = posix2utc(posix_time).split(" ")
-                name = dt[0] + "_test.csv"
+                name = dt[0] + ".csv"
                 filepath = logfiles + "/" + name
                 final_s4_list = create_s4_sigmas(resultlist)
 
                 # CReate graphic plotfiles every 10 minutes.
                 plotcounter = plotcounter + 1
-                if plotcounter >= 10:
+                if plotcounter >= plot_delay_time:
                     print("Creating matplot graphs!")
                     # create_matplot(resultlist, 0, 100, "s4_scatter.png")
                     # mgr_satellite_plotter.create_individual_plots(resultlist)
@@ -515,7 +516,7 @@ if __name__ == "__main__":
 
                 try:
                     save_s4_file(final_s4_list, filepath)
-                    save_s4_file(final_s4_list, "std_dev2_test.csv")
+                    save_s4_file(final_s4_list, "std_dev2.csv")
                 except TypeError:
                     print("S4 file not large enough to process just yet")
 
