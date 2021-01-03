@@ -4,11 +4,10 @@ from numpy import NaN
 from datetime import datetime
 from time import time
 
-epoch_now = int(time())
-epoch_start = epoch_now - (60* 60 * 24)
 binsize = 60
 constellation_count = 200
 working_dir = "images"
+
 
 class Satellite:
     def __init__(self, name):
@@ -29,7 +28,7 @@ def posix2utc(posixtime):
     return utctime
 
 
-def get_index(currentposix):
+def get_index(currentposix, epoch_start):
     # div = (epoch_now - epoch_start) / binsize
     indexvalue = (currentposix - epoch_start) / 60
     indexvalue = int(round(indexvalue, 0))
@@ -58,8 +57,8 @@ def parse_query_to_satellite(queryresults):
 
 
 def create_snr_chart(satellites, times):
-    name = working_dir + "//test.jpg"
-    snr, ax = plt.subplots(figsize=[12, 5], dpi=100)
+    chartname = working_dir + "//test.jpg"
+    noise, ax = plt.subplots(figsize=[12, 5], dpi=100)
     tic_major = 60
     tic_minor = 15
     ax.xaxis.set_major_locator(ticker.MultipleLocator(tic_major))
@@ -83,11 +82,11 @@ def create_snr_chart(satellites, times):
             plt.plot(times, r, color="black", linewidth=1, alpha=0.8)
     plt.tight_layout()
     plt.rcParams.update({'font.size': 6})
-    plt.savefig(name)
-    plt.close('all')
+    plt.savefig(chartname)
+    plt.close()
 
 
-def create_timestamps():
+def create_timestamps(epoch_start, epoch_now):
     ts = []
     for i in range(epoch_start - binsize, epoch_now, binsize):
         ts.append(posix2utc(i))
@@ -102,15 +101,18 @@ def create_constellation():
 # query results format:
 # sat_id, posixtime, alt, az, s4, snr
 def wrapper(queryresults):
-    timestamps = create_timestamps()
+    epoch_now = int(time())
+    epoch_start = epoch_now - (60 * 60 * 24)
+
+    timestamps = create_timestamps(epoch_start, epoch_now)
     satellite_dictionary = create_satellite_dictionary()
     constellation = create_constellation()
 
     for entry in queryresults:
-        if entry[2] >= 40:
+        if entry[2] >= 20:
             satellite_name = satellite_dictionary[entry[0]]
             if satellite_name <= (2*constellation_count):
-                data_index = get_index(entry[1])
+                data_index = get_index(entry[1], epoch_start)
                 if data_index <= 1440:
                     datavalue = entry[5]
                     constellation[satellite_name].data[data_index] = datavalue

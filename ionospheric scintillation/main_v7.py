@@ -383,7 +383,7 @@ if __name__ == "__main__":
     # main loop starts here run every second...
     posix_time = int(time.time())
     itercount = 0
-    plot_delay_time = 20
+    plot_delay_time = 10
     plotcounter = plot_delay_time - 1
 
     while runloop == True:
@@ -496,6 +496,7 @@ if __name__ == "__main__":
                 ########################################################################################
                 # THis was in a thread but pyplot is an arse. Should only consume a few seconds of time
                 ########################################################################################
+                resultlist = []
                 resultlist = parse_database()
 
                 # We recycle the create_sigmas function to generate a 24hr CSV logfile
@@ -507,7 +508,10 @@ if __name__ == "__main__":
                 # CReate graphic plotfiles every 10 minutes.
                 plotcounter = plotcounter + 1
                 if plotcounter >= plot_delay_time:
-                    print("Creating matplot graphs!")
+                    print("\a")
+                    print("#######################################")
+                    print("####### Creating matplot graphs #######")
+                    print("#######################################\n")
                     # create_matplot(resultlist, 0, 100, "s4_scatter.png")
                     # mgr_satellite_plotter.create_individual_plots(resultlist)
                     # mgr_snr_collator.wrapper(resultlist)
@@ -516,7 +520,7 @@ if __name__ == "__main__":
 
                 try:
                     save_s4_file(final_s4_list, filepath)
-                    save_s4_file(final_s4_list, "std_dev2.csv")
+                    save_s4_file(final_s4_list, "std_dev.csv")
                 except TypeError:
                     print("S4 file not large enough to process just yet")
 
