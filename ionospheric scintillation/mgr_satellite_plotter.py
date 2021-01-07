@@ -68,9 +68,11 @@ def create_chart(sat):
 
         ax.set_xlabel("Time UTC")
         ax.set_ylabel("Altitude, S/N, S4 (deg, dB, %)")
-        plt.plot(x, y1, color="red", linewidth=2)
-        plt.plot(x, y2, color="blue", linewidth=1, alpha=0.5)
-        plt.plot(x, y3, color="black", linewidth=2)
+
+        ax.plot(x, y1, color="red", linewidth=2)
+        ax.plot(x, y2, color="blue", linewidth=1, alpha=0.5)
+        ax.plot(x, y3, color="black", linewidth=2)
+
         plt.rcParams.update({'font.size': 6})
         filepath = working_dir + "//" + name
         # s4.tight_layout()

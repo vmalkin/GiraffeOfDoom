@@ -33,16 +33,22 @@ class SatelliteCollator(Thread):
         Thread.__init__(self, name="SatelliteCollator")
     def run(self):
         while True:
-            time.sleep(600)
+            time.sleep(300)
             print("#######################################")
-            print("####### Creating matplot graphs #######")
+            print("####### STARTING matplot graphs #######")
             print("#######################################\n")
             # create_matplot(resultlist, 0, 100, "s4_scatter.png")
             try:
                 mgr_satellite_plotter.create_individual_plots(resultlist)
                 # mgr_snr_collator.wrapper(resultlist)
                 mgr_snr_linechart.wrapper(resultlist)
+                print("#######################################")
+                print("#######    COMPLETED graphs     #######")
+                print("#######################################\n")
             except Exception:
+                print("#######################################")
+                print("#######      GRAPHS FAILED      #######")
+                print("#######################################\n")
                 logging.error("Matplot thread has failed")
 
 
