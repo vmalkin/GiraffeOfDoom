@@ -383,7 +383,7 @@ if __name__ == "__main__":
     # main loop starts here run every second...
     posix_time = int(time.time())
     itercount = 0
-    plot_delay_time = 10
+    plot_delay_time = 180
     plotcounter = plot_delay_time - 1
 
     while runloop == True:

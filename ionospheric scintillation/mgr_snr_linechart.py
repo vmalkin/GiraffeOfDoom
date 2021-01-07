@@ -111,9 +111,9 @@ def wrapper(queryresults):
     for entry in queryresults:
         if entry[2] >= 20:
             satellite_name = satellite_dictionary[entry[0]]
-            if satellite_name <= (2*constellation_count):
+            if satellite_name < (2*constellation_count):
                 data_index = get_index(entry[1], epoch_start)
-                if data_index <= 1440:
+                if data_index < 1440 and data_index >= 0:
                     datavalue = entry[5]
                     constellation[satellite_name].data[data_index] = datavalue
                     constellation[satellite_name].update_flag = True

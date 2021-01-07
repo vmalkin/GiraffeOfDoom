@@ -12,6 +12,7 @@ working_dir = "images"
 epoch_now = int(time())
 epoch_start = int(epoch_now - 86400)
 binsize = 60
+max_data_array_size = 1501
 
 class GPSSatellite:
     def __init__(self, sat_name):
@@ -22,14 +23,14 @@ class GPSSatellite:
     def init_satdata(self):
         returnarray = []
         dt = epoch_start
-        for i in range(0, 1501):
+        for i in range(0, max_data_array_size):
             # array is date, alt, snr, s4
             returnarray.append([posix2utc(dt), nan, nan, nan])
             # returnarray.append([posix2utc(dt), "", "", ""])
             dt = dt + binsize
         # We need this to trick matplot into displaying the full 24 hour span
         returnarray[0][1] = 0
-        returnarray[1500][1] = 0
+        returnarray[max_data_array_size - 1][1] = 0
         return returnarray
 
 
@@ -128,25 +129,25 @@ def create_individual_plots(resultlist):
         if name == "gps":
             # dp = (sat[0], posix2utc(sat[1]), sat[2], sat[3], sat[4], sat[5])
             index = get_index(sat[1])
-            # if index < 1441:
-            GPGSV[number].available = True
-            GPGSV[number].satdata[index][1] = sat[sat_alt]
-            GPGSV[number].satdata[index][2] = sat[sat_s4]
-            GPGSV[number].satdata[index][3] = sat[sat_snr]
-            # else:
-            #     print("Index larger than satellite list! - " + str(index))
+            if index < max_data_array_size and index >= 0:
+                GPGSV[number].available = True
+                GPGSV[number].satdata[index][1] = sat[sat_alt]
+                GPGSV[number].satdata[index][2] = sat[sat_s4]
+                GPGSV[number].satdata[index][3] = sat[sat_snr]
+            else:
+                print("GPS time index larger than list! - " + str(index))
 
         if name == "glonass":
             index = get_index(sat[1])
-            # if index < 1441:
+            if index < max_data_array_size and index >= 0:
                 # dp = (sat[0], posix2utc(sat[1]), sat[2], sat[3], sat[4], sat[5])
-            index = get_index(sat[1])
-            GLGSV[number].available = True
-            GLGSV[number].satdata[index][1] = sat[sat_alt]
-            GLGSV[number].satdata[index][2] = sat[sat_s4]
-            GLGSV[number].satdata[index][3] = sat[sat_snr]
-            # else:
-            #     print("Index larger than satellite list! - " + str(index))
+                index = get_index(sat[1])
+                GLGSV[number].available = True
+                GLGSV[number].satdata[index][1] = sat[sat_alt]
+                GLGSV[number].satdata[index][2] = sat[sat_s4]
+                GLGSV[number].satdata[index][3] = sat[sat_snr]
+            else:
+                print("Glonass time index larger than list! - " + str(index))
 
     for sat in GPGSV:
         if sat.available == True:
