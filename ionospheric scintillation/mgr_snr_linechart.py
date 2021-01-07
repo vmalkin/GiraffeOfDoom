@@ -65,7 +65,7 @@ def create_snr_chart(satellites, times):
     ax.xaxis.set_minor_locator(ticker.MultipleLocator(tic_minor))
 
     ax.tick_params(axis='x', labelrotation=90)
-    ax.set_ylim(0, 50)
+    ax.set_ylim(0, 100)
     ax.grid(True, which='major', color="#ccb3b3")
     ax.grid(True, which='minor', color="#e0e0e0")
 

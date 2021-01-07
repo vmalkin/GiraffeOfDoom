@@ -13,7 +13,7 @@ import mgr_snr_collator
 import mgr_snr_linechart
 from matplotlib import ticker as ticker
 import pickle
-
+from threading import Thread
 
 errorloglevel = logging.DEBUG
 logging.basicConfig(filename="errors.log", format='%(asctime)s %(message)s', level=errorloglevel)
@@ -26,6 +26,24 @@ duration = 60*60*24
 nullvalue = ""
 logfiles = "logfiles"
 stdev_file = "stdev_test.pkl"
+
+# Thread for plotting
+class SatelliteCollator(Thread):
+    def __init__(self):
+        Thread.__init__(self, name="SatelliteCollator")
+    def run(self):
+        while True:
+            time.sleep(600)
+            print("#######################################")
+            print("####### Creating matplot graphs #######")
+            print("#######################################\n")
+            # create_matplot(resultlist, 0, 100, "s4_scatter.png")
+            try:
+                mgr_satellite_plotter.create_individual_plots(resultlist)
+                # mgr_snr_collator.wrapper(resultlist)
+                mgr_snr_linechart.wrapper(resultlist)
+            except Exception:
+                logging.error("Matplot thread has failed")
 
 
 class GPSSatellite:
@@ -386,6 +404,17 @@ if __name__ == "__main__":
     plot_delay_time = 10
     plotcounter = plot_delay_time - 1
 
+    # ########################################################
+    # Start thread for plotting
+    sat_collation = SatelliteCollator()
+    try:
+        print("Starting matplot thread")
+        sat_collation.start()
+    except:
+        print("Unable to start matplot thread!!")
+    # ########################################################
+
+
     while runloop == True:
         # Get com data
         line = com.data_recieve()
@@ -505,18 +534,18 @@ if __name__ == "__main__":
                 filepath = logfiles + "/" + name
                 final_s4_list = create_s4_sigmas(resultlist)
 
-                # CReate graphic plotfiles every 10 minutes.
-                plotcounter = plotcounter + 1
-                if plotcounter >= plot_delay_time:
-                    print("\a")
-                    print("#######################################")
-                    print("####### Creating matplot graphs #######")
-                    print("#######################################\n")
-                    # create_matplot(resultlist, 0, 100, "s4_scatter.png")
-                    mgr_satellite_plotter.create_individual_plots(resultlist)
-                    # mgr_snr_collator.wrapper(resultlist)
-                    mgr_snr_linechart.wrapper(resultlist)
-                    plotcounter = 0
+                # # CReate graphic plotfiles every 10 minutes.
+                # plotcounter = plotcounter + 1
+                # if plotcounter >= plot_delay_time:
+                #     print("\a")
+                #     print("#######################################")
+                #     print("####### Creating matplot graphs #######")
+                #     print("#######################################\n")
+                #     # create_matplot(resultlist, 0, 100, "s4_scatter.png")
+                #     mgr_satellite_plotter.create_individual_plots(resultlist)
+                #     # mgr_snr_collator.wrapper(resultlist)
+                #     mgr_snr_linechart.wrapper(resultlist)
+                #     plotcounter = 0
 
                 try:
                     save_s4_file(final_s4_list, filepath)
