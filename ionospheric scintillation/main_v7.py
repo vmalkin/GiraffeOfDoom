@@ -11,6 +11,7 @@ from matplotlib import pyplot as plt
 import mgr_satellite_plotter
 import mgr_snr_collator
 import mgr_snr_linechart
+import mgr_test_csv
 from matplotlib import ticker as ticker
 import pickle
 
@@ -374,21 +375,23 @@ if __name__ == "__main__":
 
     GPGSV = create_satellite_list("gps_")
     GLGSV = create_satellite_list("glonass_")
-    GAGSV = create_satellite_list("galileo_")
+    # GAGSV = create_satellite_list("galileo_")
 
     counter = 0
     regex_expression = "(\$\w\wGSV),.+"
     recordlength = 4
     runloop = True
     # main loop starts here run every second...
-    posix_time = int(time.time())
-    itercount = 0
+
     plot_delay_time = 180
     plotcounter = plot_delay_time - 1
-
+    itercount = 0
+    posix_time = int(time.time())
+    
     while runloop == True:
         # Get com data
         line = com.data_recieve()
+
 
         # Parse com data for valid data GSV sentence ???GSV,
         if re.match(regex_expression, line):
@@ -424,12 +427,12 @@ if __name__ == "__main__":
                             GLGSV[index_value].set_snr(sentence[s_snr])
                             GLGSV[index_value].set_intensity(sentence[s_snr])
 
-                        if constellation == "GAGSV":
-                            GAGSV[index_value].posixtime = posix_time
-                            GAGSV[index_value].set_alt(sentence[s_alt])
-                            GAGSV[index_value].set_az(sentence[s_az])
-                            GAGSV[index_value].set_snr(sentence[s_snr])
-                            GAGSV[index_value].set_intensity(sentence[s_snr])
+                        # if constellation == "GAGSV":
+                        #     GAGSV[index_value].posixtime = posix_time
+                        #     GAGSV[index_value].set_alt(sentence[s_alt])
+                        #     GAGSV[index_value].set_az(sentence[s_az])
+                        #     GAGSV[index_value].set_snr(sentence[s_snr])
+                        #     GAGSV[index_value].set_intensity(sentence[s_snr])
 
                     except ValueError:
                         logging.debug("DEBUG: String as integer in satellite ID: " + str(sentence[s_id]))
@@ -463,25 +466,28 @@ if __name__ == "__main__":
                         gpsdb.commit()
                         db.close()
 
-                for sat in GAGSV:
-                    if sat.s4_index() > 0:
-                        satellitelist.append((sat.name, sat.posixtime, sat.return_alt(), sat.return_az(), sat.s4_index(), sat.return_snr()))
-                        # Store the satellite data to the database, once per minute
-                        gpsdb = sqlite3.connect(sat_database)
-                        db = gpsdb.cursor()
-                        db.execute('insert into satdata (sat_id, posixtime, alt, az, s4, snr) values (?, ?, ?, ?, ?, ?);',[sat.name, sat.posixtime, sat.return_alt(), sat.return_az(), sat.s4_index(), sat.return_snr()])
-                        gpsdb.commit()
-                        db.close()
+                # for sat in GAGSV:
+                #     if sat.s4_index() > 0:
+                #         satellitelist.append((sat.name, sat.posixtime, sat.return_alt(), sat.return_az(), sat.s4_index(), sat.return_snr()))
+                #         # Store the satellite data to the database, once per minute
+                #         gpsdb = sqlite3.connect(sat_database)
+                #         db = gpsdb.cursor()
+                #         db.execute('insert into satdata (sat_id, posixtime, alt, az, s4, snr) values (?, ?, ?, ?, ?, ?);',[sat.name, sat.posixtime, sat.return_alt(), sat.return_az(), sat.s4_index(), sat.return_snr()])
+                #         gpsdb.commit()
+                #         db.close()
 
-                # reset satellite lists
-                for sat in GPGSV:
-                    sat.reset()
+                # # reset satellite lists
+                # for sat in GPGSV:
+                #     sat.reset()
+                #
+                # for sat in GLGSV:
+                #     sat.reset()
+                #
+                # for sat in GAGSV:
+                #     sat.reset()
 
-                for sat in GLGSV:
-                    sat.reset()
-
-                for sat in GAGSV:
-                    sat.reset()
+                GPGSV = create_satellite_list("gps_")
+                GLGSV = create_satellite_list("glonass_")
 
                 if len(satellitelist) > 0:
                     for s in satellitelist:
@@ -512,10 +518,11 @@ if __name__ == "__main__":
                     print("#######################################")
                     print("####### Creating matplot graphs #######")
                     print("#######################################\n")
-                    # create_matplot(resultlist, 0, 100, "s4_scatter.png")
-                    mgr_satellite_plotter.create_individual_plots(resultlist)
+                    create_matplot(resultlist, 0, 100, "s4_scatter.png")
+                    # mgr_satellite_plotter.create_individual_plots(resultlist)
                     # mgr_snr_collator.wrapper(resultlist)
-                    mgr_snr_linechart.wrapper(resultlist)
+                    # mgr_snr_linechart.wrapper(resultlist)
+                    mgr_test_csv.wrapper(resultlist)
                     plotcounter = 0
 
                 try:
