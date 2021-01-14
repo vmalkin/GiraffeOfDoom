@@ -2,12 +2,14 @@
 To create simple scatterplot of S4 data
 """
 import datetime
+import plotly.express as px
 
 timeformat = '%Y-%m-%d %H:%M'
 
 def posix2utc(posixtime):
     utctime = datetime.datetime.utcfromtimestamp(int(posixtime)).strftime(timeformat)
     return utctime
+
 
 def save_s4(filename, data):
     try:
@@ -21,15 +23,27 @@ def save_s4(filename, data):
     except PermissionError:
         print("CSV file being used by another app. Update next time")
 
+
+def plot_scatterplot(xvalues, yvalues):
+    fig = px.scatter(x=xvalues, y=yvalues, title = 'S4 Index')
+    fig.show()
+
 # query format:
 # ('satID', posixtime, alt, az, s4, snr)
 def wrapper(queryresults):
     datalist = []
+    xval = []
+    yval = []
     for item in queryresults:
         dt = item[1]
         dt = posix2utc(dt)
-        da = str(item[4])
+        da = item[4]
 
-        dp = dt + "," + da
+        xval.append(dt)
+        yval.append(da)
+
+        dp = dt + "," + str(da)
         datalist.append(dp)
+
     save_s4("s4.csv", datalist)
+    plot_scatterplot(xval, yval)

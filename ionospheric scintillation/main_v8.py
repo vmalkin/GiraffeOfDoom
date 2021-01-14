@@ -11,7 +11,7 @@ from threading import Thread
 import qpr_s4_scatter
 import qpr_s4_median
 
-errorloglevel = logging.DEBUG
+errorloglevel = logging.CRITICAL
 logging.basicConfig(filename="errors.log", format='%(asctime)s %(message)s', level=errorloglevel)
 
 com = mgr_comport.SerialManager(k.portName, k.baudrate, k.bytesize, k.parity, k.stopbits, k.timeout, k.xonxoff, k.rtscts, k.writeTimeout, k.dsrdtr, k.interCharTimeout)
@@ -35,17 +35,24 @@ class QueryProcessor(Thread):
     def run(self):
         # put query data processing stuff here. NO matplot unfortunatly
         while True:
-            try:
-                print("Query Processor")
-                qpr_s4_scatter.wrapper(querydata)
-                qpr_s4_median.wrapper(querydata)
-                # rings the terminal bell
-                print("\a")
-            except:
-                print("query processor failed!")
-                logging.critical("Query processor failed in MAIN.PY")
-            time.sleep(300)
+            print("***************************** Start Query Processor")
 
+            try:
+                qpr_s4_median.wrapper(querydata)
+            except:
+                print("\n" + "!!!!!!!!!  S4 Median Failed  !!!!!!!!!" + "\n")
+                logging.warning("S4 Median failed in MAIN.PY")
+
+            try:
+                qpr_s4_scatter.wrapper(querydata)
+            except:
+                print("\n" + "!!!!!!!!!  S4 Scatter Failed  !!!!!!!!!" + "\n")
+                logging.warning("S4 Scatter failed in MAIN.PY")
+
+            # rings the terminal bell
+            print("\a")
+            print("******************************* End Query Processor")
+            time.sleep(300)
 
 
 class Satellite:
