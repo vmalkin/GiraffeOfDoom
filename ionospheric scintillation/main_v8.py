@@ -9,6 +9,7 @@ import re
 from statistics import mean, stdev
 from threading import Thread
 import qpr_s4_scatter
+import qpr_s4_median
 
 errorloglevel = logging.DEBUG
 logging.basicConfig(filename="errors.log", format='%(asctime)s %(message)s', level=errorloglevel)
@@ -24,6 +25,9 @@ logfiles = "logfiles"
 # This is the query output that will be used to generate graphs and plots etc.
 querydata = []
 
+# *************************************************
+# Plotter and query processor thread
+# *************************************************
 class QueryProcessor(Thread):
     def __init__(self):
         Thread.__init__(self, name="QueryProcessor")
@@ -31,9 +35,17 @@ class QueryProcessor(Thread):
     def run(self):
         # put query data processing stuff here. NO matplot unfortunatly
         while True:
-            print("Query Processor")
-            qpr_s4_scatter.wrapper(querydata)
+            try:
+                print("Query Processor")
+                qpr_s4_scatter.wrapper(querydata)
+                qpr_s4_median.wrapper(querydata)
+                # rings the terminal bell
+                print("\a")
+            except:
+                print("query processor failed!")
+                logging.critical("Query processor failed in MAIN.PY")
             time.sleep(300)
+
 
 
 class Satellite:
@@ -136,7 +148,7 @@ def create_logfile_directory():
     except:
         if not os.path.isdir(logfiles):
             print("Unable to create log directory")
-            logging.critical("CRITICAL ERROR: Unable to create logs directory")
+            logging.critical("CRITICAL ERROR: Unable to create logs directory in MAIN.PY")
 
 
 def calc_intensity(snr):
@@ -191,7 +203,7 @@ if __name__ == "__main__":
         queryprocessor.start()
         print("Starting query processor thread...")
     except:
-        print("Unable to start database query processor thread!!")
+        print("Unable to start database query processor thread in MAIN.PY!!")
 
     # initial setup including satellite lists
     # if database not exists, create database
@@ -229,7 +241,10 @@ if __name__ == "__main__":
             sentence = nmea_sentence(line)
             # make sure GSV sentence is a multiple of 4
             if len(sentence) % 4 == 0:
-                satlist_input(sentence)
+                try:
+                    satlist_input(sentence)
+                except:
+                    print("There was a problem inputting satellite data inot the lists in MAIN.PY")
                 counter = counter + 1
 
         # Process and reset things!
@@ -251,6 +266,9 @@ if __name__ == "__main__":
                     gpsdb.commit()
                     db.close()
 
+            # *************************************************
+            # Generate new query, reset counter.
+            # *************************************************
             print("Creating output list from database...")
             querydata = database_parse()
 

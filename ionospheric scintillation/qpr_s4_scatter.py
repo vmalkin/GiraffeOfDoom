@@ -9,7 +9,27 @@ def posix2utc(posixtime):
     utctime = datetime.datetime.utcfromtimestamp(int(posixtime)).strftime(timeformat)
     return utctime
 
+def save_s4(filename, data):
+    try:
+        with open(filename, 'w') as f:
+            f.write("Datetime UTC, S4 Scintillation Index" + '\n')
+            for result in data:
+                f.write(result + '\n')
+        f.close()
+        print("S4 csv"
+              " file written")
+    except PermissionError:
+        print("CSV file being used by another app. Update next time")
+
 # query format:
-# ('8', posixtime, 21.0, 238.84615384615384, 11.68933, 18.5)
+# ('satID', posixtime, alt, az, s4, snr)
 def wrapper(queryresults):
-    print(queryresults)
+    datalist = []
+    for item in queryresults:
+        dt = item[1]
+        dt = posix2utc(dt)
+        da = str(item[4])
+
+        dp = dt + "," + da
+        datalist.append(dp)
+    save_s4("s4.csv", datalist)
