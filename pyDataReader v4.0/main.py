@@ -9,6 +9,7 @@ import os
 import sqlite3
 import mgr_publisher
 import mgr_averager
+import mgr_binner
 
 __version__ = "4.0"
 errorloglevel = logging.DEBUG
@@ -54,8 +55,9 @@ class ChartThread(Thread):
                 # THIs is the basic plotting method that belongs to main.py
                 create_logfile(current_data)
                 # new user generated methods for plotting go here
-                mgr_publisher.wrapper(current_data, publish_dir)
-                mgr_averager.wrapper(current_data, publish_dir)
+                # mgr_publisher.wrapper(current_data, publish_dir)
+                # mgr_averager.wrapper(current_data, publish_dir)
+                mgr_binner.wrapper(current_data, publish_dir)
             except:
                 print("Simple grapher failed")
                 logging.error("Simple grapher failed")
