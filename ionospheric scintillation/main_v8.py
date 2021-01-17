@@ -10,6 +10,8 @@ from statistics import mean, stdev
 from threading import Thread
 import qpr_s4_scatter
 import qpr_s4_median
+import qpr_snr
+import qpr_save_full_query
 
 errorloglevel = logging.CRITICAL
 logging.basicConfig(filename="errors.log", format='%(asctime)s %(message)s', level=errorloglevel)
@@ -18,9 +20,12 @@ com = mgr_comport.SerialManager(k.portName, k.baudrate, k.bytesize, k.parity, k.
 timeformat = '%Y-%m-%d %H:%M:%S'
 sat_database = "gps_satellites.db"
 integration_time = 55
-duration = 60*60*24
-nullvalue = ""
+# duration = 60*60*24
+# nullvalue = ""
 logfiles = "logfiles"
+
+# readings below this altitude for satellites may be distorted due to multi-modal reflection
+optimum_altitude = 40
 
 # This is the query output that will be used to generate graphs and plots etc.
 querydata = []
@@ -36,6 +41,17 @@ class QueryProcessor(Thread):
         # put query data processing stuff here. NO matplot unfortunatly
         while True:
             print("***************************** Start Query Processor")
+            try:
+                qpr_save_full_query.wrapper(querydata)
+            except:
+                print("\n" + "!!!!!!!!!  Full Query Save Failed  !!!!!!!!!" + "\n")
+                logging.warning("SNR failed in MAIN.PY")
+
+            try:
+                qpr_snr.wrapper(querydata)
+            except:
+                print("\n" + "!!!!!!!!!  SNR Failed  !!!!!!!!!" + "\n")
+                logging.warning("SNR failed in MAIN.PY")
 
             try:
                 qpr_s4_median.wrapper(querydata)
@@ -130,7 +146,7 @@ def database_parse():
     gpsdb = sqlite3.connect(sat_database)
     db = gpsdb.cursor()
 
-    result = db.execute('select sat_id, posixtime, alt, az, s4, snr from satdata where posixtime > ? and alt > 20 order by posixtime asc', [starttime])
+    result = db.execute('select sat_id, posixtime, alt, az, s4, snr from satdata where posixtime > ? and alt > ? order by posixtime asc', [starttime, optimum_altitude])
     returnlist = []
     for item in result:
         dp = (item[0], item[1], item[2], item[3], item[4], item[5])

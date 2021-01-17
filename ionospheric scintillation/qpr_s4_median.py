@@ -3,6 +3,8 @@
 # object and use the median value of that array. THis time I'm just going to compare the current and next datetimes
 # for each entry in the query and act on that.
 
+# dependencies include Plotly, Kaleido, Pandas
+
 from statistics import median
 import datetime
 import plotly.express as px
@@ -27,7 +29,8 @@ def posix2utc(posixtime):
 
 def plot_lineplot(xval, yval):
     fig = px.line(x=xval, y = yval, title = 'Median S4 Index')
-    fig.show()
+    fig.write_image(file='median.jpg', format='jpg')
+    # fig.show()
 
 
 # query format:
@@ -52,6 +55,7 @@ def wrapper(queryresults):
             finallist.append(dp)
             xval.append(posix2utc(now_dt))
             yval.append(medvalue)
+            tempvalues = []
 
     save_s4("s4_median.csv", finallist)
     plot_lineplot(xval, yval)

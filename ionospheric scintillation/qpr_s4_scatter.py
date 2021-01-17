@@ -1,5 +1,6 @@
 """
 To create simple scatterplot of S4 data
+dependencies include Plotly, Kaleido, Pandas
 """
 import datetime
 import plotly.express as px
@@ -26,7 +27,8 @@ def save_s4(filename, data):
 
 def plot_scatterplot(xvalues, yvalues):
     fig = px.scatter(x=xvalues, y=yvalues, title = 'S4 Index')
-    fig.show()
+    fig.write_image(file='scatter.jpg', format='jpg')
+    # fig.show()
 
 # query format:
 # ('satID', posixtime, alt, az, s4, snr)
