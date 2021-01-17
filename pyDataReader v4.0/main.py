@@ -9,6 +9,7 @@ import os
 import sqlite3
 import mgr_publisher
 import mgr_averager
+import mgr_binner
 
 __version__ = "4.0"
 errorloglevel = logging.DEBUG
@@ -23,8 +24,8 @@ logfile_dir = "dailylogs"
 publish_dir = "publish"
 
 # Comm port parameters - uncomment and change one of the portNames depending on your OS
-portName = 'Com42'  # Windows
-# portName = '/dev/tty.usbserial-A702O0K9' #MacOS
+# portName = 'Com42'  # Windows
+portName = '/dev/tty.usbserial-A9MO3C9T' #MacOS
 # portName = '/dev/ttyUSB0'
 baudrate = 9600
 bytesize = 8
@@ -48,14 +49,16 @@ class ChartThread(Thread):
         while True:
             # Chart data every five minutes
             sleep(300)
+
             try:
                 # Add extra methods here to create different types of charts. IMPORT them as auxilliary classes.
                 print("Create logfiles")
                 # THIs is the basic plotting method that belongs to main.py
                 create_logfile(current_data)
                 # new user generated methods for plotting go here
-                mgr_publisher.wrapper(current_data, publish_dir)
-                mgr_averager.wrapper(current_data, publish_dir)
+                # mgr_publisher.wrapper(current_data, publish_dir)
+                # mgr_averager.wrapper(current_data, publish_dir)
+                mgr_binner.wrapper(current_data, publish_dir)
             except:
                 print("Simple grapher failed")
                 logging.error("Simple grapher failed")
