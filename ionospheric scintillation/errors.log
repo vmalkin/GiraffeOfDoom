@@ -18,3 +18,4 @@
 2021-01-07 20:26:44,271 Matplot thread has failed
 2021-01-15 10:08:29,809 Query processor failed in MAIN.PY
 2021-01-15 10:13:29,871 Query processor failed in MAIN.PY
+2021-01-17 18:01:25,289 CRITICAL ERROR: Unable to open com port. Please check com port parameters and/or hardware!!

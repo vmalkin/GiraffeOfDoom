@@ -47,17 +47,17 @@ class QueryProcessor(Thread):
                 print("\n" + "!!!!!!!!!  Full Query Save Failed  !!!!!!!!!" + "\n")
                 logging.warning("SNR failed in MAIN.PY")
 
-            try:
-                qpr_snr.wrapper(querydata)
-            except:
-                print("\n" + "!!!!!!!!!  SNR Failed  !!!!!!!!!" + "\n")
-                logging.warning("SNR failed in MAIN.PY")
+            # try:
+            #     qpr_snr.wrapper(querydata)
+            # except:
+            #     print("\n" + "!!!!!!!!!  SNR Failed  !!!!!!!!!" + "\n")
+            #     logging.warning("SNR failed in MAIN.PY")
 
-            try:
-                qpr_s4_median.wrapper(querydata)
-            except:
-                print("\n" + "!!!!!!!!!  S4 Median Failed  !!!!!!!!!" + "\n")
-                logging.warning("S4 Median failed in MAIN.PY")
+            # try:
+            #     qpr_s4_median.wrapper(querydata)
+            # except:
+            #     print("\n" + "!!!!!!!!!  S4 Median Failed  !!!!!!!!!" + "\n")
+            #     logging.warning("S4 Median failed in MAIN.PY")
 
             try:
                 qpr_s4_scatter.wrapper(querydata)
@@ -68,7 +68,7 @@ class QueryProcessor(Thread):
             # rings the terminal bell
             print("\a")
             print("******************************* End Query Processor")
-            time.sleep(300)
+            time.sleep(600)
 
 
 class Satellite:
@@ -269,6 +269,8 @@ if __name__ == "__main__":
                 except:
                     print("There was a problem inputting satellite data inot the lists in MAIN.PY")
                 counter = counter + 1
+        else:
+            print("Sentence did not pass regex")
 
         # Process and reset things!
         if counter >= maxcounter:
