@@ -10,8 +10,8 @@ from statistics import mean, stdev
 from threading import Thread
 import qpr_s4_scatter
 import qpr_s4_median
-import qpr_snr
 import qpr_save_full_query
+import qpr_sat_plots
 
 errorloglevel = logging.CRITICAL
 logging.basicConfig(filename="errors.log", format='%(asctime)s %(message)s', level=errorloglevel)
@@ -22,10 +22,9 @@ sat_database = "gps_satellites.db"
 integration_time = 55
 # duration = 60*60*24
 # nullvalue = ""
-logfiles = "logfiles"
 
 # readings below this altitude for satellites may be distorted due to multi-modal reflection
-optimum_altitude = 40
+optimum_altitude = 30
 
 # This is the query output that will be used to generate graphs and plots etc.
 querydata = []
@@ -47,23 +46,23 @@ class QueryProcessor(Thread):
                 print("\n" + "!!!!!!!!!  Full Query Save Failed  !!!!!!!!!" + "\n")
                 logging.warning("SNR failed in MAIN.PY")
 
-            # try:
-            #     qpr_snr.wrapper(querydata)
-            # except:
-            #     print("\n" + "!!!!!!!!!  SNR Failed  !!!!!!!!!" + "\n")
-            #     logging.warning("SNR failed in MAIN.PY")
-
-            # try:
-            #     qpr_s4_median.wrapper(querydata)
-            # except:
-            #     print("\n" + "!!!!!!!!!  S4 Median Failed  !!!!!!!!!" + "\n")
-            #     logging.warning("S4 Median failed in MAIN.PY")
+            try:
+                qpr_s4_median.wrapper(querydata)
+            except:
+                print("\n" + "!!!!!!!!!  S4 Median Failed  !!!!!!!!!" + "\n")
+                logging.warning("S4 Median failed in MAIN.PY")
 
             try:
                 qpr_s4_scatter.wrapper(querydata)
             except:
                 print("\n" + "!!!!!!!!!  S4 Scatter Failed  !!!!!!!!!" + "\n")
                 logging.warning("S4 Scatter failed in MAIN.PY")
+
+            try:
+                qpr_sat_plots.wrapper(querydata)
+            except:
+                print("\n" + "!!!!!!!!!  Satellite Plotter Failed  !!!!!!!!!" + "\n")
+                logging.warning("satellite plotter failed in MAIN.PY")
 
             # rings the terminal bell
             print("\a")
@@ -81,13 +80,12 @@ class Satellite:
         self.intensity = []
 
     def get_s4(self):
+        # http://mtc-m21b.sid.inpe.br/col/sid.inpe.br/mtc-m21b/2017/08.25.17.52/doc/poster_ionik%20%5BSomente%20leitura%5D.pdf
         returnvalue = 0
-        avg_intensity = mean(self.intensity)
         if len(self.intensity) > 2:
+            avg_intensity = mean(self.intensity)
             sigma = stdev(self.intensity)
             if avg_intensity > 0:
-                # variance = sigma * sigma
-                # returnvalue = round((variance / avg_intensity), 5)
                 returnvalue = round(((sigma / avg_intensity) * 100), 5)
         return returnvalue
 
@@ -164,14 +162,14 @@ def nmea_sentence(sentence):
     return s
 
 
-def create_logfile_directory():
+def create_directory(dir):
     try:
-        os.makedirs(logfiles)
-        print("Logfile directory created.")
+        os.makedirs(dir)
+        print("Directory created.")
     except:
-        if not os.path.isdir(logfiles):
-            print("Unable to create log directory")
-            logging.critical("CRITICAL ERROR: Unable to create logs directory in MAIN.PY")
+        if not os.path.isdir(dir):
+            print("Unable to create directory")
+            logging.critical("CRITICAL ERROR: Unable to create directory in MAIN.PY")
 
 
 def calc_intensity(snr):
@@ -191,7 +189,7 @@ def satlist_input(gsv_sentence):
         satlist = glgsv
 
     for i in range(4, len(gsv_sentence) - 3, increment):
-        name = constellation + "_" + gsv_sentence[i]
+        name = constellation + "_" + str(int(gsv_sentence[i]))
         satID = int(gsv_sentence[i])
         alt = gsv_sentence[i + 1]
         az = gsv_sentence[i + 2]
@@ -236,9 +234,13 @@ if __name__ == "__main__":
     if os.path.isfile(sat_database) is True:
         print("Database file exists")
 
-    if os.path.isdir(logfiles) is False:
+    if os.path.isdir(k.logfiledir) is False:
         print("Creating log file directory...")
-        create_logfile_directory()
+        create_directory(k.logfiledir)
+
+    if os.path.isdir(k.imagesdir) is False:
+        print("Creating image file directory...")
+        create_directory(k.imagesdir)
 
     # Set up the lists required to average the satellite values so the DB
     # will store one minute values.
@@ -251,8 +253,9 @@ if __name__ == "__main__":
     for i in range(0, 500):
         glgsv.append(Satellite(i))
 
+    oldtimer = time.time()
     counter = 0
-    maxcounter = 180
+    maxcounter = 300
     regex_expression = "(\$\w\wGSV),.+"
 
     while True:
@@ -273,7 +276,9 @@ if __name__ == "__main__":
             print("Sentence did not pass regex")
 
         # Process and reset things!
-        if counter >= maxcounter:
+        nowtimer = time.time()
+        # at least one minute has elapsed
+        if nowtimer >= (oldtimer + 60):
             posixtime = int(time.time())
             for s in gpgsv:
                 if s.processflag is True:
@@ -306,6 +311,7 @@ if __name__ == "__main__":
             for i in range(0, 500):
                 glgsv.append(Satellite(i))
 
-            print("Reset counter...")
+            print("Satellite readings processed: " + str(counter))
             counter = 0
+            oldtimer = nowtimer
             print("Done! " + posix2utc(posixtime) + "\n")

@@ -19,3 +19,5 @@
 2021-01-15 10:08:29,809 Query processor failed in MAIN.PY
 2021-01-15 10:13:29,871 Query processor failed in MAIN.PY
 2021-01-17 18:01:25,289 CRITICAL ERROR: Unable to open com port. Please check com port parameters and/or hardware!!
+2021-01-19 20:38:11,002 CRITICAL ERROR: Unable to open com port. Please check com port parameters and/or hardware!!
+2021-01-20 12:17:25,832 CRITICAL ERROR: Unable to open com port. Please check com port parameters and/or hardware!!
