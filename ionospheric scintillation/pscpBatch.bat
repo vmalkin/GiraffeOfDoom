@@ -23,7 +23,7 @@ IF EXIST %uploadfile% PSCP -v -pw %server_pwd% %uploadfile% vaughn@dunedinaurora
 rem del %uploadfile%
 set uploadfile=""
 
-TIMEOUT 600
+TIMEOUT 1200
 GOTO runscp
 
 :end

@@ -1,5 +1,5 @@
 """
-To create simple scatterplot of S4 data
+To create simple scatterplot of S4 data_s4
 dependencies include Plotly, Kaleido, Pandas
 """
 import datetime

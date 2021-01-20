@@ -37,7 +37,7 @@ class QueryProcessor(Thread):
         Thread.__init__(self, name="QueryProcessor")
 
     def run(self):
-        # put query data processing stuff here. NO matplot unfortunatly
+        # put query data_s4 processing stuff here. NO matplot unfortunatly
         while True:
             print("***************************** Start Query Processor")
             try:
@@ -259,10 +259,10 @@ if __name__ == "__main__":
     regex_expression = "(\$\w\wGSV),.+"
 
     while True:
-        # Get com data
+        # Get com data_s4
         line = com.data_recieve()
 
-        # Parse com data for valid data GSV sentence ???GSV,
+        # Parse com data_s4 for valid data_s4 GSV sentence ???GSV,
         if re.match(regex_expression, line):
             sentence = nmea_sentence(line)
             # make sure GSV sentence is a multiple of 4
@@ -270,7 +270,7 @@ if __name__ == "__main__":
                 try:
                     satlist_input(sentence)
                 except:
-                    print("There was a problem inputting satellite data inot the lists in MAIN.PY")
+                    print("There was a problem inputting satellite data_s4 inot the lists in MAIN.PY")
                 counter = counter + 1
         else:
             print("Sentence did not pass regex")
