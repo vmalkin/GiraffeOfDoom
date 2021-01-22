@@ -42,10 +42,11 @@ def plot_polar(alt, az, s4):
     rval = (0,30,30,30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30 ,30, 0, 0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0)
     thval = (350,350,360,10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120 ,130, 130, 120, 110, 100, 90, 80, 70, 60, 50, 40, 30, 20, 10, 360, 350)
     fig.add_trace(go.Scatterpolar(r=rval, theta=thval, fill="toself"))
+    fig.add_trace(go.Scatterpolar(r=[90], theta=[0]))  # hacky!
     fig.add_annotation(x=0.8, y=0.75, text="Local Noise Zone", bordercolor="#c7c7c7", borderwidth=2, borderpad=4, bgcolor="#ff7f0e")
 
     fig.update_layout(polar=dict(angularaxis=dict(rotation=90, direction="clockwise", color="#000000")), showlegend=False)
-    fig.update_polars(radialaxis=dict(autorange="reversed", color="#f0f0f0"), bgcolor="#101010")
+    fig.update_polars(radialaxis=dict(autorange="reversed", color="#f0f0f0" ), bgcolor="#101010")
 
 
 

@@ -74,7 +74,7 @@ class QueryProcessor(Thread):
             # rings the terminal bell
             print("\a")
             print("******************************* End Query Processor")
-            time.sleep(60)
+            time.sleep(300)
 
 
 class Satellite:
