@@ -4,6 +4,7 @@ import plotly.graph_objects as go
 import constants as k
 from numpy import NaN
 import time
+import secrets
 
 # The max constellation ID number we could expect a satellite to report.
 constellation_id_max_value = 200
@@ -80,27 +81,51 @@ def create_constellation(starttime, nowtime):
     return c
 
 
+def randomnum():
+    returnvalue = "#"
+    colourstring =  secrets.token_hex(3)
+    returnvalue = returnvalue + colourstring
+    return str(returnvalue)
+
+
+def plot_s4_combo(satlist, tlabels):
+    fig = go.Figure()
+
+    for satellite in satlist:
+        fig.add_trace(go.Scatter(x=tlabels, y=satellite.data_s4, mode="lines", name=satellite.name, line=dict(width=1, color=randomnum())))
+
+    savefile = k.imagesdir + "//s4_combo.jpg"
+    plot_title = "S4 Index All satellites. http://DunedinAurora.NZ"
+    fig.update_yaxes(range=[1, 100], gridcolor='#505050')
+    fig.update_xaxes(nticks=24, tickangle=45, gridcolor='#505050')
+    fig.update_layout(width=3000, height=600, title=plot_title, xaxis_title="Date/time UTC", yaxis_title="SNR", plot_bgcolor="#101010", )
+    fig.write_image(file=savefile, format='jpg')
+
+
+def plot_snr_combo(satlist, tlabels):
+    fig = go.Figure()
+
+    for satellite in satlist:
+        fig.add_trace(go.Scatter(x=tlabels, y=satellite.data_snr, mode="lines", name=satellite.name, line=dict(width=1, color=randomnum())))
+
+    savefile = k.imagesdir + "//snr_combo.jpg"
+    plot_title = "SNR All satellites"
+    fig.update_yaxes(range=[1, 60], gridcolor='#505050')
+    fig.update_xaxes(nticks=24, tickangle=45, gridcolor='#505050')
+    fig.update_layout(width=3000, height=600, title=plot_title, xaxis_title="Date/time UTC", yaxis_title="SNR", plot_bgcolor="#101010", )
+    fig.write_image(file=savefile, format='jpg')
+
+
 def plot(satlist, tlabels):
     for satellite in satlist:
-        s4 = []
-        alt = []
-        snr = []
-
-        for s in satellite.data_s4:
-            s4.append(s)
-        for a in satellite.data_alt:
-            alt.append(a)
-        for n in satellite.data_snr:
-            snr.append(n)
-
         name = satellite.name
         savefile = k.imagesdir + "//" + satellite.name + ".jpg"
         plot_title = "S4 Index SatID: " + name
 
         fig = go.Figure()
-        fig.add_trace(go.Scatter(x=tlabels, y=s4, mode="lines", name="S4 Value", line=dict(width=1, color="#0090b0")))
-        fig.add_trace(go.Scatter(x=tlabels, y=alt, mode="lines", name="Altitude", line=dict(width=2, color="#f00000")))
-        fig.add_trace(go.Scatter(x=tlabels, y=snr, mode="lines", name="SNR", line=dict(width=1, color="#00ff00")))
+        fig.add_trace(go.Scatter(x=tlabels, y=satellite.data_s4, mode="lines", name="S4 Value", line=dict(width=1, color="#0090b0")))
+        fig.add_trace(go.Scatter(x=tlabels, y=satellite.data_alt, mode="lines", name="Altitude", line=dict(width=2, color="#f00000")))
+        fig.add_trace(go.Scatter(x=tlabels, y=satellite.data_snr, mode="lines", name="SNR", line=dict(width=1, color="#00ff00")))
 
         fig.update_yaxes(range=[1, 100], gridcolor='#505050')
         fig.update_xaxes(nticks=24, tickangle=45, gridcolor='#505050')
@@ -154,7 +179,9 @@ def wrapper(query):
         if satellite.update_flag is True:
             plotlist.append(satellite)
 
-    plot(plotlist, timelables)
+    # plot(plotlist, timelables)
+    plot_snr_combo(plotlist, timelables)
+    # plot_s4_combo(plotlist, timelables)
 
 
 

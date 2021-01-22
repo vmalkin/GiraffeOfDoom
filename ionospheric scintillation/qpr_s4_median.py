@@ -32,9 +32,9 @@ def plot_lineplot(xval, yval):
     savefile = k.imagesdir + "//avg.jpg"
     data = go.Scatter(x=xval, y = yval, mode="lines")
     fig = go.Figure(data)
-    fig.update_yaxes(range=[1, 70], gridcolor='#505050')
+    fig.update_yaxes(range=[1, 40], gridcolor='#505050')
     fig.update_xaxes(nticks=24, tickangle=45, gridcolor='#505050')
-    fig.update_layout(width=1700, height=600, title="S4 Avg Index, GPS & Glonass Constellations", xaxis_title="Date/time UTC", yaxis_title="S4 Index", plot_bgcolor="#101010")
+    fig.update_layout(width=1700, height=600, title="S4 Avg Index, GPS & Glonass Constellations. http://DunedinAurora.NZ", xaxis_title="Date/time UTC", yaxis_title="S4 Index", plot_bgcolor="#101010")
     fig.update_traces(line=dict(width=2, color="rgba(0,255,255,0.5)"))
     fig.write_image(file=savefile, format='jpg')
     # fig.show()
@@ -57,7 +57,7 @@ def wrapper(queryresults):
             tempvalues.append(value)
 
         if next_dt > now_dt:
-            medvalue = mean(tempvalues)
+            medvalue = median(tempvalues)
             dp = posix2utc(now_dt) + "," + str(medvalue)
             finallist.append(dp)
             xval.append(posix2utc(now_dt))

@@ -30,10 +30,10 @@ def plot_scatterplot(xvalues, yvalues):
     savefile = k.imagesdir + "//scatter.jpg"
     data = go.Scatter(x=xvalues, y=yvalues, mode='markers')
     fig = go.Figure(data)
-    fig.update_yaxes(range=[1, 20], gridcolor='#505050')
+    fig.update_yaxes(range=[1, 40], gridcolor='#505050')
     fig.update_xaxes(nticks=24, tickangle=45, gridcolor='#505050')
-    fig.update_layout(width=1700, height=600, title="S4 Indices, GPS & Glonass Constellations", xaxis_title="Date/time UTC", yaxis_title="S4 Index", plot_bgcolor="#101010")
-    fig.update_traces(marker=dict(size=5, color="rgba(0,255,255,0.2)", line=dict(width=5, color="rgba(0,200,255,0.1)")))
+    fig.update_layout(width=1700, height=900, title="S4 Indices, GPS & Glonass Constellations. http://DunedinAurora.NZ", xaxis_title="Date/time UTC", yaxis_title="S4 Index", plot_bgcolor="#101010")
+    fig.update_traces(marker=dict(size=3, color="rgba(255,255,255,0.6)", line=dict(width=5, color="rgba(0,255,255,0.3)")))
     # fig.update_traces(marker=dict(size=7, color="rgba(0,255,255,0.2)"))
     fig.write_image(file=savefile, format='jpg')
     # fig.show()

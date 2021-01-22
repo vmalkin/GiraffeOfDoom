@@ -12,6 +12,7 @@ import qpr_s4_scatter
 import qpr_s4_median
 import qpr_save_full_query
 import qpr_sat_plots
+import qpr_alt_az
 
 errorloglevel = logging.CRITICAL
 logging.basicConfig(filename="errors.log", format='%(asctime)s %(message)s', level=errorloglevel)
@@ -24,7 +25,7 @@ integration_time = 55
 # nullvalue = ""
 
 # readings below this altitude for satellites may be distorted due to multi-modal reflection
-optimum_altitude = 30
+optimum_altitude = 20
 
 # This is the query output that will be used to generate graphs and plots etc.
 querydata = []
@@ -64,10 +65,16 @@ class QueryProcessor(Thread):
                 print("\n" + "!!!!!!!!!  Satellite Plotter Failed  !!!!!!!!!" + "\n")
                 logging.warning("satellite plotter failed in MAIN.PY")
 
+            try:
+                qpr_alt_az.wrapper(querydata)
+            except:
+                print("\n" + "!!!!!!!!!  Alt-Az Plotter Failed  !!!!!!!!!" + "\n")
+                logging.warning("AltAz plotter failed in MAIN.PY")
+
             # rings the terminal bell
             print("\a")
             print("******************************* End Query Processor")
-            time.sleep(600)
+            time.sleep(60)
 
 
 class Satellite:
@@ -189,8 +196,16 @@ def satlist_input(gsv_sentence):
         satlist = glgsv
 
     for i in range(4, len(gsv_sentence) - 3, increment):
-        name = constellation + "_" + str(int(gsv_sentence[i]))
-        satID = int(gsv_sentence[i])
+        # needed as occasional cruft seems to be attached to this value and we need it to be an int
+        id = gsv_sentence[i]
+        id = id.strip()
+        if id[:1] == "0":
+            id = id[1:]
+        id = id + ".0"
+        id = int(float(id))
+        
+        name = constellation + "_" + str(id)
+        satID = (id)
         alt = gsv_sentence[i + 1]
         az = gsv_sentence[i + 2]
         snr = gsv_sentence[i + 3]
@@ -271,6 +286,7 @@ if __name__ == "__main__":
                     satlist_input(sentence)
                 except:
                     print("There was a problem inputting satellite data_s4 inot the lists in MAIN.PY")
+                    print(sentence)
                 counter = counter + 1
         else:
             print("Sentence did not pass regex")
