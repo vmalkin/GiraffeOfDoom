@@ -33,6 +33,7 @@ def plot_scatterplot(xvalues, yvalues):
     fig.update_yaxes(range=[1, 40], gridcolor='#505050')
     fig.update_xaxes(nticks=24, tickangle=45, gridcolor='#505050')
     fig.update_layout(width=1700, height=900, title="S4 Indices, GPS & Glonass Constellations. http://DunedinAurora.NZ", xaxis_title="Date/time UTC", yaxis_title="S4 Index", plot_bgcolor="#101010")
+    fig.update_layout(font=dict(size=22), title_font_size=22)
     fig.update_traces(marker=dict(size=3, color="rgba(255,255,255,0.6)", line=dict(width=5, color="rgba(0,255,255,0.3)")))
     # fig.update_traces(marker=dict(size=7, color="rgba(0,255,255,0.2)"))
     fig.write_image(file=savefile, format='jpg')
