@@ -58,7 +58,9 @@ def wrapper(queryresults):
             tempvalues.append(value)
 
         if next_dt > now_dt:
-            medvalue = median(tempvalues)
+            medvalue = 0
+            if sum(tempvalues) != 0:
+                medvalue = median(tempvalues)
             dp = posix2utc(now_dt) + "," + str(medvalue)
             finallist.append(dp)
             xval.append(posix2utc(now_dt))
