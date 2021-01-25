@@ -6,8 +6,9 @@ import datetime
 import plotly.graph_objects as go
 import constants as k
 import time
+import os
 
-
+timelapsesavefolder = k.imagesdir + "//timelapse"
 class SatelliteLabel():
     def __init__(self):
         self.id = None
@@ -37,6 +38,7 @@ def save_s4(filename, data):
 def plot_polar(alt, az, s4, label_alt, label_az, label_text):
     savefile = k.imagesdir + "//polar.jpg"
     data = go.Scatterpolar(r=alt, theta=az, mode='markers+text')
+
     # data = go.Scatterpolar(r=alt, theta=az, text=id, mode='markers')
     timenow = posix2utc(time.time(), '%H:%M')
     timestart = time.time() - (60*60)
@@ -67,15 +69,24 @@ def plot_polar(alt, az, s4, label_alt, label_az, label_text):
     #################################################################################################################################################
 
     fig.update_layout(polar=dict(angularaxis=dict(rotation=90, direction="clockwise", gridcolor="#505050", color="#000000")), showlegend=False)
-    fig.update_polars(radialaxis=dict(autorange="reversed", color="#909090", gridcolor="#505050"), bgcolor="#101010")
+    fig.update_polars(radialaxis_tickangle=270, radialaxis_angle=270, radialaxis=dict(autorange="reversed", color="#909090", gridcolor="#505050"), bgcolor="#101010")
+
     fig.write_image(file=savefile, format='jpg')
+    # create sequential images for logging
+    t_filename = str(posix2utc(time.time(), "%Y%m%d_%H%M")) + ".jpg"
+    cel = timelapsesavefolder + "//" + t_filename
+    fig.write_image(file=cel, format='jpg')
     # fig.show()
 
 
 # query format:
 # ('satID', posixtime, alt, az, s4, snr)
 def wrapper(queryresults):
+    if os.path.isdir(timelapsesavefolder) is False:
+        os.makedirs(timelapsesavefolder)
+
     duration_hrs = 1
+    snr_threshold = 0
     t = int(time.time() - (60 * 60 * duration_hrs))
     alt = []
     az = []
@@ -91,13 +102,14 @@ def wrapper(queryresults):
         snr = item[4]
 
         if sattime >= t:
-            alt.append(s_alt)
-            az.append(s_az)
-            if snr > 100:
-                s4.append(100)
-            else:
-                s4.append(snr)
-            # update the most recent sat data for labels
+            if snr >= snr_threshold:
+                alt.append(s_alt)
+                az.append(s_az)
+                if snr > 100:
+                    s4.append(100)
+                else:
+                    s4.append(snr)
+                # update the most recent sat data for labels
             labellist[s_satname] = [s_alt, s_az]
 
     labelalt = []
