@@ -51,7 +51,7 @@ void setup() {
   //mySerial.println(PMTK_SET_NMEA_OUTPUT_RMCGGA);
 //  mySerial.println(PMTK_SET_NMEA_OUTPUT_ALLDATA);
   mySerial.println(PMTK_SET_NMEA_OUTPUT_GSV);
-  mySerial.println(PMTK_SET_NMEA_UPDATE_10HZ);
+  mySerial.println(PMTK_SET_NMEA_UPDATE_1HZ);
  }
 
 

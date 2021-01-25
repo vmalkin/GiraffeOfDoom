@@ -74,8 +74,8 @@ class QueryProcessor(Thread):
             # rings the terminal bell
             print("\a")
             print("******************************* End Query Processor")
-            # time.sleep(300)
-            time.sleep(60)
+            time.sleep(300)
+            # time.sleep(60)
 
 
 class Satellite:
@@ -277,9 +277,11 @@ if __name__ == "__main__":
     while True:
         # Get com data_s4
         line = com.data_recieve()
+        # print(line[:6])
 
         # Parse com data_s4 for valid data_s4 GSV sentence ???GSV,
-        if re.match(regex_expression, line):
+        # if re.match(regex_expression, line):
+        if line[:6] == "$GPGSV" or line[:6] == "$GLGSV":
             sentence = nmea_sentence(line)
             # make sure GSV sentence is a multiple of 4
             if len(sentence) % 4 == 0:
@@ -291,6 +293,7 @@ if __name__ == "__main__":
                 counter = counter + 1
         else:
             print("Sentence did not pass regex")
+            print(line)
 
         # Process and reset things!
         nowtimer = time.time()
