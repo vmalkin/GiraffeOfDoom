@@ -65,17 +65,17 @@ class QueryProcessor(Thread):
                 print("\n" + "!!!!!!!!!  Satellite Plotter Failed  !!!!!!!!!" + "\n")
                 logging.warning("satellite plotter failed in MAIN.PY")
 
-            try:
-                qpr_alt_az.wrapper(querydata)
-            except:
-                print("\n" + "!!!!!!!!!  Alt-Az Plotter Failed  !!!!!!!!!" + "\n")
-                logging.warning("AltAz plotter failed in MAIN.PY")
+            # try:
+            qpr_alt_az.wrapper(querydata)
+            # except:
+            #     print("\n" + "!!!!!!!!!  Alt-Az Plotter Failed  !!!!!!!!!" + "\n")
+            #     logging.warning("AltAz plotter failed in MAIN.PY")
 
             # rings the terminal bell
             print("\a")
             print("******************************* End Query Processor")
-            time.sleep(300)
-            # time.sleep(60)
+            # time.sleep(300)
+            time.sleep(60)
 
 
 class Satellite:
