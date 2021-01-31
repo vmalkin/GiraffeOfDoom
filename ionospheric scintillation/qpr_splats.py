@@ -1,7 +1,6 @@
 """
-To create simple scatterplot of S4 data_s4
 dependencies include Plotly, Kaleido, Pandas
-This code creates polar plot of satellite positions with a trail of the last 1 hour of S4 readings
+This file creates a polar plot of the alt/az of S4 values over "normal" for the past 24 hours
 """
 import datetime
 import plotly.graph_objects as go

@@ -1,3 +1,4 @@
+#  The raw query output is saved as an CSV file
 import datetime
 
 timeformat = '%Y-%m-%d %H:%M'
