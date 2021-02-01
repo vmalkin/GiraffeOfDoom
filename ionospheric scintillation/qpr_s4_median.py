@@ -44,6 +44,7 @@ def plot_lineplot(xval, yval):
 # query format:
 # ('satID', posixtime, alt, az, s4, snr)
 def wrapper(queryresults):
+    altitude_s4 = 40
     finallist = []
     tempvalues = []
     xval = []
@@ -55,7 +56,9 @@ def wrapper(queryresults):
         next_dt = queryresults[i + 1][1]
         value = queryresults[i][4]
         if next_dt == now_dt:
-            tempvalues.append(value)
+            # only values over altitude for S4 considered
+            if queryresults[i][2] > altitude_s4:
+                tempvalues.append(value)
 
         if next_dt > now_dt:
             medvalue = 0

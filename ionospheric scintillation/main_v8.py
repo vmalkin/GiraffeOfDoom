@@ -13,6 +13,8 @@ import qpr_s4_median
 import qpr_save_full_query
 import qpr_sat_plots
 import qpr_alt_az
+import qpr_24hr_tracks
+import qpr_splats
 
 errorloglevel = logging.CRITICAL
 logging.basicConfig(filename="errors.log", format='%(asctime)s %(message)s', level=errorloglevel)
@@ -20,12 +22,12 @@ logging.basicConfig(filename="errors.log", format='%(asctime)s %(message)s', lev
 com = mgr_comport.SerialManager(k.portName, k.baudrate, k.bytesize, k.parity, k.stopbits, k.timeout, k.xonxoff, k.rtscts, k.writeTimeout, k.dsrdtr, k.interCharTimeout)
 timeformat = '%Y-%m-%d %H:%M:%S'
 sat_database = "gps_satellites.db"
-integration_time = 55
+integration_time = 30
 # duration = 60*60*24
 # nullvalue = ""
 
 # readings below this altitude for satellites may be distorted due to multi-modal reflection
-optimum_altitude = 20
+optimum_altitude = 25
 
 # This is the query output that will be used to generate graphs and plots etc.
 querydata = []
@@ -70,6 +72,20 @@ class QueryProcessor(Thread):
             except:
                 print("\n" + "!!!!!!!!!  Alt-Az Plotter Failed  !!!!!!!!!" + "\n")
                 logging.warning("AltAz plotter failed in MAIN.PY")
+
+            try:
+                qpr_24hr_tracks.wrapper(querydata)
+            except:
+                print("\n" + "!!!!!!!!!  24hr Track Plotter Failed  !!!!!!!!!" + "\n")
+                logging.warning("24hr Track failed in MAIN.PY")
+
+            try:
+                qpr_splats.wrapper(querydata)
+            except:
+                print("\n" + "!!!!!!!!!  Noise Plotter Failed  !!!!!!!!!" + "\n")
+                logging.warning("Noise Event Plotter failed in MAIN.PY")
+
+
 
             # rings the terminal bell
             print("\a")

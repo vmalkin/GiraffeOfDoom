@@ -1,13 +1,15 @@
 """
+To create simple scatterplot of S4 data_s4
 dependencies include Plotly, Kaleido, Pandas
-This file creates a polar plot of the alt/az of S4 values over "normal" for the past 24 hours
+This code creates polar plot of satellite positions with a trail of the last 24 hour
 """
 import datetime
 import plotly.graph_objects as go
 import constants as k
 import time
+import os
 
-# timelapsesavefolder = k.imagesdir + "//timelapse"
+timelapsesavefolder = k.imagesdir + "//timelapse"
 class SatelliteLabel():
     def __init__(self):
         self.id = None
@@ -34,23 +36,33 @@ def save_s4(filename, data):
         print("CSV file being used by another app. Update next time")
 
 
-def plot_polar(alt, az, s4):
-    savefile = k.imagesdir + "//splat.jpg"
+def plot_polar(alt, az, label_alt, label_az, label_text):
+    savefile = k.imagesdir + "//24hr_tracks.jpg"
     data = go.Scatterpolar(r=alt, theta=az, mode='markers+text')
 
-    event_count = str(len(s4))
+    # data = go.Scatterpolar(r=alt, theta=az, text=id, mode='markers')
     timenow = posix2utc(time.time(), '%H:%M')
     timestart = time.time() - (60*60)
     timestart = posix2utc(timestart, '%H:%M')
     date = posix2utc(time.time(), "%Y-%m-%d")
-    plottitle = "GPS Noise. " + event_count + " events. <br>24 Hours. " + date +  "<br>" "Updated " + timenow +  " UTC.<br>http://DunedinAurora.NZ"
+    plottitle = "GPS tracks. " + date +  "<br>Last 24 Hours. Plotted at " + timenow +  " UTC.<br>http://DunedinAurora.NZ"
     fig = go.Figure(data)
 
     fig.update_layout(width=1200, height=1200, title=plottitle)
     fig.update_layout(font=dict(size=22), title_font_size=22)
     # default markers
     # fig.update_traces(marker=dict(size=s4, color="rgba(0,155,200,1)", line=dict(width=1, color="rgba(255,255,255,1)")))
-    fig.update_traces(marker=dict(size=s4, color="darkgoldenrod", line=dict(width=1, color="yellow")))
+    fig.update_traces(marker=dict(size=5, color="rgba(0,155,200,1)", line=dict(width=1, color="rgba(255,255,255,1)")))
+
+
+    ####################################################### Satellite ID markers  ###################################################################
+    fig.add_trace(go.Scatterpolar(
+        r=label_alt, theta=label_az, mode='markers+text', marker_symbol="circle",
+        text=label_text, textposition="top center", textfont=dict(size=16, color="#ffffff"),
+        marker=dict(size=15, color="#ffffff")
+        ))
+    #################################################################################################################################################
+
 
     ####################################################### Zone of local noise #####################################################################
     rval = (0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0)
@@ -71,26 +83,49 @@ def plot_polar(alt, az, s4):
                       bgcolor="#101010")
 
     fig.write_image(file=savefile, format='jpg')
+    # create sequential images for logging
+    t_filename = str(posix2utc(time.time(), "%Y%m%d_%H%M")) + ".jpg"
+    cel = timelapsesavefolder + "//" + t_filename
+    fig.write_image(file=cel, format='jpg')
+    # fig.show()
+
 
 # query format:
 # ('satID', posixtime, alt, az, s4, snr)
 def wrapper(queryresults):
-    splat_threshold = 25
+    if os.path.isdir(timelapsesavefolder) is False:
+        os.makedirs(timelapsesavefolder)
+
+    duration_hrs = 24
+    snr_threshold = 0
+    t = int(time.time() - (60 * 60 * duration_hrs))
     alt = []
     az = []
-    s4 = []
+    labellist = {}
 
     # Get noise data
     for item in queryresults:
+        s_satname = item[0]
+        sattime = item[1]
         s_alt = item[2]
         s_az = item[3]
-        s_s4 = item[4]
-        if s_s4 > splat_threshold:
-            if s_s4 > 50:
-                s_s4 = 70
-            alt.append(s_alt)
-            az.append(s_az)
-            s4.append(s_s4)
+        snr = item[4]
 
-    plot_polar(alt, az, s4)
+        if sattime >= t:
+            if snr >= snr_threshold:
+                alt.append(s_alt)
+                az.append(s_az)
+                # update the most recent sat data for labels
+            labellist[s_satname] = [s_alt, s_az]
 
+    labelalt = []
+    labelaz = []
+    labeltext = []
+    # parse out label data
+    for item in labellist:
+        labeltext.append(item)
+        labelalt.append(labellist[item][0])
+        labelaz.append(labellist[item][1])
+
+    plot_polar(alt, az, labelalt, labelaz, labeltext)
+    # plot_scatterplot(alt, az, s4)

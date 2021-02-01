@@ -52,6 +52,8 @@ def plot_polar(alt, az, s4, label_alt, label_az, label_text):
     fig.update_layout(font=dict(size=22), title_font_size=22)
     # default markers
     fig.update_traces(marker=dict(size=s4, color="rgba(0,155,200,1)", line=dict(width=1, color="rgba(255,255,255,1)")))
+    # fig.update_traces(marker=dict(size=5, color="rgba(0,155,200,1)", line=dict(width=1, color="rgba(255,255,255,1)")))
+
 
     ####################################################### Satellite ID markers  ###################################################################
     fig.add_trace(go.Scatterpolar(
@@ -61,20 +63,13 @@ def plot_polar(alt, az, s4, label_alt, label_az, label_text):
         ))
     #################################################################################################################################################
 
-    # ####################################################### Zone of local noise #####################################################################
-    # rval = (0,30,30,30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30 ,30, 0, 0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0)
-    # thval = (350,350,360,10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120 ,130, 130, 120, 110, 100, 90, 80, 70, 60, 50, 40, 30, 20, 10, 360, 350)
-    # fig.add_trace(go.Scatterpolar(r=rval, theta=thval, line_color="green", fill="toself"))
-    # fig.add_trace(go.Scatterpolar(r=[89], theta=[0], line_color="black"))  # hacky!
-    # fig.add_annotation(x=0.8, y=0.75, text="Local Noise Zone", bordercolor="#00c700", borderwidth=2, borderpad=4, bgcolor="#20f00e")
-    # #################################################################################################################################################
 
     ####################################################### Zone of local noise #####################################################################
     rval = (0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0)
     thval = (0,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,210,220,230,240,250,260,270,280,290,300,310,320,330,340,350,0)
     fig.add_trace(go.Scatterpolar(r=rval, theta=thval, line_color="green", fill="none"))
 
-    rval = (35,35,35,35,35,35,35,35,35,35,35,35,35,35,35,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,35,35,35)
+    rval = (50,50,50,50,50,50,50,50,35,35,35,35,35,35,35,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,35,35,35)
     thval = (0,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,210,220,230,240,250,260,270,280,290,300,310,320,330,340,350,0)
     fig.add_trace(go.Scatterpolar(r=rval, theta=thval, line_color="green", fill="tonext"))
 
@@ -88,6 +83,7 @@ def plot_polar(alt, az, s4, label_alt, label_az, label_text):
                       bgcolor="#101010")
 
     fig.write_image(file=savefile, format='jpg')
+
     # create sequential images for logging
     t_filename = str(posix2utc(time.time(), "%Y%m%d_%H%M")) + ".jpg"
     cel = timelapsesavefolder + "//" + t_filename
