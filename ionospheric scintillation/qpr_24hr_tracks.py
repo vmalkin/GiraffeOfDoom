@@ -52,7 +52,7 @@ def plot_polar(alt, az, label_alt, label_az, label_text):
     fig.update_layout(font=dict(size=22), title_font_size=22)
     # default markers
     # fig.update_traces(marker=dict(size=s4, color="rgba(0,155,200,1)", line=dict(width=1, color="rgba(255,255,255,1)")))
-    fig.update_traces(marker=dict(size=5, color="rgba(0,155,200,1)", line=dict(width=1, color="rgba(255,255,255,1)")))
+    fig.update_traces(marker=dict(size=3, color="rgba(255,100,0,1)", line=dict(width=1, color="rgba(255,255,255,1)")))
 
 
     ####################################################### Satellite ID markers  ###################################################################
@@ -83,11 +83,7 @@ def plot_polar(alt, az, label_alt, label_az, label_text):
                       bgcolor="#101010")
 
     fig.write_image(file=savefile, format='jpg')
-    # create sequential images for logging
-    t_filename = str(posix2utc(time.time(), "%Y%m%d_%H%M")) + ".jpg"
-    cel = timelapsesavefolder + "//" + t_filename
-    fig.write_image(file=cel, format='jpg')
-    # fig.show()
+
 
 
 # query format:

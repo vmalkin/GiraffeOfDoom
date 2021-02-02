@@ -18,7 +18,7 @@
 // Connect the GPS RX (receive) pin to Digital 8
 
 // You can change the pin numbers to match your wiring:
-SoftwareSerial mySerial(7, 8);
+SoftwareSerial mySerial(8, 7);
 
 #define PMTK_SET_NMEA_UPDATE_1HZ  "$PMTK220,1000*1F"
 #define PMTK_SET_NMEA_UPDATE_5HZ  "$PMTK220,200*2C"
@@ -34,7 +34,7 @@ SoftwareSerial mySerial(7, 8);
 #define PMTK_SET_NMEA_OUTPUT_GSV "$PMTK314,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0*29"
 // turn off output
 #define PMTK_SET_NMEA_OUTPUT_OFF "$PMTK314,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0*28"
-
+#define PGCMD_NOANTENNA "$PGCMD,33,0*6D" 
 #define PMTK_Q_RELEASE "$PMTK605*31"
 
 void setup() {
@@ -43,15 +43,11 @@ void setup() {
   Serial.begin(57600); // this baud rate doesn't actually matter!
   mySerial.begin(9600);
   delay(2000);
-//  Serial.println("Get version!");
-//  mySerial.println(PMTK_Q_RELEASE);
   
   mySerial.println(PMTK_RESET);
   // you can send various commands to get it started
-  //mySerial.println(PMTK_SET_NMEA_OUTPUT_RMCGGA);
-//  mySerial.println(PMTK_SET_NMEA_OUTPUT_ALLDATA);
   mySerial.println(PMTK_SET_NMEA_OUTPUT_GSV);
-  mySerial.println(PMTK_SET_NMEA_UPDATE_1HZ);
+  mySerial.println(PGCMD_NOANTENNA);
  }
 
 

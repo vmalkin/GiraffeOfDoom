@@ -75,7 +75,7 @@ def plot_polar(alt, az, s4):
 # query format:
 # ('satID', posixtime, alt, az, s4, snr)
 def wrapper(queryresults):
-    splat_threshold = 25
+    splat_threshold = 40
     alt = []
     az = []
     s4 = []
