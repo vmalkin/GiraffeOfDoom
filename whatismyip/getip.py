@@ -14,11 +14,9 @@ def importdata():
     return ipaddress
 
 def savetofile(datastring):
-    savefile = "ip.txt"
-    try:
-        os.remove(savefile)
-    except OSError:
-        print("WARNING: could not delete " + savefile)
+    savefile = "/home/vmalkin/Magnetometer/publish/ip.txt"
+    # savefile = "ip.txt"
+
     try:
         with open (savefile,'w') as f:
             f.write(datastring)

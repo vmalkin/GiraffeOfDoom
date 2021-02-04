@@ -73,7 +73,7 @@ def plot_polar(alt, az, s4, label_alt, label_az, label_text):
     thval = (0,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,210,220,230,240,250,260,270,280,290,300,310,320,330,340,350,0)
     fig.add_trace(go.Scatterpolar(r=rval, theta=thval, line_color="green", fill="tonext"))
 
-    fig.add_trace(go.Scatterpolar(r=[89], theta=[0], line_color="black"))  # hacky!
+    fig.add_trace(go.Scatterpolar(r=[90], theta=[0], line_color="black"))  # hacky!
     fig.add_annotation(x=0.8, y=0.75, text="Local Noise Zone", bordercolor="#00c700", borderwidth=2, borderpad=4, bgcolor="#20f00e")
     #################################################################################################################################################
 
