@@ -34,7 +34,7 @@ def save_s4(filename, data):
         print("CSV file being used by another app. Update next time")
 
 
-def plot_polar(alt, az, s4):
+def plot_polar(alt, az, s4, splat_threshold):
     savefile = k.imagesdir + "//splat.jpg"
     data = go.Scatterpolar(r=alt, theta=az, mode='markers+text')
 
@@ -43,7 +43,7 @@ def plot_polar(alt, az, s4):
     timestart = time.time() - (60*60)
     timestart = posix2utc(timestart, '%H:%M')
     date = posix2utc(time.time(), "%Y-%m-%d")
-    plottitle = "GPS Noise. " + event_count + " events. <br>24 Hours. " + date +  "<br>" "Updated " + timenow +  " UTC.<br>http://DunedinAurora.NZ"
+    plottitle = "GPS Noise. " + str(event_count) + " events above S4 =  " + str(splat_threshold) +  "<br>24 Hour plot. " + date +  "<br>" "Updated " + timenow +  " UTC.<br>http://DunedinAurora.NZ"
     fig = go.Figure(data)
 
     fig.update_layout(width=1200, height=1200, title=plottitle)
@@ -92,5 +92,5 @@ def wrapper(queryresults):
             az.append(s_az)
             s4.append(s_s4)
 
-    plot_polar(alt, az, s4)
+    plot_polar(alt, az, s4, splat_threshold)
 

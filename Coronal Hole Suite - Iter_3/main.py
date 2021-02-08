@@ -18,7 +18,7 @@ forecaster = mgr_forecast.Forecaster()
 common_data.report_string = ""
 
 if __name__ == "__main__":
-#    while True:
+    # while True:
     # reset the resport string
     common_data.report_string = ""
 
@@ -59,5 +59,5 @@ if __name__ == "__main__":
             w.write(common_data.report_string + '\n')
 
         # Pause for an hour
-#        time.sleep(3600)
+        # time.sleep(3600)
 
