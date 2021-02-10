@@ -72,6 +72,9 @@ def plot_polar(alt, az, s4, splat_threshold):
 
     fig.write_image(file=savefile, format='jpg')
 
+def create_colourway(posixtime):
+    pass
+
 # query format:
 # ('satID', posixtime, alt, az, s4, snr)
 def wrapper(queryresults):

@@ -1,5 +1,5 @@
 # Comm port parameters - uncomment and change one of the portNames depending on your OS
-portName = 'Com39' # Windows
+portName = 'Com10' # Windows
 # portName = '/dev/tty.usbserial-A702O0K9' #MacOS
 # portName = "/dev/cu.usbmodem1421"
 # portName = '/dev/ttyUSB0'
