@@ -34,7 +34,7 @@ def save_s4(filename, data):
         print("CSV file being used by another app. Update next time")
 
 
-def plot_polar(alt, az, s4, splat_threshold):
+def plot_polar(alt, az, s4, colours, splat_threshold):
     savefile = k.imagesdir + "//splat.jpg"
     data = go.Scatterpolar(r=alt, theta=az, mode='markers+text')
 
@@ -50,7 +50,7 @@ def plot_polar(alt, az, s4, splat_threshold):
     fig.update_layout(font=dict(size=22), title_font_size=22)
     # default markers
     # fig.update_traces(marker=dict(size=s4, color="rgba(0,155,200,1)", line=dict(width=1, color="rgba(255,255,255,1)")))
-    fig.update_traces(marker=dict(size=s4, color="darkgoldenrod", line=dict(width=1, color="yellow")))
+    fig.update_traces(marker=dict(size=s4, color=colours, line=dict(width=1, color="yellow")))
 
     ####################################################### Zone of local noise #####################################################################
     rval = (0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0)
@@ -73,7 +73,11 @@ def plot_polar(alt, az, s4, splat_threshold):
     fig.write_image(file=savefile, format='jpg')
 
 def create_colourway(posixtime):
-    pass
+    nowtime = float(time.time())
+    index = 1 - round(((nowtime - posixtime) /  86400), 8)
+    clr = "rgba(184, 134, 11," + str(index) + ")"
+    # print(index)
+    return clr
 
 # query format:
 # ('satID', posixtime, alt, az, s4, snr)
@@ -82,9 +86,11 @@ def wrapper(queryresults):
     alt = []
     az = []
     s4 = []
+    colours = []
 
     # Get noise data
     for item in queryresults:
+        s_time = item[1]
         s_alt = item[2]
         s_az = item[3]
         s_s4 = item[4]
@@ -94,6 +100,7 @@ def wrapper(queryresults):
             alt.append(s_alt)
             az.append(s_az)
             s4.append(s_s4)
+            colours.append(create_colourway(s_time))
 
-    plot_polar(alt, az, s4, splat_threshold)
+    plot_polar(alt, az, s4, colours, splat_threshold)
 
