@@ -7,6 +7,18 @@ import plotly.graph_objects as go
 import constants as k
 import time
 
+# Used in legend and chart series
+colourdict = {
+    0: "#16164e",
+    1: "#212170",
+    2: "#0b410b",
+    3: "#245513",
+    4: "#009700",
+    5: "#b7770d",
+    6: "#f7bc5b",
+    7: "#ffffff"
+}
+
 # timelapsesavefolder = k.imagesdir + "//timelapse"
 class SatelliteLabel():
     def __init__(self):
@@ -40,17 +52,18 @@ def plot_polar(alt, az, s4, colours, splat_threshold):
 
     event_count = str(len(s4))
     timenow = posix2utc(time.time(), '%H:%M')
-    timestart = time.time() - (60*60)
-    timestart = posix2utc(timestart, '%H:%M')
+    # timestart = time.time() - (60*60)
+    # timestart = posix2utc(timestart, '%H:%M')
     date = posix2utc(time.time(), "%Y-%m-%d")
     plottitle = "GPS Noise. " + str(event_count) + " events above S4 =  " + str(splat_threshold) +  "<br>24 Hour plot. " + date +  "<br>" "Updated " + timenow +  " UTC.<br>http://DunedinAurora.NZ"
     fig = go.Figure(data)
 
-    fig.update_layout(width=1200, height=1200, title=plottitle)
+    fig.update_layout(width=1500, height=1200, title=plottitle)
     fig.update_layout(font=dict(size=22), title_font_size=22)
+    fig.update_layout(legend_title_text="Data Age")
     # default markers
-    # fig.update_traces(marker=dict(size=s4, color="rgba(0,155,200,1)", line=dict(width=1, color="rgba(255,255,255,1)")))
-    fig.update_traces(marker=dict(size=s4, color=colours, line=dict(width=1, color="yellow")))
+    fig.update_traces(marker=dict(size=s4, color="rgba(0,0,0,0)", line=dict(width=6, color=colours)))
+    # fig.update_traces(marker=dict(size=s4, color=colours, line=dict(width=1, color="black")))
 
     ####################################################### Zone of local noise #####################################################################
     rval = (0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0)
@@ -70,13 +83,20 @@ def plot_polar(alt, az, s4, colours, splat_threshold):
                       radialaxis=dict(autorange="reversed", color="#909090", gridcolor="#505050", range=[0, 90]),
                       bgcolor="#101010")
 
+    fig.add_annotation(x=1, y=0.65, text="Data Age", font=dict(color="#000000", size=28), borderwidth=0, bordercolor="#000000", borderpad=4, bgcolor="#ffffff")
+    for i in range(0, len(colourdict)):
+        y_location = (0.07 * i) + 0.1
+        j = 8 - i
+        text = str(j * 3 - 3) + " to " + str(j * 3) + " hrs"
+        fig.add_annotation(x=1, y=y_location, text=text, font=dict(color="#000000", size=22), borderwidth=12, bordercolor=colourdict[i], borderpad=6,)
+
     fig.write_image(file=savefile, format='jpg')
 
 def create_colourway(posixtime):
-    nowtime = float(time.time())
-    index = 1 - round(((nowtime - posixtime) /  86400), 8)
-    clr = "rgba(184, 134, 11," + str(index) + ")"
-    # print(index)
+    #  dictionary for 3hr bins
+    epochstart = time.time() - 86400
+    index = int((posixtime - epochstart) / 10800)
+    clr = colourdict[index]
     return clr
 
 # query format:
