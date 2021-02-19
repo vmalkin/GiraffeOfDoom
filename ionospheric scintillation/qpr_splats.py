@@ -70,7 +70,7 @@ def plot_polar(alt, az, s4, colours, splat_threshold):
     thval = (0,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,210,220,230,240,250,260,270,280,290,300,310,320,330,340,350,0)
     fig.add_trace(go.Scatterpolar(r=rval, theta=thval, line_color="green", fill="none"))
 
-    rval = (20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20)
+    rval = (40,40,40,40,40,40,40,40,40,40,40,40,40,40,40,40,40,40,40,40,40,40,40,40,40,40,40,40,40,40,40,40,40,40,40,40,40)
     thval = (0,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,210,220,230,240,250,260,270,280,290,300,310,320,330,340,350,0)
     fig.add_trace(go.Scatterpolar(r=rval, theta=thval, line_color="green", fill="tonext"))
 
@@ -105,6 +105,7 @@ def create_colourway(posixtime):
 # ('satID', posixtime, alt, az, s4, snr)
 def wrapper(queryresults):
     splat_threshold = 40
+    splat_altitude = 40
     alt = []
     az = []
     s4 = []
@@ -117,12 +118,13 @@ def wrapper(queryresults):
         s_az = item[3]
         s_s4 = item[4]
         if s_s4 > splat_threshold:
-            if s_s4 > 50:
-                s_s4 = 70
-            alt.append(s_alt)
-            az.append(s_az)
-            s4.append(s_s4)
-            colours.append(create_colourway(s_time))
+            if s_alt >= splat_altitude:
+                if s_s4 > 50:
+                    s_s4 = 70
+                alt.append(s_alt)
+                az.append(s_az)
+                s4.append(s_s4)
+                colours.append(create_colourway(s_time))
 
     plot_polar(alt, az, s4, colours, splat_threshold)
 
