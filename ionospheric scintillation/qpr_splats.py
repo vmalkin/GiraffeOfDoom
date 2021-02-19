@@ -9,11 +9,11 @@ import time
 
 # Used in legend and chart series
 colourdict = {
-    0: "#16164e",
-    1: "#212170",
-    2: "#0b410b",
-    3: "#245513",
-    4: "#009700",
+    0: "#444444",
+    1: "#0c2256",
+    2: "#1742a4",
+    3: "#005900",
+    4: "#00c100",
     5: "#b7770d",
     6: "#f7bc5b",
     7: "#ffffff"
@@ -70,12 +70,14 @@ def plot_polar(alt, az, s4, colours, splat_threshold):
     thval = (0,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,210,220,230,240,250,260,270,280,290,300,310,320,330,340,350,0)
     fig.add_trace(go.Scatterpolar(r=rval, theta=thval, line_color="green", fill="none"))
 
-    rval = (40,40,40,40,40,40,40,40,40,40,40,40,40,40,40,40,40,40,40,40,40,40,40,40,40,40,40,40,40,40,40,40,40,40,40,40,40)
+    rval = (20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20)
     thval = (0,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,210,220,230,240,250,260,270,280,290,300,310,320,330,340,350,0)
     fig.add_trace(go.Scatterpolar(r=rval, theta=thval, line_color="green", fill="tonext"))
 
     fig.add_trace(go.Scatterpolar(r=[90], theta=[0], line_color="black"))  # hacky!
-    fig.add_annotation(x=0.8, y=0.75, text="Local Noise Zone", bordercolor="#00c700", borderwidth=2, borderpad=4, bgcolor="#20f00e")
+    fig.add_annotation(x=0.18, y=0.58, text="Trees", bordercolor="#00c700", borderwidth=2, borderpad=4, bgcolor="#20f00e")
+    fig.add_annotation(x=0.27, y=0.8, text="Trees", bordercolor="#00c700", borderwidth=2, borderpad=4, bgcolor="#20f00e")
+    fig.add_annotation(x=0.27, y=0.17, text="Pine Tree", bordercolor="#00c700", borderwidth=2, borderpad=4, bgcolor="#20f00e")
     #################################################################################################################################################
 
     fig.update_layout(polar=dict(angularaxis=dict(rotation=90, direction="clockwise", gridcolor="#505050", color="#000000")), showlegend=False)
@@ -102,10 +104,6 @@ def create_colourway(posixtime):
 # query format:
 # ('satID', posixtime, alt, az, s4, snr)
 def wrapper(queryresults):
-    # avoid low altitude obstructions. This could be different to the default altitude for multipath.
-    splat_altitiude = 40
-
-    # value above which we record an instance of noise.
     splat_threshold = 40
     alt = []
     az = []
@@ -118,15 +116,13 @@ def wrapper(queryresults):
         s_alt = item[2]
         s_az = item[3]
         s_s4 = item[4]
-
         if s_s4 > splat_threshold:
-            if s_alt > splat_altitiude:
-                if s_s4 > 50:
-                    s_s4 = 70
-                alt.append(s_alt)
-                az.append(s_az)
-                s4.append(s_s4)
-                colours.append(create_colourway(s_time))
+            if s_s4 > 50:
+                s_s4 = 70
+            alt.append(s_alt)
+            az.append(s_az)
+            s4.append(s_s4)
+            colours.append(create_colourway(s_time))
 
     plot_polar(alt, az, s4, colours, splat_threshold)
 
