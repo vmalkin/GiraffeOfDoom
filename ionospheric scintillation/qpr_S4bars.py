@@ -4,8 +4,8 @@ This file creates a polar plot of the alt/az of S4 values over "normal" for the 
 """
 import datetime
 import plotly.graph_objects as go
-import constants as k
 import time
+import constants as k
 
 # Used in legend and chart series
 colourdict = {
@@ -20,12 +20,12 @@ colourdict = {
 }
 
 # timelapsesavefolder = k.imagesdir + "//timelapse"
-class SatelliteLabel():
-    def __init__(self):
-        self.id = None
-        self.posixtime = None
-        self.alt = None
-        self.az = None
+# class SatelliteLabel():
+#     def __init__(self):
+#         self.id = None
+#         self.posixtime = None
+#         self.alt = None
+#         self.az = None
 
 def posix2utc(posixtime, timeformat):
     # '%Y-%m-%d %H:%M'
@@ -46,71 +46,33 @@ def save_s4(filename, data):
         print("CSV file being used by another app. Update next time")
 
 
-def plot_polar(alt, az, s4, colours, splat_threshold):
-    savefile = k.imagesdir + "//splat.jpg"
-    data = go.Scatterpolar(r=alt, theta=az, mode='markers+text')
-
-    event_count = str(len(s4))
-    timenow = posix2utc(time.time(), '%H:%M')
-    # timestart = time.time() - (60*60)
-    # timestart = posix2utc(timestart, '%H:%M')
-    date = posix2utc(time.time(), "%Y-%m-%d")
-    plottitle = "GPS Noise. " + str(event_count) + " events above S4 =  " + str(splat_threshold) +  "<br>24 Hour plot. " + date +  "<br>" "Updated " + timenow +  " UTC.<br>http://DunedinAurora.NZ"
-    fig = go.Figure(data)
-
-    fig.update_layout(width=1500, height=1200, title=plottitle)
-    fig.update_layout(font=dict(size=22), title_font_size=22)
-    fig.update_layout(legend_title_text="Data Age")
-    # default markers
-    fig.update_traces(marker=dict(size=s4, color="rgba(0,0,0,0)", line=dict(width=6, color=colours)))
-    # fig.update_traces(marker=dict(size=s4, color=colours, line=dict(width=1, color="black")))
-
-    ####################################################### Zone of local noise #####################################################################
-    rval = (0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0)
-    thval = (0,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,210,220,230,240,250,260,270,280,290,300,310,320,330,340,350,0)
-    fig.add_trace(go.Scatterpolar(r=rval, theta=thval, line_color="green", fill="none"))
-
-    rval = (40,40,40,40,40,40,40,40,40,40,40,40,40,40,40,40,40,40,40,40,40,40,40,40,40,40,40,40,40,40,40,40,40,40,40,40,40)
-    thval = (0,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,210,220,230,240,250,260,270,280,290,300,310,320,330,340,350,0)
-    fig.add_trace(go.Scatterpolar(r=rval, theta=thval, line_color="green", fill="tonext"))
-
-    fig.add_trace(go.Scatterpolar(r=[90], theta=[0], line_color="black"))  # hacky!
-    fig.add_annotation(x=0.18, y=0.58, text="Trees", bordercolor="#00c700", borderwidth=2, borderpad=4, bgcolor="#20f00e")
-    fig.add_annotation(x=0.27, y=0.8, text="Trees", bordercolor="#00c700", borderwidth=2, borderpad=4, bgcolor="#20f00e")
-    fig.add_annotation(x=0.27, y=0.17, text="Pine Tree", bordercolor="#00c700", borderwidth=2, borderpad=4, bgcolor="#20f00e")
-    #################################################################################################################################################
-
-    fig.update_layout(polar=dict(angularaxis=dict(rotation=90, direction="clockwise", gridcolor="#505050", color="#000000")), showlegend=False)
-    fig.update_polars(radialaxis_tickangle=270, radialaxis_angle=270,
-                      radialaxis=dict(autorange="reversed", color="#909090", gridcolor="#505050", range=[0, 90]),
-                      bgcolor="#101010")
-
-    fig.add_annotation(x=1, y=0.65, text="Data Age", font=dict(color="#000000", size=28), borderwidth=0, bordercolor="#000000", borderpad=4, bgcolor="#ffffff")
-    for i in range(0, len(colourdict)):
-        y_location = (0.07 * i) + 0.1
-        j = 8 - i
-        text = str(j * 3 - 3) + " to " + str(j * 3) + " hrs"
-        fig.add_annotation(x=1, y=y_location, text=text, font=dict(color="#000000", size=22), borderwidth=12, bordercolor=colourdict[i], borderpad=6,)
-
+def plot(ut, da):
+    # Here we're using Plotly's grouping function to bin our data into hours. It does this by the time format.
+    savefile = k.imagesdir + "//count_s4.jpg"
+    data = [go.Bar(x=ut, y=da)]
+    layout = go.Layout(barmode="group")
+    fig = go.Figure(data=data, layout=layout)
+    fig.update_layout(width=800, height=500, title="S4 count", xaxis_title="Date/time UTC", yaxis_title="Count S4.", plot_bgcolor="#101010", )
+    fig.update_yaxes(range=[0, 600], gridcolor='#505050')
+    fig.update_xaxes(nticks=24, tickangle=45, gridcolor='#505050')
     fig.write_image(file=savefile, format='jpg')
 
-def create_colourway(posixtime):
-    #  dictionary for 3hr bins
-    epochstart = time.time() - 86400
-    index = int((posixtime - epochstart) / 10800)
-    clr = colourdict[index]
-    return clr
+# def create_colourway(posixtime):
+#     #  dictionary for 3hr bins
+#     epochstart = time.time() - 86400
+#     index = int((posixtime - epochstart) / 10800)
+#     clr = colourdict[index]
+#     return clr
 
 # query format:
 # ('satID', posixtime, alt, az, s4, snr)
 def wrapper(queryresults):
     splat_threshold = 40
     splat_altitude = 40
-    alt = []
-    az = []
-    s4 = []
-    colours = []
+    utc = []
+    dat = []
 
+    # print(queryresults)
     # Get noise data
     for item in queryresults:
         s_time = item[1]
@@ -119,12 +81,10 @@ def wrapper(queryresults):
         s_s4 = item[4]
         if s_s4 > splat_threshold:
             if s_alt >= splat_altitude:
-                if s_s4 > 50:
-                    s_s4 = 70
-                alt.append(s_alt)
-                az.append(s_az)
-                s4.append(s_s4)
-                colours.append(create_colourway(s_time))
-
-    plot_polar(alt, az, s4, colours, splat_threshold)
+                utc.append(str(posix2utc(s_time, '%Y-%m-%d %H')))
+                dat.append(s_s4)
+            else:
+                utc.append(posix2utc(s_time, '%Y-%m-%d %H'))
+                dat.append(0)
+    plot(utc, dat)
 

@@ -8,15 +8,26 @@ import constants as k
 import time
 
 # Used in legend and chart series
+# colourdict = {
+#     0: "#444444",
+#     1: "#0c2256",
+#     2: "#1742a4",
+#     3: "#005900",
+#     4: "#00c100",
+#     5: "#b7770d",
+#     6: "#f7bc5b",
+#     7: "#ffffff"
+# }
+
 colourdict = {
-    0: "#444444",
-    1: "#0c2256",
-    2: "#1742a4",
-    3: "#005900",
-    4: "#00c100",
-    5: "#b7770d",
-    6: "#f7bc5b",
-    7: "#ffffff"
+    0: '#303030',
+    1: '#001e2c',
+    2: '#013f4f',
+    3: '#016474',
+    4: '#8a2f27',
+    5: '#b2673e',
+    6: '#ffd871',
+    7: '#ffffff'
 }
 
 # timelapsesavefolder = k.imagesdir + "//timelapse"

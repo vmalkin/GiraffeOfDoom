@@ -15,6 +15,7 @@ import qpr_sat_plots
 import qpr_alt_az
 import qpr_24hr_tracks
 import qpr_splats
+import qpr_S4bars
 
 errorloglevel = logging.CRITICAL
 logging.basicConfig(filename="errors.log", format='%(asctime)s %(message)s', level=errorloglevel)
@@ -55,11 +56,11 @@ class QueryProcessor(Thread):
                 print("\n" + "!!!!!!!!!  S4 Median Failed  !!!!!!!!!" + "\n")
                 logging.warning("S4 Median failed in MAIN.PY")
 
-            # try:
-            #     qpr_s4_scatter.wrapper(querydata)
-            # except:
-            #     print("\n" + "!!!!!!!!!  S4 Scatter Failed  !!!!!!!!!" + "\n")
-            #     logging.warning("S4 Scatter failed in MAIN.PY")
+            try:
+                qpr_s4_scatter.wrapper(querydata)
+            except:
+                print("\n" + "!!!!!!!!!  S4 Scatter Failed  !!!!!!!!!" + "\n")
+                logging.warning("S4 Scatter failed in MAIN.PY")
 
             try:
                 qpr_sat_plots.wrapper(querydata)
@@ -67,11 +68,11 @@ class QueryProcessor(Thread):
                 print("\n" + "!!!!!!!!!  Satellite Plotter Failed  !!!!!!!!!" + "\n")
                 logging.warning("satellite plotter failed in MAIN.PY")
 
-            try:
-                qpr_alt_az.wrapper(querydata)
-            except:
-                print("\n" + "!!!!!!!!!  Alt-Az Plotter Failed  !!!!!!!!!" + "\n")
-                logging.warning("AltAz plotter failed in MAIN.PY")
+            # try:
+            #     qpr_alt_az.wrapper(querydata)
+            # except:
+            #     print("\n" + "!!!!!!!!!  Alt-Az Plotter Failed  !!!!!!!!!" + "\n")
+            #     logging.warning("AltAz plotter failed in MAIN.PY")
 
             try:
                 qpr_24hr_tracks.wrapper(querydata)
@@ -83,6 +84,12 @@ class QueryProcessor(Thread):
                 qpr_splats.wrapper(querydata)
             except:
                 print("\n" + "!!!!!!!!!  Noise Plotter Failed  !!!!!!!!!" + "\n")
+                logging.warning("Noise Event Plotter failed in MAIN.PY")
+
+            try:
+                qpr_S4bars.wrapper(querydata)
+            except:
+                print("\n" + "!!!!!!!!!  S4 Bar Plotter Failed  !!!!!!!!!" + "\n")
                 logging.warning("Noise Event Plotter failed in MAIN.PY")
 
 
