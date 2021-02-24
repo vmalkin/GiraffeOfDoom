@@ -52,8 +52,9 @@ def plot(ut, da):
     data = [go.Bar(x=ut, y=da)]
     layout = go.Layout(barmode="group")
     fig = go.Figure(data=data, layout=layout)
+    # fig = go.Figure(data=data)
     fig.update_layout(width=800, height=500, title="S4 count", xaxis_title="Date/time UTC", yaxis_title="Count S4.", plot_bgcolor="#101010", )
-    fig.update_yaxes(range=[0, 600], gridcolor='#505050')
+    fig.update_yaxes(range=[0, 30], gridcolor='#505050')
     fig.update_xaxes(nticks=24, tickangle=45, gridcolor='#505050')
     fig.write_image(file=savefile, format='jpg')
 
@@ -71,18 +72,34 @@ def wrapper(queryresults):
     splat_altitude = 40
     utc = []
     dat = []
+    counter = 0
 
-    # print(queryresults)
-    # Get noise data
+    # for i in range(0, len(queryresults)-1):
+    #     s_time = queryresults[i][1]
+    #     s_time_next = queryresults[i+1][1]
+    #     s_alt = queryresults[i][2]
+    #     s_az = queryresults[i][3]
+    #     s_s4 = queryresults[i][4]
+    #
+    #     if s_time == s_time_next:
+    #         if s_s4 > splat_threshold:
+    #             if s_alt >= splat_altitude:
+    #                 counter = counter + 1
+    #     else:
+    #         utc.append(str(posix2utc(s_time, '%Y-%m-%d %H')))
+    #         dat.append(counter)
+    #         counter = 0
+
     for item in queryresults:
         s_time = item[1]
         s_alt = item[2]
         s_az = item[3]
         s_s4 = item[4]
+
         if s_s4 > splat_threshold:
             if s_alt >= splat_altitude:
                 utc.append(str(posix2utc(s_time, '%Y-%m-%d %H')))
-                dat.append(s_s4)
+                dat.append(1)
             else:
                 utc.append(posix2utc(s_time, '%Y-%m-%d %H'))
                 dat.append(0)

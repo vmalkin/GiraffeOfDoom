@@ -180,9 +180,9 @@ def wrapper(query):
         if satellite.update_flag is True:
             plotlist.append(satellite)
 
-    plot(plotlist, timelables)
+    # plot(plotlist, timelables)
     # plot_snr_combo(plotlist, timelables)
-    # plot_s4_combo(plotlist, timelables)
+    plot_s4_combo(plotlist, timelables)
 
 
 

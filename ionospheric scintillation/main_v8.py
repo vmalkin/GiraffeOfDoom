@@ -50,23 +50,23 @@ class QueryProcessor(Thread):
                 print("\n" + "!!!!!!!!!  Full Query Save Failed  !!!!!!!!!" + "\n")
                 logging.warning("SNR failed in MAIN.PY")
 
-            try:
-                qpr_s4_median.wrapper(querydata)
-            except:
-                print("\n" + "!!!!!!!!!  S4 Median Failed  !!!!!!!!!" + "\n")
-                logging.warning("S4 Median failed in MAIN.PY")
+            # try:
+            #     qpr_s4_median.wrapper(querydata)
+            # except:
+            #     print("\n" + "!!!!!!!!!  S4 Median Failed  !!!!!!!!!" + "\n")
+            #     logging.warning("S4 Median failed in MAIN.PY")
 
-            try:
-                qpr_s4_scatter.wrapper(querydata)
-            except:
-                print("\n" + "!!!!!!!!!  S4 Scatter Failed  !!!!!!!!!" + "\n")
-                logging.warning("S4 Scatter failed in MAIN.PY")
+            # try:
+            #     qpr_s4_scatter.wrapper(querydata)
+            # except:
+            #     print("\n" + "!!!!!!!!!  S4 Scatter Failed  !!!!!!!!!" + "\n")
+            #     logging.warning("S4 Scatter failed in MAIN.PY")
 
-            try:
-                qpr_sat_plots.wrapper(querydata)
-            except:
-                print("\n" + "!!!!!!!!!  Satellite Plotter Failed  !!!!!!!!!" + "\n")
-                logging.warning("satellite plotter failed in MAIN.PY")
+            # try:
+            #     qpr_sat_plots.wrapper(querydata)
+            # except:
+            #     print("\n" + "!!!!!!!!!  Satellite Plotter Failed  !!!!!!!!!" + "\n")
+            #     logging.warning("satellite plotter failed in MAIN.PY")
 
             # try:
             #     qpr_alt_az.wrapper(querydata)
