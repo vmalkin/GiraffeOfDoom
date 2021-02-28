@@ -69,9 +69,9 @@ def plot_polar(alt, az, s4, colours, splat_threshold):
     plottitle = "GPS Noise. " + str(event_count) + " events above S4 =  " + str(splat_threshold) +  "<br>24 Hour plot. " + date +  "<br>" "Updated " + timenow +  " UTC.<br>http://DunedinAurora.NZ"
     fig = go.Figure(data)
 
-    fig.update_layout(width=1200, height=1500, title=plottitle)
+    fig.update_layout(width=1500, height=1200, title=plottitle)
     fig.update_layout(font=dict(size=22), title_font_size=22)
-    # fig.update_layout(legend_title_text="Data Age")
+    fig.update_layout(legend_title_text="Data Age")
     # default markers
     fig.update_traces(marker=dict(size=s4, color="rgba(0,0,0,0)", line=dict(width=6, color=colours)))
     # fig.update_traces(marker=dict(size=s4, color=colours, line=dict(width=1, color="black")))
@@ -96,14 +96,13 @@ def plot_polar(alt, az, s4, colours, splat_threshold):
                       radialaxis=dict(autorange="reversed", color="#909090", gridcolor="#505050", range=[0, 90]),
                       bgcolor="#101010")
 
-    # ########## Legend ##########
-    fig.add_annotation(x=0.02, y=0, text="Data Age <br>(Hours old)", font=dict(color="#000000", size=24), borderwidth=0, bordercolor="#000000", borderpad=4, bgcolor="#ffffff")
+    fig.add_annotation(x=1, y=0.65, text="Data Age", font=dict(color="#000000", size=28), borderwidth=0, bordercolor="#000000", borderpad=4, bgcolor="#ffffff")
     for i in range(0, len(colourdict)):
-        x_location = (0.115 * i) + 0.16
+        y_location = (0.07 * i) + 0.1
         j = 8 - i
-        text = str(j * 3 - 3) + " - " + str(j * 3)
-        fig.add_annotation(x=x_location, y=0, text=text, font=dict(color="#000000", size=22), borderwidth=12, bordercolor=colourdict[i], borderpad=6,)
-    # ########## ###### ##########
+        text = str(j * 3 - 3) + " to " + str(j * 3) + " hrs"
+        fig.add_annotation(x=1, y=y_location, text=text, font=dict(color="#000000", size=22), borderwidth=12, bordercolor=colourdict[i], borderpad=6,)
+
     fig.write_image(file=savefile, format='jpg')
 
 def create_colourway(posixtime):

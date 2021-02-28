@@ -311,7 +311,7 @@ if __name__ == "__main__":
                 try:
                     satlist_input(sentence)
                 except:
-                    print("There was a problem inputting satellite data_s4 into the lists in MAIN.PY")
+                    print("There was a problem inputting satellite data_s4 inot the lists in MAIN.PY")
                     print(sentence)
                 counter = counter + 1
         else:
