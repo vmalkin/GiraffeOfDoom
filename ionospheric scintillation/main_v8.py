@@ -50,11 +50,11 @@ class QueryProcessor(Thread):
                 print("\n" + "!!!!!!!!!  Full Query Save Failed  !!!!!!!!!" + "\n")
                 logging.warning("SNR failed in MAIN.PY")
 
-            # try:
-            #     qpr_s4_median.wrapper(querydata)
-            # except:
-            #     print("\n" + "!!!!!!!!!  S4 Median Failed  !!!!!!!!!" + "\n")
-            #     logging.warning("S4 Median failed in MAIN.PY")
+            try:
+                qpr_s4_median.wrapper(querydata)
+            except:
+                print("\n" + "!!!!!!!!!  S4 Median Failed  !!!!!!!!!" + "\n")
+                logging.warning("S4 Median failed in MAIN.PY")
 
             # try:
             #     qpr_s4_scatter.wrapper(querydata)
@@ -288,7 +288,6 @@ if __name__ == "__main__":
         gpgsv.append(Satellite(i))
 
     glgsv = []
-
     for i in range(0, 500):
         glgsv.append(Satellite(i))
 
@@ -311,7 +310,7 @@ if __name__ == "__main__":
                 try:
                     satlist_input(sentence)
                 except:
-                    print("There was a problem inputting satellite data_s4 inot the lists in MAIN.PY")
+                    print("There was a problem inputting satellite data_s4 into the lists in MAIN.PY")
                     print(sentence)
                 counter = counter + 1
         else:
