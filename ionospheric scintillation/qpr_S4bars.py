@@ -54,7 +54,7 @@ def plot(ut, da):
     fig = go.Figure(data=data, layout=layout)
     # fig = go.Figure(data=data)
     fig.update_layout(width=1500, height=700, title="S4 count", xaxis_title="Date/time UTC", yaxis_title="Count S4.", plot_bgcolor="#101010", )
-    fig.update_yaxes(range=[0, 30], gridcolor='#505050')
+    fig.update_yaxes(range=[0, 25], gridcolor='#505050')
     fig.update_xaxes(nticks=24, tickangle=45, gridcolor='#505050')
     fig.write_image(file=savefile, format='jpg')
 
