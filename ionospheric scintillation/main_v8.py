@@ -31,7 +31,7 @@ integration_time = 30
 optimum_altitude = 25
 
 # This is the query output that will be used to generate graphs and plots etc.
-querydata = []
+querydata_24 = []
 
 # *************************************************
 # Plotter and query processor thread
@@ -45,49 +45,49 @@ class QueryProcessor(Thread):
         while True:
             print("***************************** Start Query Processor")
             try:
-                qpr_save_full_query.wrapper(querydata)
+                qpr_save_full_query.wrapper(querydata_24)
             except:
                 print("\n" + "!!!!!!!!!  Full Query Save Failed  !!!!!!!!!" + "\n")
                 logging.warning("SNR failed in MAIN.PY")
 
             try:
-                qpr_s4_median.wrapper(querydata)
+                qpr_s4_median.wrapper(querydata_24)
             except:
                 print("\n" + "!!!!!!!!!  S4 Median Failed  !!!!!!!!!" + "\n")
                 logging.warning("S4 Median failed in MAIN.PY")
 
             # try:
-            #     qpr_s4_scatter.wrapper(querydata)
+            #     qpr_s4_scatter.wrapper(querydata_24)
             # except:
             #     print("\n" + "!!!!!!!!!  S4 Scatter Failed  !!!!!!!!!" + "\n")
             #     logging.warning("S4 Scatter failed in MAIN.PY")
 
-            # try:
-            #     qpr_sat_plots.wrapper(querydata)
-            # except:
-            #     print("\n" + "!!!!!!!!!  Satellite Plotter Failed  !!!!!!!!!" + "\n")
-            #     logging.warning("satellite plotter failed in MAIN.PY")
+            try:
+                qpr_sat_plots.wrapper(querydata_24)
+            except:
+                print("\n" + "!!!!!!!!!  Satellite Plotter Failed  !!!!!!!!!" + "\n")
+                logging.warning("satellite plotter failed in MAIN.PY")
 
             # try:
-            #     qpr_alt_az.wrapper(querydata)
+            #     qpr_alt_az.wrapper(querydata_24)
             # except:
             #     print("\n" + "!!!!!!!!!  Alt-Az Plotter Failed  !!!!!!!!!" + "\n")
             #     logging.warning("AltAz plotter failed in MAIN.PY")
 
             try:
-                qpr_24hr_tracks.wrapper(querydata)
+                qpr_24hr_tracks.wrapper(querydata_24)
             except:
                 print("\n" + "!!!!!!!!!  24hr Track Plotter Failed  !!!!!!!!!" + "\n")
                 logging.warning("24hr Track failed in MAIN.PY")
 
             try:
-                qpr_splats.wrapper(querydata)
+                qpr_splats.wrapper(querydata_24)
             except:
                 print("\n" + "!!!!!!!!!  Noise Plotter Failed  !!!!!!!!!" + "\n")
                 logging.warning("Noise Event Plotter failed in MAIN.PY")
 
             try:
-                qpr_S4bars.wrapper(querydata)
+                qpr_S4bars.wrapper(querydata_24)
             except:
                 print("\n" + "!!!!!!!!!  S4 Bar Plotter Failed  !!!!!!!!!" + "\n")
                 logging.warning("Noise Event Plotter failed in MAIN.PY")
@@ -169,8 +169,8 @@ def posix2utc(posixtime):
     return utctime
 
 
-def database_parse():
-    starttime = int(time.time()) - (60 * 60 * 24)
+def database_parse(hourduration):
+    starttime = int(time.time()) - (60 * 60 * hourduration)
     print("Parsing database...")
     gpsdb = sqlite3.connect(sat_database)
     db = gpsdb.cursor()
@@ -342,7 +342,8 @@ if __name__ == "__main__":
             # Generate new query, reset counter.
             # *************************************************
             print("Creating output list from database...")
-            querydata = database_parse()
+            querydata_24 = database_parse(24)
+            querydata_48 = database_parse(48)
 
             print("Resetting Satellite lists...")
             gpgsv = []
