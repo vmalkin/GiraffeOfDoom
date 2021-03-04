@@ -1,0 +1,18 @@
+from time import time
+import plotly.graph_objects as go
+
+
+def plot():
+    pass
+
+
+# query format:
+# ('satID', posixtime, alt, az, s4, snr)
+# Query is 48 hours of data
+def wrapper(querydata):
+    time_start = time()
+    s4_threshold = 40
+    s4_altitude = 40
+    utc = []
+    dat = []
+
