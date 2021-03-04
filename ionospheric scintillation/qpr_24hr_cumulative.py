@@ -16,3 +16,6 @@ def wrapper(querydata):
     utc = []
     dat = []
 
+# get 24 hr of data from start of array, then...
+# sum up S4, save to temp list, save timestamp.
+# pop(0), move along one and append(newvalue), repeat!
