@@ -16,6 +16,7 @@ import qpr_alt_az
 import qpr_24hr_tracks
 import qpr_splats
 import qpr_S4bars
+import qpr_24hr_cumulative
 
 errorloglevel = logging.CRITICAL
 logging.basicConfig(filename="errors.log", format='%(asctime)s %(message)s', level=errorloglevel)
@@ -32,6 +33,7 @@ optimum_altitude = 25
 
 # This is the query output that will be used to generate graphs and plots etc.
 querydata_24 = []
+querydata_48 = []
 
 # *************************************************
 # Plotter and query processor thread
@@ -68,11 +70,11 @@ class QueryProcessor(Thread):
                 print("\n" + "!!!!!!!!!  Satellite Plotter Failed  !!!!!!!!!" + "\n")
                 logging.warning("satellite plotter failed in MAIN.PY")
 
-            # try:
-            #     qpr_alt_az.wrapper(querydata_24)
-            # except:
-            #     print("\n" + "!!!!!!!!!  Alt-Az Plotter Failed  !!!!!!!!!" + "\n")
-            #     logging.warning("AltAz plotter failed in MAIN.PY")
+            try:
+                qpr_alt_az.wrapper(querydata_24)
+            except:
+                print("\n" + "!!!!!!!!!  Alt-Az Plotter Failed  !!!!!!!!!" + "\n")
+                logging.warning("AltAz plotter failed in MAIN.PY")
 
             try:
                 qpr_24hr_tracks.wrapper(querydata_24)
@@ -91,6 +93,12 @@ class QueryProcessor(Thread):
             except:
                 print("\n" + "!!!!!!!!!  S4 Bar Plotter Failed  !!!!!!!!!" + "\n")
                 logging.warning("Noise Event Plotter failed in MAIN.PY")
+
+            try:
+                qpr_24hr_cumulative.wrapper(querydata_48)
+            except:
+                print("\n" + "!!!!!!!!!  Rolling count Plotter Failed  !!!!!!!!!" + "\n")
+                logging.warning("Rolling count Plotter failed in MAIN.PY")
 
 
 
