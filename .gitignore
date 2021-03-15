@@ -14,3 +14,4 @@ Coronal Hole Suite/index.html
 *.db
 *.pkl
 scanCHImages/images/files.txt
+*.log

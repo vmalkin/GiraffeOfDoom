@@ -2,9 +2,9 @@ import sqlite3
 import constants as k
 import logging
 import requests
-import time
 import datetime
 import re
+import calendar
 
 """
 logging levels in order of least --> most severity:
@@ -134,15 +134,22 @@ class State:
             logging.error(station_id + " ERROR: Error with query")
         return result
 
+    # def posix2utc(self, posixvalue):
+    #     # utctime = datetime.datetime.fromtimestamp(int(posixvalue)).strftime('%Y-%m-%d %H:%M:%S')
+    #     utctime = datetime.datetime.utcfromtimestamp(int(posixvalue)).strftime(timeformat)
+    #     return utctime
+    #
+    # def utc2posix(self, utc_string):
+    #     dt = datetime.datetime.strptime(utc_string, timeformat).utctimetuple()
+    #     return(int(time.mktime(dt)))
     def posix2utc(self, posixvalue):
-        # utctime = datetime.datetime.fromtimestamp(int(posixvalue)).strftime('%Y-%m-%d %H:%M:%S')
-        utctime = datetime.datetime.utcfromtimestamp(int(posixvalue)).strftime(timeformat)
+        utctime = datetime.datetime.utcfromtimestamp(int(posixvalue)).strftime('%Y-%m-%d %H:%M:%S')
         return utctime
 
     def utc2posix(self, utc_string):
-        dt = datetime.datetime.strptime(utc_string, timeformat).utctimetuple()
-        return(int(time.mktime(dt)))
-
+        dt = datetime.datetime.strptime(utc_string, '%Y-%m-%d %H:%M:%S')
+        ts = calendar.timegm(dt.timetuple())
+        return ts
 
 state = State()
 machine_state = state.s_initialise

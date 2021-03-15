@@ -4,6 +4,7 @@ import logging
 import requests
 import time
 import datetime
+import calendar
 
 """
 logging levels in order of least --> most severity:
@@ -140,13 +141,14 @@ class State:
         return result
 
     def posix2utc(self, posixvalue):
-        # utctime = datetime.datetime.fromtimestamp(int(posixvalue)).strftime('%Y-%m-%d %H:%M:%S')
         utctime = datetime.datetime.utcfromtimestamp(int(posixvalue)).strftime('%Y-%m-%d %H:%M:%S')
         return utctime
 
     def utc2posix(self, utc_string):
-        dt = datetime.datetime.strptime(utc_string, '%Y-%m-%d %H:%M:%S').utctimetuple()
-        return(int(time.mktime(dt)))
+        dt = datetime.datetime.strptime(utc_string, '%Y-%m-%d %H:%M:%S')
+        ts = calendar.timegm(dt.timetuple())
+        return ts
+
 
 
 state = State()
