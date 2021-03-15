@@ -7,7 +7,8 @@ import logging
 import constants as k
 from time import time
 import datetime
-from statistics import mean, median
+from statistics import mean, median, stdev
+import pickle
 
 errorloglevel = logging.WARNING
 logging.basicConfig(filename=k.error_log, format='%(asctime)s %(message)s', level=errorloglevel)
@@ -15,6 +16,7 @@ logging.info("Created error log for this session")
 
 dna_core = sqlite3.connect(k.dbfile)
 db = dna_core.cursor()
+sigma_file = "sigmas.pkl"
 
 
 def get_data(station):
@@ -91,6 +93,7 @@ def create_hourly_bins(processed_query):
         else:
             new_dt = round((max(t) - min(t)),5)
             dp = [h0, new_dt]
+            print(dp)
             returnlist.append(dp)
             t = []
     return returnlist
@@ -110,6 +113,16 @@ def medianfilter(querydata):
     return returndata
 
 
+def get_sigma(processed_query):
+    t = []
+    for item in processed_query:
+        t.append(item[1])
+    s = stdev(t)
+    return s
+
+
+
+
 
 if __name__ == "__main__":
     querydata = get_data("Ruru_Obs")
@@ -123,16 +136,28 @@ if __name__ == "__main__":
         processed_query = average_out(processed_query)
         processed_query = create_hourly_bins(processed_query)
 
-        # sigmavalue = get_sigma(processed_query)
-        # median_sigma = process_save(sigmavalue)
-        # processed_query = append_sigmas(processed_query, median_sigma)
+        # Calculate the stdev of the data, then determine the median sigma value to use
+        sigmavalue = get_sigma(processed_query)
+        list_of_sigmas = load_sigma_list(sigma_file)
+        append_sigma(sigmavalue)
+        list_of_sigmas = check_prune_sigmas(list_of_sigmas, sigma_file)
+        save_sigma_list(list_of_sigmas, sigma_file)
+        median_sigma = get_median_sigma(list_of_sigmas)
 
+        # We will use the standard deviation to determin the colour of the bars in the graph
+        # and generate a list of colours to be passed to the plotter
+        colourlist = colours_stdev(processed_query, median_sigma)
+
+        # Create an alert if hourly values go over 3-sigma
+        create_alert(processed_query)
 
         for item in processed_query:
-            hours.append(item[0])
-            data.append(float(item[1]))
+            hr = item[0] + " hrs"
+            dt = float(item[1])
+            hours.append(hr)
+            data.append(dt)
 
-        plot(hours, data)
+        plot(hours, data, colourlist)
     else:
         print("Not enough data to process just yet.")
 
