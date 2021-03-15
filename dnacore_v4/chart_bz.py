@@ -5,7 +5,7 @@ import time
 from datetime import datetime, timedelta
 import os
 from statistics import mean, median
-import matplotlib.pyplot as plt
+import plotly as p
 """
 logging levels in order of least --> most severity:
 DEBUG
@@ -232,3 +232,5 @@ if __name__ == "__main__":
     plt.yticks(ticks=hours, labels=hours, rotation=0)
     plt.savefig(savefile)
     plt.close('all')
+
+#      using plotly

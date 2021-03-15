@@ -301,3 +301,8 @@
 2021-01-02 15:48:31,744 SW_speed ERROR: Could not get data from URL
 2021-01-02 15:48:32,600 SW_Density ERROR: Could not get data from URL
 2021-01-02 15:48:33,503 Geomag_Bz ERROR: Could not get data from URL
+2021-03-15 15:14:45,318 WARNING: unable to parse a time value: 1615731099
+2021-03-15 15:14:47,180 GOES_16 ERROR: Could not get data from URL
+2021-03-15 15:14:48,011 SW_speed ERROR: Could not get data from URL
+2021-03-15 15:14:49,119 SW_Density ERROR: Could not get data from URL
+2021-03-15 15:14:49,922 Geomag_Bz ERROR: Could not get data from URL
