@@ -200,6 +200,7 @@ if __name__ == "__main__":
         append_sigma(sigmavalue, list_of_sigmas)
         # This is the median value of sigma over the last three carrington rotations.
         median_sigma = get_median_sigma(list_of_sigmas)
+        print("Median Sigma: " + str(median_sigma))
         list_of_sigmas = check_prune_sigmas(list_of_sigmas, median_sigma)
         save_sigma_list(list_of_sigmas, sigma_file)
 
