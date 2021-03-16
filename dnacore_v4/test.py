@@ -9,6 +9,7 @@ from time import time
 import datetime
 from statistics import mean, median, stdev
 import pickle
+import os
 
 errorloglevel = logging.WARNING
 logging.basicConfig(filename=k.error_log, format='%(asctime)s %(message)s', level=errorloglevel)
@@ -17,7 +18,7 @@ logging.info("Created error log for this session")
 dna_core = sqlite3.connect(k.dbfile)
 db = dna_core.cursor()
 sigma_file = "sigmas.pkl"
-
+station = "DnA_1"
 
 def get_data(station):
     start_time = int(time()) - 86400
@@ -34,14 +35,18 @@ def posix2utc(posixtime, timeformat):
     return utctime
 
 
-def plot(hours, data):
+def plot(hours, data, colours):
     fig = go.Figure(go.Bar(
         x=data,
         y=hours,
+        marker=dict(color=colours),
         orientation='h'
     ))
-    fig.update_traces(marker_line_width=1, marker_line_color='#007000')
-    fig.show()
+    fig.update_layout(width=300, height=900, title=station)
+    fig.update_layout(font=dict(size=18))
+    fig.update_xaxes(range=[0, 0.003], gridcolor='#505050', visible=False)
+    savefile = station + ".jpg"
+    fig.write_image(file=savefile, format='jpg')
 
 
 def dxdt(querydata):
@@ -52,7 +57,7 @@ def dxdt(querydata):
         d2 = float(querydata[i][1])
         d1 = float(querydata[i-1][1])
 
-        dh = round((d2 - d1),3)
+        dh = round((d2 - d1), 5)
         dp = (dt, dh)
 
         t.append(dp)
@@ -68,7 +73,7 @@ def average_out(query_dhdt):
 
     for i in range(0, len(query_dhdt)):
         temp_data = float(query_dhdt[i][1])
-        temp_data = round(temp_data, 3)
+        temp_data = round(temp_data, 5)
         avg_data.append(temp_data)
 
         if len(avg_data) == halfwindow * 2:
@@ -91,7 +96,7 @@ def create_hourly_bins(processed_query):
         if h0 == h1:
             t.append(dt)
         else:
-            new_dt = round((max(t) - min(t)),5)
+            new_dt = round((max(t) - min(t)), 5)
             dp = [h0, new_dt]
             print(dp)
             returnlist.append(dp)
@@ -102,11 +107,11 @@ def create_hourly_bins(processed_query):
 def medianfilter(querydata):
     returndata = []
     for i in range(2, len(querydata)-2):
-        d0 = round(float(querydata[i - 2][1]), 3)
-        d1 = round(float(querydata[i - 1][1]), 3)
-        d2 = round(float(querydata[i][1]), 3)
-        d3 = round(float(querydata[i + 1][1]), 3)
-        d4 = round(float(querydata[i + 2][1]), 3)
+        d0 = round(float(querydata[i - 2][1]), 5)
+        d1 = round(float(querydata[i - 1][1]), 5)
+        d2 = round(float(querydata[i][1]), 5)
+        d3 = round(float(querydata[i + 1][1]), 5)
+        d4 = round(float(querydata[i + 2][1]), 5)
         d = median([d0, d1, d2, d3, d4])
         dt = querydata[i][0]
         returndata.append((dt, d))
@@ -117,17 +122,69 @@ def get_sigma(processed_query):
     t = []
     for item in processed_query:
         t.append(item[1])
-    s = stdev(t)
+    s = round(stdev(t), 5)
     return s
 
 
+def load_sigma_list():
+    returnlist = []
+    if os.path.exists(sigma_file) is True:
+        try:
+            returnlist = pickle.load(open(sigma_file, "rb"))
+        except EOFError:
+            print("Pickle file is empty")
+    print("Pickle file is " + str(len(returnlist)) + " records long")
+    return returnlist
 
+
+def append_sigma(sigmavalue, list_of_sigmas):
+    list_of_sigmas.append(sigmavalue)
+
+
+def check_prune_sigmas(list_of_sigmas, medianvalue):
+    # db is tapped every 5 mins =  288 times
+    returnlist = []
+    maxlen = 288 * 27 * 3
+    if len(list_of_sigmas) > maxlen:
+        returnlist.append(medianvalue)
+    else:
+        returnlist = list_of_sigmas
+    return  returnlist
+
+
+def save_sigma_list(list_of_sigmas, sigma_file):
+    pickle.dump(list_of_sigmas, open(sigma_file, "wb"),0)
+
+
+def get_median_sigma(list_of_sigmas):
+    return median(list_of_sigmas)
+
+
+def colours_stdev(processed_query, median_sigma):
+    colours = []
+    low1 = "#40ff40"
+    low2 = "#00bf00"
+    med = "#ff8000"
+    hi = "#ff0000"
+    for item in processed_query:
+        value = item[1]
+        if value < median_sigma:
+            clr = low1
+        if value >= median_sigma * 1:
+            clr = low2
+        if value >= median_sigma * 2:
+            clr = med
+        if value >= median_sigma * 3:
+            clr = hi
+        colours.append(clr)
+    return colours
 
 
 if __name__ == "__main__":
     querydata = get_data("Ruru_Obs")
     data = []
     hours = []
+    colourlist = []
 
     # If there is enough data to process
     if len(querydata) > (30*30):
@@ -138,18 +195,20 @@ if __name__ == "__main__":
 
         # Calculate the stdev of the data, then determine the median sigma value to use
         sigmavalue = get_sigma(processed_query)
-        list_of_sigmas = load_sigma_list(sigma_file)
-        append_sigma(sigmavalue)
-        list_of_sigmas = check_prune_sigmas(list_of_sigmas, sigma_file)
-        save_sigma_list(list_of_sigmas, sigma_file)
+
+        list_of_sigmas = load_sigma_list()
+        append_sigma(sigmavalue, list_of_sigmas)
+        # This is the median value of sigma over the last three carrington rotations.
         median_sigma = get_median_sigma(list_of_sigmas)
+        list_of_sigmas = check_prune_sigmas(list_of_sigmas, median_sigma)
+        save_sigma_list(list_of_sigmas, sigma_file)
 
         # We will use the standard deviation to determin the colour of the bars in the graph
         # and generate a list of colours to be passed to the plotter
         colourlist = colours_stdev(processed_query, median_sigma)
 
-        # Create an alert if hourly values go over 3-sigma
-        create_alert(processed_query)
+        # # Create an alert if hourly values go over 3-sigma
+        # create_alert(processed_query)
 
         for item in processed_query:
             hr = item[0] + " hrs"
@@ -161,3 +220,4 @@ if __name__ == "__main__":
     else:
         print("Not enough data to process just yet.")
 
+    print("Plot completed")
