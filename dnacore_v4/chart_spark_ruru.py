@@ -17,10 +17,10 @@ logging.info("Created error log for this session")
 
 dna_core = sqlite3.connect(k.dbfile)
 db = dna_core.cursor()
-sigma_file = "test.pkl"
-station = "Ruru_Obs"
-plot_title = "test"
-median_sigma = 0
+sigma_file = "sigmas.pkl"
+station = "DnA_1"
+plot_title = "DnA_1"
+
 
 def get_data(station):
     start_time = int(time()) - 86400
@@ -92,25 +92,19 @@ def create_hourly_bins(processed_query):
     returnlist = []
     t = []
     for i in range(0, len(processed_query) - 1):
-        dat = posix2utc(processed_query[i][0], '%d %H hrs ')
+        dat = posix2utc(processed_query[i][0], '%H')
         h0 = posix2utc(processed_query[i][0], '%H')
         h1 = posix2utc(processed_query[i + 1][0], '%H')
         dt = processed_query[i][1]
 
         if h0 == h1:
             t.append(dt)
-        elif i == len(processed_query) - 1:
+        else:
             new_dt = round((max(t) - min(t)), 5)
             dp = [dat, new_dt]
             print(dp)
             returnlist.append(dp)
             t = []
-        # else:
-        #     new_dt = round((max(t) - min(t)), 5)
-        #     dp = [dat, new_dt]
-        #     print(dp)
-        #     returnlist.append(dp)
-        #     t = []
     return returnlist
 
 
@@ -193,7 +187,7 @@ def colours_stdev(processed_query, median_sigma):
 
 
 if __name__ == "__main__":
-    querydata = get_data(station)
+    querydata = get_data("Ruru_Obs")
     data = []
     hours = []
     colourlist = []
@@ -224,13 +218,14 @@ if __name__ == "__main__":
         # create_alert(processed_query)
 
         for item in processed_query:
-            hr = item[0] + " "
+            # Ugly hack to fix hours discrepancy
+            hr = str((int(item[0])+1)) + " hrs "
             dt = float(item[1])
             hours.append(hr)
             data.append(dt)
 
-        # hours.pop(len(hours)-1)
-        # hours.append("Now ")
+        hours.pop(len(hours)-1)
+        hours.append("Now ")
 
         plot(hours, data, colourlist)
     else:
