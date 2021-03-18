@@ -21,6 +21,8 @@ sigma_file = "test.pkl"
 station = "Ruru_Obs"
 plot_title = "test"
 median_sigma = 0
+# a 10 min window for averaging readings give the number of readings per minute
+halfwindow = 30 * 10
 
 def get_data(station):
     start_time = int(time()) - 86400
@@ -48,7 +50,8 @@ def plot(hours, data, colours):
     fig.update_layout(width=320, height=900, title=plot_title)
     fig.update_layout(font=dict(size=20), margin=dict(l=10, r=20, b=10), yaxis_title="UTC")
     fig.update_xaxes(range=[0, maxaxis], gridcolor='#505050', visible=False)
-    savefile = station + ".jpg"
+    # savefile = station + ".jpg"
+    savefile = "test.jpg"
     fig.write_image(file=savefile, format='jpg')
 
 
@@ -69,8 +72,6 @@ def dxdt(querydata):
 
 def average_out(query_dhdt):
     # smoothes out the dh/dt data
-    # a 10 min window for 30 readings per min
-    halfwindow = 30 * 10
     avg_data = []
     return_data = []
 
@@ -92,25 +93,28 @@ def create_hourly_bins(processed_query):
     returnlist = []
     t = []
     for i in range(0, len(processed_query) - 1):
-        dat = posix2utc(processed_query[i][0], '%d %H hrs ')
+        dat = posix2utc(processed_query[i][0], '%H h ')
         h0 = posix2utc(processed_query[i][0], '%H')
         h1 = posix2utc(processed_query[i + 1][0], '%H')
         dt = processed_query[i][1]
 
         if h0 == h1:
             t.append(dt)
-        elif i == len(processed_query) - 1:
+
+        if h0 < h1:
             new_dt = round((max(t) - min(t)), 5)
             dp = [dat, new_dt]
             print(dp)
             returnlist.append(dp)
             t = []
-        # else:
-        #     new_dt = round((max(t) - min(t)), 5)
-        #     dp = [dat, new_dt]
-        #     print(dp)
-        #     returnlist.append(dp)
-        #     t = []
+
+        if h0 == h1 and i+1 == len(processed_query) - 1:
+            new_dt = round((max(t) - min(t)), 5)
+            dp = [dat, new_dt]
+            print(dp)
+            returnlist.append(dp)
+            t = []
+
     return returnlist
 
 
@@ -198,13 +202,11 @@ if __name__ == "__main__":
     hours = []
     colourlist = []
 
-    # If there is enough data to process
-    if len(querydata) > (30*30):
-        processed_query = medianfilter(querydata)
-        processed_query = dxdt(processed_query)
-        processed_query = average_out(processed_query)
-        processed_query = create_hourly_bins(processed_query)
-
+    processed_query = medianfilter(querydata)
+    processed_query = dxdt(processed_query)
+    processed_query = average_out(processed_query)
+    processed_query = create_hourly_bins(processed_query)
+    if len(processed_query) > 2:
         # Calculate the stdev of the data, then determine the median sigma value to use
         sigmavalue = get_sigma(processed_query)
 
@@ -229,8 +231,8 @@ if __name__ == "__main__":
             hours.append(hr)
             data.append(dt)
 
-        # hours.pop(len(hours)-1)
-        # hours.append("Now ")
+        hours.pop(len(hours)-1)
+        hours.append("Now ")
 
         plot(hours, data, colourlist)
     else:
