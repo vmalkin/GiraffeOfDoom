@@ -40,7 +40,7 @@ def posix2utc(posixtime, timeformat):
 
 
 def plot(hours, data, colours):
-    maxaxis = median_sigma * 6
+    maxaxis = median_sigma * 12
     fig = go.Figure(go.Bar(
         x=data,
         y=hours,
@@ -175,12 +175,13 @@ def get_median_sigma(list_of_sigmas):
 
 def colours_stdev(processed_query, median_sigma):
     # Unique to each station. Empirically derived
-    scaling_factor = 2
+    scaling_factor = 2.5
     colours = []
-    low1 = "#40ff40"
-    low2 = "#00bf00"
-    med = "#ff8000"
-    hi = "#ff0000"
+    low1 = "#00e13c"
+    low2 = "#00691c"
+    med1 = "#ebb000"
+    med2 = "#e14400"
+    hi = "#c30012"
     for item in processed_query:
         value = item[1]
         if value < median_sigma * scaling_factor:
@@ -188,8 +189,10 @@ def colours_stdev(processed_query, median_sigma):
         if value >= median_sigma * 1 * scaling_factor:
             clr = low2
         if value >= median_sigma * 2 * scaling_factor:
-            clr = med
+            clr = med1
         if value >= median_sigma * 3 * scaling_factor:
+            clr = med2
+        if value >= median_sigma * 4 * scaling_factor:
             clr = hi
         colours.append(clr)
     return colours
