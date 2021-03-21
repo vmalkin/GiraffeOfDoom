@@ -24,6 +24,9 @@ median_sigma = 0
 # a 10 min window for averaging readings give the number of readings per minute
 halfwindow = 30 * 10
 
+# Empirically derived scaling factor to make date fit the appropriate colour range
+scaling_factor = 0.6
+
 def get_data(station):
     start_time = int(time()) - 86400
     result = db.execute("select station_data.posix_time, station_data.data_value from station_data "
@@ -38,9 +41,9 @@ def posix2utc(posixtime, timeformat):
     utctime = datetime.datetime.utcfromtimestamp(int(posixtime)).strftime(timeformat)
     return utctime
 
-
-def plot(hours, data, colours):
-    maxaxis = median_sigma * 8
+# hours, data, colourlist, min_value, median_sigma
+def plot(hours, data, colours, minvalue, mediansigma):
+    maxaxis = max(data)
     fig = go.Figure(go.Bar(
         x=data,
         y=hours,
@@ -50,8 +53,8 @@ def plot(hours, data, colours):
     fig.update_layout(width=320, height=900, title=plot_title)
     fig.update_layout(font=dict(size=20), margin=dict(l=10, r=20, b=10), yaxis_title="UTC")
     fig.update_xaxes(range=[0, maxaxis], gridcolor='#505050', visible=False)
-    # savefile = station + ".jpg"
-    savefile = "test.jpg"
+    savefile = "spk_" + station + ".jpg"
+    # savefile = "spk_test.jpg"
     fig.write_image(file=savefile, format='jpg')
 
 
@@ -92,29 +95,22 @@ def average_out(query_dhdt):
 def create_hourly_bins(processed_query):
     returnlist = []
     t = []
-    for i in range(0, len(processed_query) - 1):
-        dat = posix2utc(processed_query[i][0], '%H h ')
-        h0 = posix2utc(processed_query[i][0], '%H')
-        h1 = posix2utc(processed_query[i + 1][0], '%H')
-        dt = processed_query[i][1]
-
-        if h0 == h1:
-            t.append(dt)
-
-        if h0 < h1:
-            new_dt = round((max(t) - min(t)), 5)
-            dp = [dat, new_dt]
-            print(dp)
+    processed_query.reverse()
+    # we will be iterating backwards
+    h0 = processed_query[0][0]
+    for i in range(1, len(processed_query) - 1):
+        h1 = processed_query[i][0]
+        d = processed_query[i][1]
+        if (h0 - h1) < (60*60):
+            t.append(d)
+        else:
+            dat = posix2utc(h0, "%H:%M")
+            d = max(t) - min(t)
+            dp = [dat, d]
             returnlist.append(dp)
+            h0 = h1
             t = []
-
-        if h0 == h1 and i+1 == len(processed_query) - 1:
-            new_dt = round((max(t) - min(t)), 5)
-            dp = [dat, new_dt]
-            print(dp)
-            returnlist.append(dp)
-            t = []
-
+    returnlist.reverse()
     return returnlist
 
 
@@ -174,29 +170,35 @@ def get_median_sigma(list_of_sigmas):
     return median(list_of_sigmas)
 
 
-def colours_stdev(processed_query, median_sigma):
+def colours_stdev(processed_query, minvalue, mediansigma):
     # Unique to each station. Empirically derived
-    scaling_factor = 2.5
     colours = []
-    low1 = "#00e13c"
-    low2 = "#00691c"
-    med1 = "#ebb000"
-    med2 = "#e14400"
-    hi = "#c30012"
+    low1 = "#00e13c"  # pale green
+    low2 = "#00691c"  # dark green
+    med1 = "#ebb000"  # yellow
+    med2 = "#e14400"  # orange
+    hi = "#A50000"  # red
     for item in processed_query:
         value = item[1]
-        if value < median_sigma * scaling_factor:
+        if value >= 0:
             clr = low1
-        if value >= median_sigma * 1 * scaling_factor:
+        if value >= minvalue + (mediansigma * 1 * scaling_factor):
             clr = low2
-        if value >= median_sigma * 2 * scaling_factor:
+        if value >= minvalue + (mediansigma * 2 * scaling_factor):
             clr = med1
-        if value >= median_sigma * 3 * scaling_factor:
+        if value >= minvalue + (mediansigma * 3 * scaling_factor):
             clr = med2
-        if value >= median_sigma * 4 * scaling_factor:
+        if value >= minvalue + (mediansigma * 4 * scaling_factor):
             clr = hi
         colours.append(clr)
     return colours
+
+
+def get_min_value(processed_query):
+    t = []
+    for item in processed_query:
+        t.append(item[1])
+    return min(t)
 
 
 if __name__ == "__main__":
@@ -209,6 +211,8 @@ if __name__ == "__main__":
     processed_query = dxdt(processed_query)
     processed_query = average_out(processed_query)
     processed_query = create_hourly_bins(processed_query)
+    print(len(processed_query))
+
     if len(processed_query) > 2:
         # Calculate the stdev of the data, then determine the median sigma value to use
         sigmavalue = get_sigma(processed_query)
@@ -217,13 +221,14 @@ if __name__ == "__main__":
         append_sigma(sigmavalue, list_of_sigmas)
         # This is the median value of sigma over the last three carrington rotations.
         median_sigma = get_median_sigma(list_of_sigmas)
+
         print("Median Sigma: " + str(median_sigma))
         list_of_sigmas = check_prune_sigmas(list_of_sigmas, median_sigma)
         save_sigma_list(list_of_sigmas, sigma_file)
+        min_value = get_min_value(processed_query)
 
-        # We will use the standard deviation to determin the colour of the bars in the graph
-        # and generate a list of colours to be passed to the plotter
-        colourlist = colours_stdev(processed_query, median_sigma)
+        # colours are determined by the median standard deviation.
+        colourlist = colours_stdev(processed_query, min_value, median_sigma)
 
         # # Create an alert if hourly values go over 3-sigma
         # create_alert(processed_query)
@@ -237,7 +242,7 @@ if __name__ == "__main__":
         hours.pop(len(hours)-1)
         hours.append("Now ")
 
-        plot(hours, data, colourlist)
+        plot(hours, data, colourlist, min_value, median_sigma)
     else:
         print("Not enough data to process just yet.")
 
