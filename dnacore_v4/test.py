@@ -42,7 +42,7 @@ def posix2utc(posixtime, timeformat):
     return utctime
 
 # hours, data, colourlist, min_value, median_sigma
-def plot(hours, data, colours, minvalue, mediansigma):
+def plot(hours, data, colours):
     maxaxis = max(data)
     fig = go.Figure(go.Bar(
         x=data,
@@ -242,7 +242,7 @@ if __name__ == "__main__":
         hours.pop(len(hours)-1)
         hours.append("Now ")
 
-        plot(hours, data, colourlist, min_value, median_sigma)
+        plot(hours, data, colourlist)
     else:
         print("Not enough data to process just yet.")
 

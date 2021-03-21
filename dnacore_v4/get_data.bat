@@ -11,7 +11,7 @@ rem specialised plotting files.
 python save_logfiles.py
 
 python chart_dxdt.py
-rem python chart_spark_bz.py
+python chart_spark_bz.py
 python chart_spark_goes.py
 python chart_spark_ruru.py
 

@@ -5,7 +5,7 @@ import time
 from datetime import datetime, timedelta
 import os
 from statistics import mean, median
-import plotly as p
+import plotly.graph_objects as go
 """
 logging levels in order of least --> most severity:
 DEBUG
@@ -188,49 +188,47 @@ def convert_datetime_to_hour(datetimestring):
     hr = datetime.strftime(dateobject, "%H:%M")
     return hr
 
+
+def plot(data, hours, colours):
+    fig = go.Figure(go.Bar(
+        x=data,
+        y=hours,
+        marker=dict(color=colours),
+        orientation='h'
+    ))
+    fig.update_layout(width=620, height=900, title="Bz")
+    fig.update_layout(font=dict(size=20), margin=dict(l=10, r=20, b=10), yaxis_title="UTC")
+    fig.update_xaxes(range=[-10, 10], gridcolor='#909090', visible=True)
+    savefile = "spk_bz.jpg"
+    # savefile = "spk_test.jpg"
+    fig.write_image(file=savefile, format='jpg')
+
+
 if __name__ == "__main__":
     for station in stations:
         current_stationdata = get_data(station)
-        db.close()
 
         tempdata = parse_querydata(current_stationdata)  # a list
         tempdata = filter_median(tempdata)  # a tuple list
         tempdata = bin_data(tempdata)  # a list - one minute bins
         tempdata = convert_time(tempdata)
 
-        d_hi = []
-        d_lo = []
+        data = []
+        colours = []
         hours = []
         for dp in tempdata:
             hr = dp[0]
             hr = convert_datetime_to_hour(hr)
             da = float(dp[1])
             if da > 0:
-                d_hi.append((da))
-                d_lo.append(null_value)
-            if da <= 0:
-                d_hi.append(null_value)
-                d_lo.append((da))
+                clr = "#009000"
+            else:
+                clr = "#900000"
             hours.append(hr)
+            data.append(da)
+            colours.append(clr)
 
-    hours.reverse()
-    d_lo.reverse()
-    d_hi.reverse()
+        hours.pop(len(hours)-1)
+        hours.append("Now ")
 
-    fig, ax = plt.subplots(figsize=(4, 6))
-    ax.set_xlim(-10, 10)
-    ax.set_ylabel("UTC Hour")
-    ax.set_xlabel("Bz - nT")
-    ax.set_title(title)
-
-    ax.barh(y=hours, width=d_hi, color='#509050')
-    ax.barh(y=hours, width=d_lo, color='red')
-    plt.grid(color='#95a5a6', linestyle='-', linewidth=1, axis='x', alpha=0.7)
-    plt.grid(color='#95a5a6', linestyle='-', linewidth=1, axis='y', alpha=0.7)
-
-    fig.tight_layout()
-    plt.yticks(ticks=hours, labels=hours, rotation=0)
-    plt.savefig(savefile)
-    plt.close('all')
-
-#      using plotly
+        plot(data, hours, colours)
