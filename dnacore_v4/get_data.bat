@@ -20,5 +20,5 @@ python test_goes.py
 
 
 
-timeout 300
+timeout 480
 goto start
