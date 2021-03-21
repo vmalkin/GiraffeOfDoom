@@ -228,6 +228,9 @@ if __name__ == "__main__":
             data.append(da)
             colours.append(clr)
 
+        # # Create an alert if Bz goes negative
+        # create_alert(data, hours)
+
         hours.pop(len(hours)-1)
         hours.append("Now ")
 

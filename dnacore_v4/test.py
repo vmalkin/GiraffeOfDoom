@@ -230,8 +230,7 @@ if __name__ == "__main__":
         # colours are determined by the median standard deviation.
         colourlist = colours_stdev(processed_query, min_value, median_sigma)
 
-        # # Create an alert if hourly values go over 3-sigma
-        # create_alert(processed_query)
+
 
         for item in processed_query:
             hr = item[0] + " "
@@ -241,6 +240,9 @@ if __name__ == "__main__":
 
         hours.pop(len(hours)-1)
         hours.append("Now ")
+
+        # # Create an alert if hourly values go over 3-sigma
+        # create_alert(processed_query)
 
         plot(hours, data, colourlist)
     else:
