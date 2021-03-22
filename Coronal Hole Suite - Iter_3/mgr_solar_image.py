@@ -92,8 +92,13 @@ class SolarImageProcessor:
     def _add_img_logo(self, image_name):
         label = 'DunedinAurora.NZ Coronal Hole Map'
         label2 = self._get_utc_time()
-        cv2.putText(image_name, label, (10,482), cv2.FONT_HERSHEY_SIMPLEX, 0.5,(250,250,250), 1 );
-        cv2.putText(image_name, label2, (10,498), cv2.FONT_HERSHEY_SIMPLEX, 0.5,(250,250,250), 1 );
+        # # SDO
+        # cv2.putText(image_name, label, (10,482), cv2.FONT_HERSHEY_SIMPLEX, 0.5,(250,250,250), 1 );
+        # cv2.putText(image_name, label2, (10,498), cv2.FONT_HERSHEY_SIMPLEX, 0.5,(250,250,250), 1 );
+        # GOES
+        cv2.putText(image_name, label, (10,40), cv2.FONT_HERSHEY_SIMPLEX, 1,(250,250,250), 2 );
+        cv2.putText(image_name, label2, (10,90), cv2.FONT_HERSHEY_SIMPLEX, 1,(250,250,250), 2 );
+
         # cv2.imwrite('disc_full.bmp', image_name)
         return image_name
 
@@ -154,6 +159,7 @@ class SolarImageProcessor:
             # increased latitude
 
             # Start grabbing all processed images and save as jpg
+            self._add_img_logo(outputimg1)
             try:
                 time_now = str(datetime.datetime.utcnow().strftime("%Y_%m_%d_%H_%M"))
                 filename = "sun_jpegs/" + time_now + ".jpg"
@@ -163,8 +169,6 @@ class SolarImageProcessor:
                 logging.error("Unable to process running solar image in JPG folder")
                 print("Unable to process running solar image in JPG folder")
 
-
-            self._add_img_logo(outputimg1)
             self._image_write('disc_full.bmp', outputimg1)
 
             # Meridian Segment
