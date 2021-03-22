@@ -14,23 +14,23 @@ import os
 errorloglevel = logging.WARNING
 logging.basicConfig(filename=k.error_log, format='%(asctime)s %(message)s', level=errorloglevel)
 logging.info("Created error log for this session")
-
 dna_core = sqlite3.connect(k.dbfile)
 db = dna_core.cursor()
-sigma_file = "goes.pkl"
-station = "GOES_16"
-plot_title = "test GOES"
+
+# #######################################################################################
+#   These details must be cusomised for each station
+sigma_file = "ruru.pkl"
+station = "Ruru_Obs"
+plot_title = "Dunedin Aurora No2"
 median_sigma = 0
 # a 10 min window for averaging readings give the number of readings per minute
 halfwindow = 30 * 10
-
 # Empirically derived scaling factor to make date fit the appropriate colour range
-scaling_factor = 0.8
+scaling_factor = 1
+# #######################################################################################
 
 def get_data(station):
-
-    start_time = int(time()) - (60*60*24)
-    print(posix2utc(start_time, '%Y-%m-%d %H:%M:%S'))
+    start_time = int(time()) - 86400
     result = db.execute("select station_data.posix_time, station_data.data_value from station_data "
                         "where station_data.station_id = ? and station_data.posix_time > ? order by station_data.posix_time asc", [station, start_time])
     query_result = result.fetchall()
@@ -44,7 +44,7 @@ def posix2utc(posixtime, timeformat):
     return utctime
 
 # hours, data, colourlist, min_value, median_sigma
-def plot(hours, data, colours, minvalue, mediansigma):
+def plot(hours, data, colours):
     maxaxis = max(data)
     fig = go.Figure(go.Bar(
         x=data,
@@ -227,13 +227,12 @@ if __name__ == "__main__":
         print("Median Sigma: " + str(median_sigma))
         list_of_sigmas = check_prune_sigmas(list_of_sigmas, median_sigma)
         save_sigma_list(list_of_sigmas, sigma_file)
-
         min_value = get_min_value(processed_query)
+
         # colours are determined by the median standard deviation.
         colourlist = colours_stdev(processed_query, min_value, median_sigma)
 
-        # # Create an alert if hourly values go over 3-sigma
-        # create_alert(processed_query)
+
 
         for item in processed_query:
             hr = item[0] + " "
@@ -244,7 +243,10 @@ if __name__ == "__main__":
         hours.pop(len(hours)-1)
         hours.append("Now ")
 
-        plot(hours, data, colourlist, min_value, median_sigma)
+        # # Create an alert if hourly values go over 3-sigma
+        # create_alert(processed_query)
+
+        plot(hours, data, colourlist)
     else:
         print("Not enough data to process just yet.")
 

@@ -14,7 +14,7 @@ WARNING
 ERROR
 CRITICAL
 """
-errorloglevel = logging.ERROR
+errorloglevel = logging.DEBUG
 logging.basicConfig(filename=k.error_log, format='%(asctime)s %(message)s', level=errorloglevel)
 logging.info("Created error log for this session")
 

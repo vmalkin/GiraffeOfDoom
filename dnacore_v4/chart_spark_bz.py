@@ -30,14 +30,13 @@ finish_time = int(time.time())
 start_time = finish_time - (60 * 60 * 24)
 binsize = 60 * 60
 number_bins = int((finish_time - start_time) / binsize) + 2
-null_value = ""
 half_window = 90
 
 minvalue = 0
 maxvalue = 3
 null_value = 0
-title = "IMF Bz"
-savefile = "bz.png"
+# title = "IMF Bz"
+# savefile = "bz.png"
 
 
 class DataPoint:
@@ -102,14 +101,14 @@ def check_create_folders():
 
 def get_data(station):
     result = db.execute("select station_data.posix_time, station_data.data_value from station_data "
-                        "where station_data.station_id = ? and station_data.posix_time > ?", [station, start_time])
+                        "where station_data.station_id = ? and station_data.posix_time > ? order by station_data.posix_time asc", [station, start_time])
     query_result = result.fetchall()
     db.close()
     return query_result
 
 
 def posix2utc(posixtime):
-    # utctime = datetime.datetime.fromtimestamp(int(posixvalue)).strftime('%Y-%m-%d %H:%M:%S')
+    # timeformat = '%Y-%m-%d %H:%M:%S'
     utctime = datetime.utcfromtimestamp(int(posixtime)).strftime(timeformat)
     return utctime
 
@@ -185,7 +184,7 @@ def convert_datetime_to_hour(datetimestring):
     # Add one hour to the actual bin time value, so it looks current on the graph.
     # the bin value is correct, this is making the time look current
     dateobject = datetime.strptime(datetimestring, timeformat) + timedelta(hours=1)
-    hr = datetime.strftime(dateobject, "%H:%M")
+    hr = datetime.strftime(dateobject, "%d %H:%M")
     return hr
 
 
@@ -205,33 +204,33 @@ def plot(data, hours, colours):
 
 
 if __name__ == "__main__":
-    for station in stations:
-        current_stationdata = get_data(station)
+    current_stationdata = get_data("Geomag_Bz")
 
-        tempdata = parse_querydata(current_stationdata)  # a list
-        tempdata = filter_median(tempdata)  # a tuple list
-        tempdata = bin_data(tempdata)  # a list - one minute bins
-        tempdata = convert_time(tempdata)
+    tempdata = parse_querydata(current_stationdata)  # a list
+    # print(tempdata)
+    tempdata = filter_median(tempdata)  # a tuple list
+    tempdata = bin_data(tempdata)  # a list - one minute bins
+    tempdata = convert_time(tempdata)
 
-        data = []
-        colours = []
-        hours = []
-        for dp in tempdata:
-            hr = dp[0]
-            hr = convert_datetime_to_hour(hr)
-            da = float(dp[1])
-            if da > 0:
-                clr = "#009000"
-            else:
-                clr = "#900000"
-            hours.append(hr)
-            data.append(da)
-            colours.append(clr)
+    data = []
+    colours = []
+    hours = []
+    for dp in tempdata:
+        hr = dp[0]
+        hr = convert_datetime_to_hour(hr)
+        da = float(dp[1])
+        if da > 0:
+            clr = "#009000"
+        else:
+            clr = "#900000"
+        hours.append(hr)
+        data.append(da)
+        colours.append(clr)
 
-        # # Create an alert if Bz goes negative
-        # create_alert(data, hours)
+    # # Create an alert if Bz goes negative
+    # create_alert(data, hours)
 
-        hours.pop(len(hours)-1)
-        hours.append("Now ")
-
-        plot(data, hours, colours)
+    hours.pop(len(hours)-1)
+    hours.append("Now ")
+    print(hours)
+    plot(data, hours, colours)
