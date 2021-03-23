@@ -19,15 +19,18 @@ db = dna_core.cursor()
 
 # #######################################################################################
 #   These details must be cusomised for each station
-sigma_file = "ruru.pkl"
+sigma_file = "s_ruru.pkl"
+mean_file = "m_ruru.pkl"
 station = "Ruru_Obs"
 plot_title = "Dunedin Aurora No2"
 median_sigma = 0
+median_mean = 0
 # a 10 min window for averaging readings give the number of readings per minute
 halfwindow = 30 * 10
 # Empirically derived scaling factor to make date fit the appropriate colour range
 scaling_factor = 1
 # #######################################################################################
+
 
 def get_data(station):
     start_time = int(time()) - 86400
@@ -45,7 +48,7 @@ def posix2utc(posixtime, timeformat):
 
 # hours, data, colourlist, min_value, median_sigma
 def plot(hours, data, colours):
-    maxaxis = max(data)
+    maxaxis = 8 * median_sigma + median_mean
     fig = go.Figure(go.Bar(
         x=data,
         y=hours,
@@ -55,8 +58,8 @@ def plot(hours, data, colours):
     fig.update_layout(width=320, height=900, title=plot_title)
     fig.update_layout(font=dict(size=20), margin=dict(l=10, r=20, b=10), yaxis_title="UTC")
     fig.update_xaxes(range=[0, maxaxis], gridcolor='#505050', visible=False)
-    savefile = "spk_" + station + ".jpg"
-    # savefile = "spk_test.jpg"
+    # savefile = "spk_" + station + ".jpg"
+    savefile = "spk_test.jpg"
     fig.write_image(file=savefile, format='jpg')
 
 
@@ -137,70 +140,89 @@ def get_sigma(processed_query):
     s = round(stdev(t), 5)
     return s
 
+def get_mean(processed_query):
+    t = []
+    for item in processed_query:
+        t.append(item[1])
+    s = round(mean(t), 5)
+    return s
 
-def load_sigma_list():
+
+def load_data_list(filename):
     returnlist = []
-    if os.path.exists(sigma_file) is True:
+    if os.path.exists(filename) is True:
         try:
-            returnlist = pickle.load(open(sigma_file, "rb"))
+            returnlist = pickle.load(open(filename, "rb"))
         except EOFError:
             print("Pickle file is empty")
     print("Pickle file is " + str(len(returnlist)) + " records long")
     return returnlist
 
 
-def append_sigma(sigmavalue, list_of_sigmas):
-    list_of_sigmas.append(sigmavalue)
+def append_value(value, list_of_values):
+    list_of_values.append(value)
 
 
-def check_prune_sigmas(list_of_sigmas, medianvalue):
+def check_prune_value(list_of_values, value):
     # db is tapped every 5 mins =  288 times
     returnlist = []
     maxlen = 288 * 27 * 3
-    if len(list_of_sigmas) > maxlen:
-        returnlist.append(medianvalue)
+    if len(list_of_values) > maxlen:
+        returnlist.append(value)
     else:
-        returnlist = list_of_sigmas
+        returnlist = list_of_values
     return  returnlist
 
 
-def save_sigma_list(list_of_sigmas, sigma_file):
-    pickle.dump(list_of_sigmas, open(sigma_file, "wb"),0)
+def save_data_list(list_of_values, values_file):
+    pickle.dump(list_of_values, open(values_file, "wb"),0)
 
 
-def get_median_sigma(list_of_sigmas):
-    return median(list_of_sigmas)
+def get_median_value(list_of_values):
+    return median(list_of_values)
 
 
-def colours_stdev(processed_query, minvalue, mediansigma):
+def colours_stdev(processed_query, mean, mediansigma):
     # Unique to each station. Empirically derived
     colours = []
-    low1 = "#00e13c"  # pale green
-    low2 = "#00691c"  # dark green
-    med1 = "#ebb000"  # yellow
-    med2 = "#e14400"  # orange
-    hi = "#A50000"  # red
+    low1 = "#49ff60"  # pale green
+    low2 = "#00c31a"  # med green
+    med1 = "#00790f"  # dark green
+    med2 = "#e17100"  # orange
+    hi1 = "#e10000"  # red
+    hi2 = "#870000"  # red
     for item in processed_query:
         value = item[1]
-        if value >= 0:
+        if value <= mean:
             clr = low1
-        if value >= minvalue + (mediansigma * 1 * scaling_factor):
+        if value >= mean + (mediansigma * 1 * scaling_factor):
+            clr = low1
+        if value >= mean + (mediansigma * 2 * scaling_factor):
             clr = low2
-        if value >= minvalue + (mediansigma * 2 * scaling_factor):
+        if value >= mean + (mediansigma * 3 * scaling_factor):
             clr = med1
-        if value >= minvalue + (mediansigma * 3 * scaling_factor):
+        if value >= mean + (mediansigma * 4 * scaling_factor):
             clr = med2
-        if value >= minvalue + (mediansigma * 4 * scaling_factor):
-            clr = hi
+        if value >= mean + (mediansigma * 5 * scaling_factor):
+            clr = hi1
+        if value >= mean + (mediansigma * 6 * scaling_factor):
+            clr = hi2
         colours.append(clr)
     return colours
 
 
-def get_min_value(processed_query):
-    t = []
+# def get_min_value(processed_query):
+#     t = []
+#     for item in processed_query:
+#         t.append(item[1])
+#     return min(t)
+
+
+def hours_to_stdevs(processed_query):
+    returnresult = []
     for item in processed_query:
-        t.append(item[1])
-    return min(t)
+        dt = item[0]
+        da = item[1]
 
 
 if __name__ == "__main__":
@@ -218,21 +240,31 @@ if __name__ == "__main__":
     if len(processed_query) > 2:
         # Calculate the stdev of the data, then determine the median sigma value to use
         sigmavalue = get_sigma(processed_query)
+        meanvalue = get_mean(processed_query)
 
-        list_of_sigmas = load_sigma_list()
-        append_sigma(sigmavalue, list_of_sigmas)
+        list_of_sigmas = load_data_list(sigma_file)
+        list_of_means = load_data_list(mean_file)
+
+        append_value(sigmavalue, list_of_sigmas)
+        append_value(meanvalue, list_of_means)
         # This is the median value of sigma over the last three carrington rotations.
-        median_sigma = get_median_sigma(list_of_sigmas)
+        median_sigma = get_median_value(list_of_sigmas)
+        median_mean = get_median_value(list_of_means)
 
         print("Median Sigma: " + str(median_sigma))
-        list_of_sigmas = check_prune_sigmas(list_of_sigmas, median_sigma)
-        save_sigma_list(list_of_sigmas, sigma_file)
-        min_value = get_min_value(processed_query)
+        print("Median Mean: " + str(median_mean))
+
+        list_of_sigmas = check_prune_value(list_of_sigmas, median_sigma)
+        list_of_means = check_prune_value(list_of_sigmas, median_sigma)
+
+        save_data_list(list_of_sigmas, sigma_file)
+        save_data_list(list_of_means, mean_file)
+
+        # Convert actual values to standard deviations
+        stdevhours = hours_to_stdevs(processed_query)
 
         # colours are determined by the median standard deviation.
-        colourlist = colours_stdev(processed_query, min_value, median_sigma)
-
-
+        colourlist = colours_stdev(processed_query, median_mean, median_sigma)
 
         for item in processed_query:
             hr = item[0] + " "
