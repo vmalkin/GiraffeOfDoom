@@ -22,7 +22,7 @@ db = dna_core.cursor()
 sigma_file = "s_goes.pkl"
 mean_file = "m_goes.pkl"
 station = "GOES_16"
-plot_title = "test"
+plot_title = "test goes"
 median_sigma = 0
 median_mean = 0
 # a 10 min window for averaging readings give the number of readings per minute
@@ -184,7 +184,7 @@ def get_median_value(list_of_values):
 def colours_stdev(processed_query, mean, mediansigma):
     # Unique to each station. Empirically derived
     colours = []
-    clr = ""
+    clr = "#ffffff"
     low1 = "#00c31a"  # med green
     low2 = "#00790f"  # dark green
     med1 = "#e17100"  # orange
@@ -192,17 +192,17 @@ def colours_stdev(processed_query, mean, mediansigma):
 
     for item in processed_query:
         value = item[1]
-        if value <= mean:
+        if value > 0:
             clr = low1
-        if value >= mean + (mediansigma * 1 * scaling_factor):
+        if value > mean + (mediansigma * 1 * scaling_factor):
             clr = low1
-        if value >= mean + (mediansigma * 2 * scaling_factor):
+        if value > mean + (mediansigma * 2 * scaling_factor):
             clr = low2
-        if value >= mean + (mediansigma * 3 * scaling_factor):
+        if value > mean + (mediansigma * 3 * scaling_factor):
             clr = med1
-        if value >= mean + (mediansigma * 4 * scaling_factor):
+        if value > mean + (mediansigma * 4 * scaling_factor):
             clr = med1
-        if value >= mean + (mediansigma * 5 * scaling_factor):
+        if value > mean + (mediansigma * 5 * scaling_factor):
             clr = hi1
 
         colours.append(clr)
