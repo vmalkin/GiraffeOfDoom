@@ -12,9 +12,8 @@ python save_logfiles.py
 
 python chart_dxdt.py
 python chart_spark_bz.py
-python chart_spark_ruru.py
-python chart_spark_goes.py
 
+python test_goes.py
 python test.py
 
 timeout 480

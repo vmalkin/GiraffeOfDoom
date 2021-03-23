@@ -19,18 +19,17 @@ db = dna_core.cursor()
 
 # #######################################################################################
 #   These details must be cusomised for each station
-sigma_file = "s_ruru.pkl"
-mean_file = "m_ruru.pkl"
-station = "Ruru_Obs"
-plot_title = "Dunedin Aurora No2"
+sigma_file = "s_goes.pkl"
+mean_file = "m_goes.pkl"
+station = "GOES_16"
+plot_title = "test"
 median_sigma = 0
 median_mean = 0
 # a 10 min window for averaging readings give the number of readings per minute
-halfwindow = 30 * 10
+halfwindow = 10
 # Empirically derived scaling factor to make date fit the appropriate colour range
 scaling_factor = 1
 # #######################################################################################
-
 
 def get_data(station):
     start_time = int(time()) - 86400
@@ -58,8 +57,8 @@ def plot(hours, data, colours):
     fig.update_layout(width=320, height=900, title=plot_title)
     fig.update_layout(font=dict(size=20), margin=dict(l=10, r=20, b=10), yaxis_title="UTC")
     fig.update_xaxes(range=[0, maxaxis], gridcolor='#505050', visible=False)
-    # savefile = "spk_" + station + ".jpg"
-    savefile = "spk_test.jpg"
+    savefile = "spk_" + station + ".jpg"
+    # savefile = "spk_test.jpg"
     fig.write_image(file=savefile, format='jpg')
 
 
@@ -185,12 +184,12 @@ def get_median_value(list_of_values):
 def colours_stdev(processed_query, mean, mediansigma):
     # Unique to each station. Empirically derived
     colours = []
-    low1 = "#49ff60"  # pale green
-    low2 = "#00c31a"  # med green
-    med1 = "#00790f"  # dark green
-    med2 = "#e17100"  # orange
+    clr = ""
+    low1 = "#00c31a"  # med green
+    low2 = "#00790f"  # dark green
+    med1 = "#e17100"  # orange
     hi1 = "#e10000"  # red
-    hi2 = "#870000"  # red
+
     for item in processed_query:
         value = item[1]
         if value <= mean:
@@ -202,11 +201,10 @@ def colours_stdev(processed_query, mean, mediansigma):
         if value >= mean + (mediansigma * 3 * scaling_factor):
             clr = med1
         if value >= mean + (mediansigma * 4 * scaling_factor):
-            clr = med2
+            clr = med1
         if value >= mean + (mediansigma * 5 * scaling_factor):
             clr = hi1
-        if value >= mean + (mediansigma * 6 * scaling_factor):
-            clr = hi2
+
         colours.append(clr)
     return colours
 

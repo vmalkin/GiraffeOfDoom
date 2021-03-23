@@ -184,12 +184,12 @@ def get_median_value(list_of_values):
 def colours_stdev(processed_query, mean, mediansigma):
     # Unique to each station. Empirically derived
     colours = []
-    low1 = "#49ff60"  # pale green
-    low2 = "#00c31a"  # med green
-    med1 = "#00790f"  # dark green
-    med2 = "#e17100"  # orange
+    clr = ""
+    low1 = "#00c31a"  # med green
+    low2 = "#00790f"  # dark green
+    med1 = "#e17100"  # orange
     hi1 = "#e10000"  # red
-    hi2 = "#870000"  # red
+
     for item in processed_query:
         value = item[1]
         if value <= mean:
@@ -201,11 +201,10 @@ def colours_stdev(processed_query, mean, mediansigma):
         if value >= mean + (mediansigma * 3 * scaling_factor):
             clr = med1
         if value >= mean + (mediansigma * 4 * scaling_factor):
-            clr = med2
+            clr = med1
         if value >= mean + (mediansigma * 5 * scaling_factor):
             clr = hi1
-        if value >= mean + (mediansigma * 6 * scaling_factor):
-            clr = hi2
+
         colours.append(clr)
     return colours
 
