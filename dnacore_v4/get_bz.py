@@ -2,7 +2,7 @@ import sqlite3
 import constants as k
 import logging
 import requests
-import time
+import calendar
 import datetime
 import re
 
@@ -65,7 +65,6 @@ class State:
                 time_tag = self.utc2posix(json_data[i][0])
                 bz = json_data[i][3]
 
-
                 if re.match(r"^[0-9]*[0-9.]*$", bz):
                     pass
                 else:
@@ -127,6 +126,7 @@ class State:
         try:
             for item in self.mag_data:
                 itemsplit = item.split(",")
+                print(itemsplit[0])
                 db.execute("insert into station_data(station_id, posix_time, data_value) values (?, ?, ?)", [station_id, itemsplit[0], itemsplit[1]])
             result = "success"
         except sqlite3.ProgrammingError:
@@ -140,8 +140,9 @@ class State:
         return utctime
 
     def utc2posix(self, utc_string):
-        dt = datetime.datetime.strptime(utc_string, timeformat).utctimetuple()
-        return(int(time.mktime(dt)))
+        dt = datetime.datetime.strptime(utc_string, '%Y-%m-%d %H:%M:%S.%f')
+        ts = calendar.timegm(dt.timetuple())
+        return ts
 
 
 state = State()

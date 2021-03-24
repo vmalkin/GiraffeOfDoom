@@ -2,17 +2,16 @@
 rem Get basic data and plot the basic csv files
 python get_ruru.py
 python get_goes16.py
-
-REM python get_SW_speed.py
-REM python get_SW_density.py
+python get_SW_speed.py
+python get_SW_density.py
 python get_bz.py
 
-rem specialised plotting files.
+rem Save basic CSV files. Logs for 24 hrs and the nowfiles for display
 python save_logfiles.py
-
 python chart_dxdt.py
-python chart_spark_bz.py
 
+REM Chart the Spark Plots for the front page
+python chart_spark_bz.py
 python test_goes.py
 python test.py
 
