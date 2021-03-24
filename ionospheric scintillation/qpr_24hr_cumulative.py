@@ -11,7 +11,7 @@ def plot(ut, da):
     fig.update_yaxes(range=[60, 100], gridcolor='#505050')
     fig.update_xaxes(nticks=24, tickangle=45, gridcolor='#505050')
     fig.update_layout(font=dict(size=22), title_font_size=22)
-    fig.update_layout(width=1700, height=900, title="Rolling 24hr count GPS Noise. http://DunedinAurora.NZ", xaxis_title="Date/time UTC", yaxis_title="S4 Index", plot_bgcolor="#101010")
+    fig.update_layout(width=1700, height=700, title="Rolling 24hr count GPS Noise. http://DunedinAurora.NZ", xaxis_title="Date/time UTC", yaxis_title="S4 Index", plot_bgcolor="#101010")
     fig.update_traces(line=dict(width=2, color="rgba(0,255,255,0.8)"))
     fig.write_image(file=savefile, format='jpg')
 
