@@ -15,5 +15,8 @@ python chart_spark_bz.py
 python test_goes.py
 python test.py
 
+REM Special monitoring  for alerts
+
+
 timeout 480
 goto start

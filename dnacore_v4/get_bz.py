@@ -126,7 +126,6 @@ class State:
         try:
             for item in self.mag_data:
                 itemsplit = item.split(",")
-                print(itemsplit[0])
                 db.execute("insert into station_data(station_id, posix_time, data_value) values (?, ?, ?)", [station_id, itemsplit[0], itemsplit[1]])
             result = "success"
         except sqlite3.ProgrammingError:
