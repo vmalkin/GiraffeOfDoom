@@ -28,7 +28,8 @@ median_mean = 0
 # a 10 min window for averaging readings give the number of readings per minute
 halfwindow = 30 * 10
 # Empirically derived scaling factor to make date fit the appropriate colour range
-scaling_factor = 1
+scaling_factor = 1.0
+
 # #######################################################################################
 
 def get_data(station):
