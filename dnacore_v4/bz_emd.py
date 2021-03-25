@@ -16,7 +16,7 @@ with open("Geomag_Bz.csv", "r") as f:
 a.pop(0)
 n = np.array(a, dtype='float')
 
-def my_get_next_imf(x, zoom=None, sd_thresh=0.1):
+def my_get_next_imf(x, zoom=None, sd_thresh=0.05):
 
     proto_imf = x.copy()  # Take a copy of the input so we don't overwrite anything
     continue_sift = True  # Define a flag indicating whether we should continue sifting
@@ -39,9 +39,9 @@ def my_get_next_imf(x, zoom=None, sd_thresh=0.1):
         # Add a summary subplot
         plt.subplot(5, 1, niters)
         plt.plot(proto_imf[zoom[0]:zoom[1]], 'k')
-        # plt.plot(upper_env[zoom[0]:zoom[1]])
-        # plt.plot(lower_env[zoom[0]:zoom[1]])
-        # plt.plot(avg_env[zoom[0]:zoom[1]])
+        plt.plot(upper_env[zoom[0]:zoom[1]])
+        plt.plot(lower_env[zoom[0]:zoom[1]])
+        plt.plot(avg_env[zoom[0]:zoom[1]])
 
 
         # Should we stop sifting?
@@ -59,4 +59,11 @@ def my_get_next_imf(x, zoom=None, sd_thresh=0.1):
     plt.show()
     return proto_imf
 
-imf1 = my_get_next_imf(n)
+sample_rate = len(n)
+imf = emd.sift.sift(n)
+emd.plotting.plot_imfs(imf[:sample_rate, :], cmap=True, scale_y=True)
+IP, IF, IA = emd.spectra.frequency_transform(imf, sample_rate, 'hilbert')
+plt.plot(imf)
+plt.show()
+
+# imf1 = my_get_next_imf(n)
