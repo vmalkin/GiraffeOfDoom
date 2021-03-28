@@ -5,7 +5,7 @@ import numpy as np
 
 a = []
 dt = []
-# with open("GOES_16.csv", "r") as f:
+# with open("2021-03-20.csv", "r") as f:
 with open("Geomag_Bz.csv", "r") as f:
 # with open("Ruru_Obs//2021-03-26.csv", "r") as f:
 # with open("ruru_obs_dxdt.csv", "r") as f:
