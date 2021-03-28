@@ -1,6 +1,7 @@
 import datetime
 import constants as k
 import plotly.graph_objects as go
+import mgr_stats
 
 
 def plot(ut, da):
@@ -50,6 +51,8 @@ def wrapper(querydata):
     lastpass_utc = []
     rolling = []
 
+    # We build up our temp array rolling until it is a day long, then we get the cumulative sum, add the sum to the
+    # output list.
     for j in range(0, len(firstpass_dat)):
         if len(rolling) < 1440:
             rolling.append(firstpass_dat[j])
@@ -61,6 +64,8 @@ def wrapper(querydata):
             lastpass_dat.append(dp)
             lastpass_utc.append(dt)
 
+    statvalues = mgr_stats.wrapper(lastpass_dat, "t_mean.pkl", "t_sigma.pkl")
+    print(statvalues)
     plot(lastpass_utc, lastpass_dat)
     print("Plot complete")
 

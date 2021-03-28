@@ -7,18 +7,6 @@ import plotly.graph_objects as go
 import constants as k
 import time
 
-# Used in legend and chart series
-# colourdict = {
-#     0: "#444444",
-#     1: "#0c2256",
-#     2: "#1742a4",
-#     3: "#005900",
-#     4: "#00c100",
-#     5: "#b7770d",
-#     6: "#f7bc5b",
-#     7: "#ffffff"
-# }
-
 colourdict = {
     0: '#303030',
     1: '#001e2c',
@@ -104,6 +92,9 @@ def plot_polar(alt, az, s4, colours, splat_threshold):
         text = str(j * 3 - 3) + " - " + str(j * 3)
         fig.add_annotation(x=x_location, y=0, text=text, font=dict(color="#000000", size=22), borderwidth=12, bordercolor=colourdict[i], borderpad=6,)
 
+    timelapse = posix2utc(time.time(), '%Y_%m_%d_%H_%M')
+    timelapse = k.imagesdir + "//timelapse//" + timelapse + ".jpg"
+    fig.write_image(file=timelapse, format='jpg')
     fig.write_image(file=savefile, format='jpg')
 
 def create_colourway(posixtime):

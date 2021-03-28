@@ -6,12 +6,20 @@ the median value of each file is returned as a dictionary
 
 from statistics import mean, stdev, median
 import pickle
+import os
 
 listlength = 7000
 
 
 def load_values(pickle_file):
-    pass
+    returnlist = []
+    if os.path.exists(pickle_file) is True:
+        try:
+            returnlist = pickle.load(open(pickle_file, "rb"))
+        except EOFError:
+            print("Pickle file is empty")
+    print("Loaded pickle file is " + str(len(returnlist)) + " records long")
+    return returnlist
 
 
 def prune_list(value_list):
@@ -49,7 +57,7 @@ def append_value(value_list, appendage):
 
 
 def save_values(save_list, pickle_file):
-    pass
+    pickle.dump(save_list, open(pickle_file, "wb"),0)
 
 
 def calc_median(value_list):
