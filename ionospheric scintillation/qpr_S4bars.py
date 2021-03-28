@@ -74,34 +74,34 @@ def wrapper(queryresults):
     dat = []
     counter = 0
 
-    # for i in range(0, len(queryresults)-1):
-    #     s_time = queryresults[i][1]
-    #     s_time_next = queryresults[i+1][1]
-    #     s_alt = queryresults[i][2]
-    #     s_az = queryresults[i][3]
-    #     s_s4 = queryresults[i][4]
+    for i in range(0, len(queryresults)-1):
+        s_time = queryresults[i][1]
+        s_time_next = queryresults[i+1][1]
+        s_alt = queryresults[i][2]
+        s_az = queryresults[i][3]
+        s_s4 = queryresults[i][4]
+
+        if s_time == s_time_next:
+            if s_s4 > splat_threshold:
+                if s_alt >= splat_altitude:
+                    counter = counter + 1
+        else:
+            utc.append(str(posix2utc(s_time, '%Y-%m-%d %H')))
+            dat.append(counter)
+            counter = 0
+
+    # for item in queryresults:
+    #     s_time = item[1]
+    #     s_alt = item[2]
+    #     s_az = item[3]
+    #     s_s4 = item[4]
     #
-    #     if s_time == s_time_next:
-    #         if s_s4 > splat_threshold:
-    #             if s_alt >= splat_altitude:
-    #                 counter = counter + 1
-    #     else:
-    #         utc.append(str(posix2utc(s_time, '%Y-%m-%d %H')))
-    #         dat.append(counter)
-    #         counter = 0
-
-    for item in queryresults:
-        s_time = item[1]
-        s_alt = item[2]
-        s_az = item[3]
-        s_s4 = item[4]
-
-        if s_s4 > splat_threshold:
-            if s_alt >= splat_altitude:
-                utc.append(str(posix2utc(s_time, '%Y-%m-%d %H')))
-                dat.append(1)
-            else:
-                utc.append(posix2utc(s_time, '%Y-%m-%d %H'))
-                dat.append(0)
+    #     if s_s4 > splat_threshold:
+    #         if s_alt >= splat_altitude:
+    #             utc.append(str(posix2utc(s_time, '%Y-%m-%d %H')))
+    #             dat.append(1)
+    #         else:
+    #             utc.append(posix2utc(s_time, '%Y-%m-%d %H'))
+    #             dat.append(0)
     plot(utc, dat)
 
