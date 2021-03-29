@@ -55,9 +55,18 @@ def plot(hours, data, colours):
         marker=dict(color=colours),
         orientation='h'
     ))
-    fig.update_layout(width=320, height=900, title=plot_title)
+
+    fig.update_layout(width=320, height=900, title=plot_title,
+                      xaxis=dict(tickmode="array",
+                                 tickvals=[median_mean,
+                                           median_mean + 2 * median_sigma,
+                                           median_mean + 4 * median_sigma,
+                                           median_mean + 6 * median_sigma,
+                                           median_mean + 8 * median_sigma],
+                                 ticktext=["x", "2σ", "4σ", "6σ", "8σ"]))
+
     fig.update_layout(font=dict(size=20), margin=dict(l=10, r=20, b=10), yaxis_title="UTC")
-    fig.update_xaxes(range=[0, maxaxis], gridcolor='#505050', visible=False)
+    fig.update_xaxes(range=[0, maxaxis], gridcolor='#a0a0a0', visible=True)
     # savefile = "spk_" + station + ".jpg"
     savefile = "spk_test.jpg"
     fig.write_image(file=savefile, format='jpg')

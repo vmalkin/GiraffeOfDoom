@@ -195,8 +195,8 @@ def plot(data, hours, colours):
         marker=dict(color=colours),
         orientation='h'
     ))
-    fig.update_layout(width=620, height=900, title="Bz")
-    fig.update_layout(font=dict(size=20), margin=dict(l=10, r=20, b=10), yaxis_title="UTC")
+    fig.update_layout(width=620, height=900, title="IMF - Bz")
+    fig.update_layout(font=dict(size=20), margin=dict(l=10, r=20, b=10), xaxis_title="Bz - nT", yaxis_title="UTC")
     fig.update_xaxes(range=[-10, 10], gridcolor='#909090', visible=True)
     savefile = "spk_bz.jpg"
     # savefile = "spk_test.jpg"
@@ -232,5 +232,4 @@ if __name__ == "__main__":
 
     hours.pop(len(hours)-1)
     hours.append("Now ")
-    print(hours)
     plot(data, hours, colours)

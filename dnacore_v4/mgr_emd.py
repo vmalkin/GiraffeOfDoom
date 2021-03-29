@@ -9,7 +9,7 @@ def plot_histogram(IP, IF, IA):
     fig.show()
 
 
-def wrapper(datafile):
+def wrapper(datafile, plotname):
     a = []
     dt = []
     with open(datafile, "r") as f:
@@ -42,13 +42,17 @@ def wrapper(datafile):
         data = imf[:, i]
         r = i+2
         fig.add_trace(go.Scatter(x=dt, y=data, mode="lines", line=dict(width=2, color="#000000")), row=r, col=1)
-
-    fig.update_layout(height=3000, width=1400, title_text="Instrinsic Mode functions")
+    title = "Instrinsic Mode functions - " + plotname
+    fig.update_layout(height=3500, width=1400, title_text=title)
     fig.show()
     # fig.write_image(file="temp.jpg", format="jpg")
     print("Plot finished")
 
 
-wrapper("Geomag_Bz.csv")
+wrapper("bbr_bz.csv", "Bz")
+wrapper("bbr_speed.csv", "SW Speed")
+wrapper("bbr_density.csv", "SW Density")
+wrapper("bbr_ruru_h.csv", "H Component")
+
 
 
