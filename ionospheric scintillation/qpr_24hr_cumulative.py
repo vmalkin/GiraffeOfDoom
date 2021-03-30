@@ -4,16 +4,25 @@ import plotly.graph_objects as go
 import mgr_stats
 
 
-def plot(ut, da):
+def plot(ut, da, median, sigma):
     savefile = k.imagesdir + "//cumulative.jpg"
+    clr_grid = '#c7c7c7'
     data = go.Scatter(x=ut, y = da, mode="lines")
     fig = go.Figure(data)
-    # fig.update_yaxes(range=[120, 180], gridcolor='#505050')
-    fig.update_yaxes(range=[60, 100], gridcolor='#505050')
-    fig.update_xaxes(nticks=24, tickangle=45, gridcolor='#505050')
-    fig.update_layout(font=dict(size=20), title_font_size=22)
-    fig.update_layout(width=1700, height=700, title="Rolling 24hr count GPS Noise Events. http://DunedinAurora.NZ", xaxis_title="Date/time UTC", yaxis_title="S4 Index", plot_bgcolor="#101010")
-    fig.update_traces(line=dict(width=2, color="rgba(0,255,255,0.8)"))
+    # fig.update_yaxes(range=[170, 210], gridcolor=clr_grid)
+    fig.update_yaxes(range=[70, 115], gridcolor='#505050')
+
+    clr_mean = "rgba(200,10,10,0.8)"
+    clr_sigma = "rgba(0,150,0,0.8)"
+    fig.add_hline(y=median, line_color=clr_mean, annotation_text="x ̅", annotation_font_color=clr_mean, annotation_position="top left")
+    fig.add_hline(y=(median + sigma*2), line_color=clr_sigma, annotation_text="2σ",annotation_font_color=clr_sigma, annotation_position="top left")
+    fig.add_hline(y=(median + sigma*4), line_color=clr_sigma, annotation_text="4σ", annotation_font_color=clr_sigma, annotation_position="top left")
+    fig.add_hline(y=(median + sigma*6), line_color=clr_sigma, annotation_text="6σ", annotation_font_color=clr_sigma, annotation_position="top left")
+
+    fig.update_xaxes(nticks=24, tickangle=45, gridcolor=clr_grid)
+    fig.update_layout(font=dict(size=20), title_font_size=21)
+    fig.update_layout(width=1700, height=700, title="Rolling 24hr count GPS noise. s4 > 40. http://DunedinAurora.NZ", xaxis_title="Date/time UTC", yaxis_title="S4 Index", plot_bgcolor="#e0e0e0")
+    fig.update_traces(line=dict(width=5, color="rgba(10,10,10,1)"))
     fig.write_image(file=savefile, format='jpg')
 
 
@@ -66,7 +75,7 @@ def wrapper(querydata):
 
     statvalues = mgr_stats.wrapper(lastpass_dat, "t_mean.pkl", "t_sigma.pkl")
     print(statvalues)
-    plot(lastpass_utc, lastpass_dat)
+    plot(lastpass_utc, lastpass_dat, statvalues["medianvalue"], statvalues["mediansigma"])
     print("Plot complete")
 
 
