@@ -3,7 +3,7 @@ import emd
 import numpy as np
 
 a = []
-with open("Geomag_Bz.csv", "r") as f:
+with open("GOES_16", "r") as f:
     for line in f:
         line = line.split(",")
         d = line[1].strip()
