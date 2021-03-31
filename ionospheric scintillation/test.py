@@ -1,6 +1,5 @@
-x = "0215"
+import mgr_stats
 
-if x[:1] == "0":
-    x = x[1:]
-
-print(x)
+test = [1,2,3,4,5,6,7,8,9,10]
+values = (mgr_stats.wrapper(test, "t_mean.pkl", "t_sigma.pkl"))
+print(values)

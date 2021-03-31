@@ -184,7 +184,7 @@ def convert_datetime_to_hour(datetimestring):
     # Add one hour to the actual bin time value, so it looks current on the graph.
     # the bin value is correct, this is making the time look current
     dateobject = datetime.strptime(datetimestring, timeformat) + timedelta(hours=1)
-    hr = datetime.strftime(dateobject, "%d %H:%M")
+    hr = datetime.strftime(dateobject, "%H:%M ")
     return hr
 
 
@@ -195,8 +195,8 @@ def plot(data, hours, colours):
         marker=dict(color=colours),
         orientation='h'
     ))
-    fig.update_layout(width=620, height=900, title="Bz")
-    fig.update_layout(font=dict(size=20), margin=dict(l=10, r=20, b=10), yaxis_title="UTC")
+    fig.update_layout(width=620, height=900, title="IMF - Bz")
+    fig.update_layout(font=dict(size=20), margin=dict(l=10, r=20, b=10), xaxis_title="Bz - nT", yaxis_title="UTC")
     fig.update_xaxes(range=[-10, 10], gridcolor='#909090', visible=True)
     savefile = "spk_bz.jpg"
     # savefile = "spk_test.jpg"
@@ -222,7 +222,7 @@ if __name__ == "__main__":
         if da > 0:
             clr = "#009000"
         else:
-            clr = "#900000"
+            clr = "#e00000"
         hours.append(hr)
         data.append(da)
         colours.append(clr)
@@ -232,5 +232,4 @@ if __name__ == "__main__":
 
     hours.pop(len(hours)-1)
     hours.append("Now ")
-    print(hours)
     plot(data, hours, colours)

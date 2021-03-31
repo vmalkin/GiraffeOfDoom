@@ -72,7 +72,12 @@ def plot_polar(alt, az, s4, label_alt, label_az, label_text):
     fig.add_trace(go.Scatterpolar(r=rval, theta=thval, line_color="green", fill="tonext"))
 
     fig.add_trace(go.Scatterpolar(r=[90], theta=[0], line_color="black"))  # hacky!
-    fig.add_annotation(x=0.8, y=0.75, text="Local Noise Zone", bordercolor="#00c700", borderwidth=2, borderpad=4, bgcolor="#20f00e")
+    fig.add_annotation(x=0.18, y=0.58, text="Trees", bordercolor="#00c700", borderwidth=2, borderpad=4,
+                       bgcolor="#20f00e")
+    fig.add_annotation(x=0.27, y=0.8, text="Trees", bordercolor="#00c700", borderwidth=2, borderpad=4,
+                       bgcolor="#20f00e")
+    fig.add_annotation(x=0.27, y=0.17, text="Pine Tree", bordercolor="#00c700", borderwidth=2, borderpad=4,
+                       bgcolor="#20f00e")
     #################################################################################################################################################
 
     fig.update_layout(polar=dict(angularaxis=dict(rotation=90, direction="clockwise", gridcolor="#505050", color="#000000")), showlegend=False)
@@ -82,10 +87,10 @@ def plot_polar(alt, az, s4, label_alt, label_az, label_text):
 
     fig.write_image(file=savefile, format='jpg')
 
-    # create sequential images for logging
-    t_filename = str(posix2utc(time.time(), "%Y%m%d_%H%M")) + ".jpg"
-    cel = timelapsesavefolder + "//" + t_filename
-    fig.write_image(file=cel, format='jpg')
+    # # create sequential images for logging
+    # t_filename = str(posix2utc(time.time(), "%Y%m%d_%H%M")) + ".jpg"
+    # cel = timelapsesavefolder + "//" + t_filename
+    # fig.write_image(file=cel, format='jpg')
     # fig.show()
 
 

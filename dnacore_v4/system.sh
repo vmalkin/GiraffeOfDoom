@@ -9,12 +9,13 @@ do
  
  python3.5 save_logfiles.py
  python3.5 chart_dxdt.py
+ 
  python3.5 chart_bz.py
  python3.5 chart_goes.py
  python3.5 chart_ruru.py
  
  echo " "
- echo "Processing completed for this cycle. Waiting 300 seconds... "
+ echo "Processing completed for this cycle. Waiting 480 seconds... "
  echo " "
- sleep 300
+ sleep 480
 done
