@@ -10,7 +10,7 @@ def plot(ut, da, median, sigma):
     data = go.Scatter(x=ut, y = da, mode="lines")
     fig = go.Figure(data)
     # fig.update_yaxes(range=[170, 210], gridcolor=clr_grid)
-    fig.update_yaxes(range=[70, 115], gridcolor='#505050')
+    fig.update_yaxes(range=[70, 115], gridcolor=clr_grid)
 
     clr_mean = "rgba(200,10,10,0.8)"
     clr_sigma = "rgba(0,150,0,0.8)"

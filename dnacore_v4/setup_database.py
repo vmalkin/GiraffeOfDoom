@@ -30,7 +30,11 @@ db.execute('create table station_data('
            'data_value text, '
            'foreign key (station_id) references station(station_id)'
            ');')
-
+db.execute('create table events('
+           'posix_time integer, '
+           'station_id text, '
+           'message text,'
+           'foreign key (station_id) references station(station_id);')
 # Watch the syntax for the value to be passed into the query!
 # https://stackoverflow.com/questions/16856647/sqlite3-programmingerror-incorrect-number-of-bindings-supplied-the-current-sta#16856730
 try:

@@ -49,11 +49,11 @@ def wrapper(datafile, plotname):
     print("Plot finished")
 
 
-# wrapper("bbr_bz.csv", "Bz")
-# wrapper("bbr_speed.csv", "SW Speed")
-# wrapper("bbr_density.csv", "SW Density")
-# wrapper("bbr_ruru_h.csv", "RapidRun")
-# wrapper("bbr_ruru_original.csv", "Original")
+##wrapper("bbr_bz.csv", "Bz")
+##wrapper("bbr_speed.csv", "SW Speed")
+##wrapper("bbr_density.csv", "SW Density")
+##wrapper("bbr_ruru_h.csv", "RapidRun")
+##wrapper("bbr_ruru_original.csv", "Original")
 
 wrapper("Geomag_Bz.csv", "BZ")
 wrapper("GOES_16.csv", "GOES 16")
