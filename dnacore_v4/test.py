@@ -226,6 +226,13 @@ def hours_to_stdevs(processed_query):
         da = item[1]
 
 
+def create_alert(alerttext):
+    alertime = time()
+    d = [alertime, station, alerttext]
+    db.execute("insert into events (posixtime, station_id, message) values (?,?,?);", (d))
+
+
+
 if __name__ == "__main__":
     querydata = get_data(station)
     data = []

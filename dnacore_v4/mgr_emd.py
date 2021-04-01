@@ -1,11 +1,15 @@
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
+import matplotlib as plot
 import emd
 import numpy as np
 
 
-def plot_histogram(IP, IF, IA):
-    fig = go.Figure(go.Scatter(x=IF))
+def plot_histogram(x):
+    fig = go.Figure()
+    for i in range(0, len(x[0])):
+        fig.add_trace(go.Histogram(x=x[:, i]))
+        # fig.add_trace(go.Scatter(y=x[:,i], mode="lines"))
     fig.show()
 
 
@@ -29,8 +33,15 @@ def wrapper(datafile, plotname):
     sample_rate = len(n)
     imf = emd.sift.sift(n)
     emd.plotting.plot_imfs(imf[:sample_rate, :], cmap=True, scale_y=True)
-    IP, IF, IA = emd.spectra.frequency_transform(imf, sample_rate, 'hilbert')
-    # plot_histogram(IP, IF, IA)
+    IP, IF, IA = emd.spectra.frequency_transform(imf, sample_rate, 'nht')
+    freq_edges, freq_centres = emd.spectra.define_hist_bins(1, 200, 300, 'linear')
+
+    spec_weighted = emd.spectra.hilberthuang_1d(IF, np.ones_like(IA), freq_edges)
+    plot_histogram(IF)
+
+    hht = emd.spectra.hilberthuang(IF[:, 2, None], IA[:, 2, None], freq_edges, mode='amplitude')
+    time_centres = np.arange(201) - .5
+
 
     print("data is " + str(len(imf)) + " records long")
     # Create the plotly subsplots
@@ -49,16 +60,16 @@ def wrapper(datafile, plotname):
     print("Plot finished")
 
 
-##wrapper("bbr_bz.csv", "Bz")
-##wrapper("bbr_speed.csv", "SW Speed")
-##wrapper("bbr_density.csv", "SW Density")
-##wrapper("bbr_ruru_h.csv", "RapidRun")
-##wrapper("bbr_ruru_original.csv", "Original")
+wrapper("bbr_bz.csv", "Bz")
+# wrapper("bbr_speed.csv", "SW Speed")
+# wrapper("bbr_density.csv", "SW Density")
+# wrapper("bbr_ruru_h.csv", "RapidRun")
+# wrapper("bbr_ruru_original.csv", "Original")
 
-wrapper("Geomag_Bz.csv", "BZ")
-wrapper("GOES_16.csv", "GOES 16")
-wrapper("Ruru_Obs.csv", "Ruru")
-wrapper("SW_speed.csv", "Solar Wind Speed")
-wrapper("SW_Density.csv", "Solar Wind Density")
+# wrapper("Geomag_Bz.csv", "BZ")
+# wrapper("GOES_16.csv", "GOES 16")
+# wrapper("Ruru_Obs.csv", "Ruru")
+# wrapper("SW_speed.csv", "Solar Wind Speed")
+# wrapper("SW_Density.csv", "Solar Wind Density")
 
 
