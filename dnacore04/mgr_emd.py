@@ -5,8 +5,9 @@ import emd
 import numpy as np
 
 
-def plot_histogram(x):
+def plot_histogram(x, title):
     fig = go.Figure()
+    fig.update_layout(title=title)
     for i in range(0, len(x[0])):
         fig.add_trace(go.Histogram(x=x[:, i]))
         # fig.add_trace(go.Scatter(y=x[:,i], mode="lines"))
@@ -37,7 +38,7 @@ def wrapper(datafile, plotname):
     freq_edges, freq_centres = emd.spectra.define_hist_bins(1, 200, 300, 'linear')
 
     spec_weighted = emd.spectra.hilberthuang_1d(IF, np.ones_like(IA), freq_edges)
-    plot_histogram(IF)
+    plot_histogram(IF, plotname)
 
     hht = emd.spectra.hilberthuang(IF[:, 2, None], IA[:, 2, None], freq_edges, mode='amplitude')
     time_centres = np.arange(201) - .5
@@ -48,11 +49,11 @@ def wrapper(datafile, plotname):
     fig = make_subplots(rows=len(imf[0])+1, cols=1)
     fig.update_xaxes(nticks=24, tickangle=45)
     fig.add_trace(go.Scatter(x=dt, y=a, mode="lines", line=dict(width=2, color="#ff0000")), row=1, col=1)
-
     for i in range(0, len(imf[0])):
         data = imf[:, i]
         r = i+2
-        fig.add_trace(go.Scatter(x=dt, y=data, mode="lines", line=dict(width=2, color="#000000")), row=r, col=1)
+        # fig.add_trace(go.Scatter(x=dt, y=data, mode="lines", line=dict(width=2, color="#000000")), row=r, col=1)
+        fig.add_trace(go.Scatter(x=dt, y=data, mode="lines", line=dict(width=2)), row=r, col=1)
     title = "Instrinsic Mode functions - " + plotname
     fig.update_layout(height=3500, width=1400, title_text=title)
     fig.show()
@@ -60,16 +61,16 @@ def wrapper(datafile, plotname):
     print("Plot finished")
 
 
-wrapper("bbr_bz.csv", "Bz")
+# wrapper("bbr_bz.csv", "Bz")
 # wrapper("bbr_speed.csv", "SW Speed")
 # wrapper("bbr_density.csv", "SW Density")
 # wrapper("bbr_ruru_h.csv", "RapidRun")
 # wrapper("bbr_ruru_original.csv", "Original")
 
-# wrapper("Geomag_Bz.csv", "BZ")
-# wrapper("GOES_16.csv", "GOES 16")
-# wrapper("Ruru_Obs.csv", "Ruru")
-# wrapper("SW_speed.csv", "Solar Wind Speed")
-# wrapper("SW_Density.csv", "Solar Wind Density")
+wrapper("Geomag_Bz.csv", "BZ")
+wrapper("GOES_16.csv", "GOES 16")
+wrapper("Ruru_Obs.csv", "Ruru")
+wrapper("SW_speed.csv", "Solar Wind Speed")
+wrapper("SW_Density.csv", "Solar Wind Density")
 
 

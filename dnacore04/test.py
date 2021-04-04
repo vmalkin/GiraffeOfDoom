@@ -15,12 +15,12 @@ errorloglevel = logging.WARNING
 logging.basicConfig(filename=k.error_log, format='%(asctime)s %(message)s', level=errorloglevel)
 logging.info("Created error log for this session")
 dna_core = sqlite3.connect(k.dbfile)
-db = dna_core.cursor()
+
 
 # #######################################################################################
 #   These details must be cusomised for each station
-sigma_file = "s_test.pkl"
-mean_file = "m_test.pkl"
+sigma_file = "s_test000.pkl"
+mean_file = "m_test000.pkl"
 station = "Ruru_Obs"
 plot_title = "test ruru"
 median_sigma = 0
@@ -33,6 +33,7 @@ scaling_factor = 1.0
 # #######################################################################################
 
 def get_data(station):
+    db = dna_core.cursor()
     start_time = int(time()) - 86400
     result = db.execute("select station_data.posix_time, station_data.data_value from station_data "
                         "where station_data.station_id = ? and station_data.posix_time > ? order by station_data.posix_time asc", [station, start_time])
@@ -219,18 +220,45 @@ def colours_stdev(processed_query, mean, mediansigma):
     return colours
 
 
-def hours_to_stdevs(processed_query):
-    returnresult = []
+def create_alert(alerttext):
+    db = dna_core.cursor()
+    t = time()
+    values = (station, t, alerttext)
+    try:
+        db.execute("insert into events (station_id, posix_time, message) values (?,?,?)", values)
+    except sqlite3.Error:
+        print("DATABASE ERROR inserting new alert")
+    db.close()
+
+def processalerts(processed_query, median_mean, median_sigma):
+    returnvalue = ""
+    nowdata = processed_query[0][1]
+
+    if nowdata <= median_mean + (median_sigma * 3 * scaling_factor):
+        returnvalue = plot_title + ": Geomagnetic activity is currently quiet. "
+    if nowdata > median_mean + (median_sigma * 3 * scaling_factor):
+        returnvalue = plot_title + ": Geomagnetic activity is currently unsettled at the moment. "
+    if nowdata > median_mean + (median_sigma * 4 * scaling_factor):
+        returnvalue = plot_title + ": Geomagnetic activity is moderately disturbed right now. "
+    if nowdata > median_mean + (median_sigma * 5 * scaling_factor):
+        returnvalue = plot_title + ": Geomagnetic activity is STRONG right now! "
+
     for item in processed_query:
         dt = item[0]
-        da = item[1]
+        value = item[1]
+        r=""
+        if value >= median_mean + (median_sigma * 3 * scaling_factor):
+            r = "\nUnsettled activity was detected at " + dt + " UTC. "
+        if value > median_mean + (median_sigma * 4 * scaling_factor):
+            r = "\nModerate Activity was detected at " + dt + " UTC. "
+        if value > median_mean + (median_sigma * 5 * scaling_factor):
+            r = "\nSTRONG ACTIVITY was detected at " + dt + " UTC. "
+        returnvalue = returnvalue + r
 
 
-def create_alert(alerttext):
-    alertime = time()
-    d = [alertime, station, alerttext]
-    db.execute("insert into events (posixtime, station_id, message) values (?,?,?);", (d))
-
+    if len(mean_file) < 500:
+        returnvalue = returnvalue + "\nWARNING: Activity thresholds are approximate - computer is still refining!"
+    return returnvalue
 
 
 if __name__ == "__main__":
@@ -268,9 +296,6 @@ if __name__ == "__main__":
         save_data_list(list_of_sigmas, sigma_file)
         save_data_list(list_of_means, mean_file)
 
-        # Convert actual values to standard deviations
-        stdevhours = hours_to_stdevs(processed_query)
-
         # colours are determined by the median standard deviation.
         colourlist = colours_stdev(processed_query, median_mean, median_sigma)
 
@@ -284,7 +309,10 @@ if __name__ == "__main__":
         hours.append("Now ")
 
         # # Create an alert if hourly values go over 3-sigma
-        # create_alert(processed_query)
+        alertmessage = processalerts(processed_query, median_mean, median_sigma)
+        if len(alertmessage) > 0:
+            print(alertmessage)
+            create_alert(alertmessage)
 
         plot(hours, data, colourlist)
     else:
