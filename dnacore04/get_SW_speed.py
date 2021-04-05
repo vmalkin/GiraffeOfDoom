@@ -57,7 +57,7 @@ class State:
     def do_get_data(self):
         """Get data"""
         result = "fail"
-        webdata = requests.get(datasource, timeout=20).json()
+        webdata = requests.get(datasource, timeout=10).json()
         returndata = []
         try:
             json_data = webdata

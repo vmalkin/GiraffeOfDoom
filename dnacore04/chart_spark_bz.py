@@ -23,7 +23,7 @@ db = dna_core.cursor()
 timeformat = '%Y-%m-%d %H:%M:%S'
 
 # Only specific station data makes sense as detrended readings.
-stations = ["Geomag_Bz"]
+station = "Geomag_Bz"
 # stations = k.stations
 
 finish_time = int(time.time())
@@ -88,15 +88,14 @@ def bin_indexvalue(nowtime):
 
 
 def check_create_folders():
-    for station in stations:
-        try:
-            if not os.path.exists(station):
-                print("Create directory for " + station)
-                os.makedirs(station)
-            else:
-                print("Directory exists for " + station)
-        except Exception:
-            print("Some kind of error happened creating the directory for " + station)
+    try:
+        if not os.path.exists(station):
+            print("Create directory for " + station)
+            os.makedirs(station)
+        else:
+            print("Directory exists for " + station)
+    except Exception:
+        print("Some kind of error happened creating the directory for " + station)
 
 
 def get_data(station):
@@ -188,6 +187,40 @@ def convert_datetime_to_hour(datetimestring):
     return hr
 
 
+def create_alert(alerttext):
+    db = dna_core.cursor()
+    t = time.time()
+    values = [station, t, alerttext]
+    try:
+        db.execute("insert into events (station_id, posix_time, message) values (?,?,?)", values)
+    except sqlite3.Error:
+        print("DATABASE ERROR inserting new alert")
+    db.close()
+
+def processalerts(data, time):
+    returnvalue = ""
+    k = len(data) - 1
+    nowdata = data[k]
+
+    # if nowdata >= 0:
+    #     returnvalue = "Bz is currently positive at " + str(nowdata) + " nanoTesla."
+    if nowdata < 0 and nowdata > -5:
+        returnvalue = "Bz is currently NEGATIVE at " + str(nowdata) + " nanoTesla."
+    if nowdata < -5:
+        returnvalue = "Bz is currently STRONGLY NEGATIVE at " + str(nowdata) + " nanoTesla."
+    #
+    # for item in processed_query:
+    #     dt = item[0]
+    #     value = item[1]
+    #     r=""
+    #     if value >= median_mean + (median_sigma * 3 * scaling_factor):
+    #         r = "\nUnsettled activity was detected at " + dt + " UTC. "
+    #     if value > median_mean + (median_sigma * 4 * scaling_factor):
+    #         r = "\nModerate Activity was detected at " + dt + " UTC. "
+    #     if value > median_mean + (median_sigma * 5 * scaling_factor):
+    return returnvalue
+
+
 def plot(data, hours, colours):
     fig = go.Figure(go.Bar(
         x=data,
@@ -233,3 +266,9 @@ if __name__ == "__main__":
     hours.pop(len(hours)-1)
     hours.append("Now ")
     plot(data, hours, colours)
+
+    # # Create an alert if hourly values go over 3-sigma
+    alertmessage = processalerts(data, hours)
+    if len(alertmessage) > 0:
+        print(alertmessage)
+        create_alert(alertmessage)

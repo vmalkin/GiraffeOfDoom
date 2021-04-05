@@ -223,7 +223,7 @@ def colours_stdev(processed_query, mean, mediansigma):
 def create_alert(alerttext):
     db = dna_core.cursor()
     t = time()
-    values = (station, t, alerttext)
+    values = [station, t, alerttext]
     try:
         db.execute("insert into events (station_id, posix_time, message) values (?,?,?)", values)
     except sqlite3.Error:
@@ -232,7 +232,8 @@ def create_alert(alerttext):
 
 def processalerts(processed_query, median_mean, median_sigma):
     returnvalue = ""
-    nowdata = processed_query[0][1]
+    k = len(processed_query)-1
+    nowdata = processed_query[k][1]
 
     if nowdata <= median_mean + (median_sigma * 3 * scaling_factor):
         returnvalue = plot_title + ": Geomagnetic activity is currently quiet. "

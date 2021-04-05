@@ -58,7 +58,7 @@ class State:
         """Get data"""
         result = "fail"
         # try:
-        webdata = requests.get(datasource, timeout=20).json()
+        webdata = requests.get(datasource, timeout=10).json()
         # except Exception:
         #     logging.error(station_id + " Unable to get data from URL")
 
