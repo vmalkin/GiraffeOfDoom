@@ -189,10 +189,11 @@ def convert_datetime_to_hour(datetimestring):
 
 def create_alert(alerttext):
     db = dna_core.cursor()
-    t = time.time()
+    t = int(time.time())
     values = [station, t, alerttext]
     try:
         db.execute("insert into events (station_id, posix_time, message) values (?,?,?)", values)
+        dna_core.commit()
     except sqlite3.Error:
         print("DATABASE ERROR inserting new alert")
     db.close()
@@ -202,8 +203,8 @@ def processalerts(data, time):
     k = len(data) - 1
     nowdata = data[k]
 
-    # if nowdata >= 0:
-    #     returnvalue = "Bz is currently positive at " + str(nowdata) + " nanoTesla."
+    if nowdata >= 0:
+        returnvalue = "Bz is currently positive at " + str(nowdata) + " nanoTesla."
     if nowdata < 0 and nowdata > -5:
         returnvalue = "Bz is currently NEGATIVE at " + str(nowdata) + " nanoTesla."
     if nowdata < -5:
