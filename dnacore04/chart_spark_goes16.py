@@ -232,6 +232,49 @@ def hours_to_stdevs(processed_query):
         da = item[1]
 
 
+def create_alert(alerttext):
+    db = dna_core.cursor()
+    t = int(time())
+    values = [station, t, alerttext]
+    try:
+        db.execute("insert into events (station_id, posix_time, message) values (?,?,?)", values)
+        dna_core.commit()
+    except sqlite3.Error:
+        print("DATABASE ERROR inserting new alert")
+    db.close()
+
+
+def processalerts(processed_query, median_mean, median_sigma):
+    returnvalue = ""
+    k = len(processed_query)-1
+    nowdata = processed_query[k][1]
+
+    if nowdata <= median_mean + (median_sigma * 3 * scaling_factor):
+        returnvalue = plot_title + ": Geomagnetic activity has been quiet in the last 60 mins."
+    if nowdata > median_mean + (median_sigma * 3 * scaling_factor):
+        returnvalue = plot_title + ": Geomagnetic activity has been unsettled in the last 60 mins."
+    if nowdata > median_mean + (median_sigma * 4 * scaling_factor):
+        returnvalue = plot_title + ": Geomagnetic activity has been moderate in the last 60 mins."
+    if nowdata > median_mean + (median_sigma * 5 * scaling_factor):
+        returnvalue = plot_title + ": Geomagnetic activity has been STRONG in the last 60 mins."
+
+    for item in processed_query:
+        dt = item[0]
+        dt = dt.split(":")
+        dt = dt[0]+"hrs"
+        value = item[1]
+        r=""
+        if value >= median_mean + (median_sigma * 3 * scaling_factor):
+            r = "\n" + dt + " UTC: " + "Unsettled activity detected."
+        if value > median_mean + (median_sigma * 4 * scaling_factor):
+            r = "\n" + dt + " UTC: " + "moderate activity detected."
+        if value > median_mean + (median_sigma * 5 * scaling_factor):
+            r = "\n" + dt + " UTC: " + "STRONG activity detected."
+        returnvalue = returnvalue + r
+
+    return returnvalue
+
+
 if __name__ == "__main__":
     querydata = get_data(station)
     data = []
@@ -282,8 +325,13 @@ if __name__ == "__main__":
         hours.pop(len(hours)-1)
         hours.append("Now ")
 
-        # # Create an alert if hourly values go over 3-sigma
-        # create_alert(processed_query)
+        # Create an alert if hourly values go over 3-sigma
+        alertmessage = processalerts(processed_query, median_mean, median_sigma)
+        if len(alertmessage) > 0:
+            print(alertmessage)
+            if len(list_of_sigmas) < 400:
+                alertmessage = alertmessage + "\nComputer is refining threshold values"
+            create_alert(alertmessage)
 
         plot(hours, data, colourlist)
     else:

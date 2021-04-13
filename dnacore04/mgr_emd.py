@@ -72,5 +72,6 @@ wrapper("GOES_16.csv", "GOES 16")
 wrapper("Ruru_Obs.csv", "Ruru")
 wrapper("SW_speed.csv", "Solar Wind Speed")
 wrapper("SW_Density.csv", "Solar Wind Density")
+wrapper("dna_smoothed.csv", "Ambient RF")
 
 

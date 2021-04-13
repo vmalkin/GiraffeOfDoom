@@ -18,7 +18,8 @@ logging.info("Created error log for this session")
 dna_core = sqlite3.connect(k.dbfile)
 
 timeformat = '%Y-%m-%d %H:%M'
-ascii_spacer = "__________________________________________________________________________________"
+# ascii_spacer = "__________________________________________________________________________________"
+ascii_spacer = " "
 
 def posix2utc(posixtime, timeformat):
     # timeformat = '%Y-%m-%d %H:%M:%S'
@@ -38,7 +39,7 @@ def get_data():
 
 t = time.time()
 t = posix2utc(t,timeformat)
-print("Report generated at " + t)
+print("Dunedin Aurora - Space weather status. Generated  " + t)
 print(ascii_spacer)
 d = get_data()
 for item in d:
