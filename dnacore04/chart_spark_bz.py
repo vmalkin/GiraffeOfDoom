@@ -198,7 +198,7 @@ def create_alert(alerttext):
         print("DATABASE ERROR inserting new alert")
     db.close()
 
-def processalerts(data, time):
+def process_socialmedia_alerts(data, time):
     returnvalue = ""
     k = len(data) - 1
     nowdata = data[k]
@@ -221,6 +221,29 @@ def processalerts(data, time):
     #     if value > median_mean + (median_sigma * 5 * scaling_factor):
     return returnvalue
 
+def process_dashboard(data):
+    returnvalue = ""
+    k = len(data) - 1
+    nowdata = data[k]
+
+    if nowdata >= 0:
+        returnvalue = "low," + str(nowdata)
+    if nowdata < 0 and nowdata > -5:
+        returnvalue = "med," + str(nowdata)
+    if nowdata < -5:
+        returnvalue = "high," + str(nowdata)
+    return returnvalue
+
+def create_dashboard(dash_msg):
+    db = dna_core.cursor()
+    t = int(time.time())
+    values = [station, t, dash_msg]
+    try:
+        db.execute("insert into dashboard (station_id, posix_time, message) values (?,?,?)", values)
+        dna_core.commit()
+    except sqlite3.Error:
+        print("DATABASE ERROR inserting new alert")
+    db.close()
 
 def plot(data, hours, colours):
     fig = go.Figure(go.Bar(
@@ -268,8 +291,14 @@ if __name__ == "__main__":
     hours.append("Now ")
     plot(data, hours, colours)
 
-    # # Create an alert if hourly values go over 3-sigma
-    alertmessage = processalerts(data, hours)
-    if len(alertmessage) > 0:
-        print(alertmessage)
-        create_alert(alertmessage)
+    # # # Create social media alert
+    # alertmessage = process_socialmedia_alerts(data, hours)
+    # if len(alertmessage) > 0:
+    #     print(alertmessage)
+    #     create_alert(alertmessage)
+
+    # Create data for the DnA dashboard
+    dashb_msg = process_dashboard(data)
+    if len(dashb_msg) > 0:
+        print(dashb_msg)
+        create_dashboard(dashb_msg)

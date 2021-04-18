@@ -232,19 +232,19 @@ def create_alert(alerttext):
     db.close()
 
 
-def processalerts(processed_query, median_mean, median_sigma):
+def process_socialmedia_alerts(processed_query, median_mean, median_sigma):
     returnvalue = ""
     k = len(processed_query)-1
     nowdata = processed_query[k][1]
 
     if nowdata <= median_mean + (median_sigma * 3 * scaling_factor):
-        returnvalue = plot_title + ": Geomagnetic activity has been quiet in the last 60 mins."
+        q = plot_title + ": Geomagnetic activity has been quiet in the last 60 mins."
     if nowdata > median_mean + (median_sigma * 3 * scaling_factor):
-        returnvalue = plot_title + ": Geomagnetic activity has been unsettled in the last 60 mins."
+        q = plot_title + ": Geomagnetic activity has been unsettled in the last 60 mins."
     if nowdata > median_mean + (median_sigma * 4 * scaling_factor):
-        returnvalue = plot_title + ": Geomagnetic activity has been moderate in the last 60 mins."
+        q = plot_title + ": Geomagnetic activity has been moderate in the last 60 mins."
     if nowdata > median_mean + (median_sigma * 5 * scaling_factor):
-        returnvalue = plot_title + ": Geomagnetic activity has been STRONG in the last 60 mins."
+        q = plot_title + ": Geomagnetic activity has been STRONG in the last 60 mins."
 
     for item in processed_query:
         dt = item[0]
@@ -258,10 +258,36 @@ def processalerts(processed_query, median_mean, median_sigma):
             r = "\n" + dt + " UTC: " + "moderate activity detected."
         if value > median_mean + (median_sigma * 5 * scaling_factor):
             r = "\n" + dt + " UTC: " + "STRONG activity detected."
-        returnvalue = returnvalue + r
+
+        returnvalue = r + q
 
     return returnvalue
 
+def process_dashboard(processed_query, median_mean, median_sigma):
+    returnvalue = ""
+    k = len(processed_query)-1
+    nowdata = processed_query[k][1]
+
+    if nowdata <= median_mean + (median_sigma * 3 * scaling_factor):
+        returnvalue = "none"
+    if nowdata > median_mean + (median_sigma * 3 * scaling_factor):
+        returnvalue = "low"
+    if nowdata > median_mean + (median_sigma * 4 * scaling_factor):
+        returnvalue = "med"
+    if nowdata > median_mean + (median_sigma * 5 * scaling_factor):
+        returnvalue = "high"
+    return returnvalue
+
+def create_dashboard(dash_msg):
+    db = dna_core.cursor()
+    t = int(time())
+    values = [station, t, dash_msg]
+    try:
+        db.execute("insert into dashboard (station_id, posix_time, message) values (?,?,?)", values)
+        dna_core.commit()
+    except sqlite3.Error:
+        print("DATABASE ERROR inserting new alert")
+    db.close()
 
 if __name__ == "__main__":
     querydata = get_data(station)
@@ -310,13 +336,18 @@ if __name__ == "__main__":
         hours.pop(len(hours)-1)
         hours.append("Now ")
 
-        # Create an alert if hourly values go over 3-sigma
-        alertmessage = processalerts(processed_query, median_mean, median_sigma)
-        if len(alertmessage) > 0:
-            print(alertmessage)
-            if len(list_of_sigmas) < 400:
-                alertmessage = alertmessage + "\nComputer is refining threshold values"
-            create_alert(alertmessage)
+        # # Create a social media alert if hourly values go over 3-sigma
+        # alertmessage = process_socialmedia_alerts(processed_query, median_mean, median_sigma)
+        # if len(alertmessage) > 0:
+        #     if len(list_of_sigmas) < 400:
+        #         alertmessage = alertmessage + "\nComputer is refining threshold values"
+        #     create_alert(alertmessage)
+
+        # Create data for the DnA dashboard
+        dashb_msg = process_dashboard(processed_query, median_mean, median_sigma)
+        if len(dashb_msg) > 0:
+            print(dashb_msg)
+            create_dashboard(dashb_msg)
 
         plot(hours, data, colourlist)
     else:

@@ -8,34 +8,48 @@ dna_core = sqlite3.connect(k.dbfile)
 
 db = dna_core.cursor()
 
-db.execute('drop table if exists station;')
-db.execute('drop table if exists station_data;')
-db.execute('drop table if exists station_statistics;')
+# db.execute('drop table if exists station;')
+# db.execute('drop table if exists station_data;')
+# db.execute('drop table if exists events;')
+# db.execute('drop table if exists dashboard;')
+
 db.execute('PRAGMA foreign_keys = ON;')
 
-db.execute('create table station ('
-           'station_id text not null primary key'
-           ');')
+try:
+    db.execute('create table station ('
+               'station_id text not null primary key'
+               ');')
+except:
+    print("Error creating station table")
 
-# NOT USED
-# db.execute('create table station_statistics ('
-#            'station_id text not null,'
-#            'data_value real,'
-#            'type text,'
-#            'foreign key (station_id) references station(station_id)'
-#            ');')
+try:
+    db.execute('create table station_data('
+               'station_id text, '
+               'posix_time integer, '
+               'data_value text, '
+               'foreign key (station_id) references station(station_id)'
+               ');')
+except:
+    print("Error creating station_data table")
 
-db.execute('create table station_data('
-           'station_id text, '
-           'posix_time integer, '
-           'data_value text, '
-           'foreign key (station_id) references station(station_id)'
-           ');')
-db.execute('create table events('
-           'posix_time integer, '
-           'station_id text, '
-           'message text,'
-           'foreign key (station_id) references station(station_id));')
+try:
+    db.execute('create table events('
+               'posix_time integer, '
+               'station_id text, '
+               'message text,'
+               'foreign key (station_id) references station(station_id));')
+except:
+    print("Error creating events table")
+
+try:
+    db.execute('create table dashboard('
+               'posix_time integer, '
+               'station_id text, '
+               'message text,'
+               'foreign key (station_id) references station(station_id));')
+except:
+    print("Error creating dashboard table")
+
 # Watch the syntax for the value to be passed into the query!
 # https://stackoverflow.com/questions/16856647/sqlite3-programmingerror-incorrect-number-of-bindings-supplied-the-current-sta#16856730
 try:

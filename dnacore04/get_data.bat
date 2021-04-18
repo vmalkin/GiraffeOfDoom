@@ -14,9 +14,11 @@ REM Chart the Spark Plots for the front page
 python chart_spark_bz.py
 python chart_spark_ruru.py
 python chart_spark_goes16.py
-python test.py
+python chart_spark_swspeed.py
+python chart_spark_swdens.py
+rem python test.py
 
 REM Special monitoring  for alerts
-python AlertManager.py
+python DashboardManager.py
 timeout 480
 goto start

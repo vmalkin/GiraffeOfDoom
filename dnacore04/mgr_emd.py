@@ -19,6 +19,7 @@ def wrapper(datafile, plotname):
     dt = []
     with open(datafile, "r") as f:
         for line in f:
+            # print(line)
             line = line.split(",")
             d = line[1].strip()
             t = line[0]
@@ -61,7 +62,7 @@ def wrapper(datafile, plotname):
     print("Plot finished")
 
 
-# wrapper("bbr_bz.csv", "Bz")
+# wrapper("bbr_bz.csv", "Bz BBR")
 # wrapper("bbr_speed.csv", "SW Speed")
 # wrapper("bbr_density.csv", "SW Density")
 # wrapper("bbr_ruru_h.csv", "RapidRun")
@@ -73,5 +74,7 @@ wrapper("Ruru_Obs.csv", "Ruru")
 wrapper("SW_speed.csv", "Solar Wind Speed")
 wrapper("SW_Density.csv", "Solar Wind Density")
 wrapper("dna_smoothed.csv", "Ambient RF")
+
+# wrapper("test.csv", "Frankencoil Broadband")
 
 
