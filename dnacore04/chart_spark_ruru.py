@@ -275,7 +275,7 @@ def process_dashboard(processed_query, median_mean, median_sigma):
     nowdata = processed_query[k][1]
 
     if nowdata <= median_mean + (median_sigma * 3 * scaling_factor):
-        returnvalue = "none"
+        returnvalue = "low"
     if nowdata > median_mean + (median_sigma * 3 * scaling_factor):
         returnvalue = "low"
     if nowdata > median_mean + (median_sigma * 4 * scaling_factor):

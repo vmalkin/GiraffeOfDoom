@@ -10,7 +10,21 @@ def plot(ut, da, median, sigma):
     data = go.Scatter(x=ut, y = da, mode="lines")
     fig = go.Figure(data)
     # fig.update_yaxes(range=[170, 210], gridcolor=clr_grid)
-    fig.update_yaxes(range=[70, 115], gridcolor=clr_grid)
+    max_d = max(da)
+    max_s = median + (sigma * 8)
+    min_d = min(da)
+
+    if max_d > max_s:
+        maxm = max_d
+    else:
+        maxm = max_s
+
+    if min_d < median:
+        minm = min_d
+    else:
+        minm = median
+
+    fig.update_yaxes(range=[minm, maxm], gridcolor=clr_grid)
 
     clr_mean = "rgba(200,10,10,0.8)"
     clr_sigma = "rgba(0,150,0,0.8)"
