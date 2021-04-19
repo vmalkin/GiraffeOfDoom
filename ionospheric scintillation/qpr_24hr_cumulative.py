@@ -42,6 +42,7 @@ def wrapper(querydata):
     firstpass_dat = []
     minute_count = 0
 
+    #  We are just counting instances of an S4 reading being over our threshold, if so, bump the counter for tha min
     for i in range(0, len(querydata)-1):
         min_now = querydata[i][1]
         min_next = querydata[i+1][1]
@@ -51,6 +52,7 @@ def wrapper(querydata):
             if s_alt >= s4_altitude:
                 if s_s4 >= s4_threshold:
                     minute_count = minute_count + 1
+        # we've finished the minute, append the total, the we'll count the next minute.
         else:
             firstpass_dat.append(minute_count)
             firstpass_utc.append(posix2utc(min_now, '%Y-%m-%d %H:%M'))
