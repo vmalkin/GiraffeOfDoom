@@ -15,7 +15,7 @@ station = "SW_speed"
 
 
 def get_data(station):
-    start_time = int(time()) - (60* 60)
+    start_time = int(time()) - (60* 20)
     result = db.execute("select station_data.posix_time, station_data.data_value from station_data "
                         "where station_data.station_id = ? and station_data.posix_time > ? order by station_data.posix_time asc", [station, start_time])
     query_result = result.fetchall()
