@@ -222,17 +222,17 @@ def process_socialmedia_alerts(data, time):
     return returnvalue
 
 def process_dashboard(data):
-    returnvalue = ""
+    # returnvalue = ""
     k = len(data) - 1
     nowdata = data[k]
 
-    if nowdata >= 0:
-        returnvalue = "low," + str(nowdata)
-    if nowdata < 0 and nowdata > -5:
-        returnvalue = "med," + str(nowdata)
-    if nowdata < -5:
-        returnvalue = "high," + str(nowdata)
-    return returnvalue
+    # if nowdata >= 0:
+    #     returnvalue = "low," + str(nowdata)
+    # if nowdata < 0 and nowdata > -5:
+    #     returnvalue = "med," + str(nowdata)
+    # if nowdata < -5:
+    #     returnvalue = "high," + str(nowdata)
+    return str(nowdata)
 
 def create_dashboard(dash_msg):
     db = dna_core.cursor()
@@ -300,5 +300,5 @@ if __name__ == "__main__":
     # Create data for the DnA dashboard
     dashb_msg = process_dashboard(data)
     if len(dashb_msg) > 0:
-        print(dashb_msg)
+        # print(dashb_msg)
         create_dashboard(dashb_msg)

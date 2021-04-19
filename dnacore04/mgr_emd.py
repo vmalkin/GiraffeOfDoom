@@ -39,7 +39,7 @@ def wrapper(datafile, plotname):
     freq_edges, freq_centres = emd.spectra.define_hist_bins(1, 200, 300, 'linear')
 
     spec_weighted = emd.spectra.hilberthuang_1d(IF, np.ones_like(IA), freq_edges)
-    plot_histogram(IF, plotname)
+    # plot_histogram(IF, plotname)
 
     hht = emd.spectra.hilberthuang(IF[:, 2, None], IA[:, 2, None], freq_edges, mode='amplitude')
     time_centres = np.arange(201) - .5

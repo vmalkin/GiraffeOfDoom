@@ -3,6 +3,7 @@ import constants as k
 import logging
 import time
 import datetime
+import json
 """
 logging levels in order of least --> most severity:
 DEBUG
@@ -16,6 +17,16 @@ logging.basicConfig(filename=k.error_log, format='%(asctime)s %(message)s', leve
 logging.info("Created error log for this session")
 
 dna_core = sqlite3.connect(k.dbfile)
+
+dataforjson = {
+"utc" : "0000-00-00 00:00",
+"speed" : "none",
+"density" : "none",
+"mag" : "none",
+"ion" : "none",
+"dna" : "none",
+"bz" : "none"
+}
 
 timeformat = '%Y-%m-%d %H:%M'
 # ascii_spacer = "__________________________________________________________________________________"
@@ -43,7 +54,27 @@ print("Dunedin Aurora - Space weather status. Generated  " + t)
 print(ascii_spacer)
 
 d = get_data()
+t = int(time.time())
+utc = posix2utc(t, timeformat)
 for item in d:
-    print(item)
+    if item[1] == "GOES_16":
+        dataforjson["mag"] = item[2]
 
+    if item[1] == "Geomag_Bz":
+        dataforjson["bz"] = item[2][:-1]
 
+    if item[1] == "Ruru_Obs":
+        dataforjson["dna"] = item[2]
+
+    if item[1] == "SW_Density":
+        dataforjson["density"] = item[2]
+
+    if item[1] == "SW_speed":
+        dataforjson["speed"] = item[2]
+
+dataforjson["utc"] = utc + " UTC"
+
+print(dataforjson)
+filepath = "data.json"
+with open(filepath, "w") as j:
+    json.dump(dataforjson, j)
