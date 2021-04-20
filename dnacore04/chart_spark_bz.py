@@ -255,9 +255,9 @@ def plot(data, hours, colours):
     fig.update_layout(width=420, height=900, title="IMF - Bz")
     fig.update_layout(font=dict(size=24), margin=dict(l=10, r=20, b=10), xaxis_title="Bz - nT", yaxis_title="UTC")
     fig.update_xaxes(range=[-10, 10], gridcolor='#909090', visible=True)
-    savefile = "spk_bz.jpg"
-    # savefile = "spk_test.jpg"
-    fig.write_image(file=savefile, format='jpg')
+    savefile = "spk_bz.svg"
+    # savefile = "spk_test.svg"
+    fig.write_image(file=savefile, format='svg')
 
 
 if __name__ == "__main__":
