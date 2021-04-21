@@ -252,9 +252,10 @@ def plot(data, hours, colours):
         marker=dict(color=colours),
         orientation='h'
     ))
-    fig.update_layout(width=420, height=900, title="IMF - Bz")
-    fig.update_layout(font=dict(size=24), margin=dict(l=10, r=20, b=10), xaxis_title="Bz - nT", yaxis_title="UTC")
-    fig.update_xaxes(range=[-10, 10], gridcolor='#909090', visible=True)
+    fig.update_layout(plot_bgcolor="rgba(0,0,0,0)", paper_bgcolor="rgba(0,0,0,0)")
+    fig.update_layout(width=420, height=1100, title="IMF - Bz")
+    fig.update_layout(font=dict(size=24, color="#ffffff"), margin=dict(l=10, r=20, b=10), xaxis_title="Bz - nT", yaxis_title="UTC")
+    fig.update_xaxes(range=[-10, 10], gridcolor='#505050', visible=True)
     savefile = "spk_bz.svg"
     # savefile = "spk_test.svg"
     fig.write_image(file=savefile, format='svg')
@@ -279,7 +280,7 @@ if __name__ == "__main__":
         if da > 0:
             clr = "#009000"
         else:
-            clr = "#e00000"
+            clr = "#900000"
         hours.append(hr)
         data.append(da)
         colours.append(clr)
