@@ -66,9 +66,9 @@ def plot(hours, data, colours):
 
     fig.update_layout(font=dict(size=20), margin=dict(l=10, r=20, b=10), yaxis_title="UTC")
     fig.update_xaxes(range=[0, maxaxis], gridcolor='#a0a0a0', visible=True)
-    savefile = "spk_" + station + ".jpg"
-    # savefile = "spk_test.jpg"
-    fig.write_image(file=savefile, format='jpg')
+    savefile = "spk_" + station + ".svg"
+    # savefile = "spk_test.svg"
+    fig.write_image(file=savefile, format='svg')
 
 
 def dxdt(querydata):
