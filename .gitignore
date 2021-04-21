@@ -15,3 +15,7 @@ Coronal Hole Suite/index.html
 *.pkl
 scanCHImages/images/files.txt
 *.log
+dnacore04/data.json
+dnacore04/spk_bz.svg
+dnacore04/spk_GOES_16.svg
+dnacore04/spk_Ruru_Obs.svg
