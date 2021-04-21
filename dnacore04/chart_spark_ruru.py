@@ -22,7 +22,7 @@ db = dna_core.cursor()
 sigma_file = "s_test.pkl"
 mean_file = "m_test.pkl"
 station = "Ruru_Obs"
-plot_title = "DnA No2"
+plot_title = "Magnetometer<br>DnA"
 median_sigma = 0
 median_mean = 0
 # a 10 min window for averaging readings give the number of readings per minute
@@ -55,8 +55,8 @@ def plot(hours, data, colours):
         marker=dict(color=colours),
         orientation='h'
     ))
-
-    fig.update_layout(width=320, height=900, title=plot_title,
+    fig.update_layout(plot_bgcolor="rgba(0,0,0,0)", paper_bgcolor="rgba(0,0,0,0)")
+    fig.update_layout(width=300, height=1200, title=plot_title,
                       xaxis=dict(tickmode="array",
                                  tickvals=[median_mean,
                                            median_mean + 2 * median_sigma,
@@ -65,8 +65,8 @@ def plot(hours, data, colours):
                                            median_mean + 8 * median_sigma],
                                  ticktext=["x", "2σ", "4σ", "6σ", "8σ"]))
 
-    fig.update_layout(font=dict(size=20), margin=dict(l=10, r=20, b=10), yaxis_title="UTC")
-    fig.update_xaxes(range=[0, maxaxis], gridcolor='#a0a0a0', visible=True)
+    fig.update_layout(font=dict(size=20, color='#ffffff'), margin=dict(l=10, r=20, b=10), yaxis_title="UTC")
+    fig.update_xaxes(range=[0, maxaxis], gridcolor='#505050', visible=True)
     savefile = "spk_" + station + ".svg"
     # savefile = "spk_test.svg"
     fig.write_image(file=savefile, format='svg')
@@ -198,7 +198,7 @@ def colours_stdev(processed_query, mean, mediansigma):
     low1 = "#00c31a"  # med green
     low2 = "#00790f"  # dark green
     med1 = "#e17100"  # orange
-    hi1 = "#e10000"  # red
+    hi1 = "#900000"  # red
 
     for item in processed_query:
         value = item[1]
