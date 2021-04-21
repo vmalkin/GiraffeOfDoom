@@ -22,7 +22,7 @@ db = dna_core.cursor()
 sigma_file = "s_test.pkl"
 mean_file = "m_test.pkl"
 station = "Ruru_Obs"
-plot_title = "Magnetometer<br>DnA"
+plot_title = "Magnetometer<br>Dunedin, NZ"
 median_sigma = 0
 median_mean = 0
 # a 10 min window for averaging readings give the number of readings per minute
