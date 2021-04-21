@@ -75,6 +75,6 @@ wrapper("SW_speed.csv", "Solar Wind Speed")
 wrapper("SW_Density.csv", "Solar Wind Density")
 wrapper("dna_smoothed.csv", "Ambient RF")
 
-# wrapper("test.csv", "Frankencoil Broadband")
+wrapper("test.csv", "Frankencoil Broadband")
 
 

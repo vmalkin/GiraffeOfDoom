@@ -10,9 +10,9 @@ def plot(ut, da, median, sigma):
     data = go.Scatter(x=ut, y = da, mode="lines")
     fig = go.Figure(data)
     # fig.update_yaxes(range=[170, 210], gridcolor=clr_grid)
-    max_d = max(da)
+    max_d = max(da) + 5
     max_s = median + (sigma * 8)
-    min_d = min(da)
+    min_d = min(da) - 5
 
     if max_d > max_s:
         maxm = max_d
