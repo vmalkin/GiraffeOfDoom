@@ -262,6 +262,10 @@ def plot(data, hours, colours):
 
 
 if __name__ == "__main__":
+    clr_low2 = "#00790f"  #  green
+    clr_med1 = "#e17100"  # orange
+    clr_hi1 = "#900000"  # red
+
     current_stationdata = get_data("Geomag_Bz")
 
     tempdata = parse_querydata(current_stationdata)  # a list
@@ -277,10 +281,14 @@ if __name__ == "__main__":
         hr = dp[0]
         hr = convert_datetime_to_hour(hr)
         da = float(dp[1])
+
         if da > 0:
-            clr = "#009000"
-        else:
-            clr = "#900000"
+            clr = clr_low2
+        if da <=0 and da > -5:
+            clr = clr_med1
+        if da <= -5:
+            clr = clr_hi1
+
         hours.append(hr)
         data.append(da)
         colours.append(clr)
