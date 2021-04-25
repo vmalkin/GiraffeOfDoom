@@ -16,6 +16,7 @@ python chart_spark_ruru.py
 python chart_spark_goes16.py
 python chart_spark_swspeed.py
 python chart_spark_swdens.py
+python mgr_emd.py
 rem python test.py
 
 REM Special monitoring  for alerts
