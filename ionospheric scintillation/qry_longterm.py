@@ -104,6 +104,6 @@ def wrapper(querydata):
     print("Plot complete")
 
 
-t = 24 * 60
+t = 24 * 100
 qry = database_parse(t)
 wrapper(qry)
