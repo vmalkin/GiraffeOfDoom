@@ -37,7 +37,7 @@ def erode_dilate_img(image_to_process):
    # Erode and Dilate the image to clear up noise
     # Erosion will trim away pixels (noise)
     # dilation puffs out edges
-    kernel = np.ones((5,5),np.uint8)
+    kernel = np.ones((3,3),np.uint8)
     outputimg = cv2.erode(image_to_process,kernel,iterations = 1)
     outputimg = cv2.dilate(outputimg,kernel,iterations = 1)
     return outputimg
@@ -88,7 +88,7 @@ def json_timestamper():
     else:
         with open(timejsonfile, "r") as j:
             timejson = json.load(j)
-        print(timejson)
+
 
     # check to see if the interval has passed
     if nowtime - timejson["prev"] > interval:
@@ -101,7 +101,7 @@ def json_timestamper():
     # write updated nowtime to json file
     with open(timejsonfile, "w") as j:
         json.dump(timejson, j)
-
+    print(timejson)
     return intervaltimer
 
 
@@ -129,20 +129,21 @@ if __name__ == "__main__":
 
             img_se = erode_dilate_img(img_sg)
             img_le = erode_dilate_img(img_lg)
+
             image_save("se.jpg", img_se)
             image_save("le.jpg", img_le)
 
             diff = img_s.copy()
             cv2.absdiff(img_s, img_l, diff)
 
-            # test to see if there is a difference between the two images if so, the latest
+            # test to see if there is a difference between the two BASE images if so, the latest
             # image is the new current image to save for the next comparison
             image_difference = np.sum(diff)
 
             print(image_difference)
             if image_difference > 0:
                 diff = img_se.copy()
-                cv2.absdiff(img_se, img_le, diff)
+                cv2.absdiff(img_le, img_se, diff)
 
                 alpha = 15
                 beta = 20
@@ -156,9 +157,9 @@ if __name__ == "__main__":
                 print("Difference in images detected. Difference file created.")
                 # Parse for edges - identify CME?
 
-                # save the latest image as the new current image
-                image_save(img_stored, img_l)
-                print("Latest image copied as LASCO current image")
+                # # save the latest image as the new current image
+                # image_save(img_stored, img_l)
+                # print("Latest image copied as LASCO current image")
             else:
                 print("New image from internet is the same as stored image. No difference calculated")
         else:
