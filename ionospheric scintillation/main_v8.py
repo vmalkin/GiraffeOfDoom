@@ -17,6 +17,7 @@ import qpr_24hr_tracks
 import qpr_splats
 import qpr_S4bars
 import qpr_24hr_cumulative
+import qry_makeJSON
 
 errorloglevel = logging.CRITICAL
 logging.basicConfig(filename="errors.log", format='%(asctime)s %(message)s', level=errorloglevel)
@@ -100,7 +101,11 @@ class QueryProcessor(Thread):
                 print("\n" + "!!!!!!!!!  Rolling count Plotter Failed  !!!!!!!!!" + "\n")
                 logging.warning("Rolling count Plotter failed in MAIN.PY")
 
-
+            try:
+                qry_makeJSON.wrapper()
+            except:
+                print("\n" + "!!!!!!!!!  Ion Reading json creator failed  !!!!!!!!!" + "\n")
+                logging.warning("Ion Reading json creator failed in MAIN.PY")
 
             # rings the terminal bell
             print("\a")

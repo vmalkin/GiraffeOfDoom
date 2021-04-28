@@ -4,6 +4,7 @@ import logging
 import time
 import datetime
 import json
+import os
 """
 logging levels in order of least --> most severity:
 DEBUG
@@ -28,6 +29,8 @@ dataforjson = {
 "bz" : "none"
 }
 
+# the location of the ion data from Ruru Observatory on this server
+iondatajson = "..//ion.json"
 timeformat = '%Y-%m-%d %H:%M'
 # ascii_spacer = "__________________________________________________________________________________"
 ascii_spacer = " "
@@ -47,6 +50,17 @@ def get_data():
     x = result.fetchall()
     db.close()
     return x
+
+def get_ion_data():
+    nowtime = int(time.time())
+    returnvalue = "none"
+    if os.path.isfile(iondatajson) is True:
+        with open(iondatajson, "r") as i:
+            tempjson = json.load(i)
+
+        if nowtime - tempjson["posixtime"] < 3600:
+            returnvalue = tempjson["ionstate"]
+    return returnvalue
 
 t = time.time()
 t = posix2utc(t,timeformat)
@@ -72,6 +86,7 @@ for item in d:
     if item[1] == "SW_speed":
         dataforjson["speed"] = item[2]
 
+dataforjson["ion"] = get_ion_data()
 dataforjson["utc"] = utc + " UTC"
 
 print(dataforjson)

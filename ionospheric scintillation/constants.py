@@ -17,3 +17,6 @@ interCharTimeout = None
 
 imagesdir = "images"
 logfiledir = "logfiles"
+
+statsfile_mean = "t_mean.pkl"
+statsfile_sigma = "t_sigma.pkl"

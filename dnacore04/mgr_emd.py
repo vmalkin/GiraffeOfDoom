@@ -57,7 +57,7 @@ def wrapper(datafile, plotname):
         fig.add_trace(go.Scatter(x=dt, y=data, mode="lines", line=dict(width=1)), row=r, col=1)
     title = "Instrinsic Mode functions - " + plotname
     fig.update_layout(height=2000, width=800, title_text=title)
-    # fig.show()
+    fig.show()
     filename = "imd_" + plotname + ".svg"
     fig.write_image(file=filename, format="svg")
     print("Plot finished")
@@ -69,13 +69,13 @@ def wrapper(datafile, plotname):
 # wrapper("bbr_ruru_h.csv", "RapidRun")
 # wrapper("bbr_ruru_original.csv", "Original")
 
-wrapper("Geomag_Bz.csv", "BZ")
-wrapper("GOES_16.csv", "GOES 16")
-wrapper("Ruru_Obs.csv", "Ruru")
-wrapper("SW_speed.csv", "Solar Wind Speed")
-wrapper("SW_Density.csv", "Solar Wind Density")
+##wrapper("Geomag_Bz.csv", "BZ")
+##wrapper("GOES_16.csv", "GOES 16")
+##wrapper("Ruru_Obs.csv", "Ruru")
+##wrapper("SW_speed.csv", "Solar Wind Speed")
+##wrapper("SW_Density.csv", "Solar Wind Density")
 ##wrapper("dna_smoothed.csv", "Ambient RF")
 
-# wrapper("test.csv", "Frankencoil Broadband")
+wrapper("test.csv", "Frankencoil Broadband")
 
 
