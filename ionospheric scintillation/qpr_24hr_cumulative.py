@@ -11,31 +11,24 @@ def plot(ut, da, median, sigma):
     fig = go.Figure(data)
     # fig.update_yaxes(range=[170, 210], gridcolor=clr_grid)
     max_d = max(da) + 5
-    max_s = median + (sigma * 8)
     min_d = min(da) - 5
 
-    if max_d > max_s:
-        maxm = max_d
-    else:
-        maxm = max_s
-
-    if min_d < median:
-        minm = min_d
-    else:
-        minm = median
-
-    fig.update_yaxes(range=[minm, maxm], gridcolor=clr_grid)
+    fig.update_yaxes(range=[min_d, max_d], gridcolor=clr_grid)
 
     clr_mean = "rgba(200,10,10,0.8)"
-    clr_sigma = "rgba(0,150,0,0.8)"
-    fig.add_hline(y=median, line_color=clr_mean, annotation_text="x ̅", annotation_font_color=clr_mean, annotation_position="top left")
-    fig.add_hline(y=(median + sigma*2), line_color=clr_sigma, annotation_text="2σ",annotation_font_color=clr_sigma, annotation_position="top left")
-    fig.add_hline(y=(median + sigma*4), line_color=clr_sigma, annotation_text="4σ", annotation_font_color=clr_sigma, annotation_position="top left")
-    fig.add_hline(y=(median + sigma*6), line_color=clr_sigma, annotation_text="6σ", annotation_font_color=clr_sigma, annotation_position="top left")
+    clr_upsigma = "rgba(0,150,0,0.8)"
+    clr_downsigma = "rgba(0,0,150,0.8)"
+    fig.add_hline(y=median, line_color=clr_mean, line_width=1, annotation_text="x", annotation_font_color=clr_mean, annotation_position="top left")
+    fig.add_hline(y=(median + sigma*2), line_color=clr_upsigma, line_width=2, annotation_text="2σ",annotation_font_color=clr_upsigma, annotation_position="top left")
+    fig.add_hline(y=(median + sigma*4), line_color=clr_upsigma, line_width=4, annotation_text="4σ", annotation_font_color=clr_upsigma, annotation_position="top left")
+    fig.add_hline(y=(median + sigma*6), line_color=clr_upsigma, line_width=6,annotation_text="6σ", annotation_font_color=clr_upsigma, annotation_position="top left")
+    fig.add_hline(y=(median - sigma * 2), line_color=clr_downsigma,  line_width=2, annotation_text="-2σ", annotation_font_color=clr_downsigma, annotation_position="bottom left")
+    fig.add_hline(y=(median - sigma * 4), line_color=clr_downsigma,  line_width=4, annotation_text="-4σ", annotation_font_color=clr_downsigma, annotation_position="bottom left")
+    fig.add_hline(y=(median - sigma * 6), line_color=clr_downsigma,  line_width=6, annotation_text="-6σ", annotation_font_color=clr_downsigma, annotation_position="bottom left")
 
     fig.update_xaxes(nticks=24, tickangle=45, gridcolor=clr_grid)
     fig.update_layout(font=dict(size=20), title_font_size=21)
-    fig.update_layout(width=1700, height=700, title="Rolling 24hr count GPS noise. s4 > 40. http://DunedinAurora.NZ", xaxis_title="Date/time UTC", yaxis_title="S4 Index", plot_bgcolor="#e0e0e0")
+    fig.update_layout(width=1700, height=700, title="Rolling 24hr count GPS noise. s4 > 40. http://DunedinAurora.NZ", xaxis_title="Date/time UTC", yaxis_title="Count S4 events", plot_bgcolor="#e0e0e0")
     fig.update_traces(line=dict(width=5, color="rgba(10,10,10,1)"))
     fig.write_image(file=savefile, format='jpg')
 

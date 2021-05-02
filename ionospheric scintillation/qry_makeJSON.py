@@ -51,7 +51,7 @@ def wrapper():
     if queryresult > (m + 2 * s):
         result = "low"
 
-    if queryresult > (m + 2 * s):
+    if queryresult > (m + 4 * s):
         result = "med"
 
     if queryresult > (m + 6 * s):

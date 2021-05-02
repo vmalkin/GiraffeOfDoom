@@ -48,7 +48,7 @@ def erode_dilate_img(image_to_process):
 def get_image_from_url():
     result = "fail"
     try:
-        request = urllib.request.Request(url_lasco_c2, headers={'User-Agent': 'Mozilla/5.0'})
+        request = urllib.request.Request(url_lasco_c3, headers={'User-Agent': 'Mozilla/5.0'})
         response = urllib.request.urlopen(request, timeout=10)
 
         with open(img_latest, 'wb') as f:
