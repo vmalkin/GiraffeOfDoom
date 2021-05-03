@@ -2,8 +2,7 @@ import datetime
 import calendar
 import time
 import math
-import plotly
-import numpy as np
+import plotly.graph_objects as go
 
 source = "test2.csv"
 timeformat = "%Y-%m-%d %H:%M:%S"
@@ -102,7 +101,13 @@ def chart(dataarray):
         item = item.split(",")
         dates.append(item[0])
         data.append(item[1])
-    print(dates)
+    d = [go.Bar(x=dates, y=data)]
+    fig = go.Figure(data=d)
+    fig.update_layout(width=1200, height=300, bargap=0, plot_bgcolor="white", paper_bgcolor="white")
+    fig.update_xaxes(gridcolor='red', visible=True)
+    fig.update_yaxes(gridcolor='red', visible=True)
+    fig.update_traces(marker_color="black")
+    fig.show()
 
 
 
