@@ -4,9 +4,9 @@ import time
 import math
 import plotly.graph_objects as go
 
-source = "test2.csv"
+source = "c://temp//test2.csv"
 timeformat = "%Y-%m-%d %H:%M:%S"
-threshold = 7
+threshold = 6
 
 def posix2utc(posixtime):
     utctime = datetime.datetime.utcfromtimestamp(int(posixtime)).strftime(timeformat)
@@ -106,7 +106,7 @@ def chart(dataarray):
     fig.update_layout(width=1200, height=300, bargap=0, plot_bgcolor="white", paper_bgcolor="white")
     fig.update_xaxes(gridcolor='red', visible=True)
     fig.update_yaxes(gridcolor='red', visible=True)
-    fig.update_traces(marker_color="black")
+    fig.update_traces(marker=dict(color="rgba(0,0,0,1)", line=dict(width=1, color="rgba(0,0,0,1)")))
     fig.show()
 
 
