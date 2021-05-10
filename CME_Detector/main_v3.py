@@ -9,9 +9,12 @@ import numpy as np
 # https://soho.nascom.nasa.gov/data/REPROCESSING/Completed/2021/c3/20210509/.full_1024.lst
 
 
-baseURL = "https://soho.nascom.nasa.gov/data/REPROCESSING/Completed/2021/c3/"
+# baseURL = "https://soho.nascom.nasa.gov/data/REPROCESSING/Completed/2021/c3/"
 variables = {
-    "img_stored" : ""
+    "img_stored" : "",
+    "yearmonthday" : "",
+    "year" : "",
+    "onlinelist" : ""
 }
 
 
@@ -107,6 +110,18 @@ def add_stamp(image_object):
     cv2.putText(image_object, banner, (x, y), font, font_size, font_color, font_thickness, cv2.LINE_AA)
 
 
+def generalprocess():
+    """This is a wrapper function for the general process of getting new data and processing it"""
+
+    # get online list
+    # check list names against recent stored name
+    # if new names, reset resent stored name in program variables.
+    # download images in pairs
+    # process differences and save
+
+    pass
+
+
 if __name__ == "__main__":
     # https://soho.nascom.nasa.gov/data/REPROCESSING/Completed/2021/c3/20210509/.full_1024.lst
     t = int(time.time())
@@ -116,18 +131,25 @@ if __name__ == "__main__":
     year = posix2utc(t, "%Y")
     onlinelist = "https://soho.nascom.nasa.gov/data/REPROCESSING/Completed/" + year + "/c3/" + yearmonthday + "/.full_1024.lst"
 
-    program_variables = "variables.pkl"
-    variables = load_values(program_variables)
+    saved_variables = "variables.pkl"
+    variables = load_values(saved_variables)
 
     # check UTC date agaainst stored date
     # if a new date, run check one last time against the old date just in case there was an update. Otherwise
     # update program variables to NEW values then proceed
+    if variables["yearmonthday"] != yearmonthday:
+        generalprocess(variables)
 
-    # get online list
-    # check list names against recent stored name
-    # if new names, reset resent stored name in program variables.
-    # download images in pairs
-    # process differences and save
+        variables["yearmonthday"] = yearmonthday
+        variables["year"] = year
+        variables["onlinelist"] = onlinelist
+        save_values(variables, saved_variables)
+    else:
+        generalprocess(variables)
+
+
+
+
 
 
 
