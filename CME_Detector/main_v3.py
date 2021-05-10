@@ -163,6 +163,13 @@ if __name__ == "__main__":
                 listofimages.pop(0)
 
         for i in range(1, len(listofimages)):
+            # split the name
+            test = listofimages[i].split("_")
+            print(test)
+
+            # when iterating thru the list of names, if the time differences is near an hour, do the differencing
+            # starting with the most recent image then working backwards. Ignore images that are too close.
+
             img1url = baseURL + listofimages[i - 1]
             img2url = baseURL + listofimages[i]
 
