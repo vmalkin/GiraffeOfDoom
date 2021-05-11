@@ -169,56 +169,25 @@ if __name__ == "__main__":
 
     # test to see if the latest image matches ours, it not, start processing!
     if variables["img_stored"] != listofimages[len(listofimages) - 1]:
-        # if len(listofimages) > 2:
-        #     if len(listofimages) % 2 != 0:
-        #         listofimages.pop(0)
+
+        t =  listofimages[0].split("_")
+        hourcount = int(t[1])
+        hourimage = listofimages[0]
 
         for i in range(0, len(listofimages)):
             # split the name
             test = listofimages[i].split("_")
-            hourcount = 0000
+            test_hourcount = int(test[1])
+            testimage = listofimages[i]
 
-            # when iterating thru the list of names, if the time differences is near an hour, do the differencing
-            # starting with the most recent image then working backwards. Ignore images that are too close.
+            if test_hourcount - hourcount > 100:
 
-            img1url = baseURL + listofimages[i - 1]
-            img2url = baseURL + listofimages[i]
 
-            if i == 1:
-                response1 = get_resource_from_url(img1url)
-                parse_image_fromURL(response1, "i1.bmp")
-                img_1 = image_load("i1.bmp")
-            else:
-                img_1 = img_2
+                # LASTLY.....
+                hourcount = test_hourcount
+                hourimage = testimage
 
-            response2 = get_resource_from_url(img2url)
-            parse_image_fromURL(response2, "i2.bmp")
-            img_2 = image_load("i2.bmp")
 
-            img_og = greyscale_img(img_1)
-            img_ng = greyscale_img(img_2)
-
-            img_oe = erode_dilate_img(img_og)
-            img_ne = erode_dilate_img(img_ng)
-            # img_oe = img_og
-            # img_ne = img_ng
-
-            # unary operator to invert the image
-            img_ne = ~img_ne
-
-            # combine the images to highlight differences
-            alpha = 1
-            gamma = 0
-            new_image = img_ne.copy()
-            cv2.addWeighted(img_ne, alpha, img_oe, 1-alpha, gamma, new_image)
-
-            # Save the difference image into the images folder
-            add_stamp(new_image)
-            fname = images_folder + "/" + listofimages[i]
-            image_save(fname, new_image)
-            print("Difference file created...")
-
-        print("Difference files completed!")
 
         variables["img_stored"] = listofimages[len(listofimages) - 1]
         print(variables)
