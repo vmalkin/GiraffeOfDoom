@@ -6,17 +6,9 @@ import os
 import cv2
 import numpy as np
 
-# https://soho.nascom.nasa.gov/data/REPROCESSING/Completed/2021/c3/20210509/.full_1024.lst
-
-
-# baseURL = "https://soho.nascom.nasa.gov/data/REPROCESSING/Completed/2021/c3/"
 variables = {
-    "img_stored" : "",
-    "yearmonthday" : "",
-    "year" : "",
-    "onlinelist" : ""
+    "img_stored": "20100101_0000_c3_1024.jpg"
 }
-
 
 def get_resource_from_url(url_to_get):
     try:
@@ -135,43 +127,62 @@ if __name__ == "__main__":
         os.makedirs(images_folder)
 
     # https://soho.nascom.nasa.gov/data/REPROCESSING/Completed/2021/c3/20210509/.full_1024.lst
-    t = int(time.time())
+    tm = int(time.time())
 
     # These need to be stored in program variables dictionary
-    yearmonthday = posix2utc(t, "%Y%m%d")
-    year = posix2utc(t, "%Y")
-    baseURL = "https://soho.nascom.nasa.gov/data/REPROCESSING/Completed/" + year + "/c3/" + yearmonthday + "/"
+    yearmonthday = posix2utc(tm, "%Y%m%d")
+    year = posix2utc(tm, "%Y")
     # baseURL = "https://soho.nascom.nasa.gov/data/REPROCESSING/Completed/" + year + "/c3/" + "20210510" + "/"
+    baseURL = "https://soho.nascom.nasa.gov/data/REPROCESSING/Completed/" + year + "/c3/" + yearmonthday + "/"
     onlinelist = baseURL + ".full_1024.lst"
+    print(onlinelist)
     saved_variables = "variables.pkl"
 
     if os.path.exists(saved_variables) is False:
-        variables["yearmonthday"] = yearmonthday
-        variables["year"] = year
-        variables["onlinelist"] = onlinelist
+        variables = {
+            "img_stored": "20100101_0000_c3_1024.jpg"
+        }
         save_values(variables, saved_variables)
     else:
         variables = load_values(saved_variables)
 
     # Get the catalogue of latest images from the website
-    print(variables["onlinelist"])
-    listofimages = get_resource_from_url(variables["onlinelist"])
+    print(onlinelist)
+    listofimages = get_resource_from_url(onlinelist)
     listofimages = parse_text_fromURL(listofimages)
 
-    # if we haven't got new files for the next UTC day yet...
+    # We want to grab the latest images that have been appended to the file list since the last time we looked at it
+    # we will use the name of the last file we processed stored in variables[] help us.
+    new_images_list = []
+    v = variables["img_stored"].split("_")
+    vv = int(v[0] + v[1])
+    last = None
+    for item in listofimages:
+        u = item.split("_")
+        uu = int(u[0] + u[1])
+        if uu > vv:
+            new_images_list.append(item)
+        last = item
 
-    # test to see if the latest image matches ours, it not, start processing!
-    if variables["img_stored"] != listofimages[len(listofimages) - 1]:
+    # update the variable most recent image, with the new last image. If there are no new images,
+    # last will still have the value of none.
+    if last is not None:
+        variables["img_stored"] = last
+        save_values(variables, saved_variables)
+        print(variables)
 
-        t =  listofimages[0].split("_")
+
+    # We can now process these new images stored in the temp array.
+    if len(new_images_list) > 0:
+        t =  new_images_list[0].split("_")
         hourcount = int(t[1])
-        hourimage = listofimages[0]
+        hourimage = new_images_list[0]
 
-        for i in range(0, len(listofimages)):
+        for i in range(0, len(new_images_list)):
             # split the name
-            test = listofimages[i].split("_")
+            test = new_images_list[i].split("_")
             test_hourcount = int(test[1])
-            testimage = listofimages[i]
+            testimage = new_images_list[i]
 
             if test_hourcount - hourcount > 100:
                 img1url = baseURL + hourimage
@@ -180,6 +191,7 @@ if __name__ == "__main__":
                 response1 = get_resource_from_url(img1url)
                 parse_image_fromURL(response1, "i1.bmp")
                 img_1 = image_load("i1.bmp")
+
                 response2 = get_resource_from_url(img2url)
                 parse_image_fromURL(response2, "i2.bmp")
                 img_2 = image_load("i2.bmp")
@@ -200,6 +212,10 @@ if __name__ == "__main__":
                 cv2.addWeighted(img_ne, alpha, img_oe, 1 - alpha, gamma, new_image)
 
                 # Adjust contrast and brightness
+                d = new_image.copy()
+                alpha = 2
+                beta = -180
+                new_image = cv2.convertScaleAbs(d, alpha=alpha, beta=beta)
 
                 # Save the difference image into the images folder
                 add_stamp(new_image)
@@ -211,22 +227,9 @@ if __name__ == "__main__":
                 hourcount = test_hourcount
                 hourimage = testimage
 
-        variables["img_stored"] = listofimages[len(listofimages) - 1]
-        print(variables)
-        save_values(variables, saved_variables)
-
+                print(variables)
+                save_values(variables, saved_variables)
     else:
-        print("No new update to online file list")
-
-
-
-
-
-
-
-
-
-
-
-
+        print(variables)
+        print("No new images to download.")
 
