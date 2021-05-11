@@ -141,6 +141,7 @@ if __name__ == "__main__":
     yearmonthday = posix2utc(t, "%Y%m%d")
     year = posix2utc(t, "%Y")
     baseURL = "https://soho.nascom.nasa.gov/data/REPROCESSING/Completed/" + year + "/c3/" + yearmonthday + "/"
+    # baseURL = "https://soho.nascom.nasa.gov/data/REPROCESSING/Completed/" + year + "/c3/" + "20210510" + "/"
     onlinelist = baseURL + ".full_1024.lst"
     saved_variables = "variables.pkl"
 
@@ -153,19 +154,11 @@ if __name__ == "__main__":
         variables = load_values(saved_variables)
 
     # Get the catalogue of latest images from the website
+    print(variables["onlinelist"])
     listofimages = get_resource_from_url(variables["onlinelist"])
     listofimages = parse_text_fromURL(listofimages)
 
-    # # if we haven't got new files for the next UTC day yet...
-    # if len(listofimages) == 0:
-    #     yearmonthday = str(int(yearmonthday) - 1)
-    #     baseURL = "https://soho.nascom.nasa.gov/data/REPROCESSING/Completed/" + year + "/c3/" + yearmonthday + "/"
-    #     print(baseURL)
-    #
-    #     onlinelist = baseURL + ".full_1024.lst"
-    #
-    #     listofimages = get_resource_from_url(onlinelist)
-    #     listofimages = parse_text_fromURL(listofimages)
+    # if we haven't got new files for the next UTC day yet...
 
     # test to see if the latest image matches ours, it not, start processing!
     if variables["img_stored"] != listofimages[len(listofimages) - 1]:
@@ -181,13 +174,42 @@ if __name__ == "__main__":
             testimage = listofimages[i]
 
             if test_hourcount - hourcount > 100:
+                img1url = baseURL + hourimage
+                img2url = baseURL + testimage
 
+                response1 = get_resource_from_url(img1url)
+                parse_image_fromURL(response1, "i1.bmp")
+                img_1 = image_load("i1.bmp")
+                response2 = get_resource_from_url(img2url)
+                parse_image_fromURL(response2, "i2.bmp")
+                img_2 = image_load("i2.bmp")
+
+                img_og = greyscale_img(img_1)
+                img_ng = greyscale_img(img_2)
+
+                img_oe = erode_dilate_img(img_og)
+                img_ne = erode_dilate_img(img_ng)
+
+                # unary operator to invert the image
+                img_ne = ~img_ne
+
+                # combine the images to highlight differences
+                alpha = 0.8
+                gamma = 0
+                new_image = img_ne.copy()
+                cv2.addWeighted(img_ne, alpha, img_oe, 1 - alpha, gamma, new_image)
+
+                # Adjust contrast and brightness
+
+                # Save the difference image into the images folder
+                add_stamp(new_image)
+                fname = images_folder + "/" + listofimages[i]
+                image_save(fname, new_image)
+                print("Difference file created...")
 
                 # LASTLY.....
                 hourcount = test_hourcount
                 hourimage = testimage
-
-
 
         variables["img_stored"] = listofimages[len(listofimages) - 1]
         print(variables)
