@@ -69,13 +69,11 @@ def wrapper(datafile, plotname):
 # wrapper("bbr_ruru_h.csv", "RapidRun")
 # wrapper("bbr_ruru_original.csv", "Original")
 
-##wrapper("Geomag_Bz.csv", "BZ")
-##wrapper("GOES_16.csv", "GOES 16")
-##wrapper("Ruru_Obs.csv", "Ruru")
-##wrapper("SW_speed.csv", "Solar Wind Speed")
-##wrapper("SW_Density.csv", "Solar Wind Density")
-##wrapper("dna_smoothed.csv", "Ambient RF")
-
-wrapper("test.csv", "Frankencoil Broadband")
+wrapper("Geomag_Bz.csv", "BZ")
+wrapper("GOES_16.csv", "GOES 16")
+wrapper("Ruru_Obs.csv", "Ruru")
+wrapper("SW_speed.csv", "Solar Wind Speed")
+wrapper("SW_Density.csv", "Solar Wind Density")
+##wrapper("test.csv", "Frankencoil Broadband")
 
 

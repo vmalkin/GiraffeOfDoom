@@ -132,12 +132,13 @@ if __name__ == "__main__":
     # These need to be stored in program variables dictionary
     yearmonthday = posix2utc(tm, "%Y%m%d")
     year = posix2utc(tm, "%Y")
-    # baseURL = "https://soho.nascom.nasa.gov/data/REPROCESSING/Completed/" + year + "/c3/" + "20210510" + "/"
+    # baseURL = "https://soho.nascom.nasa.gov/data/REPROCESSING/Completed/" + year + "/c3/" + "20210511" + "/"
     baseURL = "https://soho.nascom.nasa.gov/data/REPROCESSING/Completed/" + year + "/c3/" + yearmonthday + "/"
     onlinelist = baseURL + ".full_1024.lst"
     print(onlinelist)
     saved_variables = "variables.pkl"
 
+    # if we dont have a pkl file, create one with default values.
     if os.path.exists(saved_variables) is False:
         variables = {
             "img_stored": "20100101_0000_c3_1024.jpg"
@@ -156,21 +157,12 @@ if __name__ == "__main__":
     new_images_list = []
     v = variables["img_stored"].split("_")
     vv = int(v[0] + v[1])
-    last = None
+    last = ""
     for item in listofimages:
         u = item.split("_")
         uu = int(u[0] + u[1])
         if uu > vv:
             new_images_list.append(item)
-        last = item
-
-    # update the variable most recent image, with the new last image. If there are no new images,
-    # last will still have the value of none.
-    if last is not None:
-        variables["img_stored"] = last
-        save_values(variables, saved_variables)
-        print(variables)
-
 
     # We can now process these new images stored in the temp array.
     if len(new_images_list) > 0:
@@ -227,8 +219,10 @@ if __name__ == "__main__":
                 hourcount = test_hourcount
                 hourimage = testimage
 
-                print(variables)
-                save_values(variables, saved_variables)
+            last = listofimages[i]
+        variables["img_stored"] = last
+        print(variables)
+        save_values(variables, saved_variables)
     else:
         print(variables)
         print("No new images to download.")
