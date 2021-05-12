@@ -56,8 +56,8 @@ def wrapper(datafile, plotname):
         # fig.add_trace(go.Scatter(x=dt, y=data, mode="lines", line=dict(width=2, color="#000000")), row=r, col=1)
         fig.add_trace(go.Scatter(x=dt, y=data, mode="lines", line=dict(width=1)), row=r, col=1)
     title = "Instrinsic Mode functions - " + plotname
-    fig.update_layout(height=2000, width=800, title_text=title)
-    fig.show()
+    fig.update_layout(height=2000, width=1600, title_text=title)
+    # fig.show()
     filename = "imd_" + plotname + ".svg"
     fig.write_image(file=filename, format="svg")
     print("Plot finished")
