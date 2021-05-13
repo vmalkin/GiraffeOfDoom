@@ -132,7 +132,7 @@ if __name__ == "__main__":
     # These need to be stored in program variables dictionary
     yearmonthday = posix2utc(tm, "%Y%m%d")
     year = posix2utc(tm, "%Y")
-    # baseURL = "https://soho.nascom.nasa.gov/data/REPROCESSING/Completed/" + year + "/c3/" + "20210511" + "/"
+    # baseURL = "https://soho.nascom.nasa.gov/data/REPROCESSING/Completed/" + year + "/c3/" + "20210512" + "/"
     baseURL = "https://soho.nascom.nasa.gov/data/REPROCESSING/Completed/" + year + "/c3/" + yearmonthday + "/"
     onlinelist = baseURL + ".full_1024.lst"
     print(onlinelist)
