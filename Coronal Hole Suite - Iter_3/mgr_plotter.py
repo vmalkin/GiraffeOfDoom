@@ -168,3 +168,5 @@ class Plotter:
                     f.write(predictionlist[i].printvalues() + '\n')
         except:
             print("Unable to write forecast data to file")
+
+        # Create Plotly Graph for mini prediction.
