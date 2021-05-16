@@ -19,7 +19,7 @@ do
  python DashboardManager.py
  
  echo " "
- echo "Processing completed for this cycle. Waiting 480 seconds... "
+ echo "Processing completed for this cycle. Waiting 300 seconds... "
  echo " "
- sleep 480
+ sleep 300
 done
