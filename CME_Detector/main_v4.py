@@ -116,8 +116,11 @@ def add_stamp(image_object):
     font_size = 0.7
     font_color = colour
     font_thickness = 1
-    banner = 'Acknowledgement for Lasco/SOHO usage here'
+    banner = 'Courtesy of SOHO/LASCO consortium. SOHO is a project of'
     x, y = 10, 950
+    cv2.putText(image_object, banner, (x, y), font, font_size, font_color, font_thickness, cv2.LINE_AA)
+    banner = 'international cooperation between ESA and NASA'
+    x, y = 10, 975
     cv2.putText(image_object, banner, (x, y), font, font_size, font_color, font_thickness, cv2.LINE_AA)
 
 
