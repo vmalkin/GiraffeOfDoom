@@ -103,7 +103,7 @@ def erode_dilate_img(image_to_process):
 
 
 def add_stamp(image_object):
-    cv2. rectangle(image_object, (0, 900), (1024,1024), (255,0,0), -1 )
+    cv2. rectangle(image_object, (0, 900), (1024,1024), (255,255,255), -1 )
     colour = (0, 0, 0)
     font = cv2.FONT_HERSHEY_SIMPLEX
     font_size = 1.0
@@ -121,6 +121,13 @@ def add_stamp(image_object):
     cv2.putText(image_object, banner, (x, y), font, font_size, font_color, font_thickness, cv2.LINE_AA)
 
 
+def filehour_converter(hhmm):
+    hour = int(hhmm[:2])
+    min = int(hhmm[2:])
+    returnvalue = (hour * 60) + min
+    return returnvalue
+
+
 if __name__ == "__main__":
     images_folder = "images"
     if os.path.exists(images_folder) is False:
@@ -132,8 +139,8 @@ if __name__ == "__main__":
     # These need to be stored in program variables dictionary
     yearmonthday = posix2utc(tm, "%Y%m%d")
     year = posix2utc(tm, "%Y")
-    baseURL = "https://soho.nascom.nasa.gov/data/REPROCESSING/Completed/" + year + "/c3/" + "20210513" + "/"
-    # baseURL = "https://soho.nascom.nasa.gov/data/REPROCESSING/Completed/" + year + "/c3/" + yearmonthday + "/"
+    # baseURL = "https://soho.nascom.nasa.gov/data/REPROCESSING/Completed/" + year + "/c3/" + "20210515" + "/"
+    baseURL = "https://soho.nascom.nasa.gov/data/REPROCESSING/Completed/" + year + "/c3/" + yearmonthday + "/"
     onlinelist = baseURL + ".full_1024.lst"
     print(onlinelist)
     saved_variables = "variables.pkl"
@@ -167,16 +174,16 @@ if __name__ == "__main__":
     # We can now process these new images stored in the temp array.
     if len(new_images_list) > 0:
         t =  new_images_list[0].split("_")
-        hourcount = int(t[1])
+        hourcount =  filehour_converter(t[1])
         hourimage = new_images_list[0]
 
         for i in range(0, len(new_images_list)):
             # split the name
             test = new_images_list[i].split("_")
-            test_hourcount = int(test[1])
+            test_hourcount = filehour_converter(test[1])
             testimage = new_images_list[i]
 
-            if test_hourcount - hourcount > 100:
+            if test_hourcount - hourcount > 50:
                 img1url = baseURL + hourimage
                 img2url = baseURL + testimage
 
@@ -198,16 +205,18 @@ if __name__ == "__main__":
                 img_ne = ~img_ne
 
                 # combine the images to highlight differences
-                alpha = 0.8
+                alpha = 1.1
                 gamma = 0
                 new_image = img_ne.copy()
                 cv2.addWeighted(img_ne, alpha, img_oe, 1 - alpha, gamma, new_image)
 
                 # Adjust contrast and brightness
                 d = new_image.copy()
-                alpha = 2
-                beta = -180
+                alpha = 1.2
+                beta = -64
                 new_image = cv2.convertScaleAbs(d, alpha=alpha, beta=beta)
+                new_image = cv2.applyColorMap(new_image, cv2.COLORMAP_TWILIGHT)
+
 
                 # Save the difference image into the images folder
                 add_stamp(new_image)

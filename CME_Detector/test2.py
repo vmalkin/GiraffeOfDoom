@@ -10,11 +10,11 @@ def image_save(file_name, image_object):
     cv2.imwrite(file_name, image_object)
 
 
-img = image_load("20210510_0954_c3_1024.jpg")
+img = image_load("20210514_0618_c3_1024.jpg")
 
 d = img.copy()
-alpha = 2
-beta = -180
+alpha = 1.1
+beta = -230
 new_image = cv2.convertScaleAbs(d, alpha=alpha, beta=beta)
 
 cv2.imshow("test", new_image)
