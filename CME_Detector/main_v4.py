@@ -240,6 +240,7 @@ if __name__ == "__main__":
                 hourimage = testimage
 
             last = listofimages[i]
+        variables["epoch_stored"] = year
         variables["img_stored"] = last
         print(variables)
         save_values(variables, saved_variables)
