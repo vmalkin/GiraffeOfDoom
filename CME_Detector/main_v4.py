@@ -7,7 +7,8 @@ import cv2
 import numpy as np
 
 variables = {
-    "img_stored": "20100101_0000_c3_1024.jpg"
+    "img_stored": "20100101_0000_c3_1024.jpg",
+    "epoch_stored" : "20100101"
 }
 
 def get_resource_from_url(url_to_get):
@@ -151,7 +152,8 @@ if __name__ == "__main__":
     # if we dont have a pkl file, create one with default values.
     if os.path.exists(saved_variables) is False:
         variables = {
-            "img_stored": "20100101_0000_c3_1024.jpg"
+            "img_stored": "20100101_0000_c3_1024.jpg",
+            "epoch_stored": "20100101"
         }
         save_values(variables, saved_variables)
     else:
@@ -164,13 +166,19 @@ if __name__ == "__main__":
 
     # We want to grab the latest images that have been appended to the file list since the last time we looked at it
     # we will use the name of the last file we processed stored in variables[] help us.
+
+    if year > variables["epoch_stored"]:
+        variables["img_stored"] = year + "_0000_c3_1024.jpg"
+
     new_images_list = []
     v = variables["img_stored"].split("_")
-    vv = int(v[0] + v[1])
+    vv = v[0] + v[1]
+    vv = int(vv)
     last = ""
     for item in listofimages:
         u = item.split("_")
-        uu = int(u[0] + u[1])
+        uu = u[0] + u[1]
+        uu = int(uu)
         if uu > vv:
             new_images_list.append(item)
 
