@@ -18,15 +18,47 @@ def posix2utc(posixtime, timeformat):
     return utctime
 
 
-
 def calc_ends(datalist, startposix, endposix):
-    pass
+    index_a = None
+    index_b = None
+    data_a = None
+    data_b = None
 
-
-def calc_middle(datalist, windowstart, windowend, halfwindow):
-    temp = []
     for i in range(0, len(datalist)):
-        temp.append(datalist[i].base_value)
+        if datalist[i].timevalue == startposix:
+            index_a = i
+            data_a = datalist[i].base_value
+        if datalist[i].timevalue == endposix:
+            index_b = i
+            data_b = datalist[i].base_value
+    index_step = index_b - index_a
+    data_step = data_b - data_a
+    data_bits = data_step / index_step
+
+    for j in range(index_a, index_b):
+        prev = datalist[j].base_value
+        datalist[j].smooth_value = prev + data_bits
+    return datalist
+
+
+def calc_middle(datalist, windowstart):
+    # determine how many records constitute the half window value
+    windowindex = None
+    for i in range(0, len(datalist)):
+        if datalist[i].timevalue > windowstart:
+            windowindex = i
+        # we dont need to iterate thru any more of the loop
+        break
+
+    for j in range(windowindex, len(datalist) - windowindex):
+        temp=[]
+        for k in range(-1 * windowindex, windowindex):
+            value = float(datalist[k + j].base_value)
+            temp.append(value)
+        avg = mean(temp)
+        datalist[j].smooth_value = avg
+    return datalist
+
 
 
 # data is in the format [posixtime, value]
