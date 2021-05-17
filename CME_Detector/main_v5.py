@@ -129,17 +129,12 @@ def filehour_converter(hhmm):
 
 
 def processimages(listofimages):
-    print(listofimages)
-
+    # generate a list of new images from the list thatv have not been processed
     new_images_list = []
-    v = variables["img_stored"].split("_")
-    storedhr = int(v[1])
-    last = ""
-
     for item in listofimages:
-        u = item.split("_")
-        testhr = int(u[1])
-        if testhr > storedhr:
+        i = item.split("_")
+        testhour = i[1]
+        if int(testhour) > int(variables["hour"]):
             new_images_list.append(item)
 
     # We can now process these new images stored in the temp array.
@@ -192,14 +187,15 @@ def processimages(listofimages):
                 add_stamp(new_image)
                 fname = images_folder + "/" + listofimages[i]
                 image_save(fname, new_image)
-                print("Difference file created...")
+                print("Difference file created..." + fname)
 
                 # LASTLY.....
                 hourcount = test_hourcount
                 hourimage = testimage
-
-            last = listofimages[i]
-        variables["img_stored"] = last
+        t = testimage.split("_")
+        t = t[1]
+        print("Last processed image is " +  str(t))
+        variables["hour"] = str(t)
 
 
 if __name__ == "__main__":
@@ -213,8 +209,8 @@ if __name__ == "__main__":
     # if we dont have a pkl file, create one with default values.
     if os.path.exists(saved_variables) is False:
         variables = {
-            "img_stored": "20210516_0000_c3_1024.jpg",
-            "epoch_stored": "20210516"
+            "hour": "0000",
+            "epoch": "20210516"
         }
         save_values(variables, saved_variables)
     else:
@@ -222,13 +218,14 @@ if __name__ == "__main__":
     tm = int(time.time())
 
     # These need to be stored in program variables dictionary
-    yearmonthday = posix2utc(tm, "%Y%m%d")
+    epoch = posix2utc(tm, "%Y%m%d")
     year = posix2utc(tm, "%Y")
 
 
-    if yearmonthday > variables["epoch_stored"]:
+    if epoch > variables["epoch"]:
         print(variables)
-        ymd = variables["epoch_stored"]
+        # new epoch, so perform one last parse
+        ymd = variables["epoch"]
         baseURL = "https://soho.nascom.nasa.gov/data/REPROCESSING/Completed/" + year + "/c3/" + ymd + "/"
         onlinelist = baseURL + ".full_1024.lst"
 
@@ -236,11 +233,11 @@ if __name__ == "__main__":
         listofimages = parse_text_fromURL(listofimages)
 
         processimages(listofimages)
-        variables["img_stored"] = yearmonthday + "_0000_c3_1024.jpg"
-        variables["epoch_stored"] = yearmonthday
+        variables["hour"] = "0000"
+        variables["epoch"] = epoch
 
-    if yearmonthday == variables["epoch_stored"]:
-        baseURL = "https://soho.nascom.nasa.gov/data/REPROCESSING/Completed/" + year + "/c3/" + yearmonthday + "/"
+    if epoch == variables["epoch"]:
+        baseURL = "https://soho.nascom.nasa.gov/data/REPROCESSING/Completed/" + year + "/c3/" + epoch + "/"
         onlinelist = baseURL + ".full_1024.lst"
 
         # Get the catalogue of latest images from the website
@@ -248,5 +245,6 @@ if __name__ == "__main__":
         listofimages = parse_text_fromURL(listofimages)
         processimages(listofimages)
 
+    print(onlinelist)
     print(variables)
     save_values(variables, saved_variables)
