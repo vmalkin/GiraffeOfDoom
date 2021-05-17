@@ -6,10 +6,6 @@ import os
 import cv2
 import numpy as np
 
-variables = {
-    "img_stored": "20100101_0000_c3_1024.jpg",
-    "epoch_stored" : "20100101"
-}
 
 def get_resource_from_url(url_to_get):
     try:
@@ -132,60 +128,24 @@ def filehour_converter(hhmm):
     return returnvalue
 
 
-if __name__ == "__main__":
-    images_folder = "images"
-    saved_variables = "variables.pkl"
-
-    if os.path.exists(images_folder) is False:
-        os.makedirs(images_folder)
-
-    # if we dont have a pkl file, create one with default values.
-    if os.path.exists(saved_variables) is False:
-        variables = {
-            "img_stored": "20100101_0000_c3_1024.jpg",
-            "epoch_stored": "20100101"
-        }
-        save_values(variables, saved_variables)
-    else:
-        variables = load_values(saved_variables)
-    tm = int(time.time())
-
-    # These need to be stored in program variables dictionary
-    yearmonthday = posix2utc(tm, "%Y%m%d")
-    year = posix2utc(tm, "%Y")
-    # baseURL = "https://soho.nascom.nasa.gov/data/REPROCESSING/Completed/" + year + "/c3/" + "20210515" + "/"
-    baseURL = "https://soho.nascom.nasa.gov/data/REPROCESSING/Completed/" + year + "/c3/" + yearmonthday + "/"
-    onlinelist = baseURL + ".full_1024.lst"
-    print(onlinelist)
-
-    # Get the catalogue of latest images from the website
-    print(onlinelist)
-    listofimages = get_resource_from_url(onlinelist)
-    listofimages = parse_text_fromURL(listofimages)
-
-    # We want to grab the latest images that have been appended to the file list since the last time we looked at it
-    # we will use the name of the last file we processed stored in variables[] help us.
-
-    # if yearmonthday > variables["epoch_stored"]:
-    #     variables["img_stored"] = year + "_0000_c3_1024.jpg"
-    #     variables["epoch_stored"] = yearmonthday
+def processimages(listofimages):
+    print(listofimages)
 
     new_images_list = []
     v = variables["img_stored"].split("_")
-    vv = v[0] + v[1]
-    vv = int(vv)
+    storedhr = int(v[1])
     last = ""
+
     for item in listofimages:
         u = item.split("_")
-        uu = u[0] + u[1]
-        uu = int(uu)
-        if uu > vv:
+        testhr = int(u[1])
+        if testhr > storedhr:
             new_images_list.append(item)
 
     # We can now process these new images stored in the temp array.
     if len(new_images_list) > 0:
-        t =  new_images_list[0].split("_")
-        hourcount =  filehour_converter(t[1])
+        t = new_images_list[0].split("_")
+        hourcount = filehour_converter(t[1])
         hourimage = new_images_list[0]
 
         for i in range(0, len(new_images_list)):
@@ -194,7 +154,7 @@ if __name__ == "__main__":
             test_hourcount = filehour_converter(test[1])
             testimage = new_images_list[i]
 
-            if test_hourcount - hourcount > 50:
+            if test_hourcount - hourcount > 45:
                 img1url = baseURL + hourimage
                 img2url = baseURL + testimage
 
@@ -228,7 +188,6 @@ if __name__ == "__main__":
                 new_image = cv2.convertScaleAbs(d, alpha=alpha, beta=beta)
                 new_image = cv2.applyColorMap(new_image, cv2.COLORMAP_TWILIGHT)
 
-
                 # Save the difference image into the images folder
                 add_stamp(new_image)
                 fname = images_folder + "/" + listofimages[i]
@@ -240,11 +199,54 @@ if __name__ == "__main__":
                 hourimage = testimage
 
             last = listofimages[i]
-        variables["epoch_stored"] = yearmonthday
         variables["img_stored"] = last
-        print(variables)
+
+
+if __name__ == "__main__":
+    images_folder = "images"
+    saved_variables = "variables.pkl"
+    variables = None
+
+    if os.path.exists(images_folder) is False:
+        os.makedirs(images_folder)
+
+    # if we dont have a pkl file, create one with default values.
+    if os.path.exists(saved_variables) is False:
+        variables = {
+            "img_stored": "20210516_0000_c3_1024.jpg",
+            "epoch_stored": "20210516"
+        }
         save_values(variables, saved_variables)
     else:
-        print(variables)
-        print("No new images to download.")
+        variables = load_values(saved_variables)
+    tm = int(time.time())
 
+    # These need to be stored in program variables dictionary
+    yearmonthday = posix2utc(tm, "%Y%m%d")
+    year = posix2utc(tm, "%Y")
+
+
+    if yearmonthday > variables["epoch_stored"]:
+        print(variables)
+        ymd = variables["epoch_stored"]
+        baseURL = "https://soho.nascom.nasa.gov/data/REPROCESSING/Completed/" + year + "/c3/" + ymd + "/"
+        onlinelist = baseURL + ".full_1024.lst"
+
+        listofimages = get_resource_from_url(onlinelist)
+        listofimages = parse_text_fromURL(listofimages)
+
+        processimages(listofimages)
+        variables["img_stored"] = yearmonthday + "_0000_c3_1024.jpg"
+        variables["epoch_stored"] = yearmonthday
+
+    if yearmonthday == variables["epoch_stored"]:
+        baseURL = "https://soho.nascom.nasa.gov/data/REPROCESSING/Completed/" + year + "/c3/" + yearmonthday + "/"
+        onlinelist = baseURL + ".full_1024.lst"
+
+        # Get the catalogue of latest images from the website
+        listofimages = get_resource_from_url(onlinelist)
+        listofimages = parse_text_fromURL(listofimages)
+        processimages(listofimages)
+
+    print(variables)
+    save_values(variables, saved_variables)
