@@ -7,9 +7,8 @@ import sys
 from threading import Thread
 import os
 import sqlite3
-import mgr_publisher
-import mgr_averager
 import mgr_binner
+import mgr_detrended
 
 __version__ = "4.0"
 errorloglevel = logging.DEBUG
@@ -55,10 +54,11 @@ class ChartThread(Thread):
                 print("Create logfiles")
                 # THIs is the basic plotting method that belongs to main.py
                 create_logfile(current_data)
+
                 # new user generated methods for plotting go here
-                # mgr_publisher.wrapper(current_data, publish_dir)
-                # mgr_averager.wrapper(current_data, publish_dir)
                 mgr_binner.wrapper(current_data, publish_dir)
+                mgr_detrended.wrapper(current_data, publish_dir)
+
             except:
                 print("Simple grapher failed")
                 logging.error("Simple grapher failed")
@@ -95,7 +95,7 @@ def create_logfile(current_data):
     currentdate = datetime.utcfromtimestamp(int(time())).strftime("%Y-%m-%d")
     savefile = logfile_dir + "//" + currentdate + ".csv"
     with open(savefile, "w") as s:
-        s.write("UTC Datetime, Ambient Voltage" + "\n")
+        s.write("UTC Datetime, Value" + "\n")
         for item in current_data:
             dt = posix2utc(item[0])
             data = item[1]
