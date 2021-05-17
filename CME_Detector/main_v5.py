@@ -221,7 +221,18 @@ if __name__ == "__main__":
     epoch = posix2utc(tm, "%Y%m%d")
     year = posix2utc(tm, "%Y")
 
-
+    # if the current epoch is more recent that teh stored epoch
+    # create online list for stored epoch
+    # get the file list from online
+    # parse for new images since the last parse
+    # process and store new images
+    # Update the variables file with the current epoch and file number
+    #
+    # If the current epoch equals the stored epoch
+    # get the file list from online
+    # parse for new images since the last parse
+    # process and store new images
+    # Update the variables file with the file number
     if epoch > variables["epoch"]:
         print(variables)
         # new epoch, so perform one last parse
@@ -243,6 +254,10 @@ if __name__ == "__main__":
         # Get the catalogue of latest images from the website
         listofimages = get_resource_from_url(onlinelist)
         listofimages = parse_text_fromURL(listofimages)
+
+        # get only images since the last image parse for this epoch
+
+        # process this final list of new images
         processimages(listofimages)
 
     print(onlinelist)
