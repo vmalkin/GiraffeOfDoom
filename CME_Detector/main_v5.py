@@ -40,23 +40,6 @@ def posix2utc(posixtime, timeformat):
     return utctime
 
 
-# def parse_filename_fromURL(response):
-#     # the response is a list of byte objects.
-#     for line in response:
-#         s = str(line)
-#         s = s.strip()
-#         # Parse out the file names from the HTML
-#         try:
-#             s = s.split('<a href="')
-#             t = s[1]
-#             t = t.split('">')
-#             if t[0].find("1024") > 0:  # find 1024 scale images from list
-#                 filename = t[0]
-#         except:
-#             pass
-#     return filename
-
-
 def parse_image_fromURL(response, img_latest):
     with open(img_latest, 'wb') as f:
         f.write(response.read())
@@ -129,73 +112,73 @@ def filehour_converter(hhmm):
 
 
 def processimages(listofimages):
-    # generate a list of new images from the list thatv have not been processed
-    new_images_list = []
+    t = listofimages[0].split("_")
+    hourcount = filehour_converter(t[1])
+    hourimage = listofimages[0]
+
+    for i in range(0, len(listofimages)):
+        # split the name
+        test = listofimages[i].split("_")
+        test_hourcount = filehour_converter(test[1])
+        testimage = listofimages[i]
+
+        if test_hourcount - hourcount > 45:
+            img1url = baseURL + hourimage
+            img2url = baseURL + testimage
+
+            response1 = get_resource_from_url(img1url)
+            parse_image_fromURL(response1, "i1.bmp")
+            img_1 = image_load("i1.bmp")
+
+            response2 = get_resource_from_url(img2url)
+            parse_image_fromURL(response2, "i2.bmp")
+            img_2 = image_load("i2.bmp")
+
+            img_og = greyscale_img(img_1)
+            img_ng = greyscale_img(img_2)
+
+            img_oe = erode_dilate_img(img_og)
+            img_ne = erode_dilate_img(img_ng)
+
+            # unary operator to invert the image
+            img_ne = ~img_ne
+
+            # combine the images to highlight differences
+            alpha = 1.1
+            gamma = 0
+            new_image = img_ne.copy()
+            cv2.addWeighted(img_ne, alpha, img_oe, 1 - alpha, gamma, new_image)
+
+            # Adjust contrast and brightness
+            d = new_image.copy()
+            alpha = 1.2
+            beta = -64
+            new_image = cv2.convertScaleAbs(d, alpha=alpha, beta=beta)
+            new_image = cv2.applyColorMap(new_image, cv2.COLORMAP_TWILIGHT)
+
+            # Save the difference image into the images folder
+            add_stamp(new_image)
+            fname = images_folder + "/" + listofimages[i]
+            image_save(fname, new_image)
+            print("Difference file created..." + fname)
+
+            # LASTLY.....
+            hourcount = test_hourcount
+            hourimage = testimage
+
+
+
+def parseimages(listofimages, variables):
+    returnlist = []
+    currenthour = variables["hour"]
+    last =None
     for item in listofimages:
         i = item.split("_")
-        testhour = i[1]
-        if int(testhour) > int(variables["hour"]):
-            new_images_list.append(item)
-
-    # We can now process these new images stored in the temp array.
-    if len(new_images_list) > 0:
-        t = new_images_list[0].split("_")
-        hourcount = filehour_converter(t[1])
-        hourimage = new_images_list[0]
-
-        for i in range(0, len(new_images_list)):
-            # split the name
-            test = new_images_list[i].split("_")
-            test_hourcount = filehour_converter(test[1])
-            testimage = new_images_list[i]
-
-            if test_hourcount - hourcount > 45:
-                img1url = baseURL + hourimage
-                img2url = baseURL + testimage
-
-                response1 = get_resource_from_url(img1url)
-                parse_image_fromURL(response1, "i1.bmp")
-                img_1 = image_load("i1.bmp")
-
-                response2 = get_resource_from_url(img2url)
-                parse_image_fromURL(response2, "i2.bmp")
-                img_2 = image_load("i2.bmp")
-
-                img_og = greyscale_img(img_1)
-                img_ng = greyscale_img(img_2)
-
-                img_oe = erode_dilate_img(img_og)
-                img_ne = erode_dilate_img(img_ng)
-
-                # unary operator to invert the image
-                img_ne = ~img_ne
-
-                # combine the images to highlight differences
-                alpha = 1.1
-                gamma = 0
-                new_image = img_ne.copy()
-                cv2.addWeighted(img_ne, alpha, img_oe, 1 - alpha, gamma, new_image)
-
-                # Adjust contrast and brightness
-                d = new_image.copy()
-                alpha = 1.2
-                beta = -64
-                new_image = cv2.convertScaleAbs(d, alpha=alpha, beta=beta)
-                new_image = cv2.applyColorMap(new_image, cv2.COLORMAP_TWILIGHT)
-
-                # Save the difference image into the images folder
-                add_stamp(new_image)
-                fname = images_folder + "/" + listofimages[i]
-                image_save(fname, new_image)
-                print("Difference file created..." + fname)
-
-                # LASTLY.....
-                hourcount = test_hourcount
-                hourimage = testimage
-        t = testimage.split("_")
-        t = t[1]
-        print("Last processed image is " +  str(t))
-        variables["hour"] = str(t)
+        t = i[1]
+        if t > currenthour:
+            returnlist.append(item)
+            variables["hour"] = t
+    return returnlist
 
 
 if __name__ == "__main__":
@@ -210,7 +193,7 @@ if __name__ == "__main__":
     if os.path.exists(saved_variables) is False:
         variables = {
             "hour": "0000",
-            "epoch": "20210516"
+            "epoch": "20210517"
         }
         save_values(variables, saved_variables)
     else:
@@ -233,33 +216,42 @@ if __name__ == "__main__":
     # parse for new images since the last parse
     # process and store new images
     # Update the variables file with the file number
+
     if epoch > variables["epoch"]:
-        print(variables)
-        # new epoch, so perform one last parse
+        print("old epoch, update variables")
         ymd = variables["epoch"]
         baseURL = "https://soho.nascom.nasa.gov/data/REPROCESSING/Completed/" + year + "/c3/" + ymd + "/"
         onlinelist = baseURL + ".full_1024.lst"
-
+        print(onlinelist)
         listofimages = get_resource_from_url(onlinelist)
         listofimages = parse_text_fromURL(listofimages)
+        newimages = parseimages(listofimages, variables)
 
-        processimages(listofimages)
-        variables["hour"] = "0000"
+        if len(newimages) > 0:
+            processimages(newimages)
+
+        print(newimages)
+        print(variables)
+
         variables["epoch"] = epoch
+        variables["hour"] = "0000"
+
+        save_values(variables, saved_variables)
 
     if epoch == variables["epoch"]:
-        baseURL = "https://soho.nascom.nasa.gov/data/REPROCESSING/Completed/" + year + "/c3/" + epoch + "/"
+        ymd = variables["epoch"]
+        baseURL = "https://soho.nascom.nasa.gov/data/REPROCESSING/Completed/" + year + "/c3/" + ymd + "/"
         onlinelist = baseURL + ".full_1024.lst"
-
-        # Get the catalogue of latest images from the website
+        print(onlinelist)
         listofimages = get_resource_from_url(onlinelist)
         listofimages = parse_text_fromURL(listofimages)
+        newimages = parseimages(listofimages, variables)
 
-        # get only images since the last image parse for this epoch
+        if len(newimages) > 0:
+            processimages(newimages)
 
-        # process this final list of new images
-        processimages(listofimages)
+        print(newimages)
+        print(variables)
 
-    print(onlinelist)
-    print(variables)
-    save_values(variables, saved_variables)
+        # we save here as there could be updates to the hour variable
+        save_values(variables, saved_variables)
