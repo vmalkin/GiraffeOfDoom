@@ -155,6 +155,9 @@ def processimages(listofimages, storage_folder, images_folder):
             beta = -64
             new_image = cv2.convertScaleAbs(d, alpha=alpha, beta=beta)
 
+            # a gaussian Filter
+            new_image = cv2.GaussianBlur(new_image,(5,5), 1)
+
             # # detect blobs!
             # detector = cv2.SimpleBlobDetector_create()
             # keypoints = detector.detect(new_image)
