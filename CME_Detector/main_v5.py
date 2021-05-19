@@ -5,6 +5,7 @@ import pickle
 import os
 import cv2
 import numpy as np
+import calendar
 
 
 def get_resource_from_url(url_to_get):
@@ -89,7 +90,7 @@ def add_stamp(image_object):
     font_size = 1.0
     font_color = colour
     font_thickness = 2
-    banner = 'DunedinAurora.NZ'
+    banner = 'DunedinAurora.NZ - CME Detection Project 2021.'
     x, y = 10, 925
     cv2.putText(image_object, banner, (x, y), font, font_size, font_color, font_thickness, cv2.LINE_AA)
 
@@ -104,35 +105,34 @@ def add_stamp(image_object):
     cv2.putText(image_object, banner, (x, y), font, font_size, font_color, font_thickness, cv2.LINE_AA)
 
 
-def filehour_converter(hhmm):
-    hour = int(hhmm[:2])
-    min = int(hhmm[2:])
-    returnvalue = (hour * 60) + min
-    return returnvalue
+def filehour_converter(yyyymmdd, hhmm):
+    year = (yyyymmdd[:4])
+    month = (yyyymmdd[4:6])
+    day = (yyyymmdd[6:])
+    hour = (hhmm[:2])
+    min = (hhmm[2:])
+    utc_string = year + '-' + month + '-' + day  + ' ' + hour  + ':' +  min
+    dt = datetime.datetime.strptime(utc_string, '%Y-%m-%d %H:%M')
+    ts = calendar.timegm(dt.timetuple())
+    return ts
 
 
-def processimages(listofimages):
+def processimages(listofimages, storage_folder, images_folder):
     t = listofimages[0].split("_")
-    hourcount = filehour_converter(t[1])
+    hourcount = filehour_converter(t[0], t[1])
     hourimage = listofimages[0]
 
     for i in range(0, len(listofimages)):
         # split the name
         test = listofimages[i].split("_")
-        test_hourcount = filehour_converter(test[1])
+        test_hourcount = filehour_converter(test[0], test[1])
         testimage = listofimages[i]
+        if test_hourcount - hourcount > (45*60):
+            i1 = storage_folder + "/" + hourimage
+            img_1 = image_load(i1)
 
-        if test_hourcount - hourcount > 45:
-            img1url = baseURL + hourimage
-            img2url = baseURL + testimage
-
-            response1 = get_resource_from_url(img1url)
-            parse_image_fromURL(response1, "i1.bmp")
-            img_1 = image_load("i1.bmp")
-
-            response2 = get_resource_from_url(img2url)
-            parse_image_fromURL(response2, "i2.bmp")
-            img_2 = image_load("i2.bmp")
+            i2 = storage_folder + "/" + testimage
+            img_2 = image_load(i2)
 
             img_og = greyscale_img(img_1)
             img_ng = greyscale_img(img_2)
@@ -154,6 +154,13 @@ def processimages(listofimages):
             alpha = 1.2
             beta = -64
             new_image = cv2.convertScaleAbs(d, alpha=alpha, beta=beta)
+
+            # # detect blobs!
+            # detector = cv2.SimpleBlobDetector_create()
+            # keypoints = detector.detect(new_image)
+            # im_with_keypoints = cv2.drawKeypoints(new_image, keypoints, np.array([]), (0, 255, 255), cv2.DRAW_MATCHES_FLAGS_DEFAULT)
+            # new_image = im_with_keypoints
+            # # turn into false colour
             new_image = cv2.applyColorMap(new_image, cv2.COLORMAP_TWILIGHT)
 
             # Save the difference image into the images folder
@@ -170,30 +177,44 @@ def processimages(listofimages):
 
 def parseimages(listofimages, variables):
     returnlist = []
-    currenthour = variables["hour"]
-    last =None
+
+    j = variables["hour"].split("_")
+    currenthour = filehour_converter(j[0], j[1])
+
     for item in listofimages:
         i = item.split("_")
-        t = i[1]
+        t = filehour_converter(j[0], j[1])
         if t > currenthour:
             returnlist.append(item)
-            variables["hour"] = t
+            variables["hour"] = item
     return returnlist
+
+
+def downloadimages(listofimages, storagelocation):
+    for img in listofimages:
+        img1url = baseURL + img
+        response1 = get_resource_from_url(img1url)
+        file = storagelocation + "/" + img
+        print("Saving file ", file)
+        parse_image_fromURL(response1, file)
 
 
 if __name__ == "__main__":
     images_folder = "images"
+    storage_folder = "lasco_store"
     saved_variables = "variables.pkl"
     variables = None
 
     if os.path.exists(images_folder) is False:
         os.makedirs(images_folder)
+    if os.path.exists(storage_folder) is False:
+        os.makedirs(storage_folder)
 
     # if we dont have a pkl file, create one with default values.
     if os.path.exists(saved_variables) is False:
         variables = {
-            "hour": "0000",
-            "epoch": "20210517"
+            "hour": "20001010_1010_c3_1024.jpg",
+            "epoch": "20001010"
         }
         save_values(variables, saved_variables)
     else:
@@ -228,15 +249,15 @@ if __name__ == "__main__":
         newimages = parseimages(listofimages, variables)
 
         if len(newimages) > 0:
-            processimages(newimages)
+            # rings the terminal bell
+            print("\a")
+            downloadimages(newimages, storage_folder)
 
         print(newimages)
         print(variables)
 
         variables["epoch"] = epoch
-        variables["hour"] = "0000"
-
-        save_values(variables, saved_variables)
+        variables["hour"] = epoch + "_0000_c3_1024.jpg"
 
     if epoch == variables["epoch"]:
         ymd = variables["epoch"]
@@ -248,10 +269,15 @@ if __name__ == "__main__":
         newimages = parseimages(listofimages, variables)
 
         if len(newimages) > 0:
-            processimages(newimages)
+            downloadimages(newimages, storage_folder)
 
-        print(newimages)
-        print(variables)
+    # we save here as there could be updates to the hour variable
+    save_values(variables, saved_variables)
+    print(variables)
 
-        # we save here as there could be updates to the hour variable
-        save_values(variables, saved_variables)
+    # get a list of the current stored images.
+    dirlisting = os.listdir(storage_folder)
+    print(dirlisting)
+    # process the stored images so far to get latest diffs
+    processimages(dirlisting, storage_folder, images_folder)
+    print("Finished processing.")

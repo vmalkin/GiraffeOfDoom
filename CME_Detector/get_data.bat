@@ -1,6 +1,7 @@
+title [ LASCO Coronagraph Processor ]
 :start
 rem Get data
 python main_v5.py
 
-timeout 1200
+timeout 3600
 goto start
