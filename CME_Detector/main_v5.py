@@ -177,20 +177,12 @@ def processimages(listofimages, storage_folder, images_folder):
             hourimage = testimage
 
 
-
-def parseimages(listofimages, variables):
-    returnlist = []
-
-    j = variables["hour"].split("_")
-    currenthour = filehour_converter(j[0], j[1])
-
-    for item in listofimages:
-        i = item.split("_")
-        t = filehour_converter(j[0], j[1])
-        if t > currenthour:
-            returnlist.append(item)
-            variables["hour"] = item
-    return returnlist
+def parseimages(listofimages, imagestore):
+    set_downloads = set(listofimages)
+    stored = os.listdir(imagestore)
+    set_stored = set(stored)
+    newfiles = set_downloads.difference(set_stored)
+    return newfiles
 
 
 def downloadimages(listofimages, storagelocation):
@@ -216,8 +208,7 @@ if __name__ == "__main__":
     # if we dont have a pkl file, create one with default values.
     if os.path.exists(saved_variables) is False:
         variables = {
-            "hour": "20001010_1010_c3_1024.jpg",
-            "epoch": "20001010"
+            "epoch": "20210519"
         }
         save_values(variables, saved_variables)
     else:
@@ -249,7 +240,9 @@ if __name__ == "__main__":
         print(onlinelist)
         listofimages = get_resource_from_url(onlinelist)
         listofimages = parse_text_fromURL(listofimages)
-        newimages = parseimages(listofimages, variables)
+
+        newimages = parseimages(listofimages, storage_folder)
+        print("New images: ", newimages)
 
         if len(newimages) > 0:
             # rings the terminal bell
@@ -260,7 +253,6 @@ if __name__ == "__main__":
         print(variables)
 
         variables["epoch"] = epoch
-        variables["hour"] = epoch + "_0000_c3_1024.jpg"
 
     if epoch == variables["epoch"]:
         ymd = variables["epoch"]
@@ -269,7 +261,9 @@ if __name__ == "__main__":
         print(onlinelist)
         listofimages = get_resource_from_url(onlinelist)
         listofimages = parse_text_fromURL(listofimages)
-        newimages = parseimages(listofimages, variables)
+
+        newimages = parseimages(listofimages, storage_folder)
+        print("New images: ", newimages)
 
         if len(newimages) > 0:
             downloadimages(newimages, storage_folder)
@@ -280,7 +274,6 @@ if __name__ == "__main__":
 
     # get a list of the current stored images.
     dirlisting = os.listdir(storage_folder)
-    print(dirlisting)
     # process the stored images so far to get latest diffs
     processimages(dirlisting, storage_folder, images_folder)
     print("Finished processing.")
