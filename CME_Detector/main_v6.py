@@ -205,59 +205,79 @@ if __name__ == "__main__":
     if os.path.exists(storage_folder) is False:
         os.makedirs(storage_folder)
 
-    # if we dont have a pkl file, create one with default values.
-    if os.path.exists(saved_variables) is False:
-        variables = {
-            "epoch": "20210521"
-        }
-        save_values(variables, saved_variables)
-    else:
-        variables = load_values(saved_variables)
-    tm = int(time.time())
+    # # if we dont have a pkl file, create one with default values.
+    # if os.path.exists(saved_variables) is False:
+    #     variables = {
+    #         "epoch": "20210521"
+    #     }
+    #     save_values(variables, saved_variables)
+    # else:
+    #     variables = load_values(saved_variables)
 
-    # These need to be stored in program variables dictionary
-    epoch = posix2utc(tm, "%Y%m%d")
+    tm = int(time.time())
+    ymd = posix2utc(tm, "%Y%m%d")
     year = posix2utc(tm, "%Y")
 
-    if epoch > variables["epoch"]:
-        print("old epoch, update variables")
-        ymd = variables["epoch"]
-        baseURL = "https://soho.nascom.nasa.gov/data/REPROCESSING/Completed/" + year + "/c3/" + ymd + "/"
-        onlinelist = baseURL + ".full_1024.lst"
-        print(onlinelist)
-        listofimages = get_resource_from_url(onlinelist)
-        listofimages = parse_text_fromURL(listofimages)
+    # if epoch > variables["epoch"]:
+    print("Current epoch")
+    # ymd = variables["epoch"]
+    baseURL = "https://soho.nascom.nasa.gov/data/REPROCESSING/Completed/" + year + "/c3/" + ymd + "/"
+    onlinelist = baseURL + ".full_1024.lst"
+    print(onlinelist)
+    listofimages = get_resource_from_url(onlinelist)
+    listofimages = parse_text_fromURL(listofimages)
 
-        newimages = parseimages(listofimages, storage_folder)
-        print("New images: ", newimages)
+    newimages = parseimages(listofimages, storage_folder)
+    print("New images: ", newimages)
 
-        if len(newimages) > 0:
-            # rings the terminal bell
-            print("\a")
-            downloadimages(newimages, storage_folder)
+    if len(newimages) > 0:
+        # rings the terminal bell
+        print("\a")
+        downloadimages(newimages, storage_folder)
 
-        print(newimages)
-        print(variables)
-
-        variables["epoch"] = epoch
-
-    if epoch == variables["epoch"]:
-        ymd = variables["epoch"]
-        baseURL = "https://soho.nascom.nasa.gov/data/REPROCESSING/Completed/" + year + "/c3/" + ymd + "/"
-        onlinelist = baseURL + ".full_1024.lst"
-        print(onlinelist)
-        listofimages = get_resource_from_url(onlinelist)
-        listofimages = parse_text_fromURL(listofimages)
-
-        newimages = parseimages(listofimages, storage_folder)
-        print("New images: ", newimages)
-
-        if len(newimages) > 0:
-            downloadimages(newimages, storage_folder)
-
-    # we save here as there could be updates to the hour variable
-    save_values(variables, saved_variables)
+    print(newimages)
     print(variables)
+
+    # Parse for old epoch files that have been added
+    print("Old epoch")
+    # ymd = variables["epoch"]
+    ymd = str(int(ymd) - 1)
+    baseURL = "https://soho.nascom.nasa.gov/data/REPROCESSING/Completed/" + year + "/c3/" + ymd + "/"
+    onlinelist = baseURL + ".full_1024.lst"
+    print(onlinelist)
+    listofimages = get_resource_from_url(onlinelist)
+    listofimages = parse_text_fromURL(listofimages)
+
+    newimages = parseimages(listofimages, storage_folder)
+    print("New images: ", newimages)
+
+    if len(newimages) > 0:
+        # rings the terminal bell
+        print("\a")
+        downloadimages(newimages, storage_folder)
+
+    print(newimages)
+    print(variables)
+
+    #     variables["epoch"] = epoch
+    #
+    # if epoch == variables["epoch"]:
+    #     ymd = variables["epoch"]
+    #     baseURL = "https://soho.nascom.nasa.gov/data/REPROCESSING/Completed/" + year + "/c3/" + ymd + "/"
+    #     onlinelist = baseURL + ".full_1024.lst"
+    #     print(onlinelist)
+    #     listofimages = get_resource_from_url(onlinelist)
+    #     listofimages = parse_text_fromURL(listofimages)
+    #
+    #     newimages = parseimages(listofimages, storage_folder)
+    #     print("New images: ", newimages)
+    #
+    #     if len(newimages) > 0:
+    #         downloadimages(newimages, storage_folder)
+
+    # # we save here as there could be updates to the hour variable
+    # save_values(variables, saved_variables)
+    # print(variables)
 
     # get a list of the current stored images.
     dirlisting = os.listdir(storage_folder)
