@@ -219,6 +219,10 @@ def cme_detect(done_images, imagesfolder):
 
             mask = np.zeros_like(img_old)
             mask[..., 1] = 255
+
+            print("img1 len: ", len(img_old))
+            print("img2 len: ", len(img_new))
+
             flow = cv2.calcOpticalFlowFarneback(img_old, img_new, None, 0.5, 3, 15, 3, 5, 1.2, 0)
             mag, ang = cv2.cartToPolar(flow[..., 0], flow[..., 1])
             mask[..., 0] = ang * 180 / np.pi / 2
