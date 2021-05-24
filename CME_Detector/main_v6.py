@@ -205,11 +205,17 @@ def downloadimages(listofimages, storagelocation):
 
 def cme_detect(done_images, imagesfolder):
     if len(done_images) > 1:
-        for i in range(1, len(done_images)):
-            filename = imagesfolder + "/" + done_images[i - 1]
-            img_old = image_load(filename)
-            filename = imagesfolder + "/" + done_images[i]
-            img_new = image_load(filename)
+        for i in range(1, len(done_images) - 1):
+            file_old = imagesfolder + "/" + done_images[i - 1]
+            img_old = image_load(file_old)
+
+            file_new = imagesfolder + "/" + done_images[i]
+            img_new = image_load(file_new)
+
+            # cv2.imshow("Old", img_old)
+            # cv2.waitKey()
+            # cv2.imshow("New", img_new)
+            # cv2.waitKey()
 
             mask = np.zeros_like(img_old)
             mask[..., 1] = 255
