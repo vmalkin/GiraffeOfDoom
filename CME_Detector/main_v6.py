@@ -9,6 +9,7 @@ import calendar
 
 
 def get_resource_from_url(url_to_get):
+    response = ""
     try:
         request = urllib.request.Request(url_to_get, headers={'User-Agent': 'Mozilla/5.0'})
         response = urllib.request.urlopen(request, timeout=10)
@@ -17,7 +18,10 @@ def get_resource_from_url(url_to_get):
         # logging.error("Unable to load/save image from URL: " + str(imageurl) + " " + str(filename))
         print("unable to load URL")
         print(url_to_get)
-        response = ""
+
+    # finally:
+    #     print("Unable to get any further data from URL: ", url_to_get)
+
     return response
 
 
@@ -76,32 +80,35 @@ def erode_dilate_img(image_to_process):
     # Erode and Dilate the image to clear up noise
     # Erosion will trim away pixels (noise)
     # dilation puffs out edges
-    kernel1 = np.ones((2, 2), np.uint8)
+    kernel1 = np.ones((3, 3), np.uint8)
     outputimg = cv2.erode(image_to_process, kernel1, iterations=1)
-    kernel2 = np.ones((1, 1), np.uint8)
+    kernel2 = np.ones((3, 3), np.uint8)
     outputimg = cv2.dilate(outputimg, kernel2, iterations=1)
     return outputimg
 
 
-def add_stamp(image_object):
+def add_stamp(image_object, filename):
     cv2. rectangle(image_object, (0, 900), (1024,1024), (255,255,255), -1 )
     colour = (0, 0, 0)
     font = cv2.FONT_HERSHEY_SIMPLEX
     font_size = 1.0
     font_color = colour
     font_thickness = 2
-    banner = 'DunedinAurora.NZ - CME Detection Project 2021.'
+    banner = 'DunedinAurora.NZ - CME Detection.'
     x, y = 10, 925
     cv2.putText(image_object, banner, (x, y), font, font_size, font_color, font_thickness, cv2.LINE_AA)
 
     font_size = 0.7
     font_color = colour
     font_thickness = 1
-    banner = 'Courtesy of SOHO/LASCO consortium. SOHO is a project of'
+    banner = filename
     x, y = 10, 950
     cv2.putText(image_object, banner, (x, y), font, font_size, font_color, font_thickness, cv2.LINE_AA)
-    banner = 'international cooperation between ESA and NASA'
+    banner = 'Courtesy of SOHO/LASCO consortium. SOHO is a project of'
     x, y = 10, 975
+    cv2.putText(image_object, banner, (x, y), font, font_size, font_color, font_thickness, cv2.LINE_AA)
+    banner = 'international cooperation between ESA and NASA'
+    x, y = 10, 1000
     cv2.putText(image_object, banner, (x, y), font, font_size, font_color, font_thickness, cv2.LINE_AA)
 
 
@@ -137,6 +144,10 @@ def processimages(listofimages, storage_folder, images_folder):
             img_og = greyscale_img(img_1)
             img_ng = greyscale_img(img_2)
 
+            # # Equalise the images
+            # img_og = cv2.equalizeHist(img_og)
+            # img_ng = cv2.equalizeHist(img_ng)
+
             img_oe = erode_dilate_img(img_og)
             img_ne = erode_dilate_img(img_ng)
 
@@ -151,23 +162,20 @@ def processimages(listofimages, storage_folder, images_folder):
 
             # Adjust contrast and brightness
             d = new_image.copy()
+            # alpha = 1.2
+            # beta = -64
             alpha = 1.2
-            beta = -64
+            beta = -20
             new_image = cv2.convertScaleAbs(d, alpha=alpha, beta=beta)
 
             # a gaussian Filter
             new_image = cv2.GaussianBlur(new_image,(5,5), 1)
 
-            # # detect blobs!
-            # detector = cv2.SimpleBlobDetector_create()
-            # keypoints = detector.detect(new_image)
-            # im_with_keypoints = cv2.drawKeypoints(new_image, keypoints, np.array([]), (0, 255, 255), cv2.DRAW_MATCHES_FLAGS_DEFAULT)
-            # new_image = im_with_keypoints
-            # # turn into false colour
-            new_image = cv2.applyColorMap(new_image, cv2.COLORMAP_TWILIGHT)
+
+            # new_image = cv2.applyColorMap(new_image, cv2.COLORMAP_TWILIGHT)
 
             # Save the difference image into the images folder
-            add_stamp(new_image)
+            add_stamp(new_image, hourimage)
             fname = images_folder + "/" + listofimages[i]
             image_save(fname, new_image)
             print("Difference file created..." + fname)
@@ -187,11 +195,32 @@ def parseimages(listofimages, imagestore):
 
 def downloadimages(listofimages, storagelocation):
     for img in listofimages:
-        img1url = baseURL + img
-        response1 = get_resource_from_url(img1url)
         file = storagelocation + "/" + img
-        print("Saving file ", file)
-        parse_image_fromURL(response1, file)
+        img1url = baseURL + img
+        if os.path.exists(file) is False:
+            response1 = get_resource_from_url(img1url)
+            print("Saving file ", file)
+            parse_image_fromURL(response1, file)
+
+
+def cme_detect(done_images, imagesfolder):
+    if len(done_images) > 1:
+        for i in range(1, len(done_images)):
+            filename = imagesfolder + "/" + done_images[i - 1]
+            img_old = image_load(filename)
+            filename = imagesfolder + "/" + done_images[i]
+            img_new = image_load(filename)
+
+            mask = np.zeros_like(img_old)
+            mask[..., 1] = 255
+            flow = cv2.calcOpticalFlowFarneback(img_old, img_new, None, 0.5, 3, 15, 3, 5, 1.2, 0)
+            mag, ang = cv2.cartToPolar(flow[..., 0], flow[..., 1])
+            mask[..., 0] = ang * 180 / np.pi / 2
+            mask[..., 2] = cv2.normalize(mag, None, 0, 255, cv2.NORM_MINMAX)
+            bgr = cv2.cvtColor(mask, cv2.COLOR_HSV2BGR)
+
+            fname = imagesfolder + "/" + "cme_" + str(i) + ".jpg"
+            image_save(fname, bgr)
 
 
 if __name__ == "__main__":
@@ -205,22 +234,11 @@ if __name__ == "__main__":
     if os.path.exists(storage_folder) is False:
         os.makedirs(storage_folder)
 
-    # # if we dont have a pkl file, create one with default values.
-    # if os.path.exists(saved_variables) is False:
-    #     variables = {
-    #         "epoch": "20210521"
-    #     }
-    #     save_values(variables, saved_variables)
-    # else:
-    #     variables = load_values(saved_variables)
-
     tm = int(time.time())
     ymd = posix2utc(tm, "%Y%m%d")
     year = posix2utc(tm, "%Y")
 
-    # if epoch > variables["epoch"]:
     print("Current epoch")
-    # ymd = variables["epoch"]
     baseURL = "https://soho.nascom.nasa.gov/data/REPROCESSING/Completed/" + year + "/c3/" + ymd + "/"
     onlinelist = baseURL + ".full_1024.lst"
     print(onlinelist)
@@ -259,28 +277,13 @@ if __name__ == "__main__":
     print(newimages)
     print(variables)
 
-    #     variables["epoch"] = epoch
-    #
-    # if epoch == variables["epoch"]:
-    #     ymd = variables["epoch"]
-    #     baseURL = "https://soho.nascom.nasa.gov/data/REPROCESSING/Completed/" + year + "/c3/" + ymd + "/"
-    #     onlinelist = baseURL + ".full_1024.lst"
-    #     print(onlinelist)
-    #     listofimages = get_resource_from_url(onlinelist)
-    #     listofimages = parse_text_fromURL(listofimages)
-    #
-    #     newimages = parseimages(listofimages, storage_folder)
-    #     print("New images: ", newimages)
-    #
-    #     if len(newimages) > 0:
-    #         downloadimages(newimages, storage_folder)
-
-    # # we save here as there could be updates to the hour variable
-    # save_values(variables, saved_variables)
-    # print(variables)
-
     # get a list of the current stored images.
     dirlisting = os.listdir(storage_folder)
     # process the stored images so far to get latest diffs
     processimages(dirlisting, storage_folder, images_folder)
+    
+    # Process enhanced images to test for CME
+    done_images = os.listdir(images_folder)
+    cme_detect(done_images, images_folder)
+    
     print("Finished processing.")
