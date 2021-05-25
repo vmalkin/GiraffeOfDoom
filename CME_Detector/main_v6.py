@@ -80,10 +80,10 @@ def erode_dilate_img(image_to_process):
     # Erode and Dilate the image to clear up noise
     # Erosion will trim away pixels (noise)
     # dilation puffs out edges
-    kernel1 = np.ones((3, 3), np.uint8)
+    kernel1 = np.ones((1, 1), np.uint8)
     outputimg = cv2.erode(image_to_process, kernel1, iterations=1)
     kernel2 = np.ones((3, 3), np.uint8)
-    outputimg = cv2.dilate(outputimg, kernel2, iterations=1)
+    # outputimg = cv2.dilate(outputimg, kernel2, iterations=1)
     return outputimg
 
 
@@ -144,35 +144,43 @@ def processimages(listofimages, storage_folder, images_folder):
             img_og = greyscale_img(img_1)
             img_ng = greyscale_img(img_2)
 
-            # # Equalise the images
-            # img_og = cv2.equalizeHist(img_og)
-            # img_ng = cv2.equalizeHist(img_ng)
+            # convert image to a single channel
+            img_ng = cv2.split(img_ng)
+            img_og = cv2.split(img_og)
+            img_ng = img_ng[0]
+            img_og = img_og[0]
 
-            img_oe = erode_dilate_img(img_og)
-            img_ne = erode_dilate_img(img_ng)
+            # img_og = erode_dilate_img(img_og)
+            # img_ng = erode_dilate_img(img_ng)
+
+            # # a gaussian Filter
+            # k = 5
+            # img_ng = cv2.GaussianBlur(img_ng,(k, k), cv2.BORDER_DEFAULT)
+            # img_og = cv2.GaussianBlur(img_og, (k, k), cv2.BORDER_DEFAULT)
+
+            # improved histogram function
+            clahe = cv2.createCLAHE(clipLimit=2, tileGridSize=(5,5))
+            img_og = clahe.apply(img_og)
+            img_ng = clahe.apply(img_ng)
 
             # unary operator to invert the image
-            img_ne = ~img_ne
+            img_ng = ~img_ng
 
             # combine the images to highlight differences
-            alpha = 1.1
+            alpha = 1.2
             gamma = 0
-            new_image = img_ne.copy()
-            cv2.addWeighted(img_ne, alpha, img_oe, 1 - alpha, gamma, new_image)
+            new_image = img_ng.copy()
+            cv2.addWeighted(img_ng, alpha, img_og, 1 - alpha, gamma, new_image)
 
             # Adjust contrast and brightness
             d = new_image.copy()
-            # alpha = 1.2
-            # beta = -64
             alpha = 1.2
-            beta = -20
+            beta = -50
+            # alpha = 1.2
+            # beta = -30
             new_image = cv2.convertScaleAbs(d, alpha=alpha, beta=beta)
 
-            # a gaussian Filter
-            new_image = cv2.GaussianBlur(new_image,(5,5), 1)
-
-
-            # new_image = cv2.applyColorMap(new_image, cv2.COLORMAP_TWILIGHT)
+            new_image = cv2.applyColorMap(new_image, cv2.COLORMAP_BONE)
 
             # Save the difference image into the images folder
             add_stamp(new_image, hourimage)
@@ -203,8 +211,13 @@ def downloadimages(listofimages, storagelocation):
             parse_image_fromURL(response1, file)
 
 
-def cme_detect(done_images, imagesfolder):
+def cme_detect_farneback(done_images, imagesfolder):
     if len(done_images) > 1:
+        filename = imagesfolder + "/" + done_images[0]
+        img = image_load(filename)
+        hsv = np.zeros_like(img)
+        hsv[..., 1] = 255
+
         for i in range(1, len(done_images) - 1):
             file_old = imagesfolder + "/" + done_images[i - 1]
             img_old = image_load(file_old)
@@ -212,25 +225,32 @@ def cme_detect(done_images, imagesfolder):
             file_new = imagesfolder + "/" + done_images[i]
             img_new = image_load(file_new)
 
-            # cv2.imshow("Old", img_old)
-            # cv2.waitKey()
-            # cv2.imshow("New", img_new)
-            # cv2.waitKey()
+            # convert image to a single channel
+            img_new = cv2.split(img_new)
+            img_old = cv2.split(img_old)
+            img_new = img_new[0]
+            img_old = img_old[0]
 
-            mask = np.zeros_like(img_old)
-            mask[..., 1] = 255
-
-            print("img1 len: ", len(img_old))
-            print("img2 len: ", len(img_new))
-
-            flow = cv2.calcOpticalFlowFarneback(img_old, img_new, None, 0.5, 3, 15, 3, 5, 1.2, 0)
+            flow = cv2.calcOpticalFlowFarneback(img_old, img_new, None, 0.5, 3, 15, 3, 7, 1.5, 0)
             mag, ang = cv2.cartToPolar(flow[..., 0], flow[..., 1])
-            mask[..., 0] = ang * 180 / np.pi / 2
-            mask[..., 2] = cv2.normalize(mag, None, 0, 255, cv2.NORM_MINMAX)
-            bgr = cv2.cvtColor(mask, cv2.COLOR_HSV2BGR)
+            hsv[..., 0] = ang * 180 / np.pi / 2
+            hsv[..., 2] = cv2.normalize(mag, None, 0, 255, cv2.NORM_MINMAX)
+            bgr = cv2.cvtColor(hsv, cv2.COLOR_HSV2BGR)
+
+            # new_image = cv2.applyColorMap(bgr, cv2.COLORMAP_HSV)
 
             fname = imagesfolder + "/" + "cme_" + str(i) + ".jpg"
             image_save(fname, bgr)
+
+
+def cme_detection_lucask(done_images, imagesfolder):
+    if len(done_images) > 1:
+        filename = imagesfolder + "/" + done_images[0]
+        img = image_load(filename)
+        hsv = np.zeros_like(img)
+        hsv[..., 1] = 255
+
+
 
 
 if __name__ == "__main__":
@@ -292,8 +312,8 @@ if __name__ == "__main__":
     # process the stored images so far to get latest diffs
     processimages(dirlisting, storage_folder, images_folder)
     
-    # Process enhanced images to test for CME
-    done_images = os.listdir(images_folder)
-    cme_detect(done_images, images_folder)
+    # # Process enhanced images to test for CME
+    # done_images = os.listdir(images_folder)
+    # cme_detect_farneback(done_images, images_folder)
     
     print("Finished processing.")
