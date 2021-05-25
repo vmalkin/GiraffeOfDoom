@@ -80,10 +80,10 @@ def erode_dilate_img(image_to_process):
     # Erode and Dilate the image to clear up noise
     # Erosion will trim away pixels (noise)
     # dilation puffs out edges
-    kernel1 = np.ones((1, 1), np.uint8)
+    kernel1 = np.ones((3, 3), np.uint8)
     outputimg = cv2.erode(image_to_process, kernel1, iterations=1)
     kernel2 = np.ones((3, 3), np.uint8)
-    # outputimg = cv2.dilate(outputimg, kernel2, iterations=1)
+    outputimg = cv2.dilate(outputimg, kernel2, iterations=1)
     return outputimg
 
 
@@ -153,11 +153,6 @@ def processimages(listofimages, storage_folder, images_folder):
             # img_og = erode_dilate_img(img_og)
             # img_ng = erode_dilate_img(img_ng)
 
-            # # a gaussian Filter
-            # k = 5
-            # img_ng = cv2.GaussianBlur(img_ng,(k, k), cv2.BORDER_DEFAULT)
-            # img_og = cv2.GaussianBlur(img_og, (k, k), cv2.BORDER_DEFAULT)
-
             # improved histogram function
             clahe = cv2.createCLAHE(clipLimit=2, tileGridSize=(5,5))
             img_og = clahe.apply(img_og)
@@ -181,6 +176,11 @@ def processimages(listofimages, storage_folder, images_folder):
             new_image = cv2.convertScaleAbs(d, alpha=alpha, beta=beta)
 
             new_image = cv2.applyColorMap(new_image, cv2.COLORMAP_BONE)
+
+            # # a gaussian Filter
+            k = 5
+            # img_ng = cv2.GaussianBlur(img_ng,(k, k), cv2.BORDER_DEFAULT)
+            # new_image = cv2.GaussianBlur(new_image, (k, k), cv2.BORDER_DEFAULT)
 
             # Save the difference image into the images folder
             add_stamp(new_image, hourimage)
@@ -312,7 +312,7 @@ if __name__ == "__main__":
     # process the stored images so far to get latest diffs
     processimages(dirlisting, storage_folder, images_folder)
     
-    # # Process enhanced images to test for CME
+    # Process enhanced images to test for CME
     # done_images = os.listdir(images_folder)
     # cme_detect_farneback(done_images, images_folder)
     
