@@ -300,11 +300,11 @@ if __name__ == "__main__":
     hours.append("Now ")
     plot(data, hours, colours)
 
-    # # # Create social media alert
-    # alertmessage = process_socialmedia_alerts(data, hours)
-    # if len(alertmessage) > 0:
-    #     print(alertmessage)
-    #     create_alert(alertmessage)
+    # # Create social media alert
+    alertmessage = process_socialmedia_alerts(data, hours)
+    if len(alertmessage) > 0:
+        print(alertmessage)
+        create_alert(alertmessage)
 
     # Create data for the DnA dashboard
     dashb_msg = process_dashboard(data)

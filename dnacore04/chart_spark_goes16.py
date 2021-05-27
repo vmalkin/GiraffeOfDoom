@@ -353,13 +353,13 @@ if __name__ == "__main__":
         hours.pop(len(hours)-1)
         hours.append("Now ")
 
-        # # Create an alert if hourly values go over 3-sigma
-        # alertmessage = processalerts(processed_query, median_mean, median_sigma)
-        # if len(alertmessage) > 0:
-        #     print(alertmessage)
-        #     if len(list_of_sigmas) < 400:
-        #         alertmessage = alertmessage + "\nComputer is refining threshold values"
-        #     create_alert(alertmessage)
+        # Create an alert if hourly values go over 3-sigma
+        alertmessage = processalerts(processed_query, median_mean, median_sigma)
+        if len(alertmessage) > 0:
+            print(alertmessage)
+            if len(list_of_sigmas) < 400:
+                alertmessage = alertmessage + "\nComputer is refining threshold values"
+            create_alert(alertmessage)
 
         # Create data for the DnA dashboard
         dashb_msg = process_dashboard(processed_query, median_mean, median_sigma)
