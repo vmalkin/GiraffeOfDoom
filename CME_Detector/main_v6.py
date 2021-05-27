@@ -313,7 +313,7 @@ if __name__ == "__main__":
     processimages(dirlisting, storage_folder, images_folder)
     
     # Process enhanced images to test for CME
-    # done_images = os.listdir(images_folder)
-    # cme_detect_farneback(done_images, images_folder)
+    done_images = os.listdir(images_folder)
+    cme_detect_farneback(done_images, images_folder)
     
     print("Finished processing.")
