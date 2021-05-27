@@ -243,13 +243,13 @@ def processalerts(processed_query, median_mean, median_sigma):
     k = len(processed_query)-1
     nowdata = processed_query[k][1]
 
-    if nowdata <= median_mean + (median_sigma * 3 * scaling_factor):
+    if nowdata <= median_mean + (median_sigma * 4 * scaling_factor):
         returnvalue = plot_title + ": Geomagnetic activity has been quiet in the last 60 mins."
-    if nowdata > median_mean + (median_sigma * 3 * scaling_factor):
-        returnvalue = plot_title + ": Geomagnetic activity has been unsettled in the last 60 mins."
     if nowdata > median_mean + (median_sigma * 4 * scaling_factor):
+        returnvalue = plot_title + ": Geomagnetic activity has been unsettled in the last 60 mins."
+    if nowdata > median_mean + (median_sigma * 6 * scaling_factor):
         returnvalue = plot_title + ": Geomagnetic activity has been moderate in the last 60 mins."
-    if nowdata > median_mean + (median_sigma * 5 * scaling_factor):
+    if nowdata > median_mean + (median_sigma * 7 * scaling_factor):
         returnvalue = plot_title + ": Geomagnetic activity has been STRONG in the last 60 mins."
 
     for item in processed_query:
@@ -258,11 +258,11 @@ def processalerts(processed_query, median_mean, median_sigma):
         dt = dt[0]+"hrs"
         value = item[1]
         r=""
-        if value >= median_mean + (median_sigma * 3 * scaling_factor):
+        if value >= median_mean + (median_sigma * 4 * scaling_factor):
             r = "\n" + dt + " UTC: " + "Unsettled activity detected."
-        if value > median_mean + (median_sigma * 4 * scaling_factor):
+        if value > median_mean + (median_sigma * 6 * scaling_factor):
             r = "\n" + dt + " UTC: " + "moderate activity detected."
-        if value > median_mean + (median_sigma * 5 * scaling_factor):
+        if value > median_mean + (median_sigma * 7 * scaling_factor):
             r = "\n" + dt + " UTC: " + "STRONG activity detected."
         returnvalue = returnvalue + r
 
@@ -274,13 +274,13 @@ def process_dashboard(processed_query, median_mean, median_sigma):
     k = len(processed_query)-1
     nowdata = processed_query[k][1]
 
-    if nowdata <= median_mean + (median_sigma * 3 * scaling_factor):
-        returnvalue = "low"
-    if nowdata > median_mean + (median_sigma * 3 * scaling_factor):
+    if nowdata <= median_mean + (median_sigma * 4 * scaling_factor):
         returnvalue = "low"
     if nowdata > median_mean + (median_sigma * 4 * scaling_factor):
+        returnvalue = "low"
+    if nowdata > median_mean + (median_sigma * 6 * scaling_factor):
         returnvalue = "med"
-    if nowdata > median_mean + (median_sigma * 5 * scaling_factor):
+    if nowdata > median_mean + (median_sigma * 7 * scaling_factor):
         returnvalue = "high"
     return returnvalue
 
