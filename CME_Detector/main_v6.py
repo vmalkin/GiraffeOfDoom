@@ -6,6 +6,7 @@ import os
 import cv2
 import numpy as np
 import calendar
+import glob
 
 
 def get_resource_from_url(url_to_get):
@@ -128,6 +129,7 @@ def processimages(listofimages, storage_folder, images_folder):
     t = listofimages[0].split("_")
     hourcount = filehour_converter(t[0], t[1])
     hourimage = listofimages[0]
+    mask = create_polar_mask(hourimage)
 
     for i in range(0, len(listofimages)):
         # split the name
@@ -144,6 +146,10 @@ def processimages(listofimages, storage_folder, images_folder):
             img_og = greyscale_img(img_1)
             img_ng = greyscale_img(img_2)
 
+            # add mask.
+            img_og = cv2.bitwise_and(img_og, mask, mask=mask)
+            img_ng = cv2.bitwise_and(img_ng, mask, mask=mask)
+
             # convert image to a single channel
             img_ng = cv2.split(img_ng)
             img_og = cv2.split(img_og)
@@ -154,9 +160,11 @@ def processimages(listofimages, storage_folder, images_folder):
             # img_ng = erode_dilate_img(img_ng)
 
             # improved histogram function
-            clahe = cv2.createCLAHE(clipLimit=2, tileGridSize=(5,5))
+            clahe = cv2.createCLAHE(clipLimit=3, tileGridSize=(5,5))
             img_og = clahe.apply(img_og)
             img_ng = clahe.apply(img_ng)
+            # cv2.equalizeHist(img_og, img_og)
+            # cv2.equalizeHist(img_ng, img_ng)
 
             # unary operator to invert the image
             img_ng = ~img_ng
@@ -211,18 +219,36 @@ def downloadimages(listofimages, storagelocation):
             parse_image_fromURL(response1, file)
 
 
+def create_polar_mask(image):
+    print(image)
+    img = np.zeros((1024, 1024), np.uint8)
+    colour = (255, 255, 255)
+    triangle = [(0, 0), (0, 1023), (512,512)]
+    cv2.fillPoly(img, np.array([triangle]), colour)
+
+    triangle = [(512,512), (1023, 0), (1023,1023)]
+    cv2.fillPoly(img, np.array([triangle]), colour)
+
+    cv2.circle(img, (512, 512), 80, colour, -1)
+    img = ~img
+    return img
+
+
 def cme_detect_farneback(done_images, imagesfolder):
     if len(done_images) > 1:
-        filename = imagesfolder + "/" + done_images[0]
+        # filename = imagesfolder + "/" + done_images[0]
+        filename = done_images[0]
         img = image_load(filename)
         hsv = np.zeros_like(img)
         hsv[..., 1] = 255
 
         for i in range(1, len(done_images) - 1):
-            file_old = imagesfolder + "/" + done_images[i - 1]
+            # file_old = imagesfolder + "/" + done_images[i - 1]
+            file_old = done_images[i - 1]
             img_old = image_load(file_old)
 
-            file_new = imagesfolder + "/" + done_images[i]
+            # file_new = imagesfolder + "/" + done_images[i]
+            file_new = done_images[i]
             img_new = image_load(file_new)
 
             # convert image to a single channel
@@ -238,8 +264,10 @@ def cme_detect_farneback(done_images, imagesfolder):
             bgr = cv2.cvtColor(hsv, cv2.COLOR_HSV2BGR)
 
             # new_image = cv2.applyColorMap(bgr, cv2.COLORMAP_HSV)
-
-            fname = imagesfolder + "/" + "cme_" + str(i) + ".jpg"
+            nom = done_images[i].split("\\")
+            nom = nom[1].split("_")
+            f = "cme_" + nom[0] + "_" + nom[1] + ".jpg"
+            fname = imagesfolder + "/" + f
             image_save(fname, bgr)
 
 
@@ -312,8 +340,10 @@ if __name__ == "__main__":
     # process the stored images so far to get latest diffs
     processimages(dirlisting, storage_folder, images_folder)
     
-    # Process enhanced images to test for CME
-    # done_images = os.listdir(images_folder)
+    # # Process enhanced images to test for CME
+    # # done_images = os.listdir(images_folder)
+    # filepath = images_folder + "//20*.jpg"
+    # done_images = glob.glob(filepath)
     # cme_detect_farneback(done_images, images_folder)
     
     print("Finished processing.")
