@@ -327,7 +327,7 @@ def create_polar_mask(image):
 def calc_median(array):
     temp = []
     temp.append(array[0])
-    u = None
+    u = 0
     for i in range(1, len(array) - 1):
         t = [array[i - 1], array[i], array[i + 1]]
         u = median(t)
@@ -405,7 +405,7 @@ if __name__ == "__main__":
     # Parse for old epoch files that have been added
     print("Old epoch")
     ymd = str(int(ymd) - 1)
-    # ymd = "20210523"
+    # ymd = "20210528"
     baseURL = "https://soho.nascom.nasa.gov/data/REPROCESSING/Completed/" + year + "/c3/" + ymd + "/"
     onlinelist = baseURL + ".full_1024.lst"
     print(onlinelist)
