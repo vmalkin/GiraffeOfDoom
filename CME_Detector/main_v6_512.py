@@ -367,11 +367,9 @@ def plot_chart(pixels):
 
 
 if __name__ == "__main__":
-    images_folder = "images"
-    storage_folder = "lasco_store"
-    analysis_folder = "analysis"
-    saved_variables = "variables.pkl"
-    variables = None
+    images_folder = "images_512"
+    storage_folder = "lasco_store_512"
+    analysis_folder = "analysis_512"
 
     if os.path.exists(images_folder) is False:
         os.makedirs(images_folder)
@@ -386,7 +384,7 @@ if __name__ == "__main__":
 
     print("Current epoch")
     baseURL = "https://soho.nascom.nasa.gov/data/REPROCESSING/Completed/" + year + "/c3/" + ymd + "/"
-    onlinelist = baseURL + ".full_1024.lst"
+    onlinelist = baseURL + ".full_512.lst"
     print(onlinelist)
     listofimages = get_resource_from_url(onlinelist)
     listofimages = parse_text_fromURL(listofimages)
@@ -400,14 +398,13 @@ if __name__ == "__main__":
         downloadimages(newimages, storage_folder)
 
     print(newimages)
-    print(variables)
 
     # Parse for old epoch files that have been added
     print("Old epoch")
     ymd = str(int(ymd) - 1)
     # ymd = "20210529"
     baseURL = "https://soho.nascom.nasa.gov/data/REPROCESSING/Completed/" + year + "/c3/" + ymd + "/"
-    onlinelist = baseURL + ".full_1024.lst"
+    onlinelist = baseURL + ".full_512.lst"
     print(onlinelist)
     listofimages = get_resource_from_url(onlinelist)
     listofimages = parse_text_fromURL(listofimages)
