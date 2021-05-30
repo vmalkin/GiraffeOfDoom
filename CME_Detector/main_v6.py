@@ -6,7 +6,7 @@ import os
 import cv2
 import numpy as np
 import calendar
-import glob
+import plotly.graph_objects as go
 
 
 def get_resource_from_url(url_to_get):
@@ -193,11 +193,10 @@ def processimages_analysis(listofimages, storage_folder, analysisfolder):
 
             # here we need to count pixels found in the north and south parts of the image to
             # determine if a CME halo is present
-
             count = countpixels(outputimg)
             dp = posix2utc(test_hourcount, '%Y-%m-%d %H:%M') + "," + str(count[0]) + "," + str(count[1])
+            # dp = [posix2utc(test_hourcount, '%Y-%m-%d %H:%M'),count[0], count[1]]
             pixelcount.append(dp)
-
 
             # Save the difference image into the images folder
             add_stamp(outputimg, hourimage)
@@ -358,6 +357,29 @@ def cme_detection_lucask(done_images, imagesfolder):
         hsv[..., 1] = 255
 
 
+def plot_chart(pixels):
+    xlabels = []
+    north = []
+    south = []
+
+    for item in pixels:
+        i = item.split(",")
+        xlabels.append(i[0])
+        north.append(int(i[1]))
+        south.append(int(i[2]))
+
+    print(north)
+    print(south)
+
+    fig = go.Figure()
+    fig.add_trace((go.Scatter(x=xlabels, y=south, mode="lines", name="South CMEs",
+                              line=dict(width=4, color="#000000"))))
+    fig.add_trace((go.Scatter(x=xlabels, y=north, mode="lines", name="North CMEs",
+                              line=dict(width=4, color="#ffffff"))))
+    fig.update_layout(plot_bgcolor="#808080", paper_bgcolor="rgba(0,0,0,0)")
+    fig.show()
+
+
 if __name__ == "__main__":
     images_folder = "images"
     storage_folder = "lasco_store"
@@ -424,8 +446,10 @@ if __name__ == "__main__":
     # process the stored images so far to get latest diffs
     processimages_display(dirlisting, storage_folder, images_folder)
     pixels = processimages_analysis(dirlisting, storage_folder, analysis_folder)
+    plot_chart(pixels)
 
     with open("pixelcount.csv", "w") as f:
+        f.write("UTC time, North, South\n")
         for line in pixels:
             f.write(line + "\n")
         f.close()
