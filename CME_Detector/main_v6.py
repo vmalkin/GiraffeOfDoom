@@ -7,7 +7,7 @@ import cv2
 import numpy as np
 import calendar
 import plotly.graph_objects as go
-
+from statistics import median
 
 def get_resource_from_url(url_to_get):
     response = ""
@@ -212,11 +212,11 @@ def processimages_analysis(listofimages, storage_folder, analysisfolder):
             # dp = [posix2utc(test_hourcount, '%Y-%m-%d %H:%M'),count[0], count[1]]
             pixelcount.append(dp)
 
-            # Save the difference image into the images folder
-            add_stamp(outputimg, hourimage)
-            fname = analysisfolder + "/" + listofimages[i]
-            image_save(fname, outputimg)
-            print("Polar CME image created..." + fname)
+            # # Save the difference image into the images folder
+            # add_stamp(outputimg, hourimage)
+            # fname = analysisfolder + "/" + listofimages[i]
+            # image_save(fname, outputimg)
+            # print("Polar CME image created..." + fname)
 
             # LASTLY.....
             hourcount = test_hourcount
@@ -280,7 +280,7 @@ def processimages_display(listofimages, storage_folder, images_folder):
             add_stamp(new_image, hourimage)
             fname = images_folder + "/" + listofimages[i]
             image_save(fname, new_image)
-            print("Display image created..." + fname)
+            # print("Display image created..." + fname)
 
             # LASTLY.....
             hourcount = test_hourcount
@@ -306,7 +306,6 @@ def downloadimages(listofimages, storagelocation):
 
 
 def create_polar_mask(image):
-    print(image)
     img = np.zeros((1024, 1024), np.uint8)
     colour = (255, 255, 255)
 
@@ -325,51 +324,16 @@ def create_polar_mask(image):
     return img
 
 
-# def cme_detect_farneback(done_images, imagesfolder):
-#     if len(done_images) > 1:
-#         # filename = imagesfolder + "/" + done_images[0]
-#         filename = done_images[0]
-#         img = image_load(filename)
-#         hsv = np.zeros_like(img)
-#         hsv[..., 1] = 255
-#
-#         for i in range(1, len(done_images) - 1):
-#             # file_old = imagesfolder + "/" + done_images[i - 1]
-#             file_old = done_images[i - 1]
-#             img_old = image_load(file_old)
-#
-#             # file_new = imagesfolder + "/" + done_images[i]
-#             file_new = done_images[i]
-#             img_new = image_load(file_new)
-#
-#             # convert image to a single channel
-#             img_new = cv2.split(img_new)
-#             img_old = cv2.split(img_old)
-#             img_new = img_new[0]
-#             img_old = img_old[0]
-#
-#             flow = cv2.calcOpticalFlowFarneback(img_old, img_new, None, 0.5, 3, 15, 3, 7, 1.5, 0)
-#             mag, ang = cv2.cartToPolar(flow[..., 0], flow[..., 1])
-#             hsv[..., 0] = ang * 180 / np.pi / 2
-#             hsv[..., 2] = cv2.normalize(mag, None, 0, 255, cv2.NORM_MINMAX)
-#             bgr = cv2.cvtColor(hsv, cv2.COLOR_HSV2BGR)
-#
-#             # new_image = cv2.applyColorMap(bgr, cv2.COLORMAP_HSV)
-#             nom = done_images[i].split("\\")
-#             nom = nom[1].split("_")
-#             f = "cme_" + nom[0] + "_" + nom[1] + ".jpg"
-#             fname = imagesfolder + "/" + f
-#             image_save(fname, bgr)
-#             print("Optical flow image created: ", fname)
-#
-#
-# def cme_detection_lucask(done_images, imagesfolder):
-#     if len(done_images) > 1:
-#         filename = imagesfolder + "/" + done_images[0]
-#         img = image_load(filename)
-#         hsv = np.zeros_like(img)
-#         hsv[..., 1] = 255
-
+def calc_median(array):
+    temp = []
+    temp.append(array[0])
+    u = None
+    for i in range(1, len(array) - 1):
+        t = [array[i - 1], array[i], array[i + 1]]
+        u = median(t)
+        temp.append(u)
+    temp.append(u)
+    return temp
 
 def plot_chart(pixels):
     xlabels = []
@@ -383,6 +347,10 @@ def plot_chart(pixels):
         north.append(int(i[1]))
         south.append(int(i[2]))
         total.append(int(i[3]))
+    north = calc_median(north)
+    south = calc_median(south)
+    total = calc_median(total)
+
 
     fig = go.Figure()
     fig.add_trace((go.Scatter(x=xlabels, y=total, mode="lines", name="Total CMEs",
@@ -436,7 +404,6 @@ if __name__ == "__main__":
 
     # Parse for old epoch files that have been added
     print("Old epoch")
-    # ymd = variables["epoch"]
     ymd = str(int(ymd) - 1)
     # ymd = "20210523"
     baseURL = "https://soho.nascom.nasa.gov/data/REPROCESSING/Completed/" + year + "/c3/" + ymd + "/"
@@ -453,14 +420,12 @@ if __name__ == "__main__":
         print("\a")
         downloadimages(newimages, storage_folder)
 
-    print(newimages)
-    print(variables)
-
     # get a list of the current stored images.
     dirlisting = os.listdir(storage_folder)
+
     # make sure they are in chronological order
     dirlisting.sort()
-    print(dirlisting)
+
     # process the stored images so far to get latest diffs
     processimages_display(dirlisting, storage_folder, images_folder)
     pixels = processimages_analysis(dirlisting, storage_folder, analysis_folder)
