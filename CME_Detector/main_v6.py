@@ -136,6 +136,11 @@ def countpixels(image):
     return [count_n, count_s]
 
 
+def countpixels_total(outputtotal):
+    count_t = (1024 * 1024) - cv2.countNonZero(outputtotal)
+    return count_t
+
+
 def processimages_analysis(listofimages, storage_folder, analysisfolder):
     t = listofimages[0].split("_")
     hourcount = filehour_converter(t[0], t[1])
@@ -165,6 +170,8 @@ def processimages_analysis(listofimages, storage_folder, analysisfolder):
 
             img_og = erode_dilate_img(img_og)
             img_ng = erode_dilate_img(img_ng)
+            img_to = img_og
+            img_tn = img_ng
 
             # add mask.
             img_ng = cv2.bitwise_and(img_ng, mask, mask=mask)
@@ -174,15 +181,20 @@ def processimages_analysis(listofimages, storage_folder, analysisfolder):
             clahe = cv2.createCLAHE(clipLimit=5, tileGridSize=(8,8))
             img_og = clahe.apply(img_og)
             img_ng = clahe.apply(img_ng)
+            img_to = clahe.apply(img_to)
+            img_tn = clahe.apply(img_tn)
 
             # unary operator to invert the image
             img_ng = ~img_ng
+            img_tn = ~img_tn
 
             # combine the images to highlight differences
             alpha = 1.2
             gamma = 0
             new_image = img_ng.copy()
+            new_total = img_tn.copy()
             cv2.addWeighted(img_ng, alpha, img_og, 1 - alpha, gamma, new_image)
+            cv2.addWeighted(img_tn, alpha, img_to, 1 - alpha, gamma, new_total)
 
             # Adjust contrast and brightness
             d = new_image.copy()
@@ -190,11 +202,13 @@ def processimages_analysis(listofimages, storage_folder, analysisfolder):
             beta = -50
             new_image = cv2.convertScaleAbs(d, alpha=alpha, beta=beta)
             ret, outputimg = cv2.threshold(new_image, 130, 255, cv2.THRESH_BINARY)
+            ret1, outputtotal = cv2.threshold(new_total, 130, 255, cv2.THRESH_BINARY)
 
             # here we need to count pixels found in the north and south parts of the image to
             # determine if a CME halo is present
             count = countpixels(outputimg)
-            dp = posix2utc(test_hourcount, '%Y-%m-%d %H:%M') + "," + str(count[0]) + "," + str(count[1])
+            count_total = countpixels_total(outputtotal)
+            dp = posix2utc(test_hourcount, '%Y-%m-%d %H:%M') + "," + str(count[0]) + "," + str(count[1]) + "," + str(count_total)
             # dp = [posix2utc(test_hourcount, '%Y-%m-%d %H:%M'),count[0], count[1]]
             pixelcount.append(dp)
 
@@ -311,73 +325,77 @@ def create_polar_mask(image):
     return img
 
 
-def cme_detect_farneback(done_images, imagesfolder):
-    if len(done_images) > 1:
-        # filename = imagesfolder + "/" + done_images[0]
-        filename = done_images[0]
-        img = image_load(filename)
-        hsv = np.zeros_like(img)
-        hsv[..., 1] = 255
-
-        for i in range(1, len(done_images) - 1):
-            # file_old = imagesfolder + "/" + done_images[i - 1]
-            file_old = done_images[i - 1]
-            img_old = image_load(file_old)
-
-            # file_new = imagesfolder + "/" + done_images[i]
-            file_new = done_images[i]
-            img_new = image_load(file_new)
-
-            # convert image to a single channel
-            img_new = cv2.split(img_new)
-            img_old = cv2.split(img_old)
-            img_new = img_new[0]
-            img_old = img_old[0]
-
-            flow = cv2.calcOpticalFlowFarneback(img_old, img_new, None, 0.5, 3, 15, 3, 7, 1.5, 0)
-            mag, ang = cv2.cartToPolar(flow[..., 0], flow[..., 1])
-            hsv[..., 0] = ang * 180 / np.pi / 2
-            hsv[..., 2] = cv2.normalize(mag, None, 0, 255, cv2.NORM_MINMAX)
-            bgr = cv2.cvtColor(hsv, cv2.COLOR_HSV2BGR)
-
-            # new_image = cv2.applyColorMap(bgr, cv2.COLORMAP_HSV)
-            nom = done_images[i].split("\\")
-            nom = nom[1].split("_")
-            f = "cme_" + nom[0] + "_" + nom[1] + ".jpg"
-            fname = imagesfolder + "/" + f
-            image_save(fname, bgr)
-            print("Optical flow image created: ", fname)
-
-
-def cme_detection_lucask(done_images, imagesfolder):
-    if len(done_images) > 1:
-        filename = imagesfolder + "/" + done_images[0]
-        img = image_load(filename)
-        hsv = np.zeros_like(img)
-        hsv[..., 1] = 255
+# def cme_detect_farneback(done_images, imagesfolder):
+#     if len(done_images) > 1:
+#         # filename = imagesfolder + "/" + done_images[0]
+#         filename = done_images[0]
+#         img = image_load(filename)
+#         hsv = np.zeros_like(img)
+#         hsv[..., 1] = 255
+#
+#         for i in range(1, len(done_images) - 1):
+#             # file_old = imagesfolder + "/" + done_images[i - 1]
+#             file_old = done_images[i - 1]
+#             img_old = image_load(file_old)
+#
+#             # file_new = imagesfolder + "/" + done_images[i]
+#             file_new = done_images[i]
+#             img_new = image_load(file_new)
+#
+#             # convert image to a single channel
+#             img_new = cv2.split(img_new)
+#             img_old = cv2.split(img_old)
+#             img_new = img_new[0]
+#             img_old = img_old[0]
+#
+#             flow = cv2.calcOpticalFlowFarneback(img_old, img_new, None, 0.5, 3, 15, 3, 7, 1.5, 0)
+#             mag, ang = cv2.cartToPolar(flow[..., 0], flow[..., 1])
+#             hsv[..., 0] = ang * 180 / np.pi / 2
+#             hsv[..., 2] = cv2.normalize(mag, None, 0, 255, cv2.NORM_MINMAX)
+#             bgr = cv2.cvtColor(hsv, cv2.COLOR_HSV2BGR)
+#
+#             # new_image = cv2.applyColorMap(bgr, cv2.COLORMAP_HSV)
+#             nom = done_images[i].split("\\")
+#             nom = nom[1].split("_")
+#             f = "cme_" + nom[0] + "_" + nom[1] + ".jpg"
+#             fname = imagesfolder + "/" + f
+#             image_save(fname, bgr)
+#             print("Optical flow image created: ", fname)
+#
+#
+# def cme_detection_lucask(done_images, imagesfolder):
+#     if len(done_images) > 1:
+#         filename = imagesfolder + "/" + done_images[0]
+#         img = image_load(filename)
+#         hsv = np.zeros_like(img)
+#         hsv[..., 1] = 255
 
 
 def plot_chart(pixels):
     xlabels = []
     north = []
     south = []
+    total = []
 
     for item in pixels:
         i = item.split(",")
         xlabels.append(i[0])
         north.append(int(i[1]))
         south.append(int(i[2]))
-
-    print(north)
-    print(south)
+        total.append(int(i[3]))
 
     fig = go.Figure()
-    fig.add_trace((go.Scatter(x=xlabels, y=south, mode="lines", name="South CMEs",
-                              line=dict(width=4, color="#000000"))))
+    fig.add_trace((go.Scatter(x=xlabels, y=total, mode="lines", name="Total CMEs",
+                              line=dict(width=3, color="#008000"))))
     fig.add_trace((go.Scatter(x=xlabels, y=north, mode="lines", name="North CMEs",
-                              line=dict(width=4, color="#ffffff"))))
-    fig.update_layout(plot_bgcolor="#808080", paper_bgcolor="rgba(0,0,0,0)")
-    fig.show()
+                              line=dict(width=3, color="#800000"))))
+    fig.add_trace((go.Scatter(x=xlabels, y=south, mode="lines", name="South CMEs",
+                              line=dict(width=3, color="#000080"))))
+
+    fig.update_layout(plot_bgcolor="#a0a0a0", paper_bgcolor="#a0a0a0")
+    fig.update_layout(width=1000, height=600, title="CME Detection",
+                      xaxis_title="Date/time UTC", yaxis_title="pixel count")
+    fig.write_image(file="cme.svg", format='svg')
 
 
 if __name__ == "__main__":
@@ -449,7 +467,7 @@ if __name__ == "__main__":
     plot_chart(pixels)
 
     with open("pixelcount.csv", "w") as f:
-        f.write("UTC time, North, South\n")
+        f.write("UTC time, North, South, Total\n")
         for line in pixels:
             f.write(line + "\n")
         f.close()
