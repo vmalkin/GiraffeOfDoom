@@ -89,27 +89,27 @@ def erode_dilate_img(image_to_process):
 
 
 def add_stamp(image_object, filename):
-    cv2. rectangle(image_object, (0, 900), (1024,1024), (255,255,255), -1 )
+    cv2. rectangle(image_object, (0, 449), (511,511), (255,255,255), -1 )
     colour = (0, 0, 0)
     font = cv2.FONT_HERSHEY_SIMPLEX
-    font_size = 1.0
+    font_size = 0.5
     font_color = colour
     font_thickness = 2
     banner = 'DunedinAurora.NZ - CME Detection.'
     x, y = 10, 925
     cv2.putText(image_object, banner, (x, y), font, font_size, font_color, font_thickness, cv2.LINE_AA)
 
-    font_size = 0.7
+    font_size = 0.4
     font_color = colour
     font_thickness = 1
     banner = filename
-    x, y = 10, 950
+    x, y = 5, 468
     cv2.putText(image_object, banner, (x, y), font, font_size, font_color, font_thickness, cv2.LINE_AA)
     banner = 'Courtesy of SOHO/LASCO consortium. SOHO is a project of'
-    x, y = 10, 975
+    x, y = 5, 483
     cv2.putText(image_object, banner, (x, y), font, font_size, font_color, font_thickness, cv2.LINE_AA)
     banner = 'international cooperation between ESA and NASA'
-    x, y = 10, 1000
+    x, y = 5, 496
     cv2.putText(image_object, banner, (x, y), font, font_size, font_color, font_thickness, cv2.LINE_AA)
 
 
@@ -369,7 +369,7 @@ def plot_chart(pixels):
                               line=dict(width=3, color="#000080")), row=3, col=1)
 
     fig.update_layout(plot_bgcolor="#a0a0a0", paper_bgcolor="#a0a0a0")
-    fig.update_layout(width=1000, height=800, title="CME Detection",
+    fig.update_layout(width=1200, height=800, title="CME Detection",
                       xaxis_title="Date/time UTC", yaxis_title="pixel count")
     fig.write_image(file="cme_512.svg", format='svg')
 
@@ -407,7 +407,8 @@ if __name__ == "__main__":
     # Parse for old epoch files that have been added
     print("Old epoch")
     ymd = str(int(ymd) - 1)
-    # ymd = "20210529"
+    # ymd = "20210521"
+
     baseURL = "https://soho.nascom.nasa.gov/data/REPROCESSING/Completed/" + year + "/c3/" + ymd + "/"
     onlinelist = baseURL + ".full_512.lst"
     print(onlinelist)
