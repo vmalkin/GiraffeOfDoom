@@ -216,6 +216,8 @@ def processimages_analysis(listofimages, storage_folder, analysisfolder):
             # dp = [posix2utc(test_hourcount, '%Y-%m-%d %H:%M'),count[0], count[1]]
             pixelcount.append(dp)
 
+
+
             # Save the difference image into the images folder
             add_stamp(outputimg, hourimage)
             fname = analysisfolder + "/" + listofimages[i]
