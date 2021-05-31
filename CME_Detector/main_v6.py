@@ -7,6 +7,7 @@ import cv2
 import numpy as np
 import calendar
 import plotly.graph_objects as go
+from plotly.subplots import make_subplots
 from statistics import median
 
 def get_resource_from_url(url_to_get):
@@ -56,6 +57,8 @@ def parse_text_fromURL(response):
     returnlist = []
     for line in response:
         s = str(line)
+        s = s.split("\\")
+        s = s[0]
         s = s.strip()
         s = s[2:27]
         returnlist.append(s)
@@ -212,11 +215,11 @@ def processimages_analysis(listofimages, storage_folder, analysisfolder):
             # dp = [posix2utc(test_hourcount, '%Y-%m-%d %H:%M'),count[0], count[1]]
             pixelcount.append(dp)
 
-            # # Save the difference image into the images folder
-            # add_stamp(outputimg, hourimage)
-            # fname = analysisfolder + "/" + listofimages[i]
-            # image_save(fname, outputimg)
-            # print("Polar CME image created..." + fname)
+            # Save the difference image into the images folder
+            add_stamp(outputimg, hourimage)
+            fname = analysisfolder + "/" + listofimages[i]
+            image_save(fname, outputimg)
+            print("Polar CME image created..." + fname)
 
             # LASTLY.....
             hourcount = test_hourcount
@@ -351,17 +354,18 @@ def plot_chart(pixels):
     south = calc_median(south)
     total = calc_median(total)
 
+    fig = make_subplots(rows=3, cols=1)
 
-    fig = go.Figure()
-    fig.add_trace((go.Scatter(x=xlabels, y=total, mode="lines", name="Total CMEs",
-                              line=dict(width=3, color="#008000"))))
-    fig.add_trace((go.Scatter(x=xlabels, y=north, mode="lines", name="North CMEs",
-                              line=dict(width=3, color="#800000"))))
-    fig.add_trace((go.Scatter(x=xlabels, y=south, mode="lines", name="South CMEs",
-                              line=dict(width=3, color="#000080"))))
+    # fig = go.Figure()
+    fig.add_trace(go.Scatter(x=xlabels, y=total, mode="lines", name="Total CMEs",
+                             line=dict(width=3, color="#008000")), row=1, col=1)
+    fig.add_trace(go.Scatter(x=xlabels, y=north, mode="lines", name="North CMEs",
+                             line=dict(width=3, color="#800000")), row=2, col=1)
+    fig.add_trace(go.Scatter(x=xlabels, y=south, mode="lines", name="South CMEs",
+                             line=dict(width=3, color="#000080")), row=3, col=1)
 
     fig.update_layout(plot_bgcolor="#a0a0a0", paper_bgcolor="#a0a0a0")
-    fig.update_layout(width=1000, height=600, title="CME Detection",
+    fig.update_layout(width=1000, height=800, title="CME Detection",
                       xaxis_title="Date/time UTC", yaxis_title="pixel count")
     fig.write_image(file="cme.svg", format='svg')
 

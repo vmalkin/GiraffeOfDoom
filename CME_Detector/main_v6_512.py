@@ -7,6 +7,7 @@ import cv2
 import numpy as np
 import calendar
 import plotly.graph_objects as go
+from plotly.subplots import make_subplots
 from statistics import median
 
 def get_resource_from_url(url_to_get):
@@ -20,20 +21,17 @@ def get_resource_from_url(url_to_get):
         print("unable to load URL")
         print(url_to_get)
 
-    # finally:
-    #     print("Unable to get any further data from URL: ", url_to_get)
-
     return response
 
 
-def load_values(pickle_file):
-    returnvalue = variables
-    if os.path.exists(pickle_file) is True:
-        try:
-            returnvalue = pickle.load(open(pickle_file, "rb"))
-        except EOFError:
-            print("Pickle file is empty")
-    return returnvalue
+# def load_values(pickle_file):
+#     returnvalue = variables
+#     if os.path.exists(pickle_file) is True:
+#         try:
+#             returnvalue = pickle.load(open(pickle_file, "rb"))
+#         except EOFError:
+#             print("Pickle file is empty")
+#     return returnvalue
 
 
 def save_values(save_value, pickle_file):
@@ -56,6 +54,8 @@ def parse_text_fromURL(response):
     returnlist = []
     for line in response:
         s = str(line)
+        s = s.split("\\")
+        s = s[0]
         s = s.strip()
         s = s[2:27]
         returnlist.append(s)
@@ -81,9 +81,9 @@ def erode_dilate_img(image_to_process):
     # Erode and Dilate the image to clear up noise
     # Erosion will trim away pixels (noise)
     # dilation puffs out edges
-    kernel1 = np.ones((5, 5), np.uint8)
+    kernel1 = np.ones((3, 3), np.uint8)
     outputimg = cv2.erode(image_to_process, kernel1, iterations=1)
-    kernel2 = np.ones((5, 5), np.uint8)
+    kernel2 = np.ones((3, 3), np.uint8)
     outputimg = cv2.dilate(outputimg, kernel2, iterations=1)
     return outputimg
 
@@ -125,19 +125,21 @@ def filehour_converter(yyyymmdd, hhmm):
     return ts
 
 
-def countpixels(image):
+def countpixels(image, imagesize):
     # create a mask to be added o
+    i = imagesize - 1
+    i_2 = int(imagesize / 2)
     n = image.copy()
     s = image.copy()
-    south = cv2.rectangle(s, (0,0), (1023, 512), (255,255,255),-1)
-    north = cv2.rectangle(n, (0, 512), (1023, 1023), (255,255,255),-1)
-    count_n = (1024*1024) - cv2.countNonZero(north)
-    count_s = (1024*1024) - cv2.countNonZero(south)
+    south = cv2.rectangle(s, (0,0), (i, i_2), (255,255,255),-1)
+    north = cv2.rectangle(n, (0, i_2), (i, i), (255,255,255),-1)
+    count_n = (imagesize*imagesize) - cv2.countNonZero(north)
+    count_s = (imagesize*imagesize) - cv2.countNonZero(south)
     return [count_n, count_s]
 
 
-def countpixels_total(outputtotal):
-    count_t = (1024 * 1024) - cv2.countNonZero(outputtotal)
+def countpixels_total(outputtotal, size):
+    count_t = (size * size) - cv2.countNonZero(outputtotal)
     return count_t
 
 
@@ -145,7 +147,9 @@ def processimages_analysis(listofimages, storage_folder, analysisfolder):
     t = listofimages[0].split("_")
     hourcount = filehour_converter(t[0], t[1])
     hourimage = listofimages[0]
-    mask = create_polar_mask(hourimage)
+    # input the image size
+    image_size = 512
+    mask = create_polar_mask(image_size)
     pixelcount = []
     for i in range(0, len(listofimages)):
         # split the name
@@ -206,17 +210,17 @@ def processimages_analysis(listofimages, storage_folder, analysisfolder):
 
             # here we need to count pixels found in the north and south parts of the image to
             # determine if a CME halo is present
-            count = countpixels(outputimg)
-            count_total = countpixels_total(outputtotal)
+            count = countpixels(outputimg, image_size)
+            count_total = countpixels_total(outputtotal, image_size)
             dp = posix2utc(test_hourcount, '%Y-%m-%d %H:%M') + "," + str(count[0]) + "," + str(count[1]) + "," + str(count_total)
             # dp = [posix2utc(test_hourcount, '%Y-%m-%d %H:%M'),count[0], count[1]]
             pixelcount.append(dp)
 
-            # # Save the difference image into the images folder
-            # add_stamp(outputimg, hourimage)
-            # fname = analysisfolder + "/" + listofimages[i]
-            # image_save(fname, outputimg)
-            # print("Polar CME image created..." + fname)
+            # Save the difference image into the images folder
+            add_stamp(outputimg, hourimage)
+            fname = analysisfolder + "/" + listofimages[i]
+            image_save(fname, outputimg)
+            print("Polar CME image created..." + fname)
 
             # LASTLY.....
             hourcount = test_hourcount
@@ -305,19 +309,22 @@ def downloadimages(listofimages, storagelocation):
             parse_image_fromURL(response1, file)
 
 
-def create_polar_mask(image):
-    img = np.zeros((1024, 1024), np.uint8)
+def create_polar_mask(masksize):
+    full_mask = masksize - 1
+    half_mask = int(masksize / 2)
+
+    img = np.zeros((masksize, masksize), np.uint8)
     colour = (255, 255, 255)
 
     # occulating disk
-    cv2.circle(img, (515, 500), 83, colour, -1)
+    cv2.circle(img, (half_mask, half_mask), 53, colour, -1)
 
     # top zone
-    triangle = [(0, 0), (0, 1023), (512,512)]
+    triangle = [(0, 0), (0, full_mask), (half_mask,half_mask)]
     cv2.fillPoly(img, np.array([triangle]), colour)
 
     # bottom zone
-    triangle = [(512,512), (1023, 100), (1023,1023)]
+    triangle = [(half_mask,half_mask), (full_mask, 0), (full_mask,full_mask)]
     cv2.fillPoly(img, np.array([triangle]), colour)
 
     img = ~img
@@ -351,19 +358,20 @@ def plot_chart(pixels):
     south = calc_median(south)
     total = calc_median(total)
 
+    fig = make_subplots(rows=3, cols=1)
 
-    fig = go.Figure()
-    fig.add_trace((go.Scatter(x=xlabels, y=total, mode="lines", name="Total CMEs",
-                              line=dict(width=3, color="#008000"))))
-    fig.add_trace((go.Scatter(x=xlabels, y=north, mode="lines", name="North CMEs",
-                              line=dict(width=3, color="#800000"))))
-    fig.add_trace((go.Scatter(x=xlabels, y=south, mode="lines", name="South CMEs",
-                              line=dict(width=3, color="#000080"))))
+    # fig = go.Figure()
+    fig.add_trace(go.Scatter(x=xlabels, y=total, mode="lines", name="Total CMEs",
+                              line=dict(width=3, color="#008000")), row=1, col=1)
+    fig.add_trace(go.Scatter(x=xlabels, y=north, mode="lines", name="North CMEs",
+                              line=dict(width=3, color="#800000")), row=2, col=1)
+    fig.add_trace(go.Scatter(x=xlabels, y=south, mode="lines", name="South CMEs",
+                              line=dict(width=3, color="#000080")), row=3, col=1)
 
     fig.update_layout(plot_bgcolor="#a0a0a0", paper_bgcolor="#a0a0a0")
-    fig.update_layout(width=1000, height=600, title="CME Detection",
+    fig.update_layout(width=1000, height=800, title="CME Detection",
                       xaxis_title="Date/time UTC", yaxis_title="pixel count")
-    fig.write_image(file="cme.svg", format='svg')
+    fig.write_image(file="cme_512.svg", format='svg')
 
 
 if __name__ == "__main__":
@@ -385,19 +393,16 @@ if __name__ == "__main__":
     print("Current epoch")
     baseURL = "https://soho.nascom.nasa.gov/data/REPROCESSING/Completed/" + year + "/c3/" + ymd + "/"
     onlinelist = baseURL + ".full_512.lst"
-    print(onlinelist)
     listofimages = get_resource_from_url(onlinelist)
+    print(listofimages)
     listofimages = parse_text_fromURL(listofimages)
 
     newimages = parseimages(listofimages, storage_folder)
-    print("New images: ", newimages)
 
     if len(newimages) > 0:
         # rings the terminal bell
         print("\a")
         downloadimages(newimages, storage_folder)
-
-    print(newimages)
 
     # Parse for old epoch files that have been added
     print("Old epoch")
@@ -410,7 +415,7 @@ if __name__ == "__main__":
     listofimages = parse_text_fromURL(listofimages)
 
     newimages = parseimages(listofimages, storage_folder)
-    print("New images: ", newimages)
+    # print("New images: ", newimages)
 
     if len(newimages) > 0:
         # rings the terminal bell
