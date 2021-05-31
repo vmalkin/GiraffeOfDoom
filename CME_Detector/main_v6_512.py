@@ -369,7 +369,7 @@ def plot_chart(pixels):
                               line=dict(width=3, color="#000080")), row=3, col=1)
 
     fig.update_layout(plot_bgcolor="#a0a0a0", paper_bgcolor="#a0a0a0")
-    fig.update_layout(width=1200, height=800, title="CME Detection",
+    fig.update_layout(width=1400, height=800, title="CME Detection",
                       xaxis_title="Date/time UTC", yaxis_title="pixel count")
     fig.write_image(file="cme_512.svg", format='svg')
 
