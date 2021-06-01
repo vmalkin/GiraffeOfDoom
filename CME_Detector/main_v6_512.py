@@ -397,9 +397,7 @@ if __name__ == "__main__":
     baseURL = "https://soho.nascom.nasa.gov/data/REPROCESSING/Completed/" + year + "/c3/" + ymd_now + "/"
     onlinelist = baseURL + ".full_512.lst"
     listofimages = get_resource_from_url(onlinelist)
-    print(listofimages)
     listofimages = parse_text_fromURL(listofimages)
-
     newimages = parseimages(listofimages, storage_folder)
 
     if len(newimages) > 0:
