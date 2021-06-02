@@ -29,7 +29,7 @@ def process_dashboard(density):
         returnvalue = "none"
     if density >= 10 and density < 20:
         returnvalue = "low"
-    if density >= 20 and density < 30:
+    if density >= 20 and density < 40:
         returnvalue = "med"
     if density >=40:
         returnvalue = "high"
