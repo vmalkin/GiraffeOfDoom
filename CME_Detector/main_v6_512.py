@@ -389,11 +389,12 @@ if __name__ == "__main__":
         os.makedirs(analysis_folder)
 
     tm = int(time.time())
-    ymd = posix2utc(tm, "%Y%m%d")
+    ymd_now = posix2utc(tm, "%Y%m%d")
+    ymd_old = posix2utc((tm - 86400), "%Y%m%d")
     year = posix2utc(tm, "%Y")
 
     print("Current epoch")
-    baseURL = "https://soho.nascom.nasa.gov/data/REPROCESSING/Completed/" + year + "/c3/" + ymd + "/"
+    baseURL = "https://soho.nascom.nasa.gov/data/REPROCESSING/Completed/" + year + "/c3/" + ymd_now + "/"
     onlinelist = baseURL + ".full_512.lst"
     listofimages = get_resource_from_url(onlinelist)
     listofimages = parse_text_fromURL(listofimages)
@@ -406,10 +407,8 @@ if __name__ == "__main__":
 
     # Parse for old epoch files that have been added
     print("Old epoch")
-    ymd = str(int(ymd) - 1)
-    # ymd = "20210521"
-
-    baseURL = "https://soho.nascom.nasa.gov/data/REPROCESSING/Completed/" + year + "/c3/" + ymd + "/"
+    # ymd_old = "20210531"
+    baseURL = "https://soho.nascom.nasa.gov/data/REPROCESSING/Completed/" + year + "/c3/" + ymd_old + "/"
     onlinelist = baseURL + ".full_512.lst"
     print(onlinelist)
     listofimages = get_resource_from_url(onlinelist)
