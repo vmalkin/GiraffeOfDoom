@@ -151,6 +151,7 @@ def processimages_analysis(listofimages, storage_folder, analysisfolder):
     image_size = 512
     mask = create_polar_mask(image_size)
     pixelcount = []
+
     for i in range(0, len(listofimages)):
         # split the name
         test = listofimages[i].split("_")
@@ -423,7 +424,7 @@ if __name__ == "__main__":
 
     # Parse for old epoch files that have been added
     print("Old epoch")
-    # ymd_old = "20210602"
+    # ymd_old = "20210520"
     baseURL = "https://soho.nascom.nasa.gov/data/REPROCESSING/Completed/" + year + "/c3/" + ymd_old + "/"
     onlinelist = baseURL + ".full_512.lst"
     print(onlinelist)
@@ -446,6 +447,9 @@ if __name__ == "__main__":
 
     # process the stored images so far to get latest diffs
     processimages_display(dirlisting, storage_folder, images_folder)
+
+    # CREATE the black and white images in the analysis folder
+    # FROM the contents of the DISPLAY FOLDER then ANALYSE
     pixels = processimages_analysis(dirlisting, storage_folder, analysis_folder)
     plot_chart(pixels)
 
