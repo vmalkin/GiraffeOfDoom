@@ -335,13 +335,25 @@ def create_polar_mask(masksize):
 
 def calc_median(array):
     temp = []
-    temp.append(array[0])
+    half_len = 5
     u = 0
-    for i in range(1, len(array) - 1):
-        t = [array[i - 1], array[i], array[i + 1]]
-        u = median(t)
-        temp.append(u)
-    temp.append(u)
+    if len(array) > half_len * 2:
+        for i in range(half_len, len(array) - half_len):
+            t = []
+            for j in range(0, half_len):
+                t.append(array[i + j])
+            u = median(t)
+            temp.append(u)
+    return temp
+
+
+def recursive_smooth(array, parameter):
+    temp = []
+    st_prev = array[0]
+    for i in range(1, len(array)):
+        st_now = (parameter * array[i]) + ((1 - parameter) * st_prev)
+        temp.append(st_now)
+        st_prev = st_now
     return temp
 
 def plot_chart(pixels):
@@ -359,6 +371,10 @@ def plot_chart(pixels):
     north = calc_median(north)
     south = calc_median(south)
     total = calc_median(total)
+    north = recursive_smooth(north, 0.2)
+    south = recursive_smooth(south, 0.5)
+    total = recursive_smooth(total, 0.5)
+    print(len(xlabels), len(north))
 
     fig = make_subplots(rows=3, cols=1)
 
@@ -369,7 +385,7 @@ def plot_chart(pixels):
                               line=dict(width=3, color="#800000")), row=2, col=1)
     fig.add_trace(go.Scatter(x=xlabels, y=south, mode="lines", name="South CMEs",
                               line=dict(width=3, color="#000080")), row=3, col=1)
-
+    fig.update_xaxes(nticks=24, tickangle=45, gridcolor='#ffffff')
     fig.update_layout(plot_bgcolor="#a0a0a0", paper_bgcolor="#a0a0a0")
     fig.update_layout(width=1400, height=800, title="CME Detection",
                       xaxis_title="Date/time UTC", yaxis_title="pixel count")
