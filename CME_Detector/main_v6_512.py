@@ -9,6 +9,7 @@ import calendar
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 from statistics import median
+from PIL import Image, ImageDraw
 
 def get_resource_from_url(url_to_get):
     response = ""
@@ -89,27 +90,35 @@ def erode_dilate_img(image_to_process):
 
 
 def add_stamp(image_object, filename):
+    tt = time.time()
+    tt = posix2utc(tt, "%Y-%m-%d %H:%M")
     cv2. rectangle(image_object, (0, 449), (511,511), (255,255,255), -1 )
+    cv2.rectangle(image_object, (0, 0), (511, 20), (255, 255, 255), -1)
     colour = (0, 0, 0)
     font = cv2.FONT_HERSHEY_SIMPLEX
     font_size = 0.5
     font_color = colour
-    font_thickness = 2
-    banner = 'DunedinAurora.NZ - CME Detection.'
-    x, y = 10, 925
+    font_thickness = 1
+    banner = 'http://DunedinAurora.NZ'
+    x, y = 5, 15
+    cv2.putText(image_object, banner, (x, y), font, font_size, font_color, font_thickness, cv2.LINE_AA)
+
+    banner = 'LASCO coronagraph. Updated ' + tt + " UTC."
+    x, y = 5, 466
     cv2.putText(image_object, banner, (x, y), font, font_size, font_color, font_thickness, cv2.LINE_AA)
 
     font_size = 0.4
     font_color = colour
     font_thickness = 1
+
     banner = filename
-    x, y = 5, 468
-    cv2.putText(image_object, banner, (x, y), font, font_size, font_color, font_thickness, cv2.LINE_AA)
-    banner = 'Courtesy of SOHO/LASCO consortium. SOHO is a project of'
     x, y = 5, 483
     cv2.putText(image_object, banner, (x, y), font, font_size, font_color, font_thickness, cv2.LINE_AA)
-    banner = 'international cooperation between ESA and NASA'
+    banner = 'Courtesy of SOHO/LASCO consortium. SOHO is a project of'
     x, y = 5, 496
+    cv2.putText(image_object, banner, (x, y), font, font_size, font_color, font_thickness, cv2.LINE_AA)
+    banner = 'international cooperation between ESA and NASA'
+    x, y = 5, 508
     cv2.putText(image_object, banner, (x, y), font, font_size, font_color, font_thickness, cv2.LINE_AA)
 
 
@@ -217,13 +226,11 @@ def processimages_analysis(listofimages, storage_folder, analysisfolder):
             # dp = [posix2utc(test_hourcount, '%Y-%m-%d %H:%M'),count[0], count[1]]
             pixelcount.append(dp)
 
-
-
             # Save the difference image into the images folder
             add_stamp(outputimg, hourimage)
             fname = analysisfolder + "/" + listofimages[i]
             image_save(fname, outputimg)
-            print("Polar CME image created..." + fname)
+            # print("Polar CME image created..." + fname)
 
             # LASTLY.....
             hourcount = test_hourcount
@@ -393,6 +400,20 @@ def plot_chart(pixels):
     fig.write_image(file="cme_512.svg", format='svg')
 
 
+def create_gif(list, filesfolder):
+    imagelist = []
+    for item in list:
+        j = filesfolder + "/" + item
+        i = Image.open(j)
+        imagelist.append(i)
+    imagelist[0].save("cme.gif",
+              format="GIF",
+              save_all=True,
+              append_images=imagelist[1:],
+              duration=500,
+              loop=0)
+
+
 if __name__ == "__main__":
     images_folder = "images_512"
     storage_folder = "lasco_store_512"
@@ -424,7 +445,7 @@ if __name__ == "__main__":
 
     # Parse for old epoch files that have been added
     print("Old epoch")
-    # ymd_old = "20210520"
+    ymd_old = "20210604"
     baseURL = "https://soho.nascom.nasa.gov/data/REPROCESSING/Completed/" + year + "/c3/" + ymd_old + "/"
     onlinelist = baseURL + ".full_512.lst"
     print(onlinelist)
@@ -447,12 +468,17 @@ if __name__ == "__main__":
 
     # process the stored images so far to get latest diffs
     processimages_display(dirlisting, storage_folder, images_folder)
-
-    # CREATE the black and white images in the analysis folder
-    # FROM the contents of the DISPLAY FOLDER then ANALYSE
     pixels = processimages_analysis(dirlisting, storage_folder, analysis_folder)
     plot_chart(pixels)
 
+    # create an animated GIF of the last 24 images from the IMAGES folder.
+    imagelist = os.listdir(images_folder)
+    imagelist.sort()
+    if len(imagelist) > 24:
+        cut = len(imagelist) - 24
+        imagelist = imagelist[cut:]
+    create_gif(imagelist, images_folder)
+    
     with open("pixelcount.csv", "w") as f:
         f.write("UTC time, North, South, Total\n")
         for line in pixels:
