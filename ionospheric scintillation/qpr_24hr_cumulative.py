@@ -57,7 +57,7 @@ def wrapper(querydata):
         s_s4 = querydata[i][4]
         if min_now == min_next:
             if s_alt >= s4_altitude:
-                if s_s4 >= s4_threshold:
+                if s_s4 >= s4_threshold and s_s4 <= 100:
                     minute_count = minute_count + 1
         # we've finished the minute, append the total, the we'll count the next minute.
         else:
