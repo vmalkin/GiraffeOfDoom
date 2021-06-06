@@ -6,7 +6,7 @@ import sqlite3
 import datetime
 import logging
 import re
-from statistics import mean, stdev
+from statistics import mean, stdev, median
 from threading import Thread
 import qpr_s4_scatter
 import qpr_s4_median
@@ -131,30 +131,31 @@ class Satellite:
             sigma = stdev(self.intensity)
             if avg_intensity > 0:
                 returnvalue = round(((sigma / avg_intensity) * 100), 5)
+
         return returnvalue
 
     def get_alt_avg(self):
         x = 0
         if len(self.alt) > 0:
-            x = mean(self.alt)
+            x = median(self.alt)
         return x
 
     def get_az_avg(self):
         x = 0
         if len(self.az) > 0:
-            x = mean(self.az)
+            x = median(self.az)
         return x
 
     def get_snr_avg(self):
         x = 0
         if len(self.snr) > 0:
-            x = mean(self.snr)
+            x = median(self.snr)
         return x
 
     def get_intensity_avg(self):
         x = 0
         if len(self.intensity) > 0:
-            x = mean(self.intensity)
+            x = median(self.intensity)
         return x
 
 

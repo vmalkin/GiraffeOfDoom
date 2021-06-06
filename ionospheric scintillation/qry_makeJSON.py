@@ -39,31 +39,32 @@ def database_parse():
 
 
 def wrapper():
-    m = load_values(k.statsfile_mean)
-    s = load_values(k.statsfile_sigma)
-    m = median(m)
-    s = median(s)
+    if os.path.isfile(k.statsfile_mean) is True:
+        m = load_values(k.statsfile_mean)
+        s = load_values(k.statsfile_sigma)
+        m = median(m)
+        s = median(s)
 
-    queryresult = database_parse()
+        queryresult = database_parse()
 
-    result = "none"
+        result = "none"
 
-    if queryresult > (m + 2 * s):
-        result = "low"
+        if queryresult > (m + 2 * s):
+            result = "low"
 
-    if queryresult > (m + 4 * s):
-        result = "med"
+        if queryresult > (m + 4 * s):
+            result = "med"
 
-    if queryresult > (m + 6 * s):
-        result = "high"
+        if queryresult > (m + 6 * s):
+            result = "high"
 
-    nowtime = int(time.time())
-    i = {"posixtime" : nowtime, "ionstate" : result}
-    print(queryresult, m, s)
-    print(i)
+        nowtime = int(time.time())
+        i = {"posixtime" : nowtime, "ionstate" : result}
+        print(queryresult, m, s)
+        print(i)
 
-    filepath = "ion.json"
-    with open(filepath, "w") as j:
-        json.dump(i, j)
+        filepath = "ion.json"
+        with open(filepath, "w") as j:
+            json.dump(i, j)
 
 wrapper()

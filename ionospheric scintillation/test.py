@@ -27,7 +27,7 @@ def database_parse(hourduration):
 querydata_48 = database_parse(48)
 
 for item in querydata_48:
-    if item[0] == "GPGSV_10":
+    if item[0] == "GPGSV_13":
         print(item)
 
 qpr_24hr_cumulative.wrapper(querydata_48)
