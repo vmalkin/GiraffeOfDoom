@@ -20,3 +20,5 @@ scanCHImages/images/files.txt
 *.svg
 *.svg
 CME_Detector/vaughn-prv
+CME_Detector/cme.gif
+CME_Detector/get_data.bat
