@@ -1,6 +1,5 @@
 *.xml
 heatmap/.DS_Store
-heatmap/.DS_Store
 *.pyc
 *.jpg
 *.bmp
@@ -17,8 +16,6 @@ scanCHImages/images/files.txt
 *.log
 *.svg
 *.json
-*.svg
-*.svg
 CME_Detector/vaughn-prv
 CME_Detector/cme.gif
-CME_Detector/get_data.bat
+*.bat
