@@ -70,7 +70,20 @@ def calc_median(value_list):
     return return_median
 
 
+def parse_values(valueslist):
+    templist = []
+    for item in valueslist:
+        if item[4] <= 100:
+            templist.append(item[4])
+    print("STATS: S4 values within normal limits: ", len(templist), len(valueslist))
+    return templist
+
+
 def wrapper(valueslist, pickle_mean, pickle_stdev):
+    # we need to purge entries where the S4 index isless than 0, and more than 100
+    # We should report that these were found!
+    valueslist = parse_values(valueslist)
+
     mean_list = load_values(pickle_mean)
     sigma_list = load_values(pickle_stdev)
 

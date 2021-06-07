@@ -2,6 +2,7 @@ import mgr_stats
 import qpr_24hr_cumulative
 import time
 import sqlite3
+import mgr_stats
 timeformat = '%Y-%m-%d %H:%M:%S'
 sat_database = "gps_satellites.db"
 integration_time = 30
@@ -27,7 +28,10 @@ def database_parse(hourduration):
 querydata_48 = database_parse(48)
 
 for item in querydata_48:
-    if item[0] == "GPGSV_13":
+    if item[0] == "GPGSV_11":
         print(item)
 
-qpr_24hr_cumulative.wrapper(querydata_48)
+# qpr_24hr_cumulative.wrapper(querydata_48)
+
+# mn = mgr_stats.load_values("t_mean.pkl")
+# print(mn)

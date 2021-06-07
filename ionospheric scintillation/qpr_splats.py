@@ -122,8 +122,8 @@ def wrapper(queryresults):
         s_s4 = item[4]
         if s_s4 > splat_threshold:
             if s_alt >= splat_altitude:
-                if s_s4 > 50:
-                    s_s4 = 70
+                # if s_s4 > 50:
+                #     s_s4 = 70
                 alt.append(s_alt)
                 az.append(s_az)
                 s4.append(s_s4)

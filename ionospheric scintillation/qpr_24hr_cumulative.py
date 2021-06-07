@@ -50,6 +50,7 @@ def wrapper(querydata):
     minute_count = 0
 
     #  We are just counting instances of an S4 reading being over our threshold, if so, bump the counter for tha min
+    # S4 values must be less that 100.
     for i in range(0, len(querydata)-1):
         min_now = querydata[i][1]
         min_next = querydata[i+1][1]
@@ -57,7 +58,7 @@ def wrapper(querydata):
         s_s4 = querydata[i][4]
         if min_now == min_next:
             if s_alt >= s4_altitude:
-                if s_s4 >= s4_threshold:
+                if s_s4 >= s4_threshold and s_s4 < 100:
                     minute_count = minute_count + 1
         # we've finished the minute, append the total, the we'll count the next minute.
         else:

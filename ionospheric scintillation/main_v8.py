@@ -8,16 +8,18 @@ import logging
 import re
 from statistics import mean, stdev, median
 from threading import Thread
-import qpr_s4_scatter
-import qpr_s4_median
-import qpr_save_full_query
-import qpr_sat_plots
-import qpr_alt_az
-import qpr_24hr_tracks
-import qpr_splats
-import qpr_S4bars
-import qpr_24hr_cumulative
-import qry_makeJSON
+
+import mgr_stats
+# import qpr_s4_scatter
+# import qpr_s4_median
+# import qpr_save_full_query
+# import qpr_sat_plots
+# import qpr_alt_az
+# import qpr_24hr_tracks
+# import qpr_splats
+# import qpr_S4bars
+# import qpr_24hr_cumulative
+# import qry_makeJSON
 
 errorloglevel = logging.CRITICAL
 logging.basicConfig(filename="errors.log", format='%(asctime)s %(message)s', level=errorloglevel)
@@ -35,6 +37,7 @@ optimum_altitude = 25
 # This is the query output that will be used to generate graphs and plots etc.
 querydata_24 = []
 querydata_48 = []
+current_stats = []
 
 # *************************************************
 # Plotter and query processor thread
@@ -47,17 +50,26 @@ class QueryProcessor(Thread):
         # put query data_s4 processing stuff here. NO matplot unfortunatly
         while True:
             print("***************************** Start Query Processor")
-            try:
-                qpr_save_full_query.wrapper(querydata_24)
-            except:
-                print("\n" + "!!!!!!!!!  Full Query Save Failed  !!!!!!!!!" + "\n")
-                logging.warning("SNR failed in MAIN.PY")
+            # Calculate the average S4 value and the standard deviation of S4 for the current past 24 hours
+            # This is used in several plots.
+            # try:
+            if len(querydata_24) > 2:
+                print("calculating STDEV and MEAN of the S4 ratio for the past 24 hours...")
+                current_stats = mgr_stats.wrapper(querydata_24, k.statsfile_mean, k.statsfile_sigma)
+            # except:
+            #     print("\n" + "!!!!!!!!!  UNABLE TO CALUCLATE STDEV AND MEAN OF S4 VALUES  !!!!!!!!!" + "\n")
 
-            try:
-                qpr_s4_median.wrapper(querydata_24)
-            except:
-                print("\n" + "!!!!!!!!!  S4 Median Failed  !!!!!!!!!" + "\n")
-                logging.warning("S4 Median failed in MAIN.PY")
+            # try:
+            #     qpr_save_full_query.wrapper(querydata_24)
+            # except:
+            #     print("\n" + "!!!!!!!!!  Full Query Save Failed  !!!!!!!!!" + "\n")
+            #     logging.warning("SNR failed in MAIN.PY")
+
+            # try:
+            #     qpr_s4_median.wrapper(querydata_24)
+            # except:
+            #     print("\n" + "!!!!!!!!!  S4 Median Failed  !!!!!!!!!" + "\n")
+            #     logging.warning("S4 Median failed in MAIN.PY")
 
             # try:
             #     qpr_s4_scatter.wrapper(querydata_24)
@@ -65,47 +77,47 @@ class QueryProcessor(Thread):
             #     print("\n" + "!!!!!!!!!  S4 Scatter Failed  !!!!!!!!!" + "\n")
             #     logging.warning("S4 Scatter failed in MAIN.PY")
 
-            try:
-                qpr_sat_plots.wrapper(querydata_24)
-            except:
-                print("\n" + "!!!!!!!!!  Satellite Plotter Failed  !!!!!!!!!" + "\n")
-                logging.warning("satellite plotter failed in MAIN.PY")
+            # try:
+            #     qpr_sat_plots.wrapper(querydata_24)
+            # except:
+            #     print("\n" + "!!!!!!!!!  Satellite Plotter Failed  !!!!!!!!!" + "\n")
+            #     logging.warning("satellite plotter failed in MAIN.PY")
 
-            try:
-                qpr_alt_az.wrapper(querydata_24)
-            except:
-                print("\n" + "!!!!!!!!!  Alt-Az Plotter Failed  !!!!!!!!!" + "\n")
-                logging.warning("AltAz plotter failed in MAIN.PY")
+            # try:
+            #     qpr_alt_az.wrapper(querydata_24)
+            # except:
+            #     print("\n" + "!!!!!!!!!  Alt-Az Plotter Failed  !!!!!!!!!" + "\n")
+            #     logging.warning("AltAz plotter failed in MAIN.PY")
 
-            try:
-                qpr_24hr_tracks.wrapper(querydata_24)
-            except:
-                print("\n" + "!!!!!!!!!  24hr Track Plotter Failed  !!!!!!!!!" + "\n")
-                logging.warning("24hr Track failed in MAIN.PY")
+            # try:
+            #     qpr_24hr_tracks.wrapper(querydata_24)
+            # except:
+            #     print("\n" + "!!!!!!!!!  24hr Track Plotter Failed  !!!!!!!!!" + "\n")
+            #     logging.warning("24hr Track failed in MAIN.PY")
 
-            try:
-                qpr_splats.wrapper(querydata_24)
-            except:
-                print("\n" + "!!!!!!!!!  Noise Plotter Failed  !!!!!!!!!" + "\n")
-                logging.warning("Noise Event Plotter failed in MAIN.PY")
+            # try:
+            #     qpr_splats.wrapper(querydata_24)
+            # except:
+            #     print("\n" + "!!!!!!!!!  Noise Plotter Failed  !!!!!!!!!" + "\n")
+            #     logging.warning("Noise Event Plotter failed in MAIN.PY")
 
-            try:
-                qpr_S4bars.wrapper(querydata_24)
-            except:
-                print("\n" + "!!!!!!!!!  S4 Bar Plotter Failed  !!!!!!!!!" + "\n")
-                logging.warning("Noise Event Plotter failed in MAIN.PY")
+            # try:
+            #     qpr_S4bars.wrapper(querydata_24)
+            # except:
+            #     print("\n" + "!!!!!!!!!  S4 Bar Plotter Failed  !!!!!!!!!" + "\n")
+            #     logging.warning("Noise Event Plotter failed in MAIN.PY")
 
-            try:
-                qpr_24hr_cumulative.wrapper(querydata_48)
-            except:
-                print("\n" + "!!!!!!!!!  Rolling count Plotter Failed  !!!!!!!!!" + "\n")
-                logging.warning("Rolling count Plotter failed in MAIN.PY")
+            # try:
+            #     qpr_24hr_cumulative.wrapper(querydata_48)
+            # except:
+            #     print("\n" + "!!!!!!!!!  Rolling count Plotter Failed  !!!!!!!!!" + "\n")
+            #     logging.warning("Rolling count Plotter failed in MAIN.PY")
 
-            try:
-                qry_makeJSON.wrapper()
-            except:
-                print("\n" + "!!!!!!!!!  Ion Reading json creator failed  !!!!!!!!!" + "\n")
-                logging.warning("Ion Reading json creator failed in MAIN.PY")
+            # try:
+            #     qry_makeJSON.wrapper()
+            # except:
+            #     print("\n" + "!!!!!!!!!  Ion Reading json creator failed  !!!!!!!!!" + "\n")
+            #     logging.warning("Ion Reading json creator failed in MAIN.PY")
 
             # rings the terminal bell
             print("\a")

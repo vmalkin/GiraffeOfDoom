@@ -477,6 +477,7 @@ if __name__ == "__main__":
     if len(imagelist) > 24:
         cut = len(imagelist) - 24
         imagelist = imagelist[cut:]
+    imagelist.sort()
     create_gif(imagelist, images_folder)
     
     with open("pixelcount.csv", "w") as f:
