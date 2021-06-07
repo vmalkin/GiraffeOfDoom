@@ -92,9 +92,9 @@ def plot_polar(alt, az, s4, colours, splat_threshold):
         text = str(j * 3 - 3) + " - " + str(j * 3)
         fig.add_annotation(x=x_location, y=0, text=text, font=dict(color="#000000", size=22), borderwidth=12, bordercolor=colourdict[i], borderpad=6,)
 
-    timelapse = posix2utc(time.time(), '%Y_%m_%d_%H_%M')
-    timelapse = k.imagesdir + "//timelapse//" + timelapse + ".jpg"
-    fig.write_image(file=timelapse, format='jpg')
+    # timelapse = posix2utc(time.time(), '%Y_%m_%d_%H_%M')
+    # timelapse = k.imagesdir + "//timelapse//" + timelapse + ".jpg"
+    # fig.write_image(file=timelapse, format='jpg')
     fig.write_image(file=savefile, format='jpg')
 
 def create_colourway(posixtime):
@@ -122,12 +122,11 @@ def wrapper(queryresults):
         s_s4 = item[4]
         if s_s4 > splat_threshold:
             if s_alt >= splat_altitude:
-                # if s_s4 > 50:
-                #     s_s4 = 70
-                alt.append(s_alt)
-                az.append(s_az)
-                s4.append(s_s4)
-                colours.append(create_colourway(s_time))
+                if s_s4 <= 100:
+                    alt.append(s_alt)
+                    az.append(s_az)
+                    s4.append(s_s4)
+                    colours.append(create_colourway(s_time))
 
     plot_polar(alt, az, s4, colours, splat_threshold)
 

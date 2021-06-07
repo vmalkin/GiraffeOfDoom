@@ -29,42 +29,37 @@ def database_parse():
 
     result = db.execute('select posixtime, alt, s4 from satdata where posixtime > ? and alt > ? order by posixtime asc', [starttime, s4_altitude])
     # We want the COUNT of S4 events for the hour over 40%
-    counter = 0
+    s4array = []
     for item in result:
         if item[1] > s4_altitude:
-            if item[2] > s4_threshold:
-                counter = counter + 1
+            if item[2] > s4_threshold and item[2] <= 100:
+                s4array.append(item[2])
     db.close()
-    return counter
+    return s4array
 
 
-def wrapper():
+def wrapper(stats_dict):
     if os.path.isfile(k.statsfile_mean) is True:
-        m = load_values(k.statsfile_mean)
-        s = load_values(k.statsfile_sigma)
-        m = median(m)
-        s = median(s)
-
+        m = stats_dict["medianvalue"]
+        s = stats_dict["mediansigma"]
         queryresult = database_parse()
+        q = mean(queryresult)
+        print("Values for JSON, Result, Median, Sigma ", q, m, s)
 
         result = "none"
-
-        if queryresult > (m + 2 * s):
+        if q > (m + 2 * s):
             result = "low"
 
-        if queryresult > (m + 4 * s):
+        if q > (m + 4 * s):
             result = "med"
 
-        if queryresult > (m + 6 * s):
+        if q > (m + 6 * s):
             result = "high"
 
         nowtime = int(time.time())
         i = {"posixtime" : nowtime, "ionstate" : result}
-        print(queryresult, m, s)
         print(i)
 
         filepath = "ion.json"
         with open(filepath, "w") as j:
             json.dump(i, j)
-
-wrapper()

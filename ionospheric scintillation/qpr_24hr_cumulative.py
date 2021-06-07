@@ -1,7 +1,7 @@
 import datetime
 import constants as k
 import plotly.graph_objects as go
-import mgr_stats
+# import mgr_stats
 
 
 def plot(ut, da, median, sigma):
@@ -42,7 +42,7 @@ def posix2utc(posixtime, timeformat):
 # query format:
 # ('satID', posixtime, alt, az, s4, snr)
 # Query is 48 hours of data, each datapoint is one minute for a different satellite
-def wrapper(querydata):
+def wrapper(querydata, statvalues):
     s4_threshold = 40
     s4_altitude = 40
     firstpass_utc = []
@@ -83,8 +83,6 @@ def wrapper(querydata):
             lastpass_dat.append(dp)
             lastpass_utc.append(dt)
 
-    statvalues = mgr_stats.wrapper(lastpass_dat, "t_mean.pkl", "t_sigma.pkl")
-    print(statvalues)
     plot(lastpass_utc, lastpass_dat, statvalues["medianvalue"], statvalues["mediansigma"])
     print("Plot complete")
 
