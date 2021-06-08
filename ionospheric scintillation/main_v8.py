@@ -51,12 +51,14 @@ class QueryProcessor(Thread):
             print("***************************** Start Query Processor")
             # Calculate the average and the standard deviation of THE COUNT OF S4 EVENTS for the current past 24 hours
             # This is used in several plots.
-            try:
-                if len(querydata_24) > 2:
-                    print("calculating STDEV and MEAN of the S4 ratio for the past 24 hours...")
-                    k.current_stats = mgr_stats.wrapper(querydata_24, k.statsfile_mean, k.statsfile_sigma)
-            except:
-                print("\n" + "!!!!!!!!!  UNABLE TO CALUCLATE STDEV AND MEAN OF S4 VALUES  !!!!!!!!!" + "\n")
+            # try:
+            #     if len(querydata_24) > 2:
+            print("calculating STDEV and MEAN of the S4 ratio for the past 24 hours...")
+            print(querydata_24)
+            k.current_stats = mgr_stats.wrapper(querydata_24, k.s4_count_file)
+            print(k.current_stats)
+            # except:
+            #     print("\n" + "!!!!!!!!!  UNABLE TO CALUCLATE STDEV AND MEAN OF S4 VALUES  !!!!!!!!!" + "\n")
 
             try:
                 qpr_save_full_query.wrapper(querydata_24)

@@ -18,6 +18,5 @@ interCharTimeout = None
 imagesdir = "images"
 logfiledir = "logfiles"
 
-statsfile_mean = "t_mean.pkl"
-statsfile_sigma = "t_sigma.pkl"
+s4_count_file = "s4_totalcount.pkl"
 current_stats = []
