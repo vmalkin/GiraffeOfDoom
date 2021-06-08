@@ -28,32 +28,31 @@ def database_parse():
     db = gpsdb.cursor()
 
     result = db.execute('select posixtime, alt, s4 from satdata where posixtime > ? and alt > ? order by posixtime asc', [starttime, s4_altitude])
-    # We want the COUNT of S4 events for the hour over 40%
-    s4array = []
+    # We want the COUNT of S4 events for the hour over 40% AND less that 100
+    s4_counter = 0
     for item in result:
         if item[1] > s4_altitude:
             if item[2] > s4_threshold and item[2] <= 100:
-                s4array.append(item[2])
+                s4_counter = s4_counter + 1
     db.close()
-    return s4array
+    return s4_counter
 
 
 def wrapper(stats_dict):
     if os.path.isfile(k.statsfile_mean) is True:
         m = stats_dict["medianvalue"]
         s = stats_dict["mediansigma"]
-        queryresult = database_parse()
-        q = mean(queryresult)
-        print("Values for JSON, Result, Median, Sigma ", q, m, s)
+        count_events = database_parse()
+
 
         result = "none"
-        if q > (m + 2 * s):
+        if count_events > (m + 2 * s):
             result = "low"
 
-        if q > (m + 4 * s):
+        if count_events > (m + 4 * s):
             result = "med"
 
-        if q > (m + 6 * s):
+        if count_events > (m + 6 * s):
             result = "high"
 
         nowtime = int(time.time())

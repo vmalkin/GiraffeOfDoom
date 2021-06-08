@@ -70,20 +70,19 @@ def calc_median(value_list):
     return return_median
 
 
-def parse_values(valueslist):
-    templist = []
+def count_events(valueslist):
+    s4_count = 0
     for item in valueslist:
-        if item[4] <= 100:
-            templist.append(item[4])
-    print("STATS: S4 values within normal limits: ", len(templist), len(valueslist))
-    return templist
+        if item[4] > 40 and item[4] <= 100:
+            s4_count = s4_count + 1
+    return s4_count
 
 
 def wrapper(valueslist, pickle_mean, pickle_stdev):
     # we need to purge entries where the S4 index isless than 0, and more than 100
     # We should report that these were found!
-    valueslist = parse_values(valueslist)
 
+    s4Count = count_events(valueslist)
     mean_list = load_values(pickle_mean)
     sigma_list = load_values(pickle_stdev)
 
@@ -93,17 +92,15 @@ def wrapper(valueslist, pickle_mean, pickle_stdev):
     if len(sigma_list) >= listlength:
         sigma_list = prune_list(sigma_list)
 
-    mean_from_values = calc_mean(valueslist)
-    sigma_from_values = calc_stdev(valueslist)
 
-    mean_list = append_value(mean_list, mean_from_values)
-    sigma_list = append_value(sigma_list, sigma_from_values)
-
-    save_values(mean_list, pickle_mean)
-    save_values(sigma_list, pickle_stdev)
-
-    median_mean = calc_median(mean_list)
-    median_sigma = calc_median(sigma_list)
+    # mean_list = append_value(mean_list, s4Count)
+    # sigma_list = append_value(sigma_list, s4Count)
+    #
+    # save_values(mean_list, pickle_mean)
+    # save_values(sigma_list, pickle_stdev)
+    #
+    # median_mean = calc_median(mean_list)
+    # median_sigma = calc_median(sigma_list)
 
     returndict = {
         "medianvalue": median_mean,

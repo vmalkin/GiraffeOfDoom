@@ -49,7 +49,7 @@ class QueryProcessor(Thread):
         # put query data_s4 processing stuff here. NO matplot unfortunatly
         while True:
             print("***************************** Start Query Processor")
-            # Calculate the average S4 value and the standard deviation of S4 for the current past 24 hours
+            # Calculate the average and the standard deviation of THE COUNT OF S4 EVENTS for the current past 24 hours
             # This is used in several plots.
             try:
                 if len(querydata_24) > 2:
