@@ -1,8 +1,8 @@
-import mgr_stats
+import mgr_s4_count_stats
 import qpr_24hr_cumulative
 import time
 import sqlite3
-import mgr_stats
+import mgr_s4_count_stats
 timeformat = '%Y-%m-%d %H:%M:%S'
 sat_database = "gps_satellites.db"
 integration_time = 30

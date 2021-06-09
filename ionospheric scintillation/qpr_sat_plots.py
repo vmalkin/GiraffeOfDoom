@@ -94,7 +94,7 @@ def plot_s4_combo(satlist, tlabels):
     for satellite in satlist:
         fig.add_trace(go.Scatter(x=tlabels, y=satellite.data_s4, mode="lines", name=satellite.name, line=dict(width=1, color=randomnum())))
 
-    savefile = k.imagesdir + "//s4_combo.jpg"
+    savefile = k.dir_images + "//s4_combo.jpg"
     plot_title = "S4 Index All satellites. http://DunedinAurora.NZ"
     fig.update_yaxes(range=[1, 100], gridcolor='#505050')
     fig.update_xaxes(nticks=24, tickangle=45, gridcolor='#505050')
@@ -108,7 +108,7 @@ def plot_snr_combo(satlist, tlabels):
     for satellite in satlist:
         fig.add_trace(go.Scatter(x=tlabels, y=satellite.data_snr, mode="lines", name=satellite.name, line=dict(width=1, color=randomnum())))
 
-    savefile = k.imagesdir + "//snr_combo.jpg"
+    savefile = k.dir_images + "//snr_combo.jpg"
     plot_title = "SNR All satellites"
     fig.update_yaxes(range=[1, 60], gridcolor='#505050')
     fig.update_xaxes(nticks=24, tickangle=45, gridcolor='#505050')
@@ -119,7 +119,7 @@ def plot_snr_combo(satlist, tlabels):
 def plot(satlist, tlabels):
     for satellite in satlist:
         name = satellite.name
-        savefile = k.imagesdir + "//" + satellite.name + ".jpg"
+        savefile = k.dir_images + "//" + satellite.name + ".jpg"
         plot_title = "S4 Index SatID: " + name
 
         fig = go.Figure()

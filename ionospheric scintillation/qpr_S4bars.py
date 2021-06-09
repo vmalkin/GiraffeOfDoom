@@ -48,7 +48,7 @@ def save_s4(filename, data):
 
 def plot(ut, da):
     # Here we're using Plotly's grouping function to bin our data into hours. It does this by the time format.
-    savefile = k.imagesdir + "//count_s4.jpg"
+    savefile = k.dir_images + "//count_s4.jpg"
     data = [go.Bar(x=ut, y=da)]
     layout = go.Layout(barmode="group")
     fig = go.Figure(data=data, layout=layout)

@@ -29,7 +29,7 @@ def posix2utc(posixtime):
     return utctime
 
 def plot_lineplot(xval, yval):
-    savefile = k.imagesdir + "//avg.jpg"
+    savefile = k.dir_images + "//avg.jpg"
     data = go.Scatter(x=xval, y = yval, mode="lines")
     fig = go.Figure(data)
     fig.update_yaxes(range=[1, 40], gridcolor='#505050')

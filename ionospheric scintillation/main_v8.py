@@ -9,7 +9,7 @@ import re
 from statistics import mean, stdev, median
 from threading import Thread
 
-import mgr_stats
+import mgr_s4_count_stats
 import qpr_s4_scatter
 import qpr_s4_median
 import qpr_save_full_query
@@ -55,7 +55,7 @@ class QueryProcessor(Thread):
             #     if len(querydata_24) > 2:
             print("calculating STDEV and MEAN of the S4 ratio for the past 24 hours...")
             print(querydata_24)
-            k.current_stats = mgr_stats.wrapper(querydata_24, k.s4_count_file)
+            k.current_stats = mgr_s4_count_stats.wrapper(querydata_24)
             print(k.current_stats)
             # except:
             #     print("\n" + "!!!!!!!!!  UNABLE TO CALUCLATE STDEV AND MEAN OF S4 VALUES  !!!!!!!!!" + "\n")
@@ -300,13 +300,13 @@ if __name__ == "__main__":
     if os.path.isfile(sat_database) is True:
         print("Database file exists")
 
-    if os.path.isdir(k.logfiledir) is False:
+    if os.path.isdir(k.dir_logfiles) is False:
         print("Creating log file directory...")
-        create_directory(k.logfiledir)
+        create_directory(k.dir_logfiles)
 
-    if os.path.isdir(k.imagesdir) is False:
+    if os.path.isdir(k.dir_images) is False:
         print("Creating image file directory...")
-        create_directory(k.imagesdir)
+        create_directory(k.dir_images)
 
     # Set up the lists required to average the satellite values so the DB
     # will store one minute values.

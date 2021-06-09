@@ -15,8 +15,10 @@ writeTimeout = None
 dsrdtr = False
 interCharTimeout = None
 
-imagesdir = "images"
-logfiledir = "logfiles"
+dir_images = "images"
+dir_logfiles = "logfiles"
 
-s4_count_file = "s4_totalcount.pkl"
+file_count_s4 = "s4_totalcount.pkl"
+file_means = "s4_means.pkl"
+file_sigmas = "s4_sigmas.pkl"
 current_stats = []

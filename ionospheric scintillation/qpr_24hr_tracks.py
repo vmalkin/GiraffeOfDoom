@@ -9,7 +9,7 @@ import constants as k
 import time
 import os
 
-timelapsesavefolder = k.imagesdir + "//timelapse"
+timelapsesavefolder = k.dir_images + "//timelapse"
 class SatelliteLabel():
     def __init__(self):
         self.id = None
@@ -37,7 +37,7 @@ def save_s4(filename, data):
 
 
 def plot_polar(alt, az, label_alt, label_az, label_text):
-    savefile = k.imagesdir + "//24hr_tracks.jpg"
+    savefile = k.dir_images + "//24hr_tracks.jpg"
     data = go.Scatterpolar(r=alt, theta=az, mode='markers+text')
 
     # data = go.Scatterpolar(r=alt, theta=az, text=id, mode='markers')

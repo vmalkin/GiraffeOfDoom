@@ -27,7 +27,7 @@ def save_s4(filename, data):
 
 
 def plot_scatterplot(xvalues, yvalues):
-    savefile = k.imagesdir + "//scatter.jpg"
+    savefile = k.dir_images + "//scatter.jpg"
     data = go.Scatter(x=xvalues, y=yvalues, mode='markers')
     fig = go.Figure(data)
     fig.update_yaxes(range=[1, 40], gridcolor='#505050')

@@ -1,7 +1,7 @@
 import datetime
 import constants as k
 import plotly.graph_objects as go
-import mgr_stats
+import mgr_s4_count_stats
 import sqlite3
 import time
 
@@ -9,7 +9,7 @@ sat_database = "gps_satellites.db"
 optimum_altitude = 25
 
 def plot(ut, da):
-    savefile = k.imagesdir + "//longterm.svg"
+    savefile = k.dir_images + "//longterm.svg"
     clr_grid = '#c7c7c7'
     data = go.Scatter(x=ut, y = da, mode="lines")
     fig = go.Figure(data)

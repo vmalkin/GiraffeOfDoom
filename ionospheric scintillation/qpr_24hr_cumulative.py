@@ -5,7 +5,7 @@ import plotly.graph_objects as go
 
 
 def plot(ut, da, median, sigma):
-    savefile = k.imagesdir + "//cumulative.jpg"
+    savefile = k.dir_images + "//cumulative.jpg"
     clr_grid = '#c7c7c7'
     data = go.Scatter(x=ut, y = da, mode="lines")
     fig = go.Figure(data)
