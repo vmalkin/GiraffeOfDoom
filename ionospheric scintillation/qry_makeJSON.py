@@ -32,18 +32,18 @@ def database_parse():
     s4_counter = 0
     for item in result:
         if item[1] > s4_altitude:
-            if item[2] > s4_threshold and item[2] <= 100:
-                s4_counter = s4_counter + 1
+            if item[2] > s4_threshold:
+                if item[2] <= 100:
+                    s4_counter = s4_counter + 1
     db.close()
     return s4_counter
 
 
 def wrapper(stats_dict):
-    if os.path.isfile(k.statsfile_mean) is True:
+    if os.path.isfile(k.file_means) is True:
         m = stats_dict["medianvalue"]
         s = stats_dict["mediansigma"]
         count_events = database_parse()
-
 
         result = "none"
         if count_events > (m + 2 * s):

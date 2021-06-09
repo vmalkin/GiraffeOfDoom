@@ -11,7 +11,6 @@ import constants as k
 
 listlength = 7000
 
-
 def load_values(pickle_file):
     returnlist = []
     if os.path.exists(pickle_file) is True:

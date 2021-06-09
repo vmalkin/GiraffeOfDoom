@@ -5,13 +5,13 @@ import os
 import sqlite3
 import datetime
 import logging
-import re
+# import re
 from statistics import mean, stdev, median
 from threading import Thread
 
 import mgr_s4_count_stats
 import qpr_s4_scatter
-import qpr_s4_median
+# import qpr_s4_median
 import qpr_save_full_query
 import qpr_sat_plots
 import qpr_alt_az
@@ -38,6 +38,7 @@ optimum_altitude = 25
 querydata_24 = []
 querydata_48 = []
 
+
 # *************************************************
 # Plotter and query processor thread
 # *************************************************
@@ -51,14 +52,13 @@ class QueryProcessor(Thread):
             print("***************************** Start Query Processor")
             # Calculate the average and the standard deviation of THE COUNT OF S4 EVENTS for the current past 24 hours
             # This is used in several plots.
-            # try:
-            #     if len(querydata_24) > 2:
-            print("calculating STDEV and MEAN of the S4 ratio for the past 24 hours...")
-            print(querydata_24)
-            k.current_stats = mgr_s4_count_stats.wrapper(querydata_24)
-            print(k.current_stats)
-            # except:
-            #     print("\n" + "!!!!!!!!!  UNABLE TO CALUCLATE STDEV AND MEAN OF S4 VALUES  !!!!!!!!!" + "\n")
+            try:
+                if len(querydata_24) > 2:
+                    print("calculating STDEV and MEAN of the S4 ratio for the past 24 hours...")
+                    k.current_stats = mgr_s4_count_stats.wrapper(querydata_24)
+                print(k.current_stats)
+            except:
+                print("\n" + "!!!!!!!!!  UNABLE TO CALUCLATE STDEV AND MEAN OF S4 VALUES  !!!!!!!!!" + "\n")
 
             try:
                 qpr_save_full_query.wrapper(querydata_24)
@@ -115,6 +115,7 @@ class QueryProcessor(Thread):
                 logging.warning("Rolling count Plotter failed in MAIN.PY")
 
             try:
+                # pass
                 qry_makeJSON.wrapper(k.current_stats)
             except:
                 print("\n" + "!!!!!!!!!  Ion Reading json creator failed  !!!!!!!!!" + "\n")
