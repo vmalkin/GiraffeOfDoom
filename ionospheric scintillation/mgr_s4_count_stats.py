@@ -116,5 +116,7 @@ def wrapper(valueslist):
         "medianvalue": returnvalue_mean,
         "mediansigma": returnvalue_sigma
     }
-
+    print("Total Count", totalcount)
+    print("Means", s4_means)
+    print("Sigmas", s4_sigmas)
     return returndict
