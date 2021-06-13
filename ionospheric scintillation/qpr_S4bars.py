@@ -83,8 +83,9 @@ def wrapper(queryresults):
 
         if s_time == s_time_next:
             if s_s4 > splat_threshold:
-                if s_alt >= splat_altitude:
-                    counter = counter + 1
+                if s_s4 <= 100:
+                    if s_alt >= splat_altitude:
+                        counter = counter + 1
         else:
             utc.append(str(posix2utc(s_time, '%Y-%m-%d %H')))
             dat.append(counter)
