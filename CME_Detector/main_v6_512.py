@@ -343,7 +343,7 @@ def create_polar_mask(masksize):
 
 def calc_median(array):
     temp = []
-    half_len = 5
+    half_len = 2
     u = 0
     if len(array) > half_len * 2:
         for i in range(half_len, len(array) - half_len):
@@ -398,6 +398,7 @@ def plot_chart(pixels):
     fig.update_layout(width=1400, height=800, title="CME Detection",
                       xaxis_title="Date/time UTC", yaxis_title="pixel count")
     fig.write_image(file="cme_512.svg", format='svg')
+    fig.show()
 
 
 def create_gif(list, filesfolder):
