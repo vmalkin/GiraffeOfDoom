@@ -99,7 +99,7 @@ def add_stamp(image_object, filename):
     font_size = 0.5
     font_color = colour
     font_thickness = 1
-    banner = 'http://DunedinAurora.NZ'
+    banner = 'Processed by http://DunedinAurora.NZ'
     x, y = 5, 15
     cv2.putText(image_object, banner, (x, y), font, font_size, font_color, font_thickness, cv2.LINE_AA)
 
@@ -445,7 +445,7 @@ if __name__ == "__main__":
 
     # Parse for old epoch files that have been added
     print("Old epoch")
-    # ymd_old = "20210604"
+    # ymd_old = "20210614"
     baseURL = "https://soho.nascom.nasa.gov/data/REPROCESSING/Completed/" + year + "/c3/" + ymd_old + "/"
     onlinelist = baseURL + ".full_512.lst"
     print(onlinelist)
