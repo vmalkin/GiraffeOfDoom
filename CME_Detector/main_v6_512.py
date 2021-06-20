@@ -19,8 +19,7 @@ def get_resource_from_url(url_to_get):
 
     except urllib.request.HTTPError:
         # logging.error("Unable to load/save image from URL: " + str(imageurl) + " " + str(filename))
-        print("unable to load URL")
-        print(url_to_get)
+        print("unable to load URL", url_to_get)
 
     return response
 
@@ -382,7 +381,7 @@ def plot_chart(pixels):
     north = recursive_smooth(north, 0.2)
     south = recursive_smooth(south, 0.5)
     total = recursive_smooth(total, 0.5)
-    print(len(xlabels), len(north))
+    # print(len(xlabels), len(north))
 
     fig = make_subplots(rows=3, cols=1)
 
@@ -432,7 +431,7 @@ if __name__ == "__main__":
     ymd_old = posix2utc((tm - 86400), "%Y%m%d")
     year = posix2utc(tm, "%Y")
 
-    print("Current epoch")
+    print("Getting images for current epoch")
     baseURL = "https://soho.nascom.nasa.gov/data/REPROCESSING/Completed/" + year + "/c3/" + ymd_now + "/"
     onlinelist = baseURL + ".full_512.lst"
     listofimages = get_resource_from_url(onlinelist)
@@ -445,11 +444,10 @@ if __name__ == "__main__":
         downloadimages(newimages, storage_folder)
 
     # Parse for old epoch files that have been added
-    print("Old epoch")
-    # ymd_old = "20210614"
+    print("Getting images for old epoch")
+    # ymd_old = "20210619"
     baseURL = "https://soho.nascom.nasa.gov/data/REPROCESSING/Completed/" + year + "/c3/" + ymd_old + "/"
     onlinelist = baseURL + ".full_512.lst"
-    print(onlinelist)
     listofimages = get_resource_from_url(onlinelist)
     listofimages = parse_text_fromURL(listofimages)
 
@@ -468,7 +466,9 @@ if __name__ == "__main__":
     dirlisting.sort()
 
     # process the stored images so far to get latest diffs
+    print("Preparing enhanced images for display...")
     processimages_display(dirlisting, storage_folder, images_folder)
+    print("Preparing masked images for analysis...")
     pixels = processimages_analysis(dirlisting, storage_folder, analysis_folder)
     plot_chart(pixels)
 
@@ -479,6 +479,7 @@ if __name__ == "__main__":
         cut = len(imagelist) - 24
         imagelist = imagelist[cut:]
     imagelist.sort()
+    print("creating animated GIF...")
     create_gif(imagelist, images_folder)
     
     with open("pixelcount.csv", "w") as f:
