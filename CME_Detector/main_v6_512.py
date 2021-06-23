@@ -321,24 +321,31 @@ def downloadimages(listofimages, storagelocation):
 
 
 def create_polar_mask(masksize):
-    full_mask = masksize - 1
-    half_mask = int(masksize / 2)
+    dist_full = masksize - 1
+    dist_half = int(masksize / 2)
+    dist_quarter = int(masksize / 4)
 
     img = np.zeros((masksize, masksize), np.uint8)
     colour = (255, 255, 255)
 
     # occulating disk
-    cv2.circle(img, (half_mask, half_mask), 53, colour, -1)
+    cv2.circle(img, (dist_half, dist_half), 53, colour, -1)
 
     # top zone
-    triangle = [(0, 0), (0, full_mask), (half_mask,half_mask)]
+    triangle = [(0, 0), (0, dist_full), (dist_half,dist_half)]
     cv2.fillPoly(img, np.array([triangle]), colour)
 
     # bottom zone
-    triangle = [(half_mask,half_mask), (full_mask, 0), (full_mask,full_mask)]
+    triangle = [(dist_half,dist_half), (dist_full, 0), (dist_full,dist_full)]
     cv2.fillPoly(img, np.array([triangle]), colour)
 
+    # Blank the top and bottom zones so they dont go all the way to the edge
+    cv2.rectangle(img, (0, 0), (dist_full, dist_quarter), (255, 255, 255), -1)
+    cv2.rectangle(img, (0, dist_full-dist_quarter), (dist_full, dist_full), (255, 255, 255), -1)
+
     img = ~img
+    # cv2.imshow("Display window", img)
+    # k = cv2.waitKey(0)
     return img
 
 
