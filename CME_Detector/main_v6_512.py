@@ -351,7 +351,7 @@ def create_polar_mask(masksize):
 
 def calc_median(array):
     temp = []
-    half_len = 2
+    half_len = 3
     u = 0
     if len(array) > half_len * 2:
         for i in range(half_len, len(array) - half_len):
