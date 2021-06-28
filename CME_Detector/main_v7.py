@@ -165,7 +165,7 @@ def processimages_analysis(listofimages, storage_folder, analysisfolder):
         test = listofimages[i].split("_")
         test_hourcount = filehour_converter(test[0], test[1])
         testimage = listofimages[i]
-        if test_hourcount - hourcount > (10*60):
+        if test_hourcount - hourcount > (45*60):
             i1 = storage_folder + "/" + hourimage
             img_1 = image_load(i1)
 
@@ -207,7 +207,8 @@ def processimages_analysis(listofimages, storage_folder, analysisfolder):
             new_image = cv2.convertScaleAbs(d, alpha=alpha, beta=beta)
 
             outputimg = erode_dilate_img(new_image)
-            outputimg = cv2.fastNlMeansDenoising(outputimg, None, 8, 8)
+            # outputimg = cv2.fastNlMeansDenoising(outputimg, None, 8, 8)
+            # ret1, outputimg1 = cv2.threshold(outputimg, 140, 255, cv2.THRESH_BINARY)
 
             # ###############################################################################
             # 3 - Remove streaks associated with bloomed pixels
@@ -218,8 +219,7 @@ def processimages_analysis(listofimages, storage_folder, analysisfolder):
             # outputimg = clahe.apply(outputimg)
 
             # Save the difference image into the images folder
-            add_stamp(outputimg, hourimage)
-
+            # add_stamp(outputimg, hourimage)
             fname = analysisfolder + "/" + listofimages[i]
             image_save(fname, outputimg)
 
