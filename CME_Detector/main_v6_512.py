@@ -351,7 +351,7 @@ def create_polar_mask(masksize):
 
 def calc_median(array):
     temp = []
-    half_len = 2
+    half_len = 4
     u = 0
     if len(array) > half_len * 2:
         for i in range(half_len, len(array) - half_len):
@@ -384,12 +384,12 @@ def plot_chart(pixels):
         north.append(int(i[1]))
         south.append(int(i[2]))
         total.append(int(i[3]))
-    north = calc_median(north)
-    south = calc_median(south)
-    total = calc_median(total)
-    north = recursive_smooth(north, 0.2)
-    south = recursive_smooth(south, 0.5)
-    total = recursive_smooth(total, 0.5)
+    # north = calc_median(north)
+    # south = calc_median(south)
+    # total = calc_median(total)
+    # north = recursive_smooth(north, 0.2)
+    # south = recursive_smooth(south, 0.5)
+    # total = recursive_smooth(total, 0.5)
     # print(len(xlabels), len(north))
 
     fig = make_subplots(rows=3, cols=1)
