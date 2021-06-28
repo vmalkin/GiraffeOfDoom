@@ -81,9 +81,9 @@ def erode_dilate_img(image_to_process):
     # Erode and Dilate the image to clear up noise
     # Erosion will trim away pixels (noise)
     # dilation puffs out edges
-    kernel1 = np.ones((6, 6), np.uint8)
-    outputimg = cv2.erode(image_to_process, kernel1, iterations=1)
-    kernel2 = np.ones((6, 6), np.uint8)
+    kernel1 = np.ones((2, 2), np.uint8)
+    outputimg = cv2.erode(image_to_process, kernel1, iterations=2)
+    kernel2 = np.ones((9, 9), np.uint8)
     outputimg = cv2.dilate(outputimg, kernel2, iterations=1)
     return outputimg
 
@@ -155,9 +155,9 @@ def processimages_analysis(listofimages, storage_folder, analysisfolder):
     t = listofimages[0].split("_")
     hourcount = filehour_converter(t[0], t[1])
     hourimage = listofimages[0]
-    # input the image size
-    image_size = 512
-    mask = create_polar_mask(image_size)
+    # # input the image size
+    # image_size = 512
+    # mask = create_polar_mask(image_size)
     pixelcount = []
 
     for i in range(0, len(listofimages)):
@@ -165,7 +165,7 @@ def processimages_analysis(listofimages, storage_folder, analysisfolder):
         test = listofimages[i].split("_")
         test_hourcount = filehour_converter(test[0], test[1])
         testimage = listofimages[i]
-        if test_hourcount - hourcount > (45*60):
+        if test_hourcount - hourcount > (10*60):
             i1 = storage_folder + "/" + hourimage
             img_1 = image_load(i1)
 
@@ -181,57 +181,47 @@ def processimages_analysis(listofimages, storage_folder, analysisfolder):
             img_ng = img_ng[0]
             img_og = img_og[0]
 
-            img_og = erode_dilate_img(img_og)
-            img_ng = erode_dilate_img(img_ng)
-            img_to = img_og
-            img_tn = img_ng
-
-            # add mask.
-            img_ng = cv2.bitwise_and(img_ng, mask, mask=mask)
-            img_og = cv2.bitwise_and(img_og, mask, mask=mask)
-
-            # improved histogram function
-            clahe = cv2.createCLAHE(clipLimit=5, tileGridSize=(8,8))
-            img_og = clahe.apply(img_og)
-            img_ng = clahe.apply(img_ng)
-            img_to = clahe.apply(img_to)
-            img_tn = clahe.apply(img_tn)
 
             # unary operator to invert the image
             img_ng = ~img_ng
-            img_tn = ~img_tn
+
+            # ###############################################################################
+            # 1 - Remove Background
+            # ###############################################################################
 
             # combine the images to highlight differences
-            alpha = 1.2
+            alpha = 1
             gamma = 0
             new_image = img_ng.copy()
-            new_total = img_tn.copy()
+            # new_total = img_tn.copy()
             cv2.addWeighted(img_ng, alpha, img_og, 1 - alpha, gamma, new_image)
-            cv2.addWeighted(img_tn, alpha, img_to, 1 - alpha, gamma, new_total)
+
+            # ###############################################################################
+            # 2 - Remove stars, planets, particle noise
+            # ###############################################################################
 
             # Adjust contrast and brightness
             d = new_image.copy()
             alpha = 1.2
             beta = -50
             new_image = cv2.convertScaleAbs(d, alpha=alpha, beta=beta)
-            ret, outputimg = cv2.threshold(new_image, 130, 255, cv2.THRESH_BINARY)
-            ret1, outputtotal = cv2.threshold(new_total, 130, 255, cv2.THRESH_BINARY)
 
-            # here we need to count pixels found in the north and south parts of the image to
-            # determine if a CME halo is present
-            count = countpixels(outputimg, image_size)
-            count_total = countpixels_total(outputtotal, image_size)
-            dp = posix2utc(test_hourcount, '%Y-%m-%d %H:%M') + "," + str(count[0]) + "," + str(count[1]) + "," + str(count_total)
-            # dp = [posix2utc(test_hourcount, '%Y-%m-%d %H:%M'),count[0], count[1]]
-            pixelcount.append(dp)
+            outputimg = erode_dilate_img(new_image)
+            outputimg = cv2.fastNlMeansDenoising(outputimg, None, 8, 8)
+
+            # ###############################################################################
+            # 3 - Remove streaks associated with bloomed pixels
+            # ###############################################################################
+
+            # # improved histogram function
+            # clahe = cv2.createCLAHE(clipLimit=2, tileGridSize=(4,4))
+            # outputimg = clahe.apply(outputimg)
 
             # Save the difference image into the images folder
             add_stamp(outputimg, hourimage)
-            # tempname = "c://temp//" + listofimages[i]
+
             fname = analysisfolder + "/" + listofimages[i]
             image_save(fname, outputimg)
-            # image_save(tempname, outputtotal)
-            # print("Polar CME image created..." + fname)
 
             # LASTLY.....
             hourcount = test_hourcount
@@ -267,16 +257,16 @@ def processimages_display(listofimages, storage_folder, images_folder):
             # img_og = erode_dilate_img(img_og)
             # img_ng = erode_dilate_img(img_ng)
 
-            # # improved histogram function
-            # clahe = cv2.createCLAHE(clipLimit=2, tileGridSize=(8,8))
-            # img_og = clahe.apply(img_og)
-            # img_ng = clahe.apply(img_ng)
+            # improved histogram function
+            clahe = cv2.createCLAHE(clipLimit=2, tileGridSize=(8,8))
+            img_og = clahe.apply(img_og)
+            img_ng = clahe.apply(img_ng)
 
             # unary operator to invert the image
             img_ng = ~img_ng
 
             # combine the images to highlight differences
-            alpha = 0.5
+            alpha = 1.2
             gamma = 0
             new_image = img_ng.copy()
             cv2.addWeighted(img_ng, alpha, img_og, 1 - alpha, gamma, new_image)
@@ -427,9 +417,13 @@ def create_gif(list, filesfolder):
 
 
 if __name__ == "__main__":
-    images_folder = "images_512"
-    storage_folder = "lasco_store_512"
-    analysis_folder = "analysis_512"
+    # images_folder = "images_512"
+    # storage_folder = "lasco_store_512"
+    # analysis_folder = "analysis_512"
+
+    images_folder = "images_1024"
+    storage_folder = "lasco_store_1024"
+    analysis_folder = "analysis_1024"
 
     if os.path.exists(images_folder) is False:
         os.makedirs(images_folder)
@@ -445,7 +439,8 @@ if __name__ == "__main__":
 
     print("Getting images for current epoch")
     baseURL = "https://soho.nascom.nasa.gov/data/REPROCESSING/Completed/" + year + "/c3/" + ymd_now + "/"
-    onlinelist = baseURL + ".full_512.lst"
+    # onlinelist = baseURL + ".full_512.lst"
+    onlinelist = baseURL + ".full_1024.lst"
     listofimages = get_resource_from_url(onlinelist)
     listofimages = parse_text_fromURL(listofimages)
     newimages = parseimages(listofimages, storage_folder)
@@ -459,7 +454,8 @@ if __name__ == "__main__":
     print("Getting images for old epoch")
     # ymd_old = "20210618"
     baseURL = "https://soho.nascom.nasa.gov/data/REPROCESSING/Completed/" + year + "/c3/" + ymd_old + "/"
-    onlinelist = baseURL + ".full_512.lst"
+    # onlinelist = baseURL + ".full_512.lst"
+    onlinelist = baseURL + ".full_1024.lst"
     listofimages = get_resource_from_url(onlinelist)
     listofimages = parse_text_fromURL(listofimages)
 
@@ -482,7 +478,7 @@ if __name__ == "__main__":
     processimages_display(dirlisting, storage_folder, images_folder)
     print("Preparing masked images for analysis...")
     pixels = processimages_analysis(dirlisting, storage_folder, analysis_folder)
-    plot_chart(pixels)
+    # plot_chart(pixels)
 
     # create an animated GIF of the last 24 images from the IMAGES folder.
     imagelist = os.listdir(images_folder)
@@ -494,10 +490,10 @@ if __name__ == "__main__":
     print("creating animated GIF...")
     create_gif(imagelist, images_folder)
     
-    with open("pixelcount.csv", "w") as f:
-        f.write("UTC time, North, South, Total\n")
-        for line in pixels:
-            f.write(line + "\n")
-        f.close()
+    # with open("pixelcount.csv", "w") as f:
+    #     f.write("UTC time, North, South, Total\n")
+    #     for line in pixels:
+    #         f.write(line + "\n")
+    #     f.close()
 
     print("Finished processing.")
