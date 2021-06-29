@@ -214,8 +214,8 @@ def processimages_analysis(listofimages, storage_folder, analysisfolder):
             # 3 - Remove streaks associated with bloomed pixels
             # ###############################################################################
 
-            # # improved histogram function
-            # clahe = cv2.createCLAHE(clipLimit=2, tileGridSize=(4,4))
+            # improved histogram function
+            # clahe = cv2.createCLAHE(clipLimit=10, tileGridSize=(4,4))
             # outputimg = clahe.apply(outputimg)
 
             # Save the difference image into the images folder
