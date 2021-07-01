@@ -364,42 +364,42 @@ def recursive_smooth(array, parameter):
         temp.append(st_now)
         st_prev = st_now
     return temp
-
-def plot_chart(pixels):
-    xlabels = []
-    north = []
-    south = []
-    total = []
-
-    for item in pixels:
-        i = item.split(",")
-        xlabels.append(i[0])
-        north.append(int(i[1]))
-        south.append(int(i[2]))
-        total.append(int(i[3]))
-    # north = calc_median(north)
-    # south = calc_median(south)
-    # total = calc_median(total)
-    # north = recursive_smooth(north, 0.2)
-    # south = recursive_smooth(south, 0.5)
-    # total = recursive_smooth(total, 0.5)
-    # print(len(xlabels), len(north))
-
-    fig = make_subplots(rows=3, cols=1)
-
-    # fig = go.Figure()
-    fig.add_trace(go.Scatter(x=xlabels, y=total, mode="lines", name="Total CMEs",
-                              line=dict(width=3, color="#008000")), row=1, col=1)
-    fig.add_trace(go.Scatter(x=xlabels, y=north, mode="lines", name="North CMEs",
-                              line=dict(width=3, color="#800000")), row=2, col=1)
-    fig.add_trace(go.Scatter(x=xlabels, y=south, mode="lines", name="South CMEs",
-                              line=dict(width=3, color="#000080")), row=3, col=1)
-    fig.update_xaxes(nticks=24, tickangle=45, gridcolor='#ffffff')
-    fig.update_layout(plot_bgcolor="#a0a0a0", paper_bgcolor="#a0a0a0")
-    fig.update_layout(width=1400, height=800, title="CME Detection",
-                      xaxis_title="Date/time UTC", yaxis_title="pixel count")
-    fig.write_image(file="cme_512.svg", format='svg')
-    fig.show()
+#
+# def plot_chart(pixels):
+#     xlabels = []
+#     north = []
+#     south = []
+#     total = []
+#
+#     for item in pixels:
+#         i = item.split(",")
+#         xlabels.append(i[0])
+#         north.append(int(i[1]))
+#         south.append(int(i[2]))
+#         total.append(int(i[3]))
+#     # north = calc_median(north)
+#     # south = calc_median(south)
+#     # total = calc_median(total)
+#     # north = recursive_smooth(north, 0.2)
+#     # south = recursive_smooth(south, 0.5)
+#     # total = recursive_smooth(total, 0.5)
+#     # print(len(xlabels), len(north))
+#
+#     fig = make_subplots(rows=3, cols=1)
+#
+#     # fig = go.Figure()
+#     fig.add_trace(go.Scatter(x=xlabels, y=total, mode="lines", name="Total CMEs",
+#                               line=dict(width=3, color="#008000")), row=1, col=1)
+#     fig.add_trace(go.Scatter(x=xlabels, y=north, mode="lines", name="North CMEs",
+#                               line=dict(width=3, color="#800000")), row=2, col=1)
+#     fig.add_trace(go.Scatter(x=xlabels, y=south, mode="lines", name="South CMEs",
+#                               line=dict(width=3, color="#000080")), row=3, col=1)
+#     fig.update_xaxes(nticks=24, tickangle=45, gridcolor='#ffffff')
+#     fig.update_layout(plot_bgcolor="#a0a0a0", paper_bgcolor="#a0a0a0")
+#     fig.update_layout(width=1400, height=800, title="CME Detection",
+#                       xaxis_title="Date/time UTC", yaxis_title="pixel count")
+#     fig.write_image(file="cme_512.svg", format='svg')
+#     fig.show()
 
 
 def create_gif(list, filesfolder):
