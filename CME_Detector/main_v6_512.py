@@ -150,6 +150,94 @@ def countpixels_total(outputtotal, size):
     count_t = (size * size) - cv2.countNonZero(outputtotal)
     return count_t
 
+def processimages_analysis_jmap(listofimages, storage_folder, analysisfolder):
+    t = listofimages[0].split("_")
+    hourcount = filehour_converter(t[0], t[1])
+    hourimage = listofimages[0]
+    # input the image size
+    image_size = 512
+    mask = create_polar_mask(image_size)
+    pixelcount = []
+
+    for i in range(0, len(listofimages)):
+        # split the name
+        test = listofimages[i].split("_")
+        test_hourcount = filehour_converter(test[0], test[1])
+        testimage = listofimages[i]
+        if test_hourcount - hourcount > (45*60):
+            i1 = storage_folder + "/" + hourimage
+            img_1 = image_load(i1)
+
+            i2 = storage_folder + "/" + testimage
+            img_2 = image_load(i2)
+
+            img_og = greyscale_img(img_1)
+            img_ng = greyscale_img(img_2)
+
+            # convert image to a single channel
+            img_ng = cv2.split(img_ng)
+            img_og = cv2.split(img_og)
+            img_ng = img_ng[0]
+            img_og = img_og[0]
+
+            img_og = erode_dilate_img(img_og)
+            img_ng = erode_dilate_img(img_ng)
+            img_to = img_og
+            img_tn = img_ng
+
+            # add mask.
+            img_ng = cv2.bitwise_and(img_ng, mask, mask=mask)
+            img_og = cv2.bitwise_and(img_og, mask, mask=mask)
+
+            # improved histogram function
+            clahe = cv2.createCLAHE(clipLimit=5, tileGridSize=(8,8))
+            img_og = clahe.apply(img_og)
+            img_ng = clahe.apply(img_ng)
+            img_to = clahe.apply(img_to)
+            img_tn = clahe.apply(img_tn)
+
+            # unary operator to invert the image
+            img_ng = ~img_ng
+            img_tn = ~img_tn
+
+            # combine the images to highlight differences
+            alpha = 1.2
+            gamma = 0
+            new_image = img_ng.copy()
+            new_total = img_tn.copy()
+            cv2.addWeighted(img_ng, alpha, img_og, 1 - alpha, gamma, new_image)
+            cv2.addWeighted(img_tn, alpha, img_to, 1 - alpha, gamma, new_total)
+
+            # Adjust contrast and brightness
+            d = new_image.copy()
+            alpha = 1.2
+            beta = -50
+            new_image = cv2.convertScaleAbs(d, alpha=alpha, beta=beta)
+            ret, outputimg = cv2.threshold(new_image, 130, 255, cv2.THRESH_BINARY)
+            ret1, outputtotal = cv2.threshold(new_total, 130, 255, cv2.THRESH_BINARY)
+
+            # here we need to count pixels found in the north and south parts of the image to
+            # determine if a CME halo is present
+            count = countpixels(outputimg, image_size)
+            count_total = countpixels_total(outputtotal, image_size)
+            dp = posix2utc(test_hourcount, '%Y-%m-%d %H:%M') + "," + str(count[0]) + "," + str(count[1]) + "," + str(count_total)
+            # dp = [posix2utc(test_hourcount, '%Y-%m-%d %H:%M'),count[0], count[1]]
+            pixelcount.append(dp)
+
+            # Save the difference image into the images folder
+            add_stamp(outputimg, hourimage)
+            # tempname = "c://temp//" + listofimages[i]
+            fname = analysisfolder + "/" + listofimages[i]
+            image_save(fname, outputimg)
+            # image_save(tempname, outputtotal)
+            # print("Polar CME image created..." + fname)
+
+            # LASTLY.....
+            hourcount = test_hourcount
+            hourimage = testimage
+
+
+
 
 def processimages_analysis(listofimages, storage_folder, analysisfolder):
     t = listofimages[0].split("_")
@@ -267,22 +355,19 @@ def processimages_display(listofimages, storage_folder, images_folder):
             # img_og = erode_dilate_img(img_og)
             # img_ng = erode_dilate_img(img_ng)
 
-            # # improved histogram function
-            # clahe = cv2.createCLAHE(clipLimit=2, tileGridSize=(8,8))
-            # img_og = clahe.apply(img_og)
-            # img_ng = clahe.apply(img_ng)
+            # improved histogram function
+            clahe = cv2.createCLAHE(clipLimit=2, tileGridSize=(8,8))
+            img_og = clahe.apply(img_og)
+            img_ng = clahe.apply(img_ng)
 
             # unary operator to invert the image
             img_ng = ~img_ng
 
             # combine the images to highlight differences
-            alpha = 0.5
+            alpha = 1
             gamma = 0
             new_image = img_ng.copy()
             cv2.addWeighted(img_ng, alpha, img_og, 1 - alpha, gamma, new_image)
-
-
-
 
             # Adjust contrast and brightness
             d = new_image.copy()
@@ -387,13 +472,13 @@ def plot_chart(pixels):
         north.append(int(i[1]))
         south.append(int(i[2]))
         total.append(int(i[3]))
-    # north = calc_median(north)
-    # south = calc_median(south)
-    # total = calc_median(total)
-    # north = recursive_smooth(north, 0.2)
-    # south = recursive_smooth(south, 0.5)
-    # total = recursive_smooth(total, 0.5)
-    # print(len(xlabels), len(north))
+    north = calc_median(north)
+    south = calc_median(south)
+    total = calc_median(total)
+    north = recursive_smooth(north, 0.2)
+    south = recursive_smooth(south, 0.5)
+    total = recursive_smooth(total, 0.5)
+    print(len(xlabels), len(north))
 
     fig = make_subplots(rows=3, cols=1)
 
@@ -457,7 +542,7 @@ if __name__ == "__main__":
 
     # Parse for old epoch files that have been added
     print("Getting images for old epoch")
-    # ymd_old = "20210618"
+    # ymd_old = "20210628"
     baseURL = "https://soho.nascom.nasa.gov/data/REPROCESSING/Completed/" + year + "/c3/" + ymd_old + "/"
     onlinelist = baseURL + ".full_512.lst"
     listofimages = get_resource_from_url(onlinelist)
