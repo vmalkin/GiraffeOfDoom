@@ -1,15 +1,20 @@
 """
-calulculate the mean and standard deviation of a list of numbers.
-Saves each iteration of mean and stdev to a pickle file
-the median value of each file is returned as a dictionary
+This code COUNTS the number of S4 events over 0.4 (40%) for the period of the passed-in query
+results (typically 24 hours). The assumption is that the number of S4 events climbs during periods of activity
+and wanes when things are quiet
+
+This codes appends the count of events to an array. The median and standard deviation of this array are
+returned.
 """
+
 
 from statistics import mean, stdev, median
 import pickle
 import os
 import constants as k
 
-listlength = 7000
+# Approx 3 Carrington rotations
+listlength = 120000
 
 def load_values(pickle_file):
     returnlist = []
@@ -24,7 +29,7 @@ def load_values(pickle_file):
 
 def prune_list(value_list):
     """prunes a list to a list of one - the current median value of the list"""
-    medianvalue = calc_median(value_list)
+    medianvalue = median(value_list)
     m = []
     m.append(medianvalue)
     return m
@@ -60,16 +65,6 @@ def save_values(save_list, pickle_file):
     pickle.dump(save_list, open(pickle_file, "wb"),0)
 
 
-def calc_median(value_list):
-    """Calculate and return the median value of a list"""
-    if len(value_list) > 2:
-        return_median = median(value_list)
-        return_median = round(return_median, 5)
-    else:
-        return_median = 0
-    return return_median
-
-
 def count_events(valueslist):
     s4_count = 0
     for item in valueslist:
@@ -79,44 +74,34 @@ def count_events(valueslist):
 
 
 def wrapper(valueslist):
-    # Procedure:
-    # we need to purge entries where the S4 index isless than 0, and more than 100
-    # We should report that these were found!
-    # calculate the count of events for the time period
+    # Calculate the number of s4 events from our query that meet our criteria of critical elevation
+    # and not over 100%
     s4Count = count_events(valueslist)
 
-    totalcount = load_values(k.file_count_s4)
-    s4_means = load_values(k.file_means)
-    s4_sigmas = load_values(k.file_sigmas)
+    # Load the array of s4Counts
+    s4Counts_array = load_values(k.file_count_s4)
 
-    # Append this count to the running list of counts
-    totalcount = append_value(totalcount, s4Count)
-    # calculate the mean of the counts --> append to a running list of means
-    s4_means = append_value(s4_means, calc_mean(totalcount))
-    # calculate he standard deviation of the counts --> append to a running list of SDs
-    s4_sigmas = append_value(s4_sigmas, calc_stdev(totalcount))
+    # append the new count to the array
+    s4Counts_array.append(s4Count)
 
-    # Return the MEDIAN of the Means and Standard deviations. create the return dictionary based on this.
-    returnvalue_mean = calc_median(s4_means)
-    returnvalue_sigma = calc_median(s4_sigmas)
+    # calculate the standard deviation of the counts
+    returnvalue_mean = calc_mean(s4Counts_array)
+    returnvalue_sigma = calc_stdev(s4Counts_array)
 
-    # Periodically trim the the lists by seeding a new list with the median value from each one and starting afresh
-    if len(totalcount) >= listlength:
-        totalcount = prune_list(totalcount)
-    if len(s4_means) >= listlength:
-        s4_means = prune_list(s4_means)
-    if len(s4_sigmas) >= listlength:
-        s4_sigmas = prune_list(s4_sigmas)
+    # Periodically trim the the lists by seeding a new list with the median value of the current list
+    if len(s4Counts_array) >= listlength:
+        s4Counts_array = prune_list(s4Counts_array)
 
-    save_values(totalcount, k.file_count_s4)
-    save_values(s4_means, k.file_means)
-    save_values(s4_sigmas, k.file_sigmas)
+    # Save the array
+    save_values(s4Counts_array, k.file_count_s4)
 
     returndict = {
         "medianvalue": returnvalue_mean,
         "mediansigma": returnvalue_sigma
     }
-    print("Total Count", totalcount)
-    print("Means", s4_means)
-    print("Sigmas", s4_sigmas)
+
+    print("Values: ", s4Counts_array)
+    print("Mean: ", returnvalue_mean)
+    print("Sigmas: ", returnvalue_sigma)
+
     return returndict

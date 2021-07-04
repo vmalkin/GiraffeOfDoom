@@ -19,6 +19,3 @@ dir_images = "images"
 dir_logfiles = "logfiles"
 
 file_count_s4 = "s4_totalcount.pkl"
-file_means = "s4_means.pkl"
-file_sigmas = "s4_sigmas.pkl"
-current_stats = []

@@ -10,8 +10,6 @@ from statistics import mean, stdev, median
 from threading import Thread
 
 import mgr_s4_count_stats
-import qpr_s4_scatter
-# import qpr_s4_median
 import qpr_save_full_query
 import qpr_sat_plots
 import qpr_alt_az
@@ -37,6 +35,7 @@ optimum_altitude = 25
 # This is the query output that will be used to generate graphs and plots etc.
 querydata_24 = []
 querydata_48 = []
+current_stats = []
 
 
 # *************************************************
@@ -47,7 +46,11 @@ class QueryProcessor(Thread):
         Thread.__init__(self, name="QueryProcessor")
 
     def run(self):
-        # put query data_s4 processing stuff here. NO matplot unfortunatly
+        # put query data_s4 processing stuff here.
+        # The data recorded consist of:
+        # sat_id, posixtime, alt, az, s4, snr
+        # for each satellite per minute
+
         while True:
             print("***************************** Start Query Processor")
             # Calculate the average and the standard deviation of THE COUNT OF S4 EVENTS for the current past 24 hours
@@ -55,28 +58,16 @@ class QueryProcessor(Thread):
             try:
                 if len(querydata_24) > 2:
                     print("calculating STDEV and MEAN of the S4 ratio for the past 24 hours...")
-                    k.current_stats = mgr_s4_count_stats.wrapper(querydata_24)
-                print(k.current_stats)
+                    current_stats = mgr_s4_count_stats.wrapper(querydata_24)
+                print(current_stats)
             except:
-                print("\n" + "!!!!!!!!!  UNABLE TO CALUCLATE STDEV AND MEAN OF S4 VALUES  !!!!!!!!!" + "\n")
+                print("\n" + "!!!!!!!!!  UNABLE TO CALCULATE STDEV AND MEAN OF S4 VALUES  !!!!!!!!!" + "\n")
 
             try:
                 qpr_save_full_query.wrapper(querydata_24)
             except:
                 print("\n" + "!!!!!!!!!  Full Query Save Failed  !!!!!!!!!" + "\n")
                 logging.warning("SNR failed in MAIN.PY")
-
-            # try:
-            #     qpr_s4_median.wrapper(querydata_24)
-            # except:
-            #     print("\n" + "!!!!!!!!!  S4 Median Failed  !!!!!!!!!" + "\n")
-            #     logging.warning("S4 Median failed in MAIN.PY")
-
-            # try:
-            #     qpr_s4_scatter.wrapper(querydata_24)
-            # except:
-            #     print("\n" + "!!!!!!!!!  S4 Scatter Failed  !!!!!!!!!" + "\n")
-            #     logging.warning("S4 Scatter failed in MAIN.PY")
 
             try:
                 qpr_sat_plots.wrapper(querydata_24)
@@ -385,5 +376,4 @@ if __name__ == "__main__":
             print("Satellite readings processed: " + str(counter))
             counter = 0
             oldtimer = nowtimer
-            print("Done! " + posix2utc(posixtime) + "\n")
-            print(k.current_stats)
+            print("Done! " + posix2utc(posixtime) + "\n\n")
