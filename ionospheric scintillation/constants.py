@@ -17,5 +17,3 @@ interCharTimeout = None
 
 dir_images = "images"
 dir_logfiles = "logfiles"
-
-file_count_s4 = "s4_totalcount.pkl"

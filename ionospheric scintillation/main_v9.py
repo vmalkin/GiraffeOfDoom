@@ -9,15 +9,13 @@ import logging
 from statistics import mean, stdev, median
 from threading import Thread
 
-import mgr_s4_count_stats
-import qpr_save_full_query
-import qpr_sat_plots
+import mgr_save_full_query
+import mgr_sat_plots
 import mgr_polar_noise_tracks
 import mgr_polar_sat_tracks
 import mgr_polar_s4_noise
-import qpr_S4bars
-import qpr_24hr_cumulative
-import qry_makeJSON
+import mgr_s4_stats_json
+
 
 errorloglevel = logging.CRITICAL
 logging.basicConfig(filename="errors.log", format='%(asctime)s %(message)s', level=errorloglevel)
@@ -53,24 +51,15 @@ class QueryProcessor(Thread):
 
         while True:
             print("***************************** Start Query Processor")
-            # Calculate the average and the standard deviation of THE COUNT OF S4 EVENTS for the current past 24 hours
-            # This is used in several plots.
-            try:
-                if len(querydata_24) > 2:
-                    print("calculating STDEV and MEAN of the S4 ratio for the past 24 hours...")
-                    current_stats = mgr_s4_count_stats.wrapper(querydata_24)
-                print(current_stats)
-            except:
-                print("\n" + "!!!!!!!!!  UNABLE TO CALCULATE STDEV AND MEAN OF S4 VALUES  !!!!!!!!!" + "\n")
 
             try:
-                qpr_save_full_query.wrapper(querydata_24)
+                mgr_save_full_query.wrapper(querydata_24)
             except:
                 print("\n" + "!!!!!!!!!  Full Query Save Failed  !!!!!!!!!" + "\n")
                 logging.warning("SNR failed in MAIN.PY")
 
             try:
-                qpr_sat_plots.wrapper(querydata_24)
+                mgr_sat_plots.wrapper(querydata_24)
             except:
                 print("\n" + "!!!!!!!!!  Satellite Plotter Failed  !!!!!!!!!" + "\n")
                 logging.warning("satellite plotter failed in MAIN.PY")
@@ -94,23 +83,23 @@ class QueryProcessor(Thread):
                 logging.warning("Noise Event Plotter failed in MAIN.PY")
 
             try:
-                qpr_S4bars.wrapper(querydata_24)
+                mgr_s4_stats_json.wrapper()
             except:
-                print("\n" + "!!!!!!!!!  S4 Bar Plotter Failed  !!!!!!!!!" + "\n")
-                logging.warning("Noise Event Plotter failed in MAIN.PY")
+                print("\n" + "!!!!!!!!!  s4 Stats Plotter & JSON Failed  !!!!!!!!!" + "\n")
+                logging.warning("s4 Stats plotter & JSON failed in MAIN.PY")
 
-            try:
-                qpr_24hr_cumulative.wrapper(querydata_48, k.current_stats)
-            except:
-                print("\n" + "!!!!!!!!!  Rolling count Plotter Failed  !!!!!!!!!" + "\n")
-                logging.warning("Rolling count Plotter failed in MAIN.PY")
-
-            try:
-                # pass
-                qry_makeJSON.wrapper(k.current_stats)
-            except:
-                print("\n" + "!!!!!!!!!  Ion Reading json creator failed  !!!!!!!!!" + "\n")
-                logging.warning("Ion Reading json creator failed in MAIN.PY")
+            # try:
+            #     qpr_24hr_cumulative.wrapper(querydata_48, k.current_stats)
+            # except:
+            #     print("\n" + "!!!!!!!!!  Rolling count Plotter Failed  !!!!!!!!!" + "\n")
+            #     logging.warning("Rolling count Plotter failed in MAIN.PY")
+            #
+            # try:
+            #     # pass
+            #     qry_makeJSON.wrapper(k.current_stats)
+            # except:
+            #     print("\n" + "!!!!!!!!!  Ion Reading json creator failed  !!!!!!!!!" + "\n")
+            #     logging.warning("Ion Reading json creator failed in MAIN.PY")
 
             # rings the terminal bell
             print("\a")
