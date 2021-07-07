@@ -5,7 +5,7 @@ based on the current S4 value compared to the mean value for the last carrington
 
 * displays a 24 hour plot of average S4, average SNR, count of s4 noise over 40%.
 """
-
+import constants as k
 import sqlite3
 import datetime
 import time
@@ -14,10 +14,9 @@ import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 
 sat_database = "gps_satellites.db"
-
-nowtime = int(time.time())
-starttime =nowtime - (60 * 60 * 24)
 nullvalue = "none"
+nowtime = int(time.time())
+starttime = nowtime - (60 * 60 * 24)
 
 class Bin:
     def __init__(self):
@@ -53,8 +52,7 @@ def posix2utc(posixtime, timeformat):
     return utctime
 
 
-def query_get_24hr():
-    starttime = int(time.time()) - (60 * 60 * 24)
+def query_get_data(start):
     optimum_altitude = 25
     print("Parsing database...")
     gpsdb = sqlite3.connect(sat_database)
@@ -62,7 +60,7 @@ def query_get_24hr():
 
     result = db.execute(
         'select sat_id, posixtime, alt, az, s4, snr from satdata where posixtime > ? and alt > ? order by posixtime asc',
-        [starttime, optimum_altitude])
+        [start, optimum_altitude])
     returnlist = []
     for item in result:
         dp = (item[0], item[1], item[2], item[3], item[4], item[5])
@@ -81,14 +79,21 @@ def indexposition(posixtime):
 
 def calc_median(array):
     temp = []
-    half_len = 4
-    u = 0
+    half_len = 2
+
     if len(array) > half_len * 2:
         for i in range(half_len, len(array) - half_len):
             t = []
-            for j in range(0, half_len):
-                t.append(array[i + j])
-            u = median(t)
+            u = 0
+            for j in range(0 - half_len, half_len):
+                if isinstance(array[i + j], (float, int)) is True:
+                    t.append(array[i + j])
+            if len(t) == 0:
+                u = 0
+            if len(t) == 1:
+                u = sum(t)
+            if len(t) > 1:
+                u = median(t)
             temp.append(u)
     return temp
 
@@ -104,7 +109,12 @@ def recursive_smooth(array, parameter):
 
 
 def plot_chart(dt, s4, snr, spikes):
-    fig = make_subplots(rows=3, cols=1)
+    s4 = calc_median(s4)
+    s4 = recursive_smooth(s4, 0.5)
+    # snr = calc_median(snr)
+    # snr = recursive_smooth(snr, 0.5)
+
+    fig = make_subplots(rows=3, cols=1, subplot_titles=("Average S4 (Scintillation) Index", "Average S/N Ratio - All Visible Satellites", "GPS Noise Spikes per Minute"))
 
     fig.add_trace(go.Scatter(x=dt, y=s4, mode="lines", name="Avg S4 Index",
                               line=dict(width=2, color="#008000")), row=1, col=1)
@@ -112,35 +122,42 @@ def plot_chart(dt, s4, snr, spikes):
                               line=dict(width=2, color="#800000")), row=2, col=1)
     fig.add_trace(go.Bar(x=dt, y=spikes,
                          name="S4 Noise Spikes above 40%",
-                         marker=dict(color="black", line=dict(width=1, color="black"))), row=3, col=1)
+                         marker=dict(color="black", line=dict(width=2, color="black"))), row=3, col=1)
+
+    fig.update_yaxes(title_text="%", row=1, col=1)
+    fig.update_yaxes(title_text="dB", row=2, col=1)
+    fig.update_yaxes(title_text="Number per Minute", row=3, col=1)
 
     fig.update_xaxes(nticks=30, tickangle=45, gridcolor='#ffffff')
     fig.update_layout(plot_bgcolor="#a0a0a0", paper_bgcolor="#a0a0a0")
-    fig.update_layout(width=1400, height=1200, title="GPS Noise and S4 Index",
-                      xaxis_title="", yaxis_title="%")
+    fig.update_layout(width=1400, height=1200, title="Data GPS and GLONASS Constellations")
     fig.update_layout(legend=dict(orientation="h", yanchor="bottom", y=-0.2, xanchor="center", x=0.5))
-    fig.write_image(file="images//GPS.svg", format='svg')
-    # fig.show()
+    savefile = k.dir_images + "//GPS.jpg"
+    fig.write_image(file=savefile, format='jpg')
 
 
 def wrapper():
+    nowtime = int(time.time())
+    starttime = nowtime - (60 * 60 * 24)
+
     binlist = []
 
     for i in range(0, 1451):
         binlist.append(Bin())
 
-    datalist = query_get_24hr()
-
+    datalist = query_get_data(starttime)
 
     for item in datalist:
         i = indexposition(item[1])
-        t = posix2utc(item[1], '%Y-%m-%d %H:%M')
-        binlist[i].time = t
-        binlist[i].s4.append(float(item[4]))
-        binlist[i].snr.append(float(item[5]))
-        if item[4] > 40:
-            if item[2] > 30:
-                binlist[i].s4_spikes.append(1)
+        if i >= 0:
+            if i <= 1440:
+                t = posix2utc(item[1], '%Y-%m-%d %H:%M')
+                binlist[i].time = t
+                binlist[i].s4.append(float(item[4]))
+                binlist[i].snr.append(float(item[5]))
+                if item[4] > 40:
+                    if item[2] > 30:
+                        binlist[i].s4_spikes.append(1)
 
     dt = []
     s4 = []

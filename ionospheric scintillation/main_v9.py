@@ -82,11 +82,11 @@ class QueryProcessor(Thread):
                 print("\n" + "!!!!!!!!!  Noise Plotter Failed  !!!!!!!!!" + "\n")
                 logging.warning("Noise Event Plotter failed in MAIN.PY")
 
-            try:
-                mgr_s4_stats_json.wrapper()
-            except:
-                print("\n" + "!!!!!!!!!  s4 Stats Plotter & JSON Failed  !!!!!!!!!" + "\n")
-                logging.warning("s4 Stats plotter & JSON failed in MAIN.PY")
+            # try:
+            mgr_s4_stats_json.wrapper()
+            # except:
+            #     print("\n" + "!!!!!!!!!  s4 Stats Plotter & JSON Failed  !!!!!!!!!" + "\n")
+            #     logging.warning("s4 Stats plotter & JSON failed in MAIN.PY")
 
             # try:
             #     qpr_24hr_cumulative.wrapper(querydata_48, k.current_stats)
