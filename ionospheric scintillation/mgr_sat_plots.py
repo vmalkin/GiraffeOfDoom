@@ -98,7 +98,7 @@ def plot_s4_combo(satlist, tlabels):
     plot_title = "S4 Index All satellites. http://DunedinAurora.NZ"
     fig.update_yaxes(range=[1, 100], gridcolor='#505050')
     fig.update_xaxes(nticks=24, tickangle=45, gridcolor='#505050')
-    fig.update_layout(width=3000, height=800, title=plot_title, xaxis_title="Date/time UTC", yaxis_title="SNR", plot_bgcolor="#101010", )
+    fig.update_layout(width=1500, height=500, title=plot_title, xaxis_title="Date/time UTC", yaxis_title="SNR", plot_bgcolor="#101010", showlegend=False)
     fig.write_image(file=savefile, format='jpg')
 
 
@@ -112,7 +112,7 @@ def plot_snr_combo(satlist, tlabels):
     plot_title = "SNR All satellites"
     fig.update_yaxes(range=[1, 60], gridcolor='#505050')
     fig.update_xaxes(nticks=24, tickangle=45, gridcolor='#505050')
-    fig.update_layout(width=3000, height=800, title=plot_title, xaxis_title="Date/time UTC", yaxis_title="SNR", plot_bgcolor="#101010", )
+    fig.update_layout(width=1500, height=500, title=plot_title, xaxis_title="Date/time UTC", yaxis_title="SNR", plot_bgcolor="#101010", showlegend=False)
     fig.write_image(file=savefile, format='jpg')
 
 

@@ -15,8 +15,7 @@ from plotly.subplots import make_subplots
 
 sat_database = "gps_satellites.db"
 nullvalue = "none"
-nowtime = int(time.time())
-starttime = nowtime - (60 * 60 * 24)
+
 
 class Bin:
     def __init__(self):
@@ -71,7 +70,7 @@ def query_get_data(start):
     return returnlist
 
 
-def indexposition(posixtime):
+def indexposition(posixtime, starttime):
     interval = posixtime - starttime
     interval = int(interval / 60)
     return interval
@@ -124,7 +123,7 @@ def plot_chart(dt, s4, snr, spikes):
                          name="S4 Noise Spikes above 40%",
                          marker=dict(color="black", line=dict(width=2, color="black"))), row=3, col=1)
 
-    fig.update_yaxes(title_text="%", row=1, col=1)
+    fig.update_yaxes(range=[5, 40], title_text="%", row=1, col=1)
     fig.update_yaxes(title_text="dB", row=2, col=1)
     fig.update_yaxes(title_text="Number per Minute", row=3, col=1)
 
@@ -136,10 +135,20 @@ def plot_chart(dt, s4, snr, spikes):
     fig.write_image(file=savefile, format='jpg')
 
 
+def plot_cumulative(cml_dt, cml_s4):
+    savefile = k.dir_images + "//cumulative.jpg"
+    data = go.Scatter(x=cml_dt, y = cml_s4, mode="lines")
+    fig = go.Figure(data)
+    fig.update_xaxes(nticks=30, tickangle=45, gridcolor='#ffffff')
+    fig.update_layout(plot_bgcolor="#a0a0a0", paper_bgcolor="#a0a0a0")
+    fig.update_layout(font=dict(size=20), title_font_size=21)
+    fig.update_layout(width=1700, height=700, title="Rolling 24hr count GPS noise. s4 > 40. http://DunedinAurora.NZ", xaxis_title="Date/time UTC", yaxis_title="Count S4 events")
+    fig.update_traces(line=dict(width=5, color="rgba(10,10,10,1)"))
+    fig.write_image(file=savefile, format='jpg')
+
 def wrapper():
     nowtime = int(time.time())
     starttime = nowtime - (60 * 60 * 24)
-
     binlist = []
 
     for i in range(0, 1451):
@@ -148,7 +157,7 @@ def wrapper():
     datalist = query_get_data(starttime)
 
     for item in datalist:
-        i = indexposition(item[1])
+        i = indexposition(item[1], starttime)
         if i >= 0:
             if i <= 1440:
                 t = posix2utc(item[1], '%Y-%m-%d %H:%M')
@@ -171,4 +180,44 @@ def wrapper():
         spikes.append(b.get_sum_spike())
 
     plot_chart(dt, s4, snr, spikes)
-    print("GPS data plotted")
+
+    ##################################################
+    # cumulative total of S4 spikes over past 24 hours
+    hours_48 = nowtime - (60 * 60 * 48)
+    data_48 = query_get_data(hours_48)
+
+    s4bins = []
+    d = 0
+    for i in range(0, len(data_48) - 1):
+        s4 = data_48[i][4]
+        alt = data_48[i][2]
+        dt_now = data_48[i][1]
+        dt_next = data_48[i + 1][1]
+        if s4 > 40:
+            if alt > 30:
+                d = d + 1
+        if dt_next > dt_now:
+            dp = [dt_now, d]
+            s4bins.append(dp)
+            d = 0
+
+    print("length of cumulatrive s4 ", len(s4bins))
+
+    if len(s4bins) > 1440:
+        cml_s4 = []
+        cml_dt = []
+        value = 0
+        for i in range(1440, len(s4bins)):
+            for j in range(-1440, 0):
+                value = value + s4bins[i + j][1]
+            cml_s4.append(value)
+            t = posix2utc(s4bins[i][0], '%Y-%m-%d %H:%M')
+            cml_dt.append(t)
+            value = 0
+
+        plot_cumulative(cml_dt, cml_s4)
+    else:
+        print("Not enough data for cumulative readings")
+
+
+
