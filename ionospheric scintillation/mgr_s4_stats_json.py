@@ -135,17 +135,6 @@ def plot_chart(dt, s4, snr, spikes):
     fig.write_image(file=savefile, format='jpg')
 
 
-def plot_cumulative(cml_dt, cml_s4):
-    savefile = k.dir_images + "//cumulative.jpg"
-    data = go.Scatter(x=cml_dt, y = cml_s4, mode="lines")
-    fig = go.Figure(data)
-    fig.update_xaxes(nticks=30, tickangle=45, gridcolor='#ffffff')
-    fig.update_layout(plot_bgcolor="#a0a0a0", paper_bgcolor="#a0a0a0")
-    fig.update_layout(font=dict(size=20), title_font_size=21)
-    fig.update_layout(width=1700, height=700, title="Rolling 24hr count GPS noise. s4 > 40. http://DunedinAurora.NZ", xaxis_title="Date/time UTC", yaxis_title="Count S4 events")
-    fig.update_traces(line=dict(width=5, color="rgba(10,10,10,1)"))
-    fig.write_image(file=savefile, format='jpg')
-
 def wrapper():
     nowtime = int(time.time())
     starttime = nowtime - (60 * 60 * 24)
@@ -180,44 +169,4 @@ def wrapper():
         spikes.append(b.get_sum_spike())
 
     plot_chart(dt, s4, snr, spikes)
-
-    ##################################################
-    # cumulative total of S4 spikes over past 24 hours
-    hours_48 = nowtime - (60 * 60 * 48)
-    data_48 = query_get_data(hours_48)
-
-    s4bins = []
-    d = 0
-    for i in range(0, len(data_48) - 1):
-        s4 = data_48[i][4]
-        alt = data_48[i][2]
-        dt_now = data_48[i][1]
-        dt_next = data_48[i + 1][1]
-        if s4 > 40:
-            if alt > 30:
-                d = d + 1
-        if dt_next > dt_now:
-            dp = [dt_now, d]
-            s4bins.append(dp)
-            d = 0
-
-    print("length of cumulatrive s4 ", len(s4bins))
-
-    if len(s4bins) > 1440:
-        cml_s4 = []
-        cml_dt = []
-        value = 0
-        for i in range(1440, len(s4bins)):
-            for j in range(-1440, 0):
-                value = value + s4bins[i + j][1]
-            cml_s4.append(value)
-            t = posix2utc(s4bins[i][0], '%Y-%m-%d %H:%M')
-            cml_dt.append(t)
-            value = 0
-
-        plot_cumulative(cml_dt, cml_s4)
-    else:
-        print("Not enough data for cumulative readings")
-
-
 

@@ -15,6 +15,7 @@ import mgr_polar_noise_tracks
 import mgr_polar_sat_tracks
 import mgr_polar_s4_noise
 import mgr_s4_stats_json
+import mgr_cumulative
 
 
 errorloglevel = logging.CRITICAL
@@ -82,17 +83,17 @@ class QueryProcessor(Thread):
                 print("\n" + "!!!!!!!!!  Noise Plotter Failed  !!!!!!!!!" + "\n")
                 logging.warning("Noise Event Plotter failed in MAIN.PY")
 
-            # try:
-            mgr_s4_stats_json.wrapper()
-            # except:
-            #     print("\n" + "!!!!!!!!!  s4 Stats Plotter & JSON Failed  !!!!!!!!!" + "\n")
-            #     logging.warning("s4 Stats plotter & JSON failed in MAIN.PY")
+            try:
+                mgr_s4_stats_json.wrapper()
+            except:
+                print("\n" + "!!!!!!!!!  s4 Stats Plotter & JSON Failed  !!!!!!!!!" + "\n")
+                logging.warning("s4 Stats plotter & JSON failed in MAIN.PY")
 
-            # try:
-            #     qpr_24hr_cumulative.wrapper(querydata_48, k.current_stats)
-            # except:
-            #     print("\n" + "!!!!!!!!!  Rolling count Plotter Failed  !!!!!!!!!" + "\n")
-            #     logging.warning("Rolling count Plotter failed in MAIN.PY")
+            try:
+                mgr_cumulative.wrapper()
+            except:
+                print("\n" + "!!!!!!!!!  Cumulative Count Failed  !!!!!!!!!" + "\n")
+                logging.warning("Cumulative Count Failed in MAIN.PY")
             #
             # try:
             #     # pass
