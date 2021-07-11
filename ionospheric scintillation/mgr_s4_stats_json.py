@@ -113,23 +113,29 @@ def plot_chart(dt, s4, snr, spikes):
     # snr = calc_median(snr)
     # snr = recursive_smooth(snr, 0.5)
 
-    fig = make_subplots(rows=3, cols=1, subplot_titles=("Average S4 (Scintillation) Index", "Average S/N Ratio - All Visible Satellites", "GPS Noise Spikes per Minute"))
+    # fig = make_subplots(rows=2, cols=1,
+    #                     subplot_titles=(
+    #                     "Average S4 (Scintillation) Index", "Average S/N Ratio - All Visible Satellites",
+    #                     "GPS Noise Spikes per Minute"))
 
-    fig.add_trace(go.Scatter(x=dt, y=s4, mode="lines", name="Avg S4 Index",
-                              line=dict(width=2, color="#008000")), row=1, col=1)
+    fig = make_subplots(rows=2, cols=1,
+                        subplot_titles=("Average S/N Ratio - All Visible Satellites", "GPS Noise Spikes per Minute"))
+
+    # fig.add_trace(go.Scatter(x=dt, y=s4, mode="lines", name="Avg S4 Index",
+    #                           line=dict(width=2, color="#008000")), row=1, col=1)
     fig.add_trace(go.Scatter(x=dt, y=snr, mode="lines", name="Avg S/N Ratio",
-                              line=dict(width=2, color="#800000")), row=2, col=1)
+                              line=dict(width=2, color="#800000")), row=1, col=1)
     fig.add_trace(go.Bar(x=dt, y=spikes,
                          name="S4 Noise Spikes above 40%",
-                         marker=dict(color="black", line=dict(width=2, color="black"))), row=3, col=1)
+                         marker=dict(color="black", line=dict(width=2, color="black"))), row=2, col=1)
 
-    fig.update_yaxes(range=[5, 40], title_text="%", row=1, col=1)
-    fig.update_yaxes(title_text="dB", row=2, col=1)
-    fig.update_yaxes(title_text="Number per Minute", row=3, col=1)
+    # fig.update_yaxes(range=[5, 25], title_text="%", row=1, col=1)
+    fig.update_yaxes(title_text="dB", row=1, col=1)
+    fig.update_yaxes(title_text="Number per Minute", row=2, col=1)
 
     fig.update_xaxes(nticks=30, tickangle=45, gridcolor='#ffffff')
     fig.update_layout(plot_bgcolor="#a0a0a0", paper_bgcolor="#a0a0a0")
-    fig.update_layout(width=1400, height=1200, title="Data GPS and GLONASS Constellations")
+    fig.update_layout(width=1400, height=600, title="Data GPS and GLONASS Constellations")
     fig.update_layout(legend=dict(orientation="h", yanchor="bottom", y=-0.2, xanchor="center", x=0.5))
     savefile = k.dir_images + "//GPS.jpg"
     fig.write_image(file=savefile, format='jpg')

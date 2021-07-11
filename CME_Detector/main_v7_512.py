@@ -24,16 +24,6 @@ def get_resource_from_url(url_to_get):
     return response
 
 
-# def load_values(pickle_file):
-#     returnvalue = variables
-#     if os.path.exists(pickle_file) is True:
-#         try:
-#             returnvalue = pickle.load(open(pickle_file, "rb"))
-#         except EOFError:
-#             print("Pickle file is empty")
-#     return returnvalue
-
-
 def save_values(save_value, pickle_file):
     pickle.dump(save_value, open(pickle_file, "wb"), 0)
 
@@ -81,9 +71,9 @@ def erode_dilate_img(image_to_process):
     # Erode and Dilate the image to clear up noise
     # Erosion will trim away pixels (noise)
     # dilation puffs out edges
-    kernel1 = np.ones((6, 6), np.uint8)
+    kernel1 = np.ones((3, 3), np.uint8)
     outputimg = cv2.erode(image_to_process, kernel1, iterations=1)
-    kernel2 = np.ones((6, 6), np.uint8)
+    kernel2 = np.ones((3, 3), np.uint8)
     outputimg = cv2.dilate(outputimg, kernel2, iterations=1)
     return outputimg
 
@@ -133,6 +123,7 @@ def filehour_converter(yyyymmdd, hhmm):
     return ts
 
 
+
 def processimages_analysis(listofimages, storage_folder, analysisfolder):
     t = listofimages[0].split("_")
     hourcount = filehour_converter(t[0], t[1])
@@ -140,7 +131,7 @@ def processimages_analysis(listofimages, storage_folder, analysisfolder):
     # input the image size
     image_size = 512
     mask = create_polar_mask(image_size)
-    pixelcount = []
+    # pixelcount = []
 
     for i in range(0, len(listofimages)):
         # split the name
@@ -180,16 +171,20 @@ def processimages_analysis(listofimages, storage_folder, analysisfolder):
             # img_tn = clahe.apply(img_tn)
 
             # unary operator to invert the image
-            img_ng = ~img_ng
+            # img_ng = ~img_ng
             # img_tn = ~img_tn
 
-            # combine the images to highlight differences
-            alpha = 0.5
-            gamma = 0
-            new_image = img_ng.copy()
-            # new_total = img_tn.copy()
-            cv2.addWeighted(img_ng, alpha, img_og, 1 - alpha, gamma, new_image)
-            # cv2.addWeighted(img_tn, alpha, img_to, 1 - alpha, gamma, new_total)
+            # # combine the images to highlight differences
+            # alpha = 0.5
+            # gamma = 0
+
+            # new_image = img_og.copy()
+            new_image = img_ng -img_og
+            # new_image = erode_dilate_img(new_image)
+
+            # # new_total = img_tn.copy()
+            # cv2.addWeighted(img_ng, alpha, img_og, 1 - alpha, gamma, new_image)
+            # # cv2.addWeighted(img_tn, alpha, img_to, 1 - alpha, gamma, new_total)
 
             # # Adjust contrast and brightness
             # d = new_image.copy()
@@ -198,14 +193,6 @@ def processimages_analysis(listofimages, storage_folder, analysisfolder):
             # new_image = cv2.convertScaleAbs(d, alpha=alpha, beta=beta)
             # ret, outputimg = cv2.threshold(new_image, 130, 255, cv2.THRESH_BINARY)
             # # ret1, outputtotal = cv2.threshold(new_total, 130, 255, cv2.THRESH_BINARY)
-
-            # # here we need to count pixels found in the north and south parts of the image to
-            # # determine if a CME halo is present
-            # count = countpixels(outputimg, image_size)
-            # count_total = countpixels_total(outputtotal, image_size)
-            # dp = posix2utc(test_hourcount, '%Y-%m-%d %H:%M') + "," + str(count[0]) + "," + str(count[1]) + "," + str(count_total)
-            # dp = [posix2utc(test_hourcount, '%Y-%m-%d %H:%M'),count[0], count[1]]
-            # pixelcount.append(dp)
 
             # Save the difference image into the images folder
             add_stamp(new_image, hourimage)
@@ -218,7 +205,7 @@ def processimages_analysis(listofimages, storage_folder, analysisfolder):
             # LASTLY.....
             hourcount = test_hourcount
             hourimage = testimage
-    return pixelcount
+    # return pixelcount
 
 def processimages_display(listofimages, storage_folder, images_folder):
     t = listofimages[0].split("_")
@@ -354,42 +341,6 @@ def recursive_smooth(array, parameter):
         st_prev = st_now
     return temp
 
-def plot_chart(pixels):
-    xlabels = []
-    north = []
-    south = []
-    total = []
-
-    for item in pixels:
-        i = item.split(",")
-        xlabels.append(i[0])
-        north.append(int(i[1]))
-        south.append(int(i[2]))
-        total.append(int(i[3]))
-    north = calc_median(north)
-    south = calc_median(south)
-    total = calc_median(total)
-    north = recursive_smooth(north, 0.2)
-    south = recursive_smooth(south, 0.5)
-    total = recursive_smooth(total, 0.5)
-    print(len(xlabels), len(north))
-
-    fig = make_subplots(rows=3, cols=1)
-
-    # fig = go.Figure()
-    fig.add_trace(go.Scatter(x=xlabels, y=total, mode="lines", name="Total CMEs",
-                              line=dict(width=3, color="#008000")), row=1, col=1)
-    fig.add_trace(go.Scatter(x=xlabels, y=north, mode="lines", name="North CMEs",
-                              line=dict(width=3, color="#800000")), row=2, col=1)
-    fig.add_trace(go.Scatter(x=xlabels, y=south, mode="lines", name="South CMEs",
-                              line=dict(width=3, color="#000080")), row=3, col=1)
-    fig.update_xaxes(nticks=24, tickangle=45, gridcolor='#ffffff')
-    fig.update_layout(plot_bgcolor="#a0a0a0", paper_bgcolor="#a0a0a0")
-    fig.update_layout(width=1400, height=800, title="CME Detection",
-                      xaxis_title="Date/time UTC", yaxis_title="pixel count")
-    fig.write_image(file="cme_512.svg", format='svg')
-    fig.show()
-
 
 def create_gif(list, filesfolder):
     imagelist = []
@@ -459,9 +410,8 @@ if __name__ == "__main__":
     # process the stored images so far to get latest diffs
     print("Preparing enhanced images for display...")
     processimages_display(dirlisting, storage_folder, images_folder)
-    # print("Preparing masked images for analysis...")
-    # pixels = processimages_analysis(dirlisting, storage_folder, analysis_folder)
-    # plot_chart(pixels)
+    print("Preparing enhanced images for analysis...")
+    processimages_analysis(dirlisting, storage_folder, analysis_folder)
 
     # create an animated GIF of the last 24 images from the IMAGES folder.
     imagelist = os.listdir(images_folder)
@@ -472,11 +422,5 @@ if __name__ == "__main__":
     imagelist.sort()
     print("creating animated GIF...")
     create_gif(imagelist, images_folder)
-    
-    # with open("pixelcount.csv", "w") as f:
-    #     f.write("UTC time, North, South, Total\n")
-    #     for line in pixels:
-    #         f.write(line + "\n")
-    #     f.close()
 
     print("Finished processing.")

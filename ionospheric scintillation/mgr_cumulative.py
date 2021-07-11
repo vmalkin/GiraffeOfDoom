@@ -9,8 +9,8 @@ nullvalue = "none"
 
 
 class Bin:
-    def __init__(self):
-        self.time = None
+    def __init__(self, posixtime):
+        self.time = posixtime
         self.data = [0]
 
     def sumdata(self):
@@ -48,14 +48,28 @@ def indexposition(posixtime, starttime):
 
 
 def plot_chart(dates, data):
+    green = "rgba(0,100,0,0.7)"
+    blue = "rgba(0,0,150,0.7)"
     savefile = k.dir_images + "//cumulative.jpg"
-    data = go.Scatter(x=dates, y = data, mode="lines")
+    data = go.Scatter(x=dates, y=data, mode="lines")
     fig = go.Figure(data)
-    fig.update_xaxes(nticks=24, tickangle=45)
+    fig.update_xaxes(nticks=30, tickangle=45)
     fig.update_layout(font=dict(size=20), title_font_size=21)
-    fig.update_layout(width=1700, height=700, title="Rolling 24hr count GPS noise. s4 > 40. http://DunedinAurora.NZ", xaxis_title="Date/time UTC", yaxis_title="Count S4 events", plot_bgcolor="#e0e0e0")
-    fig.update_traces(line=dict(width=5, color="rgba(10,10,10,1)"))
+    fig.update_layout(width=1400, height=600, title="GPS Noise Spikes. Cumulative Total.",
+                      xaxis_title="Date/time UTC<br><sub>http://DunedinAurora.nz</sub>",
+                      yaxis_title="Count S4 events > 40%",
+                      plot_bgcolor="#e0e0e0")
+    fig.update_traces(line=dict(width=3, color="rgba(10,10,10,1)"))
+    fig.update_layout(plot_bgcolor="#a0a0a0", paper_bgcolor="#a0a0a0")
+    # manually edit min max markers
+    fig.add_hline(y=120, line_color=green, line_width=6, annotation_text="Noisy Ionosphere",
+                  annotation_font_color=green, annotation_font_size=20, annotation_position="top left")
+    fig.add_hline(y=72, line_color=blue, line_width=6, annotation_text="Quiet Ionosphere",
+                  annotation_font_color=blue, annotation_font_size=20, annotation_position="bottom left")
+
+
     fig.write_image(file=savefile, format='jpg')
+    # fig.show()
 
 
 def query_parse(queryresult):
@@ -81,28 +95,43 @@ def wrapper():
     starttime = nowtime - (60 * 60 * 48)
     binlist = []
 
+    # create the list of one minute bins
+    t = nowtime
     for i in range(0, 2880):
-        binlist.append(Bin())
+        binlist.append(Bin(t))
+        t = t + 60
 
+    # get the last 48 hours of data.
     queryresult = query_get_data(starttime)
+    # parse out readings below 40deg in alt and s4 over 100%
     parsed_query = query_parse(queryresult)
 
+    # assign s4 readings to 1 minute bins in the correct range.
     for item in parsed_query:
         dt = item[1]
         i = indexposition(dt, starttime)
         if i >=0:
             if i <=2880:
-                binlist[i].time = posix2utc(dt, '%Y-%m-%d %H:%M')
                 binlist[i].data.append(1)
 
+    # lists for plotting
     report_data = []
     report_datetime = []
     temp = []
+    # Parse thru the list of bins, each entry in the report data represnts a running cumulative total
+    # of S4 spikes for the previous 24 hour period.
     for i in range(0, len(binlist)):
-        temp.append(binlist[i].sumdata())
-        if len(temp) >= 1440:
-            report_datetime.append(binlist[i].time)
-            report_data.append(sum(temp))
+        x = binlist[i].sumdata()
+        temp.append(x)
+        if len(temp) > 1440:
             temp.pop(0)
+            y = sum(temp)
+            report_data.append(y)
+            d = posix2utc(binlist[i].time, '%Y-%m-%d %H:%M')
+            report_datetime.append(d)
 
+    # with open("temp.csv", "w") as t:
+    #     for item in report_data:
+    #         t.write(str(item) + "\n")
+    #     t.close()
     plot_chart(report_datetime, report_data)
