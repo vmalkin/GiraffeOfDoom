@@ -50,6 +50,9 @@ def indexposition(posixtime, starttime):
 def plot_chart(dates, data):
     green = "rgba(0,100,0,0.7)"
     blue = "rgba(0,0,150,0.7)"
+    maxline = 100
+    minline = 72
+
     savefile = k.dir_images + "//cumulative.jpg"
     data = go.Scatter(x=dates, y=data, mode="lines")
     fig = go.Figure(data)
@@ -62,9 +65,9 @@ def plot_chart(dates, data):
     fig.update_traces(line=dict(width=3, color="rgba(10,10,10,1)"))
     fig.update_layout(plot_bgcolor="#a0a0a0", paper_bgcolor="#a0a0a0")
     # manually edit min max markers
-    fig.add_hline(y=120, line_color=green, line_width=6, annotation_text="Noisy Ionosphere",
+    fig.add_hline(y=maxline, line_color=green, line_width=6, annotation_text="Noisy Ionosphere",
                   annotation_font_color=green, annotation_font_size=20, annotation_position="top left")
-    fig.add_hline(y=72, line_color=blue, line_width=6, annotation_text="Quiet Ionosphere",
+    fig.add_hline(y=minline, line_color=blue, line_width=6, annotation_text="Quiet Ionosphere",
                   annotation_font_color=blue, annotation_font_size=20, annotation_position="bottom left")
 
 
