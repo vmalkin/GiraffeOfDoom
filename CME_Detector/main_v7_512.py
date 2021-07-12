@@ -123,7 +123,6 @@ def filehour_converter(yyyymmdd, hhmm):
     return ts
 
 
-
 def processimages_analysis(listofimages, storage_folder, analysisfolder):
     t = listofimages[0].split("_")
     hourcount = filehour_converter(t[0], t[1])
@@ -131,7 +130,6 @@ def processimages_analysis(listofimages, storage_folder, analysisfolder):
     # input the image size
     image_size = 512
     mask = create_polar_mask(image_size)
-    # pixelcount = []
 
     for i in range(0, len(listofimages)):
         # split the name
@@ -154,7 +152,13 @@ def processimages_analysis(listofimages, storage_folder, analysisfolder):
             img_ng = img_ng[0]
             img_og = img_og[0]
 
-            new_image = img_ng -img_og
+            # new_image = img_ng -img_og
+            img_ng = ~img_ng
+            new_image = cv2.absdiff(img_og, img_ng)
+
+            # ret, new_image = cv2.threshold(new_image, 10, 255, cv2.THRESH_BINARY)
+
+            # countour, heirarchy = cv2.findContours(new_image, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
             # Save the difference image into the images folder
             add_stamp(new_image, hourimage)
@@ -165,6 +169,32 @@ def processimages_analysis(listofimages, storage_folder, analysisfolder):
             # LASTLY.....
             hourcount = test_hourcount
             hourimage = testimage
+
+def processimages_opticalflow(listofimages, storage_folder, images_folder):
+    pr = storage_folder + "//" + listofimages[0]
+    prev = image_load(pr)
+    hsv = np.zeros_like(prev)
+    hsv[..., 1] = 255
+
+    for i in range(1, len(listofimages)):
+        nx = storage_folder + "//" + listofimages[i]
+        next = image_load(nx)
+
+        # convert image to a single channel
+        prev = cv2.split(prev)
+        next = cv2.split(next)
+        prev = prev[0]
+        next = next[0]
+
+        flow = cv2.calcOpticalFlowFarneback(prev, next, None, 0.5, 3, 15, 3, 5, 1.2, 0)
+        mag, ang = cv2.cartToPolar(flow[..., 0], flow[..., 1])
+        hsv[..., 0] = ang * 180 / np.pi / 2
+        hsv[..., 2] = cv2.normalize(mag, None, 0, 255, cv2.NORM_MINMAX)
+        bgr = cv2.cvtColor(hsv, cv2.COLOR_HSV2BGR)
+
+        savefile = images_folder + "//" + "flow" + str(i) + ".jpg"
+        cv2.imwrite(savefile, bgr)
+        prev = next
 
 
 def processimages_display(listofimages, storage_folder, images_folder):
@@ -372,6 +402,10 @@ if __name__ == "__main__":
     processimages_display(dirlisting, storage_folder, images_folder)
     print("Preparing enhanced images for analysis...")
     processimages_analysis(dirlisting, storage_folder, analysis_folder)
+
+    # dirlisting = os.listdir(analysis_folder)
+    # print("Preparing images for optical flow...")
+    # processimages_opticalflow(dirlisting, analysis_folder, analysis_folder)
 
     # create an animated GIF of the last 24 images from the IMAGES folder.
     imagelist = os.listdir(images_folder)
