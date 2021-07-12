@@ -71,9 +71,9 @@ def erode_dilate_img(image_to_process):
     # Erode and Dilate the image to clear up noise
     # Erosion will trim away pixels (noise)
     # dilation puffs out edges
-    kernel1 = np.ones((3, 3), np.uint8)
+    kernel1 = np.ones((6, 6), np.uint8)
     outputimg = cv2.erode(image_to_process, kernel1, iterations=1)
-    kernel2 = np.ones((3, 3), np.uint8)
+    kernel2 = np.ones((6, 6), np.uint8)
     outputimg = cv2.dilate(outputimg, kernel2, iterations=1)
     return outputimg
 
@@ -138,7 +138,7 @@ def processimages_analysis(listofimages, storage_folder, analysisfolder):
         test = listofimages[i].split("_")
         test_hourcount = filehour_converter(test[0], test[1])
         testimage = listofimages[i]
-        if test_hourcount - hourcount > (45*10):
+        if test_hourcount - hourcount > (60*40):
             i1 = storage_folder + "/" + hourimage
             img_1 = image_load(i1)
 
@@ -154,58 +154,18 @@ def processimages_analysis(listofimages, storage_folder, analysisfolder):
             img_ng = img_ng[0]
             img_og = img_og[0]
 
-            # img_og = erode_dilate_img(img_og)
-            # img_ng = erode_dilate_img(img_ng)
-            # img_to = img_og
-            # img_tn = img_ng
-
-            # # add mask.
-            # img_ng = cv2.bitwise_and(img_ng, mask, mask=mask)
-            # img_og = cv2.bitwise_and(img_og, mask, mask=mask)
-
-            # # improved histogram function
-            # clahe = cv2.createCLAHE(clipLimit=5, tileGridSize=(8,8))
-            # img_og = clahe.apply(img_og)
-            # img_ng = clahe.apply(img_ng)
-            # img_to = clahe.apply(img_to)
-            # img_tn = clahe.apply(img_tn)
-
-            # unary operator to invert the image
-            # img_ng = ~img_ng
-            # img_tn = ~img_tn
-
-            # # combine the images to highlight differences
-            # alpha = 0.5
-            # gamma = 0
-
-            # new_image = img_og.copy()
             new_image = img_ng -img_og
-            # new_image = erode_dilate_img(new_image)
-
-            # # new_total = img_tn.copy()
-            # cv2.addWeighted(img_ng, alpha, img_og, 1 - alpha, gamma, new_image)
-            # # cv2.addWeighted(img_tn, alpha, img_to, 1 - alpha, gamma, new_total)
-
-            # # Adjust contrast and brightness
-            # d = new_image.copy()
-            # alpha = 1.2
-            # beta = -50
-            # new_image = cv2.convertScaleAbs(d, alpha=alpha, beta=beta)
-            # ret, outputimg = cv2.threshold(new_image, 130, 255, cv2.THRESH_BINARY)
-            # # ret1, outputtotal = cv2.threshold(new_total, 130, 255, cv2.THRESH_BINARY)
 
             # Save the difference image into the images folder
             add_stamp(new_image, hourimage)
             # tempname = "c://temp//" + listofimages[i]
             fname = analysisfolder + "/" + listofimages[i]
             image_save(fname, new_image)
-            # image_save(tempname, outputtotal)
-            # print("Polar CME image created..." + fname)
 
             # LASTLY.....
             hourcount = test_hourcount
             hourimage = testimage
-    # return pixelcount
+
 
 def processimages_display(listofimages, storage_folder, images_folder):
     t = listofimages[0].split("_")
