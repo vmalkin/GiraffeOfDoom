@@ -136,7 +136,7 @@ def processimages_analysis(listofimages, storage_folder, analysisfolder):
         test = listofimages[i].split("_")
         test_hourcount = filehour_converter(test[0], test[1])
         testimage = listofimages[i]
-        if test_hourcount - hourcount > (60*40):
+        if test_hourcount - hourcount > (60*20):
             i1 = storage_folder + "/" + hourimage
             img_1 = image_load(i1)
 
@@ -152,9 +152,28 @@ def processimages_analysis(listofimages, storage_folder, analysisfolder):
             img_ng = img_ng[0]
             img_og = img_og[0]
 
-            # new_image = img_ng -img_og
+            # # new_image = img_ng -img_og
             img_ng = ~img_ng
-            new_image = cv2.absdiff(img_og, img_ng)
+            # new_image = cv2.absdiff(img_og, img_ng)
+
+            # combine the images to highlight differences
+            alpha = 0.7
+            gamma = 0
+            new_image = img_ng.copy()
+            cv2.addWeighted(img_ng, alpha, img_og, 1 - alpha, gamma, new_image)
+
+            kernel1 = np.ones((5, 5), np.uint8)
+            new_image = cv2.dilate(new_image, kernel1, iterations=1)
+            new_image = cv2.erode(new_image, kernel1, iterations=1)
+
+
+            new_image = cv2.GaussianBlur(new_image, (5,5), 0)
+
+            # Adjust contrast and brightness
+            d = new_image.copy()
+            alpha = 1.2  # brightness
+            beta = 1   # contrast
+            new_image = cv2.convertScaleAbs(d, alpha=alpha, beta=beta)
 
             # ret, new_image = cv2.threshold(new_image, 10, 255, cv2.THRESH_BINARY)
 
@@ -363,6 +382,7 @@ if __name__ == "__main__":
     ymd_old = posix2utc((tm - 86400), "%Y%m%d")
     year = posix2utc(tm, "%Y")
 
+    # LASCO coronagraph
     print("Getting images for current epoch")
     baseURL = "https://soho.nascom.nasa.gov/data/REPROCESSING/Completed/" + year + "/c3/" + ymd_now + "/"
     onlinelist = baseURL + ".full_512.lst"
@@ -397,15 +417,16 @@ if __name__ == "__main__":
     # make sure they are in chronological order
     dirlisting.sort()
 
-    # process the stored images so far to get latest diffs
-    print("Preparing enhanced images for display...")
-    processimages_display(dirlisting, storage_folder, images_folder)
+    # # process the stored images so far to get latest diffs
+    # print("Preparing enhanced images for display...")
+    # processimages_display(dirlisting, storage_folder, images_folder)
+
     print("Preparing enhanced images for analysis...")
     processimages_analysis(dirlisting, storage_folder, analysis_folder)
 
-    # dirlisting = os.listdir(analysis_folder)
-    # print("Preparing images for optical flow...")
-    # processimages_opticalflow(dirlisting, analysis_folder, analysis_folder)
+    dirlisting = os.listdir(analysis_folder)
+    print("Preparing images for optical flow...")
+    processimages_opticalflow(dirlisting, analysis_folder, analysis_folder)
 
     # create an animated GIF of the last 24 images from the IMAGES folder.
     imagelist = os.listdir(images_folder)
