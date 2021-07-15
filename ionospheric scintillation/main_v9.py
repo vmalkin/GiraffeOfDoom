@@ -89,11 +89,11 @@ class QueryProcessor(Thread):
                 print("\n" + "!!!!!!!!!  s4 Stats Plotter & JSON Failed  !!!!!!!!!" + "\n")
                 logging.warning("s4 Stats plotter & JSON failed in MAIN.PY")
 
-            try:
-                mgr_cumulative.wrapper()
-            except:
-                print("\n" + "!!!!!!!!!  Cumulative Count Failed  !!!!!!!!!" + "\n")
-                logging.warning("Cumulative Count Failed in MAIN.PY")
+            # try:
+            mgr_cumulative.wrapper()
+            # except:
+            #     print("\n" + "!!!!!!!!!  Cumulative Count Failed  !!!!!!!!!" + "\n")
+            #     logging.warning("Cumulative Count Failed in MAIN.PY")
             #
             # try:
             #     # pass

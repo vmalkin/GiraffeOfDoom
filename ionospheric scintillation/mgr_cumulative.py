@@ -3,10 +3,13 @@ import sqlite3
 import datetime
 import time
 import plotly.graph_objects as go
+from statistics import mean
+import json
 
 sat_database = "gps_satellites.db"
 nullvalue = "none"
-
+ion_max = 95
+ion_min = 72
 
 class Bin:
     def __init__(self, posixtime):
@@ -50,8 +53,7 @@ def indexposition(posixtime, starttime):
 def plot_chart(dates, data):
     green = "rgba(0,100,0,0.7)"
     blue = "rgba(0,0,150,0.7)"
-    maxline = 100
-    minline = 72
+
 
     savefile = k.dir_images + "//cumulative.jpg"
     data = go.Scatter(x=dates, y=data, mode="lines")
@@ -65,9 +67,9 @@ def plot_chart(dates, data):
     fig.update_traces(line=dict(width=3, color="rgba(10,10,10,1)"))
     fig.update_layout(plot_bgcolor="#a0a0a0", paper_bgcolor="#a0a0a0")
     # manually edit min max markers
-    fig.add_hline(y=maxline, line_color=green, line_width=6, annotation_text="Noisy Ionosphere",
+    fig.add_hline(y=ion_max, line_color=green, line_width=6, annotation_text="Noisy Ionosphere",
                   annotation_font_color=green, annotation_font_size=20, annotation_position="top left")
-    fig.add_hline(y=minline, line_color=blue, line_width=6, annotation_text="Quiet Ionosphere",
+    fig.add_hline(y=ion_min, line_color=blue, line_width=6, annotation_text="Quiet Ionosphere",
                   annotation_font_color=blue, annotation_font_size=20, annotation_position="bottom left")
 
 
@@ -91,6 +93,41 @@ def query_parse(queryresult):
                 if item[index_s4] <= s4_max:
                     returnlist.append(item)
     return returnlist
+
+
+def create_json(report_datetime, report_data):
+    ion_med = ((ion_max - ion_min) / 2) + ion_min
+    result = "none"
+    dtm = int(time.time())
+
+    if len(report_data) > 60:
+        dtm = dtm
+        dta = report_data[-60:]
+        dta = mean(dta)
+
+        if dta < ion_min:
+            result = "none"
+
+        if dta > ion_min:
+            if dta <= ion_med:
+                result = "low"
+
+        if dta > ion_med:
+            if dta <= ion_max:
+                result = "med"
+
+        if dta > ion_max:
+            result = "high"
+
+    i = {"posixtime": dtm, "ionstate": result}
+    print(dta, ion_min, ion_med, ion_max)
+    print(i)
+
+    filepath = "ion.json"
+    with open(filepath, "w") as j:
+        json.dump(i, j)
+
+
 
 
 def wrapper():
@@ -138,3 +175,4 @@ def wrapper():
     #         t.write(str(item) + "\n")
     #     t.close()
     plot_chart(report_datetime, report_data)
+    create_json(report_datetime, report_data)
