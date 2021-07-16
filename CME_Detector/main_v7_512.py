@@ -71,10 +71,11 @@ def erode_dilate_img(image_to_process):
     # Erode and Dilate the image to clear up noise
     # Erosion will trim away pixels (noise)
     # dilation puffs out edges
+    kernel2 = np.ones((4, 4), np.uint8)
+    outputimg = cv2.dilate(image_to_process, kernel2, iterations=1)
+
     kernel1 = np.ones((6, 6), np.uint8)
-    outputimg = cv2.erode(image_to_process, kernel1, iterations=1)
-    kernel2 = np.ones((6, 6), np.uint8)
-    outputimg = cv2.dilate(outputimg, kernel2, iterations=1)
+    outputimg = cv2.erode(outputimg, kernel1, iterations=1)
     return outputimg
 
 
@@ -166,7 +167,6 @@ def processimages_analysis(listofimages, storage_folder, analysisfolder):
             new_image = cv2.dilate(new_image, kernel1, iterations=1)
             new_image = cv2.erode(new_image, kernel1, iterations=1)
 
-
             new_image = cv2.GaussianBlur(new_image, (5,5), 0)
 
             # Adjust contrast and brightness
@@ -188,6 +188,54 @@ def processimages_analysis(listofimages, storage_folder, analysisfolder):
             # LASTLY.....
             hourcount = test_hourcount
             hourimage = testimage
+
+
+def processimages_detrend(listofimages, storage_folder, analysisfolder):
+    avg_array = []
+    for i in range(0, len(listofimages)):
+        p = storage_folder + "//" + listofimages[i]
+        pic = image_load(p)
+        pic = greyscale_img(pic)
+        # # convert image to a single channel
+        # pic = cv2.split(pic)
+        # pic = pic[0]
+
+        kernel1 = np.ones((3, 3), np.uint8)
+        pic = cv2.erode(pic, kernel1, iterations=1)
+        avg_array.append(pic)
+        img_old = pic.copy()
+        edges = pic.copy()
+        firsttime_flag = True
+
+        # 100 images is about a day
+        if len(avg_array) >= 100:
+            avg_img = np.mean(avg_array, axis=0)
+            detrended_img = pic - avg_img
+
+            if firsttime_flag == True:
+                firsttime_flag ==False
+                img_old = detrended_img.copy()
+
+            if firsttime_flag == False:
+                edges = detrended_img - img_old
+                img_old = detrended_img.copy()
+
+            # # Adjust contrast and brightness
+            # d = detrended_img.copy()
+            # alpha = 1
+            # beta = 0
+            # detrended_img = cv2.convertScaleAbs(d, alpha=alpha, beta=beta)
+
+            # At this point there will be values less than zero,
+            # the image needs to be remapped to between 0, 255
+            # correction = np.full((512, 512), np.min(detrended_img))
+            # corrected_img = detrended_img - correction
+
+            savefile = analysisfolder + "//" + "dt_" + listofimages[i]
+            image_save(savefile, edges)
+
+            print("dt", i, len(listofimages))
+            avg_array.pop(0)
 
 def processimages_opticalflow(listofimages, storage_folder, images_folder):
     pr = storage_folder + "//" + listofimages[0]
@@ -211,8 +259,9 @@ def processimages_opticalflow(listofimages, storage_folder, images_folder):
         hsv[..., 2] = cv2.normalize(mag, None, 0, 255, cv2.NORM_MINMAX)
         bgr = cv2.cvtColor(hsv, cv2.COLOR_HSV2BGR)
 
-        savefile = images_folder + "//" + "flow" + str(i) + ".jpg"
+        savefile = images_folder + "//" + "fl_" + listofimages[i]
         cv2.imwrite(savefile, bgr)
+        print("fl", i, len(listofimages))
         prev = next
 
 
@@ -365,6 +414,9 @@ def create_gif(list, filesfolder):
               loop=0)
 
 
+
+
+
 if __name__ == "__main__":
     images_folder = "images_512"
     storage_folder = "lasco_store_512"
@@ -397,7 +449,7 @@ if __name__ == "__main__":
 
     # Parse for old epoch files that have been added
     print("Getting images for old epoch")
-    # ymd_old = "20210628"
+    # ymd_old = "20210713"
     baseURL = "https://soho.nascom.nasa.gov/data/REPROCESSING/Completed/" + year + "/c3/" + ymd_old + "/"
     onlinelist = baseURL + ".full_512.lst"
     listofimages = get_resource_from_url(onlinelist)
@@ -422,11 +474,12 @@ if __name__ == "__main__":
     # processimages_display(dirlisting, storage_folder, images_folder)
 
     print("Preparing enhanced images for analysis...")
-    processimages_analysis(dirlisting, storage_folder, analysis_folder)
-
-    dirlisting = os.listdir(analysis_folder)
-    print("Preparing images for optical flow...")
-    processimages_opticalflow(dirlisting, analysis_folder, analysis_folder)
+    # processimages_analysis(dirlisting, storage_folder, analysis_folder)
+    processimages_detrend(dirlisting, storage_folder, analysis_folder)
+    #
+    # dirlisting = os.listdir(analysis_folder)
+    # print("Preparing images for optical flow...")
+    # processimages_opticalflow(dirlisting, analysis_folder, analysis_folder)
 
     # create an animated GIF of the last 24 images from the IMAGES folder.
     imagelist = os.listdir(images_folder)
