@@ -124,118 +124,67 @@ def filehour_converter(yyyymmdd, hhmm):
     return ts
 
 
-def processimages_analysis(listofimages, storage_folder, analysisfolder):
-    t = listofimages[0].split("_")
-    hourcount = filehour_converter(t[0], t[1])
-    hourimage = listofimages[0]
-    # input the image size
-    image_size = 512
-    mask = create_polar_mask(image_size)
-
-    for i in range(0, len(listofimages)):
-        # split the name
-        test = listofimages[i].split("_")
-        test_hourcount = filehour_converter(test[0], test[1])
-        testimage = listofimages[i]
-        if test_hourcount - hourcount > (60*20):
-            i1 = storage_folder + "/" + hourimage
-            img_1 = image_load(i1)
-
-            i2 = storage_folder + "/" + testimage
-            img_2 = image_load(i2)
-
-            img_og = greyscale_img(img_1)
-            img_ng = greyscale_img(img_2)
-
-            # convert image to a single channel
-            img_ng = cv2.split(img_ng)
-            img_og = cv2.split(img_og)
-            img_ng = img_ng[0]
-            img_og = img_og[0]
-
-            # # new_image = img_ng -img_og
-            img_ng = ~img_ng
-            # new_image = cv2.absdiff(img_og, img_ng)
-
-            # combine the images to highlight differences
-            alpha = 0.7
-            gamma = 0
-            new_image = img_ng.copy()
-            cv2.addWeighted(img_ng, alpha, img_og, 1 - alpha, gamma, new_image)
-
-            kernel1 = np.ones((5, 5), np.uint8)
-            new_image = cv2.dilate(new_image, kernel1, iterations=1)
-            new_image = cv2.erode(new_image, kernel1, iterations=1)
-
-            new_image = cv2.GaussianBlur(new_image, (5,5), 0)
-
-            # Adjust contrast and brightness
-            d = new_image.copy()
-            alpha = 1.2  # brightness
-            beta = 1   # contrast
-            new_image = cv2.convertScaleAbs(d, alpha=alpha, beta=beta)
-
-            # ret, new_image = cv2.threshold(new_image, 10, 255, cv2.THRESH_BINARY)
-
-            # countour, heirarchy = cv2.findContours(new_image, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-
-            # Save the difference image into the images folder
-            add_stamp(new_image, hourimage)
-            # tempname = "c://temp//" + listofimages[i]
-            fname = analysisfolder + "/" + listofimages[i]
-            image_save(fname, new_image)
-
-            # LASTLY.....
-            hourcount = test_hourcount
-            hourimage = testimage
-
-
 def processimages_detrend(listofimages, storage_folder, analysisfolder):
     avg_array = []
+    pixel_count = []
+    mask = create_polar_mask(512, 5, -10)
+
     for i in range(0, len(listofimages)):
         p = storage_folder + "//" + listofimages[i]
         pic = image_load(p)
         pic = greyscale_img(pic)
-        # # convert image to a single channel
-        # pic = cv2.split(pic)
-        # pic = pic[0]
+
+        # convert image to a single channel
+        pic = cv2.split(pic)
+        pic = pic[0]
 
         kernel1 = np.ones((3, 3), np.uint8)
         pic = cv2.erode(pic, kernel1, iterations=1)
         avg_array.append(pic)
-        img_old = pic.copy()
-        edges = pic.copy()
-        firsttime_flag = True
 
         # 100 images is about a day
         if len(avg_array) >= 100:
             avg_img = np.mean(avg_array, axis=0)
-            detrended_img = pic - avg_img
 
-            if firsttime_flag == True:
-                firsttime_flag ==False
-                img_old = detrended_img.copy()
+            pic = np.float32(pic)
+            avg_img = np.float32(avg_img)
 
-            if firsttime_flag == False:
-                edges = detrended_img - img_old
-                img_old = detrended_img.copy()
+            detrended_img = cv2.subtract(pic, avg_img)
+            ret,detrended_img = cv2.threshold(detrended_img, 6, 255, cv2.THRESH_BINARY)
+            detrended_img = np.float32(detrended_img)
 
-            # # Adjust contrast and brightness
-            # d = detrended_img.copy()
-            # alpha = 1
-            # beta = 0
-            # detrended_img = cv2.convertScaleAbs(d, alpha=alpha, beta=beta)
+            # detrended_img = np.uint8(detrended_img)
+            # avg_img = np.uint8(avg_img)
+            # detrended_img = cv2.adaptiveThreshold(avg_img, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 3, 0)
 
-            # At this point there will be values less than zero,
-            # the image needs to be remapped to between 0, 255
-            # correction = np.full((512, 512), np.min(detrended_img))
-            # corrected_img = detrended_img - correction
+            # # [blend_images]
+            # alpha = 0.5
+            # beta = (1.0 - alpha)
+            # detrended_img = cv2.addWeighted(pic, alpha, avg_img, beta, 0.0)
+
+            # detrended_img = pic - avg_img
+            # detrended_img = detrended_img * 4
+
+            # # normalise the image
+            # detrended_img = detrended_img - detrended_img.min()
+            # detrended_img = (detrended_img / detrended_img.max()) * 255
 
             savefile = analysisfolder + "//" + "dt_" + listofimages[i]
-            image_save(savefile, edges)
+            add_stamp(detrended_img, savefile)
+
+            image_save(savefile, detrended_img)
+
+            px = cv2.countNonZero(detrended_img)
+            pixel_count.append(px)
 
             print("dt", i, len(listofimages))
             avg_array.pop(0)
+
+    with open("pixelcount.csv", "w") as p:
+        for line in pixel_count:
+            p.write(str(line) + "\n")
+        p.close()
+
 
 def processimages_opticalflow(listofimages, storage_folder, images_folder):
     pr = storage_folder + "//" + listofimages[0]
@@ -253,7 +202,7 @@ def processimages_opticalflow(listofimages, storage_folder, images_folder):
         prev = prev[0]
         next = next[0]
 
-        flow = cv2.calcOpticalFlowFarneback(prev, next, None, 0.5, 3, 15, 3, 5, 1.2, 0)
+        flow = cv2.calcOpticalFlowFarneback(prev, next, None, 0.5, 3, 15, 3, 5, 2, 0)
         mag, ang = cv2.cartToPolar(flow[..., 0], flow[..., 1])
         hsv[..., 0] = ang * 180 / np.pi / 2
         hsv[..., 2] = cv2.normalize(mag, None, 0, 255, cv2.NORM_MINMAX)
@@ -347,7 +296,7 @@ def downloadimages(listofimages, storagelocation):
             parse_image_fromURL(response1, file)
 
 
-def create_polar_mask(masksize):
+def create_polar_mask(masksize, xoffset, yoffset):
     dist_full = masksize - 1
     dist_half = int(masksize / 2)
     dist_quarter = int(masksize / 4)
@@ -356,21 +305,21 @@ def create_polar_mask(masksize):
     colour = (255, 255, 255)
 
     # occulating disk
-    cv2.circle(img, (dist_half, dist_half), 53, colour, -1)
+    cv2.circle(img, (dist_half + xoffset, dist_half + yoffset), 53, colour, -1)
 
-    # top zone
-    triangle = [(0, 0), (0, dist_full), (dist_half,dist_half)]
-    cv2.fillPoly(img, np.array([triangle]), colour)
+    # # top zone
+    # triangle = [(0, 10), (0, dist_full-10), (dist_half,dist_half)]
+    # cv2.fillPoly(img, np.array([triangle]), colour)
 
-    # bottom zone
-    triangle = [(dist_half,dist_half), (dist_full, 0), (dist_full,dist_full)]
-    cv2.fillPoly(img, np.array([triangle]), colour)
+    # # bottom zone
+    # triangle = [(dist_half,dist_half), (dist_full, 0), (dist_full,dist_full)]
+    # cv2.fillPoly(img, np.array([triangle]), colour)
 
-    # Blank the top and bottom zones so they dont go all the way to the edge
-    cv2.rectangle(img, (0, 0), (dist_full, dist_quarter), (255, 255, 255), -1)
-    cv2.rectangle(img, (0, dist_full-dist_quarter), (dist_full, dist_full), (255, 255, 255), -1)
+    # # Blank the top and bottom zones so they dont go all the way to the edge
+    # cv2.rectangle(img, (0, 0), (dist_full, dist_quarter), (255, 255, 255), -1)
+    # cv2.rectangle(img, (0, dist_full-dist_quarter), (dist_full, dist_full), (255, 255, 255), -1)
 
-    img = ~img
+    # img = ~img
     # cv2.imshow("Display window", img)
     # k = cv2.waitKey(0)
     return img
@@ -414,9 +363,6 @@ def create_gif(list, filesfolder):
               loop=0)
 
 
-
-
-
 if __name__ == "__main__":
     images_folder = "images_512"
     storage_folder = "lasco_store_512"
@@ -449,7 +395,7 @@ if __name__ == "__main__":
 
     # Parse for old epoch files that have been added
     print("Getting images for old epoch")
-    # ymd_old = "20210713"
+    # ymd_old = "20210716"
     baseURL = "https://soho.nascom.nasa.gov/data/REPROCESSING/Completed/" + year + "/c3/" + ymd_old + "/"
     onlinelist = baseURL + ".full_512.lst"
     listofimages = get_resource_from_url(onlinelist)
@@ -469,20 +415,19 @@ if __name__ == "__main__":
     # make sure they are in chronological order
     dirlisting.sort()
 
-    # # process the stored images so far to get latest diffs
-    # print("Preparing enhanced images for display...")
-    # processimages_display(dirlisting, storage_folder, images_folder)
+    # process the stored images so far to get latest diffs
+    print("Preparing enhanced images for display...")
+    processimages_display(dirlisting, storage_folder, images_folder)
 
     print("Preparing enhanced images for analysis...")
-    # processimages_analysis(dirlisting, storage_folder, analysis_folder)
     processimages_detrend(dirlisting, storage_folder, analysis_folder)
-    #
+
     # dirlisting = os.listdir(analysis_folder)
     # print("Preparing images for optical flow...")
     # processimages_opticalflow(dirlisting, analysis_folder, analysis_folder)
 
-    # create an animated GIF of the last 24 images from the IMAGES folder.
-    imagelist = os.listdir(images_folder)
+    # create an animated GIF of the last 24 images from the Analysis folder.
+    imagelist = os.listdir(analysis_folder)
     imagelist.sort()
     if len(imagelist) > 24:
         cut = len(imagelist) - 24
