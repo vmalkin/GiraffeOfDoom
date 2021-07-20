@@ -127,7 +127,7 @@ def filehour_converter(yyyymmdd, hhmm):
 def processimages_detrend(listofimages, storage_folder, analysisfolder):
     avg_array = []
     pixel_count = []
-    mask = create_polar_mask(512, 5, -10)
+    mask = create_polar_mask(512, -10, 10, "n")
 
     for i in range(0, len(listofimages)):
         p = storage_folder + "//" + listofimages[i]
@@ -151,38 +151,31 @@ def processimages_detrend(listofimages, storage_folder, analysisfolder):
 
             detrended_img = cv2.subtract(pic, avg_img)
             ret,detrended_img = cv2.threshold(detrended_img, 6, 255, cv2.THRESH_BINARY)
-            detrended_img = np.float32(detrended_img)
+            final_img = np.uint8(detrended_img)
 
-            # detrended_img = np.uint8(detrended_img)
-            # avg_img = np.uint8(avg_img)
-            # detrended_img = cv2.adaptiveThreshold(avg_img, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 3, 0)
+            # # # add mask.
+            # masked_img = cv2.bitwise_and(final_img, mask, mask=mask)
+            # m_image = analysisfolder + "//" + "ms_" + listofimages[i]
+            # add_stamp(masked_img, m_image)
+            # image_save(m_image, masked_img)
 
-            # # [blend_images]
-            # alpha = 0.5
-            # beta = (1.0 - alpha)
-            # detrended_img = cv2.addWeighted(pic, alpha, avg_img, beta, 0.0)
+            f_image = analysisfolder + "//" + "dt_" + listofimages[i]
+            add_stamp(final_img, f_image)
+            image_save(f_image, final_img)
 
-            # detrended_img = pic - avg_img
-            # detrended_img = detrended_img * 4
-
-            # # normalise the image
-            # detrended_img = detrended_img - detrended_img.min()
-            # detrended_img = (detrended_img / detrended_img.max()) * 255
-
-            savefile = analysisfolder + "//" + "dt_" + listofimages[i]
-            add_stamp(detrended_img, savefile)
-
-            image_save(savefile, detrended_img)
-
-            px = cv2.countNonZero(detrended_img)
-            pixel_count.append(px)
+            px = cv2.countNonZero(final_img)
+            t = listofimages[i].split("_")
+            hr = filehour_converter(t[0], t[1])
+            hr = posix2utc(hr, "%Y-%m-%d %H:%M")
+            dp = str(hr) + "," + str(px)
+            pixel_count.append(dp)
 
             print("dt", i, len(listofimages))
             avg_array.pop(0)
 
     with open("pixelcount.csv", "w") as p:
         for line in pixel_count:
-            p.write(str(line) + "\n")
+            p.write(line + "\n")
         p.close()
 
 
@@ -296,7 +289,7 @@ def downloadimages(listofimages, storagelocation):
             parse_image_fromURL(response1, file)
 
 
-def create_polar_mask(masksize, xoffset, yoffset):
+def create_polar_mask(masksize, xoffset, yoffset, sector):
     dist_full = masksize - 1
     dist_half = int(masksize / 2)
     dist_quarter = int(masksize / 4)
@@ -304,20 +297,10 @@ def create_polar_mask(masksize, xoffset, yoffset):
     img = np.zeros((masksize, masksize), np.uint8)
     colour = (255, 255, 255)
 
-    # occulating disk
-    cv2.circle(img, (dist_half + xoffset, dist_half + yoffset), 53, colour, -1)
-
-    # # top zone
-    # triangle = [(0, 10), (0, dist_full-10), (dist_half,dist_half)]
-    # cv2.fillPoly(img, np.array([triangle]), colour)
-
-    # # bottom zone
-    # triangle = [(dist_half,dist_half), (dist_full, 0), (dist_full,dist_full)]
-    # cv2.fillPoly(img, np.array([triangle]), colour)
-
-    # # Blank the top and bottom zones so they dont go all the way to the edge
-    # cv2.rectangle(img, (0, 0), (dist_full, dist_quarter), (255, 255, 255), -1)
-    # cv2.rectangle(img, (0, dist_full-dist_quarter), (dist_full, dist_full), (255, 255, 255), -1)
+    # annulus
+    diameter = 53
+    width = 60
+    cv2.circle(img, (dist_half + xoffset, dist_half + yoffset), diameter, colour, width)
 
     # img = ~img
     # cv2.imshow("Display window", img)
@@ -434,6 +417,7 @@ if __name__ == "__main__":
         imagelist = imagelist[cut:]
     imagelist.sort()
     print("creating animated GIF...")
-    create_gif(imagelist, images_folder)
+
+    create_gif(imagelist, analysis_folder)
 
     print("Finished processing.")
