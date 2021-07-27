@@ -99,6 +99,7 @@ def create_json(report_datetime, report_data):
     ion_med = ((ion_max - ion_min) / 2) + ion_min
     result = "none"
     dtm = int(time.time())
+    dta = 0
 
     if len(report_data) > 60:
         dtm = dtm
@@ -130,12 +131,15 @@ def create_json(report_datetime, report_data):
 
 def wrapper():
     nowtime = int(time.time())
-    starttime = nowtime - (60 * 60 * 48)
+    posix_day = 60*60*24
+    starttime = nowtime - (posix_day * 2)  # A Carrington Rotation
     binlist = []
 
     # create the list of one minute bins
     t = nowtime
-    for i in range(0, 2880):
+
+    bin_range = int((nowtime - starttime) / (60*60))
+    for i in range(0, bin_range):
         binlist.append(Bin(t))
         t = t + 60
 
@@ -149,7 +153,7 @@ def wrapper():
         dt = item[1]
         i = indexposition(dt, starttime)
         if i >=0:
-            if i <=2880:
+            if i <=bin_range:
                 binlist[i].data.append(1)
 
     # lists for plotting
@@ -168,9 +172,5 @@ def wrapper():
             d = posix2utc(binlist[i].time, '%Y-%m-%d %H:%M')
             report_datetime.append(d)
 
-    # with open("temp.csv", "w") as t:
-    #     for item in report_data:
-    #         t.write(str(item) + "\n")
-    #     t.close()
     plot_chart(report_datetime, report_data)
     create_json(report_datetime, report_data)

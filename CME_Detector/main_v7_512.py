@@ -79,7 +79,7 @@ def erode_dilate_img(image_to_process):
     return outputimg
 
 
-def add_stamp(image_object, filename):
+def add_stamp(banner_text, image_object, filename):
     tt = time.time()
     tt = posix2utc(tt, "%Y-%m-%d %H:%M")
     cv2. rectangle(image_object, (0, 449), (511,511), (255,255,255), -1 )
@@ -89,7 +89,7 @@ def add_stamp(image_object, filename):
     font_size = 0.5
     font_color = colour
     font_thickness = 1
-    banner = 'Processed by http://DunedinAurora.NZ'
+    banner = banner_text
     x, y = 5, 15
     cv2.putText(image_object, banner, (x, y), font, font_size, font_color, font_thickness, cv2.LINE_AA)
 
@@ -160,7 +160,7 @@ def processimages_detrend(listofimages, storage_folder, analysisfolder):
             # image_save(m_image, masked_img)
 
             f_image = analysisfolder + "//" + "dt_" + listofimages[i]
-            add_stamp(final_img, f_image)
+            add_stamp("High Contrast CME Detection", final_img, f_image)
             image_save(f_image, final_img)
 
             px = cv2.countNonZero(final_img)
@@ -261,7 +261,7 @@ def processimages_display(listofimages, storage_folder, images_folder):
             new_image = cv2.applyColorMap(new_image, cv2.COLORMAP_BONE)
 
             # Save the difference image into the images folder
-            add_stamp(new_image, hourimage)
+            add_stamp("Processed at Dunedin Aurora", new_image, hourimage)
             fname = images_folder + "/" + listofimages[i]
             image_save(fname, new_image)
             # print("Display image created..." + fname)
@@ -378,7 +378,7 @@ if __name__ == "__main__":
 
     # Parse for old epoch files that have been added
     print("Getting images for old epoch")
-    # ymd_old = "20210716"
+    # ymd_old = "20210722"
     baseURL = "https://soho.nascom.nasa.gov/data/REPROCESSING/Completed/" + year + "/c3/" + ymd_old + "/"
     onlinelist = baseURL + ".full_512.lst"
     listofimages = get_resource_from_url(onlinelist)

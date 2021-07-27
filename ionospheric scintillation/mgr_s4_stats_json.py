@@ -1,8 +1,5 @@
 """
 This file:
-* Creates a json file with the format: {"posixtime": 1625362051, "ionstate": "low"}
-based on the current S4 value compared to the mean value for the last carrington rotation.
-
 * displays a 24 hour plot of average S4, average SNR, count of s4 noise over 40%.
 """
 import constants as k

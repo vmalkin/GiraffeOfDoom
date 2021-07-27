@@ -15,7 +15,7 @@ import mgr_polar_noise_tracks
 import mgr_polar_sat_tracks
 import mgr_polar_s4_noise
 import mgr_s4_stats_json
-import mgr_cumulative
+import mgr_cumulative_2
 
 
 errorloglevel = logging.CRITICAL
@@ -90,17 +90,10 @@ class QueryProcessor(Thread):
                 logging.warning("s4 Stats plotter & JSON failed in MAIN.PY")
 
             # try:
-            mgr_cumulative.wrapper()
+            mgr_cumulative_2.wrapper()
             # except:
             #     print("\n" + "!!!!!!!!!  Cumulative Count Failed  !!!!!!!!!" + "\n")
             #     logging.warning("Cumulative Count Failed in MAIN.PY")
-            #
-            # try:
-            #     # pass
-            #     qry_makeJSON.wrapper(k.current_stats)
-            # except:
-            #     print("\n" + "!!!!!!!!!  Ion Reading json creator failed  !!!!!!!!!" + "\n")
-            #     logging.warning("Ion Reading json creator failed in MAIN.PY")
 
             # rings the terminal bell
             print("\a")
