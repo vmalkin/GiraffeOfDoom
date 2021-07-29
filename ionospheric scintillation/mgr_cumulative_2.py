@@ -67,10 +67,10 @@ def plot_chart(dates, data):
     fig.update_traces(line=dict(width=3, color="rgba(10,10,10,1)"))
     fig.update_layout(plot_bgcolor="#a0a0a0", paper_bgcolor="#a0a0a0")
     # manually edit min max markers
-    fig.add_hline(y=ion_max, line_color=green, line_width=6, annotation_text="Noisy Ionosphere",
-                  annotation_font_color=green, annotation_font_size=20, annotation_position="top left")
-    fig.add_hline(y=ion_min, line_color=blue, line_width=6, annotation_text="Quiet Ionosphere",
-                  annotation_font_color=blue, annotation_font_size=20, annotation_position="bottom left")
+    # fig.add_hline(y=ion_max, line_color=green, line_width=6, annotation_text="Noisy Ionosphere",
+    #               annotation_font_color=green, annotation_font_size=20, annotation_position="top left")
+    # fig.add_hline(y=ion_min, line_color=blue, line_width=6, annotation_text="Quiet Ionosphere",
+    #               annotation_font_color=blue, annotation_font_size=20, annotation_position="bottom left")
 
 
     fig.write_image(file=savefile, format='jpg')
@@ -99,7 +99,6 @@ def create_json(report_datetime, report_data):
     ion_med = ((ion_max - ion_min) / 2) + ion_min
     result = "none"
     dtm = int(time.time())
-    dta = 0
 
     if len(report_data) > 60:
         dtm = dtm
@@ -121,7 +120,7 @@ def create_json(report_datetime, report_data):
             result = "high"
 
     i = {"posixtime": dtm, "ionstate": result}
-    print(dta, ion_min, ion_med, ion_max)
+    # print(dta, ion_min, ion_med, ion_max)
     print(i)
 
     filepath = "ion.json"

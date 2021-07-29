@@ -153,12 +153,6 @@ def processimages_detrend(listofimages, storage_folder, analysisfolder):
             ret,detrended_img = cv2.threshold(detrended_img, 6, 255, cv2.THRESH_BINARY)
             final_img = np.uint8(detrended_img)
 
-            # # # add mask.
-            # masked_img = cv2.bitwise_and(final_img, mask, mask=mask)
-            # m_image = analysisfolder + "//" + "ms_" + listofimages[i]
-            # add_stamp(masked_img, m_image)
-            # image_save(m_image, masked_img)
-
             f_image = analysisfolder + "//" + "dt_" + listofimages[i]
             add_stamp("High Contrast CME Detection", final_img, f_image)
             image_save(f_image, final_img)
@@ -171,6 +165,8 @@ def processimages_detrend(listofimages, storage_folder, analysisfolder):
             pixel_count.append(dp)
 
             print("dt", i, len(listofimages))
+
+            # always do this
             avg_array.pop(0)
 
     with open("pixelcount.csv", "w") as p:
@@ -378,7 +374,7 @@ if __name__ == "__main__":
 
     # Parse for old epoch files that have been added
     print("Getting images for old epoch")
-    # ymd_old = "20210722"
+    # ymd_old = "20210726"
     baseURL = "https://soho.nascom.nasa.gov/data/REPROCESSING/Completed/" + year + "/c3/" + ymd_old + "/"
     onlinelist = baseURL + ".full_512.lst"
     listofimages = get_resource_from_url(onlinelist)
