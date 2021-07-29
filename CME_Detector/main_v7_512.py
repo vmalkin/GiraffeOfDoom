@@ -124,6 +124,10 @@ def filehour_converter(yyyymmdd, hhmm):
     return ts
 
 
+def polar_to_rect(final_img):
+    return final_img
+
+
 def processimages_detrend(listofimages, storage_folder, analysisfolder):
     avg_array = []
     pixel_count = []
@@ -152,6 +156,13 @@ def processimages_detrend(listofimages, storage_folder, analysisfolder):
             detrended_img = cv2.subtract(pic, avg_img)
             ret,detrended_img = cv2.threshold(detrended_img, 6, 255, cv2.THRESH_BINARY)
             final_img = np.uint8(detrended_img)
+
+            # convert the image from polar to rectangular coords in order to more easily
+            # map CME occurences and identify halo CMEs
+            final_img = polar_to_rect(final_img)
+
+            # Detect CME location.
+            # identify Halo CME
 
             f_image = analysisfolder + "//" + "dt_" + listofimages[i]
             add_stamp("High Contrast CME Detection", final_img, f_image)
