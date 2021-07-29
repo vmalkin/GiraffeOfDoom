@@ -152,7 +152,7 @@ def wrapper():
         dt = item[1]
         i = indexposition(dt, starttime)
         if i >=0:
-            if i <=bin_range:
+            if i <= bin_range - 1:
                 binlist[i].data.append(1)
 
     # lists for plotting
