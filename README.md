@@ -34,5 +34,5 @@ Python script to use an external site to determine my IP from the outside world.
 ### Ionospheric Monitoring
 This project uses a Sparkfun SAM-M8Q board to monitor the S/N ratio of satellite messages from the GPS and GLONAS gps constellations. From this we can derive a unitless value called the S4 Index that descibes how turbulent the ionosphere is in response to space weather. 
 
-###Coronal Mass Ejection (CME) Detection
+### Coronal Mass Ejection (CME) Detection
 This project downloads and processes LASCO coronagraph images using the Open Computer Vision library (OpenCV) to try and identify CMEs. From thisn it is hoped to idendify /halo CMEs/ that are potentiall Earth facing and a trigger for big geomagnetic storms.
