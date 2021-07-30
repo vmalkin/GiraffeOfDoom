@@ -3,13 +3,11 @@ import sqlite3
 import datetime
 import time
 import plotly.graph_objects as go
-from statistics import mean
+from statistics import mean, stdev
 import json
 
 sat_database = "gps_satellites.db"
 nullvalue = "none"
-ion_max = 95
-ion_min = 72
 
 class Bin:
     def __init__(self, posixtime):
@@ -50,10 +48,11 @@ def indexposition(posixtime, starttime):
     return interval
 
 
-def plot_chart(dates, data):
-    green = "rgba(0,100,0,0.7)"
-    blue = "rgba(0,0,150,0.7)"
-
+def plot_chart(dates, data, ion_min, ion_max, ion_average):
+    green = "rgba(0, 100, 0, 0.7)"
+    red = "rgba(150, 0, 0, 0.7)"
+    violet = "rgba(127, 0, 255, 0.7)"
+    blue = "rgba(0, 0, 150, 0.7)"
 
     savefile = k.dir_images + "//cumulative.jpg"
     data = go.Scatter(x=dates, y=data, mode="lines")
@@ -67,10 +66,14 @@ def plot_chart(dates, data):
     fig.update_traces(line=dict(width=3, color="rgba(10,10,10,1)"))
     fig.update_layout(plot_bgcolor="#a0a0a0", paper_bgcolor="#a0a0a0")
     # manually edit min max markers
-    # fig.add_hline(y=ion_max, line_color=green, line_width=6, annotation_text="Noisy Ionosphere",
-    #               annotation_font_color=green, annotation_font_size=20, annotation_position="top left")
-    # fig.add_hline(y=ion_min, line_color=blue, line_width=6, annotation_text="Quiet Ionosphere",
-    #               annotation_font_color=blue, annotation_font_size=20, annotation_position="bottom left")
+    fig.add_hline(y=ion_max, line_color=red, line_width=6, annotation_text="Noisy Ionosphere",
+                  annotation_font_color=red, annotation_font_size=20, annotation_position="top left")
+
+    fig.add_hline(y=ion_average, line_color=green, line_width=6, annotation_text="Average",
+                  annotation_font_color=green, annotation_font_size=20, annotation_position="top left")
+
+    fig.add_hline(y=ion_min, line_color=blue, line_width=6, annotation_text="Quiet Ionosphere",
+                  annotation_font_color=blue, annotation_font_size=20, annotation_position="bottom left")
 
 
     fig.write_image(file=savefile, format='jpg')
@@ -95,7 +98,7 @@ def query_parse(queryresult):
     return returnlist
 
 
-def create_json(report_datetime, report_data):
+def create_json(report_data, ion_min, ion_max):
     ion_med = ((ion_max - ion_min) / 2) + ion_min
     result = "none"
     dtm = int(time.time())
@@ -131,16 +134,21 @@ def create_json(report_datetime, report_data):
 def wrapper():
     nowtime = int(time.time())
     posix_day = 60*60*24
-    starttime = nowtime - (posix_day * 2)  # A Carrington Rotation
+    starttime = nowtime - (posix_day * 7)  # A Carrington Rotation
     binlist = []
+
+    ion_max = 0
+    ion_min = 0
+    ion_average = 0
 
     # create the list of one minute bins
     t = nowtime
 
-    bin_range = int((nowtime - starttime) / (60*60))
+    bin_range = int((nowtime - starttime) / 60)
     for i in range(0, bin_range):
         binlist.append(Bin(t))
         t = t + 60
+    print("Length of binlist ", len(binlist))
 
     # get the last 48 hours of data.
     queryresult = query_get_data(starttime)
@@ -171,5 +179,16 @@ def wrapper():
             d = posix2utc(binlist[i].time, '%Y-%m-%d %H:%M')
             report_datetime.append(d)
 
-    plot_chart(report_datetime, report_data)
-    create_json(report_datetime, report_data)
+    ion_average = mean(report_data)
+    ion_sigma = stdev(report_data)
+    ion_max = ion_average + (4 * ion_sigma)
+    ion_min = ion_average - (4 * ion_sigma)
+
+    # to calculate the stats, we use a larger set of data than what we will display
+    # so the stats are more stable over the longer term.
+    if len(report_data) > 1440:
+        report_data = report_data[-1440:]
+        report_datetime = report_datetime[-1440:]
+
+    plot_chart(report_datetime, report_data, ion_min, ion_max, ion_average)
+    create_json(report_data, ion_min, ion_max)

@@ -11,6 +11,10 @@ from plotly.subplots import make_subplots
 from statistics import median
 from PIL import Image, ImageDraw
 
+# the origin point in the LASCO image is not in the geometric centre of the file. We need this
+# correction when creating the polar to rectangular image
+polar_offset = [6, 10]
+
 def get_resource_from_url(url_to_get):
     response = ""
     try:
@@ -124,7 +128,8 @@ def filehour_converter(yyyymmdd, hhmm):
     return ts
 
 
-def polar_to_rect(final_img):
+def polar_to_rect(final_img, offset):
+    x_corr, y_corr = offset[0], offset[1]
     return final_img
 
 
@@ -159,7 +164,7 @@ def processimages_detrend(listofimages, storage_folder, analysisfolder):
 
             # convert the image from polar to rectangular coords in order to more easily
             # map CME occurences and identify halo CMEs
-            final_img = polar_to_rect(final_img)
+            final_img = polar_to_rect(final_img, polar_offset)
 
             # Detect CME location.
             # identify Halo CME
