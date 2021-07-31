@@ -48,13 +48,13 @@ def indexposition(posixtime, starttime):
     return interval
 
 
-def plot_chart(dates, data, ion_min, ion_max, ion_average):
+def plot_chart(filename, dates, data, ion_min, ion_max, ion_average):
     green = "rgba(0, 100, 0, 0.7)"
     red = "rgba(150, 0, 0, 0.7)"
     violet = "rgba(127, 0, 255, 0.7)"
     blue = "rgba(0, 0, 150, 0.7)"
 
-    savefile = k.dir_images + "//cumulative.jpg"
+    savefile = k.dir_images + "//" + filename
     data = go.Scatter(x=dates, y=data, mode="lines")
     fig = go.Figure(data)
     fig.update_xaxes(nticks=30, tickangle=45)
@@ -134,7 +134,7 @@ def create_json(report_data, ion_min, ion_max):
 def wrapper():
     nowtime = int(time.time())
     posix_day = 60*60*24
-    starttime = nowtime - (posix_day * 7)  # A Carrington Rotation
+    starttime = nowtime - (posix_day * 28)  # A Carrington Rotation
     binlist = []
 
     ion_max = 0
@@ -184,11 +184,14 @@ def wrapper():
     ion_max = ion_average + (4 * ion_sigma)
     ion_min = ion_average - (4 * ion_sigma)
 
+    # PLot the full result of the total query.
+    plot_chart("full_cumulative.jpg", report_datetime, report_data, ion_min, ion_max, ion_average)
+
     # to calculate the stats, we use a larger set of data than what we will display
     # so the stats are more stable over the longer term.
     if len(report_data) > 1440:
         report_data = report_data[-1440:]
         report_datetime = report_datetime[-1440:]
 
-    plot_chart(report_datetime, report_data, ion_min, ion_max, ion_average)
+    plot_chart("cumulative.jpg", report_datetime, report_data, ion_min, ion_max, ion_average)
     create_json(report_data, ion_min, ion_max)
