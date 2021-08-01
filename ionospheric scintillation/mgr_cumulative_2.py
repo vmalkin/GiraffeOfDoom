@@ -12,6 +12,8 @@ nullvalue = "none"
 class Bin:
     def __init__(self, posixtime):
         self.time = posixtime
+
+        # a count of s4 spikes
         self.data = [0]
 
     def sumdata(self):
@@ -99,7 +101,6 @@ def query_parse(queryresult):
 
 
 def create_json(report_data, ion_min, ion_max):
-    ion_med = ((ion_max - ion_min) / 2) + ion_min
     result = "none"
     dtm = int(time.time())
 
@@ -112,12 +113,8 @@ def create_json(report_data, ion_min, ion_max):
             result = "none"
 
         if dta > ion_min:
-            if dta <= ion_med:
-                result = "low"
-
-        if dta > ion_med:
             if dta <= ion_max:
-                result = "med"
+                result = "low"
 
         if dta > ion_max:
             result = "high"
@@ -141,17 +138,17 @@ def wrapper():
     ion_min = 0
     ion_average = 0
 
-    # create the list of one minute bins
-    t = nowtime
-
-    bin_range = int((nowtime - starttime) / 60)
+    # create the list of empty one minute bins
+    bin_range = int((nowtime - starttime) / 60) + 1
     for i in range(0, bin_range):
-        binlist.append(Bin(t))
-        t = t + 60
+        bintime = starttime + (i * 60)
+        binlist.append(Bin(bintime))
+
     print("Length of binlist ", len(binlist))
 
-    # get the last 48 hours of data.
+    # get data for the required period (See value for variable starttime
     queryresult = query_get_data(starttime)
+
     # parse out readings below 40deg in alt and s4 over 100%
     parsed_query = query_parse(queryresult)
 
@@ -161,28 +158,33 @@ def wrapper():
         i = indexposition(dt, starttime)
         if i >=0:
             if i <= bin_range - 1:
-                binlist[i].data.append(1)
+                binlist[i].data.append(1)  # add a 1-count to the list
 
     # lists for plotting
     report_data = []
     report_datetime = []
     temp = []
-    # Parse thru the list of bins, each entry in the report data represnts a running cumulative total
+
+    # Parse thru the list of bins, each entry in the report data represents a running cumulative total
     # of S4 spikes for the previous 24 hour period.
     for i in range(0, len(binlist)):
         x = binlist[i].sumdata()
         temp.append(x)
+
+        # We've now created a 24hour window of cumulative data, start sliding thru this to create the cumulative output
         if len(temp) > 1440:
+
             temp.pop(0)
             y = sum(temp)
+
             report_data.append(y)
             d = posix2utc(binlist[i].time, '%Y-%m-%d %H:%M')
             report_datetime.append(d)
 
     ion_average = mean(report_data)
     ion_sigma = stdev(report_data)
-    ion_max = ion_average + (4 * ion_sigma)
-    ion_min = ion_average - (4 * ion_sigma)
+    ion_max = ion_average + (2 * ion_sigma)
+    ion_min = ion_average - (2 * ion_sigma)
 
     # PLot the full result of the total query.
     plot_chart("full_cumulative.jpg", report_datetime, report_data, ion_min, ion_max, ion_average)
