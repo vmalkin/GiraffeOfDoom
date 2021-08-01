@@ -54,12 +54,14 @@ def plot_chart(filename, dates, data, ion_min, ion_max, ion_average):
     green = "rgba(0, 100, 0, 0.7)"
     red = "rgba(150, 0, 0, 0.7)"
     blue = "rgba(0, 0, 150, 0.7)"
+    y_min = min(data) - 2
+    y_max = max(data) + 2
 
     savefile = k.dir_images + "//" + filename
     plotdata = go.Scatter(x=dates, y=data, mode="lines")
     fig = go.Figure(plotdata)
     fig.update_xaxes(nticks=30, tickangle=45)
-    fig.update_yaxes(range=[min(data) - 2, max(data)] + 2)
+    fig.update_yaxes(range=[y_min ,y_max] )
     fig.update_layout(font=dict(size=20), title_font_size=21)
     fig.update_layout(width=1400, height=600, title="GPS Noise Spikes. Cumulative Total.",
                       xaxis_title="Date/time UTC<br><sub>http://DunedinAurora.nz</sub>",
