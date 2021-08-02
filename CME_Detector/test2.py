@@ -1,15 +1,20 @@
+import datetime
+import time
 import cv2
 import numpy as np
+import calendar
+import plotly.graph_objects as go
+from plotly.subplots import make_subplots
+from statistics import median
+from PIL import Image, ImageDraw
 
-if __name__ == "__main__":
-    image_lasco = "c://temp//lasco.jpg"
-    image_stereo_a = "c://temp//stereo_a.jpg"
+def image_load(file_name):
+    img = cv2.imread(file_name)
+    return img
 
-    img_l = cv2.imread(image_lasco)
-    img_s = cv2.imread(image_stereo_a)
 
-    # crop and scale images to have the same FOV
-    # convert to gray scale
-    # erode and dialate to smooth images.
-    # Apply any other contrast/brightness to have images the same intensity
-    # Create 3D point cloud of intersecting volume. Normalise the intensities to fit 0-254
+def image_save(file_name, image_object):
+    cv2.imwrite(file_name, image_object)
+
+
+test = image_load("part1.jpg")
