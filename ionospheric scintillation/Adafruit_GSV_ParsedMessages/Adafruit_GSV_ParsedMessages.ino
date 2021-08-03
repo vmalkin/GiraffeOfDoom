@@ -19,6 +19,7 @@
 
 // You can change the pin numbers to match your wiring:
 SoftwareSerial mySerial(8, 7);
+String nmea_sentence;
 
 #define PMTK_SET_NMEA_UPDATE_1HZ  "$PMTK220,1000*1F"
 #define PMTK_SET_NMEA_UPDATE_5HZ  "$PMTK220,200*2C"
@@ -53,13 +54,19 @@ void setup() {
 
 
 void loop() {
-  if (Serial.available()) {
-   char c = Serial.read();
-   Serial.write(c);
-   mySerial.write(c);
-  }
-  if (mySerial.available()) {
+  
+  if (mySerial.available()) 
+  {
     char c = mySerial.read();
-    Serial.write(c);
+    
+    if (c != '\r')
+    {    
+       nmea_sentence = nmea_sentence + c;
+      }
+    else
+    {
+      Serial.print(nmea_sentence);
+      nmea_sentence = "";
+      }
   }
 }
