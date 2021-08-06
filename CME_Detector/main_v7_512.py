@@ -169,9 +169,9 @@ def processimages_detrend(listofimages, storage_folder, analysisfolder):
             # Detect CME location.
             # identify Halo CME
 
-            f_image = analysisfolder + "//" + "dt_" + listofimages[i]
-            add_stamp("High Contrast CME Detection", final_img, f_image)
-            image_save(f_image, final_img)
+            # f_image = analysisfolder + "//" + "dt_" + listofimages[i]
+            # add_stamp("High Contrast CME Detection", final_img, f_image)
+            # image_save(f_image, final_img)
 
             px = cv2.countNonZero(final_img)
             t = listofimages[i].split("_")

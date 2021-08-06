@@ -68,8 +68,8 @@ def polar_to_rectangular(angle, distance):
     if angle > 270:
         if angle < 360:
             angle = angle - 270
-            delta_x = distance * sin(radians(angle))
-            delta_y = distance * cos(radians(angle))
+            delta_y = distance * sin(radians(angle))
+            delta_x = distance * cos(radians(angle))
             x = imagecentre - delta_x
             y = imagecentre - delta_y
 
@@ -79,24 +79,28 @@ def polar_to_rectangular(angle, distance):
     return [x,y]
 
 
-test = image_load("part2.jpg")
+test = image_load("part1.jpg")
 greyimg = cv2.cvtColor(test, cv2.COLOR_BGR2GRAY)
 pic = cv2.split(greyimg)
 pic = pic[0]
 
 t = []
-for i in range(0, 201):
-    for j in range(0, 361):
-        coords = polar_to_rectangular(j, 1)
-        t.append(pic[coords[0], coords[1]])
+u = []
+
+# the y direction
+for i in range(0, 200):
+    # the x direction
+    for j in range(0, 360):
+        coords = polar_to_rectangular(j, i)
+        pixelvalue = pic[coords[0], coords[1]]
+        u.append(pixelvalue)
+    t.append(u)
+    u = []
 
 # https://www.geeksforgeeks.org/convert-a-numpy-array-to-an-image/
-array = np.arange(0, 72000, 1, np.uint8)
-print(array.shape)
-array = np.reshape(array, (200, 360))
-testpic = im.fromarray(array)
-testpic.save('testpic.png')
+array = np.array(t)
+# print(array.shape)
+# array = np.reshape(array, (200, 360))
 
-cv2.imshow("Test", testpic)
-cv2.waitKey(0) # waits until a key is pressed
-cv2.destroyAllWindows() # destroys the window showing image
+image_save("testpic.png", array)
+
