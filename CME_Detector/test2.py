@@ -1,10 +1,11 @@
 import cv2
 import numpy as np
-from PIL import Image as im
 from math import sin, cos, radians
 
-offset_x = 0
-offset_y = 0
+# offset values when coronagraph mask support-vane in top-right position
+offset_x = 11
+offset_y = -4
+
 image_size = 512
 imagecentre = image_size / 2
 
@@ -87,7 +88,7 @@ def polar_to_rectangular(angle, distance):
     return [x,y]
 
 
-test = image_load("part5.jpg")
+test = image_load("part1.jpg")
 greyimg = cv2.cvtColor(test, cv2.COLOR_BGR2GRAY)
 pic = cv2.split(greyimg)
 pic = pic[0]
@@ -96,9 +97,9 @@ t = []
 u = []
 
 # the y direction
-for i in range(200, 0, -1):
+for i in range(0, 220):
     # the x direction
-    for j in range(360, 0, -1):
+    for j in range(0, 360):
         coords = polar_to_rectangular(j, i)
         pixelvalue = pic[coords[0], coords[1]]
         u.append(pixelvalue)

@@ -164,14 +164,14 @@ def processimages_detrend(listofimages, storage_folder, analysisfolder):
 
             # convert the image from polar to rectangular coords in order to more easily
             # map CME occurences and identify halo CMEs
-            final_img = polar_to_rect(final_img, polar_offset)
+            # final_img = polar_to_rect(final_img, polar_offset)
 
             # Detect CME location.
             # identify Halo CME
 
-            # f_image = analysisfolder + "//" + "dt_" + listofimages[i]
+            f_image = analysisfolder + "//" + "dt_" + listofimages[i]
             # add_stamp("High Contrast CME Detection", final_img, f_image)
-            # image_save(f_image, final_img)
+            image_save(f_image, final_img)
 
             px = cv2.countNonZero(final_img)
             t = listofimages[i].split("_")
@@ -421,15 +421,15 @@ if __name__ == "__main__":
     # print("Preparing images for optical flow...")
     # processimages_opticalflow(dirlisting, analysis_folder, analysis_folder)
 
-    # create an animated GIF of the last 24 images from the Analysis folder.
-    imagelist = os.listdir(analysis_folder)
-    imagelist.sort()
-    if len(imagelist) > 24:
-        cut = len(imagelist) - 24
-        imagelist = imagelist[cut:]
-    imagelist.sort()
-    print("creating animated GIF...")
-
-    create_gif(imagelist, analysis_folder)
+    # # create an animated GIF of the last 24 images from the Analysis folder.
+    # imagelist = os.listdir(analysis_folder)
+    # imagelist.sort()
+    # if len(imagelist) > 24:
+    #     cut = len(imagelist) - 24
+    #     imagelist = imagelist[cut:]
+    # imagelist.sort()
+    # print("creating animated GIF...")
+    #
+    # create_gif(imagelist, analysis_folder)
 
     print("Finished processing.")
