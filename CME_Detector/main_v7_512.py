@@ -10,10 +10,14 @@ import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 from statistics import median
 from PIL import Image, ImageDraw
+from math import sin, cos, radians
 
-# the origin point in the LASCO image is not in the geometric centre of the file. We need this
-# correction when creating the polar to rectangular image
-polar_offset = [6, 10]
+# offset values when coronagraph mask support-vane in top-right position
+offset_x = -5
+offset_y = 10
+
+image_size = 512
+imagecentre = image_size / 2
 
 def get_resource_from_url(url_to_get):
     response = ""
@@ -128,9 +132,75 @@ def filehour_converter(yyyymmdd, hhmm):
     return ts
 
 
-def polar_to_rect(final_img, offset):
-    x_corr, y_corr = offset[0], offset[1]
-    return final_img
+
+def polar_to_rectangular(angle, distance):
+    """
+    With our image, we have a line at an angle , radiating from
+    the centre. We want the pixel value at the end. THis method will return the [x,y] co-ords accounting
+    for the offset the actual centre point from the geometric centre of the image
+
+    Angle: in degrees measured clockwise from North/top
+    Distance: in pixels, as a radius measured from the centre.
+    """
+    if angle == 0 or angle == 360:
+        # print("a == 0")
+        x = imagecentre
+        y = imagecentre - distance
+
+    if angle > 0:
+        if angle < 90:
+            # print("0 < a < 90")
+            delta_x = distance * sin(radians(angle))
+            delta_y = distance * cos(radians(angle))
+            x = imagecentre + delta_x
+            y = imagecentre - delta_y
+
+    if angle == 90:
+        # print("a == 90")
+        x = imagecentre + distance
+        y = imagecentre
+
+    if angle > 90:
+        if angle < 180:
+            # print("90 < a < 180")
+            angle = angle - 90
+            delta_y = distance * sin(radians(angle))
+            delta_x = distance * cos(radians(angle))
+            x = imagecentre + delta_x
+            y = imagecentre + delta_y
+
+    if angle == 180:
+        # print("a == 180")
+        x = imagecentre
+        y = imagecentre + distance
+
+    if angle > 180:
+        if angle < 270:
+            # print("180 < a < 270")
+            angle = angle - 180
+            delta_x = distance * sin(radians(angle))
+            delta_y = distance * cos(radians(angle))
+            x = imagecentre - delta_x
+            y = imagecentre + delta_y
+
+    if angle == 270:
+        # print("a == 270")
+        x = imagecentre - distance
+        y = imagecentre
+
+    if angle > 270:
+        if angle < 360:
+            # print("270 < a < 360")
+            angle = angle - 270
+            delta_y = distance * sin(radians(angle))
+            delta_x = distance * cos(radians(angle))
+            x = imagecentre - delta_x
+            y = imagecentre - delta_y
+
+    # finally add the offsets and return
+    x = int(x + offset_x)
+    y = int(y + offset_y)
+    return [x,y]
 
 
 def processimages_detrend(listofimages, storage_folder, analysisfolder):
@@ -164,14 +234,25 @@ def processimages_detrend(listofimages, storage_folder, analysisfolder):
 
             # convert the image from polar to rectangular coords in order to more easily
             # map CME occurences and identify halo CMEs
-            # final_img = polar_to_rect(final_img, polar_offset)
 
-            # Detect CME location.
-            # identify Halo CME
+            t = []
+            u = []
+
+            # the y direction
+            for dist in range(220, 0, -1):
+                # the x direction
+                for angle in range(0, 360):
+                    coords = polar_to_rectangular(angle, dist)
+                    pixelvalue = final_img[coords[1], coords[0]]
+                    u.append(pixelvalue)
+                t.append(u)
+                u = []
+
+            array = np.array(t)
 
             f_image = analysisfolder + "//" + "dt_" + listofimages[i]
             # add_stamp("High Contrast CME Detection", final_img, f_image)
-            image_save(f_image, final_img)
+            image_save(f_image, array)
 
             px = cv2.countNonZero(final_img)
             t = listofimages[i].split("_")
@@ -181,14 +262,6 @@ def processimages_detrend(listofimages, storage_folder, analysisfolder):
             pixel_count.append(dp)
 
             print("dt", i, len(listofimages))
-
-            # always do this
-            avg_array.pop(0)
-
-    with open("pixelcount.csv", "w") as p:
-        for line in pixel_count:
-            p.write(line + "\n")
-        p.close()
 
 
 def processimages_opticalflow(listofimages, storage_folder, images_folder):

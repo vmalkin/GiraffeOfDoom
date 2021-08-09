@@ -3,8 +3,8 @@ import numpy as np
 from math import sin, cos, radians
 
 # offset values when coronagraph mask support-vane in top-right position
-offset_x = 11
-offset_y = -4
+offset_x = -5
+offset_y = 10
 
 image_size = 512
 imagecentre = image_size / 2
@@ -88,7 +88,7 @@ def polar_to_rectangular(angle, distance):
     return [x,y]
 
 
-test = image_load("part1.jpg")
+test = image_load("part5.jpg")
 greyimg = cv2.cvtColor(test, cv2.COLOR_BGR2GRAY)
 pic = cv2.split(greyimg)
 pic = pic[0]
@@ -97,19 +97,23 @@ t = []
 u = []
 
 # the y direction
-for i in range(0, 220):
+for dist in range(220, 0, -1):
     # the x direction
-    for j in range(0, 360):
-        coords = polar_to_rectangular(j, i)
-        pixelvalue = pic[coords[0], coords[1]]
+    for angle in range(0, 360):
+        coords = polar_to_rectangular(angle, dist)
+        pixelvalue = pic[coords[1], coords[0]]
         u.append(pixelvalue)
     t.append(u)
     u = []
 
+
+
 # https://www.geeksforgeeks.org/convert-a-numpy-array-to-an-image/
 array = np.array(t)
 # print(array.shape)
-# array = np.reshape(array, (200, 360))
+# array = np.reshape(array, (220, 360))
 
 image_save("testpic.png", array)
+
+
 
