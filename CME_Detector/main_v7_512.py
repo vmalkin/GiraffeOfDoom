@@ -463,7 +463,7 @@ if __name__ == "__main__":
 
     # Parse for old epoch files that have been added
     print("Getting images for old epoch")
-    # ymd_old = "20210726"
+    # ymd_old = "20210804"
     baseURL = "https://soho.nascom.nasa.gov/data/REPROCESSING/Completed/" + year + "/c3/" + ymd_old + "/"
     onlinelist = baseURL + ".full_512.lst"
     listofimages = get_resource_from_url(onlinelist)
@@ -494,15 +494,15 @@ if __name__ == "__main__":
     # print("Preparing images for optical flow...")
     # processimages_opticalflow(dirlisting, analysis_folder, analysis_folder)
 
-    # # create an animated GIF of the last 24 images from the Analysis folder.
-    # imagelist = os.listdir(analysis_folder)
-    # imagelist.sort()
-    # if len(imagelist) > 24:
-    #     cut = len(imagelist) - 24
-    #     imagelist = imagelist[cut:]
-    # imagelist.sort()
-    # print("creating animated GIF...")
-    #
-    # create_gif(imagelist, analysis_folder)
+    # create an animated GIF of the last 24 images from the Analysis folder.
+    imagelist = os.listdir(analysis_folder)
+    imagelist.sort()
+    if len(imagelist) > 24:
+        cut = len(imagelist) - 24
+        imagelist = imagelist[cut:]
+    imagelist.sort()
+    print("creating animated GIF...")
+
+    create_gif(imagelist, analysis_folder)
 
     print("Finished processing.")
