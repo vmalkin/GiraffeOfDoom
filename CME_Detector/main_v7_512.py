@@ -1,16 +1,14 @@
 import datetime
 import time
 import urllib.request
-import pickle
 import os
 import cv2
 import numpy as np
 import calendar
-import plotly.graph_objects as go
-from plotly.subplots import make_subplots
 from statistics import median
-from PIL import Image, ImageDraw
+from PIL import Image
 from math import sin, cos, radians
+import functools
 
 # offset values when coronagraph mask support-vane in top-right position
 offset_x = -5
@@ -30,10 +28,6 @@ def get_resource_from_url(url_to_get):
         print("unable to load URL", url_to_get)
 
     return response
-
-
-def save_values(save_value, pickle_file):
-    pickle.dump(save_value, open(pickle_file, "wb"), 0)
 
 
 def posix2utc(posixtime, timeformat):
@@ -132,7 +126,6 @@ def filehour_converter(yyyymmdd, hhmm):
     return ts
 
 
-
 def polar_to_rectangular(angle, distance):
     """
     With our image, we have a line at an angle , radiating from
@@ -203,10 +196,10 @@ def polar_to_rectangular(angle, distance):
     return [x,y]
 
 
+
 def processimages_detrend(listofimages, storage_folder, analysisfolder):
     avg_array = []
     pixel_count = []
-    mask = create_polar_mask(512, -10, 10, "n")
 
     for i in range(0, len(listofimages)):
         p = storage_folder + "//" + listofimages[i]
@@ -237,7 +230,6 @@ def processimages_detrend(listofimages, storage_folder, analysisfolder):
 
             t = []
             u = []
-
             # the y direction
             for dist in range(220, 0, -1):
                 # the x direction
@@ -264,32 +256,32 @@ def processimages_detrend(listofimages, storage_folder, analysisfolder):
             print("dt", i, len(listofimages))
 
 
-def processimages_opticalflow(listofimages, storage_folder, images_folder):
-    pr = storage_folder + "//" + listofimages[0]
-    prev = image_load(pr)
-    hsv = np.zeros_like(prev)
-    hsv[..., 1] = 255
-
-    for i in range(1, len(listofimages)):
-        nx = storage_folder + "//" + listofimages[i]
-        next = image_load(nx)
-
-        # convert image to a single channel
-        prev = cv2.split(prev)
-        next = cv2.split(next)
-        prev = prev[0]
-        next = next[0]
-
-        flow = cv2.calcOpticalFlowFarneback(prev, next, None, 0.5, 3, 15, 3, 5, 2, 0)
-        mag, ang = cv2.cartToPolar(flow[..., 0], flow[..., 1])
-        hsv[..., 0] = ang * 180 / np.pi / 2
-        hsv[..., 2] = cv2.normalize(mag, None, 0, 255, cv2.NORM_MINMAX)
-        bgr = cv2.cvtColor(hsv, cv2.COLOR_HSV2BGR)
-
-        savefile = images_folder + "//" + "fl_" + listofimages[i]
-        cv2.imwrite(savefile, bgr)
-        print("fl", i, len(listofimages))
-        prev = next
+# def processimages_opticalflow(listofimages, storage_folder, images_folder):
+#     pr = storage_folder + "//" + listofimages[0]
+#     prev = image_load(pr)
+#     hsv = np.zeros_like(prev)
+#     hsv[..., 1] = 255
+#
+#     for i in range(1, len(listofimages)):
+#         nx = storage_folder + "//" + listofimages[i]
+#         next = image_load(nx)
+#
+#         # convert image to a single channel
+#         prev = cv2.split(prev)
+#         next = cv2.split(next)
+#         prev = prev[0]
+#         next = next[0]
+#
+#         flow = cv2.calcOpticalFlowFarneback(prev, next, None, 0.5, 3, 15, 3, 5, 2, 0)
+#         mag, ang = cv2.cartToPolar(flow[..., 0], flow[..., 1])
+#         hsv[..., 0] = ang * 180 / np.pi / 2
+#         hsv[..., 2] = cv2.normalize(mag, None, 0, 255, cv2.NORM_MINMAX)
+#         bgr = cv2.cvtColor(hsv, cv2.COLOR_HSV2BGR)
+#
+#         savefile = images_folder + "//" + "fl_" + listofimages[i]
+#         cv2.imwrite(savefile, bgr)
+#         print("fl", i, len(listofimages))
+#         prev = next
 
 
 def processimages_display(listofimages, storage_folder, images_folder):
@@ -374,23 +366,23 @@ def downloadimages(listofimages, storagelocation):
             parse_image_fromURL(response1, file)
 
 
-def create_polar_mask(masksize, xoffset, yoffset, sector):
-    dist_full = masksize - 1
-    dist_half = int(masksize / 2)
-    dist_quarter = int(masksize / 4)
-
-    img = np.zeros((masksize, masksize), np.uint8)
-    colour = (255, 255, 255)
-
-    # annulus
-    diameter = 53
-    width = 60
-    cv2.circle(img, (dist_half + xoffset, dist_half + yoffset), diameter, colour, width)
-
-    # img = ~img
-    # cv2.imshow("Display window", img)
-    # k = cv2.waitKey(0)
-    return img
+# def create_polar_mask(masksize, xoffset, yoffset, sector):
+#     dist_full = masksize - 1
+#     dist_half = int(masksize / 2)
+#     dist_quarter = int(masksize / 4)
+#
+#     img = np.zeros((masksize, masksize), np.uint8)
+#     colour = (255, 255, 255)
+#
+#     # annulus
+#     diameter = 53
+#     width = 60
+#     cv2.circle(img, (dist_half + xoffset, dist_half + yoffset), diameter, colour, width)
+#
+#     # img = ~img
+#     # cv2.imshow("Display window", img)
+#     # k = cv2.waitKey(0)
+#     return img
 
 
 def calc_median(array):
@@ -432,6 +424,7 @@ def create_gif(list, filesfolder):
 
 
 if __name__ == "__main__":
+    computation_start = time.time()
     images_folder = "images_512"
     storage_folder = "lasco_store_512"
     analysis_folder = "analysis_512"
@@ -504,5 +497,6 @@ if __name__ == "__main__":
     print("creating animated GIF...")
 
     create_gif(imagelist, analysis_folder)
-
+    computation_end = time.time()
+    print("Elapsed time: ", computation_end - computation_start)
     print("Finished processing.")
