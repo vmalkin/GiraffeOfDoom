@@ -94,7 +94,7 @@ pic = cv2.split(greyimg)
 pic = pic[0]
 
 t = []
-u = []
+# u = []
 
 # the y direction
 for dist in range(220, 0, -1):
@@ -102,9 +102,9 @@ for dist in range(220, 0, -1):
     for angle in range(0, 360):
         coords = polar_to_rectangular(angle, dist)
         pixelvalue = pic[coords[1], coords[0]]
-        u.append(pixelvalue)
-    t.append(u)
-    u = []
+        t.append(pixelvalue)
+    # t.append(u)
+    # u = []
 
 
 

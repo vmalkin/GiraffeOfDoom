@@ -196,11 +196,46 @@ def polar_to_rectangular(angle, distance):
     return [x,y]
 
 
+def annotate_image(array, width, height):
+    cimage = cv2.cvtColor(array, cv2.COLOR_GRAY2BGR)
+    rad_sol = 10  # solar radius in pixels at 512 pixels
+    north = 0
+    east = 90
+    south = 180
+    west = 270
+
+    # NSWE lines
+    cv2.line(cimage, (north, 0), (north, height), (0, 100, 255), thickness=1)
+    cv2.line(cimage, (east, 0), (east, height), (0, 100, 255), thickness=1)
+    cv2.line(cimage, (south, 0), (south, height), (0, 100, 255), thickness=1)
+    cv2.line(cimage, (west, 0), (west, height), (0, 100, 255), thickness=1)
+    # solar surface
+    cv2. rectangle(cimage, (0, height - rad_sol), (width, height), (0,255,255), -1)
+    cv2.rectangle(cimage, (0, 0), (width, 12), (0, 0, 0), -1)
+
+    font = cv2.FONT_HERSHEY_SIMPLEX
+    font_size = 0.4
+    font_color = (0, 100, 255)
+    font_thickness = 1
+    cv2.putText(cimage, "N", (north, 10), font, font_size, font_color, font_thickness, cv2.LINE_AA)
+    cv2.putText(cimage, "E", (east, 10), font, font_size, font_color, font_thickness, cv2.LINE_AA)
+    cv2.putText(cimage, "S", (south, 10), font, font_size, font_color, font_thickness, cv2.LINE_AA)
+    cv2.putText(cimage, "W", (west, 10), font, font_size, font_color, font_thickness, cv2.LINE_AA)
+
+    font_color = (0, 255, 255)
+    cv2.putText(cimage, "Solar Surface", (10, height - 15), font, font_size, font_color, font_thickness, cv2.LINE_AA)
+
+    return cimage
+
+
+def count_nonzero(array):
+    # COunt non zero pixels in a zone just above the solar surface.
+    return 1
+
 
 def processimages_detrend(listofimages, storage_folder, analysisfolder):
     avg_array = []
     pixel_count = []
-
     for i in range(0, len(listofimages)):
         p = storage_folder + "//" + listofimages[i]
         pic = image_load(p)
@@ -227,33 +262,38 @@ def processimages_detrend(listofimages, storage_folder, analysisfolder):
 
             # convert the image from polar to rectangular coords in order to more easily
             # map CME occurences and identify halo CMEs
-
+            dst = 220
+            ang = 360
             t = []
-            u = []
-            # the y direction
-            for dist in range(220, 0, -1):
-                # the x direction
-                for angle in range(0, 360):
+            for dist in range(dst, 0, -1):
+                for angle in range(0, ang):
                     coords = polar_to_rectangular(angle, dist)
-                    pixelvalue = final_img[coords[1], coords[0]]
-                    u.append(pixelvalue)
-                t.append(u)
-                u = []
+                    t.append(final_img[coords[1], coords[0]])
 
-            array = np.array(t)
+            # https://www.geeksforgeeks.org/convert-a-numpy-array-to-an-image/
+            # array = np.array(t)
+            array = np.reshape(np.array(t), (dst, ang))
 
-            f_image = analysisfolder + "//" + "dt_" + listofimages[i]
-            # add_stamp("High Contrast CME Detection", final_img, f_image)
-            image_save(f_image, array)
 
-            px = cv2.countNonZero(final_img)
+            px = count_nonzero(array)
             t = listofimages[i].split("_")
             hr = filehour_converter(t[0], t[1])
             hr = posix2utc(hr, "%Y-%m-%d %H:%M")
             dp = str(hr) + "," + str(px)
             pixel_count.append(dp)
 
+            array = annotate_image(array, ang, dst)
+
+            # cv2.imshow('Example - Show image in window', array)
+            # cv2.waitKey(0)  # waits until a key is pressed
+            # cv2.destroyAllWindows()  # destroys the window showing image
+
+            f_image = analysisfolder + "//" + "dt_" + listofimages[i]
+            # add_stamp("High Contrast CME Detection", final_img, f_image)
+            image_save(f_image, array)
+
             print("dt", i, len(listofimages))
+
 
 
 # def processimages_opticalflow(listofimages, storage_folder, images_folder):
@@ -498,5 +538,6 @@ if __name__ == "__main__":
 
     create_gif(imagelist, analysis_folder)
     computation_end = time.time()
-    print("Elapsed time: ", computation_end - computation_start)
+    elapsed_mins = round((computation_end - computation_start) / 60, 1)
+    print("Elapsed time: ", elapsed_mins)
     print("Finished processing.")
