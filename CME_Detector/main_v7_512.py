@@ -69,16 +69,16 @@ def greyscale_img(image_to_process):
     return greyimg
 
 
-def erode_dilate_img(image_to_process):
-    # Erode and Dilate the image to clear up noise
-    # Erosion will trim away pixels (noise)
-    # dilation puffs out edges
-    kernel2 = np.ones((4, 4), np.uint8)
-    outputimg = cv2.dilate(image_to_process, kernel2, iterations=1)
-
-    kernel1 = np.ones((6, 6), np.uint8)
-    outputimg = cv2.erode(outputimg, kernel1, iterations=1)
-    return outputimg
+# def erode_dilate_img(image_to_process):
+#     # Erode and Dilate the image to clear up noise
+#     # Erosion will trim away pixels (noise)
+#     # dilation puffs out edges
+#     kernel2 = np.ones((4, 4), np.uint8)
+#     outputimg = cv2.dilate(image_to_process, kernel2, iterations=1)
+#
+#     kernel1 = np.ones((6, 6), np.uint8)
+#     outputimg = cv2.erode(outputimg, kernel1, iterations=1)
+#     return outputimg
 
 
 def add_stamp(banner_text, image_object, filename):
@@ -196,7 +196,7 @@ def polar_to_rectangular(angle, distance):
     return [x,y]
 
 
-def annotate_image(array, width, height):
+def annotate_image(array, width, height, timevalue):
     cimage = cv2.cvtColor(array, cv2.COLOR_GRAY2BGR)
     rad_sol = 10  # solar radius in pixels at 512 pixels
     north = 0
@@ -224,13 +224,24 @@ def annotate_image(array, width, height):
 
     font_color = (0, 255, 255)
     cv2.putText(cimage, "Solar Surface", (10, height - 15), font, font_size, font_color, font_thickness, cv2.LINE_AA)
-
+    cv2.putText(cimage, timevalue, (220, height - 15), font, font_size, font_color, font_thickness, cv2.LINE_AA)
+    cv2.rectangle(cimage, (0, 220 - 50), (360, 220 - 40), (0, 255, 0), 1)
     return cimage
 
 
 def count_nonzero(array):
     # COunt non zero pixels in a zone just above the solar surface.
-    return 1
+    try:
+        num_pixels = cv2.countNonZero(array)
+    except Exception:
+        num_pixels = 0
+    return num_pixels
+
+
+def create_mask(image, imagewidth, imageheight, topoffset, bottomoffset):
+    mask = np.zeros(image.shape[:2], dtype="uint8")
+    cv2.rectangle(mask, (0, imageheight - topoffset), (imagewidth, imageheight - bottomoffset), 255, -1)
+    return mask
 
 
 def processimages_detrend(listofimages, storage_folder, analysisfolder):
@@ -274,15 +285,17 @@ def processimages_detrend(listofimages, storage_folder, analysisfolder):
             # array = np.array(t)
             array = np.reshape(np.array(t), (dst, ang))
 
+            mask = create_mask(array, ang, dst, 40, 50)
+            masked = cv2.bitwise_and(array, mask)
 
-            px = count_nonzero(array)
+            px = count_nonzero(masked)
             t = listofimages[i].split("_")
             hr = filehour_converter(t[0], t[1])
             hr = posix2utc(hr, "%Y-%m-%d %H:%M")
             dp = str(hr) + "," + str(px)
             pixel_count.append(dp)
 
-            array = annotate_image(array, ang, dst)
+            array = annotate_image(array, ang, dst, hr)
 
             # cv2.imshow('Example - Show image in window', array)
             # cv2.waitKey(0)  # waits until a key is pressed
@@ -294,34 +307,10 @@ def processimages_detrend(listofimages, storage_folder, analysisfolder):
 
             print("dt", i, len(listofimages))
 
-
-
-# def processimages_opticalflow(listofimages, storage_folder, images_folder):
-#     pr = storage_folder + "//" + listofimages[0]
-#     prev = image_load(pr)
-#     hsv = np.zeros_like(prev)
-#     hsv[..., 1] = 255
-#
-#     for i in range(1, len(listofimages)):
-#         nx = storage_folder + "//" + listofimages[i]
-#         next = image_load(nx)
-#
-#         # convert image to a single channel
-#         prev = cv2.split(prev)
-#         next = cv2.split(next)
-#         prev = prev[0]
-#         next = next[0]
-#
-#         flow = cv2.calcOpticalFlowFarneback(prev, next, None, 0.5, 3, 15, 3, 5, 2, 0)
-#         mag, ang = cv2.cartToPolar(flow[..., 0], flow[..., 1])
-#         hsv[..., 0] = ang * 180 / np.pi / 2
-#         hsv[..., 2] = cv2.normalize(mag, None, 0, 255, cv2.NORM_MINMAX)
-#         bgr = cv2.cvtColor(hsv, cv2.COLOR_HSV2BGR)
-#
-#         savefile = images_folder + "//" + "fl_" + listofimages[i]
-#         cv2.imwrite(savefile, bgr)
-#         print("fl", i, len(listofimages))
-#         prev = next
+    with open("pixelcount.csv", "w") as p:
+        for line in pixel_count:
+            p.write(line + "\n")
+        p.close()
 
 
 def processimages_display(listofimages, storage_folder, images_folder):
@@ -406,47 +395,28 @@ def downloadimages(listofimages, storagelocation):
             parse_image_fromURL(response1, file)
 
 
-# def create_polar_mask(masksize, xoffset, yoffset, sector):
-#     dist_full = masksize - 1
-#     dist_half = int(masksize / 2)
-#     dist_quarter = int(masksize / 4)
-#
-#     img = np.zeros((masksize, masksize), np.uint8)
-#     colour = (255, 255, 255)
-#
-#     # annulus
-#     diameter = 53
-#     width = 60
-#     cv2.circle(img, (dist_half + xoffset, dist_half + yoffset), diameter, colour, width)
-#
-#     # img = ~img
-#     # cv2.imshow("Display window", img)
-#     # k = cv2.waitKey(0)
-#     return img
+# def calc_median(array):
+#     temp = []
+#     half_len = 4
+#     u = 0
+#     if len(array) > half_len * 2:
+#         for i in range(half_len, len(array) - half_len):
+#             t = []
+#             for j in range(0, half_len):
+#                 t.append(array[i + j])
+#             u = median(t)
+#             temp.append(u)
+#     return temp
 
 
-def calc_median(array):
-    temp = []
-    half_len = 4
-    u = 0
-    if len(array) > half_len * 2:
-        for i in range(half_len, len(array) - half_len):
-            t = []
-            for j in range(0, half_len):
-                t.append(array[i + j])
-            u = median(t)
-            temp.append(u)
-    return temp
-
-
-def recursive_smooth(array, parameter):
-    temp = []
-    st_prev = array[0]
-    for i in range(1, len(array)):
-        st_now = (parameter * array[i]) + ((1 - parameter) * st_prev)
-        temp.append(st_now)
-        st_prev = st_now
-    return temp
+# def recursive_smooth(array, parameter):
+#     temp = []
+#     st_prev = array[0]
+#     for i in range(1, len(array)):
+#         st_now = (parameter * array[i]) + ((1 - parameter) * st_prev)
+#         temp.append(st_now)
+#         st_prev = st_now
+#     return temp
 
 
 def create_gif(list, filesfolder):
@@ -522,10 +492,6 @@ if __name__ == "__main__":
 
     print("Preparing enhanced images for analysis...")
     processimages_detrend(dirlisting, storage_folder, analysis_folder)
-
-    # dirlisting = os.listdir(analysis_folder)
-    # print("Preparing images for optical flow...")
-    # processimages_opticalflow(dirlisting, analysis_folder, analysis_folder)
 
     # create an animated GIF of the last 24 images from the Analysis folder.
     imagelist = os.listdir(analysis_folder)

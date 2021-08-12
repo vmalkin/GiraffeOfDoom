@@ -136,9 +136,9 @@ def wrapper():
     starttime = nowtime - (posix_day * 28)  # A Carrington Rotation
     binlist = []
 
-    ion_max = 0
-    ion_min = 0
-    ion_average = 0
+    # ion_max = 0
+    # ion_min = 0
+    # ion_average = 0
 
     # create the list of empty one minute bins
     bin_range = int((nowtime - starttime) / 60) + 1
@@ -163,39 +163,49 @@ def wrapper():
                 binlist[i].data.append(1)  # add a 1-count to the list
 
     # lists for plotting
-    report_data = []
-    report_datetime = []
-    temp = []
+    report_data1440 = []
+    report_data60 = []
+    report_datetime1440 = []
+    report_datetime60 = []
+    temp1440 = []
+    temp60 = []
 
     # Parse thru the list of bins, each entry in the report data represents a running cumulative total
     # of S4 spikes for the previous 24 hour period.
     for i in range(0, len(binlist)):
         x = binlist[i].sumdata()
-        temp.append(x)
+        temp1440.append(x)
+        temp60.append(x)
+
+        if len(temp60) > 60:
+            temp60.pop(0)
+            y = sum(temp60)
+            report_data60.append(y)
+            d = posix2utc(binlist[i].time, '%Y-%m-%d %H:%M')
+            report_datetime60.append(d)
 
         # We've now created a 24hour window of cumulative data, start sliding thru this to create the cumulative output
-        if len(temp) > 1440:
-
-            temp.pop(0)
-            y = sum(temp)
-
-            report_data.append(y)
+        if len(temp1440) > 1440:
+            temp1440.pop(0)
+            y = sum(temp1440)
+            report_data1440.append(y)
             d = posix2utc(binlist[i].time, '%Y-%m-%d %H:%M')
-            report_datetime.append(d)
+            report_datetime1440.append(d)
 
-    ion_average = mean(report_data)
-    ion_sigma = stdev(report_data)
+    ion_average = mean(report_data1440)
+    ion_sigma = stdev(report_data1440)
     ion_max = ion_average + (2 * ion_sigma)
     ion_min = ion_average - (2 * ion_sigma)
 
     # PLot the full result of the total query.
-    plot_chart("full_cumulative.jpg", report_datetime, report_data, ion_min, ion_max, ion_average)
+    plot_chart("full_cumulative.jpg", report_datetime1440, report_data1440, ion_min, ion_max, ion_average)
 
     # to calculate the stats, we use a larger set of data than what we will display
     # so the stats are more stable over the longer term.
-    if len(report_data) > 1440:
-        report_data = report_data[-1440:]
-        report_datetime = report_datetime[-1440:]
+    if len(report_data1440) > 1440:
+        report_data1440 = report_data1440[-1440:]
+        report_datetime1440 = report_datetime1440[-1440:]
 
-    plot_chart("cumulative.jpg", report_datetime, report_data, ion_min, ion_max, ion_average)
-    create_json(report_data, ion_min, ion_max)
+    plot_chart("cumulative.jpg", report_datetime1440, report_data1440, ion_min, ion_max, ion_average)
+    plot_chart("hourly_cumulative.jpg", report_datetime60, report_data60, ion_min, ion_max, ion_average)
+    create_json(report_data1440, ion_min, ion_max)

@@ -48,7 +48,7 @@ void setup() {
   
   mySerial.println(PMTK_RESET);
   // you can send various commands to get it started
-  mySerial.println(PMTK_SET_NMEA_OUTPUT_RMCONLY);
+  mySerial.println(PMTK_SET_NMEA_OUTPUT_GSV);
   mySerial.println(PGCMD_NOANTENNA);
  }
 
