@@ -271,15 +271,15 @@ def plot(dates, pixel_count):
     fig.update_layout(font=dict(size=20), title_font_size=21)
     fig.update_layout(width=1800, height=600, title="Coronal Mass Ejections",
                           xaxis_title="Date/time UTC<br><sub>http://DunedinAurora.nz</sub>",
-                          yaxis_title="CME Spike",
+                          yaxis_title="CME Coverage",
                           plot_bgcolor="#e0e0e0")
     fig.update_layout(plot_bgcolor="#a0a0a0", paper_bgcolor="#a0a0a0")
 
     fig.update_xaxes(nticks=50, tickangle=45)
-    fig.update_yaxes(range=[0, 3602])
-    fig.add_hline(y=3600, line_color=red, line_width=6, annotation_text="Maximum Extent",
+    fig.update_yaxes(range=[0, 1.01])
+    fig.add_hline(y=1, line_color=red, line_width=6, annotation_text="Full Halo CME",
                   annotation_font_color=red, annotation_font_size=20, annotation_position="top left")
-    fig.update_traces(line=dict(width=2, color="rgba(200, 80, 0, 1)"))
+    fig.update_traces(line=dict(width=2, color="rgba(150, 60, 0, 1)"))
     fig.write_image(file="cme_plot.jpg", format='jpg')
 
 
@@ -333,6 +333,9 @@ def processimages_detrend(listofimages, storage_folder, analysisfolder):
             # Pixelcounter to create graphic pf CMEs
             # A full halo CME should produce counts in the order of 3600
             px = count_nonzero(masked)
+            #  pixelcount as a percentage of the area monitored
+            px = float(px) / 3600
+            px = round(px, 3)
             t = listofimages[i].split("_")
             hr = filehour_converter(t[0], t[1])
             hr = posix2utc(hr, "%Y-%m-%d %H:%M")
@@ -481,7 +484,7 @@ if __name__ == "__main__":
 
     # Parse for old epoch files that have been added
     print("Getting images for old epoch")
-    # ymd_old = "20210804"
+    # ymd_old = "20210813"
     baseURL = "https://soho.nascom.nasa.gov/data/REPROCESSING/Completed/" + year + "/c3/" + ymd_old + "/"
     onlinelist = baseURL + ".full_512.lst"
     listofimages = get_resource_from_url(onlinelist)
@@ -511,8 +514,9 @@ if __name__ == "__main__":
     # create an animated GIF of the last 24 images from the Analysis folder.
     imagelist = os.listdir(analysis_folder)
     imagelist.sort()
-    if len(imagelist) > 40:
-        cut = len(imagelist) - 40
+    listlength = 60
+    if len(imagelist) > listlength:
+        cut = len(imagelist) - listlength
         imagelist = imagelist[cut:]
     imagelist.sort()
     print("creating animated GIF...")
