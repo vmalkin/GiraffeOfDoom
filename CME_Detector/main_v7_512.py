@@ -5,10 +5,10 @@ import os
 import cv2
 import numpy as np
 import calendar
-from statistics import median
 from PIL import Image
 from math import sin, cos, radians
-import functools
+from statistics import median
+from plotly import graph_objects as go
 
 # offset values when coronagraph mask support-vane in top-right position
 offset_x = -5
@@ -16,6 +16,7 @@ offset_y = 10
 
 image_size = 512
 imagecentre = image_size / 2
+
 
 def get_resource_from_url(url_to_get):
     response = ""
@@ -84,7 +85,7 @@ def greyscale_img(image_to_process):
 def add_stamp(banner_text, image_object, filename):
     tt = time.time()
     tt = posix2utc(tt, "%Y-%m-%d %H:%M")
-    cv2. rectangle(image_object, (0, 449), (511,511), (255,255,255), -1 )
+    cv2. rectangle(image_object, (0, 449), (511, 511), (255, 255, 255), -1)
     cv2.rectangle(image_object, (0, 0), (511, 20), (255, 255, 255), -1)
     colour = (0, 0, 0)
     font = cv2.FONT_HERSHEY_SIMPLEX
@@ -120,7 +121,7 @@ def filehour_converter(yyyymmdd, hhmm):
     day = (yyyymmdd[6:])
     hour = (hhmm[:2])
     min = (hhmm[2:])
-    utc_string = year + '-' + month + '-' + day  + ' ' + hour  + ':' +  min
+    utc_string = year + '-' + month + '-' + day + ' ' + hour + ':' + min
     dt = datetime.datetime.strptime(utc_string, '%Y-%m-%d %H:%M')
     ts = calendar.timegm(dt.timetuple())
     return ts
@@ -193,7 +194,7 @@ def polar_to_rectangular(angle, distance):
     # finally add the offsets and return
     x = int(x + offset_x)
     y = int(y + offset_y)
-    return [x,y]
+    return [x, y]
 
 
 def annotate_image(array, width, height, timevalue):
@@ -210,7 +211,7 @@ def annotate_image(array, width, height, timevalue):
     cv2.line(cimage, (south, 0), (south, height), (0, 100, 255), thickness=1)
     cv2.line(cimage, (west, 0), (west, height), (0, 100, 255), thickness=1)
     # solar surface
-    cv2. rectangle(cimage, (0, height - rad_sol), (width, height), (0,255,255), -1)
+    cv2. rectangle(cimage, (0, height - rad_sol), (width, height), (0, 255, 255), -1)
     cv2.rectangle(cimage, (0, 0), (width, 12), (0, 0, 0), -1)
 
     font = cv2.FONT_HERSHEY_SIMPLEX
@@ -225,6 +226,7 @@ def annotate_image(array, width, height, timevalue):
     font_color = (0, 255, 255)
     cv2.putText(cimage, "Solar Surface", (10, height - 15), font, font_size, font_color, font_thickness, cv2.LINE_AA)
     cv2.putText(cimage, timevalue, (220, height - 15), font, font_size, font_color, font_thickness, cv2.LINE_AA)
+    # THis box marks the slot used to detect count pixels for CMEs
     cv2.rectangle(cimage, (0, 220 - 50), (360, 220 - 40), (0, 255, 0), 1)
     return cimage
 
@@ -244,9 +246,47 @@ def create_mask(image, imagewidth, imageheight, topoffset, bottomoffset):
     return mask
 
 
+def median_filter(data):
+    # simple 3 value median filter
+    filtered = []
+    t = []
+    for item in data:
+        t.append(float(item))
+        if len(t) == 3:
+            f = median(t)
+            filtered.append(f)
+            t.pop(0)
+    return filtered
+
+
+def plot(dates, pixel_count):
+    pixel_count = median_filter(pixel_count)
+    dates.pop(0)
+    dates.pop(len(dates) - 1)
+    red = "rgba(150, 0, 0, 0.7)"
+
+    plotdata = go.Scatter(x=dates, y=pixel_count, mode="lines")
+    fig = go.Figure(plotdata)
+
+    fig.update_layout(font=dict(size=20), title_font_size=21)
+    fig.update_layout(width=1800, height=600, title="Coronal Mass Ejections",
+                          xaxis_title="Date/time UTC<br><sub>http://DunedinAurora.nz</sub>",
+                          yaxis_title="CME Spike",
+                          plot_bgcolor="#e0e0e0")
+    fig.update_layout(plot_bgcolor="#a0a0a0", paper_bgcolor="#a0a0a0")
+
+    fig.update_xaxes(nticks=50, tickangle=45)
+    fig.update_yaxes(range=[0, 3602])
+    fig.add_hline(y=3600, line_color=red, line_width=6, annotation_text="Maximum Extent",
+                  annotation_font_color=red, annotation_font_size=20, annotation_position="top left")
+    fig.update_traces(line=dict(width=2, color="rgba(200, 80, 0, 1)"))
+    fig.write_image(file="cme_plot.jpg", format='jpg')
+
+
 def processimages_detrend(listofimages, storage_folder, analysisfolder):
     avg_array = []
     pixel_count = []
+    dates = []
     for i in range(0, len(listofimages)):
         p = storage_folder + "//" + listofimages[i]
         pic = image_load(p)
@@ -262,13 +302,15 @@ def processimages_detrend(listofimages, storage_folder, analysisfolder):
 
         # 100 images is about a day
         if len(avg_array) >= 100:
+            # ALWAYS POP
+            avg_array.pop(0)
             avg_img = np.mean(avg_array, axis=0)
 
             pic = np.float32(pic)
             avg_img = np.float32(avg_img)
 
             detrended_img = cv2.subtract(pic, avg_img)
-            ret,detrended_img = cv2.threshold(detrended_img, 6, 255, cv2.THRESH_BINARY)
+            ret, detrended_img = cv2.threshold(detrended_img, 3, 255, cv2.THRESH_BINARY)
             final_img = np.uint8(detrended_img)
 
             # convert the image from polar to rectangular coords in order to more easily
@@ -288,12 +330,14 @@ def processimages_detrend(listofimages, storage_folder, analysisfolder):
             mask = create_mask(array, ang, dst, 40, 50)
             masked = cv2.bitwise_and(array, mask)
 
+            # Pixelcounter to create graphic pf CMEs
+            # A full halo CME should produce counts in the order of 3600
             px = count_nonzero(masked)
             t = listofimages[i].split("_")
             hr = filehour_converter(t[0], t[1])
             hr = posix2utc(hr, "%Y-%m-%d %H:%M")
-            dp = str(hr) + "," + str(px)
-            pixel_count.append(dp)
+            pixel_count.append(px)
+            dates.append(hr)
 
             array = annotate_image(array, ang, dst, hr)
 
@@ -306,12 +350,7 @@ def processimages_detrend(listofimages, storage_folder, analysisfolder):
             image_save(f_image, array)
 
             print("dt", i, len(listofimages))
-
-    with open("pixelcount.csv", "w") as p:
-        for line in pixel_count:
-            p.write(line + "\n")
-        p.close()
-
+    plot(dates, pixel_count)
 
 def processimages_display(listofimages, storage_folder, images_folder):
     t = listofimages[0].split("_")
@@ -343,7 +382,7 @@ def processimages_display(listofimages, storage_folder, images_folder):
             # img_ng = erode_dilate_img(img_ng)
 
             # improved histogram function
-            clahe = cv2.createCLAHE(clipLimit=2, tileGridSize=(8,8))
+            clahe = cv2.createCLAHE(clipLimit=2, tileGridSize=(8, 8))
             img_og = clahe.apply(img_og)
             img_ng = clahe.apply(img_ng)
 
@@ -393,30 +432,6 @@ def downloadimages(listofimages, storagelocation):
             response1 = get_resource_from_url(img1url)
             print("Saving file ", file)
             parse_image_fromURL(response1, file)
-
-
-# def calc_median(array):
-#     temp = []
-#     half_len = 4
-#     u = 0
-#     if len(array) > half_len * 2:
-#         for i in range(half_len, len(array) - half_len):
-#             t = []
-#             for j in range(0, half_len):
-#                 t.append(array[i + j])
-#             u = median(t)
-#             temp.append(u)
-#     return temp
-
-
-# def recursive_smooth(array, parameter):
-#     temp = []
-#     st_prev = array[0]
-#     for i in range(1, len(array)):
-#         st_now = (parameter * array[i]) + ((1 - parameter) * st_prev)
-#         temp.append(st_now)
-#         st_prev = st_now
-#     return temp
 
 
 def create_gif(list, filesfolder):
@@ -496,13 +511,14 @@ if __name__ == "__main__":
     # create an animated GIF of the last 24 images from the Analysis folder.
     imagelist = os.listdir(analysis_folder)
     imagelist.sort()
-    if len(imagelist) > 24:
-        cut = len(imagelist) - 24
+    if len(imagelist) > 40:
+        cut = len(imagelist) - 40
         imagelist = imagelist[cut:]
     imagelist.sort()
     print("creating animated GIF...")
 
     create_gif(imagelist, analysis_folder)
+
     computation_end = time.time()
     elapsed_mins = round((computation_end - computation_start) / 60, 1)
     print("Elapsed time: ", elapsed_mins)
