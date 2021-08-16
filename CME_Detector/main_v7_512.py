@@ -227,7 +227,7 @@ def annotate_image(array, width, height, timevalue):
     cv2.putText(cimage, "Solar Surface", (10, height - 15), font, font_size, font_color, font_thickness, cv2.LINE_AA)
     cv2.putText(cimage, timevalue, (220, height - 15), font, font_size, font_color, font_thickness, cv2.LINE_AA)
     # THis box marks the slot used to detect count pixels for CMEs
-    cv2.rectangle(cimage, (0, 220 - 50), (360, 220 - 40), (0, 255, 0), 1)
+    cv2.rectangle(cimage, (0, 220 - 50), (359, 220 - 40), (0, 255, 0), 1)
     return cimage
 
 
@@ -263,7 +263,7 @@ def plot(dates, pixel_count):
     pixel_count = median_filter(pixel_count)
     dates.pop(0)
     dates.pop(len(dates) - 1)
-    red = "rgba(150, 0, 0, 0.7)"
+    red = "rgba(150, 0, 0, 1)"
 
     plotdata = go.Scatter(x=dates, y=pixel_count, mode="lines")
     fig = go.Figure(plotdata)
@@ -279,7 +279,7 @@ def plot(dates, pixel_count):
     fig.update_yaxes(range=[0, 1.01])
     fig.add_hline(y=1, line_color=red, line_width=6, annotation_text="Full Halo CME",
                   annotation_font_color=red, annotation_font_size=20, annotation_position="top left")
-    fig.update_traces(line=dict(width=2, color="rgba(150, 60, 0, 1)"))
+    fig.update_traces(line=dict(width=4, color=red))
     fig.write_image(file="cme_plot.jpg", format='jpg')
 
 
@@ -484,7 +484,7 @@ if __name__ == "__main__":
 
     # Parse for old epoch files that have been added
     print("Getting images for old epoch")
-    # ymd_old = "20210813"
+    # ymd_old = "20210807"
     baseURL = "https://soho.nascom.nasa.gov/data/REPROCESSING/Completed/" + year + "/c3/" + ymd_old + "/"
     onlinelist = baseURL + ".full_512.lst"
     listofimages = get_resource_from_url(onlinelist)
@@ -514,7 +514,7 @@ if __name__ == "__main__":
     # create an animated GIF of the last 24 images from the Analysis folder.
     imagelist = os.listdir(analysis_folder)
     imagelist.sort()
-    listlength = 60
+    listlength = 100
     if len(imagelist) > listlength:
         cut = len(imagelist) - listlength
         imagelist = imagelist[cut:]
