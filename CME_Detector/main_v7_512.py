@@ -24,7 +24,7 @@ def get_resource_from_url(url_to_get):
         request = urllib.request.Request(url_to_get, headers={'User-Agent': 'Mozilla/5.0'})
         response = urllib.request.urlopen(request, timeout=10)
 
-    except urllib.request.HTTPError:
+    except:
         # logging.error("Unable to load/save image from URL: " + str(imageurl) + " " + str(filename))
         print("unable to load URL", url_to_get)
 
@@ -37,12 +37,12 @@ def posix2utc(posixtime, timeformat):
     return utctime
 
 
-def parse_image_fromURL(response, img_latest):
+def parse_image_from_url(response, img_latest):
     with open(img_latest, 'wb') as f:
         f.write(response.read())
 
 
-def parse_text_fromURL(response):
+def parse_text_from_url(response):
     # the response is a list of byte objects.
     returnlist = []
     for line in response:
@@ -270,9 +270,9 @@ def plot(dates, pixel_count):
 
     fig.update_layout(font=dict(size=20), title_font_size=21)
     fig.update_layout(width=1800, height=600, title="Coronal Mass Ejections",
-                          xaxis_title="Date/time UTC<br><sub>http://DunedinAurora.nz</sub>",
-                          yaxis_title="CME Coverage",
-                          plot_bgcolor="#e0e0e0")
+                      xaxis_title="Date/time UTC<br><sub>http://DunedinAurora.nz</sub>",
+                      yaxis_title="CME Coverage",
+                      plot_bgcolor="#e0e0e0")
     fig.update_layout(plot_bgcolor="#a0a0a0", paper_bgcolor="#a0a0a0")
 
     fig.update_xaxes(nticks=50, tickangle=45)
@@ -353,7 +353,12 @@ def processimages_detrend(listofimages, storage_folder, analysisfolder):
             image_save(f_image, array)
 
             print("dt", i, len(listofimages))
+
+    pixel_count = median_filter(pixel_count)
+    dates.pop(len(dates) - 1)
+    dates.pop(0)
     plot(dates, pixel_count)
+
 
 def processimages_display(listofimages, storage_folder, images_folder):
     t = listofimages[0].split("_")
@@ -434,7 +439,7 @@ def downloadimages(listofimages, storagelocation):
         if os.path.exists(file) is False:
             response1 = get_resource_from_url(img1url)
             print("Saving file ", file)
-            parse_image_fromURL(response1, file)
+            parse_image_from_url(response1, file)
 
 
 def create_gif(list, filesfolder):
@@ -444,11 +449,11 @@ def create_gif(list, filesfolder):
         i = Image.open(j)
         imagelist.append(i)
     imagelist[0].save("cme.gif",
-              format="GIF",
-              save_all=True,
-              append_images=imagelist[1:],
-              duration=500,
-              loop=0)
+                      format="GIF",
+                      save_all=True,
+                      append_images=imagelist[1:],
+                      duration=500,
+                      loop=0)
 
 
 if __name__ == "__main__":
@@ -474,7 +479,7 @@ if __name__ == "__main__":
     baseURL = "https://soho.nascom.nasa.gov/data/REPROCESSING/Completed/" + year + "/c3/" + ymd_now + "/"
     onlinelist = baseURL + ".full_512.lst"
     listofimages = get_resource_from_url(onlinelist)
-    listofimages = parse_text_fromURL(listofimages)
+    listofimages = parse_text_from_url(listofimages)
     newimages = parseimages(listofimages, storage_folder)
 
     if len(newimages) > 0:
@@ -488,7 +493,7 @@ if __name__ == "__main__":
     baseURL = "https://soho.nascom.nasa.gov/data/REPROCESSING/Completed/" + year + "/c3/" + ymd_old + "/"
     onlinelist = baseURL + ".full_512.lst"
     listofimages = get_resource_from_url(onlinelist)
-    listofimages = parse_text_fromURL(listofimages)
+    listofimages = parse_text_from_url(listofimages)
 
     newimages = parseimages(listofimages, storage_folder)
     # print("New images: ", newimages)
