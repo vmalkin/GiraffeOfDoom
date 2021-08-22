@@ -46,10 +46,10 @@ void setup() {
   mySerial.begin(9600);
   delay(2000);
   
-  mySerial.println(PMTK_RESET);
+//  mySerial.println(PMTK_RESET);
   // you can send various commands to get it started
-  mySerial.println(PMTK_SET_NMEA_OUTPUT_GSV);
-  mySerial.println(PGCMD_NOANTENNA);
+  mySerial.println(PMTK_API_SET_NMEA_OUTPUT_RMC);
+//  mySerial.println(PGCMD_NOANTENNA);
  }
 
 

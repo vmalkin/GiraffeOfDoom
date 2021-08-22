@@ -283,13 +283,39 @@ def plot(dates, pixel_count):
     fig.write_image(file="cme_plot.jpg", format='jpg')
 
 
+def text_alert(px, hr):
+    # %Y-%m-%d %H:%M
+    timestring = hr
+    hr = hr.split(" ")
+    hr = hr[0]
+    hr = hr.split("-")
+    new_hr = hr[0] + "/" + hr[1] + "/" + hr[2]
+    url = "https://stereo-ssc.nascom.nasa.gov/browse/" + new_hr +  "/ahead/cor2_rdiff/512/thumbnail.shtml"
+    stereo_url = "<br><a href=\"" + url + "\" target=\"_blank\">" + url + "</a>"
+    savefile = "cme_alert.php"
+
+    if px >= 0.4:
+        msg = "A possible CME has been detected with " + str(int(px * 100)) + "% coverage"
+        if px >= 0.6:
+            msg = "Warning: A possible PARTIAL HALO CME has been detected with " + str(int(px * 100)) + "% coverage"
+            if px >= 0.8:
+                msg = "ALERT: A possible FULL HALO CME has been detected with " + str(int(px * 100)) + "% coverage"
+
+        msg = msg + "<br>Confirm Earth impact with STEREO A satellite data here:"
+        msg_alert = "<p>" + timestring + ": " + msg + "\n" + stereo_url + "\n\n"
+        with open(savefile, "w") as s:
+            s.write(msg_alert)
+
+
 def processimages_detrend(listofimages, storage_folder, analysisfolder):
     avg_array = []
     pixel_count = []
     dates = []
     for i in range(0, len(listofimages)):
         p = storage_folder + "//" + listofimages[i]
+
         pic = image_load(p)
+
         pic = greyscale_img(pic)
 
         # convert image to a single channel
@@ -337,8 +363,14 @@ def processimages_detrend(listofimages, storage_folder, analysisfolder):
             px = float(px) / 3600
             px = round(px, 3)
             t = listofimages[i].split("_")
-            hr = filehour_converter(t[0], t[1])
-            hr = posix2utc(hr, "%Y-%m-%d %H:%M")
+            posixtime = filehour_converter(t[0], t[1])
+            hr = posix2utc(posixtime, "%Y-%m-%d %H:%M")
+
+            # Create a text alert to be exported to DunedinAurora and potentially
+            # twitter
+            if posixtime > (time.time() - (60 * 60 * 24 * 4)):
+                text_alert(px, hr)
+
             pixel_count.append(px)
             dates.append(hr)
 
@@ -353,6 +385,7 @@ def processimages_detrend(listofimages, storage_folder, analysisfolder):
             image_save(f_image, array)
 
             print("dt", i, len(listofimages))
+
 
     pixel_count = median_filter(pixel_count)
     dates.pop(len(dates) - 1)
@@ -468,6 +501,9 @@ if __name__ == "__main__":
         os.makedirs(storage_folder)
     if os.path.exists(analysis_folder) is False:
         os.makedirs(analysis_folder)
+
+    if os.path.exists("cme_alert.php"):
+        os.remove("cme_alert.php")
 
     tm = int(time.time())
     ymd_now = posix2utc(tm, "%Y%m%d")
