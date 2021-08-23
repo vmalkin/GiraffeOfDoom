@@ -16,6 +16,9 @@ offset_y = 10
 
 image_size = 512
 imagecentre = image_size / 2
+cme_min = 0.4
+cme_partial = 0.6
+cme_halo = 0.8
 
 
 def get_resource_from_url(url_to_get):
@@ -264,6 +267,8 @@ def plot(dates, pixel_count):
     dates.pop(0)
     dates.pop(len(dates) - 1)
     red = "rgba(150, 0, 0, 1)"
+    green = "rgba(0, 150, 0, 0.8)"
+    orange = "rgba(150, 100, 0, 0.8)"
 
     plotdata = go.Scatter(x=dates, y=pixel_count, mode="lines")
     fig = go.Figure(plotdata)
@@ -277,6 +282,13 @@ def plot(dates, pixel_count):
 
     fig.update_xaxes(nticks=50, tickangle=45)
     fig.update_yaxes(range=[0, 1.01])
+
+    fig.add_hline(y=cme_min, line_color=green, line_width=6, annotation_text="Minor CME",
+                  annotation_font_color=green, annotation_font_size=20, annotation_position="top left")
+
+    fig.add_hline(y=cme_partial, line_color=orange, line_width=6, annotation_text="Partial Halo CME",
+                  annotation_font_color=orange, annotation_font_size=20, annotation_position="top left")
+
     fig.add_hline(y=1, line_color=red, line_width=6, annotation_text="Full Halo CME",
                   annotation_font_color=red, annotation_font_size=20, annotation_position="top left")
     fig.update_traces(line=dict(width=4, color=red))
@@ -294,11 +306,11 @@ def text_alert(px, hr):
     stereo_url = "<br><a href=\"" + url + "\" target=\"_blank\">" + url + "</a>"
     savefile = "cme_alert.php"
 
-    if px >= 0.4:
+    if px >= cme_min:
         msg = "A possible CME has been detected with " + str(int(px * 100)) + "% coverage"
-        if px >= 0.6:
+        if px >= cme_partial:
             msg = "Warning: A possible PARTIAL HALO CME has been detected with " + str(int(px * 100)) + "% coverage"
-            if px >= 0.8:
+            if px >= cme_halo:
                 msg = "ALERT: A possible FULL HALO CME has been detected with " + str(int(px * 100)) + "% coverage"
 
         msg = msg + "<br>Confirm Earth impact with STEREO A satellite data here:"

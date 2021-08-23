@@ -184,7 +184,8 @@ def plot_graph(data):
     fig = make_subplots(rows=2, cols=1, subplot_titles=("Variance in Latitude", "Variance in Longtitude"))
     fig.add_trace(go.Scatter(x=dates, y=lat, mode="lines", line=dict(width=2, color=lat_clr)), row=1, col=1)
     fig.add_trace(go.Scatter(x=dates, y=long, mode="lines", line=dict(width=2, color=long_clr)), row=2, col=1)
-
+    fig.update_xaxes(nticks=30, tickangle=45)
+    fig.update_layout(font=dict(size=20), title_font_size=21)
     fig.update_layout(width=2000, height=1000,
                       title="GPS variations (decimal part)",
                       showlegend=False, plot_bgcolor="#a0a0a0", paper_bgcolor="#a0a0a0")
