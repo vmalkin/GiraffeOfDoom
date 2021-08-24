@@ -262,7 +262,42 @@ def median_filter(data):
     return filtered
 
 
-def plot(dates, pixel_count):
+def plot_mini(dates, pixel_count):
+    savefile = "cme_mini.jpg"
+    # pixel_count = median_filter(pixel_count)
+    dates.pop(0)
+    dates.pop(len(dates) - 1)
+    red = "rgba(150, 0, 0, 1)"
+    green = "rgba(0, 150, 0, 0.8)"
+    orange = "rgba(150, 100, 0, 0.8)"
+
+    plotdata = go.Scatter(x=dates, y=pixel_count, mode="lines")
+    fig = go.Figure(plotdata)
+
+    fig.update_layout(font=dict(size=20), title_font_size=24)
+    fig.update_layout(title="Coronal Mass Ejections",
+                      xaxis_title="Date/time UTC<br><sub>http://DunedinAurora.nz</sub>",
+                      yaxis_title="CME Coverage",
+                      plot_bgcolor="#e0e0e0")
+    fig.update_layout(plot_bgcolor="#a0a0a0", paper_bgcolor="#a0a0a0")
+
+    # fig.update_xaxes(nticks=50, tickangle=45)
+    fig.update_yaxes(range=[0, 1.01])
+
+    fig.add_hline(y=cme_min, line_color=green, line_width=6, annotation_text="Minor CME",
+                  annotation_font_color="darkslategrey", annotation_font_size=20, annotation_position="top left")
+
+    fig.add_hline(y=cme_partial, line_color=orange, line_width=6, annotation_text="Partial Halo CME",
+                  annotation_font_color="darkslategrey", annotation_font_size=20, annotation_position="top left")
+
+    fig.add_hline(y=1, line_color=red, line_width=6, annotation_text="Full Halo CME",
+                  annotation_font_color="darkslategrey", annotation_font_size=20, annotation_position="top left")
+    fig.update_traces(line=dict(width=4, color=red))
+    fig.write_image(file=savefile, format='jpg')
+
+
+def plot(dates, pixel_count, filename, width, height):
+    savefile = filename
     pixel_count = median_filter(pixel_count)
     dates.pop(0)
     dates.pop(len(dates) - 1)
@@ -274,7 +309,7 @@ def plot(dates, pixel_count):
     fig = go.Figure(plotdata)
 
     fig.update_layout(font=dict(size=20), title_font_size=21)
-    fig.update_layout(width=1800, height=600, title="Coronal Mass Ejections",
+    fig.update_layout(width=width, height=height, title="Coronal Mass Ejections",
                       xaxis_title="Date/time UTC<br><sub>http://DunedinAurora.nz</sub>",
                       yaxis_title="CME Coverage",
                       plot_bgcolor="#e0e0e0")
@@ -292,7 +327,7 @@ def plot(dates, pixel_count):
     fig.add_hline(y=1, line_color=red, line_width=6, annotation_text="Full Halo CME",
                   annotation_font_color=red, annotation_font_size=20, annotation_position="top left")
     fig.update_traces(line=dict(width=4, color=red))
-    fig.write_image(file="cme_plot.jpg", format='jpg')
+    fig.write_image(file=savefile, format='jpg')
 
 
 def text_alert(px, hr):
@@ -303,7 +338,7 @@ def text_alert(px, hr):
     hr = hr.split("-")
     new_hr = hr[0] + "/" + hr[1] + "/" + hr[2]
     url = "https://stereo-ssc.nascom.nasa.gov/browse/" + new_hr +  "/ahead/cor2_rdiff/512/thumbnail.shtml"
-    stereo_url = "<br><a href=\"" + url + "\" target=\"_blank\">" + url + "</a>"
+    stereo_url = "<a href=\"" + url + "\" target=\"_blank\">" + "Stereo Science Centre</a>"
     savefile = "cme_alert.php"
 
     if px >= cme_min:
@@ -312,9 +347,9 @@ def text_alert(px, hr):
             msg = "Warning: A possible PARTIAL HALO CME has been detected with " + str(int(px * 100)) + "% coverage"
             if px >= cme_halo:
                 msg = "ALERT: A possible FULL HALO CME has been detected with " + str(int(px * 100)) + "% coverage"
+        msg = msg + "<br>Confirm Earth impact with STEREO A satellite data:"
 
-        msg = msg + "<br>Confirm Earth impact with STEREO A satellite data here:"
-        msg_alert = "<p>" + timestring + ": " + msg + "\n" + stereo_url + "\n\n"
+        msg_alert = "<p>" + timestring + "<br>" + msg +  " " + stereo_url
         with open(savefile, "w") as s:
             s.write(msg_alert)
 
@@ -380,8 +415,8 @@ def processimages_detrend(listofimages, storage_folder, analysisfolder):
 
             # Create a text alert to be exported to DunedinAurora and potentially
             # twitter
-            if posixtime > (time.time() - (60 * 60 * 24 * 4)):
-                text_alert(px, hr)
+            text_alert(px, hr)
+
 
             pixel_count.append(px)
             dates.append(hr)
@@ -402,7 +437,11 @@ def processimages_detrend(listofimages, storage_folder, analysisfolder):
     pixel_count = median_filter(pixel_count)
     dates.pop(len(dates) - 1)
     dates.pop(0)
-    plot(dates, pixel_count)
+    plot(dates, pixel_count, "cme_plot.jpg", 1800, 600)
+
+    dates = dates[-100:]
+    pixel_count = pixel_count[-100:]
+    plot_mini(dates, pixel_count)
 
 
 def processimages_display(listofimages, storage_folder, images_folder):

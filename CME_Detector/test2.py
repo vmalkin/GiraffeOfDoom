@@ -1,3 +1,7 @@
+cme_min = 0.4
+cme_partial = 0.6
+cme_halo = 0.8
+
 def text_alert(px, hr):
     # %Y-%m-%d %H:%M
     timestring = hr
@@ -6,19 +10,19 @@ def text_alert(px, hr):
     hr = hr.split("-")
     new_hr = hr[0] + "/" + hr[1] + "/" + hr[2]
     url = "https://stereo-ssc.nascom.nasa.gov/browse/" + new_hr +  "/ahead/cor2_rdiff/512/thumbnail.shtml"
-    stereo_url = "<br><a href=\"" + url + "\" target=\"_blank\">" + url + "</a>"
+    stereo_url = "<a href=\"" + url + "\" target=\"_blank\">" + "Stereo Science Centre</a>"
     savefile = "cme_alert.php"
 
-    if px >= 0.4:
+    if px >= cme_min:
         msg = "A possible CME has been detected with " + str(int(px * 100)) + "% coverage"
-        if px >= 0.6:
+        if px >= cme_partial:
             msg = "Warning: A possible PARTIAL HALO CME has been detected with " + str(int(px * 100)) + "% coverage"
-            if px >= 0.8:
+            if px >= cme_halo:
                 msg = "ALERT: A possible FULL HALO CME has been detected with " + str(int(px * 100)) + "% coverage"
+        msg = msg + "<br>Confirm Earth impact with STEREO A satellite data:"
 
-        msg = msg + "<br>Confirm with STEREO A satellite data here:"
-        msg_alert = "<p>" + timestring + ": " + msg + "\n" + stereo_url + "\n\n"
-        with open(savefile, "a") as s:
+        msg_alert = "<p>" + timestring + "<br>" + msg +  " " + stereo_url
+        with open(savefile, "w") as s:
             s.write(msg_alert)
 
-text_alert(0.47, "2021-08-21 10:30")
+text_alert(0.5, "2021-08-24 23:34:12")
