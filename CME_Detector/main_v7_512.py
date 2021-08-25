@@ -315,7 +315,7 @@ def plot(dates, pixel_count, filename, width, height):
                       plot_bgcolor="#e0e0e0")
     fig.update_layout(plot_bgcolor="#a0a0a0", paper_bgcolor="#a0a0a0")
 
-    fig.update_xaxes(nticks=50, tickangle=45)
+    fig.update_xaxes(nticks=25, tickangle=45)
     fig.update_yaxes(range=[0, 1.01])
 
     fig.add_hline(y=cme_min, line_color=green, line_width=6, annotation_text="Minor CME",
@@ -433,7 +433,7 @@ def processimages_detrend(listofimages, storage_folder, analysisfolder):
 
             print("dt", i, len(listofimages))
 
-
+    print(len(dates), len(pixel_count))
     pixel_count = median_filter(pixel_count)
     dates.pop(len(dates) - 1)
     dates.pop(0)
