@@ -20,6 +20,7 @@
 // You can change the pin numbers to match your wiring:
 SoftwareSerial mySerial(8, 7);
 String nmea_sentence;
+unsigned long elapsedTime;
 
 #define PMTK_SET_NMEA_UPDATE_1HZ  "$PMTK220,1000*1F"
 #define PMTK_SET_NMEA_UPDATE_5HZ  "$PMTK220,200*2C"
@@ -39,6 +40,9 @@ String nmea_sentence;
 #define PGCMD_NOANTENNA "$PGCMD,33,0*6D" 
 #define PMTK_Q_RELEASE "$PMTK605*31"
 
+// IN case we need to
+void(* resetFunc) (void) = 0;  // declare reset fuction at address 0
+
 void setup() {
   while (!Serial); // wait for Serial to be ready
 
@@ -54,6 +58,12 @@ void setup() {
 
 
 void loop() {
+  // Elapsed timer
+  elapsedTime = millis();
+  if (elapsedTime >= 3600000)
+  {
+    resetFunc();
+    }
   
   if (mySerial.available()) 
   {

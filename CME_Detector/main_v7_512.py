@@ -361,77 +361,79 @@ def processimages_detrend(listofimages, storage_folder, analysisfolder):
     for i in range(0, len(listofimages)):
         p = storage_folder + "//" + listofimages[i]
 
-        pic = image_load(p)
+        try:
+            pic = image_load(p)
+            pic = greyscale_img(pic)
 
-        pic = greyscale_img(pic)
+            # convert image to a single channel
+            pic = cv2.split(pic)
+            pic = pic[0]
 
-        # convert image to a single channel
-        pic = cv2.split(pic)
-        pic = pic[0]
+            kernel1 = np.ones((3, 3), np.uint8)
+            pic = cv2.erode(pic, kernel1, iterations=1)
+            avg_array.append(pic)
 
-        kernel1 = np.ones((3, 3), np.uint8)
-        pic = cv2.erode(pic, kernel1, iterations=1)
-        avg_array.append(pic)
+            # 100 images is about a day
+            if len(avg_array) >= 100:
+                # ALWAYS POP
+                avg_array.pop(0)
+                avg_img = np.mean(avg_array, axis=0)
 
-        # 100 images is about a day
-        if len(avg_array) >= 100:
-            # ALWAYS POP
-            avg_array.pop(0)
-            avg_img = np.mean(avg_array, axis=0)
+                pic = np.float32(pic)
+                avg_img = np.float32(avg_img)
 
-            pic = np.float32(pic)
-            avg_img = np.float32(avg_img)
+                detrended_img = cv2.subtract(pic, avg_img)
+                ret, detrended_img = cv2.threshold(detrended_img, 3, 255, cv2.THRESH_BINARY)
+                final_img = np.uint8(detrended_img)
 
-            detrended_img = cv2.subtract(pic, avg_img)
-            ret, detrended_img = cv2.threshold(detrended_img, 3, 255, cv2.THRESH_BINARY)
-            final_img = np.uint8(detrended_img)
+                # convert the image from polar to rectangular coords in order to more easily
+                # map CME occurences and identify halo CMEs
+                dst = 220
+                ang = 360
+                t = []
+                for dist in range(dst, 0, -1):
+                    for angle in range(0, ang):
+                        coords = polar_to_rectangular(angle, dist)
+                        t.append(final_img[coords[1], coords[0]])
 
-            # convert the image from polar to rectangular coords in order to more easily
-            # map CME occurences and identify halo CMEs
-            dst = 220
-            ang = 360
-            t = []
-            for dist in range(dst, 0, -1):
-                for angle in range(0, ang):
-                    coords = polar_to_rectangular(angle, dist)
-                    t.append(final_img[coords[1], coords[0]])
+                # https://www.geeksforgeeks.org/convert-a-numpy-array-to-an-image/
+                # array = np.array(t)
+                array = np.reshape(np.array(t), (dst, ang))
 
-            # https://www.geeksforgeeks.org/convert-a-numpy-array-to-an-image/
-            # array = np.array(t)
-            array = np.reshape(np.array(t), (dst, ang))
+                mask = create_mask(array, ang, dst, 40, 50)
+                masked = cv2.bitwise_and(array, mask)
 
-            mask = create_mask(array, ang, dst, 40, 50)
-            masked = cv2.bitwise_and(array, mask)
+                # Pixelcounter to create graphic pf CMEs
+                # A full halo CME should produce counts in the order of 3600
+                px = count_nonzero(masked)
+                #  pixelcount as a percentage of the area monitored
+                px = float(px) / 3600
+                px = round(px, 3)
+                t = listofimages[i].split("_")
+                posixtime = filehour_converter(t[0], t[1])
+                hr = posix2utc(posixtime, "%Y-%m-%d %H:%M")
 
-            # Pixelcounter to create graphic pf CMEs
-            # A full halo CME should produce counts in the order of 3600
-            px = count_nonzero(masked)
-            #  pixelcount as a percentage of the area monitored
-            px = float(px) / 3600
-            px = round(px, 3)
-            t = listofimages[i].split("_")
-            posixtime = filehour_converter(t[0], t[1])
-            hr = posix2utc(posixtime, "%Y-%m-%d %H:%M")
-
-            # Create a text alert to be exported to DunedinAurora and potentially
-            # twitter
-            text_alert(px, hr)
+                # Create a text alert to be exported to DunedinAurora and potentially
+                # twitter
+                text_alert(px, hr)
 
 
-            pixel_count.append(px)
-            dates.append(hr)
+                pixel_count.append(px)
+                dates.append(hr)
 
-            array = annotate_image(array, ang, dst, hr)
+                array = annotate_image(array, ang, dst, hr)
 
-            # cv2.imshow('Example - Show image in window', array)
-            # cv2.waitKey(0)  # waits until a key is pressed
-            # cv2.destroyAllWindows()  # destroys the window showing image
+                # cv2.imshow('Example - Show image in window', array)
+                # cv2.waitKey(0)  # waits until a key is pressed
+                # cv2.destroyAllWindows()  # destroys the window showing image
 
-            f_image = analysisfolder + "//" + "dt_" + listofimages[i]
-            # add_stamp("High Contrast CME Detection", final_img, f_image)
-            image_save(f_image, array)
+                f_image = analysisfolder + "//" + "dt_" + listofimages[i]
+                # add_stamp("High Contrast CME Detection", final_img, f_image)
+                image_save(f_image, array)
 
-            print("dt", i, len(listofimages))
+                print("dt", i, len(listofimages))
+        except:
+            print("Error processing image")
 
     print(len(dates), len(pixel_count))
     pixel_count = median_filter(pixel_count)
@@ -461,52 +463,54 @@ def processimages_display(listofimages, storage_folder, images_folder):
             i2 = storage_folder + "/" + testimage
             img_2 = image_load(i2)
 
-            img_og = greyscale_img(img_1)
-            img_ng = greyscale_img(img_2)
+            try:
+                img_og = greyscale_img(img_1)
+                img_ng = greyscale_img(img_2)
 
-            # convert image to a single channel
-            img_ng = cv2.split(img_ng)
-            img_og = cv2.split(img_og)
-            img_ng = img_ng[0]
-            img_og = img_og[0]
+                # convert image to a single channel
+                img_ng = cv2.split(img_ng)
+                img_og = cv2.split(img_og)
+                img_ng = img_ng[0]
+                img_og = img_og[0]
 
-            # img_og = erode_dilate_img(img_og)
-            # img_ng = erode_dilate_img(img_ng)
+                # img_og = erode_dilate_img(img_og)
+                # img_ng = erode_dilate_img(img_ng)
 
-            # improved histogram function
-            clahe = cv2.createCLAHE(clipLimit=2, tileGridSize=(8, 8))
-            img_og = clahe.apply(img_og)
-            img_ng = clahe.apply(img_ng)
+                # improved histogram function
+                clahe = cv2.createCLAHE(clipLimit=2, tileGridSize=(8, 8))
+                img_og = clahe.apply(img_og)
+                img_ng = clahe.apply(img_ng)
 
-            # unary operator to invert the image
-            img_ng = ~img_ng
+                # unary operator to invert the image
+                img_ng = ~img_ng
 
-            # combine the images to highlight differences
-            alpha = 1
-            gamma = 0
-            new_image = img_ng.copy()
-            cv2.addWeighted(img_ng, alpha, img_og, 1 - alpha, gamma, new_image)
+                # combine the images to highlight differences
+                alpha = 1
+                gamma = 0
+                new_image = img_ng.copy()
+                cv2.addWeighted(img_ng, alpha, img_og, 1 - alpha, gamma, new_image)
 
-            # Adjust contrast and brightness
-            d = new_image.copy()
-            alpha = 1.2
-            beta = -50
-            # alpha = 1.2
-            # beta = -30
-            new_image = cv2.convertScaleAbs(d, alpha=alpha, beta=beta)
+                # Adjust contrast and brightness
+                d = new_image.copy()
+                alpha = 1.2
+                beta = -50
+                # alpha = 1.2
+                # beta = -30
+                new_image = cv2.convertScaleAbs(d, alpha=alpha, beta=beta)
 
-            new_image = cv2.applyColorMap(new_image, cv2.COLORMAP_BONE)
+                new_image = cv2.applyColorMap(new_image, cv2.COLORMAP_BONE)
 
-            # Save the difference image into the images folder
-            add_stamp("Processed at Dunedin Aurora", new_image, hourimage)
-            fname = images_folder + "/" + listofimages[i]
-            image_save(fname, new_image)
-            # print("Display image created..." + fname)
+                # Save the difference image into the images folder
+                add_stamp("Processed at Dunedin Aurora", new_image, hourimage)
+                fname = images_folder + "/" + listofimages[i]
+                image_save(fname, new_image)
+                # print("Display image created..." + fname)
 
-            # LASTLY.....
-            hourcount = test_hourcount
-            hourimage = testimage
-
+                # LASTLY.....
+                hourcount = test_hourcount
+                hourimage = testimage
+            except:
+                print("Unable to proces image")
 
 def parseimages(listofimages, imagestore):
     set_downloads = set(listofimages)
@@ -596,9 +600,9 @@ if __name__ == "__main__":
     # make sure they are in chronological order
     dirlisting.sort()
 
-    # process the stored images so far to get latest diffs
-    print("Preparing enhanced images for display...")
-    processimages_display(dirlisting, storage_folder, images_folder)
+    # # process the stored images so far to get latest diffs
+    # print("Preparing enhanced images for display...")
+    # processimages_display(dirlisting, storage_folder, images_folder)
 
     print("Preparing enhanced images for analysis...")
     processimages_detrend(dirlisting, storage_folder, analysis_folder)
