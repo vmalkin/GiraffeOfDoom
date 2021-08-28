@@ -284,17 +284,7 @@ def log_errors(errormessage):
 
 
 def image_load(file_name):
-    # Return a None if the image is currupt
-    try:
-        pil_image = Image.open(file_name)
-        # pil_image.verify()
-        pil_image.transpose(Image.FLIP_LEFT_RIGHT)
-        pil_image.close()
-        img = cv2.imread(file_name)
-    except Exception as e:
-        print(e)
-        img = None
-
+    img = cv2.imread(file_name)
     return img
 
 
@@ -323,6 +313,11 @@ def wrapper(images_folder, storage_folder, analysis_folder):
         p = storage_folder + "//" + dirlisting[i]
 
         # Test that image is not corrupted
+        try:
+            pil_image = Image.open(p)
+            pil_image.verify()
+        except:
+            print("Error on Image: " + p)
 
         img = image_load(p)
 
@@ -376,12 +371,10 @@ def wrapper(images_folder, storage_folder, analysis_folder):
                 image_save(f_image, array)
 
                 print("dt", i, len(dirlisting))
+
         else:
             msg = "Unable to load picure " + p
             log_errors(msg)
-
-
-
 
     # Create line graphs of CME detections
     print(len(dates), len(pixel_count))

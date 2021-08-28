@@ -6,7 +6,6 @@ q = "cme_plot.jpg"
 
 try:
     pil_image = Image.open(p)
-    pil_image.verify()
     pil_image.transpose(Image.FLIP_LEFT_RIGHT)
     pil_image.close()
 except:
@@ -15,7 +14,6 @@ except:
 
 try:
     pil_image = Image.open(q)
-    pil_image.verify()
     pil_image.transpose(Image.FLIP_LEFT_RIGHT)
     pil_image.close()
 except:
