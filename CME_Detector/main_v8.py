@@ -3,6 +3,7 @@ import time
 import urllib.request
 import os
 import mgr_analyser
+import mgr_enhancer
 
 
 def get_resource_from_url(url_to_get):
@@ -102,10 +103,17 @@ if __name__ == "__main__":
         print("\a")
         downloadimages(newimages, storage_folder)
 
+
+    # Analyse and enhance stored images
+    try:
+        mgr_analyser.wrapper(storage_folder, analysis_folder)
+    except:
+        print("The Analyser has failed!")
+
     # try:
-    mgr_analyser.wrapper(images_folder, storage_folder, analysis_folder)
+    mgr_enhancer.wrapper(storage_folder, images_folder)
     # except:
-    #     pass
+    #     print("The Enhancer has failed!")
 
     computation_end = time.time()
     elapsed_mins = round((computation_end - computation_start) / 60, 1)

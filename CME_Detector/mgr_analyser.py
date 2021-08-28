@@ -308,7 +308,7 @@ def greyscale_img(image_to_process):
     return greyimg
 
 
-def wrapper(images_folder, storage_folder, analysis_folder):
+def wrapper(storage_folder, analysis_folder):
     # get a list of the current stored images.
     dirlisting = os.listdir(storage_folder)
 
