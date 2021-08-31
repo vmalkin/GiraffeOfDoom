@@ -21,7 +21,7 @@ portName = 'Com39'  # Windows
 # portName = "/dev/cu.usbmodem1421"
 # portName = '/dev/ttyUSB0'
 # baudrate = 9600 # for SAM module at DUnedin Aurora
-baudrate = 57600
+baudrate = 115200
 bytesize = 8
 parity = 'N'
 stopbits = 1
@@ -226,9 +226,9 @@ if __name__ == "__main__":
     while True:
         maxlen = 60 * 60 * 24
         data = com.data_recieve()
-        if data[1] == "G":
-            if data[2] == "P":
-                if data[3] == "R":
+        if data[0] == '$':
+            if data[1] == 'G':
+                if data[2] == 'P':
                     # print(data)
                     try:
                         data = data.split(",")
@@ -243,39 +243,39 @@ if __name__ == "__main__":
                         all_lats.append(newlat)
                         all_longs.append(newlong)
 
+                        if len(all_lats) >= 60:
+                            if start_flag is False:
+                                median_lat = median(all_lats)
+                                median_long = median(all_longs)
+
+                                lat_old = median_lat
+                                long_old = median_long
+                                start_flag = True
+                            else:
+                                median_lat = median(all_lats)
+                                median_long = median(all_longs)
+                                utcdate = parse_date(ut_date, ut_time)
+                                posixdate = utc2posix(utcdate)
+
+                                # Calculate the rate of change
+                                variance_lat_new = round((median_lat - lat_old), 7)
+                                variance_long_new = round((median_long - long_old), 7)
+
+                                datapoint = [utcdate, variance_lat_new, variance_long_new]
+                                print(datapoint)
+
+                                database_append(db, posixdate, variance_lat_new, variance_long_new)
+
+                                # master_array.append(datapoint)
+
+                                all_lats = []
+                                all_longs = []
+                                lat_old = median_lat
+                                long_old = median_long
+
+                        if len(master_array) > maxlen:
+                            master_array.pop(0)
+
                     except:
                         print("Malformed NMEA sentence")
                         logging.debug(data)
-
-        if len(all_lats) >= 60:
-            if start_flag is False:
-                median_lat = median(all_lats)
-                median_long = median(all_longs)
-
-                lat_old = median_lat
-                long_old = median_long
-                start_flag = True
-            else:
-                median_lat = median(all_lats)
-                median_long = median(all_longs)
-                utcdate = parse_date(ut_date, ut_time)
-                posixdate = utc2posix(utcdate)
-
-                # Calculate the rate of change
-                variance_lat_new = round((median_lat - lat_old), 7)
-                variance_long_new = round((median_long - long_old), 7)
-
-                datapoint = [utcdate, variance_lat_new, variance_long_new]
-                print(datapoint)
-
-                database_append(db, posixdate, variance_lat_new, variance_long_new)
-
-                # master_array.append(datapoint)
-
-                all_lats = []
-                all_longs = []
-                lat_old = median_lat
-                long_old = median_long
-
-        if len(master_array) > maxlen:
-            master_array.pop(0)

@@ -3,6 +3,7 @@ import cv2
 import numpy as np
 from math import sin, cos, radians
 import datetime
+import time
 import calendar
 from statistics import median
 from PIL import Image
@@ -163,15 +164,18 @@ def text_alert(px, hr):
     stereo_url = "<a href=\"" + url + "\" target=\"_blank\">" + "Stereo Science Centre</a>"
     savefile = "cme_alert.php"
 
-    if px >= cme_min:
-        msg = "A possible CME has been detected with " + str(int(px * 100)) + "% coverage"
-        if px >= cme_partial:
-            msg = "Warning: A possible PARTIAL HALO CME has been detected with " + str(int(px * 100)) + "% coverage"
-            if px >= cme_halo:
-                msg = "ALERT: A possible FULL HALO CME has been detected with " + str(int(px * 100)) + "% coverage"
-        msg = msg + "<br>Confirm Earth impact with STEREO A satellite data:"
+    heading = "<b>CME Monitor updated at " + posix2utc(time.time(), " %Y-%m-%d %H:%M") + " UTC.</b><p>"
 
-        msg_alert = "<p>" + timestring + "<br>" + msg +  " " + stereo_url
+    if px >= cme_min:
+        msg = "A possible CME has been detected at " + timestring +  " with " + str(int(px * 100)) + "% coverage."
+        if px >= cme_partial:
+            msg = "Warning: A possible PARTIAL HALO CME has been detected  at " + timestring +  " with " + str(int(px * 100)) + "% coverage."
+            if px >= cme_halo:
+                msg = "ALERT: A possible FULL HALO CME has been detected at " + timestring +  " with " + str(int(px * 100)) + "% coverage."
+
+        msg = msg + "<br>Confirm Earth impact with STEREO A satellite data: " + stereo_url
+
+        msg_alert = heading + msg
         with open(savefile, "w") as s:
             s.write(msg_alert)
 
@@ -379,8 +383,6 @@ def wrapper(storage_folder, analysis_folder):
         else:
             msg = "Unable to load picure " + p
             log_errors(msg)
-
-
 
 
     # Create line graphs of CME detections
