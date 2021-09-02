@@ -315,9 +315,10 @@ if __name__ == "__main__":
                     print("There was a problem inputting satellite data_s4 into the lists in MAIN.PY")
                     print(sentence)
                 counter = counter + 1
-        else:
-            print("Sentence did not pass regex")
-            print(line)
+        # else:
+        #     # print("Sentence did not pass regex")
+        #     # print(line)
+
 
         # Process and reset things!
         nowtimer = time.time()
