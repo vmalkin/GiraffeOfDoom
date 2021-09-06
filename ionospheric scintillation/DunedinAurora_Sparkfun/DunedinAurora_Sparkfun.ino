@@ -28,20 +28,19 @@ void setup()
   Serial.println("SparkFun u-blox Example");
 
   Wire.begin();
-Wire.setClock(300000);
+//Wire.setClock(300000);
   
   if (myGNSS.begin() == false)
   {
     Serial.println(F("u-blox GNSS not detected at default I2C address. Please check wiring. Freezing."));
     while (1);
   }
-//myGNSS.setI2COutput(COM_TYPE_UBX); //Set the I2C port to output UBX only (turn off NMEA noise)
+//  For high update speeds we can only use a single constellation
   myGNSS.setI2COutput(COM_TYPE_NMEA); //Set the I2C port to output both NMEA and UBX messages
-  myGNSS.setMeasurementRate(1000); //Produce a measurement every 1000ms
-//myGNSS.setNavigationFrequency(4); //Set output to 5 times a second
+  myGNSS.setNavigationFrequency(10); //can go up to 40hz!
+  myGNSS.setDynamicModel(DYN_MODEL_STATIONARY)
   myGNSS.saveConfigSelective(VAL_CFG_SUBSEC_IOPORT); //Save (only) the communications port settings to flash and BBR
   myGNSS.setProcessNMEAMask(SFE_UBLOX_FILTER_NMEA_GSV); // Or, we can be kind to MicroNMEA and _only_ pass the GGA messages to it
-  //This will pipe all NMEA sentences to the serial port so we can see them
   myGNSS.setNMEAOutputPort(Serial);
 }
 
@@ -49,5 +48,5 @@ void loop()
 {
   myGNSS.checkUblox(); //See if new data is available. Process bytes as they come in.
 
-  delay(250); //Don't pound too hard on the I2C bus
+//  delay(250); //Don't pound too hard on the I2C bus
 }

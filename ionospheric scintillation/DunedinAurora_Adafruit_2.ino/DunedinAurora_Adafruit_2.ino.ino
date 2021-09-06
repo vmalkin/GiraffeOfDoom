@@ -13,6 +13,8 @@
 
 #include <Adafruit_GPS.h>
 #include <SoftwareSerial.h>
+#define FACTORY_RESET "$PMTK104*37"
+#define PMTK_SET_BAUD_38400 "$PMTK251,38400*27"
 
 // Connect the GPS Power pin to 5V
 // Connect the GPS Ground pin to ground
@@ -26,61 +28,48 @@ Adafruit_GPS GPS(&mySerial);
 // Set GPSECHO to 'false' to turn off echoing the GPS data to the Serial console
 // Set to 'true' if you want to debug and listen to the raw GPS sentences
 #define GPSECHO  true
-#define PGCMD_ANTENNA "$PGCMD,33,1*6C" // request for updates on antenna status
-#define PGCMD_NOANTENNA "$PGCMD,33,0*6D"
-#define FACTORY_RESET "$PMTK104*37"
-#define PMTK_SET_BAUD_38400 "$PMTK251,38400*27"
 
-String nmeaSentence;
 void setup()
 {
-  // connect at 115200 so we can read the GPS fast enough and echo without dropping chars
-  Serial.begin(115200);
-  delay(100);
-  Serial.println("DunedinAurora.NZ - Scintillation Monitor");
-//  GPS.sendCommand(FACTORY_RESET);
 
+  // connect at 115200 so we can read the GPS fast enough and echo without dropping chars
+  // also spit it out
+  Serial.begin(115200);
+  delay(5000);
+  Serial.println("Adafruit GPS library basic test!");
 
 // Default speed is 9600.
   GPS.begin(9600);
 //  GPS.sendCommand(PMTK_SET_BAUD_9600);
 
+  // uncomment this line to turn on RMC (recommended minimum) and GGA (fix data) including altitude
+  GPS.sendCommand(PMTK_SET_NMEA_OUTPUT_GSVONLY);
+  
+  // Set the update rate
+  GPS.sendCommand(PMTK_SET_NMEA_UPDATE_5HZ);   // 1 Hz update rate
   GPS.sendCommand(PGCMD_NOANTENNA); // OFF
-  GPS.sendCommand(PMTK_SET_NMEA_OUTPUT_GSVONLY);  // GPGSV messages only
-  GPS.sendCommand(PMTK_SET_NMEA_UPDATE_1HZ);
+  // For the parsing code to work nicely and have time to sort thru the data, and
+  // print it out we don't suggest using anything higher than 1 Hz
+
+  delay(1000);
 }
+
 int i = 0;
-void loop()                    
+void loop()                     // run over and over again
 {
   char c = GPS.read();
+  // if you want to debug, this is a good time to do it!
+  if ((c) && (GPSECHO))
+    Serial.write(c);
+
   // if a sentence is received, we can check the checksum, parse it...
-  
-////    if (c != '\r')
-//    if (c != '$')
-//    {    
-//       nmeaSentence = nmeaSentence + c;
-//      }
-//    else
-//    {
-//      Serial.print(nmeaSentence);
-//      nmeaSentence = "";
-//      }
-      
-  if (GPS.newNMEAreceived())
-  {
-    if (GPS.lastNMEA()[3] == 'G')
-    {
-      if (GPS.lastNMEA()[4] == 'S')
-      {
-        if (GPS.lastNMEA()[5] == 'V')
-        {
-          Serial.print(GPS.lastNMEA());
-//          Serial.println(i++);
-        }
-      }
-    }
-  }
-    
+  if (GPS.newNMEAreceived()) {
+    // a tricky thing here is if we print the NMEA sentence, or data
+    // we end up not listening and catching other sentences!
+    // so be very wary if using OUTPUT_ALLDATA and trytng to print out data
+    //Serial.println(GPS.lastNMEA());   // this also sets the newNMEAreceived() flag to false
     if (!GPS.parse(GPS.lastNMEA()))   // this also sets the newNMEAreceived() flag to false
       return;  // we can fail to parse a sentence in which case we should just wait for another
+  }
+
 }
