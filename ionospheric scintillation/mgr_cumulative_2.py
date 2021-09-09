@@ -206,6 +206,6 @@ def wrapper():
         report_data1440 = report_data1440[-1440:]
         report_datetime1440 = report_datetime1440[-1440:]
 
-    plot_chart("cumulative.jpg", report_datetime1440, report_data1440, ion_min, ion_max, ion_average)
-    plot_chart("hourly_cumulative.jpg", report_datetime60, report_data60, ion_min, ion_max, ion_average)
+    # plot_chart("cumulative.jpg", report_datetime1440, report_data1440, ion_min, ion_max, ion_average)
+    # plot_chart("hourly_cumulative.jpg", report_datetime60, report_data60, ion_min, ion_max, ion_average)
     create_json(report_data1440, ion_min, ion_max)

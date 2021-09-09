@@ -181,8 +181,8 @@ def wrapper(query):
             plotlist.append(satellite)
 
     plot(plotlist, timelables)
-    plot_snr_combo(plotlist, timelables)
-    plot_s4_combo(plotlist, timelables)
+    # plot_snr_combo(plotlist, timelables)
+    # plot_s4_combo(plotlist, timelables)
 
 
 

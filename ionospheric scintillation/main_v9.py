@@ -16,6 +16,7 @@ import mgr_polar_sat_tracks
 import mgr_polar_s4_noise
 import mgr_s4_stats_json
 import mgr_cumulative_2
+import mgr_s4_count
 
 
 errorloglevel = logging.CRITICAL
@@ -71,11 +72,11 @@ class QueryProcessor(Thread):
                 print("\n" + "!!!!!!!!!  Alt-Az Plotter Failed  !!!!!!!!!" + "\n")
                 logging.warning("AltAz plotter failed in MAIN.PY")
 
-            try:
-                mgr_polar_sat_tracks.wrapper(querydata_24)
-            except:
-                print("\n" + "!!!!!!!!!  24hr Track Plotter Failed  !!!!!!!!!" + "\n")
-                logging.warning("24hr Track failed in MAIN.PY")
+            # try:
+            #     mgr_polar_sat_tracks.wrapper(querydata_24)
+            # except:
+            #     print("\n" + "!!!!!!!!!  24hr Track Plotter Failed  !!!!!!!!!" + "\n")
+            #     logging.warning("24hr Track failed in MAIN.PY")
 
             try:
                 mgr_polar_s4_noise.wrapper(querydata_24)
@@ -89,11 +90,17 @@ class QueryProcessor(Thread):
                 print("\n" + "!!!!!!!!!  s4 Stats Plotter & JSON Failed  !!!!!!!!!" + "\n")
                 logging.warning("s4 Stats plotter & JSON failed in MAIN.PY")
 
-            # try:
-            mgr_cumulative_2.wrapper()
-            # except:
-            #     print("\n" + "!!!!!!!!!  Cumulative Count Failed  !!!!!!!!!" + "\n")
-            #     logging.warning("Cumulative Count Failed in MAIN.PY")
+            try:
+                mgr_s4_count.wrapper()
+            except:
+                print("\n" + "!!!!!!!!!  s4 Count Failed  !!!!!!!!!" + "\n")
+                logging.warning("s4 Count failed in MAIN.PY")
+
+            try:
+                mgr_cumulative_2.wrapper()
+            except:
+                print("\n" + "!!!!!!!!!  Cumulative Count Failed  !!!!!!!!!" + "\n")
+                logging.warning("Cumulative Count Failed in MAIN.PY")
 
             # rings the terminal bell
             print("\a")
