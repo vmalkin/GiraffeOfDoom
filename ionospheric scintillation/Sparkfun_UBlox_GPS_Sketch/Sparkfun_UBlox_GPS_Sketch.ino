@@ -1,5 +1,8 @@
+#include <SparkFun_u-blox_GNSS_Arduino_Library.h>
+#include <u-blox_config_keys.h>
+#include <u-blox_structs.h>
+
 #include <Wire.h> //Needed for I2C to GPS
-#include "SparkFun_Ublox_Arduino_Library.h" 
 SFE_UBLOX_GPS gps;
 
 //char nmea_sentence[90];
