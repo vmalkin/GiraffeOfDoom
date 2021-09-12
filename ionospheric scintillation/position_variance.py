@@ -7,7 +7,7 @@ import logging
 import os
 import datetime
 import calendar
-from statistics import median
+from statistics import median, mean
 from threading import Thread
 
 
@@ -16,7 +16,7 @@ errorloglevel = logging.DEBUG
 logging.basicConfig(filename="position_errors.log", format='%(asctime)s %(message)s', level=errorloglevel)
 
 # Comm port parameters - uncomment and change one of the portNames depending on your OS
-portName = 'Com39'  # Windows
+portName = 'Com12'  # Windows
 # portName = '/dev/tty.usbserial-A702O0K9' #MacOS
 # portName = "/dev/cu.usbmodem1421"
 # portName = '/dev/ttyUSB0'
@@ -153,17 +153,6 @@ def parse_date(ut_date, ut_time):
     return dt
 
 
-def process_lats(lat):
-    d = float(lat - 4552)
-    d = round(d, 6)
-    return d
-
-
-def process_longs(long):
-    d = float(long - 17029)
-    d = round(d, 6)
-    return d
-
 
 def plot_graph(data):
     dates = []
@@ -182,11 +171,11 @@ def plot_graph(data):
     long_clr = "blue"
 
     fig = make_subplots(rows=2, cols=1, subplot_titles=("Variance in Latitude", "Variance in Longtitude"))
-    fig.add_trace(go.Scatter(x=dates, y=lat, mode="lines", line=dict(width=2, color=lat_clr)), row=1, col=1)
-    fig.add_trace(go.Scatter(x=dates, y=long, mode="lines", line=dict(width=2, color=long_clr)), row=2, col=1)
+    fig.add_trace(go.Scatter(x=dates, y=lat, mode="lines", line=dict(width=1, color=lat_clr)), row=1, col=1)
+    fig.add_trace(go.Scatter(x=dates, y=long, mode="lines", line=dict(width=1, color=long_clr)), row=2, col=1)
     fig.update_xaxes(nticks=30, tickangle=45)
     fig.update_layout(font=dict(size=20), title_font_size=21)
-    fig.update_layout(width=2000, height=1000,
+    fig.update_layout(width=4000, height=1000,
                       title="GPS variations (decimal part)",
                       showlegend=False, plot_bgcolor="#a0a0a0", paper_bgcolor="#a0a0a0")
 
@@ -198,9 +187,8 @@ if __name__ == "__main__":
     master_array = []
     all_lats = []
     all_longs = []
-    lat_old, long_old = 0.0, 0.0
-    start_flag = False
-
+    start_flag = True
+    
     # check/create the database
     database_create(db)
 
@@ -226,56 +214,40 @@ if __name__ == "__main__":
     while True:
         maxlen = 60 * 60 * 24
         data = com.data_recieve()
-        if data[0] == '$':
-            if data[1] == 'G':
-                if data[2] == 'P':
-                    # print(data)
-                    try:
-                        data = data.split(",")
-                        ut_time = data[1]
-                        ut_date = data[9]
-                        lat = float(data[3])
-                        long = float(data[5])
+        
+        if start_flag == True:
+            start_flag = False
+        else:
+            try:
+                data = data.split(",")
+                d_lat = float(data[0])
+                d_long = float(data[1])
 
-                        newlat = process_lats(lat)
-                        newlong = process_longs(long)
+                all_lats.append(d_lat)
+                all_longs.append(d_long)
 
-                        all_lats.append(newlat)
-                        all_longs.append(newlong)
+                if len(all_lats) >= 5:
+                    median_lat = round(mean(all_lats), 4)
+                    median_long = round(mean(all_longs), 4)
+                    posixdate = int(time.time())
+                    utcdate = posix2utc(posixdate, '%Y-%m-%d %H:%M:%S')
+                    
+                    # Calculate the rate of change
+                    datapoint = [utcdate, median_lat, median_long]
+                    print(datapoint)
 
-                        if len(all_lats) >= 60:
-                            if start_flag is False:
-                                median_lat = median(all_lats)
-                                median_long = median(all_longs)
+                    database_append(db, posixdate, median_lat, median_long)
 
-                                lat_old = median_lat
-                                long_old = median_long
-                                start_flag = True
-                            else:
-                                median_lat = median(all_lats)
-                                median_long = median(all_longs)
-                                utcdate = parse_date(ut_date, ut_time)
-                                posixdate = utc2posix(utcdate)
+                    # master_array.append(datapoint)
 
-                                # Calculate the rate of change
-                                variance_lat_new = round((median_lat - lat_old), 7)
-                                variance_long_new = round((median_long - long_old), 7)
+                    all_lats = []
+                    all_longs = []
+                    lat_old = median_lat
+                    long_old = median_long
 
-                                datapoint = [utcdate, variance_lat_new, variance_long_new]
-                                print(datapoint)
+                if len(master_array) > maxlen:
+                    master_array.pop(0)
 
-                                database_append(db, posixdate, variance_lat_new, variance_long_new)
-
-                                # master_array.append(datapoint)
-
-                                all_lats = []
-                                all_longs = []
-                                lat_old = median_lat
-                                long_old = median_long
-
-                        if len(master_array) > maxlen:
-                            master_array.pop(0)
-
-                    except:
-                        print("Malformed NMEA sentence")
-                        logging.debug(data)
+            except:
+                print("Malformed NMEA sentence")
+                logging.debug(data)
