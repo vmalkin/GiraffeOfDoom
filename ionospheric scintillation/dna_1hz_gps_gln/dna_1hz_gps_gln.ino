@@ -31,11 +31,18 @@ void setup()
 //  // Set the speed for update and output
 //  myGNSS.setMeasurementRate(250);
 //  myGNSS.setI2CpollingWait(25); // Set i2cPollingWait to 25ms
-  myGNSS.setNavigationFrequency(1);
- 
-  
+  myGNSS.setNavigationFrequency(10);
   myGNSS.setDynamicModel(DYN_MODEL_STATIONARY);
-  myGNSS.setProcessNMEAMask(SFE_UBLOX_FILTER_NMEA_GSV); // Or, we can be kind to MicroNMEA and _only_ pass the GGA messages to it
+  //Disable or enable various NMEA sentences over the UART1 interface
+  myGNSS.disableNMEAMessage(UBX_NMEA_GLL, COM_PORT_I2C); //Several of these are on by default on ublox board so let's disable them
+  myGNSS.disableNMEAMessage(UBX_NMEA_GSA, COM_PORT_I2C);
+  myGNSS.enableNMEAMessage(UBX_NMEA_GSV, COM_PORT_I2C);
+  myGNSS.disableNMEAMessage(UBX_NMEA_RMC, COM_PORT_I2C);
+  myGNSS.disableNMEAMessage(UBX_NMEA_GGA, COM_PORT_I2C); //Only leaving GGA & VTG enabled at current navigation rate
+  myGNSS.disableNMEAMessage(UBX_NMEA_VTG, COM_PORT_I2C);  
+  myGNSS.configureMessage(UBX_CLASS_NAV, UBX_NAV_PVT, COM_PORT_I2C, 0); //Message Class, ID, and port we want to configure, sendRate of 0 (disable).
+  
+  
   myGNSS.setNMEAOutputPort(Serial);
   myGNSS.saveConfigSelective(VAL_CFG_SUBSEC_IOPORT); //Save (only) the communications port settings to flash and BBR
   delay(1000);
