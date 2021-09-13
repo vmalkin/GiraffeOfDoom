@@ -61,11 +61,11 @@ def indexposition(posixtime, starttime):
 def plot_chart(filename, dates, data):
     black = "rgba(0,0,0,0.75)"
     savefile = k.dir_images + "//" + filename
-
-    if max(data) > 40:
+    max_axis = 30
+    if max(data) > max_axis:
         y_max = 100
     else:
-        y_max = 40
+        y_max = max_axis
 
     plotdata = go.Bar(x=dates, y=data, marker = dict(color=black, line=dict(width=1, color=black)))
     fig = go.Figure(plotdata)

@@ -130,7 +130,7 @@ def plot(satlist, tlabels):
         fig.update_yaxes(range=[1, 100], gridcolor='#505050')
         fig.update_xaxes(nticks=24, tickangle=45, gridcolor='#505050')
         fig.update_layout(width=1800, height=600, title=plot_title, xaxis_title="Date/time UTC", yaxis_title="Alt, S4.", plot_bgcolor="#101010", )
-        fig.update_layout(font=dict(size=22), title_font_size=22)
+        fig.update_layout(font=dict(size=22), title_font_size=22, paper_bgcolor="#a0a0a0")
         fig.write_image(file=savefile, format='jpg')
 
 
