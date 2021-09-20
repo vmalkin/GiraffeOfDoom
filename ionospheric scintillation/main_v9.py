@@ -54,11 +54,11 @@ class QueryProcessor(Thread):
         while True:
             print("***************************** Start Query Processor")
 
-            try:
-                mgr_save_full_query.wrapper(querydata_24)
-            except:
-                print("\n" + "!!!!!!!!!  Full Query Save Failed  !!!!!!!!!" + "\n")
-                logging.warning("SNR failed in MAIN.PY")
+            # try:
+            #     mgr_save_full_query.wrapper(querydata_24)
+            # except:
+            #     print("\n" + "!!!!!!!!!  Full Query Save Failed  !!!!!!!!!" + "\n")
+            #     logging.warning("SNR failed in MAIN.PY")
 
             try:
                 mgr_sat_plots.wrapper(querydata_24)
@@ -72,11 +72,11 @@ class QueryProcessor(Thread):
                 print("\n" + "!!!!!!!!!  Alt-Az Plotter Failed  !!!!!!!!!" + "\n")
                 logging.warning("AltAz plotter failed in MAIN.PY")
 
-            # try:
-            #     mgr_polar_sat_tracks.wrapper(querydata_24)
-            # except:
-            #     print("\n" + "!!!!!!!!!  24hr Track Plotter Failed  !!!!!!!!!" + "\n")
-            #     logging.warning("24hr Track failed in MAIN.PY")
+            try:
+                mgr_polar_sat_tracks.wrapper(querydata_24)
+            except:
+                print("\n" + "!!!!!!!!!  24hr Track Plotter Failed  !!!!!!!!!" + "\n")
+                logging.warning("24hr Track failed in MAIN.PY")
 
             try:
                 mgr_polar_s4_noise.wrapper(querydata_24)
