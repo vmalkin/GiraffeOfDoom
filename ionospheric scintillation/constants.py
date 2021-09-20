@@ -4,6 +4,7 @@ portName = 'Com3' # Windows
 # portName = "/dev/cu.usbmodem1421"
 # portName = '/dev/ttyUSB0'
 # baudrate = 9600 # for SAM module at DUnedin Aurora
+portName = "/dev/ttyACM0"
 baudrate = 115200
 bytesize = 8
 parity = 'N'
