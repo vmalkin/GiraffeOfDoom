@@ -141,7 +141,7 @@ def calc_average(report_data):
             r = mean(temparray)
             middle.append(r)
 
-    bookend = [0 for i in range(0, half_window)]
+    bookend = ["" for i in range(0, half_window)]
 
     returnarray = bookend + middle + bookend
     return returnarray
