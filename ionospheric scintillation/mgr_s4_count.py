@@ -128,6 +128,13 @@ def query_parse(queryresult):
 #         json.dump(i, j)
 
 
+def calc_average(report_data):
+    half_window = 10
+    if len(report_data) > half_window * 2 + 1:
+
+    pass
+
+
 def wrapper():
     nowtime = int(time.time())
     posix_day = 60*60*24
@@ -164,6 +171,7 @@ def wrapper():
     report_data = []
     report_datetime = []
 
+
     # Parse thru the list of bins, each entry in the report data represents a running cumulative total
     # of S4 spikes for the previous 24 hour period.
     for i in range(0, len(binlist)):
@@ -172,6 +180,8 @@ def wrapper():
         report_data.append(x)
         report_datetime.append(dt)
 
+    report_avg = calc_average(report_data)
+
     # PLot the full result of the total query.
-    plot_chart("s4_values.jpg", report_datetime, report_data)
+    plot_chart("s4_values.jpg", report_datetime, report_data, report_avg)
     # create_json(report_data1440, ion_min, ion_max)
