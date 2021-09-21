@@ -67,12 +67,12 @@ def plot_chart(filename, dates, data, avg_reading):
     plotdata = go.Bar(x=dates, y=data, marker = dict(color=black, line=dict(width=1, color=black)))
     fig = go.Figure(plotdata)
 
-    fig.add_trace(go.Scatter(x=dates, y=avg_reading, mode="lines", line=dict(width=5, color="#a0a0a0")))
+    fig.add_trace(go.Scatter(x=dates, y=avg_reading, mode="lines", line=dict(width=5, color="#ffffff")))
     fig.add_trace(go.Scatter(x=dates, y=avg_reading, mode="lines", line=dict(width=2, color="#ff0000")))
 
     fig.update_xaxes(nticks=30, tickangle=45, gridcolor='#ffffff')
     fig.update_yaxes(range=[y_min ,y_max] )
-    fig.update_layout(width=1400, height=600, title="S<sub>4</sub> Index - 1 minute bins",
+    fig.update_layout(width=1400, height=600, title="S<sub>4</sub> Index - 1 minute bins & average trend",
                       xaxis_title="Date/time UTC<br><sub>http://DunedinAurora.nz</sub>",
                       yaxis_title="S<sub>4</sub> index, %",
                       plot_bgcolor="#e0e0e0")
