@@ -129,10 +129,22 @@ def query_parse(queryresult):
 
 
 def calc_average(report_data):
+    middle = []
     half_window = 10
-    if len(report_data) > half_window * 2 + 1:
 
-    pass
+    if len(report_data) > half_window * 2 + 1:
+        for i in range(half_window, len(report_data) - half_window):
+            temparray = []
+            for j in range(0 - half_window, half_window):
+                temparray.append(report_data[j + i])
+            r = mean(temparray)
+            middle.append(r)
+
+    bookend = [0 for i in range(0, half_window)]
+
+    returnarray = bookend + middle + bookend
+    return returnarray
+
 
 
 def wrapper():
