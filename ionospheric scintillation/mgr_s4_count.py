@@ -67,8 +67,8 @@ def plot_chart(filename, dates, data, avg_reading):
     plotdata = go.Bar(x=dates, y=data, marker = dict(color=black, line=dict(width=1, color=black)))
     fig = go.Figure(plotdata)
 
-    fig.add_trace(go.Scatter(x=dates, y=avg_reading, mode="lines", line=dict(width=5, color="#ffffff")))
-    fig.add_trace(go.Scatter(x=dates, y=avg_reading, mode="lines", line=dict(width=2, color="#ff0000")))
+    fig.add_trace(go.Scatter(x=dates, y=avg_reading, mode="lines", line=dict(width=6, color="#ffffff")))
+    fig.add_trace(go.Scatter(x=dates, y=avg_reading, mode="lines", line=dict(width=3, color="#770000")))
 
     fig.update_xaxes(nticks=30, tickangle=45, gridcolor='#ffffff')
     fig.update_yaxes(range=[y_min ,y_max] )
