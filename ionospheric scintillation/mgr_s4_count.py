@@ -76,7 +76,7 @@ def plot_chart(filename, dates, data, avg_reading):
                       xaxis_title="Date/time UTC<br><sub>http://DunedinAurora.nz</sub>",
                       yaxis_title="S<sub>4</sub> index, %",
                       plot_bgcolor="#e0e0e0")
-    fig.update_layout(font=dict(size=18), title_font_size=22)
+    fig.update_layout(font=dict(size=18), title_font_size=22, showlegend=False)
     fig.update_layout(plot_bgcolor="#a0a0a0", paper_bgcolor="#a0a0a0")
     # fig.update_layout(width=1400, height=600)
     fig.write_image(file=savefile, format='jpg')
