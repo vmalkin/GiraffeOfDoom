@@ -25,44 +25,47 @@ repo_names = [
 
 
 if __name__ == '__main__':
-    with open("Studio_2.txt", "w") as s:
-        for name in repo_names:
-            s.write("==================" + name + "==================\n")
-            repo = g.get_repo(name)
+    # with open("Studio_2.txt", "w") as s:
+    for name in repo_names:
+        repo_name = "http://github.com/" + name
+        print("================== " + repo_name + " ==================\n")
+        repo = g.get_repo(name)
 
-            s.write("OPEN ISSUES\n")
-            open_issues = repo.get_issues(state="open")
-            for issue in open_issues:
-                issues = str(issue.id) + " " + str(issue.state) + " " + str(issue.assignees)
-                s.write(issues + "\n")
+        print("OPEN ISSUES\n")
+        open_issues = repo.get_issues(state="open")
+        for issue in open_issues:
+            issues = str(issue.id) + " " + str(issue.state) + " " + str(issue.assignees)
+            print(issues + "\n")
 
-            s.write("COMMITS\n")
-            try:
-                commits = repo.get_commits()
-                for commit in commits:
-                    headerkeys = commit.raw_headers
-                    # print(headerkeys)
-                    comms = str(headerkeys['last-modified']) + " " + str(commit.html_url) + " " +  str(commit.author)
-                    s.write(comms + "\n")
-            except github.GithubException:
-                print("Error: no commits")
+        print("COMMITS\n")
+        try:
+            commits = repo.get_commits()
+            for commit in commits:
+                header_keys = commit.raw_headers
+                # print(headerkeys)
+                comms = str(header_keys['last-modified']) + ", " + str(commit.html_url) + ", " + str(commit.author)
+                print(comms + "\n")
+        except github.GithubException:
+            print("Error: no commits")
 
-            s.write("PULL REQUESTS\n")
-            pulls = repo.get_pulls()
-            for p in pulls:
-                print(p.state)
-                for c in p.get_review_comments():
-                    s.write(c + "\n")
+        print("PULL REQUESTS\n")
+        pulls = repo.get_pulls()
+        for p in pulls:
+            print(p.state)
+            for c in p.get_review_comments():
+                print(c + "\n")
 
-            s.write("GROUP MEMBERS\n")
-            users = repo.get_contributors()
-            for user in users:
-                peeps = str(user) + " " +  str(user.last_modified) + " " +  str(user.name)
-                s.write(peeps + "\n")
+        print("GROUP MEMBERS\n")
+        users = repo.get_contributors()
+        for user in users:
+            peeps = str(user) + " " +  str(user.last_modified) + " " +  str(user.name)
+            print(peeps + "\n")
 
-            s.write("==================" + "END" + "==================\n\n")
-        s.close()
-        sleep(2)
+        print("==================" + "END" + "==================\n\n")
+    # s.close()
+    sleep(2)
+
+    print("Finished!")
 
 
 

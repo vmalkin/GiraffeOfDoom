@@ -1,0 +1,104 @@
+================== http://github.com/BIT-Studio-2/project-21s2-buddy-on-the-beach ==================
+OPEN ISSUES
+1005938322 open []
+1005907547 open []
+1005875315 open []
+1005874754 open []
+1005874677 open []
+1005874481 open []
+1005874274 open []
+1005874148 open []
+1005874010 open []
+1005873902 open []
+1005873747 open []
+COMMITS
+Thu, 23 Sep 2021 23:21:11 GMT, https://github.com/BIT-Studio-2/project-21s2-buddy-on-the-beach/commit/675917a4dd52b3a66d64e30263cf218844eea50e, NamedUser(login="mojoju")
+Thu, 23 Sep 2021 23:20:59 GMT, https://github.com/BIT-Studio-2/project-21s2-buddy-on-the-beach/commit/37e0070ff3dc5853a6c4e794a5171f36507f79bf, NamedUser(login="mojoju")
+Thu, 23 Sep 2021 23:03:13 GMT, https://github.com/BIT-Studio-2/project-21s2-buddy-on-the-beach/commit/cfa400e7e8f81c774672cbe93508ad7cfd93ef0f, NamedUser(login="3MKJOE58")
+Thu, 23 Sep 2021 23:02:53 GMT, https://github.com/BIT-Studio-2/project-21s2-buddy-on-the-beach/commit/87b63d3010de826ea7a5de8dd3069e876db32c88, NamedUser(login="3MKJOE58")
+Thu, 23 Sep 2021 22:43:42 GMT, https://github.com/BIT-Studio-2/project-21s2-buddy-on-the-beach/commit/bbeec431ddc6ec6b00f79e5b5fc135860b290448, NamedUser(login="3MKJOE58")
+Thu, 23 Sep 2021 22:43:20 GMT, https://github.com/BIT-Studio-2/project-21s2-buddy-on-the-beach/commit/b3d2685d67a486f99991d43a8e324e8c2185ba94, NamedUser(login="3MKJOE58")
+Thu, 23 Sep 2021 22:42:28 GMT, https://github.com/BIT-Studio-2/project-21s2-buddy-on-the-beach/commit/cb23ab635e8ef99aea5e53559d856e6dc8f3395c, NamedUser(login="Mcfarlanejo")
+Thu, 23 Sep 2021 22:07:03 GMT, https://github.com/BIT-Studio-2/project-21s2-buddy-on-the-beach/commit/77dc74493b03c91139c4a1714637b7af6e446a48, NamedUser(login="mojoju")
+Thu, 23 Sep 2021 21:59:08 GMT, https://github.com/BIT-Studio-2/project-21s2-buddy-on-the-beach/commit/ebf7ac07b6086c29f8ec9e635a4af3b93e073655, NamedUser(login="mojoju")
+Wed, 22 Sep 2021 02:41:09 GMT, https://github.com/BIT-Studio-2/project-21s2-buddy-on-the-beach/commit/7d10eabe7e584c0c55a2bc64aa6fe5927c2afe9f, NamedUser(login="mojoju")
+Wed, 22 Sep 2021 02:03:11 GMT, https://github.com/BIT-Studio-2/project-21s2-buddy-on-the-beach/commit/77d4de9528ef6d0eae44cc4518bcc13a61c3cd1f, NamedUser(login="mojoju")
+Thu, 16 Sep 2021 23:23:27 GMT, https://github.com/BIT-Studio-2/project-21s2-buddy-on-the-beach/commit/a948055a044a2dd84fab539697c053d16e4b6c5f, NamedUser(login="3MKJOE58")
+PULL REQUESTS
+GROUP MEMBERS
+NamedUser(login="mojoju") Thu, 23 Sep 2021 23:21:32 GMT None
+NamedUser(login="3MKJOE58") Thu, 23 Sep 2021 23:21:32 GMT Yousef Altay
+NamedUser(login="Mcfarlanejo") Thu, 23 Sep 2021 23:21:32 GMT None
+==================END==================
+
+================== http://github.com/BIT-Studio-2/project-21s2-ark-tech ==================
+OPEN ISSUES
+1005904473 open [NamedUser(login="TomMc608")]
+1003683567 open [NamedUser(login="AardhynLavender")]
+1003668867 open [NamedUser(login="Sasnz")]
+1003668222 open []
+1003666796 open []
+1003665445 open []
+COMMITS
+Thu, 23 Sep 2021 23:40:11 GMT, https://github.com/BIT-Studio-2/project-21s2-ark-tech/commit/37faf25f42967bff601cf59ce2f35d0dd7d9ab29, NamedUser(login="Sasnz")
+Thu, 23 Sep 2021 23:30:36 GMT, https://github.com/BIT-Studio-2/project-21s2-ark-tech/commit/d32d68b868f4ae5ce69ec5e83aaf7df62e5b4b85, NamedUser(login="Sasnz")
+Thu, 23 Sep 2021 23:30:22 GMT, https://github.com/BIT-Studio-2/project-21s2-ark-tech/commit/10386083b579cae61489854552598470b4cf13ea, NamedUser(login="Sasnz")
+Thu, 23 Sep 2021 23:25:15 GMT, https://github.com/BIT-Studio-2/project-21s2-ark-tech/commit/b4c0cf96b9729341734f05deb6e31073879549b2, NamedUser(login="kblack89")
+Thu, 23 Sep 2021 23:22:45 GMT, https://github.com/BIT-Studio-2/project-21s2-ark-tech/commit/259886e4ef4ef5676c804e84fd703af449ff530f, NamedUser(login="AardhynLavender")
+Thu, 23 Sep 2021 23:14:29 GMT, https://github.com/BIT-Studio-2/project-21s2-ark-tech/commit/3f73af758425acfe1133d4343f6c9dc2762f0550, NamedUser(login="TomMc608")
+Thu, 23 Sep 2021 23:09:33 GMT, https://github.com/BIT-Studio-2/project-21s2-ark-tech/commit/be62d88c5714427fe2fe7261c0f8c52f8033bd73, None
+Thu, 23 Sep 2021 23:09:22 GMT, https://github.com/BIT-Studio-2/project-21s2-ark-tech/commit/c1fe4a832a144658fa9be48d479a9861c6ae0608, None
+Thu, 23 Sep 2021 23:02:15 GMT, https://github.com/BIT-Studio-2/project-21s2-ark-tech/commit/05d79e54047ac98a58a1f9f95fa04d98b52ee65b, NamedUser(login="TomMc608")
+Thu, 23 Sep 2021 22:45:16 GMT, https://github.com/BIT-Studio-2/project-21s2-ark-tech/commit/ac96aad2123296a0922fa9493a3dd73d14293192, NamedUser(login="TomMc608")
+Thu, 23 Sep 2021 22:08:12 GMT, https://github.com/BIT-Studio-2/project-21s2-ark-tech/commit/9bc5887fc81b03ed8428868c205e5e531932d2d6, None
+Thu, 23 Sep 2021 21:58:51 GMT, https://github.com/BIT-Studio-2/project-21s2-ark-tech/commit/f6408ac223dfab3d850d9eadb96eab004774a409, NamedUser(login="AardhynLavender")
+Thu, 23 Sep 2021 21:57:52 GMT, https://github.com/BIT-Studio-2/project-21s2-ark-tech/commit/418e398ae6753144b11f44ac6accc2d65196ed21, NamedUser(login="AardhynLavender")
+PULL REQUESTS
+GROUP MEMBERS
+NamedUser(login="AardhynLavender") Thu, 23 Sep 2021 23:40:14 GMT Aardhyn Lavender
+NamedUser(login="Sasnz") Thu, 23 Sep 2021 23:40:14 GMT Reuben Koks
+NamedUser(login="TomMc608") Thu, 23 Sep 2021 23:40:14 GMT Tom
+NamedUser(login="kblack89") Thu, 23 Sep 2021 23:40:14 GMT None
+==================END==================
+
+================== http://github.com/BIT-Studio-2/project-21s2-beach-boys ==================
+OPEN ISSUES
+1001560135 open []
+1001551702 open []
+1001504946 open [NamedUser(login="Dani-op"), NamedUser(login="TeAwa-Whetu"), NamedUser(login="LennoxHB"), NamedUser(login="gpseal")]
+COMMITS
+Thu, 23 Sep 2021 03:52:15 GMT, https://github.com/BIT-Studio-2/project-21s2-beach-boys/commit/ed1dc56a68900b24578e638bc5c8e2ad4de42c0d, NamedUser(login="Dani-op")
+Thu, 23 Sep 2021 03:50:07 GMT, https://github.com/BIT-Studio-2/project-21s2-beach-boys/commit/818eae6f06943dbc66b6d6cbcb0c7bb6b20e9f0a, NamedUser(login="TeAwa-Whetu")
+Thu, 23 Sep 2021 03:44:55 GMT, https://github.com/BIT-Studio-2/project-21s2-beach-boys/commit/f677815734eb0cac990867696532f01f9da142fd, NamedUser(login="TeAwa-Whetu")
+Mon, 20 Sep 2021 23:11:02 GMT, https://github.com/BIT-Studio-2/project-21s2-beach-boys/commit/3216f640fd76e3db22a0afc5c3ae4ed7256ec443, NamedUser(login="Dani-op")
+Mon, 20 Sep 2021 22:37:06 GMT, https://github.com/BIT-Studio-2/project-21s2-beach-boys/commit/d2fc53aaa425a6250db2477e8aa924512ed20136, NamedUser(login="gpseal")
+Mon, 20 Sep 2021 11:39:25 GMT, https://github.com/BIT-Studio-2/project-21s2-beach-boys/commit/276ebe7e627f61a0b6c658571b9dd7406ea43b7a, NamedUser(login="LennoxHB")
+Thu, 16 Sep 2021 04:33:55 GMT, https://github.com/BIT-Studio-2/project-21s2-beach-boys/commit/86f2f434a52c55ed9d79c352dc0c3dc4fea18a2e, NamedUser(login="LennoxHB")
+PULL REQUESTS
+GROUP MEMBERS
+NamedUser(login="TeAwa-Whetu") Thu, 23 Sep 2021 03:52:21 GMT Git-Basher
+NamedUser(login="Dani-op") Thu, 23 Sep 2021 03:52:21 GMT None
+NamedUser(login="LennoxHB") Thu, 23 Sep 2021 03:52:21 GMT None
+NamedUser(login="gpseal") Thu, 23 Sep 2021 03:52:21 GMT Greg
+==================END==================
+
+================== http://github.com/BIT-Studio-2/project-21s2-beach-buddy ==================
+OPEN ISSUES
+1005009053 open []
+1004997534 open [NamedUser(login="SB-Lamia")]
+1004937444 open []
+1004934029 open []
+1001571707 open []
+1001570658 open []
+1001568052 open []
+1001566270 open []
+1001561402 open []
+1001557559 open []
+1001553900 open []
+1001551633 open []
+1001549572 open []
+COMMITS
+Thu, 23 Sep 2021 03:45:57 GMT, https://github.com/BIT-Studio-2/project-21s2-beach-buddy/commit/1a7cb811a4d899328726332ae3fa909973eb23b9, NamedUser(login="abdallah-altay")
+Tue, 21 Sep 2021 05:54:38 GMT, https://github.com/BIT-Studio-2/project-21s2-beach-buddy/commit/e0482ed191a772022649fe0831777309068f7c79, NamedUser(login="abdallah-altay")
+Tue, 21 Sep 2021 05:43:26 GMT, https://github.com/BIT-Studio-2/project-21s2-beach-buddy/commit/19c86987e76aef901acd4ab7cf5dd7a42dcc3fcb, NamedUser(login="abdallah-altay")
+Mon, 20 Sep 2021 23:48:44 GMT, https://github.com/BIT-Studio-2/project-21s2-beach-buddy/commit/4e04f2f807e97c1f417ef1457b64a0c4879f6ea0, NamedUser(login="manutr021")
