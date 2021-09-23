@@ -1,16 +1,14 @@
-# This script is designed to use the Github api to extract information about a series of repos, their contributors
-# and their work
-# Data will be displayed graphically.
-
+# This script is designed to use the Github api to extract information about a series of repos,
+# their contributors and their work. Data will be displayed graphically.
+import github.GithubException
 from github import Github
-import requests
 from pprint import pprint
+from time import sleep
 
-git_token = "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"
+git_token = "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"
 g = Github(git_token)
 
-
-repos = [
+repo_names = [
     "BIT-Studio-2/project-21s2-buddy-on-the-beach",
     "BIT-Studio-2/project-21s2-ark-tech",
     "BIT-Studio-2/project-21s2-beach-boys",
@@ -21,11 +19,36 @@ repos = [
     "BIT-Studio-2/project-21s2-walkeez"
     ]
 
-# Press the green button in the gutter to run the script.
+
 if __name__ == '__main__':
-    for item in repos:
-        r = g.get_repo(item)
-        pprint(r.get_contributors().get_page(0))
+    for name in repo_names:
+        print("==================" + name + "==================")
+        repo = g.get_repo(name)
+
+        print("\nOPEN ISSUES")
+        open_issues = repo.get_issues(state="open")
+        for issue in open_issues:
+            print(issue.id, issue.state, issue.assignees)
+
+        print("\nCOMMITS")
+        try:
+            commits = repo.get_commits()
+            for commit in commits:
+                print(commit.last_modified, commit.committer)
+
+        except github.GithubException:
+            print("Error: no commits")
+
+        print("\nGROUP MEMBERS")
+        users = repo.get_contributors()
+        for user in users:
+            print(user)
+
+        print("==================" + "END" + "==================")
+        print(" ")
+        sleep(2)
+
+
 
 
 
