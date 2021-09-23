@@ -5,7 +5,7 @@ from github import Github
 from pprint import pprint
 from time import sleep
 
-git_token = "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"
+git_token = "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"
 g = Github(git_token)
 
 repo_names = [
@@ -21,31 +21,43 @@ repo_names = [
 
 
 if __name__ == '__main__':
-    for name in repo_names:
-        print("==================" + name + "==================")
-        repo = g.get_repo(name)
+    with open("Studio_2.txt", "w") as s:
+        for name in repo_names:
+            s.write("==================" + name + "==================\n")
+            repo = g.get_repo(name)
 
-        print("\nOPEN ISSUES")
-        open_issues = repo.get_issues(state="open")
-        for issue in open_issues:
-            print(issue.id, issue.state, issue.assignees)
+            s.write("OPEN ISSUES\n")
+            open_issues = repo.get_issues(state="open")
+            for issue in open_issues:
+                issues = str(issue.id) + " " + str(issue.state) + " " + str(issue.assignees)
+                s.write(issues + "\n")
 
-        print("\nCOMMITS")
-        try:
-            commits = repo.get_commits()
-            for commit in commits:
-                print(commit.last_modified, commit.committer)
+            s.write("COMMITS\n")
+            try:
+                commits = repo.get_commits()
+                for commit in commits:
+                    headerkeys = commit.raw_headers
+                    # print(headerkeys)
+                    comms = str(headerkeys['last-modified']) + " " + str(commit.html_url) + " " +  str(commit.author)
+                    s.write(comms + "\n")
+            except github.GithubException:
+                print("Error: no commits")
 
-        except github.GithubException:
-            print("Error: no commits")
+            s.write("PULL REQUESTS\n")
+            pulls = repo.get_pulls()
+            for p in pulls:
+                print(p.state)
+                for c in p.get_review_comments():
+                    s.write(c + "\n")
 
-        print("\nGROUP MEMBERS")
-        users = repo.get_contributors()
-        for user in users:
-            print(user)
+            s.write("GROUP MEMBERS\n")
+            users = repo.get_contributors()
+            for user in users:
+                peeps = str(user) + " " +  str(user.last_modified) + " " +  str(user.name)
+                s.write(peeps + "\n")
 
-        print("==================" + "END" + "==================")
-        print(" ")
+            s.write("==================" + "END" + "==================\n\n")
+        s.close()
         sleep(2)
 
 
