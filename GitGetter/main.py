@@ -5,7 +5,11 @@ from github import Github
 from pprint import pprint
 from time import sleep
 
-git_token = "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"
+
+with open("../../git.token") as g:
+    for line in g:
+        git_token = line.strip()
+
 g = Github(git_token)
 
 repo_names = [
