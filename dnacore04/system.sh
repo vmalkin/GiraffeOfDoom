@@ -6,6 +6,7 @@ do
  python3 get_SW_speed.py
  python3 get_SW_density.py
  python3 get_bz.py
+ python3 get_VLF.py
  
  python3 save_logfiles.py
  python3 chart_dxdt.py

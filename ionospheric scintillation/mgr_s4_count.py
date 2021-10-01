@@ -59,24 +59,28 @@ def indexposition(posixtime, starttime):
 
 
 def plot_chart(filename, dates, data, avg_reading):
-    black = "rgba(0,0,0,0.75)"
+    bar_colour = "#8df2a7"
     savefile = k.dir_images + "//" + filename
-    y_max = 20
-    y_min = 5
+    y_max = 23
+    y_min = 8
+    
+    plotdata = go.Bar(name="S4 Bins", x=dates, y=data, marker = dict(color=bar_colour, line=dict(width=0.5, color=bar_colour)))
 
-    plotdata = go.Bar(x=dates, y=data, marker = dict(color=black, line=dict(width=1, color=black)))
     fig = go.Figure(plotdata)
 
-    fig.add_trace(go.Scatter(x=dates, y=avg_reading, mode="lines", line=dict(width=6, color="#ffffff")))
-    fig.add_trace(go.Scatter(x=dates, y=avg_reading, mode="lines", line=dict(width=3, color="#770000")))
+    fig.add_trace(go.Scatter(showlegend=False,  x=dates, y=avg_reading, mode="lines", line=dict(width=6, color="#ffffff")))
+    fig.add_trace(go.Scatter(name="Trend", x=dates, y=avg_reading, mode="lines", line=dict(width=3, color="#770000")))
 
     fig.update_xaxes(nticks=30, tickangle=45, gridcolor='#ffffff')
     fig.update_yaxes(range=[y_min ,y_max] )
-    fig.update_layout(width=1400, height=600, title="S<sub>4</sub> Index - 1 minute bins & average trend",
+    fig.update_layout(width=1400, height=600, margin=dict(l=50, r=15, b=100, t=100, pad=4),
+                      title="S<sub>4</sub> Index - 1 minute bins & average trend",
                       xaxis_title="Date/time UTC<br><sub>http://DunedinAurora.nz</sub>",
                       yaxis_title="S<sub>4</sub> index, %",
                       plot_bgcolor="#e0e0e0")
-    fig.update_layout(font=dict(size=18), title_font_size=22, showlegend=False)
+    fig.update_layout(font=dict(size=18), title_font_size=22, showlegend=True)
+    fig.update_layout(legend = dict(orientation="h", yanchor = "top", xanchor = "right", x=1, y=1.11))
+    
     fig.update_layout(plot_bgcolor="#a0a0a0", paper_bgcolor="#a0a0a0")
     # fig.update_layout(width=1400, height=600)
     fig.write_image(file=savefile, format='jpg')
