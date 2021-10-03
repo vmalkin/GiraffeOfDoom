@@ -45,7 +45,7 @@ def plot_polar(alt, az, label_alt, label_az, label_text):
     timestart = time.time() - (60*60)
     timestart = posix2utc(timestart, '%H:%M')
     date = posix2utc(time.time(), "%Y-%m-%d")
-    plottitle = "GPS tracks. " + date +  "<br>Last 24 Hours. Plotted at " + timenow +  " UTC.<br>http://DunedinAurora.NZ"
+    plottitle = "GPS tracks. " + k.sensor + date +  "<br>Last 24 Hours. Plotted at " + timenow +  " UTC.<br>http://DunedinAurora.NZ"
     fig = go.Figure(data)
 
     fig.update_layout(width=1200, height=1200, title=plottitle)

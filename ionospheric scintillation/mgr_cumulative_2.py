@@ -63,7 +63,7 @@ def plot_chart(filename, dates, data, ion_min, ion_max, ion_average):
     fig.update_xaxes(nticks=30, tickangle=45)
     fig.update_yaxes(range=[y_min ,y_max] )
     fig.update_layout(font=dict(size=20), title_font_size=21)
-    fig.update_layout(width=1400, height=600, title="GPS Noise Spikes. Cumulative Total.",
+    fig.update_layout(width=1400, height=600, title="GPS Noise Spikes - " + k.sensor + ". Cumulative Total.",
                       xaxis_title="Date/time UTC<br><sub>http://DunedinAurora.nz</sub>",
                       yaxis_title="Count S4 events > 40%",
                       plot_bgcolor="#e0e0e0")

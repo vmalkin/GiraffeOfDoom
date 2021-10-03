@@ -63,8 +63,10 @@ def plot_chart(filename, dates, data, avg_reading):
     savefile = k.dir_images + "//" + filename
     y_max = 23
     y_min = 8
-    
-    plotdata = go.Bar(name="S4 Bins", x=dates, y=data, marker = dict(color=bar_colour, line=dict(width=0.5, color=bar_colour)))
+    title = "GPS - " + k.sensor + "S4 Bins"
+    plotdata = go.Bar(name=title, x=dates, y=data,
+                      marker = dict(color=bar_colour,
+                      line=dict(width=0.5, color=bar_colour)))
 
     fig = go.Figure(plotdata)
 

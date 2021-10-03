@@ -43,7 +43,7 @@ def plot_polar(alt, az, s4, label_alt, label_az, label_text):
     timestart = time.time() - (60*60)
     timestart = posix2utc(timestart, '%H:%M')
     date = posix2utc(time.time(), "%Y-%m-%d")
-    plottitle = "GPS Interferance. " + date +  "<br>" + timestart + " to " + timenow +  " UTC.<br>http://DunedinAurora.NZ"
+    plottitle = "GPS Interferance - " + k.sensor + ". " + date +  "<br>" + timestart + " to " + timenow +  " UTC.<br>http://DunedinAurora.NZ"
     fig = go.Figure(data)
 
     fig.update_layout(width=1200, height=1200, title=plottitle)

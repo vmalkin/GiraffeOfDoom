@@ -120,7 +120,7 @@ def plot(satlist, tlabels):
     for satellite in satlist:
         name = satellite.name
         savefile = k.dir_images + "//" + satellite.name + ".jpg"
-        plot_title = "S4 Index SatID: " + name
+        plot_title = k.sensor + " S4 Index SatID: " + name
 
         fig = go.Figure()
         fig.add_trace(go.Scatter(x=tlabels, y=satellite.data_s4, mode="lines", name="S4 Value", line=dict(width=1, color="#0090b0")))

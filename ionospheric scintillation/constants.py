@@ -16,5 +16,6 @@ writeTimeout = None
 dsrdtr = False
 interCharTimeout = None
 
+sensor = "UBlox"
 dir_images = "images"
 dir_logfiles = "logfiles"
