@@ -46,7 +46,7 @@ def save_s4(filename, data):
 
 
 def plot_polar(alt, az, s4, colours, splat_threshold):
-    savefile = k.dir_images + "//splat.jpg"
+    savefile = k.dir_images + "//" + k.sensor + "_splat.jpg"
     data = go.Scatterpolar(r=alt, theta=az, mode='markers+text')
 
     event_count = str(len(s4))

@@ -119,7 +119,7 @@ def plot_snr_combo(satlist, tlabels):
 def plot(satlist, tlabels):
     for satellite in satlist:
         name = satellite.name
-        savefile = k.dir_images + "//" + satellite.name + ".jpg"
+        savefile = k.dir_images + "//" + k.sensor + "_" + satellite.name + ".jpg"
         plot_title = k.sensor + " S4 Index SatID: " + name
 
         fig = go.Figure()

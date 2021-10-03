@@ -37,7 +37,7 @@ def save_s4(filename, data):
 
 
 def plot_polar(alt, az, label_alt, label_az, label_text):
-    savefile = k.dir_images + "//24hr_tracks.jpg"
+    savefile = k.dir_images + "//" + k.sensor + "_24hr_tracks.jpg"
     data = go.Scatterpolar(r=alt, theta=az, mode='markers+text')
 
     # data = go.Scatterpolar(r=alt, theta=az, text=id, mode='markers')

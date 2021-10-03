@@ -57,7 +57,7 @@ def plot_chart(filename, dates, data, ion_min, ion_max, ion_average):
     y_min = min(data) - 2
     y_max = max(data) + 2
 
-    savefile = k.dir_images + "//" + filename
+    savefile = k.dir_images + "//" + k.sensor + "_" + filename
     plotdata = go.Scatter(x=dates, y=data, mode="lines")
     fig = go.Figure(plotdata)
     fig.update_xaxes(nticks=30, tickangle=45)

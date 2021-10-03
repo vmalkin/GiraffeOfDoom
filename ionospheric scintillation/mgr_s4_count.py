@@ -60,7 +60,7 @@ def indexposition(posixtime, starttime):
 
 def plot_chart(filename, dates, data, avg_reading):
     bar_colour = "#7df6ff"
-    savefile = k.dir_images + "//" + filename
+    savefile = k.dir_images + "//" + k.sensor + "_" + filename
     y_max = 23
     y_min = 8
     title = "GPS S4 Bins"
