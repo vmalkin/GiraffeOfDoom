@@ -135,7 +135,7 @@ def plot_chart(dt, s4, snr, spikes):
     title = "GNSS Constellations. Sensor: " + k.sensor
     fig.update_layout(width=1400, height=600, title=title)
     fig.update_layout(legend=dict(orientation="h", yanchor="bottom", y=-0.2, xanchor="center", x=0.5))
-    savefile = k.dir_images + "//GPS.jpg"
+    savefile = k.dir_images + "//" + k.sensor + "_GPS.jpg"
     fig.write_image(file=savefile, format='jpg')
 
 
