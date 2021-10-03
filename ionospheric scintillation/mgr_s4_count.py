@@ -63,7 +63,7 @@ def plot_chart(filename, dates, data, avg_reading):
     savefile = k.dir_images + "//" + filename
     y_max = 23
     y_min = 8
-    title = "GPS - " + k.sensor + "S4 Bins"
+    title = "GPS S4 Bins"
     plotdata = go.Bar(name=title, x=dates, y=data,
                       marker = dict(color=bar_colour,
                       line=dict(width=0.5, color=bar_colour)))
@@ -76,7 +76,7 @@ def plot_chart(filename, dates, data, avg_reading):
     fig.update_xaxes(nticks=30, tickangle=45, gridcolor='#ffffff')
     fig.update_yaxes(range=[y_min ,y_max] )
     fig.update_layout(width=1400, height=600, margin=dict(l=50, r=15, b=100, t=100, pad=4),
-                      title="S<sub>4</sub> Index - 1 minute bins & average trend",
+                      title="GNSS - " + k.sensor + " S<sub>4</sub> Index - 1 minute bins & average trend",
                       xaxis_title="Date/time UTC<br><sub>http://DunedinAurora.nz</sub>",
                       yaxis_title="S<sub>4</sub> index, %",
                       plot_bgcolor="#e0e0e0")
