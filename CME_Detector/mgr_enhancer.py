@@ -88,7 +88,7 @@ def wrapper(storage_folder, images_folder):
 
     # make sure they are in chronological order by name
     dirlisting.sort()
-
+    print(dirlisting)
 
     t = dirlisting[0].split("_")
     hourcount = filehour_converter(t[0], t[1])
