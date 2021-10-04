@@ -1,6 +1,7 @@
 import datetime
 import time
 import urllib.request
+import requests
 import os
 import mgr_analyser
 import mgr_enhancer
@@ -9,12 +10,14 @@ import mgr_enhancer
 def get_resource_from_url(url_to_get):
     response = ""
     try:
-        request = urllib.request.Request(url_to_get, headers={'User-Agent': 'Mozilla/5.0'})
-        response = urllib.request.urlopen(request, timeout=10)
+        response = requests.get(url_to_get)
+        # request = urllib.request.Request(url_to_get, headers={'User-Agent': 'Mozilla/5.0'})
+        # response = urllib.request.urlopen(request, timeout=10)
 
     except:
         # logging.error("Unable to load/save image from URL: " + str(imageurl) + " " + str(filename))
         print("unable to load URL", url_to_get)
+        print("Try: pip install --upgrade certifi")
 
     return response
 
@@ -27,14 +30,11 @@ def posix2utc(posixtime, timeformat):
 
 def parse_text_from_url(response):
     # the response is a list of byte objects.
+    response = response.text
+    response = response.split("\n")
     returnlist = []
-    for line in response:
-        s = str(line)
-        s = s.split("\\")
-        s = s[0]
-        s = s.strip()
-        s = s[2:27]
-        returnlist.append(s)
+    for item in response:
+        returnlist.append(item)
     return returnlist
 
 
@@ -54,7 +54,9 @@ def downloadimages(listofimages, storagelocation):
             response1 = get_resource_from_url(img1url)
             print("Saving file ", file)
             with open(file, 'wb') as f:
-                f.write(response1.read())
+                # f.write(response1.read())
+                f.write(response1.content)
+            f.close()
 
 
 if __name__ == "__main__":
@@ -90,13 +92,14 @@ if __name__ == "__main__":
 
     # Parse for old epoch files that have been added
     print("Getting images for old epoch")
-    # ymd_old = "20210807"
+    ymd_old = "20210929"
     baseURL = "https://soho.nascom.nasa.gov/data/REPROCESSING/Completed/" + year + "/c3/" + ymd_old + "/"
     onlinelist = baseURL + ".full_512.lst"
     listofimages = get_resource_from_url(onlinelist)
     listofimages = parse_text_from_url(listofimages)
 
     newimages = parseimages(listofimages, storage_folder)
+
 
     if len(newimages) > 0:
         # rings the terminal bell
