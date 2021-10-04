@@ -10,7 +10,8 @@ import mgr_enhancer
 def get_resource_from_url(url_to_get):
     response = ""
     try:
-        response = requests.get(url_to_get)
+        headers = {'User-Agent': 'Mozilla/5.0'}
+        response = requests.get(url_to_get, headers=headers)
         # request = urllib.request.Request(url_to_get, headers={'User-Agent': 'Mozilla/5.0'})
         # response = urllib.request.urlopen(request, timeout=10)
 
@@ -92,7 +93,7 @@ if __name__ == "__main__":
 
     # Parse for old epoch files that have been added
     print("Getting images for old epoch")
-    ymd_old = "20210929"
+    ymd_old = "20211002"
     baseURL = "https://soho.nascom.nasa.gov/data/REPROCESSING/Completed/" + year + "/c3/" + ymd_old + "/"
     onlinelist = baseURL + ".full_512.lst"
     listofimages = get_resource_from_url(onlinelist)
