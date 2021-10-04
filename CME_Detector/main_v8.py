@@ -99,14 +99,11 @@ if __name__ == "__main__":
     listofimages = parse_text_from_url(listofimages)
 
     newimages = parseimages(listofimages, storage_folder)
-    print(newimages)
-
 
     if len(newimages) > 0:
         # rings the terminal bell
         print("\a")
         downloadimages(newimages, storage_folder)
-
 
     # Analyse and enhance stored images
     try:
