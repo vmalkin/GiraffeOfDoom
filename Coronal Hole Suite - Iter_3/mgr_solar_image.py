@@ -89,11 +89,12 @@ class SolarImageProcessor:
         mask = cv2.imread(mask_filepath, 0)
         return mask
 
-    def _make_dynmask_segment(self, imagesize):
-        pass
+    def _make_dynmask_segment(self, image, imagesize):
+        mask = np.zeros(image.shape[:2], dtype="float32")
 
-    def _make_dynmask_full(self, imagesize):
-        pass
+    def _make_dynmask_full(self, image, imagesize):
+        mask = np.zeros(image.shape[:2], dtype="float32")
+
 
     def _add_img_logo(self, image_name):
         label = 'DunedinAurora.NZ Coronal Hole Map'
