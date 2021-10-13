@@ -16,10 +16,10 @@ errorloglevel = logging.DEBUG
 logging.basicConfig(filename="position_errors.log", format='%(asctime)s %(message)s', level=errorloglevel)
 
 # Comm port parameters - uncomment and change one of the portNames depending on your OS
-portName = 'Com12'  # Windows
+# portName = 'Com12'  # Windows
 # portName = '/dev/tty.usbserial-A702O0K9' #MacOS
 # portName = "/dev/cu.usbmodem1421"
-# portName = '/dev/ttyUSB0'
+portName = '/dev/ttyACM0'
 # baudrate = 9600 # for SAM module at DUnedin Aurora
 baudrate = 115200
 bytesize = 8
@@ -96,17 +96,18 @@ def database_create(database):
         db.execute('create table satdata ('
                    'posixtime string,'
                    'var_lat real,'
-                   'var_long real'
+                   'var_long real,'
+                   'var_alt real'
                    ');')
         gpsdb.commit()
         db.close()
 
 
-def database_append(database, posixdate, lats, longs):
+def database_append(database, posixdate, lats, longs, alts):
     gpsdb = sqlite3.connect(database)
     db = gpsdb.cursor()
-    db.execute("insert into satdata (posixtime, var_lat, var_long) "
-               "values(?, ?, ?)", [posixdate, lats, longs])
+    db.execute("insert into satdata (posixtime, var_lat, var_long, var_alt) "
+               "values(?, ?, ?, ?)", [posixdate, lats, longs, alts])
     gpsdb.commit()
     db.close()
 
@@ -158,21 +159,27 @@ def plot_graph(data):
     dates = []
     lat = []
     long = []
+    alt = []
 
     for dp in data:
         dates.append(posix2utc(dp[0], '%Y-%m-%d %H:%M:%S'))
         lat.append(dp[1])
         long.append(dp[2])
+        alt.append(dp[3])
 
     filename = posix2utc(time.time(), '%Y-%m-%d')
     filename = filename + ".jpg"
 
     lat_clr = "red"
     long_clr = "blue"
+    alt_clr = 'green'
 
-    fig = make_subplots(rows=2, cols=1, subplot_titles=("Variance in Latitude", "Variance in Longtitude"))
+    fig = make_subplots(rows=3, cols=1, subplot_titles=("dLat", "dLong", "dAlt"))
     fig.add_trace(go.Scatter(x=dates, y=lat, mode="lines", line=dict(width=1, color=lat_clr)), row=1, col=1)
     fig.add_trace(go.Scatter(x=dates, y=long, mode="lines", line=dict(width=1, color=long_clr)), row=2, col=1)
+    fig.add_trace(go.Scatter(x=dates, y=alt, mode="lines", line=dict(width=1, color=alt_clr)), row=3, col=1)
+
+
     fig.update_xaxes(nticks=30, tickangle=45)
     fig.update_layout(font=dict(size=20), title_font_size=21)
     fig.update_layout(width=4000, height=1000,
@@ -187,6 +194,7 @@ if __name__ == "__main__":
     master_array = []
     all_lats = []
     all_longs = []
+    all_alts = []
     start_flag = True
     
     # check/create the database
@@ -222,28 +230,33 @@ if __name__ == "__main__":
                 data = data.split(",")
                 d_lat = float(data[0])
                 d_long = float(data[1])
+                d_alt = float(data[2])
 
                 all_lats.append(d_lat)
                 all_longs.append(d_long)
+                all_alts.append(d_alt)
 
                 if len(all_lats) >= 5:
                     median_lat = round(mean(all_lats), 4)
                     median_long = round(mean(all_longs), 4)
+                    median_alt = round(mean(all_alts), 4)
                     posixdate = int(time.time())
                     utcdate = posix2utc(posixdate, '%Y-%m-%d %H:%M:%S')
                     
                     # Calculate the rate of change
-                    datapoint = [utcdate, median_lat, median_long]
+                    datapoint = [utcdate, median_lat, median_long, median_alt]
                     print(datapoint)
 
-                    database_append(db, posixdate, median_lat, median_long)
+                    database_append(db, posixdate, median_lat, median_long, median_alt)
 
                     # master_array.append(datapoint)
 
                     all_lats = []
                     all_longs = []
+                    all_alts = []
                     lat_old = median_lat
                     long_old = median_long
+                    alt_old = median_alt
 
                 if len(master_array) > maxlen:
                     master_array.pop(0)
