@@ -120,7 +120,7 @@ def database_getdata(database):
 
     returnlist = []
     for item in result:
-        dp = (item[0], item[1], item[2])
+        dp = (item[0], item[1], item[2], item[3])
         returnlist.append(dp)
     print("current query " + str(len(returnlist)) + " records long")
 
