@@ -61,6 +61,9 @@ if __name__ == '__main__':
             peeps = str(user) + " " +  str(user.last_modified) + " " +  str(user.name)
             print(peeps + "\n")
 
+        kanban = repo.get_projects()
+
+
         print("==================" + "END" + "==================\n\n")
     # s.close()
     sleep(2)
