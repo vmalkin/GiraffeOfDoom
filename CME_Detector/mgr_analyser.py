@@ -165,7 +165,7 @@ def text_alert(px, hr):
     savefile = "cme_alert.php"
 
     heading = "<b>CME Monitor updated at " + posix2utc(time.time(), " %Y-%m-%d %H:%M") + " UTC.</b><p>"
-
+    msg = ""
     if px >= cme_min:
         msg = "A possible CME has been detected at " + timestring +  " with " + str(int(px * 100)) + "% coverage."
         if px >= cme_partial:
@@ -173,11 +173,13 @@ def text_alert(px, hr):
             if px >= cme_halo:
                 msg = "ALERT: A possible FULL HALO CME has been detected at " + timestring +  " with " + str(int(px * 100)) + "% coverage."
 
+    if len(msg) > 0:
         msg = msg + "<br>Confirm Earth impact with STEREO A satellite data: " + stereo_url
 
-        msg_alert = heading + msg
-        with open(savefile, "w") as s:
-            s.write(msg_alert)
+    msg_alert = heading + msg
+    with open(savefile, "w") as s:
+        s.write(msg_alert)
+    s.close()
 
 
 def filehour_converter(yyyymmdd, hhmm):
@@ -322,6 +324,8 @@ def wrapper(storage_folder, analysis_folder):
     avg_array = []
     pixel_count = []
     dates = []
+    px_max = cme_min
+    px_date = ""
 
     for i in range (0, len(dirlisting)):
         p = storage_folder + "//" + dirlisting[i]
@@ -369,7 +373,11 @@ def wrapper(storage_folder, analysis_folder):
                 t = dirlisting[i].split("_")
                 posixtime = filehour_converter(t[0], t[1])
                 hr = posix2utc(posixtime, "%Y-%m-%d %H:%M")
-                text_alert(px, hr)
+                # text_alert(px, hr)
+                #  For text alerts
+                # if px >= px_max:
+                px_max = px
+                px_date =  hr
 
                 pixel_count.append(px)
                 dates.append(hr)
@@ -384,6 +392,8 @@ def wrapper(storage_folder, analysis_folder):
             msg = "Unable to load picure " + p
             log_errors(msg)
 
+    #  Creat text alert
+    text_alert(px_max, px_date)
 
     # Create line graphs of CME detections
     print(len(dates), len(pixel_count))
