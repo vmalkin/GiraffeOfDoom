@@ -1,6 +1,6 @@
 import datetime
 import time
-import urllib.request
+import re
 import requests
 import os
 import mgr_analyser
@@ -60,6 +60,24 @@ def downloadimages(listofimages, storagelocation):
             f.close()
 
 
+def get_imagelist(url_to_get):
+    headers = {'User-Agent': 'Mozilla/5.0'}
+    r = requests.get(url_to_get, headers=headers)
+    r = r.text.split("\n")
+    #  The response is now delimited on newlines. We can get rid lines to only have the HTML with the images
+    r = r[13:]
+    r = r[:-4]
+    returnlist = []
+    for line in r:
+        l1 = line.split("href=\"")
+        l2 = (l1[1])
+        l2 = l2.split("\">")
+        filename = l2[0]
+        if re.search("c3_512", filename):
+            returnlist.append(filename)
+    return returnlist
+
+
 if __name__ == "__main__":
     computation_start = time.time()
     images_folder = "images_512"
@@ -81,10 +99,9 @@ if __name__ == "__main__":
     # LASCO coronagraph
     print("Getting images for current epoch")
     baseURL = "https://soho.nascom.nasa.gov/data/REPROCESSING/Completed/" + year + "/c3/" + ymd_now + "/"
-    onlinelist = baseURL + ".full_512.lst"
-    listofimages = get_resource_from_url(onlinelist)
-    listofimages = parse_text_from_url(listofimages)
+    listofimages = get_imagelist(baseURL)
     newimages = parseimages(listofimages, storage_folder)
+
 
     if len(newimages) > 0:
         # rings the terminal bell
@@ -95,10 +112,7 @@ if __name__ == "__main__":
     print("Getting images for old epoch")
     # ymd_old = "20211002"
     baseURL = "https://soho.nascom.nasa.gov/data/REPROCESSING/Completed/" + year + "/c3/" + ymd_old + "/"
-    onlinelist = baseURL + ".full_512.lst"
-    listofimages = get_resource_from_url(onlinelist)
-    listofimages = parse_text_from_url(listofimages)
-
+    listofimages = get_imagelist(baseURL)
     newimages = parseimages(listofimages, storage_folder)
 
     if len(newimages) > 0:
@@ -112,10 +126,10 @@ if __name__ == "__main__":
     except:
         print("The Analyser has failed!")
 
-    # try:
-    mgr_enhancer.wrapper(storage_folder, images_folder)
-    # except:
-    #     print("The Enhancer has failed!")
+    try:
+        mgr_enhancer.wrapper(storage_folder, images_folder)
+    except:
+        print("The Enhancer has failed!")
 
     computation_end = time.time()
     elapsed_mins = round((computation_end - computation_start) / 60, 1)

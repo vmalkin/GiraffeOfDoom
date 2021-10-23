@@ -1,1 +1,0 @@
-<b>CME Monitor updated at  2021-10-04 09:33 UTC.</b><p>A possible CME has been detected at 2021-10-02 07:06 with 40% coverage.<br>Confirm Earth impact with STEREO A satellite data: <a href="https://stereo-ssc.nascom.nasa.gov/browse/2021/10/02/ahead/cor2_rdiff/512/thumbnail.shtml" target="_blank">Stereo Science Centre</a>
