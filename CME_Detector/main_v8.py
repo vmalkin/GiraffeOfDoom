@@ -12,14 +12,9 @@ def get_resource_from_url(url_to_get):
     try:
         headers = {'User-Agent': 'Mozilla/5.0'}
         response = requests.get(url_to_get, headers=headers)
-        # request = urllib.request.Request(url_to_get, headers={'User-Agent': 'Mozilla/5.0'})
-        # response = urllib.request.urlopen(request, timeout=10)
-
     except:
-        # logging.error("Unable to load/save image from URL: " + str(imageurl) + " " + str(filename))
         print("unable to load URL", url_to_get)
         print("Try: pip install --upgrade certifi")
-
     return response
 
 
@@ -27,16 +22,6 @@ def posix2utc(posixtime, timeformat):
     # '%Y-%m-%d %H:%M'
     utctime = datetime.datetime.utcfromtimestamp(int(posixtime)).strftime(timeformat)
     return utctime
-
-
-def parse_text_from_url(response):
-    # the response is a list of byte objects.
-    response = response.text
-    response = response.split("\n")
-    returnlist = []
-    for item in response:
-        returnlist.append(item)
-    return returnlist
 
 
 def parseimages(listofimages, imagestore):
@@ -65,8 +50,11 @@ def get_imagelist(url_to_get):
     r = requests.get(url_to_get, headers=headers)
     r = r.text.split("\n")
     #  The response is now delimited on newlines. We can get rid lines to only have the HTML with the images
+    # Remove the content above and below the table that contains images
     r = r[13:]
     r = r[:-4]
+
+    # Now split the lines around image file names. Return only the ones 512 in size
     returnlist = []
     for line in r:
         l1 = line.split("href=\"")

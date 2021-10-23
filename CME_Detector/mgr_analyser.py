@@ -379,10 +379,12 @@ def wrapper(storage_folder, analysis_folder):
                 posixtime = filehour_converter(t[0], t[1])
                 hr = posix2utc(posixtime, "%Y-%m-%d %H:%M")
                 # text_alert(px, hr)
-                #  For text alerts
-                # if px >= px_max:
-                px_max = px
-                px_date =  hr
+
+                #  For text alerts, CME in the last day
+                if px >= px_max:
+                    if posixtime > (time.time() - 86400):
+                        px_max = px
+                        px_date =  hr
 
                 pixel_count.append(px)
                 dates.append(hr)
