@@ -186,6 +186,7 @@ def plot_graph(data):
                       title="GPS variations (decimal part)",
                       showlegend=False, plot_bgcolor="#a0a0a0", paper_bgcolor="#a0a0a0")
 
+    fig.write_image(file="gps_variance_now.jpg", format="jpg")
     fig.write_image(file=filename, format="jpg")
     # fig.show()
 
