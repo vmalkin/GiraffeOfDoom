@@ -399,7 +399,7 @@ def wrapper(storage_folder, analysis_folder):
             msg = "Unable to load picure " + p
             log_errors(msg)
 
-    #  Creat text alert
+    # #  Creat text alert
     text_alert(px_max, px_date)
 
     # Create line graphs of CME detections
