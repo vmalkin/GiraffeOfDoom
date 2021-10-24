@@ -182,7 +182,7 @@ def plot_graph(data):
 
     fig.update_xaxes(nticks=30, tickangle=45)
     fig.update_layout(font=dict(size=20), title_font_size=21)
-    fig.update_layout(width=4000, height=1000,
+    fig.update_layout(width=4000, height=2000,
                       title="GPS variations (decimal part)",
                       showlegend=False, plot_bgcolor="#a0a0a0", paper_bgcolor="#a0a0a0")
 
