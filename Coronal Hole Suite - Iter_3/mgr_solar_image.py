@@ -30,7 +30,6 @@ class SolarImageProcessor:
     def __init__(self):
         self.coverage = 0
 
-
     # ##############
     # M E T H O D S
     # ##############
@@ -93,7 +92,12 @@ class SolarImageProcessor:
         mask = np.zeros(image.shape[:2], dtype="float32")
         dimensions = mask.shape
         width = dimensions[1]
-
+        centre_x = int(width / 2)
+        centre_y = int(width / 2)
+        axis_long = int(width * 0.4)
+        axis_short = int(width * 0.1)
+        cv2.ellipse(mask, (centre_x, centre_x), (axis_short, axis_long), 0, 0, 360, (255, 255, 255), -1)
+        return mask
 
     def _make_dynmask_full(self, image, imagesize):
         mask = np.zeros(image.shape[:2], dtype="float32")
@@ -103,11 +107,6 @@ class SolarImageProcessor:
         centre_x = int(width / 2)
         centre_y = int(width / 2)
         cv2.circle(mask, (centre_x, centre_y), radius, (255,255,255), -1)
-        #
-        #
-        # cv2.imshow("test", mask)
-        # cv2.waitKey(0)
-        # cv2.destroyAllWindows()
         return mask
 
 
@@ -145,74 +144,81 @@ class SolarImageProcessor:
             logging.debug("Unable to get syntopic map from NOAA")
             common_data.report_string = common_data.report_string + "Unable to get syntopic map from NOAA.\n"
 
-        # try:
-        # self._save_image_from_url("https://sdo.gsfc.nasa.gov/assets/img/latest/latest_512_0193.jpg", "sun.jpg")
-        # self._save_image_from_url("https://services.swpc.noaa.gov/images/suvi-primary-195.png", "sun.jpg")
-        self._save_image_from_url("https://services.swpc.noaa.gov/images/animations/suvi/primary/195/latest.png", "sun.jpg")
-
-        img = self._image_read('sun.jpg')
-
-
-        # current UTC time
-        # nowtime_utc = get_utc_time()
-        # nowtime_posix = get_posix_time()
-
-        # when saved in paint, a 16bit bmp seems ok
-        # # SDO masks
-        # mask_full = self._make_mask('mask_full.bmp')
-        # mask_segment = self._make_mask('mask_meridian.bmp')
-        # GOES masks
-        mask_full = self._make_mask('mask_full_goes.bmp')
-        mask_segment = self._make_mask('mask_meridian_goes.bmp')
-
-        mask_full = self._make_dynmask_full(img, 512)
-        mask_segment = self._make_dynmask_segment(img, 512)
-
-        # # print mask parameters for debugging purposes.
-        # print(str(mask_full.dtype) + " " + str(mask_full.shape))
-        # print(str(mask_segment.dtype) + " " + str(mask_segment.shape))
-
-        # Process the image to get B+W coronal hole image
-        outputimg = self._greyscale_img(img)
-        outputimg = self._threshold_img(outputimg)
-        outputimg = self._erode_dilate_img(outputimg)
-
-        # save out the masked images
-
-        # Full disk image
-        outputimg1 = self._mask_img(outputimg, mask_full)
-
-        # HERE we need to calculate the latitude of black pixels and account for dimishing effects cause by
-        # increased latitude
-
-        # Start grabbing all processed images and save as jpg
-        self._add_img_logo(outputimg1)
         try:
-            time_now = str(datetime.datetime.utcnow().strftime("%Y_%m_%d_%H_%M"))
-            filename = "sun_jpegs/" + time_now + ".jpg"
-            # filename = "sun_jpegs/" + str(int(time.time())) + ".jpg"
-            self._image_write(filename, outputimg1)
+            # self._save_image_from_url("https://sdo.gsfc.nasa.gov/assets/img/latest/latest_512_0193.jpg", "sun.jpg")
+            # self._save_image_from_url("https://services.swpc.noaa.gov/images/suvi-primary-195.png", "sun.jpg")
+            self._save_image_from_url("https://services.swpc.noaa.gov/images/animations/suvi/primary/195/latest.png", "sun.jpg")
+
+            img = self._image_read('sun.jpg')
+
+
+            # current UTC time
+            # nowtime_utc = get_utc_time()
+            # nowtime_posix = get_posix_time()
+
+            # when saved in paint, a 16bit bmp seems ok
+            # # SDO masks
+            # mask_full = self._make_mask('mask_full.bmp')
+            # mask_segment = self._make_mask('mask_meridian.bmp')
+            # GOES masks
+            mask_full = self._make_mask('mask_full_goes.bmp')
+            mask_segment = self._make_mask('mask_meridian_goes.bmp')
+
+            mask_full = self._make_dynmask_full(img, 512)
+            mask_segment = self._make_dynmask_segment(img, 512)
+
+            # # print mask parameters for debugging purposes.
+            # print(str(mask_full.dtype) + " " + str(mask_full.shape))
+            # print(str(mask_segment.dtype) + " " + str(mask_segment.shape))
+
+            # Process the image to get B+W coronal hole image
+            outputimg = self._greyscale_img(img)
+            outputimg = self._threshold_img(outputimg)
+            outputimg = self._erode_dilate_img(outputimg)
+
+            # save out the masked images
+
+            # Full disk image
+            outputimg1 = self._mask_img(outputimg, mask_full)
+            # cv2.imshow("test", mask)
+            # cv2.waitKey(0)
+            # cv2.destroyAllWindows()
+
+            # HERE we need to calculate the latitude of black pixels and account for dimishing effects cause by
+            # increased latitude
+
+            # Start grabbing all processed images and save as jpg
+            self._add_img_logo(outputimg1)
+            try:
+                time_now = str(datetime.datetime.utcnow().strftime("%Y_%m_%d_%H_%M"))
+                filename = "sun_jpegs/" + time_now + ".jpg"
+                # filename = "sun_jpegs/" + str(int(time.time())) + ".jpg"
+                self._image_write(filename, outputimg1)
+            except:
+                logging.error("Unable to process running solar image in JPG folder")
+                print("Unable to process running solar image in JPG folder")
+
+            self._image_write('disc_full.bmp', outputimg1)
+
+            # Meridian Segment
+            outputimg2 = self._mask_img(outputimg, mask_segment)
+            # cv2.imshow("test", mask)
+            # cv2.waitKey(0)
+            # cv2.destroyAllWindows()
+            
+            self._image_write('disc_segment.bmp', outputimg2)
+
+            # Calculate the area occupied by coronal holes
+            self.coverage = self._count_pixels(outputimg2, mask_segment)
+
+            # It is extremely unlikely that we will ever get 100% coronal hole coverage on the meridian
+            # Most ikely it is a glitched image from SDO - so we get less statistical grief if we reset the value
+            # to a zero.
+            if self.coverage == 1:
+                self.coverage = 0
+
         except:
-            logging.error("Unable to process running solar image in JPG folder")
-            print("Unable to process running solar image in JPG folder")
-
-        self._image_write('disc_full.bmp', outputimg1)
-
-        # Meridian Segment
-        outputimg2 = self._mask_img(outputimg, mask_segment)
-        self._image_write('disc_segment.bmp', outputimg2)
-
-        # Calculate the area occupied by coronal holes
-        self.coverage = self._count_pixels(outputimg2, mask_segment)
-
-        # It is extremely unlikely that we will ever get 100% coronal hole coverage on the meridian
-        # Most ikely it is a glitched image from SDO - so we get less statistical grief if we reset the value
-        # to a zero.
-        if self.coverage == 1:
+            logging.error("Unable to process SDO image")
+            common_data.report_string = common_data.report_string + "Unable to calculate coronal hole coverage.\n"
             self.coverage = 0
-
-        # except:
-        #     logging.error("Unable to process SDO image")
-        #     common_data.report_string = common_data.report_string + "Unable to calculate coronal hole coverage.\n"
-        #     self.coverage = 0
 
