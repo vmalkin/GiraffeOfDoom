@@ -378,7 +378,7 @@ def wrapper(storage_folder, analysis_folder):
                 t = dirlisting[i].split("_")
                 posixtime = filehour_converter(t[0], t[1])
                 hr = posix2utc(posixtime, "%Y-%m-%d %H:%M")
-                # text_alert(px, hr)
+                text_alert(px, hr)
 
                 #  For text alerts, CME in the last day
                 if px >= px_max:
@@ -400,7 +400,7 @@ def wrapper(storage_folder, analysis_folder):
             log_errors(msg)
 
     # #  Creat text alert
-    text_alert(px_max, px_date)
+    # text_alert(px_max, px_date)
 
     # Create line graphs of CME detections
     print(len(dates), len(pixel_count))
