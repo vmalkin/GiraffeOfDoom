@@ -169,8 +169,9 @@ def text_alert(px, hr):
     stereo_url = "<a href=\"" + url + "\" target=\"_blank\">" + "Stereo Science Centre</a>"
     savefile = "cme_alert.php"
 
-    heading = "<b>CME Monitor updated at " + posix2utc(time.time(), " %Y-%m-%d %H:%M") + " UTC.</b><p>"
-    msg = ""
+    heading = "<b>CME Monitor updated at " + posix2utc(time.time(), " %Y-%m-%d %H:%M") + " UTC.</b>" \
+                "<p>Most significant event in the last 24 hours:"
+    msg = "No Significant Activity"
     if px >= cme_min:
         msg = "A possible CME has been detected at " + timestring +  " with " + str(int(px * 100)) + "% coverage."
         if px >= cme_partial:
@@ -358,15 +359,16 @@ def wrapper(storage_folder, analysis_folder):
                 detrended_img = cv2.subtract(pic, avg_img)
                 ret, detrended_img = cv2.threshold(detrended_img, 3, 255, cv2.THRESH_BINARY)
 
-                #  convolved the returned residuals image from polar to rectangular co-ords. the data is appended to
+                #  convolve the returned residuals image from polar to rectangular co-ords. the data is appended to
                 #  an array
                 radius = 220
                 angle = 360
                 t = []
-                for dist in range(radius, 0, -1):
-                    for angle in range(0, angle):
-                        coords = polar_to_rectangular(angle, dist)
-                        t.append(detrended_img[coords[1], coords[0]])
+                for j in range(radius, 0, -1):
+                    for k in range(0, angle):
+                        coords = polar_to_rectangular(k, j)
+                        pixelvalue = detrended_img[coords[1], coords[0]]
+                        t.append(pixelvalue)
 
                 # Convert the 1D array into a 2D image
                 array = np.reshape(np.array(t), (radius, angle))
