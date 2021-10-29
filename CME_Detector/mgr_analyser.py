@@ -330,7 +330,7 @@ def wrapper(storage_folder, analysis_folder):
     pixel_count = []
     dates = []
     px_max = cme_min
-    px_date = ""
+    px_date = (time.time() - 86400)
 
     for i in range (0, len(dirlisting)):
         p = storage_folder + "//" + dirlisting[i]
@@ -342,13 +342,15 @@ def wrapper(storage_folder, analysis_folder):
         if img is not None:
             img_g = greyscale_img(img)
             kernel1 = np.ones((3, 3), np.uint8)
-
+            # Create an array of pictures with which to create an average
+            # that is isued to compare individual images, essentiall a 3D version
+            #  of finding the residual.
             # Pic is used for comparisons and must be float64
             pic = cv2.erode(img_g, kernel1, iterations=1)
             pic = np.array(pic, np.float64)
             avg_array.append(pic)
 
-            # 100 images is about a day
+            # 100 images is about a day. Start comparing individual images against an "average" image
             if len(avg_array) >= 100:
                 # ALWAYS POP
                 avg_array.pop(0)
@@ -356,16 +358,20 @@ def wrapper(storage_folder, analysis_folder):
                 detrended_img = cv2.subtract(pic, avg_img)
                 ret, detrended_img = cv2.threshold(detrended_img, 3, 255, cv2.THRESH_BINARY)
 
-                dst = 220
-                ang = 360
+                #  convolved the returned residuals image from polar to rectangular co-ords. the data is appended to
+                #  an array
+                radius = 220
+                angle = 360
                 t = []
-                for dist in range(dst, 0, -1):
-                    for angle in range(0, ang):
+                for dist in range(radius, 0, -1):
+                    for angle in range(0, angle):
                         coords = polar_to_rectangular(angle, dist)
                         t.append(detrended_img[coords[1], coords[0]])
 
-                array = np.reshape(np.array(t), (dst, ang))
-                mask = create_mask(array, ang, dst, 40, 50)
+                # Convert the 1D array into a 2D image
+                array = np.reshape(np.array(t), (radius, angle))
+                #  Just crops the image
+                mask = create_mask(array, angle, radius, 40, 50)
                 masked = cv2.bitwise_and(array, mask)
 
                 # Pixelcounter to create graphic pf CMEs
@@ -378,7 +384,7 @@ def wrapper(storage_folder, analysis_folder):
                 t = dirlisting[i].split("_")
                 posixtime = filehour_converter(t[0], t[1])
                 hr = posix2utc(posixtime, "%Y-%m-%d %H:%M")
-                text_alert(px, hr)
+                # text_alert(px, hr)
 
                 #  For text alerts, CME in the last day
                 if px >= px_max:
@@ -389,7 +395,7 @@ def wrapper(storage_folder, analysis_folder):
                 pixel_count.append(px)
                 dates.append(hr)
                 # Annotate image for display
-                array = annotate_image(array, ang, dst, hr)
+                array = annotate_image(array, angle, radius, hr)
 
                 f_image = analysis_folder + "//" + "dt_" + dirlisting[i]
                 image_save(f_image, array)
@@ -400,7 +406,7 @@ def wrapper(storage_folder, analysis_folder):
             log_errors(msg)
 
     # #  Creat text alert
-    # text_alert(px_max, px_date)
+    text_alert(px_max, px_date)
 
     # Create line graphs of CME detections
     print(len(dates), len(pixel_count))
