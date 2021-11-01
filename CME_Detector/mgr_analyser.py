@@ -331,7 +331,7 @@ def wrapper(storage_folder, analysis_folder):
     pixel_count = []
     dates = []
     px_max = cme_min
-    px_date = (time.time() - 86400)
+    px_date = posix2utc((time.time() - 86400), "%Y-%m-%d %H:%M")
 
     for i in range (0, len(dirlisting)):
         p = storage_folder + "//" + dirlisting[i]
