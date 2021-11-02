@@ -169,15 +169,14 @@ def text_alert(px, hr):
     stereo_url = "<a href=\"" + url + "\" target=\"_blank\">" + "Stereo Science Centre</a>"
     savefile = "cme_alert.php"
 
-    heading = "<b>CME Monitor updated at " + posix2utc(time.time(), " %Y-%m-%d %H:%M") + " UTC.</b>" \
-                "<p>Most significant event in the last 24 hours:"
-    msg = "No Significant Activity"
+    heading = "<b>CME Monitor updated at " + posix2utc(time.time(), " %Y-%m-%d %H:%M") + " UTC.</b>"
+    msg = "<p>No significant activity detected in the last 24 hours."
     if px >= cme_min:
-        msg = "A possible CME has been detected at " + timestring +  " with " + str(int(px * 100)) + "% coverage."
+        msg = "<p>A possible CME has been detected at " + timestring +  " with " + str(int(px * 100)) + "% coverage."
         if px >= cme_partial:
-            msg = "Warning: A possible PARTIAL HALO CME has been detected  at " + timestring +  " with " + str(int(px * 100)) + "% coverage."
+            msg = "<p>Warning: A possible PARTIAL HALO CME has been detected  at " + timestring +  " with " + str(int(px * 100)) + "% coverage."
             if px >= cme_halo:
-                msg = "ALERT: A possible FULL HALO CME has been detected at " + timestring +  " with " + str(int(px * 100)) + "% coverage."
+                msg = "<p>ALERT: A possible FULL HALO CME has been detected at " + timestring +  " with " + str(int(px * 100)) + "% coverage."
 
     if len(msg) > 0:
         msg = msg + "<br>Confirm Earth impact with STEREO A satellite data: " + stereo_url
