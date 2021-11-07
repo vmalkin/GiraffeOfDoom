@@ -160,6 +160,7 @@ def annotate_image(array, width, height, timevalue):
 
 def text_alert(px, hr):
     # %Y-%m-%d %H:%M
+    cme_detect = False
     timestring = hr
     hr = hr.split(" ")
     hr = hr[0]
@@ -171,14 +172,16 @@ def text_alert(px, hr):
     msg = "<p>No significant activity detected in the last 24 hours."
     heading = "<b>CME Monitor updated at " + posix2utc(time.time(), " %Y-%m-%d %H:%M") + " UTC.</b>"
     if px > cme_min:
-        print(px, timestring)
+        cme_detect = True
         msg = "<p>A possible CME has been detected at " + timestring +  " with " + str(int(px * 100)) + "% coverage."
         if px >= cme_partial:
+            cme_detect = True
             msg = "<p>Warning: A possible PARTIAL HALO CME has been detected  at " + timestring +  " with " + str(int(px * 100)) + "% coverage."
             if px >= cme_halo:
+                cme_detect = True
                 msg = "<p>ALERT: A possible FULL HALO CME has been detected at " + timestring +  " with " + str(int(px * 100)) + "% coverage."
 
-    if len(msg) > 0:
+    if cme_detect == True:
         msg = msg + "<br>Confirm Earth impact with STEREO A satellite data: " + stereo_url
 
     msg_alert = heading + msg
