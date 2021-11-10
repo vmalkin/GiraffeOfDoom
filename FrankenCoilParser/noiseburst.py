@@ -55,18 +55,23 @@ if __name__ == "__main__":
     for i in range(1, len(raw_datalist)):
         # The new row to be appended to the refined data
         dp = []
-        date = raw_datalist[i][0]
-        dp.append(date)
-        # recursive smooth the data and build up the datapoint
-        for j in range(1, len(raw_datalist[i])):
-            x_now = raw_datalist[i][j]
-            smoothed_prev = refined_datalist[i-1][j]
-            print(x_now, smoothed_prev)
-            d = recursive_smooth(x_now, smoothed_prev)
-            dp.append(d)
-        #append the smoothed data
-        refined_datalist.append(dp)
+        data_r = raw_datalist[i].strip("\n")
+        data_s = refined_datalist[i - 1].strip("\n")
+        data_r = data_r.split(",")
+        data_s = data_s.split(",")
 
+        # recursive smooth the data and build up the datapoint
+        for length in range(0, len(raw_datalist[i])):
+            if length == 0:
+                dp.append(data_r[0])
+            else:
+                x_now = data_r[length]
+                smoothed_prev = data_s[length]
+                print(x_now, smoothed_prev)
+                d = recursive_smooth(x_now, smoothed_prev)
+                dp.append(d)
+        # append the smoothed data
+        refined_datalist.append(dp)
 
     # create the display file for upload to DunedinAurora.NZ
     #  Smooth the data
