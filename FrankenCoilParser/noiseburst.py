@@ -74,11 +74,11 @@ if __name__ == "__main__":
 
         # append the smoothed data
         refined_datalist.append(dp)
-
+    refined_datalist.pop(0)
     # create the display file for upload to DunedinAurora.NZ
     #  Smooth the data
     with open(graphing_file, "w") as g:
-        g.write("UTC Datetime,125hz,240hz,410hz,760hz,1800hz,4300hz,9000hz \n")
+        g.write("UTC Datetime,125hz,240hz,410hz,760hz,1800hz,4300hz,9000hz\n")
         for line in refined_datalist:
             d = line[0]
             for i in range(1, len(line)):
