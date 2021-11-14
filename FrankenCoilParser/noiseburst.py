@@ -75,6 +75,7 @@ if __name__ == "__main__":
         # append the smoothed data
         refined_datalist.append(dp)
     refined_datalist.pop(0)
+    refined_datalist.pop(0)
     # create the display file for upload to DunedinAurora.NZ
     #  Smooth the data
     with open(graphing_file, "w") as g:
