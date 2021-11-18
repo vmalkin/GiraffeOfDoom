@@ -26,6 +26,7 @@ logging.basicConfig(filename="errors.log", format='%(asctime)s %(message)s', lev
 
 getcontext().prec = 6
 
+
 class SolarImageProcessor:
     def __init__(self):
         self.coverage = 0
@@ -49,7 +50,7 @@ class SolarImageProcessor:
         hist = cv2.calcHist([image_to_process], [0], None, [256], [0, 256])
         print(hist)
 
-    def _greyscale_img(self, image_to_process):
+    def _greyscale_img(image_to_process):
         # converting an Image to grey scale...
         greyimg = cv2.cvtColor(image_to_process, cv2.COLOR_BGR2GRAY)
         return greyimg
@@ -63,17 +64,17 @@ class SolarImageProcessor:
         return outputimg
 
     def _erode_dilate_img(self, image_to_process):
-       # Erode and Dilate the image to clear up noise
+        # Erode and Dilate the image to clear up noise
         # Erosion will trim away pixels (noise)
         # dilation puffs out edges
-        kernel = np.ones((5,5),np.uint8)
-        outputimg = cv2.erode(image_to_process,kernel,iterations = 2)
-        outputimg = cv2.dilate(outputimg,kernel,iterations = 1)
+        kernel = np.ones((5, 5), np.uint8)
+        outputimg = cv2.erode(image_to_process, kernel, iterations=2)
+        outputimg = cv2.dilate(outputimg, kernel, iterations=1)
         return outputimg
 
     def _mask_img(self, image_to_process, maskname):
         # Mask off the blowout due to the corona
-        outputimg = cv2.bitwise_and(image_to_process, image_to_process, mask = maskname)
+        outputimg = cv2.bitwise_and(image_to_process, image_to_process, mask=maskname)
         return outputimg
 
     def _count_pixels(self, part_img, whole_img):
@@ -94,8 +95,8 @@ class SolarImageProcessor:
         width = dimensions[1]
         centre_x = int(width / 2)
         centre_y = int(width / 2)
-        axis_long = int(width /2 * 0.6)
-        axis_short = int(width /2 * 0.1)
+        axis_long = int(width / 2 * 0.6)
+        axis_short = int(width / 2 * 0.1)
         cv2.ellipse(mask, (centre_x, centre_x), (axis_short, axis_long), 0, 0, 360, (255, 255, 255), -1)
         return mask
 
@@ -106,9 +107,8 @@ class SolarImageProcessor:
         radius = int(width / 2 * 0.6)
         centre_x = int(width / 2)
         centre_y = int(width / 2)
-        cv2.circle(mask, (centre_x, centre_y), radius, (255,255,255), -1)
+        cv2.circle(mask, (centre_x, centre_y), radius, (255, 255, 255), -1)
         return mask
-
 
     def _add_img_logo(self, image_name):
         label = 'DunedinAurora.NZ Coronal Hole Map'
@@ -117,11 +117,14 @@ class SolarImageProcessor:
         # cv2.putText(image_name, label, (10,482), cv2.FONT_HERSHEY_SIMPLEX, 0.5,(250,250,250), 1 );
         # cv2.putText(image_name, label2, (10,498), cv2.FONT_HERSHEY_SIMPLEX, 0.5,(250,250,250), 1 );
         # GOES
-        cv2.putText(image_name, label, (10,40), cv2.FONT_HERSHEY_SIMPLEX, 1,(250,250,250), 2 );
-        cv2.putText(image_name, label2, (10,90), cv2.FONT_HERSHEY_SIMPLEX, 1,(250,250,250), 2 );
+        cv2.putText(image_name, label, (10, 40), cv2.FONT_HERSHEY_SIMPLEX, 1, (250, 250, 250), 2);
+        cv2.putText(image_name, label2, (10, 90), cv2.FONT_HERSHEY_SIMPLEX, 1, (250, 250, 250), 2);
 
         # cv2.imwrite('disc_full.bmp', image_name)
         return image_name
+
+    def _add_ref_lines(self, outputimg1):
+        pass
 
     def _save_image_from_url(self, imageurl, filename):
         logging.debug("starting image from URL download: " + filename)
@@ -132,7 +135,6 @@ class SolarImageProcessor:
                 f.write(response.read())
         except urllib.request.HTTPError:
             logging.error("Unable to load/save image from URL: " + str(imageurl) + " " + str(filename))
-
 
     # ################################
     # W R A P P E R   F U N C T I O N
@@ -147,7 +149,8 @@ class SolarImageProcessor:
         try:
             # self._save_image_from_url("https://sdo.gsfc.nasa.gov/assets/img/latest/latest_512_0193.jpg", "sun.jpg")
             # self._save_image_from_url("https://services.swpc.noaa.gov/images/suvi-primary-195.png", "sun.jpg")
-            self._save_image_from_url("https://services.swpc.noaa.gov/images/animations/suvi/primary/195/latest.png", "sun.jpg")
+            self._save_image_from_url("https://services.swpc.noaa.gov/images/animations/suvi/primary/195/latest.png",
+                                      "sun.jpg")
             img = self._image_read('sun.jpg')
 
             mask_full = self._make_dynmask_full(img)
@@ -163,6 +166,8 @@ class SolarImageProcessor:
 
             # Start grabbing all processed images and save as jpg
             self._add_img_logo(outputimg1)
+            self._add_ref_lines(outputimg1)
+
             try:
                 time_now = str(datetime.datetime.utcnow().strftime("%Y_%m_%d_%H_%M"))
                 filename = "sun_jpegs/" + time_now + ".jpg"
@@ -192,4 +197,3 @@ class SolarImageProcessor:
             logging.error("Unable to process SDO image")
             common_data.report_string = common_data.report_string + "Unable to calculate coronal hole coverage.\n"
             self.coverage = 0
-
