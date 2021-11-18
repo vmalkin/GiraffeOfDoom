@@ -123,8 +123,14 @@ class SolarImageProcessor:
         # cv2.imwrite('disc_full.bmp', image_name)
         return image_name
 
-    def _add_ref_lines(self, outputimg1):
-        pass
+    def _add_ref_lines(self, image):
+        img = np.zeros(image.shape[:2], dtype="uint8")
+        dimensions = img.shape
+        width = dimensions[1]
+        centre_x = int(width / 2)
+        axis_long = int(width / 2 * 0.6)
+        axis_short = int(width / 2 * 0.1)
+        cv2.ellipse(img, (centre_x, centre_x), (axis_short, axis_long), 0, 0, 360, (255, 0, 0), 1)
 
     def _save_image_from_url(self, imageurl, filename):
         logging.debug("starting image from URL download: " + filename)
@@ -165,7 +171,7 @@ class SolarImageProcessor:
             outputimg1 = self._mask_img(outputimg, mask_full)
 
             # Start grabbing all processed images and save as jpg
-            self._add_img_logo(outputimg1)
+            # self._add_img_logo(outputimg1)
             self._add_ref_lines(outputimg1)
 
             try:
