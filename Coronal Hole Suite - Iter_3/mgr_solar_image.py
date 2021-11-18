@@ -50,7 +50,7 @@ class SolarImageProcessor:
         hist = cv2.calcHist([image_to_process], [0], None, [256], [0, 256])
         print(hist)
 
-    def _greyscale_img(image_to_process):
+    def _greyscale_img(self, image_to_process):
         # converting an Image to grey scale...
         greyimg = cv2.cvtColor(image_to_process, cv2.COLOR_BGR2GRAY)
         return greyimg
@@ -124,13 +124,19 @@ class SolarImageProcessor:
         return image_name
 
     def _add_ref_lines(self, image):
-        img = np.zeros(image.shape[:2], dtype="uint8")
-        dimensions = img.shape
+        band = 180
+        image = cv2.cvtColor(image, cv2.COLOR_GRAY2BGR)
+        dimensions = image.shape
         width = dimensions[1]
+        radius = int(width / 2 * 0.53)
         centre_x = int(width / 2)
         axis_long = int(width / 2 * 0.6)
         axis_short = int(width / 2 * 0.1)
-        cv2.ellipse(img, (centre_x, centre_x), (axis_short, axis_long), 0, 0, 360, (255, 0, 0), 1)
+        cv2.ellipse(image, (centre_x, centre_x), (axis_short, axis_long), 0, 0, 360, (0, 124, 255), 3)
+        cv2.line(image, (centre_x - radius, centre_x - band), (centre_x + radius, centre_x - band), (0, 124, 255), thickness=3)
+        cv2.line(image, (centre_x - radius, centre_x + band), (centre_x + radius, centre_x + band), (0, 124, 255), thickness=3)
+
+        return image
 
     def _save_image_from_url(self, imageurl, filename):
         logging.debug("starting image from URL download: " + filename)
@@ -155,24 +161,24 @@ class SolarImageProcessor:
         try:
             # self._save_image_from_url("https://sdo.gsfc.nasa.gov/assets/img/latest/latest_512_0193.jpg", "sun.jpg")
             # self._save_image_from_url("https://services.swpc.noaa.gov/images/suvi-primary-195.png", "sun.jpg")
-            self._save_image_from_url("https://services.swpc.noaa.gov/images/animations/suvi/primary/195/latest.png",
-                                      "sun.jpg")
+            self._save_image_from_url("https://services.swpc.noaa.gov/images/animations/suvi/primary/195/latest.png","sun.jpg")
             img = self._image_read('sun.jpg')
-
-            mask_full = self._make_dynmask_full(img)
-            mask_segment = self._make_dynmask_segment(img)
 
             # Process the image to get B+W coronal hole image
             outputimg = self._greyscale_img(img)
             outputimg = self._threshold_img(outputimg)
             outputimg = self._erode_dilate_img(outputimg)
 
+            mask_full = self._make_dynmask_full(img)
+            mask_segment = self._make_dynmask_segment(img)
+
             # Full disk image
             outputimg1 = self._mask_img(outputimg, mask_full)
 
+
             # Start grabbing all processed images and save as jpg
-            # self._add_img_logo(outputimg1)
-            self._add_ref_lines(outputimg1)
+            outputimg1 = self._add_img_logo(outputimg1)
+            outputimg1 = self._add_ref_lines(outputimg1)
 
             try:
                 time_now = str(datetime.datetime.utcnow().strftime("%Y_%m_%d_%H_%M"))
