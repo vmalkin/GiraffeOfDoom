@@ -51,6 +51,7 @@ def get_imagelist(url_to_get):
     r = r.text.split("\n")
     #  The response is now delimited on newlines. We can get rid lines to only have the HTML with the images
     # Remove the content above and below the table that contains images
+
     r = r[13:]
     r = r[:-4]
 
@@ -58,11 +59,13 @@ def get_imagelist(url_to_get):
     returnlist = []
     for line in r:
         l1 = line.split("href=\"")
-        l2 = (l1[1])
-        l2 = l2.split("\">")
-        filename = l2[0]
-        if re.search("c3_512", filename):
-            returnlist.append(filename)
+        if len(l1) == 2:
+            l2 = (l1[1])
+            l2 = l2.split("\"")
+            filename = l2[0]
+            if re.search("c3_512", filename):
+                returnlist.append(filename)
+
     return returnlist
 
 
