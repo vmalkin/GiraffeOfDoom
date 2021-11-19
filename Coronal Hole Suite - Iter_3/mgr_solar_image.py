@@ -124,17 +124,34 @@ class SolarImageProcessor:
         return image_name
 
     def _add_ref_lines(self, image):
-        band = 180
         image = cv2.cvtColor(image, cv2.COLOR_GRAY2BGR)
         dimensions = image.shape
         width = dimensions[1]
-        radius = int(width / 2 * 0.53)
+
+        band1 = 100
+        band2 = int(band1 * 2.1)
+        radius1 = int(width * 0.0461)
+        radius2 = int(width * 0.0428)
+
         centre_x = int(width / 2)
+
+        cv2.line(image, (centre_x - radius2, centre_x + band2), (centre_x + radius2, centre_x + band2), (0, 124, 255), thickness=4)
+        cv2.line(image, (centre_x - radius1, centre_x + band1), (centre_x + radius1, centre_x + band1), (0, 0, 255), thickness=6)
+        cv2.line(image, (centre_x - radius1, centre_x - band1), (centre_x + radius1, centre_x - band1), (0, 0, 255), thickness=6)
+        cv2.line(image, (centre_x - radius2, centre_x - band2), (centre_x + radius2, centre_x - band2), (0, 124, 255), thickness=4)
+
         axis_long = int(width / 2 * 0.6)
         axis_short = int(width / 2 * 0.1)
         cv2.ellipse(image, (centre_x, centre_x), (axis_short, axis_long), 0, 0, 360, (0, 124, 255), 3)
-        cv2.line(image, (centre_x - radius, centre_x - band), (centre_x + radius, centre_x - band), (0, 124, 255), thickness=3)
-        cv2.line(image, (centre_x - radius, centre_x + band), (centre_x + radius, centre_x + band), (0, 124, 255), thickness=3)
+
+        font = cv2.FONT_HERSHEY_SIMPLEX
+        font_size = 1
+        font_thickness = 2
+        cv2.putText(image, "Strong Effect", (centre_x - 100, centre_x), font, font_size, (0, 0, 255), font_thickness, cv2.LINE_AA)
+        cv2.putText(image, "Mild Effect", (centre_x - 100, centre_x - band1 - 10), font, font_size, (0, 124, 255), font_thickness, cv2.LINE_AA)
+        cv2.putText(image, "Weak Effect", (centre_x - 100, centre_x - band2 - 10), font, font_size, (0, 124, 0), font_thickness, cv2.LINE_AA)
+
+
 
         return image
 
@@ -158,54 +175,54 @@ class SolarImageProcessor:
             logging.debug("Unable to get syntopic map from NOAA")
             common_data.report_string = common_data.report_string + "Unable to get syntopic map from NOAA.\n"
 
+        # try:
+        # self._save_image_from_url("https://sdo.gsfc.nasa.gov/assets/img/latest/latest_512_0193.jpg", "sun.jpg")
+        # self._save_image_from_url("https://services.swpc.noaa.gov/images/suvi-primary-195.png", "sun.jpg")
+        self._save_image_from_url("https://services.swpc.noaa.gov/images/animations/suvi/primary/195/latest.png","sun.jpg")
+        img = self._image_read('sun.jpg')
+
+        # Process the image to get B+W coronal hole image
+        outputimg = self._greyscale_img(img)
+        outputimg = self._threshold_img(outputimg)
+        outputimg = self._erode_dilate_img(outputimg)
+
+        mask_full = self._make_dynmask_full(img)
+        mask_segment = self._make_dynmask_segment(img)
+
+        # Full disk image
+        outputimg1 = self._mask_img(outputimg, mask_full)
+
+
+        # Start grabbing all processed images and save as jpg
+        outputimg1 = self._add_img_logo(outputimg1)
+        outputimg1 = self._add_ref_lines(outputimg1)
+
         try:
-            # self._save_image_from_url("https://sdo.gsfc.nasa.gov/assets/img/latest/latest_512_0193.jpg", "sun.jpg")
-            # self._save_image_from_url("https://services.swpc.noaa.gov/images/suvi-primary-195.png", "sun.jpg")
-            self._save_image_from_url("https://services.swpc.noaa.gov/images/animations/suvi/primary/195/latest.png","sun.jpg")
-            img = self._image_read('sun.jpg')
-
-            # Process the image to get B+W coronal hole image
-            outputimg = self._greyscale_img(img)
-            outputimg = self._threshold_img(outputimg)
-            outputimg = self._erode_dilate_img(outputimg)
-
-            mask_full = self._make_dynmask_full(img)
-            mask_segment = self._make_dynmask_segment(img)
-
-            # Full disk image
-            outputimg1 = self._mask_img(outputimg, mask_full)
-
-
-            # Start grabbing all processed images and save as jpg
-            outputimg1 = self._add_img_logo(outputimg1)
-            outputimg1 = self._add_ref_lines(outputimg1)
-
-            try:
-                time_now = str(datetime.datetime.utcnow().strftime("%Y_%m_%d_%H_%M"))
-                filename = "sun_jpegs/" + time_now + ".jpg"
-                # filename = "sun_jpegs/" + str(int(time.time())) + ".jpg"
-                self._image_write(filename, outputimg1)
-            except:
-                logging.error("Unable to process running solar image in JPG folder")
-                print("Unable to process running solar image in JPG folder")
-
-            self._image_write('disc_full.bmp', outputimg1)
-
-            # Meridian Segment
-            outputimg2 = self._mask_img(outputimg, mask_segment)
-
-            self._image_write('disc_segment.bmp', outputimg2)
-
-            # Calculate the area occupied by coronal holes
-            self.coverage = self._count_pixels(outputimg2, mask_segment)
-
-            # It is extremely unlikely that we will ever get 100% coronal hole coverage on the meridian
-            # Most ikely it is a glitched image from SDO - so we get less statistical grief if we reset the value
-            # to a zero.
-            if self.coverage == 1:
-                self.coverage = 0
-
+            time_now = str(datetime.datetime.utcnow().strftime("%Y_%m_%d_%H_%M"))
+            filename = "sun_jpegs/" + time_now + ".jpg"
+            # filename = "sun_jpegs/" + str(int(time.time())) + ".jpg"
+            self._image_write(filename, outputimg1)
         except:
-            logging.error("Unable to process SDO image")
-            common_data.report_string = common_data.report_string + "Unable to calculate coronal hole coverage.\n"
+            logging.error("Unable to process running solar image in JPG folder")
+            print("Unable to process running solar image in JPG folder")
+
+        self._image_write('disc_full.bmp', outputimg1)
+
+        # Meridian Segment
+        outputimg2 = self._mask_img(outputimg, mask_segment)
+
+        self._image_write('disc_segment.bmp', outputimg2)
+
+        # Calculate the area occupied by coronal holes
+        self.coverage = self._count_pixels(outputimg2, mask_segment)
+
+        # It is extremely unlikely that we will ever get 100% coronal hole coverage on the meridian
+        # Most ikely it is a glitched image from SDO - so we get less statistical grief if we reset the value
+        # to a zero.
+        if self.coverage == 1:
             self.coverage = 0
+
+        # except:
+        #     logging.error("Unable to process SDO image")
+        #     common_data.report_string = common_data.report_string + "Unable to calculate coronal hole coverage.\n"
+        #     self.coverage = 0
