@@ -117,8 +117,8 @@ class SolarImageProcessor:
         # cv2.putText(image_name, label, (10,482), cv2.FONT_HERSHEY_SIMPLEX, 0.5,(250,250,250), 1 );
         # cv2.putText(image_name, label2, (10,498), cv2.FONT_HERSHEY_SIMPLEX, 0.5,(250,250,250), 1 );
         # GOES
-        cv2.putText(image_name, label, (10, 40), cv2.FONT_HERSHEY_SIMPLEX, 1.3, (250, 250, 250), 2);
-        cv2.putText(image_name, label2, (10, 90), cv2.FONT_HERSHEY_SIMPLEX, 1.3, (250, 250, 250), 2);
+        cv2.putText(image_name, label, (10, 40), cv2.FONT_HERSHEY_SIMPLEX, 1.5, (250, 250, 250), 2);
+        cv2.putText(image_name, label2, (10, 100), cv2.FONT_HERSHEY_SIMPLEX, 1.5, (250, 250, 250), 2);
 
         # cv2.imwrite('disc_full.bmp', image_name)
         return image_name
@@ -215,12 +215,12 @@ class SolarImageProcessor:
             logging.error("Unable to process running solar image in JPG folder")
             print("Unable to process running solar image in JPG folder")
 
-        self._image_write('disc_full.bmp', outputimg1)
+        self._image_write('disc_full.jpg', outputimg1)
 
         # Meridian Segment
         outputimg2 = self._mask_img(outputimg, mask_segment)
 
-        self._image_write('disc_segment.bmp', outputimg2)
+        self._image_write('disc_segment.jpg', outputimg2)
 
         # Calculate the area occupied by coronal holes
         self.coverage = self._count_pixels(outputimg2, mask_segment)
