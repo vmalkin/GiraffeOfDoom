@@ -63,7 +63,20 @@ if __name__ == "__main__":
     npdata = np.array(data_last_24_hours)
     rowlen = npdata.shape[1]
 
+    # Slice the array into separate lists for each column
+    master_data = []
     datetimes = npdata[:, 0]
+    for i in range(1, rowlen):
+        master_data.append(npdata[:, i])
+
+    # Perform whatever functions to the lists
+    for data in master_data:
+        pass
+
+    # Reconstitute the lists into a single file for display
+
+
+
 
 
 
