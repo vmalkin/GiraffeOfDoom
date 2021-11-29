@@ -81,7 +81,6 @@ if __name__ == "__main__":
     for i in range(1, rowlen):
         master_data.append(npdata[:, i])
 
-
     # Perform whatever functions to the lists
     filtered = []
     for data in master_data:
@@ -96,11 +95,12 @@ if __name__ == "__main__":
     # AFter the filtering processes, the length of data will differ from the original
     # data. Start iterating from the correct record in datetime to compensate
     difference = len(datetimes) - len(nulled[0])
-    startindex = difference / 2
-
-
-
-
-
-
-
+    startindex = int(difference / 2)
+    with open(graphing_file, "w") as g:
+        for i in range(startindex, len(datetimes) - startindex - 1):
+            dp = datetimes[i] + ","
+            for data in nulled:
+                dp = dp + str(data[i]) + ","
+            dp = dp[:-1]
+            g.write(dp + "\n")
+    g.close()
