@@ -6,7 +6,7 @@ Data file lines have the format of:
 UTCdatetime, data_a, data_b, data_c, etc...
 """
 import time
-from statistics import median
+from statistics import median, mean
 from datetime import datetime
 from calendar import timegm
 import numpy as np
@@ -19,6 +19,20 @@ dt_format = "%Y-%m-%d %H:%M:%S"
 stationname = "dna_hiss"
 graphing_file = stationname + "_graph.csv"
 median_window = 1  # Full window = halfwindow * 2 + 1
+average_window = 20
+
+def filter_average(list):
+    returnlist = []
+    for i in range(average_window, len(list) - average_window):
+        templist = []
+        for j in range(-1 * average_window, average_window):
+            data = float(list[i+j])
+            templist.append(data)
+        avg_data = mean(templist)
+        avg_data = round(avg_data, 3)
+        returnlist.append(avg_data)
+    return returnlist
+
 
 def filter_median(item_list):
     """
@@ -84,7 +98,9 @@ if __name__ == "__main__":
     # Perform whatever functions to the lists
     filtered = []
     for data in master_data:
-        filtered.append(filter_median(data))
+        d = filter_median(data)
+        d = filter_average(d)
+        filtered.append(d)
 
     # FINALLY Remove extreme values and replace with a null
     nulled = []
@@ -100,7 +116,7 @@ if __name__ == "__main__":
         for i in range(startindex, len(datetimes) - startindex - 1):
             dp = datetimes[i] + ","
             for data in nulled:
-                dp = dp + str(data[i]) + ","
+                dp = dp + str(data[i - startindex]) + ","
             dp = dp[:-1]
             g.write(dp + "\n")
     g.close()
