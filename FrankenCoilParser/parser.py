@@ -58,7 +58,6 @@ def utc_to_posix(utc_time):
 
 
 def open_file(datafile):
-    starttime = time.time() - 86400
     returnlist = []
     with open(datafile, "r") as c:
         for line in c:
@@ -66,8 +65,27 @@ def open_file(datafile):
             line = line.split(",")
             datething = line[0]
             if re.match(regex, datething):
-                if utc_to_posix(datething) > starttime:
-                    returnlist.append(line)
+                returnlist.append(line)
+    return returnlist
+
+
+def get_header(datafile):
+    with open(datafile, "r") as c:
+        for line in c:
+            header = line
+            break
+    return header
+
+def parse_file(list):
+    starttime = time.time() - 86400
+    returnlist = []
+    for line in list:
+        line = line.strip("\n")
+        line = line.split(",")
+        datething = line[0]
+        if re.match(regex, datething):
+            if utc_to_posix(datething) > starttime:
+                returnlist.append(line)
     return returnlist
 
 
@@ -85,7 +103,10 @@ def filter_nulls(data):
 
 
 if __name__ == "__main__":
-    data_last_24_hours = open_file(datafile)
+    datalist = open_file(datafile)
+    header = get_header(datafile)
+
+    data_last_24_hours = parse_file(datalist)
     npdata = np.array(data_last_24_hours)
     rowlen = npdata.shape[1]
 
@@ -113,6 +134,7 @@ if __name__ == "__main__":
     difference = len(datetimes) - len(nulled[0])
     startindex = int(difference / 2)
     with open(graphing_file, "w") as g:
+        g.write(header + "\n")
         for i in range(startindex, len(datetimes) - startindex - 1):
             dp = datetimes[i] + ","
             for data in nulled:
