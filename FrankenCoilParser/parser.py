@@ -12,11 +12,13 @@ from calendar import timegm
 import numpy as np
 import re
 
-
+# datafile = "c://temp//hiss.csv"
+# datafile = "c://temp//harmonics.csv"
 datafile = "hiss.csv"
 regex = r"\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d"
 dt_format = "%Y-%m-%d %H:%M:%S"
 stationname = "dna_hiss"
+# stationname = "dna_power_harmonics"
 graphing_file = stationname + "_graph.csv"
 median_window = 1  # Full window = halfwindow * 2 + 1
 average_window = 10
