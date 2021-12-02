@@ -19,7 +19,7 @@ dt_format = "%Y-%m-%d %H:%M:%S"
 stationname = "dna_hiss"
 graphing_file = stationname + "_graph.csv"
 median_window = 1  # Full window = halfwindow * 2 + 1
-average_window = 20
+average_window = 10
 
 def filter_average(list):
     returnlist = []
@@ -72,6 +72,7 @@ def open_file(datafile):
 def get_header(datafile):
     with open(datafile, "r") as c:
         for line in c:
+            line = line.strip()
             header = line
             break
     return header
@@ -80,8 +81,8 @@ def parse_file(list):
     starttime = time.time() - 86400
     returnlist = []
     for line in list:
-        line = line.strip("\n")
-        line = line.split(",")
+        # line = line.strip("\n")
+        # line = line.split(",")
         datething = line[0]
         if re.match(regex, datething):
             if utc_to_posix(datething) > starttime:
@@ -105,7 +106,6 @@ def filter_nulls(data):
 if __name__ == "__main__":
     datalist = open_file(datafile)
     header = get_header(datafile)
-
     data_last_24_hours = parse_file(datalist)
     npdata = np.array(data_last_24_hours)
     rowlen = npdata.shape[1]
