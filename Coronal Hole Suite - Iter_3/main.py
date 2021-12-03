@@ -8,7 +8,7 @@ import common_data
 
 LOGFILE = 'log.csv'
 WAITPERIOD = 86400 * 5
-__version__ = '1.0.1'
+__version__ = '2.0'
 __author__ = "Vaughn Malkin"
 
 discovr = mgr_discovr_data.SatelliteDataProcessor()
