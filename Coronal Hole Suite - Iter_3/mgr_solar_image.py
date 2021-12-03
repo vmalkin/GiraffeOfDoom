@@ -127,8 +127,9 @@ class SolarImageProcessor:
         image = cv2.cvtColor(image, cv2.COLOR_GRAY2BGR)
         dimensions = image.shape
         width = dimensions[1]
+        print(width)
 
-        band1 = 100
+        band1 = int(width * 0.08)
         band2 = int(band1 * 2.1)
         radius1 = int(width * 0.29)
         radius2 = int(width * 0.25)
@@ -147,20 +148,41 @@ class SolarImageProcessor:
         font = cv2.FONT_HERSHEY_SIMPLEX
         font_size = 1.2
         font_thickness = 2
-        cv2.putText(image, "Weak", (centre_x - 360, centre_x - band2 - 160), font, font_size, (0, 124, 0), font_thickness, cv2.LINE_AA)
-        cv2.putText(image, "Effect", (centre_x - 360, centre_x - band2 - 120), font, font_size, (0, 124, 0),font_thickness, cv2.LINE_AA)
+        cv2.putText(image, "Weak", (centre_x - int(width*0.28), centre_x - band2 - int(width*0.15)), font,
+                    font_size, (0, 124, 0),
+                    font_thickness, cv2.LINE_AA)
 
-        cv2.putText(image, "Mild", (centre_x - 500, centre_x - band1 - 70), font, font_size, (0, 124, 255), font_thickness, cv2.LINE_AA)
-        cv2.putText(image, "Effect", (centre_x - 500, centre_x - band1 - 30), font, font_size, (0, 124, 255),font_thickness, cv2.LINE_AA)
+        cv2.putText(image, "Effect", (centre_x - int(width*0.28), centre_x - band2 - int(width*0.12)), font,
+                    font_size, (0, 124, 0),
+                    font_thickness, cv2.LINE_AA)
 
-        cv2.putText(image, "Strong", (centre_x - 540, centre_x - 20), font, font_size, (0, 0, 255), font_thickness, cv2.LINE_AA)
-        cv2.putText(image, "Effect", (centre_x - 540, centre_x + 20), font, font_size, (0, 0, 255), font_thickness,cv2.LINE_AA)
+        cv2.putText(image, "Mild", (centre_x - int(width*0.39), centre_x - band1 - 70), font,
+                    font_size, (0, 124, 255),
+                    font_thickness, cv2.LINE_AA)
+        cv2.putText(image, "Effect", (centre_x - int(width*0.39), centre_x - band1 - int(width*0.023)), font,
+                    font_size, (0, 124, 255),
+                    font_thickness, cv2.LINE_AA)
 
-        cv2.putText(image, "Mild", (centre_x - 500, centre_x + band1 + 50), font, font_size, (0, 124, 255),font_thickness, cv2.LINE_AA)
-        cv2.putText(image, "Effect", (centre_x - 500, centre_x + band1 + 90), font, font_size, (0, 124, 255),font_thickness, cv2.LINE_AA)
+        cv2.putText(image, "Strong", (centre_x - int(width*0.42), centre_x - int(width*0.015)), font,
+                    font_size, (0, 0, 255),
+                    font_thickness, cv2.LINE_AA)
+        cv2.putText(image, "Effect", (centre_x - int(width*0.42), centre_x + int(width*0.015)), font,
+                    font_size, (0, 0, 255),
+                    font_thickness,cv2.LINE_AA)
 
-        cv2.putText(image, "Weak", (centre_x - 360, centre_x + band2 + 120), font, font_size, (0, 124, 0),font_thickness, cv2.LINE_AA)
-        cv2.putText(image, "Effect", (centre_x - 360, centre_x + band2 + 160), font, font_size, (0, 124, 0),font_thickness, cv2.LINE_AA)
+        cv2.putText(image, "Mild", (centre_x - int(width*0.39), centre_x + band1 + int(width*0.039)), font,
+                    font_size, (0, 124, 255),
+                    font_thickness, cv2.LINE_AA)
+        cv2.putText(image, "Effect", (centre_x - int(width*0.39), centre_x + band1 + int(width*0.07)), font,
+                    font_size, (0, 124, 255),
+                    font_thickness, cv2.LINE_AA)
+
+        cv2.putText(image, "Weak", (centre_x - int(width*0.28), centre_x + band2 + int(width*0.12)), font,
+                    font_size, (0, 124, 0),
+                    font_thickness, cv2.LINE_AA)
+        cv2.putText(image, "Effect", (centre_x - int(width*0.28), centre_x + band2 + int(width*0.15)), font,
+                    font_size, (0, 124, 0),
+                    font_thickness, cv2.LINE_AA)
 
         return image
 
