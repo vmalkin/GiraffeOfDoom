@@ -111,14 +111,17 @@ class SolarImageProcessor:
         return mask
 
     def _add_img_logo(self, image_name):
+        dimensions = image_name.shape
+        width = dimensions[1]
+
         label = 'DunedinAurora.NZ Coronal Hole Map'
         label2 = self._get_utc_time()
         # # SDO
         # cv2.putText(image_name, label, (10,482), cv2.FONT_HERSHEY_SIMPLEX, 0.5,(250,250,250), 1 );
         # cv2.putText(image_name, label2, (10,498), cv2.FONT_HERSHEY_SIMPLEX, 0.5,(250,250,250), 1 );
         # GOES
-        cv2.putText(image_name, label, (10, 40), cv2.FONT_HERSHEY_SIMPLEX, 1.5, (250, 250, 250), 2);
-        cv2.putText(image_name, label2, (10, 100), cv2.FONT_HERSHEY_SIMPLEX, 1.5, (250, 250, 250), 2);
+        cv2.putText(image_name, label, (10, int(width*0.031)), cv2.FONT_HERSHEY_SIMPLEX, (width*0.0014), (250, 250, 250), 2);
+        cv2.putText(image_name, label2, (10, int(width*0.078)), cv2.FONT_HERSHEY_SIMPLEX, (width*0.0014), (250, 250, 250), 2);
 
         # cv2.imwrite('disc_full.bmp', image_name)
         return image_name
@@ -136,18 +139,18 @@ class SolarImageProcessor:
 
         centre_x = int(width / 2)
 
-        cv2.line(image, (centre_x - radius2, centre_x + band2), (centre_x + radius2, centre_x + band2), (0, 124, 0), thickness=4)
-        cv2.line(image, (centre_x - radius1, centre_x + band1), (centre_x + radius1, centre_x + band1), (0, 0, 255), thickness=6)
-        cv2.line(image, (centre_x - radius1, centre_x - band1), (centre_x + radius1, centre_x - band1), (0, 0, 255), thickness=6)
-        cv2.line(image, (centre_x - radius2, centre_x - band2), (centre_x + radius2, centre_x - band2), (0, 124, 0), thickness=4)
+        cv2.line(image, (centre_x - radius2, centre_x + band2), (centre_x + radius2, centre_x + band2), (0, 124, 0), thickness=3)
+        cv2.line(image, (centre_x - radius1, centre_x + band1), (centre_x + radius1, centre_x + band1), (0, 0, 255), thickness=5)
+        cv2.line(image, (centre_x - radius1, centre_x - band1), (centre_x + radius1, centre_x - band1), (0, 0, 255), thickness=5)
+        cv2.line(image, (centre_x - radius2, centre_x - band2), (centre_x + radius2, centre_x - band2), (0, 124, 0), thickness=3)
 
         axis_long = int(width / 2 * 0.6)
         axis_short = int(width / 2 * 0.1)
         cv2.ellipse(image, (centre_x, centre_x), (axis_short, axis_long), 0, 0, 360, (0, 0, 255), 3)
 
         font = cv2.FONT_HERSHEY_SIMPLEX
-        font_size = 1.2
-        font_thickness = 2
+        font_size = width * 0.00093
+        font_thickness = int(width * 0.0015625)
         cv2.putText(image, "Weak", (centre_x - int(width*0.28), centre_x - band2 - int(width*0.15)), font,
                     font_size, (0, 124, 0),
                     font_thickness, cv2.LINE_AA)
@@ -156,7 +159,7 @@ class SolarImageProcessor:
                     font_size, (0, 124, 0),
                     font_thickness, cv2.LINE_AA)
 
-        cv2.putText(image, "Mild", (centre_x - int(width*0.39), centre_x - band1 - 70), font,
+        cv2.putText(image, "Mild", (centre_x - int(width*0.39), centre_x - band1 - int(width*0.054)), font,
                     font_size, (0, 124, 255),
                     font_thickness, cv2.LINE_AA)
         cv2.putText(image, "Effect", (centre_x - int(width*0.39), centre_x - band1 - int(width*0.023)), font,
