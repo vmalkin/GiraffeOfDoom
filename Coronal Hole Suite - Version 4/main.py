@@ -3,8 +3,10 @@ import mgr_solar_image
 import mgr_data
 import mgr_plotter
 import mgr_forecast
+import mgr_sqlite
 import time
 import common_data
+
 
 LOGFILE = 'log.csv'
 WAITPERIOD = 86400 * 5
@@ -18,9 +20,7 @@ forecaster = mgr_forecast.Forecaster()
 common_data.report_string = ""
 
 if __name__ == "__main__":
-    # while True:
-    # reset the resport string
-    common_data.report_string = ""
+    # Check that a database exists, if not, initialise one.
 
     # get the wind data and coronal hole coverage. In cases of no information, the the
     # returned values will be ZERO!
@@ -58,6 +58,4 @@ if __name__ == "__main__":
         with open(common_data.regression_ouput, 'w') as w:
             w.write(common_data.report_string + '\n')
 
-        # Pause for an hour
-        # time.sleep(3600)
 
