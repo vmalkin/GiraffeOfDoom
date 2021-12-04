@@ -1,6 +1,7 @@
 import sqlite3
+import common_data
 
-database = "solarwind.db"
+database = common_data.database
 """
  [satellite] 1..* [data] *..1 [data_type]
 """
@@ -12,7 +13,6 @@ def db_create():
     db.execute("drop table if exists sat;")
     db.execute("drop table if exists data;")
     db.execute("drop table if exists type;")
-
     db.execute("create table sat(sat_name text primary key);")
     db.execute("create table type(data_type text primary key);")
     db.execute("create table data("
@@ -33,10 +33,18 @@ def db_populate():
     db.execute("insert into sat (sat_name) values (?);", ["discovr"])
     db.execute("insert into sat (sat_name) values (?);", ["goes_primary"])
     db.execute("insert into sat (sat_name) values (?);", ["sdo"])
-
     db.execute("insert into data (data_type) values (?);", ["speed"])
     db.execute("insert into data (data_type) values (?);", ["density"])
     db.execute("insert into data (data_type) values (?);", ["forecast speed"])
+    db.execute("insert into data (data_type) values (?);", ["ch_coverage"])
+    data_b.commit()
+    db.close()
 
+
+def db_insert_data(posixtime, data, sat_name, data_type):
+    data_b = sqlite3.connect(database)
+    db = data_b.cursor()
+    db.execute("insert into data (posixtime, data, sat_name, data_type) values (?,?,?,?);",
+               [int(posixtime), float(data), sat_name, data_type])
     data_b.commit()
     db.close()

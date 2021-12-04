@@ -3,10 +3,11 @@ import mgr_solar_image
 import mgr_data
 import mgr_plotter
 import mgr_forecast
-import mgr_sqlite
 import time
 import common_data
+import os
 
+import mgr_sqlite
 
 LOGFILE = 'log.csv'
 WAITPERIOD = 86400 * 5
@@ -21,6 +22,11 @@ common_data.report_string = ""
 
 if __name__ == "__main__":
     # Check that a database exists, if not, initialise one.
+    if os.path.isfile(common_data.database) is False:
+        mgr_sqlite.db_create()
+        mgr_sqlite.db_populate()
+
+
 
     # get the wind data and coronal hole coverage. In cases of no information, the the
     # returned values will be ZERO!
@@ -36,8 +42,12 @@ if __name__ == "__main__":
     print(dp.return_values())
 
     # append the new datapoint and process the master datalist
-    data_manager.append_datapoint(dp)
-    data_manager.process_new_data()
+    mgr_sqlite.db_insert_data(posixtime, sun.coverage, "discovr", "ch_coverage")
+    mgr_sqlite.db_insert_data(posixtime, discovr.wind_speed, "discovr", "speed")
+    mgr_sqlite.db_insert_data(posixtime, discovr.wind_density, "discovr", "density")
+
+    # data_manager.append_datapoint(dp)
+    # data_manager.process_new_data()
 
     # Calculate if enough time has elapsed to start running the forecasting.
     startdate = int(data_manager.master_data[0].posix_date)
@@ -57,5 +67,3 @@ if __name__ == "__main__":
         print(common_data.report_string)
         with open(common_data.regression_ouput, 'w') as w:
             w.write(common_data.report_string + '\n')
-
-

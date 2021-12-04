@@ -9,4 +9,4 @@ mask_meridian = ""
 # --- Output files for Web display ---
 regression_ouput = "regression_goes.php"
 prediction_output = "prediction_goes.csv"
-
+database = "solarwind.db"

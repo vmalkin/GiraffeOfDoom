@@ -4,6 +4,7 @@ import time
 import datetime
 import logging
 import common_data
+import mgr_sqlite
 
 # setup error logging
 # logging levels in order of severity:
