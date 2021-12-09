@@ -25,34 +25,46 @@ graphing_file = stationname + "_graph.csv"
 median_window = 1  # Full window = halfwindow * 2 + 1
 average_window = 10
 database = "hiss.db"
+frequency_range = [125, 240, 410, 760, 1800, 4300, 9000]
 
 
-def database_create(db):
-    datab = sqlite3.connect(db)
+def db_create():
+    datab = sqlite3.connect(database)
     cursor = datab.cursor()
     cursor.execute("drop table if exists freq")
     cursor.execute("drop table if exists measurement")
+
     cursor.execute("create table freq (frequency text primary key);")
     cursor.execute("create table measurement ("
+                   "posixtime integer,"
+                   "frequency text,"
                    "data real,"
-                   "posixtime integer"
-                   "frequency text"
                    "foreign key (frequency) references freq (frequency)"
                    ");")
     # Populate with initial values
-    cursor.execute("Insert into freq ?;", ["125"])
-    cursor.execute("Insert into freq ?;", ["240"])
-    cursor.execute("Insert into freq ?;", ["410"])
-    cursor.execute("Insert into freq ?;", ["760"])
-    cursor.execute("Insert into freq ?;", ["1800"])
-    cursor.execute("Insert into freq ?;", ["4300"])
-    cursor.execute("Insert into freq ?;", ["9000"])
+    for item in frequency_range:
+        cursor.execute("Insert into freq (frequency) values (?);", [item])
+    datab.commit()
+    datab.close()
 
 
+def db_addnewdata(data_recent):
+    # YYYY-MM-DD hh:mm:ss,125hz,240hz,410hz,760hz,1800hz,4300hz,9000hz
+    # 2021-11-30 23:04:38,46.139,24.359,34.259,19.015,18.768,9.669,-3.733
+    datab = sqlite3.connect(database)
+    cursor = datab.cursor()
 
+    for item in data_recent:
+        measurement_date = utc_to_posix(item[0])
+        item.pop(0)
 
-def database_addnewdata():
-    pass
+        for i in range(0, len(frequency_range)):
+            posixtime = measurement_date
+            cursor.execute("insert into measurement (posixtime, frequency, data) "
+                           "values (?, ?, ?);", [measurement_date,frequency_range[i], item[i]])
+            print("Added data", posix_to_utc(measurement_date),frequency_range[i], item[i])
+    datab.commit()
+    datab.close()
 
 
 def filter_average(list):
@@ -85,6 +97,12 @@ def filter_median(item_list):
     return returnlist
 
 
+def posix_to_utc(posixtime):
+    # print(posixtime)
+    # utctime = datetime.datetime.utcfromtimestamp(int(posixtime)).strftime(timeformat)
+    utctime = datetime.utcfromtimestamp(int(posixtime)).strftime(dt_format)
+    return utctime
+
 def utc_to_posix(utc_time):
     date_obj = datetime.strptime(utc_time, dt_format)
     posixtime = timegm(date_obj.timetuple())
@@ -111,8 +129,8 @@ def get_header(datafile):
             break
     return header
 
-def parse_file(list):
-    starttime = time.time() - 86400
+def parse_file(list, starttime):
+    starttime = starttime
     returnlist = []
     for line in list:
         # line = line.strip("\n")
@@ -137,19 +155,33 @@ def filter_nulls(data):
     return returnlist
 
 
+def db_getdatetime():
+    datab = sqlite3.connect(database)
+    cursor = datab.cursor()
+    queryresult = cursor.execute("select max(posixtime) from measurement;")
+    for item in queryresult:
+        if item[0] == None:
+            returnvalue = 0
+        else:
+            returnvalue = item[0]
+    return returnvalue
+
+
 if __name__ == "__main__":
     if os.path.isfile(database) is False:
-        database_create(database)
+        db_create()
 
     # Query database for most recent datetime
+    # db_addnewdata(int(time.time()), 125, 56.432)
+    recent_posix = db_getdatetime()
 
     # Open the hiss CSV file. Load into a list
     datalist = open_file(datafile)
 
-    #  Delete the first line, it's a header.
+    # Most recent data to add to DB
+    data_recent = parse_file(datalist, recent_posix)
+    db_addnewdata(data_recent)
 
-    # header = get_header(datafile)
-    # data_last_24_hours = parse_file(datalist)
     # npdata = np.array(data_last_24_hours)
     # rowlen = npdata.shape[1]
     #
