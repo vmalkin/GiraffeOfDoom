@@ -7,6 +7,7 @@ UTCdatetime, data_a, data_b, data_c, etc...
 """
 import os.path
 import time
+import plotly.graph_objects as go
 from statistics import median, mean
 from datetime import datetime
 from calendar import timegm
@@ -27,6 +28,14 @@ average_window = 10
 database = "hiss.db"
 frequency_range = [125, 240, 410, 760, 1800, 4300, 9000]
 
+
+class Bin:
+    def __init__(self, posixtime):
+        self.posixtime = posixtime
+        self.data = [0]
+
+    def avg_data(self):
+        return mean(self.data)
 
 def db_create():
     datab = sqlite3.connect(database)
@@ -169,51 +178,41 @@ def db_getdatetime():
 
 if __name__ == "__main__":
     if os.path.isfile(database) is False:
+        print("No database - creating.")
         db_create()
 
     # Query database for most recent datetime
-    # db_addnewdata(int(time.time()), 125, 56.432)
     recent_posix = db_getdatetime()
+    print("Get most recent date of data insertion from database")
 
     # Open the hiss CSV file. Load into a list
     datalist = open_file(datafile)
+    print("Load hiss file")
 
     # Most recent data to add to DB
     data_recent = parse_file(datalist, recent_posix)
-    db_addnewdata(data_recent)
+    print("Parse out new data to add")
 
-    # npdata = np.array(data_last_24_hours)
-    # rowlen = npdata.shape[1]
-    #
-    # # Slice the array into separate lists for each column
-    # master_data = []
-    # datetimes = npdata[:, 0]
-    # for i in range(1, rowlen):
-    #     master_data.append(npdata[:, i])
-    #
-    # # Perform whatever functions to the lists
-    # filtered = []
-    # for data in master_data:
-    #     d = filter_median(data)
-    #     d = filter_average(d)
-    #     filtered.append(d)
-    #
-    # # FINALLY Remove extreme values and replace with a null
-    # nulled = []
-    # for data in filtered:
-    #     nulled.append(filter_nulls(data))
-    #
-    # # Reconstitute the lists into a single file for display
-    # # AFter the filtering processes, the length of data will differ from the original
-    # # data. Start iterating from the correct record in datetime to compensate
-    # difference = len(datetimes) - len(nulled[0])
-    # startindex = int(difference / 2)
-    # with open(graphing_file, "w") as g:
-    #     g.write(header + "\n")
-    #     for i in range(startindex, len(datetimes) - startindex - 1):
-    #         dp = datetimes[i] + ","
-    #         for data in nulled:
-    #             dp = dp + str(data[i - startindex]) + ","
-    #         dp = dp[:-1]
-    #         g.write(dp + "\n")
-    # g.close()
+    #  Convert the data into a numpy list, get the number of elements in each row.
+    npdata = np.array(data_recent)
+    rowlen = npdata.shape[1]
+
+    # Slice the array into separate lists for each column
+    master_data = []
+    datetimes = npdata[:, 0]
+    for i in range(1, rowlen):
+        master_data.append(npdata[:, i])
+
+
+    # Generate the binlist
+    print("Generating bin lists for processing")
+    master_binlists = []
+    binlist = []
+    binsize = 60 * 5
+    for i in range(recent_posix, time.time(), binsize):
+        binlist.append(Bin(i))
+
+
+
+
+

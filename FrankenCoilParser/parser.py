@@ -21,7 +21,7 @@ stationname = "dna_hiss"
 # stationname = "dna_power_harmonics"
 graphing_file = stationname + "_graph.csv"
 median_window = 1  # Full window = halfwindow * 2 + 1
-average_window = 10
+average_window = 40
 
 def filter_average(list):
     returnlist = []
