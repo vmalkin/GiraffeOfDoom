@@ -23,6 +23,26 @@ stationname = "dna_hiss"
 graphing_file = stationname + "_graph.csv"
 median_window = 1  # Full window = halfwindow * 2 + 1
 average_window = 10
+database = "hiss.db"
+
+
+def database_create(database):
+    datab = sqlite3.connect(database)
+    cursor = datab.cursor()
+    cursor.execute("drop table if exists freq")
+    cursor.execute("drop table if exists measurement")
+    cursor.execute("create table freq (frequency text primary key);")
+    cursor.execute("create table measurement ("
+                   "data real,"
+                   "posixtime integer"
+                   "frequency text"
+                   "foreign key (frequency) references freq (frequency)"
+                   ");")
+
+
+def database_addnewdata():
+    pass
+
 
 def filter_average(list):
     returnlist = []
