@@ -184,10 +184,7 @@ if __name__ == "__main__":
         db_create()
 
     # Query database for most recent datetime
-    now_posix = int(time.time())
-    recent_posix = db_getdatetime()
-    if recent_posix == 0:
-        recent_posix = now_posix - (86400 * 2)
+    start_posix = db_getdatetime()
 
     print("Get most recent date of data insertion from database...")
 
@@ -195,53 +192,50 @@ if __name__ == "__main__":
     datalist = open_file(datafile)
     print("Load hiss file...")
 
-    # Most recent data to add to DB
-    data_recent = parse_file(datalist, recent_posix)
-    print("Parse out new data to add...")
+    # The end date for calculations
+    end_posix = int(time.time())
+    if len(datalist) > 1:
+        end_posix = utc_to_posix(datalist[len(datalist) - 1][0])
 
-    # Create the bin array
-    binlist = []
-    binsize = 60 * 5
+    # Iterate thru the hiss file. Once we have a date later than the most recent date in the database
+    # start the binnin using a mod function on the date.
+    # ['2021-12-09 20:14:30', '33.649', '28.218', '38.896', '24.042', '17.855', '3.988', '-3.54'
+    temp_bins = [[0], [0], [0], [0], [0], [0], [0], [0]]
+    bin_size = 60 * 5
 
-    # Iterate thru the bin list using modulus division to know when we've aggregated enough data for a bin.
-
-
-    # for i in range(recent_posix, now_posix, binsize):
-    #     binlist.append(Bin(i))
-    #
-    for item in data_recent:
-        current_date = utc_to_posix(item[0])
-        index = get_index(current_date, recent_posix, binsize)
-        binlist[index].d125.append(float(item[1]))
-        binlist[index].d240.append(float(item[2]))
-        binlist[index].d410.append(float(item[3]))
-        binlist[index].d760.append(float(item[4]))
-        binlist[index].d1800.append(float(item[5]))
-        binlist[index].d4300.append(float(item[6]))
-        binlist[index].d9000.append(float(item[7]))
-    #
-    # # iNPUT THE BINNED DATA INTO THE DATABASE
-    # datab = sqlite3.connect(database)
-    # cursor = datab.cursor()
-    # for item in binlist:
-    #     posixtime = item.posixtime
-    #     cursor.execute("insert into measurement (posixtime, frequency, data) "
-    #                    "values (?, ?, ?);", [posixtime, 125, round(mean(item.d125), 3)])
-    #     cursor.execute("insert into measurement (posixtime, frequency, data) "
-    #                    "values (?, ?, ?);", [posixtime,240, round(mean(item.d240), 3)])
-    #     cursor.execute("insert into measurement (posixtime, frequency, data) "
-    #                    "values (?, ?, ?);", [posixtime, 410, round(mean(item.d410), 3)])
-    #     cursor.execute("insert into measurement (posixtime, frequency, data) "
-    #                    "values (?, ?, ?);", [posixtime, 760, round(mean(item.d760), 3)])
-    #     cursor.execute("insert into measurement (posixtime, frequency, data) "
-    #                    "values (?, ?, ?);", [posixtime, 1800, round(mean(item.d1800), 3)])
-    #     cursor.execute("insert into measurement (posixtime, frequency, data) "
-    #                    "values (?, ?, ?);", [posixtime, 4300, round(mean(item.d4300), 3)])
-    #     cursor.execute("insert into measurement (posixtime, frequency, data) "
-    #                    "values (?, ?, ?);", [posixtime, 9000, round(mean(item.d9000), 3)])
-    #
-    # datab.commit()
-    # datab.close()
-
+    # for the range of posixdates
+    for i in range(start_posix, end_posix):
+        datalist_index = i - start_posix
+        #  ignore dates in the datalist that are older than the most recent date in the database.
+        current_posix = utc_to_posix(datalist[datalist_index][0])
+        print(start_posix, current_posix, end_posix)
+        # if current_posix > start_posix:
+        #     for j in range(0, 8):
+        #         temp_bins[j].append(datalist[datalist_index][j])
+        #
+        #         # test if we have reach 5 mins - one bin
+        #         if i % bin_size == 0:
+        #             print("MOd!")
+                    # datab = sqlite3.connect(database)
+                    # cursor = datab.cursor()
+                    # for item in temp_bins:
+                    #     posixtime = str(i)
+                    #     cursor.execute("insert into measurement (posixtime, frequency, data) "
+                    #                    "values (?, ?, ?);", [posixtime, 125, round(mean(temp_bins[1]), 3)])
+                    #     cursor.execute("insert into measurement (posixtime, frequency, data) "
+                    #                    "values (?, ?, ?);", [posixtime,240, round(mean(temp_bins[2]), 3)])
+                    #     cursor.execute("insert into measurement (posixtime, frequency, data) "
+                    #                    "values (?, ?, ?);", [posixtime, 410, round(mean(temp_bins[3]), 3)])
+                    #     cursor.execute("insert into measurement (posixtime, frequency, data) "
+                    #                    "values (?, ?, ?);", [posixtime, 760, round(mean(temp_bins[4]), 3)])
+                    #     cursor.execute("insert into measurement (posixtime, frequency, data) "
+                    #                    "values (?, ?, ?);", [posixtime, 1800, round(mean(temp_bins[5]), 3)])
+                    #     cursor.execute("insert into measurement (posixtime, frequency, data) "
+                    #                    "values (?, ?, ?);", [posixtime, 4300, round(mean(temp_bins[6]), 3)])
+                    #     cursor.execute("insert into measurement (posixtime, frequency, data) "
+                    #                    "values (?, ?, ?);", [posixtime, 9000, round(mean(temp_bins[7]), 3)])
+                    # datab.commit()
+                    # datab.close()
+                    # temp_bins = [[0], [0], [0], [0], [0], [0], [0], [0]]
 
 
