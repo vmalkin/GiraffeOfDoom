@@ -32,10 +32,14 @@ frequency_range = [125, 240, 410, 760, 1800, 4300, 9000]
 class Bin:
     def __init__(self, posixtime):
         self.posixtime = posixtime
-        self.data = [0]
+        self.d125 = [0]
+        self.d240 = [0]
+        self.d410 = [0]
+        self.d760 = [0]
+        self.d1800 = [0]
+        self.d4300 = [0]
+        self.d9000 = [0]
 
-    def avg_data(self):
-        return mean(self.data)
 
 def db_create():
     datab = sqlite3.connect(database)
@@ -53,25 +57,19 @@ def db_create():
     # Populate with initial values
     for item in frequency_range:
         cursor.execute("Insert into freq (frequency) values (?);", [item])
+
     datab.commit()
     datab.close()
 
 
-def db_addnewdata(data_recent):
+def db_addnewdata(posixdate,frequency, data):
     # YYYY-MM-DD hh:mm:ss,125hz,240hz,410hz,760hz,1800hz,4300hz,9000hz
     # 2021-11-30 23:04:38,46.139,24.359,34.259,19.015,18.768,9.669,-3.733
     datab = sqlite3.connect(database)
     cursor = datab.cursor()
-
-    for item in data_recent:
-        measurement_date = utc_to_posix(item[0])
-        item.pop(0)
-
-        for i in range(0, len(frequency_range)):
-            posixtime = measurement_date
-            cursor.execute("insert into measurement (posixtime, frequency, data) "
-                           "values (?, ?, ?);", [measurement_date,frequency_range[i], item[i]])
-            print("Added data", posix_to_utc(measurement_date),frequency_range[i], item[i])
+    cursor.execute("insert into measurement (posixtime, frequency, data) "
+                   "values (?, ?, ?);", [posixdate,frequency, data])
+    print("Added data", posixdate,frequency, data)
     datab.commit()
     datab.close()
 
@@ -165,15 +163,19 @@ def filter_nulls(data):
 
 
 def db_getdatetime():
+    returnvalue = 0
     datab = sqlite3.connect(database)
     cursor = datab.cursor()
     queryresult = cursor.execute("select max(posixtime) from measurement;")
     for item in queryresult:
-        if item[0] == None:
-            returnvalue = 0
-        else:
+        if item[0] is not None:
             returnvalue = item[0]
     return returnvalue
+
+
+def get_index(current_value, start_value, binsize):
+    index = int((current_value - start_value) / binsize)
+    return index
 
 
 if __name__ == "__main__":
@@ -182,37 +184,61 @@ if __name__ == "__main__":
         db_create()
 
     # Query database for most recent datetime
+    now_posix = int(time.time())
     recent_posix = db_getdatetime()
-    print("Get most recent date of data insertion from database")
+    if recent_posix == 0:
+        recent_posix = now_posix - (86400 * 2)
+
+    print("Get most recent date of data insertion from database...")
 
     # Open the hiss CSV file. Load into a list
     datalist = open_file(datafile)
-    print("Load hiss file")
+    print("Load hiss file...")
 
     # Most recent data to add to DB
     data_recent = parse_file(datalist, recent_posix)
-    print("Parse out new data to add")
+    print("Parse out new data to add...")
 
-    #  Convert the data into a numpy list, get the number of elements in each row.
-    npdata = np.array(data_recent)
-    rowlen = npdata.shape[1]
-
-    # Slice the array into separate lists for each column
-    master_data = []
-    datetimes = npdata[:, 0]
-    for i in range(1, rowlen):
-        master_data.append(npdata[:, i])
-
-
-    # Generate the binlist
-    print("Generating bin lists for processing")
-    master_binlists = []
+    # Create the bin array
     binlist = []
     binsize = 60 * 5
-    for i in range(recent_posix, time.time(), binsize):
+    for i in range(recent_posix, now_posix, binsize):
         binlist.append(Bin(i))
 
+    for item in data_recent:
+        current_date = utc_to_posix(item[0])
+        index = get_index(current_date, recent_posix, binsize)
+        binlist[index].d125.append(float(item[1]))
+        binlist[index].d240.append(float(item[2]))
+        binlist[index].d410.append(float(item[3]))
+        binlist[index].d760.append(float(item[4]))
+        binlist[index].d1800.append(float(item[5]))
+        binlist[index].d4300.append(float(item[6]))
+        binlist[index].d9000.append(float(item[7]))
 
+
+    datab = sqlite3.connect(database)
+    cursor = datab.cursor()
+    for item in binlist:
+        posixtime = item.posixtime
+        cursor.execute("insert into measurement (posixtime, frequency, data) values (?, ?, ?);", [posixtime, 125, )
+        cursor.execute("insert into measurement (posixtime, frequency, data) values (?, ?, ?);", [posixtime,240, )
+        cursor.execute("insert into measurement (posixtime, frequency, data) values (?, ?, ?);", [posixtime, 410, )
+        cursor.execute("insert into measurement (posixtime, frequency, data) values (?, ?, ?);", [posixtime, 760, )
+        cursor.execute("insert into measurement (posixtime, frequency, data) values (?, ?, ?);", [posixtime, 1800, )
+        cursor.execute("insert into measurement (posixtime, frequency, data) values (?, ?, ?);", [posixtime, 4300, )
+        cursor.execute("insert into measurement (posixtime, frequency, data) values (?, ?, ?);", [posixtime, 9000, )
+
+
+        round(mean(item.d125), 3)
+        round(mean(item.d240), 3)
+        round(mean(item.d410), 3)
+        round(mean(item.d760), 3)
+        round(mean(item.d1800), 3)
+        round(mean(item.d4300), 3)
+        round(mean(item.d9000), 3)
+    datab.commit()
+    datab.close()
 
 
 
