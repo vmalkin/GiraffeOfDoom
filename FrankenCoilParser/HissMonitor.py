@@ -5,6 +5,7 @@ Customised for Wideband Magnetic Riometer
 Data file lines have the format of:
 UTCdatetime, data_a, data_b, data_c, etc...
 """
+import os.path
 import time
 from statistics import median, mean
 from datetime import datetime
@@ -26,8 +27,8 @@ average_window = 10
 database = "hiss.db"
 
 
-def database_create(database):
-    datab = sqlite3.connect(database)
+def database_create(db):
+    datab = sqlite3.connect(db)
     cursor = datab.cursor()
     cursor.execute("drop table if exists freq")
     cursor.execute("drop table if exists measurement")
@@ -38,6 +39,16 @@ def database_create(database):
                    "frequency text"
                    "foreign key (frequency) references freq (frequency)"
                    ");")
+    # Populate with initial values
+    cursor.execute("Insert into freq ?;", ["125"])
+    cursor.execute("Insert into freq ?;", ["240"])
+    cursor.execute("Insert into freq ?;", ["410"])
+    cursor.execute("Insert into freq ?;", ["760"])
+    cursor.execute("Insert into freq ?;", ["1800"])
+    cursor.execute("Insert into freq ?;", ["4300"])
+    cursor.execute("Insert into freq ?;", ["9000"])
+
+
 
 
 def database_addnewdata():
@@ -127,41 +138,50 @@ def filter_nulls(data):
 
 
 if __name__ == "__main__":
+    if os.path.isfile(database) is False:
+        database_create(database)
+
+    # Query database for most recent datetime
+
+    # Open the hiss CSV file. Load into a list
     datalist = open_file(datafile)
-    header = get_header(datafile)
-    data_last_24_hours = parse_file(datalist)
-    npdata = np.array(data_last_24_hours)
-    rowlen = npdata.shape[1]
 
-    # Slice the array into separate lists for each column
-    master_data = []
-    datetimes = npdata[:, 0]
-    for i in range(1, rowlen):
-        master_data.append(npdata[:, i])
+    #  Delete the first line, it's a header.
 
-    # Perform whatever functions to the lists
-    filtered = []
-    for data in master_data:
-        d = filter_median(data)
-        d = filter_average(d)
-        filtered.append(d)
-
-    # FINALLY Remove extreme values and replace with a null
-    nulled = []
-    for data in filtered:
-        nulled.append(filter_nulls(data))
-
-    # Reconstitute the lists into a single file for display
-    # AFter the filtering processes, the length of data will differ from the original
-    # data. Start iterating from the correct record in datetime to compensate
-    difference = len(datetimes) - len(nulled[0])
-    startindex = int(difference / 2)
-    with open(graphing_file, "w") as g:
-        g.write(header + "\n")
-        for i in range(startindex, len(datetimes) - startindex - 1):
-            dp = datetimes[i] + ","
-            for data in nulled:
-                dp = dp + str(data[i - startindex]) + ","
-            dp = dp[:-1]
-            g.write(dp + "\n")
-    g.close()
+    # header = get_header(datafile)
+    # data_last_24_hours = parse_file(datalist)
+    # npdata = np.array(data_last_24_hours)
+    # rowlen = npdata.shape[1]
+    #
+    # # Slice the array into separate lists for each column
+    # master_data = []
+    # datetimes = npdata[:, 0]
+    # for i in range(1, rowlen):
+    #     master_data.append(npdata[:, i])
+    #
+    # # Perform whatever functions to the lists
+    # filtered = []
+    # for data in master_data:
+    #     d = filter_median(data)
+    #     d = filter_average(d)
+    #     filtered.append(d)
+    #
+    # # FINALLY Remove extreme values and replace with a null
+    # nulled = []
+    # for data in filtered:
+    #     nulled.append(filter_nulls(data))
+    #
+    # # Reconstitute the lists into a single file for display
+    # # AFter the filtering processes, the length of data will differ from the original
+    # # data. Start iterating from the correct record in datetime to compensate
+    # difference = len(datetimes) - len(nulled[0])
+    # startindex = int(difference / 2)
+    # with open(graphing_file, "w") as g:
+    #     g.write(header + "\n")
+    #     for i in range(startindex, len(datetimes) - startindex - 1):
+    #         dp = datetimes[i] + ","
+    #         for data in nulled:
+    #             dp = dp + str(data[i - startindex]) + ","
+    #         dp = dp[:-1]
+    #         g.write(dp + "\n")
+    # g.close()
