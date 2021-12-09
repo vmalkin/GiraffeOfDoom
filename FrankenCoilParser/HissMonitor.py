@@ -216,27 +216,26 @@ if __name__ == "__main__":
         binlist[index].d4300.append(float(item[6]))
         binlist[index].d9000.append(float(item[7]))
 
-
+    # iNPUT THE BINNED DATA INTO THE DATABASE
     datab = sqlite3.connect(database)
     cursor = datab.cursor()
     for item in binlist:
         posixtime = item.posixtime
-        cursor.execute("insert into measurement (posixtime, frequency, data) values (?, ?, ?);", [posixtime, 125, )
-        cursor.execute("insert into measurement (posixtime, frequency, data) values (?, ?, ?);", [posixtime,240, )
-        cursor.execute("insert into measurement (posixtime, frequency, data) values (?, ?, ?);", [posixtime, 410, )
-        cursor.execute("insert into measurement (posixtime, frequency, data) values (?, ?, ?);", [posixtime, 760, )
-        cursor.execute("insert into measurement (posixtime, frequency, data) values (?, ?, ?);", [posixtime, 1800, )
-        cursor.execute("insert into measurement (posixtime, frequency, data) values (?, ?, ?);", [posixtime, 4300, )
-        cursor.execute("insert into measurement (posixtime, frequency, data) values (?, ?, ?);", [posixtime, 9000, )
+        cursor.execute("insert into measurement (posixtime, frequency, data) "
+                       "values (?, ?, ?);", [posixtime, 125, round(mean(item.d125), 3)])
+        cursor.execute("insert into measurement (posixtime, frequency, data) "
+                       "values (?, ?, ?);", [posixtime,240, round(mean(item.d240), 3)])
+        cursor.execute("insert into measurement (posixtime, frequency, data) "
+                       "values (?, ?, ?);", [posixtime, 410, round(mean(item.d410), 3)])
+        cursor.execute("insert into measurement (posixtime, frequency, data) "
+                       "values (?, ?, ?);", [posixtime, 760, round(mean(item.d760), 3)])
+        cursor.execute("insert into measurement (posixtime, frequency, data) "
+                       "values (?, ?, ?);", [posixtime, 1800, round(mean(item.d1800), 3)])
+        cursor.execute("insert into measurement (posixtime, frequency, data) "
+                       "values (?, ?, ?);", [posixtime, 4300, round(mean(item.d4300), 3)])
+        cursor.execute("insert into measurement (posixtime, frequency, data) "
+                       "values (?, ?, ?);", [posixtime, 9000, round(mean(item.d9000), 3)])
 
-
-        round(mean(item.d125), 3)
-        round(mean(item.d240), 3)
-        round(mean(item.d410), 3)
-        round(mean(item.d760), 3)
-        round(mean(item.d1800), 3)
-        round(mean(item.d4300), 3)
-        round(mean(item.d9000), 3)
     datab.commit()
     datab.close()
 
