@@ -1,13 +1,6 @@
-from datetime import datetime
-import time
-dt_format = "%Y-%m-%d %H:%M:%S"
+def get_index(start, stop, current, length):
+    i = (current - start) / (stop - start)
+    i = int(i * length)
+    return i
 
-def posix_to_utc(posixtime):
-    # print(posixtime)
-    # utctime = datetime.datetime.utcfromtimestamp(int(posixtime)).strftime(timeformat)
-    utctime = datetime.utcfromtimestamp(int(posixtime)).strftime(dt_format)
-    return utctime
-
-now = time.time()
-
-print(posix_to_utc(now))
+print(get_index(0, 2000, 1800, 700))
