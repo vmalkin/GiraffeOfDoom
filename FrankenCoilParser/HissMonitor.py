@@ -190,12 +190,15 @@ if __name__ == "__main__":
 
     # Create the master list of bins to populate with data from the hiss file.
     masterlist =[]
-    temp_bins = [["replace me with posix date"], [], [], [], [], [], [], []]
+    # temp_bins = [["replace me with posix date"], [], [], [], [], [], [], []]
     bin_size = 60 * 5
 
     for i in range(start_posix, end_posix + bin_size):
         if i % bin_size == 0:
-            temp_bins[0] = i
+            temp_bins = []
+            temp_bins.append(i)
+            for j in range(1, 8):
+                temp_bins.append([])
             masterlist.append(temp_bins)
 
     # Append data to the master list.
@@ -208,5 +211,4 @@ if __name__ == "__main__":
             data = float(item[i])
             masterlist[master_index][i].append(data)
 
-    print(mean(masterlist[0][1]))
-    print(mean(masterlist[1][1]))
+
