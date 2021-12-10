@@ -68,34 +68,34 @@ def db_addnewdata(posixdate,frequency, data):
     datab.close()
 
 
-def filter_average(list):
-    returnlist = []
-    for i in range(average_window, len(list) - average_window):
-        templist = []
-        for j in range(-1 * average_window, average_window):
-            data = float(list[i+j])
-            templist.append(data)
-        avg_data = mean(templist)
-        avg_data = round(avg_data, 3)
-        returnlist.append(avg_data)
-    return returnlist
+# def filter_average(list):
+#     returnlist = []
+#     for i in range(average_window, len(list) - average_window):
+#         templist = []
+#         for j in range(-1 * average_window, average_window):
+#             data = float(list[i+j])
+#             templist.append(data)
+#         avg_data = mean(templist)
+#         avg_data = round(avg_data, 3)
+#         returnlist.append(avg_data)
+#     return returnlist
 
 
-def filter_median(item_list):
-    """
-    Takes in a list of DataPoints and performs a median filter on the list. The list is truncated at the start
-    and end by one halfwindow
-    """
-    returnlist = []
-
-    for i in range(median_window, len(item_list) - median_window):
-        data_store = []
-        for j in range(0 - median_window, median_window + 1):
-            d = float(item_list[i + j])
-            data_store.append(d)
-        medianvalue = median(data_store)
-        returnlist.append(medianvalue)
-    return returnlist
+# def filter_median(item_list):
+#     """
+#     Takes in a list of DataPoints and performs a median filter on the list. The list is truncated at the start
+#     and end by one halfwindow
+#     """
+#     returnlist = []
+#
+#     for i in range(median_window, len(item_list) - median_window):
+#         data_store = []
+#         for j in range(0 - median_window, median_window + 1):
+#             d = float(item_list[i + j])
+#             data_store.append(d)
+#         medianvalue = median(data_store)
+#         returnlist.append(medianvalue)
+#     return returnlist
 
 
 def posix_to_utc(posixtime):
@@ -121,14 +121,14 @@ def open_file(datafile):
                 returnlist.append(line)
     return returnlist
 
-
-def get_header(datafile):
-    with open(datafile, "r") as c:
-        for line in c:
-            line = line.strip()
-            header = line
-            break
-    return header
+#
+# def get_header(datafile):
+#     with open(datafile, "r") as c:
+#         for line in c:
+#             line = line.strip()
+#             header = line
+#             break
+#     return header
 
 def parse_file(list, starttime):
     starttime = starttime
@@ -143,17 +143,17 @@ def parse_file(list, starttime):
     return returnlist
 
 
-def filter_nulls(data):
-    null = None
-    returnlist = []
-    for item in data:
-        if item == 0:
-            returnlist.append(null)
-        elif item > 500:
-            returnlist.append(null)
-        else:
-            returnlist.append(item)
-    return returnlist
+# def filter_nulls(data):
+#     null = None
+#     returnlist = []
+#     for item in data:
+#         if item == 0:
+#             returnlist.append(null)
+#         elif item > 500:
+#             returnlist.append(null)
+#         else:
+#             returnlist.append(item)
+#     return returnlist
 
 
 def db_getdatetime():
@@ -188,27 +188,41 @@ if __name__ == "__main__":
     # The end date for calculations
     end_posix = utc_to_posix(datalist[len(datalist) - 1][0])
 
-    # Create the master list of bins to populate with data from the hiss file.
-    masterlist =[]
-    # temp_bins = [["replace me with posix date"], [], [], [], [], [], [], []]
-    bin_size = 60 * 5
+    if start_posix >= end_posix:
+        print("Start Date is later than End date. Stopping")
+    else:
+        # Create the master list of bins to populate with data from the hiss file.
+        masterlist =[]
+        bin_size = 60 * 5
 
-    for i in range(start_posix, end_posix + bin_size):
-        if i % bin_size == 0:
-            temp_bins = []
-            temp_bins.append(i)
-            for j in range(1, 8):
-                temp_bins.append([])
-            masterlist.append(temp_bins)
+        for i in range(start_posix, end_posix + bin_size):
+            if i % bin_size == 0:
+                temp_bins = []
+                temp_bins.append(i)
+                for j in range(1, 8):
+                    temp_bins.append([])
+                masterlist.append(temp_bins)
 
-    # Append data to the master list.
-    for item in datalist:
-        posix_data = utc_to_posix(item[0])
-        master_range = len(masterlist) - 1
-        master_index = get_index(start_posix, end_posix, posix_data, master_range)
+        # Append data to the master list.
+        for item in datalist:
+            posix_data = utc_to_posix(item[0])
+            master_range = len(masterlist) - 1
+            master_index = get_index(start_posix, end_posix, posix_data, master_range)
 
-        for i in range(1, len(item)):
-            data = float(item[i])
-            masterlist[master_index][i].append(data)
+            for i in range(1, len(item)):
+                data = float(item[i])
+                masterlist[master_index][i].append(data)
 
+        datab = sqlite3.connect(database)
+        cursor = datab.cursor()
+        for item in masterlist:
+            posixdate = item[0]
 
+            for i in range(1, len(frequency_range) + 1):
+                index = i - 1
+                data = round(mean(item[i]), 3)
+                cursor.execute("insert into measurement (posixtime, frequency, data) "
+                               "values (?, ?, ?);", [posixdate, frequency_range[index], data])
+                print("Added data", posixdate, frequency_range[index], data)
+        datab.commit()
+        datab.close()
