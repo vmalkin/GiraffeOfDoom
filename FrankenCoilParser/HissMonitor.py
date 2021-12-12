@@ -181,12 +181,14 @@ if __name__ == "__main__":
     # Query database for most recent datetime
     print("Looking in Database for most recent start date...")
     start_posix = db_getdatetime()
+
     if start_posix == 0:
         print("Database empty! Calculating start date from CSV data...")
         start_posix = utc_to_posix(datalist[0][0])
-
+    print("Start date located: ", posix_to_utc(start_posix))
     # The end date for calculations
     end_posix = utc_to_posix(datalist[len(datalist) - 1][0])
+    print("End date located: ", posix_to_utc(end_posix))
 
     if start_posix >= end_posix:
         print("Start Date is later than End date. Stopping")
@@ -204,14 +206,18 @@ if __name__ == "__main__":
                 masterlist.append(temp_bins)
 
         # Append data to the master list.
+        print("Begin assembling array of new data values...")
         for item in datalist:
-            posix_data = utc_to_posix(item[0])
-            master_range = len(masterlist) - 1
-            master_index = get_index(start_posix, end_posix, posix_data, master_range)
+            posix_date = utc_to_posix(item[0])
 
-            for i in range(1, len(item)):
-                data = float(item[i])
-                masterlist[master_index][i].append(data)
+            if posix_date > start_posix:
+                master_range = len(masterlist) - 1
+                master_index = get_index(start_posix, end_posix, posix_date, master_range)
+
+                for i in range(1, len(item)):
+                    # print(i, item, master_index, master_range)
+                    data = float(item[i])
+                    masterlist[master_index][i].append(data)
 
         datab = sqlite3.connect(database)
         cursor = datab.cursor()
