@@ -224,7 +224,7 @@ def plot_heatmap(slots, dates, plotdata, savefile, frequency, rows):
     plottitle = str(frequency) + " Hz"
     height = int(rows) * 30
     fig.update_layout(width=1200, height=height, title=plottitle)
-    fig.show()
+    # fig.show()
     fig.write_image(savefile)
 
 if __name__ == "__main__":
