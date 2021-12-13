@@ -16,7 +16,6 @@ import sqlite3
 import re
 
 # datafile = "c://temp//hiss.csv"
-# datafile = "c://temp//harmonics.csv"
 datafile = "hiss.csv"
 regex = r"\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d"
 dt_format = "%Y-%m-%d %H:%M:%S"
@@ -98,10 +97,10 @@ def db_addnewdata(posixdate,frequency, data):
 #     return returnlist
 
 
-def posix_to_utc(posixtime):
+def posix_to_utc(posixtime, format):
     # print(posixtime)
     # utctime = datetime.datetime.utcfromtimestamp(int(posixtime)).strftime(timeformat)
-    utctime = datetime.utcfromtimestamp(int(posixtime)).strftime(dt_format)
+    utctime = datetime.utcfromtimestamp(int(posixtime)).strftime(format)
     return utctime
 
 def utc_to_posix(utc_time):
@@ -167,6 +166,67 @@ def db_getdatetime():
     return returnvalue
 
 
+def db_get_plotdata(frequency):
+    returnvalue = []
+    datab = sqlite3.connect(database)
+    cursor = datab.cursor()
+    queryresult = cursor.execute("select * from measurement where frequency = ? order by posixtime asc;", [frequency])
+    for item in queryresult:
+        dp = [str(item[0]), item[2]]
+        returnvalue.append(dp)
+    return returnvalue
+
+
+def db_get_dates(frequency):
+    returnvalue = []
+    datab = sqlite3.connect(database)
+    cursor = datab.cursor()
+    queryresult = cursor.execute("select posixtime from measurement where frequency = ? order by posixtime asc;", [frequency])
+    for item in queryresult:
+        dp = [str(item[0])]
+        returnvalue.append(dp)
+    return returnvalue
+
+
+def process_dates(dates):
+    returnarray = []
+    for item in dates:
+        plot_date = str(posix_to_utc(item[0], "%Y-%m-%d"))
+        if plot_date not in returnarray:
+            returnarray.append(plot_date)
+    return returnarray
+
+
+def db_gettimeslots():
+    returnarray = []
+    for i in range(0, 86400):
+        if i % 300 == 0:
+            returnarray.append(posix_to_utc(i, "%H:%M"))
+    return returnarray
+
+
+def process_data(plotdata):
+    returnarray = []
+    day = []
+    for item in plotdata:
+        plot_date = item[0]
+        plot_data = item[1]
+        day.append(plot_data)
+        if posix_to_utc(plot_date, "%H:%M") == "00:00":
+            returnarray.append(day)
+            day = []
+    return returnarray
+
+
+def plot_heatmap(slots, dates, plotdata, savefile, frequency, rows):
+    data = go.Heatmap(x=slots, y=dates, z=plotdata, colorscale='thermal')
+    fig = go.Figure(data)
+    plottitle = str(frequency) + " Hz"
+    height = int(rows) * 30
+    fig.update_layout(width=1200, height=height, title=plottitle)
+    fig.show()
+    fig.write_image(savefile)
+
 if __name__ == "__main__":
     if os.path.isfile(database) is False:
         print("No database - creating.")
@@ -185,10 +245,10 @@ if __name__ == "__main__":
     if start_posix == 0:
         print("Database empty! Calculating start date from CSV data...")
         start_posix = utc_to_posix(datalist[0][0])
-    print("Start date located: ", posix_to_utc(start_posix))
+    print("Start date located: ", posix_to_utc(start_posix, dt_format))
     # The end date for calculations
     end_posix = utc_to_posix(datalist[len(datalist) - 1][0])
-    print("End date located: ", posix_to_utc(end_posix))
+    print("End date located: ", posix_to_utc(end_posix, dt_format))
 
     if start_posix >= end_posix:
         print("Start Date is later than End date. Stopping")
@@ -232,3 +292,16 @@ if __name__ == "__main__":
                 print("Added data", posixdate, frequency_range[index], data)
         datab.commit()
         datab.close()
+
+
+    dates = db_get_dates(125)
+    dates = process_dates(dates)
+    slots = db_gettimeslots()
+    rows = len(dates)
+
+    for freq in frequency_range:
+        plotdata = db_get_plotdata(freq)
+        plotdata = process_data(plotdata)
+        savefile = str(freq) + ".jpg"
+        plot_heatmap(slots, dates, plotdata, savefile, freq, rows)
+
