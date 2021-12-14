@@ -16,8 +16,8 @@ import sqlite3
 import re
 from statistics import stdev
 
-datafile = "c://temp//hiss.csv"
-# datafile = "hiss.csv"
+# datafile = "c://temp//hiss.csv"
+datafile = "hiss.csv"
 regex = r"\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d"
 dt_format = "%Y-%m-%d %H:%M:%S"
 stationname = "dna_hiss"
@@ -264,6 +264,25 @@ def plot_heatmap(slots, dates, plotdata, savefile, frequency, rows):
     # fig.show()
     fig.write_image(savefile)
 
+
+def generate_plots():
+    # Create the heat plots for each frequency
+    dates = db_get_dates(125)
+    dates = process_dates(dates)
+    slots = db_gettimeslots()
+    rows = len(dates)
+
+    for item in frequency_range:
+        frequency = item[0]
+        thresh_hi = item[1]
+        thresh_lo = item[2]
+
+        plotdata = db_get_plotdata(frequency)
+        plotdata = process_data(plotdata, thresh_hi, thresh_lo)
+        savefile = str(frequency) + ".svg"
+        plot_heatmap(slots, dates, plotdata, savefile, frequency, rows)
+
+
 if __name__ == "__main__":
     if os.path.isfile(database) is False:
         print("No database - creating.")
@@ -279,16 +298,19 @@ if __name__ == "__main__":
     print("Looking in Database for most recent start date...")
     start_posix = db_getdatetime()
 
+    # If database is empty, get start time from CSV file
     if start_posix == 0:
         print("Database empty! Calculating start date from CSV data...")
         start_posix = utc_to_posix(datalist[0][0])
     print("Start date located: ", posix_to_utc(start_posix, dt_format))
-    # The end date for calculations
+
+    # The end date for calculations from CSV file
     end_posix = utc_to_posix(datalist[len(datalist) - 1][0])
     print("End date located: ", posix_to_utc(end_posix, dt_format))
 
     if start_posix >= end_posix:
         print("Start Date is later than End date. Stopping")
+        generate_plots()
     else:
         # Create the master list of bins to populate with data from the hiss file.
         masterlist =[]
@@ -299,7 +321,7 @@ if __name__ == "__main__":
                 temp_bins = []
                 temp_bins.append(i)
                 for j in range(1, 8):
-                    temp_bins.append([])
+                    temp_bins.append([0.0])
                 masterlist.append(temp_bins)
 
         # Append data to the master list.
@@ -329,20 +351,4 @@ if __name__ == "__main__":
                 # print("Added data", posixdate, frequency_range[index], data)
         datab.commit()
         datab.close()
-
-    # Create the heat plots for each frequency
-    dates = db_get_dates(125)
-    dates = process_dates(dates)
-    slots = db_gettimeslots()
-    rows = len(dates)
-
-    for item in frequency_range:
-        frequency = item[0]
-        thresh_hi = item[1]
-        thresh_lo = item[2]
-
-        plotdata = db_get_plotdata(frequency)
-        plotdata = process_data(plotdata, thresh_hi, thresh_lo)
-        savefile = str(frequency) + ".svg"
-        plot_heatmap(slots, dates, plotdata, savefile, frequency, rows)
-
+        generate_plots()
