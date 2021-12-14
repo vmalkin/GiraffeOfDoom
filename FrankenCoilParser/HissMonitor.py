@@ -14,6 +14,7 @@ from calendar import timegm
 import numpy as np
 import sqlite3
 import re
+from statistics import stdev
 
 # datafile = "c://temp//hiss.csv"
 datafile = "hiss.csv"
@@ -205,27 +206,54 @@ def db_gettimeslots():
     return returnarray
 
 
-def process_data(plotdata):
+def process_data(rawplotdata):
+    threshold_hi = 100
+    diff_threshold = 4
+    plotnull = None
     returnarray = []
     day = []
-    for item in plotdata:
-        plot_date = item[0]
-        plot_data = item[1]
-        day.append(plot_data)
-        if posix_to_utc(plot_date, "%H:%M") == "00:00":
+
+    for i in range(1, len(rawplotdata)):
+        now_time = rawplotdata[i][0]
+        now_data = rawplotdata[i][1]
+        prev_data = rawplotdata[i - 1][1]
+
+        if prev_data > now_data:
+            diff = prev_data - now_data
+        if now_data > prev_data:
+            diff = now_data - prev_data
+        if now_data == prev_data:
+            diff = 0
+
+        if now_data == 0.0:
+            now_data = plotnull
+        elif now_data > threshold_hi:
+            now_data = plotnull
+        elif diff == 0:
+            now_data = plotnull
+        elif diff > diff_threshold:
+            now_data = plotnull
+
+        day.append(now_data)
+
+        if posix_to_utc(now_time, "%H:%M") == "00:00":
             returnarray.append(day)
             day = []
+    returnarray.append(day)
     return returnarray
 
 
 def plot_heatmap(slots, dates, plotdata, savefile, frequency, rows):
     data = go.Heatmap(x=slots, y=dates, z=plotdata, colorscale='thermal')
     fig = go.Figure(data)
-    plottitle = str(frequency) + " Hz"
+    plottitle = "VLF hiss at " + str(frequency) + " Hz"
     height = int(rows) * 30
+    fig.update_layout(paper_bgcolor="#a0a0a0",  plot_bgcolor="#e0e0e0")
+    fig.update_yaxes(tickformat="%b %d", ticklabelmode="instant")
+    fig.update_layout(title_font_size=21, yaxis = dict(tickfont=dict(size=16)))
     fig.update_layout(width=1200, height=height, title=plottitle)
-    # fig.show()
-    fig.write_image(savefile)
+    fig.show()
+    # fig.write_image(savefile)
 
 if __name__ == "__main__":
     if os.path.isfile(database) is False:
@@ -289,11 +317,11 @@ if __name__ == "__main__":
                 data = round(mean(item[i]), 3)
                 cursor.execute("insert into measurement (posixtime, frequency, data) "
                                "values (?, ?, ?);", [posixdate, frequency_range[index], data])
-                print("Added data", posixdate, frequency_range[index], data)
+                # print("Added data", posixdate, frequency_range[index], data)
         datab.commit()
         datab.close()
 
-
+    # Create the heat plots for each frequency
     dates = db_get_dates(125)
     dates = process_dates(dates)
     slots = db_gettimeslots()
