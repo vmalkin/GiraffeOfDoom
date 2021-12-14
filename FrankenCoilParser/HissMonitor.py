@@ -16,8 +16,8 @@ import sqlite3
 import re
 from statistics import stdev
 
-# datafile = "c://temp//hiss.csv"
-datafile = "hiss.csv"
+datafile = "c://temp//hiss.csv"
+# datafile = "hiss.csv"
 regex = r"\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d"
 dt_format = "%Y-%m-%d %H:%M:%S"
 stationname = "dna_hiss"
@@ -26,7 +26,15 @@ graphing_file = stationname + "_graph.csv"
 median_window = 1  # Full window = halfwindow * 2 + 1
 average_window = 10
 database = "hiss.db"
-frequency_range = [125, 240, 410, 760, 1800, 4300, 9000]
+# Each entry is Frequency, threshold_hi, threshold_lo
+frequency_range = [
+    [125, 60, 20],
+    [240,  60, 20],
+    [410,  60, 20],
+    [760,  60, 5],
+    [1800, 60, 5],
+    [4300, 20, -20],
+    [9000, 20, -20]]
 
 
 def get_index(start, stop, current, length):
@@ -50,7 +58,7 @@ def db_create():
                    ");")
     # Populate with initial values
     for item in frequency_range:
-        cursor.execute("Insert into freq (frequency) values (?);", [item])
+        cursor.execute("Insert into freq (frequency) values (?);", [item[0]])
 
     datab.commit()
     datab.close()
@@ -206,9 +214,10 @@ def db_gettimeslots():
     return returnarray
 
 
-def process_data(rawplotdata):
-    threshold_hi = 100
-    diff_threshold = 4
+def process_data(rawplotdata, thresh_hi, thresh_lo):
+    threshold_hi = thresh_hi
+    threshold_lo = thresh_lo
+    diff_threshold = 20
     plotnull = None
     returnarray = []
     day = []
@@ -225,11 +234,11 @@ def process_data(rawplotdata):
         if now_data == prev_data:
             diff = 0
 
-        if now_data == 0.0:
+        # if now_data == 0.0:
+        #     now_data = plotnull
+        if now_data > threshold_hi:
             now_data = plotnull
-        elif now_data > threshold_hi:
-            now_data = plotnull
-        elif diff == 0:
+        elif now_data < threshold_lo:
             now_data = plotnull
         elif diff > diff_threshold:
             now_data = plotnull
@@ -252,8 +261,8 @@ def plot_heatmap(slots, dates, plotdata, savefile, frequency, rows):
     fig.update_yaxes(tickformat="%b %d", ticklabelmode="instant")
     fig.update_layout(title_font_size=21, yaxis = dict(tickfont=dict(size=16)))
     fig.update_layout(width=1200, height=height, title=plottitle)
-    fig.show()
-    # fig.write_image(savefile)
+    # fig.show()
+    fig.write_image(savefile)
 
 if __name__ == "__main__":
     if os.path.isfile(database) is False:
@@ -316,7 +325,7 @@ if __name__ == "__main__":
                 index = i - 1
                 data = round(mean(item[i]), 3)
                 cursor.execute("insert into measurement (posixtime, frequency, data) "
-                               "values (?, ?, ?);", [posixdate, frequency_range[index], data])
+                               "values (?, ?, ?);", [posixdate, frequency_range[index][0], data])
                 # print("Added data", posixdate, frequency_range[index], data)
         datab.commit()
         datab.close()
@@ -327,9 +336,13 @@ if __name__ == "__main__":
     slots = db_gettimeslots()
     rows = len(dates)
 
-    for freq in frequency_range:
-        plotdata = db_get_plotdata(freq)
-        plotdata = process_data(plotdata)
-        savefile = str(freq) + ".jpg"
-        plot_heatmap(slots, dates, plotdata, savefile, freq, rows)
+    for item in frequency_range:
+        frequency = item[0]
+        thresh_hi = item[1]
+        thresh_lo = item[2]
+
+        plotdata = db_get_plotdata(frequency)
+        plotdata = process_data(plotdata, thresh_hi, thresh_lo)
+        savefile = str(frequency) + ".svg"
+        plot_heatmap(slots, dates, plotdata, savefile, frequency, rows)
 
