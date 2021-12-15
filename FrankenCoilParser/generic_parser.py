@@ -54,7 +54,7 @@ def filter_median(object_list):
 
         for j in range(0, filterwindow - 1):
             k = i - j
-            data = float(object_list[k].data)
+            data = float(object_list[k].rawdata)
             data_store.append(data)
 
         if len(data_store) > 0:
@@ -72,7 +72,7 @@ def filter_average(object_list):
         templist = []
         datetime = object_list[i].utc_time
         for j in range(-1 * half_window, half_window):
-            data = float(object_list[i+j].data)
+            data = float(object_list[i+j].rawdata)
             templist.append(data)
         avg_data = mean(templist)
         dp = DataPoint(datetime, avg_data)
@@ -91,7 +91,7 @@ def filter_binner(object_list):
 
         for j in range(0, filterwindow - 1):
             k = i - j
-            data = float(object_list[k].data)
+            data = float(object_list[k].rawdata)
             data_store.append(data)
 
         if len(data_store) > 0:
