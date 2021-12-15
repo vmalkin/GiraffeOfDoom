@@ -207,8 +207,8 @@ if __name__ == "__main__":
 
             # Get unbinned data
             rawdata = db_get_plotdata(frequency)
-            data_start = rawdata[0][0]
-            data_end = rawdata[len(rawdata) - 1][0]
+            data_start = int(rawdata[0][0])
+            data_end = int(rawdata[len(rawdata) - 1][0])
 
             # Set up to create 5 min bins.
             masterlist = []
@@ -217,13 +217,14 @@ if __name__ == "__main__":
             for i in range(data_start, data_end):
                 if i % bin == 0:
                     masterlist.append(bindata)
-            for item in rawdata
 
-
-
-
-
-        print("SVG files updated")
+            for item in rawdata:
+                date = int(item[0])
+                data = item[1]
+                listlength = len(masterlist) - 1
+                index = int(((date - data_start) / (data_end - data_start)) * listlength)
+                masterlist[index].append(data)
+     print("SVG files updated")
 
 
 
