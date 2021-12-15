@@ -199,32 +199,32 @@ if __name__ == "__main__":
         datab.commit()
         datab.close()
 
-        # Get data for each frequency and begin to process.
-        for item in frequency_range:
-            frequency = item[0]
-            thresh_hi = item[1]
-            thresh_lo = item[2]
+        # # Get data for each frequency and begin to process.
+        # for item in frequency_range:
+        #     frequency = item[0]
+        #     thresh_hi = item[1]
+        #     thresh_lo = item[2]
 
-            # Get unbinned data
-            rawdata = db_get_plotdata(frequency)
-            data_start = int(rawdata[0][0])
-            data_end = int(rawdata[len(rawdata) - 1][0])
+        # Get unbinned data
+        rawdata = db_get_plotdata(125)
+        data_start = int(rawdata[0][0])
+        data_end = int(rawdata[len(rawdata) - 1][0])
 
-            # Set up to create 5 min bins.
-            masterlist = []
-            bindata = [0]
-            bin = 60 * 5
-            for i in range(data_start, data_end):
-                if i % bin == 0:
-                    masterlist.append(bindata)
+        # Set up to create 5 min bins.
+        masterlist = []
 
-            for item in rawdata:
-                date = int(item[0])
-                data = item[1]
-                listlength = len(masterlist) - 1
-                index = int(((date - data_start) / (data_end - data_start)) * listlength)
-                masterlist[index].append(data)
-     print("SVG files updated")
+        bin = 60 * 5
+        for i in range(data_start, data_end):
+            if i % bin == 0:
+                masterlist.append([0])
+
+        for item in rawdata:
+            date = int(item[0])
+            data = item[1]
+            listlength = len(masterlist) - 1
+            index = int(((date - data_start) / (data_end - data_start)) * listlength)
+            masterlist[index].append(data)
+
 
 
 
