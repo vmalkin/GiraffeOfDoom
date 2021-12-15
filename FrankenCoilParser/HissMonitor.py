@@ -18,6 +18,7 @@ from statistics import stdev
 
 # datafile = "c://temp//hiss.csv"
 datafile = "hiss.csv"
+
 regex = r"\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d"
 dt_format = "%Y-%m-%d %H:%M:%S"
 stationname = "dna_hiss"
@@ -26,6 +27,7 @@ graphing_file = stationname + "_graph.csv"
 median_window = 1  # Full window = halfwindow * 2 + 1
 average_window = 10
 database = "hiss.db"
+
 # Each entry is Frequency, threshold_hi, threshold_lo
 frequency_range = [
     [125, 60, 20],
@@ -76,36 +78,6 @@ def db_addnewdata(posixdate,frequency, data):
     datab.close()
 
 
-# def filter_average(list):
-#     returnlist = []
-#     for i in range(average_window, len(list) - average_window):
-#         templist = []
-#         for j in range(-1 * average_window, average_window):
-#             data = float(list[i+j])
-#             templist.append(data)
-#         avg_data = mean(templist)
-#         avg_data = round(avg_data, 3)
-#         returnlist.append(avg_data)
-#     return returnlist
-
-
-# def filter_median(item_list):
-#     """
-#     Takes in a list of DataPoints and performs a median filter on the list. The list is truncated at the start
-#     and end by one halfwindow
-#     """
-#     returnlist = []
-#
-#     for i in range(median_window, len(item_list) - median_window):
-#         data_store = []
-#         for j in range(0 - median_window, median_window + 1):
-#             d = float(item_list[i + j])
-#             data_store.append(d)
-#         medianvalue = median(data_store)
-#         returnlist.append(medianvalue)
-#     return returnlist
-
-
 def posix_to_utc(posixtime, format):
     # print(posixtime)
     # utctime = datetime.datetime.utcfromtimestamp(int(posixtime)).strftime(timeformat)
@@ -129,14 +101,6 @@ def open_file(datafile):
                 returnlist.append(line)
     return returnlist
 
-#
-# def get_header(datafile):
-#     with open(datafile, "r") as c:
-#         for line in c:
-#             line = line.strip()
-#             header = line
-#             break
-#     return header
 
 def parse_file(list, starttime):
     starttime = starttime
@@ -149,19 +113,6 @@ def parse_file(list, starttime):
             if utc_to_posix(datething) > starttime:
                 returnlist.append(line)
     return returnlist
-
-
-# def filter_nulls(data):
-#     null = None
-#     returnlist = []
-#     for item in data:
-#         if item == 0:
-#             returnlist.append(null)
-#         elif item > 500:
-#             returnlist.append(null)
-#         else:
-#             returnlist.append(item)
-#     return returnlist
 
 
 def db_getdatetime():
@@ -253,15 +204,18 @@ def process_data(rawplotdata, thresh_hi, thresh_lo):
 
 
 def plot_heatmap(slots, dates, plotdata, savefile, frequency, rows):
-    data = go.Heatmap(x=slots, y=dates, z=plotdata, colorscale='thermal')
+    data = go.Heatmap(x=slots, y=dates, z=plotdata, colorscale='hot')
     fig = go.Figure(data)
-    plottitle = "VLF hiss at " + str(frequency) + " Hz"
-    height = int(rows) * 30
+    plottitle = "VLF hiss at " + str(frequency) + " Hz. Strength in dB."
+    if rows < 10:
+        height = 300
+    else:
+        height = int(rows) * 30
     fig.update_layout(paper_bgcolor="#a0a0a0",  plot_bgcolor="#e0e0e0")
     fig.update_yaxes(tickformat="%b %d", ticklabelmode="instant")
-    fig.update_layout(title_font_size=21, yaxis = dict(tickfont=dict(size=16)))
+    fig.update_layout(title_font_size=21, yaxis = dict(tickfont=dict(size=12)))
     fig.update_layout(width=1200, height=height, title=plottitle)
-    # fig.show()
+    # # fig.show()
     fig.write_image(savefile)
 
 
@@ -279,8 +233,10 @@ def generate_plots():
 
         plotdata = db_get_plotdata(frequency)
         plotdata = process_data(plotdata, thresh_hi, thresh_lo)
+
         savefile = str(frequency) + ".svg"
         plot_heatmap(slots, dates, plotdata, savefile, frequency, rows)
+    print("SVG iles update")
 
 
 if __name__ == "__main__":
@@ -351,4 +307,6 @@ if __name__ == "__main__":
                 # print("Added data", posixdate, frequency_range[index], data)
         datab.commit()
         datab.close()
+
         generate_plots()
+
