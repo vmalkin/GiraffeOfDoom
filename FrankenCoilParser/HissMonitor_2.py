@@ -218,8 +218,8 @@ def draw_graphs():
         plot_total.append(plot_daily)
 
         savefile = str(frequency) + ".svg"
-        # plot_heatmap(slots, plot_dateaxis, plot_total, savefile, frequency, len(plot_total), None, None)
-        plot_heatmap(slots, plot_dateaxis, plot_total, savefile, frequency, len(plot_total), thresh_hi, thresh_lo)
+        plot_heatmap(slots, plot_dateaxis, plot_total, savefile, frequency, len(plot_total), None, None)
+        # plot_heatmap(slots, plot_dateaxis, plot_total, savefile, frequency, len(plot_total), thresh_hi, thresh_lo)
     print("All graphs updated!")
 
 
