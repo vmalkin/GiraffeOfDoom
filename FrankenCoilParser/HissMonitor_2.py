@@ -16,8 +16,8 @@ import sqlite3
 import re
 from statistics import stdev
 
-# datafile = "c://temp//hiss.csv"
-datafile = "hiss.csv"
+datafile = "c://temp//hiss.csv"
+# datafile = "hiss.csv"
 
 regex = r"\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d"
 dt_format = "%Y-%m-%d %H:%M:%S"
@@ -33,10 +33,10 @@ frequency_range = [
     [125, 60, 20],
     [240,  60, 20],
     [410,  60, 20],
-    [760,  60, 5],
-    [1800, 60, 5],
-    [4300, 20, -20],
-    [9000, 20, -20]]
+    [760,  30, 5],
+    [1800, 30, 5],
+    [4300, 20, -10],
+    [9000, 20, -10]]
 
 
 def get_index(start, stop, current, length):
@@ -137,25 +137,26 @@ def db_get_plotdata(frequency):
     return returnvalue
 
 
-def plot_heatmap(slots, dates, plotdata, savefile, frequency, rows):
+def plot_heatmap(slots, dates, plotdata, savefile, frequency, rows, z_hi, z_lo):
     data = go.Heatmap(x=slots, y=dates, z=plotdata, colorscale='hot')
     fig = go.Figure(data)
-    # plottitle = "VLF hiss at " + str(frequency) + " Hz. Strength in dB."
-    # if rows < 10:
-    #     height = 300
-    # else:
-    #     height = int(rows) * 30
-    # fig.update_layout(paper_bgcolor="#a0a0a0",  plot_bgcolor="#e0e0e0")
-    # fig.update_yaxes(tickformat="%b %d", ticklabelmode="instant")
-    # fig.update_layout(title_font_size=21, yaxis = dict(tickfont=dict(size=12)))
-    # fig.update_layout(width=1200, height=height, title=plottitle)
-    fig.show()
-    # fig.write_image(savefile)
+    plottitle = "VLF hiss at " + str(frequency) + " Hz. Strength in dB."
+    if rows < 10:
+        height = 300
+    else:
+        height = int(rows) * 30
+    fig.data[0].update(zmin=z_lo, zmax=z_hi)
+    fig.update_layout(paper_bgcolor="#a0a0a0",  plot_bgcolor="#e0e0e0")
+    fig.update_yaxes(tickformat="%b %d", ticklabelmode="instant")
+    fig.update_layout(title_font_size=21, yaxis = dict(tickfont=dict(size=12)))
+    fig.update_layout(width=1200, height=height, title=plottitle)
+    # fig.show()
+    fig.write_image(savefile)
 
 
 def create_slots():
     returnlist = []
-    for i in range(0, 86400, 5):
+    for i in range(0, 86400, 300):
         returnlist.append(posix_to_utc(i, "%H:%M"))
     return returnlist
 
@@ -204,49 +205,53 @@ if __name__ == "__main__":
         datab.commit()
         datab.close()
 
-        # # Get data for each frequency and begin to process.
-        # for item in frequency_range:
-        #     frequency = item[0]
-        #     thresh_hi = item[1]
-        #     thresh_lo = item[2]
+        # Get data for each frequency and begin to process.
+        for item in frequency_range:
+            frequency = item[0]
+            thresh_hi = item[1]
+            thresh_lo = item[2]
 
-        # Get unbinned data
-        rawdata = db_get_plotdata(125)
-        data_start = int(rawdata[0][0])
-        data_end = int(rawdata[len(rawdata) - 1][0])
+            # Get unbinned data
+            rawdata = db_get_plotdata(frequency)
+            data_start = int(rawdata[0][0])
+            data_end = int(rawdata[len(rawdata) - 1][0])
 
-        # Set up to create 5 min bins.
-        masterlist = []
-        masterlist_dates = []
-        bin = 60 * 5
-        for i in range(data_start, data_end):
-            if i % bin == 0:
-                masterlist.append([0])
-                masterlist_dates.append(i)
+            # Set up to create 5 min bins.
+            masterlist = []
+            masterlist_dates = []
+            bin = 60 * 5
+            for i in range(data_start, data_end):
+                if i % bin == 0:
+                    masterlist.append([0])
+                    masterlist_dates.append(i)
 
-        for item in rawdata:
-            date = int(item[0])
-            data = item[1]
-            listlength = len(masterlist) - 1
-            index = int(((date - data_start) / (data_end - data_start)) * listlength)
-            masterlist[index].append(data)
+            for item in rawdata:
+                date = int(item[0])
+                data = item[1]
+                listlength = len(masterlist) - 1
+                index = int(((date - data_start) / (data_end - data_start)) * listlength)
+                masterlist[index].append(data)
 
-        # Reformat the data so it can be plotted as a heatmap.
-        plot_total = []
-        plot_daily = []
-        plot_dateaxis = []
-        slots = create_slots()
+            # Reformat the data so it can be plotted as a heatmap.
+            plot_total = []
+            plot_daily = []
+            plot_dateaxis = []
+            slots = create_slots()
 
-        for i in range(0, len(masterlist_dates)):
-            if posix_to_utc(masterlist_dates[i], "%H:%M") == "00:00":
-                plot_total.append(plot_daily)
-                plot_dateaxis.append(posix_to_utc(masterlist_dates[i], "%Y-%m-%d"))
-                plot_daily = []
-            else:
-                plot_daily.append(mean(masterlist[i]))
+            for i in range(0, len(masterlist_dates)):
+                if posix_to_utc(masterlist_dates[i], "%H:%M") == "00:00":
+                    plot_total.append(plot_daily)
+                    plot_dateaxis.append(posix_to_utc(masterlist_dates[i], "%Y-%m-%d"))
+                    plot_daily = []
+                else:
+                    if sum(masterlist[i]) > 0:
+                        data = mean(masterlist[i])
+                    elif sum(masterlist[i]) == 0:
+                        data = None
+                    plot_daily.append(data)
 
-        # print(len(plot_total), len(plot_dateaxis))
-
-        plot_heatmap(slots, plot_dateaxis, plot_total, "test.svg", 125, len(masterlist))
+            savefile = str(frequency) + ".jpg"
+            plot_heatmap(slots, plot_dateaxis, plot_total, savefile, frequency, len(plot_total), None, None)
+            # plot_heatmap(slots, plot_dateaxis, plot_total, savefile, frequency, len(plot_total), thresh_hi, thresh_lo)
 
 
