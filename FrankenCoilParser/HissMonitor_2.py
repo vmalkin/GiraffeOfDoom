@@ -147,7 +147,9 @@ def plot_heatmap(slots, dates, plotdata, savefile, frequency, rows, z_hi, z_lo):
         height = int(rows) * 30
     fig.data[0].update(zmin=z_lo, zmax=z_hi)
     fig.update_layout(paper_bgcolor="#a0a0a0",  plot_bgcolor="#e0e0e0")
-    fig.update_yaxes(tickformat="%b %d", ticklabelmode="period")
+    fig.update_xaxes(title_text="UTC Hours")
+    fig.update_yaxes(title_text="UTC Date", tickformat="%b %d", ticklabelmode="instant")
+    # fig.update_yaxes(ticklabelmode="instant")
     fig.update_layout(title_font_size=21, yaxis = dict(tickfont=dict(size=12)))
     fig.update_layout(width=1200, height=height, title=plottitle)
     # fig.show()
@@ -202,7 +204,7 @@ def draw_graphs():
             # This becomes a new line for the day in the heatmap.
             if posix_to_utc(masterlist_dates[i], "%H:%M") == "00:00":
                 plot_total.append(plot_daily)
-                plot_dateaxis.append(posix_to_utc(masterlist_dates[i], "%Y-%m-%d"))
+                plot_dateaxis.append(posix_to_utc(masterlist_dates[i]-86400, "%Y-%m-%d"))
                 plot_daily = []
             else:
                 # Create a single value of the data for the current 5 minutes. Catch any weird data issues.
@@ -212,6 +214,8 @@ def draw_graphs():
                 elif sum(masterlist[i]) == 0:
                     data = None
                 plot_daily.append(data)
+        # The last row is partial data for the day
+        plot_total.append(plot_daily)
 
         savefile = str(frequency) + ".svg"
         plot_heatmap(slots, plot_dateaxis, plot_total, savefile, frequency, len(plot_total), None, None)
