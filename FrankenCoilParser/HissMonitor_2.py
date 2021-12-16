@@ -16,8 +16,8 @@ import sqlite3
 import re
 from statistics import stdev
 
-datafile = "c://temp//hiss.csv"
-# datafile = "hiss.csv"
+# datafile = "c://temp//hiss.csv"
+datafile = "hiss.csv"
 
 regex = r"\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d"
 dt_format = "%Y-%m-%d %H:%M:%S"
@@ -147,7 +147,7 @@ def plot_heatmap(slots, dates, plotdata, savefile, frequency, rows, z_hi, z_lo):
         height = int(rows) * 30
     fig.data[0].update(zmin=z_lo, zmax=z_hi)
     fig.update_layout(paper_bgcolor="#a0a0a0",  plot_bgcolor="#e0e0e0")
-    fig.update_yaxes(tickformat="%b %d", ticklabelmode="instant")
+    fig.update_yaxes(tickformat="%b %d", ticklabelmode="period")
     fig.update_layout(title_font_size=21, yaxis = dict(tickfont=dict(size=12)))
     fig.update_layout(width=1200, height=height, title=plottitle)
     # fig.show()
@@ -159,6 +159,64 @@ def create_slots():
     for i in range(0, 86400, 300):
         returnlist.append(posix_to_utc(i, "%H:%M"))
     return returnlist
+
+def draw_graphs():
+    print("Updating graphs...")
+    # Get data for each frequency and begin to process.
+    for item in frequency_range:
+        frequency = item[0]
+        thresh_hi = item[1]
+        thresh_lo = item[2]
+
+        # Get unbinned data
+        rawdata = db_get_plotdata(frequency)
+        data_start = int(rawdata[0][0])
+        data_end = int(rawdata[len(rawdata) - 1][0])
+
+        # Set up to create 5 min bins.
+        masterlist = []
+        masterlist_dates = []
+        bin = 60 * 5
+        for i in range(data_start, data_end):
+            if i % bin == 0:
+                masterlist.append([0])
+                masterlist_dates.append(i)
+
+        #  Put data from the raw data into the correct 5 min bin
+        for item in rawdata:
+            date = int(item[0])
+            data = item[1]
+            listlength = len(masterlist) - 1
+            index = int(((date - data_start) / (data_end - data_start)) * listlength)
+            masterlist[index].append(data)
+
+        # We now have two lists of data, dates at 5 minute intervals and bins of data at 5 min intervals.
+        # These data must be rearranged so Plotly can create a heatmap from them
+        plot_total = []
+        plot_daily = []
+        plot_dateaxis = []
+        slots = create_slots()
+
+        for i in range(0, len(masterlist_dates)):
+            # If we have reached the end of the day, create a new row to be added to the plot_total
+            # This becomes a new line for the day in the heatmap.
+            if posix_to_utc(masterlist_dates[i], "%H:%M") == "00:00":
+                plot_total.append(plot_daily)
+                plot_dateaxis.append(posix_to_utc(masterlist_dates[i], "%Y-%m-%d"))
+                plot_daily = []
+            else:
+                # Create a single value of the data for the current 5 minutes. Catch any weird data issues.
+                # this is our summary for the 5 minutes
+                if sum(masterlist[i]) > 0:
+                    data = mean(masterlist[i])
+                elif sum(masterlist[i]) == 0:
+                    data = None
+                plot_daily.append(data)
+
+        savefile = str(frequency) + ".svg"
+        plot_heatmap(slots, plot_dateaxis, plot_total, savefile, frequency, len(plot_total), None, None)
+        # plot_heatmap(slots, plot_dateaxis, plot_total, savefile, frequency, len(plot_total), thresh_hi, thresh_lo)
+    print("All graphs updated!")
 
 
 if __name__ == "__main__":
@@ -187,8 +245,8 @@ if __name__ == "__main__":
     print("End date located: ", posix_to_utc(end_posix, dt_format))
 
     if start_posix >= end_posix:
-        print("Start Date is later than End date. Stopping")
-
+        print("Start Date is later than End date. No data will be imported!")
+        draw_graphs()
     else:
         # Append all data into the database.
         datab = sqlite3.connect(database)
@@ -205,53 +263,7 @@ if __name__ == "__main__":
         datab.commit()
         datab.close()
 
-        # Get data for each frequency and begin to process.
-        for item in frequency_range:
-            frequency = item[0]
-            thresh_hi = item[1]
-            thresh_lo = item[2]
+        draw_graphs()
 
-            # Get unbinned data
-            rawdata = db_get_plotdata(frequency)
-            data_start = int(rawdata[0][0])
-            data_end = int(rawdata[len(rawdata) - 1][0])
-
-            # Set up to create 5 min bins.
-            masterlist = []
-            masterlist_dates = []
-            bin = 60 * 5
-            for i in range(data_start, data_end):
-                if i % bin == 0:
-                    masterlist.append([0])
-                    masterlist_dates.append(i)
-
-            for item in rawdata:
-                date = int(item[0])
-                data = item[1]
-                listlength = len(masterlist) - 1
-                index = int(((date - data_start) / (data_end - data_start)) * listlength)
-                masterlist[index].append(data)
-
-            # Reformat the data so it can be plotted as a heatmap.
-            plot_total = []
-            plot_daily = []
-            plot_dateaxis = []
-            slots = create_slots()
-
-            for i in range(0, len(masterlist_dates)):
-                if posix_to_utc(masterlist_dates[i], "%H:%M") == "00:00":
-                    plot_total.append(plot_daily)
-                    plot_dateaxis.append(posix_to_utc(masterlist_dates[i], "%Y-%m-%d"))
-                    plot_daily = []
-                else:
-                    if sum(masterlist[i]) > 0:
-                        data = mean(masterlist[i])
-                    elif sum(masterlist[i]) == 0:
-                        data = None
-                    plot_daily.append(data)
-
-            savefile = str(frequency) + ".jpg"
-            plot_heatmap(slots, plot_dateaxis, plot_total, savefile, frequency, len(plot_total), None, None)
-            # plot_heatmap(slots, plot_dateaxis, plot_total, savefile, frequency, len(plot_total), thresh_hi, thresh_lo)
 
 
