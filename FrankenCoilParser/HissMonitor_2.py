@@ -140,19 +140,24 @@ def db_get_plotdata(frequency):
 def plot_heatmap(slots, dates, plotdata, savefile, frequency, rows):
     data = go.Heatmap(x=slots, y=dates, z=plotdata, colorscale='hot')
     fig = go.Figure(data)
-    plottitle = "VLF hiss at " + str(frequency) + " Hz. Strength in dB."
-    if rows < 10:
-        height = 300
-    else:
-        height = int(rows) * 30
-    fig.update_layout(paper_bgcolor="#a0a0a0",  plot_bgcolor="#e0e0e0")
-    fig.update_yaxes(tickformat="%b %d", ticklabelmode="instant")
-    fig.update_layout(title_font_size=21, yaxis = dict(tickfont=dict(size=12)))
-    fig.update_layout(width=1200, height=height, title=plottitle)
-    # # fig.show()
-    fig.write_image(savefile)
+    # plottitle = "VLF hiss at " + str(frequency) + " Hz. Strength in dB."
+    # if rows < 10:
+    #     height = 300
+    # else:
+    #     height = int(rows) * 30
+    # fig.update_layout(paper_bgcolor="#a0a0a0",  plot_bgcolor="#e0e0e0")
+    # fig.update_yaxes(tickformat="%b %d", ticklabelmode="instant")
+    # fig.update_layout(title_font_size=21, yaxis = dict(tickfont=dict(size=12)))
+    # fig.update_layout(width=1200, height=height, title=plottitle)
+    fig.show()
+    # fig.write_image(savefile)
 
 
+def create_slots():
+    returnlist = []
+    for i in range(0, 86400, 5):
+        returnlist.append(posix_to_utc(i, "%H:%M"))
+    return returnlist
 
 
 if __name__ == "__main__":
@@ -212,11 +217,12 @@ if __name__ == "__main__":
 
         # Set up to create 5 min bins.
         masterlist = []
-
+        masterlist_dates = []
         bin = 60 * 5
         for i in range(data_start, data_end):
             if i % bin == 0:
                 masterlist.append([0])
+                masterlist_dates.append(i)
 
         for item in rawdata:
             date = int(item[0])
@@ -225,36 +231,22 @@ if __name__ == "__main__":
             index = int(((date - data_start) / (data_end - data_start)) * listlength)
             masterlist[index].append(data)
 
+        # Reformat the data so it can be plotted as a heatmap.
+        plot_total = []
+        plot_daily = []
+        plot_dateaxis = []
+        slots = create_slots()
+
+        for i in range(0, len(masterlist_dates)):
+            if posix_to_utc(masterlist_dates[i], "%H:%M") == "00:00":
+                plot_total.append(plot_daily)
+                plot_dateaxis.append(posix_to_utc(masterlist_dates[i], "%Y-%m-%d"))
+                plot_daily = []
+            else:
+                plot_daily.append(mean(masterlist[i]))
+
+        # print(len(plot_total), len(plot_dateaxis))
+
+        plot_heatmap(slots, plot_dateaxis, plot_total, "test.svg", 125, len(masterlist))
 
 
-
-        # Create the master list of bins to populate with data from the hiss file.
-        # masterlist =[]
-        # bin_size = 60 * 5
-        #
-        # for i in range(start_posix, end_posix + bin_size):
-        #     if i % bin_size == 0:
-        #         temp_bins = []
-        #         temp_bins.append(i)
-        #         for j in range(1, 8):
-        #             temp_bins.append([0.0])
-        #         masterlist.append(temp_bins)
-        #
-        # # Append data to the master list.
-        # print("Begin assembling array of new data values...")
-        # for item in datalist:
-        #     posix_date = utc_to_posix(item[0])
-        #
-        #     if posix_date > start_posix:
-        #         master_range = len(masterlist) - 1
-        #         master_index = get_index(start_posix, end_posix, posix_date, master_range)
-        #
-        #         for i in range(1, len(item)):
-        #             # print(i, item, master_index, master_range)
-        #             data = float(item[i])
-        #             masterlist[master_index][i].append(data)
-        #
-
-        #
-        # generate_plots()
-        #

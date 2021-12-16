@@ -63,7 +63,7 @@ def filter_median(object_list):
 
         for j in range(0, filterwindow - 1):
             k = i - j
-            data = float(object_list[k].data)
+            data = float(object_list[k].rawdata)
             data_store.append(data)
 
         if len(data_store) > 0:
@@ -81,10 +81,10 @@ def filter_average(object_list):
     for i in range(half_window, len(object_list) - half_window):
         templist = []
         datetime = object_list[i].utc_time
-        data = object_list[i].data
+        data = object_list[i].rawdata
 
         for j in range(-1 * half_window, half_window):
-            d = float(object_list[i+j].data)
+            d = float(object_list[i+j].rawdata)
             templist.append(d)
 
         avg_data = mean(templist)
