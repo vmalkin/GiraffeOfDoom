@@ -152,7 +152,7 @@ def plot_heatmap(slots, dates, plotdata, savefile, frequency, rows, z_hi, z_lo):
     # fig.update_yaxes(ticklabelmode="instant")
     fig.update_layout(title_font_size=21, yaxis = dict(tickfont=dict(size=12)))
     fig.update_layout(width=1200, height=height, title=plottitle)
-    # fig.show()
+    fig.show()
     fig.write_image(savefile)
 
 
@@ -192,6 +192,9 @@ def draw_graphs():
             index = int(((date - data_start) / (data_end - data_start)) * listlength)
             masterlist[index].append(data)
 
+        if frequency == 9000:
+            for item in masterlist:
+                print(mean(item))
         # We now have two lists of data, dates at 5 minute intervals and bins of data at 5 min intervals.
         # These data must be rearranged so Plotly can create a heatmap from them
         plot_total = []
@@ -209,12 +212,17 @@ def draw_graphs():
             else:
                 # Create a single value of the data for the current 5 minutes. Catch any weird data issues.
                 # this is our summary for the 5 minutes
-                if sum(masterlist[i]) > 0:
-                    data = mean(masterlist[i])
-                elif sum(masterlist[i]) == 0:
+                if len(masterlist[i]) > 0:
+                    # If we have a bin of zeroes, this throws the heatmap off, so output a null
+                    if sum(masterlist[i]) > 0 or sum(masterlist[i]) < 0:
+                        data = mean(masterlist[i])
+                    elif sum(masterlist[i]) == 0:
+                        data = None
+                elif len(masterlist[i]) == 0:
                     data = None
                 plot_daily.append(data)
-        # The last row is partial data for the day
+        # The last row is partial data for the day.
+        plot_daily.pop(len(plot_daily) - 1)
         plot_total.append(plot_daily)
 
         savefile = str(frequency) + ".svg"
