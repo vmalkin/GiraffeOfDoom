@@ -192,9 +192,6 @@ def draw_graphs():
             index = int(((date - data_start) / (data_end - data_start)) * listlength)
             masterlist[index].append(data)
 
-        if frequency == 9000:
-            for item in masterlist:
-                print(mean(item))
         # We now have two lists of data, dates at 5 minute intervals and bins of data at 5 min intervals.
         # These data must be rearranged so Plotly can create a heatmap from them
         plot_total = []
