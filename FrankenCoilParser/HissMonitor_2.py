@@ -152,7 +152,7 @@ def plot_heatmap(slots, dates, plotdata, savefile, frequency, rows, z_hi, z_lo):
     # fig.update_yaxes(ticklabelmode="instant")
     fig.update_layout(title_font_size=21, yaxis = dict(tickfont=dict(size=12)))
     fig.update_layout(width=1200, height=height, title=plottitle)
-    fig.show()
+    # fig.show()
     fig.write_image(savefile)
 
 
@@ -253,8 +253,10 @@ if __name__ == "__main__":
     end_posix = utc_to_posix(datalist[len(datalist) - 1][0])
     print("End date located: ", posix_to_utc(end_posix, dt_format))
 
-    if start_posix >= end_posix:
-        print("Start Date is later than End date. No data will be imported!")
+    if end_posix == start_posix:
+        print("")
+        print("*** No new data to be imported! ***")
+        print("")
         draw_graphs()
     else:
         # Append all data into the database.
@@ -263,12 +265,12 @@ if __name__ == "__main__":
 
         for item in datalist:
             posixdate = utc_to_posix(item[0])
-            for i in range(1, len(frequency_range) + 1):
-                index = i - 1
-                rawdata = item[i]
-                cursor.execute("insert into measurement (posixtime, frequency, data) "
-                               "values (?, ?, ?);", [posixdate, frequency_range[index][0], rawdata])
-        #         # print("Added data", posixdate, frequency_range[index], data)
+            if posixdate > start_posix:
+                for i in range(1, len(frequency_range) + 1):
+                    index = i - 1
+                    rawdata = item[i]
+                    cursor.execute("insert into measurement (posixtime, frequency, data) "
+                                   "values (?, ?, ?);", [posixdate, frequency_range[index][0], rawdata])
         datab.commit()
         datab.close()
 

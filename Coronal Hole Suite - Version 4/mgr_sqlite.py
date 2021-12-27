@@ -3,7 +3,7 @@ import common_data
 
 database = common_data.database
 """
- [satellite] 1..* [data] *..1 [data_type]
+ERD: [satellite] 1..* [data] *..1 [data_type]
 """
 
 def db_create():
@@ -48,3 +48,11 @@ def db_insert_data(posixtime, data, sat_name, data_type):
                [int(posixtime), float(data), sat_name, data_type])
     data_b.commit()
     db.close()
+
+def db_startdate():
+    data_b = sqlite3.connect(database)
+    db = data_b.cursor()
+    result = db.execute("select min(posixtime) from data;")
+    data_b.commit()
+    db.close()
+

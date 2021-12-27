@@ -11,7 +11,7 @@ import mgr_sqlite
 
 LOGFILE = 'log.csv'
 WAITPERIOD = 86400 * 5
-__version__ = '2.1'
+__version__ = '4.0'
 __author__ = "Vaughn Malkin"
 
 discovr = mgr_discovr_data.SatelliteDataProcessor()
