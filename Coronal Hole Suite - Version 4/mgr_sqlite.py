@@ -35,7 +35,7 @@ def db_populate():
     db.execute("insert into sat (sat_name) values (?);", ["sdo"])
     db.execute("insert into data (data_type) values (?);", ["speed"])
     db.execute("insert into data (data_type) values (?);", ["density"])
-    db.execute("insert into data (data_type) values (?);", ["forecast speed"])
+    db.execute("insert into data (data_type) values (?);", ["forecast_speed"])
     db.execute("insert into data (data_type) values (?);", ["ch_coverage"])
     data_b.commit()
     db.close()
@@ -49,10 +49,20 @@ def db_insert_data(posixtime, data, sat_name, data_type):
     data_b.commit()
     db.close()
 
-def db_startdate():
+def db_first_date():
     data_b = sqlite3.connect(database)
     db = data_b.cursor()
     result = db.execute("select min(posixtime) from data;")
-    data_b.commit()
+    for item in result:
+        returnvalue = item[0]
     db.close()
+    return returnvalue
 
+def db_last_date():
+    data_b = sqlite3.connect(database)
+    db = data_b.cursor()
+    result = db.execute("select max(posixtime) from data;")
+    for item in result:
+        returnvalue = item[0]
+    db.close()
+    return returnvalue

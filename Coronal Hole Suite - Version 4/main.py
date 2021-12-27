@@ -1,6 +1,6 @@
 import mgr_discovr_data
 import mgr_solar_image
-import mgr_data
+# import mgr_data
 import mgr_plotter
 import mgr_forecast
 import time
@@ -16,7 +16,7 @@ __author__ = "Vaughn Malkin"
 
 discovr = mgr_discovr_data.SatelliteDataProcessor()
 sun = mgr_solar_image.SolarImageProcessor()
-data_manager = mgr_data.DataManager(LOGFILE)
+# data_manager = mgr_data.DataManager(LOGFILE)
 forecaster = mgr_forecast.Forecaster()
 common_data.report_string = ""
 
@@ -38,8 +38,8 @@ if __name__ == "__main__":
 
     # get current posix time and create the datapoint to append the the main data
     posixtime = int(time.time())   # sun.coverage  discovr.wind_speed  discovr.wind_density
-    dp = mgr_data.DataPoint(posixtime, sun.coverage, discovr.wind_speed, discovr.wind_density)
-    print(dp.return_values())
+    # dp = mgr_data.DataPoint(posixtime, sun.coverage, discovr.wind_speed, discovr.wind_density)
+    # print(dp.return_values())
 
     # append the new datapoint and process the master datalist
     mgr_sqlite.db_insert_data(posixtime, sun.coverage, "discovr", "ch_coverage")
@@ -50,8 +50,8 @@ if __name__ == "__main__":
     # data_manager.process_new_data()
 
     # Calculate if enough time has elapsed to start running the forecasting.
-    startdate = int(data_manager.master_data[0].posix_date)
-    nowdate = int(data_manager.master_data[len(data_manager.master_data) - 1].posix_date)
+    startdate = mgr_sqlite.db_first_date()
+    nowdate = mgr_sqlite.db_last_date()
     elapsedtime = nowdate - startdate
     timeleft = (WAITPERIOD - elapsedtime) / (60 * 60 * 24)
 

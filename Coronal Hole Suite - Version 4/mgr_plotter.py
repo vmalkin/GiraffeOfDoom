@@ -19,7 +19,7 @@ logging.basicConfig(filename="errors.log", format='%(asctime)s %(message)s', lev
 # READING_PREDICTED = "prediction.csv"
 # READING_ACTUAL = "log.csv"
 READING_PREDICTED = common_data.reading_predicted
-READING_ACTUAL = common_data.reading_actual
+# READING_ACTUAL = common_data.reading_actual
 NULL = ""
 
 # A plot point, used to aggregate multiple data series for final display.

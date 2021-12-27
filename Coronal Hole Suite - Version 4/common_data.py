@@ -1,6 +1,6 @@
 report_string = ""
 reading_predicted = "prediction.csv"
-reading_actual = "log.csv"
+# reading_actual = "log.csv"
 
 # --- BMP masks for image processing ---
 mask_full = ""
