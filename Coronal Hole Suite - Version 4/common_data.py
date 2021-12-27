@@ -3,8 +3,8 @@ reading_predicted = "prediction.csv"
 # reading_actual = "log.csv"
 
 # --- BMP masks for image processing ---
-mask_full = ""
-mask_meridian = ""
+# mask_full = ""
+# mask_meridian = ""
 
 # --- Output files for Web display ---
 regression_ouput = "regression_goes.php"
