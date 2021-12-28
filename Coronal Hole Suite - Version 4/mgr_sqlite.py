@@ -33,10 +33,10 @@ def db_populate():
     db.execute("insert into sat (sat_name) values (?);", ["discovr"])
     db.execute("insert into sat (sat_name) values (?);", ["goes_primary"])
     db.execute("insert into sat (sat_name) values (?);", ["sdo"])
-    db.execute("insert into data (data_type) values (?);", ["speed"])
-    db.execute("insert into data (data_type) values (?);", ["density"])
-    db.execute("insert into data (data_type) values (?);", ["forecast_speed"])
-    db.execute("insert into data (data_type) values (?);", ["ch_coverage"])
+    db.execute("insert into type (data_type) values (?);", ["speed"])
+    db.execute("insert into type (data_type) values (?);", ["density"])
+    db.execute("insert into type (data_type) values (?);", ["forecast_speed"])
+    db.execute("insert into type (data_type) values (?);", ["ch_coverage"])
     data_b.commit()
     db.close()
 
@@ -66,3 +66,26 @@ def db_last_date():
         returnvalue = item[0]
     db.close()
     return returnvalue
+
+
+def db_get_masterdata(satellite_name):
+    data_b = sqlite3.connect(database)
+    db = data_b.cursor()
+    result = db.execute("select data. from data;")
+    for item in result:
+        returnvalue = item[0]
+    db.close()
+    return returnvalue
+
+# select
+# data.posixtime, data.data as coronal_hole, data.data as wind_speed, data.data as wind_density,
+# sat.sat_name, type.data_type
+# from sat inner join data on sat.sat_name = data.sat_name
+# inner join type on type.data_type = data.data_type;
+#
+# select
+# data.posixtime, data.data as coronal_hole,
+# sat.sat_name, type.data_type
+# from sat inner join data on sat.sat_name = data.sat_name
+# inner join type on type.data_type = data.data_type
+# where type.data_type = "ch_coverage";

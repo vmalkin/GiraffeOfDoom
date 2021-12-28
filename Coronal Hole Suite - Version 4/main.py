@@ -10,7 +10,7 @@ import os
 import mgr_sqlite
 
 LOGFILE = 'log.csv'
-WAITPERIOD = 86400 * 5
+WAITPERIOD = 86400 * 1
 __version__ = '4.0'
 __author__ = "Vaughn Malkin"
 
@@ -57,7 +57,8 @@ if __name__ == "__main__":
 
     if elapsedtime >= WAITPERIOD:
         # create the forecast
-        forecaster.calculate_forecast(data_manager.master_data)
+        master_data = mgr_sqlite.db_get_masterdata("discovr")
+        forecaster.calculate_forecast(master_data)
 
         # Instantiate the prediction plotter, this will load it with the lates values. Plot the final data
         prediction_plotter = mgr_plotter.Plotter()
