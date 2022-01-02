@@ -1,13 +1,16 @@
-import mgr_detrended
+import mgr_detrended_v2
 
-data = []
-with open("arraysave.csv", "r") as d:
-    for line in d:
-        line.strip()
-        i = line.split(",")
-        dt = int(float(i[0]))
-        da = i[1]
-        l = str(dt) + "," + da
-        data.append(l)
+data = [4,2,3,7,5,6,11,10,10,12,7,7,8,7,7,5,5,2,6,4,6,10,7,8,12,9,11,8,8,4,4,4,2]
 
-mgr_detrended.wrapper(data, "publish")
+a = mgr_detrended_v2.calc_start(data)
+b = mgr_detrended_v2.calc_middle(data)
+c = mgr_detrended_v2.calc_end(data)
+
+for item in a:
+    print(item)
+
+for item in b:
+    print(item)
+
+for item in c:
+    print(item)
