@@ -7,8 +7,10 @@ import sys
 from threading import Thread
 import os
 import sqlite3
+
 import mgr_binner
-import mgr_detrended
+import mgr_detrended_v2
+
 
 __version__ = "4.0"
 errorloglevel = logging.DEBUG
@@ -57,7 +59,7 @@ class ChartThread(Thread):
 
                 # new user generated methods for plotting go here
                 mgr_binner.wrapper(current_data, publish_dir)
-                mgr_detrended.wrapper(current_data, publish_dir)
+                mgr_detrended_v2.wrapper(current_data, publish_dir)
 
             except:
                 print("Simple grapher failed")
