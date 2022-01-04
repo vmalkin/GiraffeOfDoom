@@ -5,8 +5,8 @@ half_window = 5
 
 def calc_start(datalist):
     returnlist = []
-    data_start = datalist[0]
-    data_end = datalist[half_window - 1]
+    data_start = float(datalist[0])
+    data_end = float(datalist[half_window - 1])
     rate = (data_end - data_start) / half_window
     d = data_start
 
@@ -18,8 +18,8 @@ def calc_start(datalist):
 
 def calc_end(datalist):
     returnlist = []
-    data_start = datalist[len(datalist) - half_window]
-    data_end = datalist[len(datalist) - 1]
+    data_start = float(datalist[len(datalist) - half_window])
+    data_end = float(datalist[len(datalist) - 1])
 
     rate = (data_end - data_start) / half_window
     d = data_start
@@ -35,7 +35,7 @@ def calc_middle(datalist):
     for i in range(half_window + 1, len(datalist) - half_window):
         t = []
         for j in range(0 - half_window, half_window):
-            t.append(datalist[i + j])
+            t.append(float(datalist[i + j]))
 
         if len(t) > 0:
             d = mean(t)
@@ -50,5 +50,17 @@ def parse_dates(datalist):
     pass
 
 
-def wrapper(datalist, publishdir):
-    pass
+def wrapper(datalist):
+    # If the length of the datalist is long enough, attempt to use the full algorthm,
+    # Otherwise use a simple linear approximation
+
+    if len(datalist) < half_window:
+        f = calc_start(datalist)
+    else:
+        # Calculate the detrended data.
+        a = calc_start(datalist)
+        b = calc_middle(datalist)
+        c = calc_end(datalist)
+        f = a + b + c
+
+    return f

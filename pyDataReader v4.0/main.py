@@ -52,14 +52,21 @@ class ChartThread(Thread):
             sleep(300)
 
             try:
-                # Add extra methods here to create different types of charts. IMPORT them as auxilliary classes.
+                # Add extra methods here to create different types of charts.
                 print("Create logfiles")
                 # THIs is the basic plotting method that belongs to main.py
                 create_logfile(current_data)
 
                 # new user generated methods for plotting go here
-                mgr_binner.wrapper(current_data, publish_dir)
-                mgr_detrended_v2.wrapper(current_data, publish_dir)
+                full_bins = mgr_binner.wrapper(current_data)
+                save_datafile(full_bins, "bins.csv", publish_dir)
+                # split off brendans data
+                save_datafile(brendan_bins, "something.csv", publish_dir)
+                # Save detrended data
+                data_dtrd = mgr_detrended_v2.wrapper(current_data)
+                save_datafile(data_dtrd, "detrended.csv", publish_dir)
+
+
 
             except:
                 print("Simple grapher failed")
