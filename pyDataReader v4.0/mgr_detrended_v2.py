@@ -9,10 +9,12 @@ def calc_start(datalist):
     data_end = float(datalist[half_window - 1])
     rate = (data_end - data_start) / half_window
     d = data_start
+    returnlist.append(data_start)
 
-    for i in range(0, half_window):
+    for i in range(0, half_window - 1):
         d = d + rate
         returnlist.append(round(d,3))
+        # print(i, datalist[i], returnlist[i])
     return returnlist
 
 
@@ -20,10 +22,11 @@ def calc_end(datalist):
     returnlist = []
     data_start = float(datalist[len(datalist) - half_window])
     data_end = float(datalist[len(datalist) - 1])
-
     rate = (data_end - data_start) / half_window
     d = data_start
-    for i in range(0, half_window):
+    returnlist.append(data_start)
+
+    for i in range(len(datalist) - half_window, len(datalist) - 1):
         d = d + rate
         returnlist.append(round(d,3))
     return returnlist
@@ -32,7 +35,7 @@ def calc_end(datalist):
 def calc_middle(datalist):
     returnlist = []
 
-    for i in range(half_window + 1, len(datalist) - half_window):
+    for i in range(half_window, len(datalist) - half_window):
         t = []
         for j in range(0 - half_window, half_window):
             t.append(float(datalist[i + j]))
@@ -42,7 +45,7 @@ def calc_middle(datalist):
         else:
             d = 0
         returnlist.append(round(d,3))
-        t = []
+
     return returnlist
 
 
@@ -63,4 +66,9 @@ def wrapper(datalist):
         c = calc_end(datalist)
         f = a + b + c
 
-    return f
+    # Generate residuals, thus flattening out the original data
+    t = []
+    for i in range(0, len(f)):
+        d = round((datalist[i] - f[i]), 3)
+        t.append(d)
+    return t

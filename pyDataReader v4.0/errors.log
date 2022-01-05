@@ -51,3 +51,11 @@
 2021-01-16 23:09:12,748 WARNING: Garbage data from device: 0.32700.3168
 2021-01-16 23:19:16,138 WARNING: Garbage data from device: 0.41500.3575
 2021-01-16 23:24:02,174 WARNING: Garbage data from device: 0.34670.3419
+2022-01-05 10:12:21,457 CRITICAL ERROR: Unable to open com port. Please check com port parameters and/or hardware!!
+2022-01-05 10:17:21,466 Simple grapher failed
+2022-01-05 10:22:21,566 Simple grapher failed
+2022-01-05 10:27:21,575 Simple grapher failed
+2022-01-05 10:32:21,578 Simple grapher failed
+2022-01-05 10:37:21,679 Simple grapher failed
+2022-01-05 10:42:21,746 Simple grapher failed
+2022-01-05 10:47:21,842 Simple grapher failed

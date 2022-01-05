@@ -48,18 +48,18 @@ def filter_average_binner(datavalues):
     return returnlist
 
 
-def save_file(current_data, publishfolder):
-    savefile = publishfolder + "//dna_telluric.csv"
-    with open(savefile, "w") as s:
-        s.write("UTC Datetime, Smoothed Ambient Voltage" + "\n")
-        for item in current_data:
-            dt = int(float(item[0]))
-            # print(dt)
-            dt = posix2utc(dt)
-            data = item[1]
-            dp = dt + "," + str(data) + "\n"
-            s.write(dp)
-        s.close()
+# def save_file(current_data, publishfolder):
+#     savefile = publishfolder + "//dna_telluric.csv"
+#     with open(savefile, "w") as s:
+#         s.write("UTC Datetime, Smoothed Ambient Voltage" + "\n")
+#         for item in current_data:
+#             dt = int(float(item[0]))
+#             # print(dt)
+#             dt = posix2utc(dt)
+#             data = item[1]
+#             dp = dt + "," + str(data) + "\n"
+#             s.write(dp)
+#         s.close()
 
 
 def posix2utc(posixtime):
@@ -68,9 +68,8 @@ def posix2utc(posixtime):
     return utctime
 
 
-def wrapper(datavalues, publishdir):
+def wrapper(datavalues):
     templist = datavalues
     templist = filter_median(templist)
     templist = filter_average_binner(templist)
-    save_file(templist, publishdir)
-    print(templist)
+    return templist
