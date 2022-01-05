@@ -1,7 +1,7 @@
 from statistics import mean
 
 # The number of readings that equates to one and a half hours of time.
-half_window = 5
+half_window = 10
 
 def calc_start(datalist):
     returnlist = []
