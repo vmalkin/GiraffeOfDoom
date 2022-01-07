@@ -26,16 +26,16 @@ def camera_setup_c270(cam):
 
 
 if __name__ == '__main__':
-    camera = cv2.VideoCapture(2)
+    camera = cv2.VideoCapture(0)
     camera_setup_c270(camera)
     print("Exposure: ", camera.get(cv2.CAP_PROP_EXPOSURE))
 
 
-
+    averaging_array = []
     while True:
-        ret, frame = camera.read()
+        ret, image = camera.read()
         # frame = cv2.resize(frame, None, fx=0.5, fy=0.5, interpolation=cv2.INTER_AREA)
-        cv2.imshow('Input', frame)
+        cv2.imshow('Input', image)
 
         c = cv2.waitKey(1)
         if c == 27:
