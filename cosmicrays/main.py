@@ -2,8 +2,10 @@ import cv2
 import numpy as np
 
 
-averaging_iterations = 300
-highpass_threshold = 50
+averaging_iterations = 100
+highpass_threshold = 2
+current_camera = 2
+
 
 def camera_setup_c270(cam):
     """
@@ -35,12 +37,14 @@ def greyscale_img(image_to_process):
 
 
 if __name__ == '__main__':
-    camera = cv2.VideoCapture(0)
+    camera = cv2.VideoCapture(current_camera)
     camera_setup_c270(camera)
     print("Exposure: ", camera.get(cv2.CAP_PROP_EXPOSURE))
-    sh_x = cv2.CAP_PROP_FRAME_WIDTH
-    sh_y = cv2.CAP_PROP_FRAME_HEIGHT
-    highpass = np.full((sh_x, sh_y), highpass_threshold)
+    sh_x = int(camera.get(cv2.CAP_PROP_FRAME_WIDTH))
+    sh_y = int(camera.get(cv2.CAP_PROP_FRAME_HEIGHT))
+
+    highpass = np.full((sh_y, sh_x), highpass_threshold)
+    print(highpass)
 
     averaging_array = []
     while True:
@@ -49,7 +53,6 @@ if __name__ == '__main__':
 
         # Create an array of pictures with which to create an average
         pic = np.array(img_g, np.float64)
-
         averaging_array.append(pic)
 
         if len(averaging_array) >= averaging_iterations:
@@ -59,6 +62,9 @@ if __name__ == '__main__':
             # print(avg_img)
             # detrended_img = cv2.subtract(pic, avg_img)
             detrended_img = pic - avg_img - highpass
+            # Clip any value less than zero, to zero
+            detrended_img = np.where(detrended_img < 0, 0,detrended_img)
+
 
             cv2.imshow('Input', detrended_img)
 
