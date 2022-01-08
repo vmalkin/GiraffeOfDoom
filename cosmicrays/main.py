@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 
 
-averaging_iterations = 2
+averaging_iterations = 10
 
 
 def camera_setup_c270(cam):
@@ -14,11 +14,11 @@ def camera_setup_c270(cam):
     Sharp = 255
     """
     cam.set(cv2.CAP_PROP_GAIN, 255)
-    cam.set(cv2.CAP_PROP_BRIGHTNESS, 130)
+    cam.set(cv2.CAP_PROP_BRIGHTNESS, 120)
     # # No
     # camera.set(cv2.CAP_PROP_GAMMA, 128)
     # Can set. 255 max value
-    cam.set(cv2.CAP_PROP_SATURATION, 32)
+    cam.set(cv2.CAP_PROP_SATURATION, 100)
     # camera.set(cv2.CAP_PROP_HUE, -1)
     cam.set(cv2.CAP_PROP_CONTRAST, 32)
     cam.set(cv2.CAP_PROP_SHARPNESS, 255)
@@ -35,7 +35,7 @@ def greyscale_img(image_to_process):
 
 
 if __name__ == '__main__':
-    camera = cv2.VideoCapture(0)
+    camera = cv2.VideoCapture(1)
     camera_setup_c270(camera)
     print("Exposure: ", camera.get(cv2.CAP_PROP_EXPOSURE))
 
@@ -44,11 +44,8 @@ if __name__ == '__main__':
     while True:
         ret, image = camera.read()
         img_g = greyscale_img(image)
-        # Create an array of pictures with which to create an average
-        # that is isued to compare individual images, essentiall a 3D version
-        #  of finding the residual.
-        # Pic is used for comparisons and must be float64
 
+        # Create an array of pictures with which to create an average
         pic = np.array(img_g, np.float64)
         averaging_array.append(pic)
 
