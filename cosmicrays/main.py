@@ -1,6 +1,10 @@
 import cv2
 import numpy as np
 
+
+averaging_iterations = 2
+
+
 def camera_setup_c270(cam):
     """
     https://physicsopenlab.org/2016/05/18/diy-webcam-particle-detector/
@@ -24,6 +28,11 @@ def camera_setup_c270(cam):
     camera.set(cv2.CAP_PROP_EXPOSURE, 120)
 
 
+def greyscale_img(image_to_process):
+    # converting an Image to grey scale one channel...
+    greyimg = cv2.cvtColor(image_to_process, cv2.COLOR_BGR2GRAY, 1)
+    return greyimg
+
 
 if __name__ == '__main__':
     camera = cv2.VideoCapture(0)
@@ -34,8 +43,23 @@ if __name__ == '__main__':
     averaging_array = []
     while True:
         ret, image = camera.read()
-        # frame = cv2.resize(frame, None, fx=0.5, fy=0.5, interpolation=cv2.INTER_AREA)
-        cv2.imshow('Input', image)
+        img_g = greyscale_img(image)
+        # Create an array of pictures with which to create an average
+        # that is isued to compare individual images, essentiall a 3D version
+        #  of finding the residual.
+        # Pic is used for comparisons and must be float64
+
+        pic = np.array(img_g, np.float64)
+        averaging_array.append(pic)
+
+        if len(averaging_array) >= averaging_iterations:
+            # ALWAYS POP
+            averaging_array.pop(0)
+            avg_img = np.mean(averaging_array, axis=0)
+            # print(avg_img)
+            # detrended_img = cv2.subtract(pic, avg_img)
+
+            cv2.imshow('Input', avg_img)
 
         c = cv2.waitKey(1)
         if c == 27:
