@@ -3,7 +3,7 @@ import numpy as np
 
 
 averaging_iterations = 300
-
+highpass_threshold = 50
 
 def camera_setup_c270(cam):
     """
@@ -38,7 +38,9 @@ if __name__ == '__main__':
     camera = cv2.VideoCapture(0)
     camera_setup_c270(camera)
     print("Exposure: ", camera.get(cv2.CAP_PROP_EXPOSURE))
-
+    sh_x = cv2.CAP_PROP_FRAME_WIDTH
+    sh_y = cv2.CAP_PROP_FRAME_HEIGHT
+    highpass = np.full((sh_x, sh_y), highpass_threshold)
 
     averaging_array = []
     while True:
@@ -47,6 +49,7 @@ if __name__ == '__main__':
 
         # Create an array of pictures with which to create an average
         pic = np.array(img_g, np.float64)
+
         averaging_array.append(pic)
 
         if len(averaging_array) >= averaging_iterations:
@@ -55,7 +58,8 @@ if __name__ == '__main__':
             avg_img = np.mean(averaging_array, axis=0)
             # print(avg_img)
             # detrended_img = cv2.subtract(pic, avg_img)
-            detrended_img = pic - avg_img
+            detrended_img = pic - avg_img - highpass
+
             cv2.imshow('Input', detrended_img)
 
         c = cv2.waitKey(1)
