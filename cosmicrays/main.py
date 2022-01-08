@@ -2,8 +2,8 @@ import cv2
 import numpy as np
 
 
-averaging_iterations = 100
-highpass_threshold = 2
+averaging_iterations = 5
+highpass_threshold = 1
 current_camera = 2
 
 
@@ -30,6 +30,7 @@ def camera_setup_c270(cam):
     camera.set(cv2.CAP_PROP_EXPOSURE, 120)
 
 
+
 def greyscale_img(image_to_process):
     # converting an Image to grey scale one channel...
     greyimg = cv2.cvtColor(image_to_process, cv2.COLOR_BGR2GRAY, 1)
@@ -37,36 +38,52 @@ def greyscale_img(image_to_process):
 
 
 if __name__ == '__main__':
+    averaging_array = []
+    display_flag = True
     camera = cv2.VideoCapture(current_camera)
     camera_setup_c270(camera)
+
     print("Exposure: ", camera.get(cv2.CAP_PROP_EXPOSURE))
     sh_x = int(camera.get(cv2.CAP_PROP_FRAME_WIDTH))
     sh_y = int(camera.get(cv2.CAP_PROP_FRAME_HEIGHT))
+    print("Frame size: ", sh_x, sh_y)
 
+    # Create a highpass filter
     highpass = np.full((sh_y, sh_x), highpass_threshold)
-    print(highpass)
 
-    averaging_array = []
+    # Image to show accumulating stikes
+    show_img = np.full((sh_y, sh_x), 0)
+
     while True:
         ret, image = camera.read()
+        # img_g = image
         img_g = greyscale_img(image)
 
         # Create an array of pictures with which to create an average
-        pic = np.array(img_g, np.float64)
-        averaging_array.append(pic)
+        # pic = np.array(img_g, np.float64)
+        averaging_array.append(img_g)
 
         if len(averaging_array) >= averaging_iterations:
             # ALWAYS POP
             averaging_array.pop(0)
             avg_img = np.mean(averaging_array, axis=0)
-            # print(avg_img)
-            # detrended_img = cv2.subtract(pic, avg_img)
-            detrended_img = pic - avg_img - highpass
-            # Clip any value less than zero, to zero
-            detrended_img = np.where(detrended_img < 0, 0,detrended_img)
+
+            if display_flag == True:
+                print("Max avg pixel value. Make threshold above this: ", np.median(avg_img))
+                display_flag = False
+
+            detrended_img = img_g - avg_img - highpass
+            # Clip any value less than zero, to zero.
+            # convert anything equal of over to 255
+            detrended_img = np.where(detrended_img <= 0, 0,detrended_img)
+            detrended_img = np.where(detrended_img > 0 , 255, detrended_img)
 
 
-            cv2.imshow('Input', detrended_img)
+            pixel_count = cv2.countNonZero(detrended_img)
+            if pixel_count > 0:
+                show_img = show_img + detrended_img
+                print("Hit: " + str(pixel_count) + " pixels")
+                cv2.imshow('Input', show_img)
 
         c = cv2.waitKey(1)
         if c == 27:
