@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 
 
-averaging_iterations = 10
+averaging_iterations = 300
 
 
 def camera_setup_c270(cam):
@@ -35,7 +35,7 @@ def greyscale_img(image_to_process):
 
 
 if __name__ == '__main__':
-    camera = cv2.VideoCapture(1)
+    camera = cv2.VideoCapture(0)
     camera_setup_c270(camera)
     print("Exposure: ", camera.get(cv2.CAP_PROP_EXPOSURE))
 
@@ -55,8 +55,8 @@ if __name__ == '__main__':
             avg_img = np.mean(averaging_array, axis=0)
             # print(avg_img)
             # detrended_img = cv2.subtract(pic, avg_img)
-
-            cv2.imshow('Input', avg_img)
+            detrended_img = pic - avg_img
+            cv2.imshow('Input', detrended_img)
 
         c = cv2.waitKey(1)
         if c == 27:
