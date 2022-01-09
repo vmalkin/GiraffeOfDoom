@@ -1,10 +1,20 @@
 import cv2
 import numpy as np
-
+import datetime
 
 averaging_iterations = 5
-highpass_threshold = 1
+highpass_threshold = 4
 current_camera = 2
+
+
+def image_save(file_name, image_object):
+    cv2.imwrite(file_name, image_object)
+
+
+def posix2utc(posixtime, timeformat):
+    # '%Y-%m-%d %H:%M'
+    utctime = datetime.datetime.utcfromtimestamp(int(posixtime)).strftime(timeformat)
+    return utctime
 
 
 def camera_setup_c270(cam):
@@ -85,9 +95,9 @@ if __name__ == '__main__':
                 print("Hit: " + str(pixel_count) + " pixels")
                 cv2.imshow('Input', show_img)
 
-        c = cv2.waitKey(1)
-        if c == 27:
-            break
+        # c = cv2.waitKey(1)
+        # if c == 27:
+        #     break
 
     camera.release()
     # cv2.destroyAllWindows()
