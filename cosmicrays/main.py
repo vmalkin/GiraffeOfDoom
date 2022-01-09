@@ -1,3 +1,5 @@
+import time
+
 import cv2
 import numpy as np
 import datetime
@@ -64,6 +66,12 @@ if __name__ == '__main__':
     # Image to show accumulating stikes
     show_img = np.full((sh_y, sh_x), 0)
 
+    # set up simple blob detector
+    params = cv2.SimpleBlobDetector_Params()
+    params.filterByArea = True
+    params.minArea = 4
+    detector = cv2.SimpleBlobDetector_create(params)
+
     while True:
         ret, image = camera.read()
         # img_g = image
@@ -86,13 +94,21 @@ if __name__ == '__main__':
             # Clip any value less than zero, to zero.
             # convert anything equal of over to 255
             detrended_img = np.where(detrended_img <= 0, 0,detrended_img)
-            detrended_img = np.where(detrended_img > 0 , 255, detrended_img)
-
+            detrended_img = np.where(detrended_img > 0, 255, detrended_img)
 
             pixel_count = cv2.countNonZero(detrended_img)
-            if pixel_count > 0:
-                show_img = show_img + detrended_img
-                print("Hit: " + str(pixel_count) + " pixels")
+            if pixel_count >= 3:
+                print(t + " Pixelcount Fired! " + str(pixel_count) + " pixels")
+
+            test = np.array(detrended_img, np.uint8)
+            keypoints = detector.detect(test)
+            if len(keypoints) > 0:
+                n = t = posix2utc(time.time(), '%Y-%m-%d')
+                filename = "CRays_" + n + ".jpg"
+                show_img = show_img + detrended_img - highpass
+                image_save(filename, show_img)
+                t = posix2utc(time.time(), '%Y-%m-%d %H:%M')
+                print(t + " Blob detected! " + str(pixel_count) + " pixels")
                 cv2.imshow('Input', show_img)
 
         # c = cv2.waitKey(1)
@@ -100,4 +116,4 @@ if __name__ == '__main__':
         #     break
 
     camera.release()
-    # cv2.destroyAllWindows()
+    cv2.destroyAllWindows()
