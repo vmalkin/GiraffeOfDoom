@@ -3,10 +3,10 @@ import cv2
 import numpy as np
 import datetime
 
-averaging_iterations = 500
-highpass_threshold = 4
+averaging_iterations = 100
+highpass_threshold = 5
 current_camera = 2
-blob_size = 5
+blob_size = 4
 
 
 def image_save(file_name, image_object):
@@ -87,13 +87,17 @@ if __name__ == '__main__':
             # quadrant of the CMOS near the camera electronics.
             testing_img = testing_img - highpass
 
+            # We now have a flat image, with no noise. Hopefully cosmic ray hits will show in the sensor images
             # Clip any value less than zero, to zero.
             # convert anything equal of over to 255
             testing_img = np.where(testing_img <= 0, 0,testing_img)
-            # detrended_new = np.where(detrended_new > 0, 255, detrended_new)
+            # testing_img = np.where(testing_img > 0, 255, testing_img)
             # cv2.imshow('Cumulative', testing_img)
 
             pixel_count = cv2.countNonZero(testing_img)
+            if pixel_count > 0:
+                if pixel_count < blob_size:
+                    print("Noise? Count: ", pixel_count)
             if pixel_count >= blob_size:
                 t = posix2utc(time.time(), '%Y-%m-%d %H:%M')
                 print(t + " Blob detected! " + str(pixel_count) + " pixels. Hot: " + str(np.max(testing_img)))
@@ -102,12 +106,11 @@ if __name__ == '__main__':
                 filename = "CRays_" + n + ".jpg"
                 show_img = show_img + testing_img
                 image_save(filename, show_img)
+                cv2.imshow('Cumulative', show_img)
 
-                # cv2.imshow('Cumulative', show_img)
-
-        # c = cv2.waitKey(1)
-        # if c == 27:
-        #     break
+        c = cv2.waitKey(1)
+        if c == 27:
+            break
 
     camera.release()
     cv2.destroyAllWindows()
