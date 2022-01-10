@@ -2,7 +2,7 @@ import time
 import cv2
 import numpy as np
 import datetime
-
+from PIL import Image
 
 averaging_iterations = 10
 highpass_threshold = 3
@@ -12,8 +12,9 @@ blob_size = 4
 
 def image_load(file_name):
     # Return a None if the image is currupt
-    img = cv2.imread(file_name)
-    return img
+    pil_image = Image.open(file_name)
+    return pil_image
+
 
 def test_blobs(image):
     # set up simple blob detector
