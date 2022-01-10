@@ -6,7 +6,7 @@ import datetime
 averaging_iterations = 500
 highpass_threshold = 4
 current_camera = 2
-blob_size = 6
+blob_size = 5
 
 
 def image_save(file_name, image_object):
@@ -77,22 +77,21 @@ if __name__ == '__main__':
             # persistent noise, and hot zones from the current image.
             detrended_new = img_g - avg_img
 
-            # essentially an image with the rate of change. only sudden changes in pixel brightness will
+            # Essentially an image with the rate of change. only sudden changes in pixel brightness will
             # show. Cosmic ray hits, sudden noise, etc. Dont forget to make the new image, the new old image
-            # for the nextiteration... :-)
+            # for the next iteration... :-)
             testing_img = detrended_new - detrended_old
             detrended_old = detrended_new
 
-            # # The image to be tested for ray strikes, is the current detrended image, minus the
-            # # previous detrended image and a value for the highpass filter
-            # test_image = detrended_new - detrended_old
-            # detrended_old = detrended_new
+            # FInally, there is still a residuum of noise, that is due to sudden hot pixels, especially in the
+            # quadrant of the CMOS near the camera electronics.
+            testing_img = testing_img - highpass
 
             # Clip any value less than zero, to zero.
             # convert anything equal of over to 255
             testing_img = np.where(testing_img <= 0, 0,testing_img)
             # detrended_new = np.where(detrended_new > 0, 255, detrended_new)
-            cv2.imshow('Cumulative', testing_img)
+            # cv2.imshow('Cumulative', testing_img)
 
             pixel_count = cv2.countNonZero(testing_img)
             if pixel_count >= blob_size:
