@@ -105,9 +105,9 @@ if __name__ == '__main__':
 
                 # cv2.imshow('Cumulative', show_img)
 
-        c = cv2.waitKey(1)
-        if c == 27:
-            break
+        # c = cv2.waitKey(1)
+        # if c == 27:
+        #     break
 
     camera.release()
     cv2.destroyAllWindows()
