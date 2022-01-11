@@ -84,7 +84,6 @@ if __name__ == '__main__':
         print("No database file, initialising")
         database_create()
 
-
     n = posix2utc(time.time(), '%Y_%m_%d_%H_%M')
     filename = "bkp_" + n + ".jpg"
 
@@ -147,10 +146,12 @@ if __name__ == '__main__':
                 if pixel_count < blob_size:
                     print("Noise? " + str(pixel_count) + " pixels.")
             if pixel_count >= blob_size:
-                t = posix2utc(time.time(), '%Y-%m-%d %H:%M')
+                tt = int(time.time())
+                t = posix2utc(tt, '%Y-%m-%d %H:%M')
                 print(t + " Blob detected! " + str(pixel_count) + " pixels.")
-
-                n = posix2utc(time.time(), '%Y-%m-%d')
+                # add to database
+                database_add_data(tt, pixel_count)
+                n = posix2utc(tt, '%Y-%m-%d')
                 filename = "CRays_" + n + ".png"
                 show_img = show_img + testing_img
                 image_save(filename, show_img)
