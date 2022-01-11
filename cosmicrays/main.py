@@ -2,9 +2,12 @@ import time
 import cv2
 import numpy as np
 import datetime
+import sqlite3
+import os
 
+database = "events.db"
 averaging_iterations = 100
-highpass_threshold = 4
+highpass_threshold = 5
 current_camera = 2
 blob_size = 4
 
@@ -27,6 +30,8 @@ def camera_setup_c270(cam):
     cam.set(cv2.CAP_PROP_CONTRAST, 32)
     cam.set(cv2.CAP_PROP_SHARPNESS, 255)
     cam.set(cv2.CAP_PROP_EXPOSURE, 120)
+    # cam.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
+    # cam.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
 
 
 def greyscale_img(image_to_process):
@@ -35,7 +40,51 @@ def greyscale_img(image_to_process):
     return greyimg
 
 
+def database_create():
+    print("No database, creating file")
+    gpsdb = sqlite3.connect(database)
+    db = gpsdb.cursor()
+    db.execute('drop table if exists data;')
+    db.execute('create table data ('
+               'posixtime text,'
+               'datavalue integer'
+               ');')
+    gpsdb.commit()
+    db.close()
+
+
+def database_add_data(timestamp, datavalue):
+    db = sqlite3.connect(database)
+    cursor = db.cursor()
+    cursor.execute("insert into data (posixtime, datavalue) values (?,?);", [timestamp, datavalue])
+    db.commit()
+    db.close()
+
+
+def database_get_data():
+    tempdata = []
+    starttime = int(time.time()) - 86400
+    db = sqlite3.connect(database)
+
+    cursor = db.cursor()
+    result = cursor.execute("select * from data where data.posixtime > ? order by data.posixtime asc", [starttime])
+    for line in result:
+        dt = line[0]
+        da = line[1]
+        d = [dt, da]
+        tempdata.append(d)
+
+    db.close()
+    return tempdata
+
+
 if __name__ == '__main__':
+    # Check that we have folders and database in place
+    if os.path.isfile(database) is False:
+        print("No database file, initialising")
+        database_create()
+
+
     n = posix2utc(time.time(), '%Y_%m_%d_%H_%M')
     filename = "bkp_" + n + ".jpg"
 
@@ -96,10 +145,10 @@ if __name__ == '__main__':
             pixel_count = cv2.countNonZero(testing_img)
             if pixel_count > 0:
                 if pixel_count < blob_size:
-                    print("Noise? Count: ", pixel_count)
+                    print("Noise? " + str(pixel_count) + " pixels.")
             if pixel_count >= blob_size:
                 t = posix2utc(time.time(), '%Y-%m-%d %H:%M')
-                print(t + " Blob detected! " + str(pixel_count) + " pixels. Hot: " + str(np.max(testing_img)))
+                print(t + " Blob detected! " + str(pixel_count) + " pixels.")
 
                 n = posix2utc(time.time(), '%Y-%m-%d')
                 filename = "CRays_" + n + ".png"
