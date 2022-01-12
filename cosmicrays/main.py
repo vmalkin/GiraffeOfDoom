@@ -61,11 +61,11 @@ def database_add_data(timestamp, datavalue):
     db.close()
 
 
-def database_get_data():
+def database_get_data(hours_duration):
+    duration = hours_duration * 3600
     tempdata = []
-    starttime = int(time.time()) - 86400
+    starttime = int(time.time()) - duration
     db = sqlite3.connect(database)
-
     cursor = db.cursor()
     result = cursor.execute("select * from data where data.posixtime > ? order by data.posixtime asc", [starttime])
     for line in result:
@@ -73,9 +73,9 @@ def database_get_data():
         da = line[1]
         d = [dt, da]
         tempdata.append(d)
-
     db.close()
     return tempdata
+
 
 
 if __name__ == '__main__':
@@ -149,8 +149,11 @@ if __name__ == '__main__':
                 tt = int(time.time())
                 t = posix2utc(tt, '%Y-%m-%d %H:%M')
                 print(t + " Blob detected! " + str(pixel_count) + " pixels.")
-                # add to database
+
+                # add to database, get data for time period and save as csv file.
                 database_add_data(tt, pixel_count)
+                current_data = database_get_data(24)
+
                 n = posix2utc(tt, '%Y-%m-%d')
                 filename = "CRays_" + n + ".png"
                 show_img = show_img + testing_img
