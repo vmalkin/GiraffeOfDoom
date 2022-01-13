@@ -4,6 +4,17 @@ import numpy as np
 import datetime
 import sqlite3
 import os
+import mgr_plotter
+from threading import Thread
+
+class ThreadPlotter(Thread):
+    def __init__(self):
+        Thread.__init__(self, name="ThreadPlotter")
+    def run(self):
+        data = database_get_data(72)
+        tt = int(time.time())
+        mgr_plotter.wrapper(data, tt)
+        time.sleep(3600)
 
 database = "events.db"
 averaging_iterations = 100
@@ -67,11 +78,9 @@ def database_get_data(hours_duration):
     starttime = int(time.time()) - duration
     db = sqlite3.connect(database)
     cursor = db.cursor()
-    result = cursor.execute("select * from data where data.posixtime > ? order by data.posixtime asc", [starttime])
+    result = cursor.execute("select posixtime from data where posixtime > ? order by posixtime asc", [starttime])
     for line in result:
-        dt = line[0]
-        da = line[1]
-        d = [dt, da]
+        d = line[0]
         tempdata.append(d)
     db.close()
     return tempdata
@@ -91,6 +100,13 @@ if __name__ == '__main__':
     display_flag = True
     camera = cv2.VideoCapture(current_camera)
     camera_setup_c270(camera)
+
+    plotter = ThreadPlotter()
+    try:
+        plotter.start()
+        print("Starting plotter thread...")
+    except:
+        print("Unable to start plotter thread in MAIN.PY!!")
 
     print("Exposure: ", camera.get(cv2.CAP_PROP_EXPOSURE))
     sh_x = int(camera.get(cv2.CAP_PROP_FRAME_WIDTH))

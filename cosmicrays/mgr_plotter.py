@@ -7,20 +7,29 @@ def posix2utc(posixtime, timeformat):
     return utctime
 
 def plot(dates, data):
-    pass
+    fig = go.Figure(go.Bar(x=dates, y=data,
+                           marker = dict(color='black', line=dict(width=0.5, color='black'))))
+    fig.update_yaxes(range=[0, 1])
+    fig.update_layout(font=dict(size=20), title_font_size=21)
+    fig.update_layout(plot_bgcolor="#a0a0a0", paper_bgcolor="#a0a0a0")
+    fig.update_layout(width=1400, height=350,
+                      title="Cosmic Ray Strikes",
+                      xaxis_title="Date/time UTC<br><sub>http://DunedinAurora.nz</sub>")
+    fig.write_image("muon_events.png")
+    # fig.show()
 
 def wrapper(data, nowtime):
-    starttime = nowtime - (86400 * 1)
-
+    null_value = None
+    starttime = nowtime - (86400 * 3)
     dates = []
     events = []
     for i in range(starttime, nowtime):
         dates.append(posix2utc(i, '%Y-%m-%d %H:%M'))
-        if data.count(i) == 1:
-            d = 1
+        i = str(i)
+        if data.count(i) == 0:
+            d = null_value
         else:
-            d = 0
+            d = 1
         events.append(d)
-
     plot(dates, events)
 
