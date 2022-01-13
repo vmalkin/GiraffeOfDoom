@@ -11,10 +11,14 @@ class ThreadPlotter(Thread):
     def __init__(self):
         Thread.__init__(self, name="ThreadPlotter")
     def run(self):
-        data = database_get_data(72)
-        tt = int(time.time())
-        mgr_plotter.wrapper(data, tt)
-        time.sleep(3600)
+        time.sleep(60)
+        while True:
+            print("Beginning plot...")
+            data = database_get_data(72)
+            tt = int(time.time())
+            mgr_plotter.wrapper(data, tt)
+            print("Plot finished")
+            time.sleep(3600)
 
 database = "events.db"
 averaging_iterations = 100
