@@ -11,15 +11,14 @@ def database_get_data(hours_duration):
     starttime = int(time.time()) - duration
     db = sqlite3.connect(database)
     cursor = db.cursor()
-    result = cursor.execute("select * from data where data.posixtime > ? order by data.posixtime asc", [starttime])
+    result = cursor.execute("select posixtime from data where posixtime > ? order by posixtime asc", [starttime])
     for line in result:
-        dt = line[0]
-        da = line[1]
-        d = [dt, da]
+        d = line[0]
         tempdata.append(d)
     db.close()
     return tempdata
 
 
 data = database_get_data(48)
-mgr_plotter.wrapper(data)
+tt = int(time.time())
+mgr_plotter.wrapper(data, tt)
