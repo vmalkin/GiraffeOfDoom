@@ -8,8 +8,9 @@ def posix2utc(posixtime, timeformat):
 
 def plot(dates, data):
     fig = go.Figure(go.Bar(x=dates, y=data,
-                           marker = dict(color='black', line=dict(width=0.5, color='black'))))
-    fig.update_yaxes(range=[0, 1])
+                           marker = dict(color='#340059', line=dict(width=0.5, color='#340059'))))
+    # fig.update_xaxes(nticks=2)
+    fig.update_yaxes(range=[0, 1], ticks='outside', nticks=1)
     fig.update_layout(font=dict(size=20), title_font_size=21)
     fig.update_layout(plot_bgcolor="#a0a0a0", paper_bgcolor="#a0a0a0")
     fig.update_layout(width=1400, height=350,
