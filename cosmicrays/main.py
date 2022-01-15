@@ -13,10 +13,10 @@ class ThreadPlotter(Thread):
     def run(self):
         time.sleep(60)
         while True:
-            print("Beginning plot...")
+            # print("Beginning plot...")
             data = database_get_data(72)
             mgr_plotter_2.wrapper(data)
-            print("Plot finished")
+            # print("Plot finished")
             time.sleep(1800)
 
 database = "events.db"
