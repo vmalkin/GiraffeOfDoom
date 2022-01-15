@@ -1,4 +1,4 @@
-import mgr_plotter
+import mgr_plotter_2
 import sqlite3
 import time
 import datetime
@@ -21,4 +21,4 @@ def database_get_data(hours_duration):
 
 data = database_get_data(48)
 tt = int(time.time())
-mgr_plotter.wrapper(data, tt)
+mgr_plotter_2.wrapper(data)
