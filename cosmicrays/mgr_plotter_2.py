@@ -12,7 +12,8 @@ def plot(dates, data, average):
     fig = go.Figure(go.Scatter(x=dates, y=data, line_color="#23007d", line_width=2))
     fig.add_hline(y=average, line_color="red", line_width=2, annotation_font_color="red",
                   annotation_text="Average", annotation_position="top left")
-    fig.update_xaxes(gridcolor=clr_grid, nticks=120, ticks='outside', tickangle=90)
+    fig.update_xaxes(gridcolor=clr_grid, ticks='outside', tickangle=90)
+    # fig.update_xaxes(gridcolor=clr_grid, nticks=120, ticks='outside', tickangle=90)
     fig.update_yaxes(gridcolor=clr_grid)
     fig.update_layout(font=dict(size=20), title_font_size=21)
     fig.update_layout(plot_bgcolor="#a0a0a0", paper_bgcolor="#a0a0a0")
