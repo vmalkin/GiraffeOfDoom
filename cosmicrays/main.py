@@ -4,7 +4,7 @@ import numpy as np
 import datetime
 import sqlite3
 import os
-import mgr_plotter
+import mgr_plotter_2
 from threading import Thread
 
 class ThreadPlotter(Thread):
@@ -15,10 +15,9 @@ class ThreadPlotter(Thread):
         while True:
             print("Beginning plot...")
             data = database_get_data(72)
-            tt = int(time.time())
-            mgr_plotter.wrapper(data, tt)
+            mgr_plotter_2.wrapper(data)
             print("Plot finished")
-            time.sleep(3600)
+            time.sleep(1800)
 
 database = "events.db"
 averaging_iterations = 100

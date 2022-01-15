@@ -8,45 +8,47 @@ def posix2utc(posixtime, timeformat):
     return utctime
 
 def plot(dates, data):
-    fig = go.Figure(go.Bar(x=dates, y=data,
-                           marker = dict(color='#340059', line=dict(width=0.5, color='#340059'))))
-    fig.update_xaxes(nticks=72, ticks='outside', tickangle=90)
-    fig.update_yaxes(range=[0, 1],  nticks=2)
+    fig = go.Figure(go.Scatter(x=dates, y=data))
+    fig.update_xaxes(nticks=120, ticks='outside', tickangle=90)
+    # fig.update_yaxes(range=[-5000, 5000])
     fig.update_layout(font=dict(size=20), title_font_size=21)
     fig.update_layout(plot_bgcolor="#a0a0a0", paper_bgcolor="#a0a0a0")
-    fig.update_layout(width=1400, height=400,
+    fig.update_layout(width=1400, height=600,
                       title="Cosmic Ray Strikes",
                       xaxis_title="Date/time UTC<br><sub>http://DunedinAurora.nz</sub>")
     fig.write_image("muon_events.png")
     # fig.show()
 
-def wrapper(data, nowtime):
-    # Convert the data to an integer
-    d = []
-    for item in data:
-        i = int(item)
-        d.append(i)
+def wrapper(data):
+    if len(data) > 3:
+        # Convert the data to an integer
+        d = []
+        for item in data:
+            i = int(item)
+            d.append(i)
 
-    # get the avg interval between timestamps
-    t = []
-    for i in range(1, len(d)):
-        x = d[i] - d[i-1]
-        t.append(x)
+        # get the avg interval between timestamps
+        t = []
+        for i in range(1, len(d)):
+            x = d[i] - d[i-1]
+            if x > 10000:
+                x = 0
+            t.append(x)
 
-    period_avg = mean(t)
-    print(len(t), len(data))
+        period_avg = mean(t)
+        d.pop(0)
+        x_axis = []
+        for item in d:
+            u = posix2utc(item, '%Y-%m-%d %H:%M')
+            x_axis.append(u)
 
-    null_value = None
-    starttime = nowtime - (86400 * 3)
-    dates = []
-    events = []
-    for i in range(starttime, nowtime):
-        dates.append(posix2utc(i, '%Y-%m-%d %H:%M'))
-        i = str(i)
-        if data.count(i) == 0:
-            d = null_value
-        else:
-            d = 1
-        events.append(d)
-    plot(dates, events)
+        y_axis = []
+        for item in t:
+            v = item - period_avg
+            y_axis.append(v)
+
+        plot(x_axis, y_axis)
+
+
+
 
