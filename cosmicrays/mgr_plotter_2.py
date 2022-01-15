@@ -21,6 +21,21 @@ def plot(dates, data):
     # fig.show()
 
 def wrapper(data, nowtime):
+    # Convert the data to an integer
+    d = []
+    for item in data:
+        i = int(item)
+        d.append(i)
+
+    # get the avg interval between timestamps
+    t = []
+    for i in range(1, len(d)):
+        x = d[i] - d[i-1]
+        t.append(x)
+
+    period_avg = mean(t)
+    print(len(t), len(data))
+
     null_value = None
     starttime = nowtime - (86400 * 3)
     dates = []

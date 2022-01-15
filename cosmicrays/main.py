@@ -179,5 +179,6 @@ if __name__ == '__main__':
                 show_img = show_img + testing_img
                 image_save(filename, show_img)
 
+
     camera.release()
     cv2.destroyAllWindows()
