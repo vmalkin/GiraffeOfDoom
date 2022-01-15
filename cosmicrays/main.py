@@ -20,7 +20,7 @@ class ThreadPlotter(Thread):
             time.sleep(1800)
 
 database = "events.db"
-averaging_iterations = 100
+averaging_iterations = 20
 highpass_threshold = 5
 current_camera = 2
 blob_size = 4
