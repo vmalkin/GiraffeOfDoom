@@ -9,7 +9,10 @@ def posix2utc(posixtime, timeformat):
 
 def plot(dates, data, average):
     clr_grid = '#c7c7c7'
-    fig = go.Figure(go.Scatter(x=dates, y=data, line_color="#23007d", line_width=2))
+    line_color = "#23007d"
+    fig = go.Figure(go.Bar(x=dates, y=data,
+                           marker=dict(color=line_color, line=dict(width=1, color=line_color))))
+    # fig = go.Figure(go.Scatter(x=dates, y=data, line_color="#23007d", line_width=2))
     fig.add_hline(y=average, line_color="red", line_width=2, annotation_font_color="red",
                   annotation_text="Average", annotation_position="top left")
     fig.update_xaxes(gridcolor=clr_grid, ticks='outside', tickangle=90)
