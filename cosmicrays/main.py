@@ -4,7 +4,8 @@ import numpy as np
 import datetime
 import sqlite3
 import os
-import mgr_plotter_2
+import mgr_plot_flux
+import mgr_plot_hits
 from threading import Thread
 
 class ThreadPlotter(Thread):
@@ -15,7 +16,8 @@ class ThreadPlotter(Thread):
         while True:
             # print("Beginning plot...")
             data = database_get_data(72)
-            mgr_plotter_2.wrapper(data)
+            mgr_plot_flux.wrapper(data)
+            mgr_plot_hits.wrapper(data)
             # print("Plot finished")
             time.sleep(1800)
 

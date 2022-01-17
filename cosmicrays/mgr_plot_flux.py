@@ -24,7 +24,7 @@ def plot(dates, data, average):
                       title="Cosmic Ray Strikes - Time between hits.",
                       xaxis_title="Date/time UTC<br><sub>http://DunedinAurora.nz</sub>",
                       yaxis_title="Seconds between hits",)
-    fig.write_image("muon_events.svg")
+    fig.write_image("muon_flux.svg")
     # fig.show()
 
 def wrapper(data):

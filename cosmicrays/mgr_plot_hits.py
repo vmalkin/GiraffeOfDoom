@@ -17,21 +17,14 @@ def plot(dates, data):
     fig.update_layout(width=1400, height=400,
                       title="Cosmic Ray Strikes",
                       xaxis_title="Date/time UTC<br><sub>http://DunedinAurora.nz</sub>")
-    fig.write_image("muon_events.png")
+    fig.write_image("muon_hits.svg")
     # fig.show()
 
-def wrapper(data, nowtime):
-    null_value = None
-    starttime = nowtime - (86400 * 3)
+def wrapper(data):
     dates = []
     events = []
-    for i in range(starttime, nowtime):
-        dates.append(posix2utc(i, '%Y-%m-%d %H:%M'))
-        i = str(i)
-        if data.count(i) == 0:
-            d = null_value
-        else:
-            d = 1
-        events.append(d)
+    for item in data:
+        dates.append(posix2utc(item, '%Y-%m-%d %H:%M'))
+        events.append(1)
     plot(dates, events)
 
