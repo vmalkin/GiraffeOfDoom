@@ -16,7 +16,7 @@ class ThreadPlotter(Thread):
         while True:
             # print("Beginning plot...")
             data = database_get_data(24*7)
-            mgr_plot_flux.wrapper(data)
+            # mgr_plot_flux.wrapper(data)
             mgr_plot_hits.wrapper(data)
             # print("Plot finished")
             time.sleep(1800)
