@@ -15,7 +15,7 @@ def plot(dates, data, ticknumber):
     fig.update_layout(font=dict(size=14), title_font_size=21)
     fig.update_layout(plot_bgcolor="#a0a0a0", paper_bgcolor="#a0a0a0")
     fig.update_layout(width=1400, height=400,
-                      title="Cosmic Ray Strikes",
+                      title="Cosmic Ray Strikes - Cumulative 6 hourly rate",
                       xaxis_title="Date/time UTC<br><sub>http://DunedinAurora.nz</sub>")
     fig.write_image("muon_hit_count.jpg")
     # fig.show()
