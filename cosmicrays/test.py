@@ -1,4 +1,4 @@
-import mgr_plot_hits
+import mgr_plot_flux
 import sqlite3
 import time
 import datetime
@@ -19,6 +19,6 @@ def database_get_data(hours_duration):
     return tempdata
 
 
-data = database_get_data(48)
+data = database_get_data(24*3)
 tt = int(time.time())
-mgr_plot_hits.wrapper(data)
+mgr_plot_flux.wrapper(data)

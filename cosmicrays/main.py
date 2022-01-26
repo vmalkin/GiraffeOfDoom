@@ -16,7 +16,7 @@ class ThreadPlotter(Thread):
         while True:
             # print("Beginning plot...")
             data = database_get_data(24*3)
-            # mgr_plot_flux.wrapper(data)
+            mgr_plot_flux.wrapper(data)
             mgr_plot_hits.wrapper(data)
             # print("Plot finished")
             time.sleep(1800)
@@ -98,8 +98,9 @@ if __name__ == '__main__':
         print("No database file, initialising")
         database_create()
 
-    n = posix2utc(time.time(), '%Y_%m_%d_%H_%M')
-    filename = "bkp_" + n + ".jpg"
+    # n = posix2utc(time.time(), '%Y_%m_%d_%H_%M')
+    # filename = "bkp_" + n + ".jpg"
+    n_old = posix2utc(time.time(), '%Y-%m-%d')
 
     averaging_array = []
     display_flag = True
@@ -171,15 +172,18 @@ if __name__ == '__main__':
                 t = posix2utc(tt, '%Y-%m-%d %H:%M')
                 print(t + " Blob detected! " + str(pixel_count) + " pixels.")
 
-                # add to database, get data for time period and save as csv file.
+                # add to database, get data for time period.
                 database_add_data(tt, pixel_count)
                 current_data = database_get_data(24)
 
                 n = posix2utc(tt, '%Y-%m-%d')
-                filename = "CRays_" + n + ".png"
-                show_img = show_img + testing_img
-                image_save(filename, show_img)
-
+                if n_old == n:
+                    filename = "CRays_" + n + ".png"
+                    show_img = show_img + testing_img
+                    image_save(filename, show_img)
+                else:
+                    n_old = n
+                    show_img = np.full((sh_y, sh_x), 0)
 
     camera.release()
     cv2.destroyAllWindows()
