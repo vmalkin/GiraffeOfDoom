@@ -12,7 +12,7 @@ class ThreadPlotter(Thread):
     def __init__(self):
         Thread.__init__(self, name="ThreadPlotter")
     def run(self):
-        time.sleep(60)
+        time.sleep(10)
         while True:
             # print("Beginning plot...")
             data = database_get_data(24*7)
