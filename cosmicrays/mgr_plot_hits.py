@@ -24,7 +24,7 @@ def plot(dates, data, ticknumber):
 def wrapper(data):
     nt = int(data[len(data) - 1])
     st = int(data[0])
-    ticknumber = int((nt - st) / (3600 * 2))
+    ticknumber = int((nt - st) / (3600 * 6))
     if ticknumber <= 0:
         ticknumber = 1
 

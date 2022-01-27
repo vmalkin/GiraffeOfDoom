@@ -19,6 +19,6 @@ def database_get_data(hours_duration):
     return tempdata
 
 
-data = database_get_data(24*3)
+data = database_get_data(24*7)
 tt = int(time.time())
 mgr_plot_flux.wrapper(data)
