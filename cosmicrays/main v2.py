@@ -32,7 +32,7 @@ database = "events.db"
 averaging_iterations = 50
 highpass_threshold = 3
 current_camera = 2
-blob_size = 3
+blob_size = 4
 
 # milli sec
 exposure_win = -1
@@ -142,15 +142,20 @@ def report_image_params(image):
     max_pixel_value = np.max(image)
     min_pixel_value = np.min(image)
     print("max_p, min_p ", max_pixel_value, min_pixel_value)
-    
+
+
+def create_highpass(x, y, value):
+    # Create a highpass filter
+    highpass = np.full((y, x), value)
+    return highpass
+
+
 if __name__ == '__main__':
     # Check that we have folders and database in place
     if os.path.isfile(database) is False:
         print("No database file, initialising")
         database_create()
 
-    # n = posix2utc(time.time(), '%Y_%m_%d_%H_%M')
-    # filename = "bkp_" + n + ".jpg"
     n_old = posix2utc(time.time(), '%Y-%m-%d')
 
     averaging_array = []
@@ -169,10 +174,6 @@ if __name__ == '__main__':
     print("Exposure: ", camera.get(cv2.CAP_PROP_EXPOSURE))
     sh_x = int(camera.get(cv2.CAP_PROP_FRAME_WIDTH))
     sh_y = int(camera.get(cv2.CAP_PROP_FRAME_HEIGHT))
-    # print("Frame size: ", sh_x, sh_y)
-
-    # Create a highpass filter
-    highpass = np.full((sh_y, sh_x), highpass_threshold)
 
     # initial old image to calculate the rate of change in the image
     detrended_old = np.full((sh_y, sh_x), 0)
@@ -197,27 +198,15 @@ if __name__ == '__main__':
             if display_flag == True:
                 print("Average Image parameters")
                 report_image_params(avg_img)
+                print("Creating dynamic highpass filter...")
+                highpassfilter = create_highpass(sh_x, sh_y, max_avg_pixels)
                 display_flag = False
-                
-            # the detrended image is the current image minus the average image. This should remove
-            # persistent noise, and hot zones from the current image.
-            detrended_new = img_g - avg_img
 
-            # Essentially an image with the rate of change. only sudden changes in pixel brightness will
-            # show. Cosmic ray hits, sudden noise, etc. Dont forget to make the new image, the new old image
-            # for the next iteration... :-)
-            testing_img = detrended_new - detrended_old
-            detrended_old = detrended_new
+            testing_img = img_g - avg_img - highpassfilter
 
-            # FInally, there is still a residuum of noise, that is due to sudden hot pixels, especially in the
-            # quadrant of the CMOS near the camera electronics.
-            testing_img = testing_img - highpass
-
-            # We now have a flat image, with no noise. Hopefully cosmic ray hits will show in the sensor images
-            # Clip any value less than zero, to zero.
-            # convert anything over zero to 255
+            # Clip image to with 0 - 255
             testing_img = np.where(testing_img <= 0, 0,testing_img)
-            testing_img = np.where(testing_img > 0, 255, testing_img)
+            testing_img = np.where(testing_img > 0, 254, testing_img)
 
             pixel_count = cv2.countNonZero(testing_img)
             if pixel_count >= blob_size:
