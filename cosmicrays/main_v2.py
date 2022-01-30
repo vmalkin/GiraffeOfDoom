@@ -167,11 +167,10 @@ if __name__ == '__main__':
     plotter = ThreadPlotter()
     try:
         plotter.start()
-        print("Starting plotter thread...")
+        print("\nStarting plotter thread...")
     except:
         print("Unable to start plotter thread in MAIN.PY!!")
 
-    print("Exposure: ", camera.get(cv2.CAP_PROP_EXPOSURE))
     sh_x = int(camera.get(cv2.CAP_PROP_FRAME_WIDTH))
     sh_y = int(camera.get(cv2.CAP_PROP_FRAME_HEIGHT))
 
@@ -191,14 +190,13 @@ if __name__ == '__main__':
         if len(averaging_array) >= averaging_iterations:
             # ALWAYS POP
             averaging_array.pop(0)
-            
             avg_img = np.mean(averaging_array, axis=0)
             max_avg_pixels = int(np.max(avg_img))
 
             if display_flag == True:
-                print("Average Image parameters")
+                print("\nAverage Image parameters")
                 report_image_params(avg_img)
-                print("Creating dynamic highpass filter...")
+                print("\nCreating dynamic highpass filter...")
                 highpassfilter = create_highpass(sh_x, sh_y, max_avg_pixels)
                 display_flag = False
 
