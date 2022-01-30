@@ -147,6 +147,7 @@ def report_image_params(image):
 def create_highpass(x, y, value):
     # Create a highpass filter
     highpass = np.full((y, x), value)
+    print("Highpass filter created. Value is: ", value)
     return highpass
 
 
@@ -210,7 +211,7 @@ if __name__ == '__main__':
             if pixel_count >= blob_size:
                 tt = int(time.time())
                 t = posix2utc(tt, '%Y-%m-%d %H:%M:%S')
-                print(t + " Blob detected! " + str(pixel_count) + " pixels. Max average: " + str(max_avg_pixels))
+                print(t + " Blob detected! " + str(pixel_count) + " pixels.")
                 
                 # add to database, get data for time period.
                 database_add_data(tt, pixel_count)
