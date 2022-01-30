@@ -139,9 +139,10 @@ def show_cam_image(img):
         cv2.destroyAllWindows()
 
 def report_image_params(image):
-    max_pixel_value = np.max(image)
-    min_pixel_value = np.min(image)
-    print("max_p, min_p ", max_pixel_value, min_pixel_value)
+    max_pixel_value = "{:.3f}".format((round(np.max(image), 4)))
+    avg_pixel_value = "{:.3f}".format(round(np.average(image), 4))
+    min_pixel_value = "{:.3f}".format(round(np.min(image), 4))
+    print("max_p, avg_p, min_p ", max_pixel_value, avg_pixel_value, min_pixel_value)
     
 if __name__ == '__main__':
     # Check that we have folders and database in place
@@ -212,33 +213,34 @@ if __name__ == '__main__':
             # FInally, there is still a residuum of noise, that is due to sudden hot pixels, especially in the
             # quadrant of the CMOS near the camera electronics.
             testing_img = testing_img - highpass
+            report_image_params(testing_img)
 
-            # We now have a flat image, with no noise. Hopefully cosmic ray hits will show in the sensor images
-            # Clip any value less than zero, to zero.
-            # convert anything over zero to 255
-            testing_img = np.where(testing_img <= 0, 0,testing_img)
-            testing_img = np.where(testing_img > 0, 255, testing_img)
-
-            pixel_count = cv2.countNonZero(testing_img)
-            if pixel_count >= blob_size:
-                tt = int(time.time())
-                t = posix2utc(tt, '%Y-%m-%d %H:%M:%S')
-                print(t + " Blob detected! " + str(pixel_count) + " pixels. Max average: " + str(max_avg_pixels))
-                
-                # add to database, get data for time period.
-                database_add_data(tt, pixel_count)
-                current_data = database_get_data(24)
-
-                n = posix2utc(tt, '%Y-%m-%d')
-                if n_old == n:
-                    filename = "CRays_" + n + ".png"
-                    # filename = posix2utc(tt, '%H-%M-%S') + ".jpg"
-                    cumulative_image = cumulative_image + testing_img
-                    show_cam_image(cumulative_image)
-                    image_save(filename, cumulative_image)
-                else:
-                    n_old = n
-                    cumulative_image = np.full((sh_y, sh_x), 0)
+            # # We now have a flat image, with no noise. Hopefully cosmic ray hits will show in the sensor images
+            # # Clip any value less than zero, to zero.
+            # # convert anything over zero to 255
+            # testing_img = np.where(testing_img <= 0, 0,testing_img)
+            # testing_img = np.where(testing_img > 0, 255, testing_img)
+            #
+            # pixel_count = cv2.countNonZero(testing_img)
+            # if pixel_count >= blob_size:
+            #     tt = int(time.time())
+            #     t = posix2utc(tt, '%Y-%m-%d %H:%M:%S')
+            #     print(t + " Blob detected! " + str(pixel_count) + " pixels. Max average: " + str(max_avg_pixels))
+            #
+            #     # add to database, get data for time period.
+            #     database_add_data(tt, pixel_count)
+            #     current_data = database_get_data(24)
+            #
+            #     n = posix2utc(tt, '%Y-%m-%d')
+            #     if n_old == n:
+            #         filename = "CRays_" + n + ".png"
+            #         # filename = posix2utc(tt, '%H-%M-%S') + ".jpg"
+            #         cumulative_image = cumulative_image + testing_img
+            #         show_cam_image(cumulative_image)
+            #         image_save(filename, cumulative_image)
+            #     else:
+            #         n_old = n
+            #         cumulative_image = np.full((sh_y, sh_x), 0)
 
     camera.release()
     cv2.destroyAllWindows()
