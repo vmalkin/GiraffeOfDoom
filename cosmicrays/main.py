@@ -29,15 +29,29 @@ class ThreadPlotter(Thread):
             time.sleep(1800)
 
 database = "events.db"
-averaging_iterations = 20
-highpass_threshold = 5
-current_camera = 2
-blob_size = 4
+averaging_iterations = 50
+highpass_threshold = 0
+current_camera = 0
+blob_size = 1
+
+# milli sec
+exposure_win = -1
+exposure_lin = int((2 ** exposure_win) * 1000)
+
+print("Exposure, Windows: ", exposure_win)
+print("Exposure, Linux mSec: ", exposure_lin)
+print("Database file is: ", database)
+print("Frames for averaging: ", averaging_iterations)
+print("Highpass filter threshold manually set to: ", highpass_threshold)
+print("Camera ID: ", current_camera)
+print("Blob size to count as muon hit: ", blob_size)
+print("\n")
 
 
 def image_save(file_name, image_object):
     img = np.array(image_object, np.uint8)
     cv2.imwrite(file_name, img)
+    print("File saved: " , file_name)
 
 
 def posix2utc(posixtime, timeformat):
@@ -47,14 +61,35 @@ def posix2utc(posixtime, timeformat):
 
 
 def camera_setup_c270(cam):
-    cam.set(cv2.CAP_PROP_GAIN, 255)
-    cam.set(cv2.CAP_PROP_BRIGHTNESS, 120)
-    cam.set(cv2.CAP_PROP_SATURATION, 100)
-    cam.set(cv2.CAP_PROP_CONTRAST, 32)
-    cam.set(cv2.CAP_PROP_SHARPNESS, 255)
-    cam.set(cv2.CAP_PROP_EXPOSURE, 120)
-    # cam.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
-    # cam.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
+    gain = 255
+    brightness = 120
+    saturation = 100
+    contrast = 32
+    sharpness = 255
+    height = 480
+    width = 640
+    
+    cam.set(cv2.CAP_PROP_GAIN, gain)
+    cam.set(cv2.CAP_PROP_BRIGHTNESS, brightness)
+    cam.set(cv2.CAP_PROP_SATURATION, saturation)
+    cam.set(cv2.CAP_PROP_CONTRAST, contrast)
+    cam.set(cv2.CAP_PROP_SHARPNESS, sharpness)
+    cam.set(cv2.CAP_PROP_FRAME_HEIGHT, height)
+    cam.set(cv2.CAP_PROP_FRAME_WIDTH, width)
+    
+    # Under linux
+    # cam.set(cv2.CAP_PROP_EXPOSURE, exposure_lin)
+    # under windows
+    cam.set(cv2.CAP_PROP_EXPOSURE, exposure_win)
+
+    print("set//get gain: ", gain, cam.get(cv2.CAP_PROP_GAIN))
+    print("set//get brightness: ", brightness, cam.get(cv2.CAP_PROP_BRIGHTNESS))
+    print("set//get saturation: ", saturation, cam.get(cv2.CAP_PROP_SATURATION))
+    print("set//get contrast: ", contrast, cam.get(cv2.CAP_PROP_CONTRAST))
+    print("set//get sharpness: ", sharpness, cam.get(cv2.CAP_PROP_SHARPNESS))
+    print("set//get height: ", height, cam.get(cv2.CAP_PROP_FRAME_HEIGHT))
+    print("set//get width: ", width, cam.get(cv2.CAP_PROP_FRAME_WIDTH))
+
 
 
 def greyscale_img(image_to_process):
@@ -97,8 +132,16 @@ def database_get_data(hours_duration):
     db.close()
     return tempdata
 
+def show_cam_image(img):
+    cv2.imshow('TEST',img)
+    if cv2.waitKey(1) == ord('q'):
+        cv2.destroyAllWindows()
 
-
+def report_image_params(image):
+    max_pixel_value = np.max(image)
+    min_pixel_value = np.min(image)
+    print("max_p, min_p ", max_pixel_value, min_pixel_value)
+    
 if __name__ == '__main__':
     # Check that we have folders and database in place
     if os.path.isfile(database) is False:
@@ -110,6 +153,7 @@ if __name__ == '__main__':
     n_old = posix2utc(time.time(), '%Y-%m-%d')
 
     averaging_array = []
+    avg_pixels = None
     display_flag = True
     camera = cv2.VideoCapture(current_camera)
     camera_setup_c270(camera)
@@ -124,7 +168,7 @@ if __name__ == '__main__':
     print("Exposure: ", camera.get(cv2.CAP_PROP_EXPOSURE))
     sh_x = int(camera.get(cv2.CAP_PROP_FRAME_WIDTH))
     sh_y = int(camera.get(cv2.CAP_PROP_FRAME_HEIGHT))
-    print("Frame size: ", sh_x, sh_y)
+    # print("Frame size: ", sh_x, sh_y)
 
     # Create a highpass filter
     highpass = np.full((sh_y, sh_x), highpass_threshold)
@@ -133,7 +177,7 @@ if __name__ == '__main__':
     detrended_old = np.full((sh_y, sh_x), 0)
 
     # Image to show accumulating stikes
-    show_img = np.full((sh_y, sh_x), 0)
+    cumulative_image = np.full((sh_y, sh_x), 0)
 
     while True:
         ret, image = camera.read()
@@ -145,24 +189,33 @@ if __name__ == '__main__':
         if len(averaging_array) >= averaging_iterations:
             # ALWAYS POP
             averaging_array.pop(0)
+            
             avg_img = np.mean(averaging_array, axis=0)
+            max_avg_pixels = int(np.max(avg_img))
+            
 
             if display_flag == True:
-                print("Max avg pixel value. Make threshold above this: ", str(int(np.max(avg_img))))
+                print("Average Image parameters")
+                report_image_params(avg_img)
                 display_flag = False
+                
             # the detrended image is the current image minus the average image. This should remove
             # persistent noise, and hot zones from the current image.
             detrended_new = img_g - avg_img
-
+            
             # Essentially an image with the rate of change. only sudden changes in pixel brightness will
             # show. Cosmic ray hits, sudden noise, etc. Dont forget to make the new image, the new old image
             # for the next iteration... :-)
             testing_img = detrended_new - detrended_old
             detrended_old = detrended_new
+                        
+            show_cam_image(testing_img)
+            report_image_params(testing_img)
 
             # FInally, there is still a residuum of noise, that is due to sudden hot pixels, especially in the
             # quadrant of the CMOS near the camera electronics.
             testing_img = testing_img - highpass
+            # show_cam_image(testing_img)
 
             # We now have a flat image, with no noise. Hopefully cosmic ray hits will show in the sensor images
             # Clip any value less than zero, to zero.
@@ -171,26 +224,24 @@ if __name__ == '__main__':
             testing_img = np.where(testing_img > 0, 255, testing_img)
 
             pixel_count = cv2.countNonZero(testing_img)
-            if pixel_count > 0:
-                if pixel_count < blob_size:
-                    print("Noise? " + str(pixel_count) + " pixels.")
             if pixel_count >= blob_size:
                 tt = int(time.time())
-                t = posix2utc(tt, '%Y-%m-%d %H:%M')
-                print(t + " Blob detected! " + str(pixel_count) + " pixels.")
-
+                t = posix2utc(tt, '%Y-%m-%d %H:%M:%S')
+##                print(t + " Blob detected! " + str(pixel_count) + " pixels. Max average: " + str(max_avg_pixels))
+                
                 # add to database, get data for time period.
                 database_add_data(tt, pixel_count)
                 current_data = database_get_data(24)
-
-                n = posix2utc(tt, '%Y-%m-%d')
-                if n_old == n:
-                    filename = "CRays_" + n + ".png"
-                    show_img = show_img + testing_img
-                    image_save(filename, show_img)
-                else:
-                    n_old = n
-                    show_img = np.full((sh_y, sh_x), 0)
+                
+##                n = posix2utc(tt, '%Y-%m-%d')
+##                if n_old == n:
+##                filename = "CRays_" + n + ".png"
+##                filename = posix2utc(tt, '%H-%M-%S') + ".jpg"
+##                cumulative_image = cumulative_image + testing_img
+##                image_save(filename, cumulative_image)
+##                else:
+##                    n_old = n
+##                    cumulative_image = np.full((sh_y, sh_x), 0)
 
     camera.release()
     cv2.destroyAllWindows()
