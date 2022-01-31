@@ -8,9 +8,11 @@ import mgr_plot_flux
 import mgr_plot_hits
 from threading import Thread
 
+
 class ThreadPlotter(Thread):
     def __init__(self):
         Thread.__init__(self, name="ThreadPlotter")
+
     def run(self):
         time.sleep(10)
         while True:
@@ -27,6 +29,7 @@ class ThreadPlotter(Thread):
                 print("Failed to print hits")
             # print("Plot finished")
             time.sleep(1800)
+
 
 database = "events.db"
 averaging_iterations = 50
@@ -51,7 +54,7 @@ print("\n")
 def image_save(file_name, image_object):
     img = np.array(image_object, np.uint8)
     cv2.imwrite(file_name, img)
-    print("File saved: " , file_name)
+    print("File saved: ", file_name)
 
 
 def posix2utc(posixtime, timeformat):
@@ -90,7 +93,6 @@ def camera_setup_c270(cam):
     print("set//get height: ", height, cam.get(cv2.CAP_PROP_FRAME_HEIGHT))
     print("set//get width: ", width, cam.get(cv2.CAP_PROP_FRAME_WIDTH))
     print("set//get exposure: ", exposure, cam.get(cv2.CAP_PROP_EXPOSURE))
-
 
 
 def greyscale_img(image_to_process):
@@ -133,15 +135,18 @@ def database_get_data(hours_duration):
     db.close()
     return tempdata
 
+
 def show_cam_image(img):
-    cv2.imshow('TEST',img)
+    cv2.imshow('TEST', img)
     if cv2.waitKey(1) == ord('q'):
         cv2.destroyAllWindows()
 
+
 def report_image_params(image):
-    max_pixel_value = np.max(image)
-    min_pixel_value = np.min(image)
-    print("max_p, min_p ", max_pixel_value, min_pixel_value)
+    max_pixel_value = round(np.max(image), 4)
+    min_pixel_value = round(np.min(image), 4)
+    avg_pixel_value = round(np.average(image), 4)
+    print("max_p, avg_p, min_p ", max_pixel_value, avg_pixel_value, min_pixel_value)
 
 
 def create_highpass(x, y, value):
@@ -149,6 +154,26 @@ def create_highpass(x, y, value):
     highpass = np.full((y, x), value)
     print("Highpass filter created. Value is: ", value)
     return highpass
+
+
+def check_pixel_coords(pixel_coords, pixel_count):
+    result = "noise"
+    xs = []
+    ys = []
+    for item in pixel_coords:
+        xs.append(item[0][0])
+        ys.append(item[0][1])
+    xd = max(xs) - min(xs)
+    yd = max(ys) - min(ys)
+    #  the range os pixels is inside the pixel count, or else it's a scattering of pixels
+    # not a blob
+    if xd > 0:
+        if yd > 0:
+            if xd <= pixel_count:
+                if yd <= pixel_count:
+                    result = "blob"
+    print(xd, yd, pixel_count, result)
+    return result
 
 
 if __name__ == '__main__':
@@ -198,7 +223,7 @@ if __name__ == '__main__':
                 print("\nAverage Image parameters")
                 report_image_params(avg_img)
                 print("\nCreating dynamic highpass filter...")
-                highpassfilter = create_highpass(sh_x, sh_y, max_avg_pixels)
+                highpassfilter = create_highpass(sh_x, sh_y, highpass_threshold)
                 display_flag = False
 
             testing_img = img_g - avg_img - highpassfilter
@@ -208,25 +233,33 @@ if __name__ == '__main__':
             testing_img = np.where(testing_img > 0, 254, testing_img)
 
             pixel_count = cv2.countNonZero(testing_img)
-            if pixel_count >= blob_size:
-                tt = int(time.time())
-                t = posix2utc(tt, '%Y-%m-%d %H:%M:%S')
-                print(t + " Blob detected! " + str(pixel_count) + " pixels.")
-                
-                # add to database, get data for time period.
-                database_add_data(tt, pixel_count)
-                current_data = database_get_data(24)
 
-                n = posix2utc(tt, '%Y-%m-%d')
-                if n_old == n:
-                    filename = "CRays_" + n + ".png"
-                    # filename = posix2utc(tt, '%H-%M-%S') + ".jpg"
-                    cumulative_image = cumulative_image + testing_img
-                    show_cam_image(cumulative_image)
-                    image_save(filename, cumulative_image)
-                else:
-                    n_old = n
-                    cumulative_image = np.full((sh_y, sh_x), 0)
+            tt = int(time.time())
+            t = posix2utc(tt, '%Y-%m-%d %H:%M:%S')
+
+            if pixel_count != 0 and pixel_count < blob_size:
+                print(t + " Noise! " + str(pixel_count) + " pixels.")
+                pixel_coords = np.array(cv2.findNonZero(testing_img))
+
+            if pixel_count >= blob_size:
+                pixel_coords = np.array(cv2.findNonZero(testing_img))
+                print(t + " Blob detected! " + str(pixel_count) + " pixels.")
+                blobcheck = check_pixel_coords(pixel_coords, pixel_count)
+                if blobcheck == "blob":
+                    # add to database, get data for time period.
+                    database_add_data(tt, pixel_count)
+                    current_data = database_get_data(24)
+
+                    n = posix2utc(tt, '%Y-%m-%d')
+                    if n_old == n:
+                        filename = "CRays_" + n + ".png"
+                        # filename = posix2utc(tt, '%H-%M-%S') + ".jpg"
+                        cumulative_image = cumulative_image + testing_img
+                        # show_cam_image(cumulative_image)
+                        image_save(filename, cumulative_image)
+                    else:
+                        n_old = n
+                        cumulative_image = np.full((sh_y, sh_x), 0)
 
     camera.release()
     cv2.destroyAllWindows()
