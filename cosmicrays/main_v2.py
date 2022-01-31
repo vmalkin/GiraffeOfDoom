@@ -157,16 +157,24 @@ def create_highpass(x, y, value):
 
 
 def check_pixel_coords(pixel_coords, pixel_count):
+    # To test that a set of pixel cordinates is a cosmic ray hit
     result = "noise"
     xs = []
     ys = []
+
+    # Determine the spread of the coordinates in the X and Y axis. Create the X and Y lists
     for item in pixel_coords:
         xs.append(item[0][0])
         ys.append(item[0][1])
+
     xd = max(xs) - min(xs)
     yd = max(ys) - min(ys)
-    #  the range os pixels is inside the pixel count, or else it's a scattering of pixels
-    # not a blob
+
+    # xd and yd are the sides of a bounding box for the blob of pixels. If either of these
+    # values is a zero, then we have a line of pixels, which seems to be what sensor noise
+    # looks like. The other test is for scatter - if a size of the box is bigger than the
+    # count of pixels, then we have a spray of pixels ie, they are not contiguous, therefore
+    # are not a cosmic ray hit. Othrwise we have a genuine blob!
     if xd > 0:
         if yd > 0:
             if xd <= pixel_count:
@@ -200,8 +208,8 @@ if __name__ == '__main__':
     sh_x = int(camera.get(cv2.CAP_PROP_FRAME_WIDTH))
     sh_y = int(camera.get(cv2.CAP_PROP_FRAME_HEIGHT))
 
-    # initial old image to calculate the rate of change in the image
-    detrended_old = np.full((sh_y, sh_x), 0)
+    # # initial old image to calculate the rate of change in the image
+    # detrended_old = np.full((sh_y, sh_x), 0)
 
     # Image to show accumulating stikes
     cumulative_image = np.full((sh_y, sh_x), 0)
@@ -219,6 +227,8 @@ if __name__ == '__main__':
             avg_img = np.mean(averaging_array, axis=0)
             max_avg_pixels = int(np.max(avg_img))
 
+            # Some initialisation stuff, including experimental automatic setting of hightpass
+            # filter
             if display_flag == True:
                 print("\nAverage Image parameters")
                 report_image_params(avg_img)
@@ -226,24 +236,31 @@ if __name__ == '__main__':
                 highpassfilter = create_highpass(sh_x, sh_y, highpass_threshold)
                 display_flag = False
 
+            # The image to test is made up of the original image, minus the average minus the highpass
             testing_img = img_g - avg_img - highpassfilter
 
             # Clip image to with 0 - 255
             testing_img = np.where(testing_img <= 0, 0,testing_img)
             testing_img = np.where(testing_img > 0, 254, testing_img)
 
+            # Count any white pixels - potential cosmic ray hits
             pixel_count = cv2.countNonZero(testing_img)
 
             tt = int(time.time())
             t = posix2utc(tt, '%Y-%m-%d %H:%M:%S')
 
+            # Report as noise hits that dont meet the size criteria
             if pixel_count != 0 and pixel_count < blob_size:
                 print(t + " Noise! " + str(pixel_count) + " pixels.")
                 pixel_coords = np.array(cv2.findNonZero(testing_img))
 
+            # if a hit is over the size for a blob of pixels, get the coordinates
+            #  of the blobs pixels and check. If it's genuine then treat as a
+            # cosmic ray hit
             if pixel_count >= blob_size:
                 pixel_coords = np.array(cv2.findNonZero(testing_img))
                 print(t + " Blob detected! " + str(pixel_count) + " pixels.")
+
                 blobcheck = check_pixel_coords(pixel_coords, pixel_count)
                 if blobcheck == "blob":
                     # add to database, get data for time period.
