@@ -174,7 +174,7 @@ def check_pixel_coords(pixel_coords, pixel_count):
     # values is a zero, then we have a line of pixels, which seems to be what sensor noise
     # looks like. The other test is for scatter - if a size of the box is bigger than the
     # count of pixels, then we have a spray of pixels ie, they are not contiguous, therefore
-    # are not a cosmic ray hit. Othrwise we have a genuine blob!
+    # are not a cosmic ray hit. Otherwise we have a genuine blob!
     if xd > 0:
         if yd > 0:
             if xd <= pixel_count:
@@ -208,9 +208,6 @@ if __name__ == '__main__':
     sh_x = int(camera.get(cv2.CAP_PROP_FRAME_WIDTH))
     sh_y = int(camera.get(cv2.CAP_PROP_FRAME_HEIGHT))
 
-    # # initial old image to calculate the rate of change in the image
-    # detrended_old = np.full((sh_y, sh_x), 0)
-
     # Image to show accumulating stikes
     cumulative_image = np.full((sh_y, sh_x), 0)
 
@@ -227,7 +224,7 @@ if __name__ == '__main__':
             avg_img = np.mean(averaging_array, axis=0)
             max_avg_pixels = int(np.max(avg_img))
 
-            # Some initialisation stuff, including experimental automatic setting of hightpass
+            # Some initialisation stuff, including experimental automatic setting of highpass
             # filter
             if display_flag == True:
                 print("\nAverage Image parameters")
@@ -270,9 +267,7 @@ if __name__ == '__main__':
                     n = posix2utc(tt, '%Y-%m-%d')
                     if n_old == n:
                         filename = "CRays_" + n + ".png"
-                        # filename = posix2utc(tt, '%H-%M-%S') + ".jpg"
                         cumulative_image = cumulative_image + testing_img
-                        # show_cam_image(cumulative_image)
                         image_save(filename, cumulative_image)
                     else:
                         n_old = n
