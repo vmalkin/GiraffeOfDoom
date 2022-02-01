@@ -143,10 +143,12 @@ def show_cam_image(img):
 
 
 def report_image_params(image):
-    max_pixel_value = round(np.max(image), 4)
-    min_pixel_value = round(np.min(image), 4)
+    # max_pixel_value = round(np.max(image), 4)
+    # min_pixel_value = round(np.min(image), 4)
     avg_pixel_value = round(np.average(image), 4)
-    print("max_p, avg_p, min_p ", max_pixel_value, avg_pixel_value, min_pixel_value)
+    # print("max_p, avg_p, min_p ", max_pixel_value, avg_pixel_value, min_pixel_value)
+    print("avg_p: ", avg_pixel_value)
+
 
 
 def create_highpass(x, y, value):
@@ -248,15 +250,14 @@ if __name__ == '__main__':
 
             # Report as noise hits that dont meet the size criteria
             if pixel_count != 0 and pixel_count < blob_size:
-                print(t + " Noise! " + str(pixel_count) + " pixels.")
-                pixel_coords = np.array(cv2.findNonZero(testing_img))
+                print(t + " Noise! " + str(pixel_count) + " pixels." + report_image_params(testing_img))
 
             # if a hit is over the size for a blob of pixels, get the coordinates
             #  of the blobs pixels and check. If it's genuine then treat as a
             # cosmic ray hit
             if pixel_count >= blob_size:
                 pixel_coords = np.array(cv2.findNonZero(testing_img))
-                print(t + " Blob detected! " + str(pixel_count) + " pixels.")
+                print(t + " Blob detected! " + str(pixel_count) + " pixels." + report_image_params(testing_img))
 
                 blobcheck = check_pixel_coords(pixel_coords, pixel_count)
                 if blobcheck == "blob":
