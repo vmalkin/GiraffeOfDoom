@@ -32,7 +32,7 @@ class ThreadPlotter(Thread):
 
 
 database = "events.db"
-averaging_iterations = 50
+averaging_iterations = 100
 highpass_threshold = 3
 current_camera = 2
 blob_size = 5
@@ -85,14 +85,15 @@ def camera_setup_c270(cam):
     # cam.set(cv2.CAP_PROP_AUTO_EXPOSURE, 3)
     cam.set(cv2.CAP_PROP_EXPOSURE, exposure)
     
-    print("set//get gain: ", gain, cam.get(cv2.CAP_PROP_GAIN))
-    print("set//get brightness: ", brightness, cam.get(cv2.CAP_PROP_BRIGHTNESS))
-    print("set//get saturation: ", saturation, cam.get(cv2.CAP_PROP_SATURATION))
-    print("set//get contrast: ", contrast, cam.get(cv2.CAP_PROP_CONTRAST))
-    print("set//get sharpness: ", sharpness, cam.get(cv2.CAP_PROP_SHARPNESS))
-    print("set//get height: ", height, cam.get(cv2.CAP_PROP_FRAME_HEIGHT))
-    print("set//get width: ", width, cam.get(cv2.CAP_PROP_FRAME_WIDTH))
-    print("set//get exposure: ", exposure, cam.get(cv2.CAP_PROP_EXPOSURE))
+    print("set / get gain: ", gain, cam.get(cv2.CAP_PROP_GAIN))
+    print("set / get brightness: ", brightness, cam.get(cv2.CAP_PROP_BRIGHTNESS))
+    print("set / get saturation: ", saturation, cam.get(cv2.CAP_PROP_SATURATION))
+    print("set / get contrast: ", contrast, cam.get(cv2.CAP_PROP_CONTRAST))
+    print("set / get sharpness: ", sharpness, cam.get(cv2.CAP_PROP_SHARPNESS))
+    print("set / get height: ", height, cam.get(cv2.CAP_PROP_FRAME_HEIGHT))
+    print("set / get width: ", width, cam.get(cv2.CAP_PROP_FRAME_WIDTH))
+    print("set / get exposure: ", exposure, cam.get(cv2.CAP_PROP_EXPOSURE))
+    print("set / get frames per second: ", cam.get(cv2.CAP_PROP_FPS))
 
 
 def greyscale_img(image_to_process):
@@ -231,7 +232,7 @@ if __name__ == '__main__':
                 print("\nAverage Image parameters")
                 report_image_params(avg_img)
                 print("\nCreating dynamic highpass filter...")
-                highpassfilter = create_highpass(sh_x, sh_y, highpass_threshold)
+                highpassfilter = create_highpass(sh_x, sh_y, max_avg_pixels)
                 display_flag = False
 
             # The image to test is made up of the original image, minus the average minus the highpass
@@ -249,14 +250,14 @@ if __name__ == '__main__':
 
             # Report as noise hits that dont meet the size criteria
             if pixel_count != 0 and pixel_count < blob_size:
-                print(t + " Noise! " + str(pixel_count) + " pixels.", report_image_params(testing_img))
+                print(t + " Noise! " + str(pixel_count) + " pixels. ", report_image_params(testing_img))
 
             # if a hit is over the size for a blob of pixels, get the coordinates
             #  of the blobs pixels and check. If it's genuine then treat as a
             # cosmic ray hit
             if pixel_count >= blob_size:
                 pixel_coords = np.array(cv2.findNonZero(testing_img))
-                print(t + " Blob detected! " + str(pixel_count) + " pixels.", report_image_params(testing_img))
+                print(t + " Noise! " + str(pixel_count) + " pixels. ", report_image_params(testing_img))
 
                 blobcheck = check_pixel_coords(pixel_coords, pixel_count)
                 if blobcheck == "blob":
