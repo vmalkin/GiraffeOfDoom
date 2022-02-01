@@ -259,7 +259,7 @@ if __name__ == '__main__':
             # cosmic ray hit
             if pixel_count >= blob_size:
                 pixel_coords = np.array(cv2.findNonZero(testing_img))
-                print(t + " Noise! " + str(pixel_count) + " pixels. ", report_image_params(testing_img))
+                print(t + " Blob! " + str(pixel_count) + " pixels. ", report_image_params(testing_img))
 
                 blobcheck = check_pixel_coords(pixel_coords, pixel_count)
                 if blobcheck == "blob":
