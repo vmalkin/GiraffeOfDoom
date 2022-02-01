@@ -35,7 +35,7 @@ database = "events.db"
 averaging_iterations = 100
 highpass_threshold = 3
 current_camera = 2
-blob_size = 5
+blob_size = 4
 
 # milli sec
 exposure_win = -1
@@ -81,6 +81,8 @@ def camera_setup_c270(cam):
     cam.set(cv2.CAP_PROP_SHARPNESS, sharpness)
     cam.set(cv2.CAP_PROP_FRAME_HEIGHT, height)
     cam.set(cv2.CAP_PROP_FRAME_WIDTH, width)
+    # Disable auto exposure
+    cam.set(cv2.CAP_PROP_AUTO_EXPOSURE, 1)
 
     # cam.set(cv2.CAP_PROP_AUTO_EXPOSURE, 3)
     cam.set(cv2.CAP_PROP_EXPOSURE, exposure)
@@ -94,7 +96,7 @@ def camera_setup_c270(cam):
     print("set / get width: ", width, cam.get(cv2.CAP_PROP_FRAME_WIDTH))
     print("set / get exposure: ", exposure, cam.get(cv2.CAP_PROP_EXPOSURE))
     print("set / get frames per second: ", cam.get(cv2.CAP_PROP_FPS))
-
+    print("set / get autoexposure: ", cam.get(cv2.CAP_PROP_AUTO_EXPOSURE))
 
 def greyscale_img(image_to_process):
     # converting an Image to grey scale one channel...
