@@ -195,6 +195,7 @@ if __name__ == '__main__':
     averaging_array = []
     avg_pixels = None
     display_flag = True
+
     camera = cv2.VideoCapture(current_camera)
     camera_setup_c270(camera)
 
@@ -210,67 +211,70 @@ if __name__ == '__main__':
 
     # Image to show accumulating stikes
     cumulative_image = np.full((sh_y, sh_x), 0)
+    try:
+        while True:
 
-    while True:
-        ret, image = camera.read()
-        img_g = greyscale_img(image)
+            ret, image = camera.read()
+            img_g = greyscale_img(image)
 
-        # Create an array of pictures with which to create an average
-        averaging_array.append(img_g)
+            # Create an array of pictures with which to create an average
+            averaging_array.append(img_g)
 
-        if len(averaging_array) >= averaging_iterations:
-            # ALWAYS POP
-            averaging_array.pop(0)
-            avg_img = np.mean(averaging_array, axis=0)
-            max_avg_pixels = int(np.max(avg_img))
+            if len(averaging_array) >= averaging_iterations:
+                # ALWAYS POP
+                averaging_array.pop(0)
+                avg_img = np.mean(averaging_array, axis=0)
+                max_avg_pixels = int(np.max(avg_img))
 
-            # Some initialisation stuff, including experimental automatic setting of highpass
-            # filter
-            if display_flag == True:
-                print("\nAverage Image parameters")
-                report_image_params(avg_img)
-                print("\nCreating dynamic highpass filter...")
-                highpassfilter = create_highpass(sh_x, sh_y, highpass_threshold)
-                display_flag = False
+                # Some initialisation stuff, including experimental automatic setting of highpass
+                # filter
+                if display_flag == True:
+                    print("\nAverage Image parameters")
+                    report_image_params(avg_img)
+                    print("\nCreating dynamic highpass filter...")
+                    highpassfilter = create_highpass(sh_x, sh_y, highpass_threshold)
+                    display_flag = False
 
-            # The image to test is made up of the original image, minus the average minus the highpass
-            testing_img = img_g - avg_img - highpassfilter
+                # The image to test is made up of the original image, minus the average minus the highpass
+                testing_img = img_g - avg_img - highpassfilter
 
-            # Clip image to with 0 - 255
-            testing_img = np.where(testing_img <= 0, 0,testing_img)
-            testing_img = np.where(testing_img > 0, 254, testing_img)
+                # Clip image to with 0 - 255
+                testing_img = np.where(testing_img <= 0, 0,testing_img)
+                testing_img = np.where(testing_img > 0, 254, testing_img)
 
-            # Count any white pixels - potential cosmic ray hits
-            pixel_count = cv2.countNonZero(testing_img)
+                # Count any white pixels - potential cosmic ray hits
+                pixel_count = cv2.countNonZero(testing_img)
 
-            tt = int(time.time())
-            t = posix2utc(tt, '%Y-%m-%d %H:%M:%S')
+                tt = int(time.time())
+                t = posix2utc(tt, '%Y-%m-%d %H:%M:%S')
 
-            # Report as noise hits that dont meet the size criteria
-            if pixel_count != 0 and pixel_count < blob_size:
-                print(t + " Noise! " + str(pixel_count) + " pixels.", report_image_params(testing_img))
+                # Report as noise hits that dont meet the size criteria
+                if pixel_count != 0 and pixel_count < blob_size:
+                    print(t + " Noise! " + str(pixel_count) + " pixels.", report_image_params(testing_img))
 
-            # if a hit is over the size for a blob of pixels, get the coordinates
-            #  of the blobs pixels and check. If it's genuine then treat as a
-            # cosmic ray hit
-            if pixel_count >= blob_size:
-                pixel_coords = np.array(cv2.findNonZero(testing_img))
-                print(t + " Blob detected! " + str(pixel_count) + " pixels.", report_image_params(testing_img))
+                # if a hit is over the size for a blob of pixels, get the coordinates
+                #  of the blobs pixels and check. If it's genuine then treat as a
+                # cosmic ray hit
+                if pixel_count >= blob_size:
+                    pixel_coords = np.array(cv2.findNonZero(testing_img))
+                    print(t + " Blob detected! " + str(pixel_count) + " pixels.", report_image_params(testing_img))
 
-                blobcheck = check_pixel_coords(pixel_coords, pixel_count)
-                if blobcheck == "blob":
-                    # add to database, get data for time period.
-                    database_add_data(tt, pixel_count)
-                    current_data = database_get_data(24)
+                    blobcheck = check_pixel_coords(pixel_coords, pixel_count)
+                    if blobcheck == "blob":
+                        # add to database, get data for time period.
+                        database_add_data(tt, pixel_count)
+                        current_data = database_get_data(24)
 
-                    n = posix2utc(tt, '%Y-%m-%d')
-                    if n_old == n:
-                        filename = "CRays_" + n + ".png"
-                        cumulative_image = cumulative_image + testing_img
-                        image_save(filename, cumulative_image)
-                    else:
-                        n_old = n
-                        cumulative_image = np.full((sh_y, sh_x), 0)
+                        n = posix2utc(tt, '%Y-%m-%d')
+                        if n_old == n:
+                            filename = "CRays_" + n + ".png"
+                            cumulative_image = cumulative_image + testing_img
+                            image_save(filename, cumulative_image)
+                        else:
+                            n_old = n
+                            cumulative_image = np.full((sh_y, sh_x), 0)
 
-    camera.release()
-    cv2.destroyAllWindows()
+    except KeyboardInterrupt:
+        print("Exiting Program")
+        camera.release()
+        cv2.destroyAllWindows()
