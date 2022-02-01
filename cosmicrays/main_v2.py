@@ -35,7 +35,7 @@ database = "events.db"
 averaging_iterations = 50
 highpass_threshold = 3
 current_camera = 2
-blob_size = 4
+blob_size = 5
 
 # milli sec
 exposure_win = -1
