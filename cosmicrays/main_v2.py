@@ -4,7 +4,7 @@ import numpy as np
 import datetime
 import sqlite3
 import os
-import mgr_plot_flux
+import mgr_plot_cumulative
 import mgr_plot_hits
 from threading import Thread
 
@@ -19,7 +19,7 @@ class ThreadPlotter(Thread):
             # print("Beginning plot...")
             data = database_get_data(24*7)
             try:
-                mgr_plot_flux.wrapper(data)
+                mgr_plot_cumulative.wrapper(data)
             except:
                 print("Failed to print cumulative totals")
 
