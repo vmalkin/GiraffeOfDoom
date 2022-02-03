@@ -6,6 +6,7 @@ import sqlite3
 import os
 import mgr_plot_cumulative
 import mgr_plot_hits
+import mgr_plot_flux
 from threading import Thread
 
 
@@ -27,6 +28,12 @@ class ThreadPlotter(Thread):
                 mgr_plot_hits.wrapper(data)
             except:
                 print("Failed to print hits")
+
+            try:
+                mgr_plot_flux.wrapper(data)
+            except:
+                print("Failed to print dxdt")
+
             # print("Plot finished")
             time.sleep(1800)
 

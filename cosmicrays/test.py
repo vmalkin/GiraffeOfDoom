@@ -2,6 +2,7 @@ import mgr_plot_hits
 import sqlite3
 import time
 import datetime
+import mgr_plot_flux
 
 database = "events.db"
 
@@ -21,4 +22,4 @@ def database_get_data(hours_duration):
 
 data = database_get_data(24*7)
 tt = int(time.time())
-mgr_plot_hits.wrapper(data)
+mgr_plot_flux.wrapper(data)
