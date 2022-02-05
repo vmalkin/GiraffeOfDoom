@@ -29,10 +29,10 @@ class ThreadPlotter(Thread):
             except:
                 print("Failed to print hits")
 
-            try:
-                mgr_plot_flux.wrapper(data)
-            except:
-                print("Failed to print dxdt")
+            # try:
+            #     mgr_plot_flux.wrapper(data)
+            # except:
+            #     print("Failed to print dxdt")
 
             # print("Plot finished")
             time.sleep(1800)
@@ -187,9 +187,9 @@ def check_pixel_coords(pixel_coords, pixel_count):
     # are not a cosmic ray hit. Otherwise we have a genuine blob!
     if xd > 0:
         if yd > 0:
-            if xd <= pixel_count:
-                if yd <= pixel_count:
-                    result = "blob"
+            # if xd <= pixel_count:
+            #     if yd <= pixel_count:
+            result = "blob"
     print(xd, yd, pixel_count, result)
     return result
 
