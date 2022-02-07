@@ -12,7 +12,6 @@ char receivedChars[numChars];
 SoftwareSerial ss(RXPin, TXPin);
 TinyGPS gps;
 
-
 void setup()
 {
   Serial.begin(115200);
