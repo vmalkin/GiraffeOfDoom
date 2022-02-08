@@ -8,6 +8,12 @@ boolean newData = false;
 const byte numChars = 79;
 char receivedChars[numChars];
 
+static boolean recvInProgress = false;
+static byte ndx = 0;
+char startMarker = '$';
+char endMarker = '\n';
+char rc;
+
 // The serial connection to the GPS device
 SoftwareSerial ss(RXPin, TXPin);
 TinyGPS gps;
@@ -24,11 +30,7 @@ void loop() {
 }
 
 void recvWithStartEndMarkers() {
-    static boolean recvInProgress = false;
-    static byte ndx = 0;
-    char startMarker = '$';
-    char endMarker = '\n';
-    char rc;
+
  
     while (ss.available() > 0 && newData == false) {
         rc = ss.read();
