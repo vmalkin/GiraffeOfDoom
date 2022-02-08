@@ -308,12 +308,12 @@ if __name__ == "__main__":
     while True:
         # Get com data_s4
         line = com.data_recieve()
-        # print(line[:5])
+        # print(line[:6])
 
         # Parse com data_s4 for valid data_s4 GSV sentence ???GSV,
         # if re.match(regex_expression, line):
-        if line[:5] == "GPGSV":
-        # if line[:6] == "$GPGSV" or line[:6] == "$GLGSV":
+        # if line[:6] == "$GPGSV":
+        if line[:6] == "$GPGSV" or line[:6] == "$GLGSV":
             sentence = nmea_sentence(line)
             # make sure GSV sentence is a multiple of 4
             if len(sentence) % 4 == 0:

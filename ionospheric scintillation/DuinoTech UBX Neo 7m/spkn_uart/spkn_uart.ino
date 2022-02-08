@@ -47,7 +47,7 @@ void setup()
   myGNSS.disableNMEAMessage(UBX_NMEA_RMC, COM_PORT_UART1);
   myGNSS.disableNMEAMessage(UBX_NMEA_GGA, COM_PORT_UART1); //Only leaving GGA & VTG enabled at current navigation rate
   myGNSS.disableNMEAMessage(UBX_NMEA_VTG, COM_PORT_UART1);  
-  myGNSS.setNavigationFrequency(1);
+  myGNSS.setNavigationFrequency(10);
 }
 
 void loop() {
