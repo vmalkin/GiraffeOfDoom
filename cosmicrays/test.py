@@ -21,6 +21,8 @@ def database_get_data(hours_duration):
     return tempdata
 
 
+
 data = database_get_data(24*100)
 tt = int(time.time())
+
 mgr_emd.wrapper(data, "Muons")
