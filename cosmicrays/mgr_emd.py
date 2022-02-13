@@ -15,8 +15,8 @@ def plot_histogram(x, title):
 
 
 def wrapper(datafile, plotname):
-    a = []
-    dt = []
+    data = []
+    dates = []
     with open(datafile, "r") as f:
         for line in f:
             # print(line)
@@ -25,12 +25,12 @@ def wrapper(datafile, plotname):
             t = line[0]
             try:
                 d = float(str(d))
-                a.append(d)
-                dt.append(t)
+                data.append(d)
+                dates.append(t)
             except:
                 pass
-    a.pop(0)
-    n = np.array(a, dtype='float')
+    data.pop(0)
+    n = np.array(data, dtype='float')
 
     sample_rate = len(n)
     imf = emd.sift.sift(n)
@@ -49,12 +49,12 @@ def wrapper(datafile, plotname):
     # Create the plotly subsplots
     fig = make_subplots(rows=len(imf[0])+1, cols=1)
     fig.update_xaxes(nticks=24, tickangle=45)
-    fig.add_trace(go.Scatter(x=dt, y=a, mode="lines", line=dict(width=2, color="#ff0000")), row=1, col=1)
+    fig.add_trace(go.Scatter(x=dates, y=data, mode="lines", line=dict(width=2, color="#ff0000")), row=1, col=1)
     for i in range(0, len(imf[0])):
         data = imf[:, i]
         r = i+2
         # fig.add_trace(go.Scatter(x=dt, y=data, mode="lines", line=dict(width=2, color="#000000")), row=r, col=1)
-        fig.add_trace(go.Scatter(x=dt, y=data, mode="lines", line=dict(width=1)), row=r, col=1)
+        fig.add_trace(go.Scatter(x=dates, y=data, mode="lines", line=dict(width=1)), row=r, col=1)
     title = "Instrinsic Mode functions - " + plotname
     fig.update_layout(height=2000, width=1600, title_text=title)
     # fig.show()
