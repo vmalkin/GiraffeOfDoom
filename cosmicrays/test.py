@@ -21,6 +21,6 @@ def database_get_data(hours_duration):
     return tempdata
 
 
-data = database_get_data(24*7)
+data = database_get_data(24*100)
 tt = int(time.time())
-mgr_plot_flux.wrapper(data)
+mgr_emd.wrapper(data, "Muons")
