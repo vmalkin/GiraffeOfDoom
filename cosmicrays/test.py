@@ -3,6 +3,7 @@ import sqlite3
 import time
 import datetime
 import mgr_plot_flux
+import mgr_emd
 
 database = "events.db"
 
