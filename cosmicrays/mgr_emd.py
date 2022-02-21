@@ -53,23 +53,26 @@ def wrapper(datafile, plotname):
             data_subset.pop(0)
 
     # --------------------------------------------
-    seconds = 10 * 60
+    seconds = 20 * 60
     newdata = []
-    for i in range(seconds, len(data)):
+    for i in range(seconds, len(data) - seconds):
         temp = []
         for j in range(0 - seconds, seconds):
             temp.append(data[i + j])
-        d = mean(temp)
+        d = round(mean(temp), 3)
         newdata.append(d)
-    dates = dates[:seconds]
-    negseconds = 0 - seconds
-    dates = dates[:negseconds]
+    dates = dates[seconds:]
+    dates = dates[:-seconds]
+    print(len(newdata))
+    print(len(dates))
     # --------------------------------------------
 
     n = np.array(newdata, dtype='float')
 
     sample_rate = len(n)
     imf = emd.sift.sift(n)
+    print("Intrinsic mode function parameters: ", imf.shape)
+
     # emd.plotting.plot_imfs(imf[:sample_rate, :], cmap=True, scale_y=True)
     # IP, IF, IA = emd.spectra.frequency_transform(imf, sample_rate, 'hilbert')
     plot_data(dates, imf, plotname)
