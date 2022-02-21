@@ -7,6 +7,16 @@ import mgr_emd
 
 database = "events.db"
 
+
+def utc2posix(value):
+    # dateformat = "%Y-%m-%d %H:%M:%S.%f"
+    dateformat = "%Y-%m-%d %H:%M:%S"
+    newdatetime = datetime.datetime.strptime(value, dateformat)
+    newdatetime = time.mktime(newdatetime.timetuple())
+    newdatetime = int(newdatetime)
+    return newdatetime
+
+
 def database_get_data(hours_duration):
     duration = hours_duration * 3600
     tempdata = []
@@ -20,7 +30,16 @@ def database_get_data(hours_duration):
     db.close()
     return tempdata
 
-
+# data = []
+# file = "dr01_24hr.csv"
+# with open(file, "r") as f:
+#     for line in f:
+#         line = line.rstrip("\n")
+#         l = line.split(",")
+#         dt = utc2posix(l[0])
+#         da = l[1]
+#         dp = str(dt) + "," + str(da)
+#         data.append(dp)
 
 data = database_get_data(24*100)
 tt = int(time.time())

@@ -1,9 +1,10 @@
 import plotly.graph_objects as go
 # from plotly.subplots import make_subplots
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 import datetime
 import emd
 import numpy as np
+from statistics import mean
 
 def posix2utc(posixtime, timeformat):
     # '%Y-%m-%d %H:%M'
@@ -11,13 +12,13 @@ def posix2utc(posixtime, timeformat):
     return utctime
 
 
-def plot_histogram(x, title):
-    fig = go.Figure()
-    fig.update_layout(title=title)
-    for i in range(0, len(x[0])):
-        fig.add_trace(go.Histogram(x=x[:, i]))
-        # fig.add_trace(go.Scatter(y=x[:,i], mode="lines"))
-    fig.show()
+def plot_data(dates, imf, title):
+    width = len(imf[0])
+    for i in range(0, width):
+        data = go.Scatter(x=dates, y=imf[:, i], mode="lines")
+        fig = go.Figure(data)
+        fig.update_layout(height=500)
+        fig.show()
 
 
 def wrapper(datafile, plotname):
@@ -51,13 +52,28 @@ def wrapper(datafile, plotname):
             data.append(da)
             data_subset.pop(0)
 
-    n = np.array(data, dtype='float')
+    # --------------------------------------------
+    seconds = 10 * 60
+    newdata = []
+    for i in range(seconds, len(data)):
+        temp = []
+        for j in range(0 - seconds, seconds):
+            temp.append(data[i + j])
+        d = mean(temp)
+        newdata.append(d)
+    dates = dates[:seconds]
+    negseconds = 0 - seconds
+    dates = dates[:negseconds]
+    # --------------------------------------------
+
+    n = np.array(newdata, dtype='float')
 
     sample_rate = len(n)
     imf = emd.sift.sift(n)
+    # emd.plotting.plot_imfs(imf[:sample_rate, :], cmap=True, scale_y=True)
+    # IP, IF, IA = emd.spectra.frequency_transform(imf, sample_rate, 'hilbert')
+    plot_data(dates, imf, plotname)
 
-    # fig = go.Figure(go.Scatter(x=dates, y=imf))
-    # fig.show()
 
     print("data is " + str(len(imf)) + " records long")
     print("Plot finished")
