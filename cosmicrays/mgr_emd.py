@@ -67,7 +67,13 @@ def wrapper(datafile, plotname):
     print(len(dates))
     # --------------------------------------------
 
-    n = np.array(newdata, dtype='float')
+    data_dx = []
+    for i in range(1, len(data)):
+        dx = data[i] - data[i - 1]
+        data_dx.append(dx)
+    dates.pop(0)
+
+    n = np.array(data_dx, dtype='float')
 
     sample_rate = len(n)
     imf = emd.sift.sift(n)
