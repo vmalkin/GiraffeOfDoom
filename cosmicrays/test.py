@@ -45,4 +45,5 @@ data = database_get_data(24*6)
 tt = int(time.time())
 
 mgr_plot_flux.wrapper(data)
+
 # mgr_plot_cumulative.wrapper(data)
