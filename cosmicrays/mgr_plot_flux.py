@@ -8,7 +8,7 @@ def posix2utc(posixtime, timeformat):
     return utctime
 
 def plot(dates, data):
-    fig = go.Figure(go.Bar(x=dates, y=data,
+    fig = go.Figure(go.Scatter(x=dates, y=data,
                            marker = dict(color='#340059', line=dict(width=0.5, color='#340059'))))
     fig.update_layout(font=dict(size=14), title_font_size=21)
     fig.update_layout(plot_bgcolor="#a0a0a0", paper_bgcolor="#a0a0a0")

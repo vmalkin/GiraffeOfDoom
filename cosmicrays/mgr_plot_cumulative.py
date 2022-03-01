@@ -21,7 +21,7 @@ def plot(dates, data, ticknumber):
     # fig.show()
 
 def wrapper(data):
-    window = 60 * 60 * 6
+    window = 60 * 60 * 12
     nt = int(data[len(data) - 1])
     st = int(data[0])
     ticknumber = int((nt - st) / (3600 * 6))

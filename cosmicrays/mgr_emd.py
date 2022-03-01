@@ -22,7 +22,7 @@ def plot_data(dates, imf, title):
 
 
 def wrapper(datafile, plotname):
-    window = 60 * 60 * 6
+    window = 60 * 60 * 24
     nt = int(datafile[len(datafile) - 1])
     st = int(datafile[0])
 
@@ -52,31 +52,26 @@ def wrapper(datafile, plotname):
             data.append(da)
             data_subset.pop(0)
 
-    # --------------------------------------------
-    seconds = 20 * 60
-    newdata = []
-    for i in range(seconds, len(data) - seconds):
-        temp = []
-        for j in range(0 - seconds, seconds):
-            temp.append(data[i + j])
-        d = round(mean(temp), 3)
-        newdata.append(d)
-    dates = dates[seconds:]
-    dates = dates[:-seconds]
-    print(len(newdata))
-    print(len(dates))
-    # --------------------------------------------
+    n = np.array(data, dtype='float')
 
-    data_dx = []
-    for i in range(1, len(data)):
-        dx = data[i] - data[i - 1]
-        data_dx.append(dx)
-    dates.pop(0)
-
-    n = np.array(data_dx, dtype='float')
+    # # --------------------------------------------
+    # seconds = 20 * 60
+    # newdata = []
+    # for i in range(seconds, len(data) - seconds):
+    #     temp = []
+    #     for j in range(0 - seconds, seconds):
+    #         temp.append(data[i + j])
+    #     d = round(mean(temp), 3)
+    #     newdata.append(d)
+    # dates = dates[seconds:]
+    # dates = dates[:-seconds]
+    # print(len(newdata))
+    # print(len(dates))
+    # n = np.array(newdata, dtype='float')
+    # # --------------------------------------------
 
     sample_rate = len(n)
-    imf = emd.sift.sift(n)
+    imf = emd.sift.iterated_mask_sift(n)
     print("Intrinsic mode function parameters: ", imf.shape)
 
     # emd.plotting.plot_imfs(imf[:sample_rate, :], cmap=True, scale_y=True)

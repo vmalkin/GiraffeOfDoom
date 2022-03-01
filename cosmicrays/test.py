@@ -1,4 +1,4 @@
-import mgr_plot_hits
+import mgr_plot_cumulative
 import sqlite3
 import time
 import datetime
@@ -41,7 +41,8 @@ def database_get_data(hours_duration):
 #         dp = str(dt) + "," + str(da)
 #         data.append(dp)
 
-data = database_get_data(24*100)
+data = database_get_data(24*6)
 tt = int(time.time())
 
-mgr_emd.wrapper(data, "Muons")
+mgr_plot_flux.wrapper(data)
+# mgr_plot_cumulative.wrapper(data)
