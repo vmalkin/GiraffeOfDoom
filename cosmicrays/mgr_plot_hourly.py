@@ -60,8 +60,6 @@ def wrapper(data):
     #         eventcounts.append(value)
     #         eventdates.append(i)
     #         bucket = []
-    #
-    #
     # plot(eventdates, eventcounts, ticknumber, hrs)
 
 
