@@ -2,7 +2,7 @@ import mgr_plot_cumulative
 import sqlite3
 import time
 import datetime
-import mgr_plot_flux
+import mgr_plot_hourly
 import mgr_emd
 
 database = "events.db"
@@ -44,6 +44,6 @@ def database_get_data(hours_duration):
 data = database_get_data(24*6)
 tt = int(time.time())
 
-mgr_plot_flux.wrapper(data)
+mgr_plot_hourly.wrapper(data)
 
 # mgr_plot_cumulative.wrapper(data)

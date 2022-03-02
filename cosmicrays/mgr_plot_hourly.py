@@ -15,49 +15,53 @@ def plot(dates, data, ticknumber, hrs):
     fig.update_layout(font=dict(size=14), title_font_size=21)
     fig.update_layout(plot_bgcolor="#a0a0a0", paper_bgcolor="#a0a0a0")
     fig.update_layout(width=1400, height=400,
-                      title="7 Day Cosmic Ray Strikes - Cumulative " + str(hrs) + " hourly rate",
+                      title="7 Day Cosmic Ray Strikes - Hourly. " + str(hrs) + " hourly rate",
                       xaxis_title="Date/time UTC<br><sub>http://DunedinAurora.nz</sub>")
-    fig.write_image("muon_hit_count.jpg")
-    # fig.show()
+    # fig.write_image("muon_hourly.jpg")
+    fig.show()
 
 def wrapper(data):
-    hrs = 12
+    hrs = 6
     window = 60 * 60 * hrs
+
     nt = int(data[len(data) - 1])
     st = int(data[0])
-    ticknumber = int((nt - st) / (3600 * 6))
 
+    ticknumber = int((nt - st) / (3600 * 6))
     if ticknumber <= 0:
         ticknumber = 1
 
-    # dates = []
-    # events = []
-    # for item in data:
-    #     dates.append(posix2utc(item, '%Y-%m-%d %H:%M'))
-    #     events.append(1)
-
-    times = []
-    times.append(0)
+    # Create a list the size of all posix times in the interval st - nt
+    # set the default value to zero
+    events = []
+    events.append(0)
     for i in range(st, nt):
-        times.append(0)
+        events.append(0)
 
+    # Scan thru the data. for each date that matches, set the date to one
     for item in data:
         index = int(item) - st
-        times[index] = 1
+        events[index] = 1
 
-    dates = []
-    data = []
-    data_subset = []
+    # Calculate the number of events for each time interval.
+    eventcounts = []
+    eventdates = []
+    bucket = []
     for i in range(st, nt):
         index = int(i) - st
-        data_subset.append(times[index])
-        if i > (st + window):
-            da = sum(data_subset)
-            dt = posix2utc(i, '%Y-%m-%d %H:%M')
-            dates.append(dt)
-            data.append(da)
-            data_subset.pop(0)
 
-    plot(dates, data, ticknumber, hrs)
+        print(index, len(data))
+
+        # dt = int(data[index])
+        # bucket.append(dt)
+    #     if index % window == 0:
+    #         print("calculating bucket")
+    #         value = sum(bucket)
+    #         eventcounts.append(value)
+    #         eventdates.append(i)
+    #         bucket = []
+    #
+    #
+    # plot(eventdates, eventcounts, ticknumber, hrs)
 
 
