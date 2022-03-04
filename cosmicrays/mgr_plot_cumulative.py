@@ -17,11 +17,12 @@ def plot(dates, data, ticknumber, hrs):
     fig.update_layout(width=1400, height=400,
                       title="7 Day Cosmic Ray Strikes - Cumulative " + str(hrs) + " hourly rate",
                       xaxis_title="Date/time UTC<br><sub>http://DunedinAurora.nz</sub>")
-    fig.write_image("muon_hit_count.jpg")
+    title = "muons_agg_" + str(hrs) + "_hr.jpg"
+    fig.write_image(title)
     # fig.show()
 
-def wrapper(data):
-    hrs = 12
+def wrapper(data, window_hours):
+    hrs = window_hours
     window = 60 * 60 * hrs
     nt = int(data[len(data) - 1])
     st = int(data[0])
