@@ -8,10 +8,10 @@ dna_core = sqlite3.connect(k.dbfile)
 
 db = dna_core.cursor()
 
-# db.execute('drop table if exists station;')
-# db.execute('drop table if exists station_data;')
-# db.execute('drop table if exists events;')
-# db.execute('drop table if exists dashboard;')
+db.execute('drop table if exists station;')
+db.execute('drop table if exists station_data;')
+db.execute('drop table if exists events;')
+db.execute('drop table if exists dashboard;')
 
 db.execute('PRAGMA foreign_keys = ON;')
 
