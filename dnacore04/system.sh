@@ -3,6 +3,7 @@ while :
 do
  python3 get_ruru.py
  python3 get_goes16.py
+ python3 get_goes17.py
  python3 get_SW_speed.py
  python3 get_SW_density.py
  python3 get_bz.py
