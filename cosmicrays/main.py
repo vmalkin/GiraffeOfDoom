@@ -4,7 +4,7 @@ import numpy as np
 import datetime
 import sqlite3
 import os
-import mgr_plot_cumulative
+import mgr_plot_avg_hits
 import mgr_plot_hits
 from threading import Thread
 

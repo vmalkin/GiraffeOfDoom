@@ -1,4 +1,4 @@
-import mgr_plot_cumulative
+import mgr_plot_avg_hits
 import sqlite3
 import time
 import datetime

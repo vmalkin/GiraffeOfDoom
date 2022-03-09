@@ -24,6 +24,7 @@ def plot(dates, data, ticknumber, hrs):
 def wrapper(data, window_hours):
     hrs = window_hours
     window = 60 * 60 * hrs
+
     nt = int(data[len(data) - 1])
     st = int(data[0])
     ticknumber = int((nt - st) / (3600 * 6))
@@ -31,34 +32,34 @@ def wrapper(data, window_hours):
     if ticknumber <= 0:
         ticknumber = 1
 
-    # dates = []
-    # events = []
-    # for item in data:
-    #     dates.append(posix2utc(item, '%Y-%m-%d %H:%M'))
-    #     events.append(1)
-
-    times = []
-    times.append(0)
-    for i in range(st, nt):
-        times.append(0)
-
-    for item in data:
-        index = int(item) - st
-        times[index] = 1
-
     dates = []
-    data = []
-    data_subset = []
-    for i in range(st, nt):
-        index = int(i) - st
-        data_subset.append(times[index])
-        if i > (st + window):
-            da = sum(data_subset)
-            dt = posix2utc(i, '%Y-%m-%d %H:%M')
-            dates.append(dt)
-            data.append(da)
-            data_subset.pop(0)
-
+    events = []
+    for item in data:
+        dates.append(posix2utc(item, '%Y-%m-%d %H:%M'))
+        events.append(1)
+    #
+    # times = []
+    # times.append(0)
+    # for i in range(st, nt):
+    #     times.append(0)
+    #
+    # for item in data:
+    #     index = int(item) - st
+    #     times[index] = 1
+    #
+    # dates = []
+    # data = []
+    # data_subset = []
+    # for i in range(st, nt):
+    #     index = int(i) - st
+    #     data_subset.append(times[index])
+    #     if i > (st + window):
+    #         da = sum(data_subset)
+    #         dt = posix2utc(i, '%Y-%m-%d %H:%M')
+    #         dates.append(dt)
+    #         data.append(da)
+    #         data_subset.pop(0)
+    #
     plot(dates, data, ticknumber, hrs)
 
 
