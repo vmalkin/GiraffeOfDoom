@@ -47,6 +47,7 @@ def wrapper(data, window_hours):
         print(compare_set.intersection(data))
         finaldata.append(d)
         finaldates.append(posix2utc(i, '%Y-%m-%d %H:%M'))
+
     plot(finaldates, finaldata, ticknumber, window_hours)
 
 
