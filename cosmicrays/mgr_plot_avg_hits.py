@@ -49,5 +49,3 @@ def wrapper(data, window_hours):
         finaldates.append(posix2utc(i, '%Y-%m-%d %H:%M'))
 
     plot(finaldates, finaldata, ticknumber, window_hours)
-
-
