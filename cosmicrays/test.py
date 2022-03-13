@@ -2,7 +2,6 @@ import mgr_plot_avg_hits
 import sqlite3
 import time
 import datetime
-import mgr_plot_hourly
 import mgr_emd
 
 database = "events.db"
@@ -41,9 +40,9 @@ def database_get_data(hours_duration):
 #         dp = str(dt) + "," + str(da)
 #         data.append(dp)
 
-data = database_get_data(24*6)
+data = database_get_data(24*3)
 tt = int(time.time())
 
-mgr_plot_hourly.wrapper(data)
+mgr_plot_avg_hits.wrapper(data, 6)
 
 # mgr_plot_cumulative.wrapper(data)
