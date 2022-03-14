@@ -37,14 +37,27 @@ def wrapper(data, window_hours):
 
     finaldates = []
     finaldata = []
+    # for i in range(st + window, nt - window):
+    #     slice_start = i - window
+    #     slice_end = i + window
+    #     compare_set = set()
+    #     for j in range(slice_start, slice_end):
+    #         compare_set.add(j)
+    #     d = len(compare_set.intersection(data))
+    #     print(compare_set[0])
+    #     print(data[0])
+    #     finaldata.append(d)
+    #     finaldates.append(posix2utc(i, '%Y-%m-%d %H:%M'))
+
     for i in range(st + window, nt - window):
         slice_start = i - window
         slice_end = i + window
-        compare_set = set()
+        compare_set = []
         for j in range(slice_start, slice_end):
-            compare_set.add(j)
-        d = len(compare_set.intersection(data))
-        print(compare_set.intersection(data))
+            compare_set.append(j)
+
+        d = list(set(data).intersection(compare_set))
+        print(len(d))
         finaldata.append(d)
         finaldates.append(posix2utc(i, '%Y-%m-%d %H:%M'))
 
