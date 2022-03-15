@@ -19,7 +19,7 @@ def plot(dates, data, ticknumber, hrs):
                       xaxis_title="Date/time UTC<br><sub>http://DunedinAurora.nz</sub>")
     title = "muons_avg_" + str(hrs) + "_hr.jpg"
     fig.write_image(title)
-    # fig.show()
+    fig.show()
 
 def wrapper(data, window_hours):
     window = 60 * 60 * window_hours
@@ -27,38 +27,27 @@ def wrapper(data, window_hours):
     nt = int(data[len(data) - 1])
     st = int(data[0])
     ticknumber = int((nt - st) / (3600 * 6))
-
     if ticknumber <= 0:
         ticknumber = 1
 
-    times = []
+    # create an empty arrag of zeros based on length of time
+    temp = []
+    temp.append(0)
     for i in range(st, nt):
-        times.append(i)
+        temp.append(0)
+
+    # Populate indices that have a date with a one.
+    for d in data:
+        index = int(d) - st
+        temp[index] = 1
 
     finaldates = []
     finaldata = []
-    # for i in range(st + window, nt - window):
-    #     slice_start = i - window
-    #     slice_end = i + window
-    #     compare_set = set()
-    #     for j in range(slice_start, slice_end):
-    #         compare_set.add(j)
-    #     d = len(compare_set.intersection(data))
-    #     print(compare_set[0])
-    #     print(data[0])
-    #     finaldata.append(d)
-    #     finaldates.append(posix2utc(i, '%Y-%m-%d %H:%M'))
-
     for i in range(st + window, nt - window):
-        slice_start = i - window
-        slice_end = i + window
-        compare_set = []
-        for j in range(slice_start, slice_end):
-            compare_set.append(j)
-
-        d = list(set(data).intersection(compare_set))
-        print(len(d))
-        finaldata.append(d)
-        finaldates.append(posix2utc(i, '%Y-%m-%d %H:%M'))
+        t = 0
+        for j in range(0 - window, window):
+            t = t + temp[i + j]
+        finaldates.append(i)
+        finaldata.append(t)
 
     plot(finaldates, finaldata, ticknumber, window_hours)
