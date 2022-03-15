@@ -45,7 +45,7 @@ def wrapper(data, window_hours):
     finaldates = []
     finaldata = []
     for i in range(st + window, nt - window):
-        print(i - st, " ", len(temp))
+        # print(i - st, " ", len(temp))
         t = 0
         for j in range(0 - window, window):
             index = i + j - st
@@ -54,5 +54,5 @@ def wrapper(data, window_hours):
         utcdate = posix2utc(i, '%Y-%m-%d %H:%M')
         finaldates.append(utcdate)
         finaldata.append(t)
-
+    print("Plotting average hits")
     plot(finaldates, finaldata, ticknumber, window_hours)

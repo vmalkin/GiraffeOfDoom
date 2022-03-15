@@ -40,5 +40,6 @@ def wrapper(data):
     for item in data:
         dates.append(posix2utc(item, '%Y-%m-%d %H:%M'))
         events.append(1)
+    print("Plotting hits")
     plot(dates, events, ticknumber, count)
 
