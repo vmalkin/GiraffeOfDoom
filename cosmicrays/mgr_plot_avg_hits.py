@@ -35,6 +35,7 @@ def wrapper(data, window_hours):
     temp.append(0)
     for i in range(st, nt):
         temp.append(0)
+    print("Length of temp array: ", len(temp))
 
     # Populate indices that have a date with a one.
     for d in data:
@@ -44,10 +45,14 @@ def wrapper(data, window_hours):
     finaldates = []
     finaldata = []
     for i in range(st + window, nt - window):
+        print(i - st, " ", len(temp))
         t = 0
         for j in range(0 - window, window):
-            t = t + temp[i + j]
-        finaldates.append(i)
+            index = i + j - st
+            # print(index)
+            t = t + temp[index]
+        utcdate = posix2utc(i, '%Y-%m-%d %H:%M')
+        finaldates.append(utcdate)
         finaldata.append(t)
 
     plot(finaldates, finaldata, ticknumber, window_hours)
