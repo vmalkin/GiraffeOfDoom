@@ -19,7 +19,7 @@ def plot(dates, data, ticknumber, hrs):
                       xaxis_title="Date/time UTC<br><sub>http://DunedinAurora.nz</sub>")
     title = "muons_avg_" + str(hrs) + "_hr.jpg"
     fig.write_image(title)
-    fig.show()
+    # fig.show()
 
 def wrapper(data, window_hours):
     window = 60 * 60 * window_hours
@@ -31,28 +31,32 @@ def wrapper(data, window_hours):
         ticknumber = 1
 
     # create an empty arrag of zeros based on length of time
-    temp = []
-    temp.append(0)
+    hits = []
+    hits.append(0)
     for i in range(st, nt):
-        temp.append(0)
-    print("Length of temp array: ", len(temp))
+        hits.append(0)
+    print("Length of temp array: ", len(hits))
 
     # Populate indices that have a date with a one.
     for d in data:
         index = int(d) - st
-        temp[index] = 1
+        hits[index] = 1
 
     finaldates = []
     finaldata = []
-    for i in range(st + window, nt - window):
-        # print(i - st, " ", len(temp))
-        t = 0
-        for j in range(0 - window, window):
-            index = i + j - st
-            # print(index)
-            t = t + temp[index]
-        utcdate = posix2utc(i, '%Y-%m-%d %H:%M')
-        finaldates.append(utcdate)
-        finaldata.append(t)
+    holding = []
+    for i in range(st, nt):
+        index = i - st
+        parse_window = window * 2
+        holding.append(hits[index])
+
+        if len(holding) > parse_window:
+            holding.pop(0)
+            temp_data = sum(holding)
+            temp_time = i - window
+            temp_time = posix2utc(temp_time, '%Y-%m-%d %H:%M')
+            finaldates.append(temp_time)
+            finaldata.append(temp_data)
+
     print("Plotting average hits")
     plot(finaldates, finaldata, ticknumber, window_hours)
