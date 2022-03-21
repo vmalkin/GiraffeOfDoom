@@ -77,8 +77,11 @@ def wrapper(query_interval):
     # parse out readings < 40deg in alt and 0 < s4 < 100
     parsed_query = query_parse(querydata)
 
-    # The query result is the avg reading for each minute. this needs to be sliced into UTC days
-    # and stacked
+    # Remove spikes with Median Filter
+    # SMooth data with a running avg
+    # Slice data by UTC days and created stacked lists for plotting
+    # Generate list of hours/mins for plotter
+
 
 
     # plot_chart("s4_values.jpg", aggregate_dates, aggregate_data, 0)
