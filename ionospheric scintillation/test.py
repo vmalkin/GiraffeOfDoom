@@ -1,8 +1,6 @@
-import mgr_polar_noise_tracks
-import mgr_s4_stats_json
+import mgr_s4_tracker_v1
 import mgr_s4_tracker
-import plotly.graph_objects as go
-from statistics import mean, stdev, median
+
 
 import sqlite3
 import time
@@ -41,7 +39,7 @@ optimum_altitude = 25
 
 print("***************************** Start Query Processor")
 # mgr_polar_noise_tracks.wrapper(querydata_24)
-mgr_s4_tracker.wrapper(querydata)
+mgr_s4_tracker_v1.wrapper(querydata)
 
 
 
