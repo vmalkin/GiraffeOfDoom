@@ -26,9 +26,9 @@ def plot_chart(filename, dates, aggregatedata, avg_reading):
     fig.update_yaxes(range=[5, 30])
     max = len(aggregatedata)
     for i in range(0, max):
-        fig.add_scatter(x=dates, y=aggregatedata[i], line=dict(color='rgba(0, 0, 0, 0.2)'))
+        fig.add_scatter(x=dates, y=aggregatedata[i], opacity=0.3)
         if i == max - 1:
-            fig.add_scatter(x=dates, y=aggregatedata[i], line=dict(color='rgba(255, 0, 0, 1)'))
+            fig.add_scatter(x=dates, y=aggregatedata[i], line=dict(color='rgba(0, 0, 0, 1)'))
     # fig = go.Figure(go.Scatter(x=dates, y=data, mode="markers", trendline="rolling", trendline_options=dict(window=20)))
     # fig.write_image(file=savefile, format='jpg')
     fig.show()
