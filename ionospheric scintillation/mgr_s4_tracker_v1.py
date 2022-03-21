@@ -74,9 +74,8 @@ def query_parse(queryresult):
 # Create an overlapping plot of the past x days to show re-occuring daily features in S4 data
 def wrapper(query_interval):
     querydata = database_parse(query_interval)
-    print(querydata[2])
     # parse out readings < 40deg in alt and 0 < s4 < 100
-    # parsed_query = query_parse(querydata)
+    parsed_query = query_parse(querydata)
 
 
 
