@@ -29,7 +29,7 @@ def database_parse(hourduration):
     db.close()
     return returnlist
 
-interval = 24 * 14
+interval = 24 * 7
 querydata = database_parse(interval)
 
 timeformat = '%Y-%m-%d %H:%M:%S'

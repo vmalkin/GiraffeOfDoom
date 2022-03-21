@@ -26,7 +26,7 @@ def plot_chart(filename, dates, aggregatedata, avg_reading):
     fig.update_yaxes(range=[5, 30])
     max = len(aggregatedata)
     for i in range(0, max):
-        fig.add_scatter(x=dates, y=aggregatedata[i], opacity=0.3)
+        fig.add_scatter(x=dates, y=aggregatedata[i], opacity=0.6)
         if i == max - 1:
             fig.add_scatter(x=dates, y=aggregatedata[i], line=dict(color='rgba(0, 0, 0, 1)'))
     # fig = go.Figure(go.Scatter(x=dates, y=data, mode="markers", trendline="rolling", trendline_options=dict(window=20)))
@@ -103,7 +103,7 @@ def wrapper(querydata):
             tmp = []
 
     for i in range(0, 1440):
-        d = posix2utc(x_data[i], "%H:%M")
+        d = round(((i / 1440) * 24), 2)
         aggregate_dates.append(d)
 
     print(len(aggregate_dates))
