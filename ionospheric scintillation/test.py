@@ -31,7 +31,7 @@ def database_parse(hourduration):
     db.close()
     return returnlist
 
-interval = 24 * 3
+interval = 24 * 7
 querydata = database_parse(interval)
 
 timeformat = '%Y-%m-%d %H:%M:%S'
@@ -42,6 +42,7 @@ optimum_altitude = 25
 print("***************************** Start Query Processor")
 # mgr_polar_noise_tracks.wrapper(querydata_24)
 mgr_s4_tracker.wrapper(querydata)
+
 
 
 

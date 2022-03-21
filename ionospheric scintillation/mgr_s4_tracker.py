@@ -21,8 +21,11 @@ def indexposition(posixtime, starttime):
     return interval
 
 
-def plot_chart(filename, dates, data, avg_reading):
-    fig = go.Figure(go.Scatter(x=dates, y=data, mode="lines"))
+def plot_chart(filename, dates, aggregatedata, avg_reading):
+    fig = go.Figure()
+    fig.update_yaxes(range=[5, 30])
+    for row in aggregatedata:
+        fig.add_scatter(x=dates, y=row, line=dict(color='rgba(0, 0, 0, 0.2)'))
     # fig = go.Figure(go.Scatter(x=dates, y=data, mode="markers", trendline="rolling", trendline_options=dict(window=20)))
     # fig.write_image(file=savefile, format='jpg')
     fig.show()
@@ -50,7 +53,7 @@ def query_parse(queryresult):
 def wrapper(querydata):
     # parse out readings < 40deg in alt and 0 < s4 < 100
     parsed_query = query_parse(querydata)
-    print(parsed_query[0])
+    # print(parsed_query[0])
 
     x_data = []
     y_data = []
@@ -60,14 +63,38 @@ def wrapper(querydata):
     for i in range(0, len(parsed_query) - 1):
         dt = parsed_query[i][1]
         dv = parsed_query[i][4]
-        dutc = posix2utc(dt, "%Y-%m-%d %H:%M")
         tmp.append(dv)
 
-        if dt != parsed_query[i + 1][1]:
-            x_data.append(dutc)
+        t1 = posix2utc(parsed_query[i][1], '%Y-%m-%d %H:%M')
+        t2 = posix2utc(parsed_query[i + 1][1], '%Y-%m-%d %H:%M')
+
+        if t1 != t2:
+            x_data.append(parsed_query[i][1])
             y_data.append(mean(tmp))
             tmp = []
-    print(len(x_data))
 
-    plot_chart("s4_values.jpg", x_data, y_data, 0)
-    # # create_json(report_data1440, ion_min, ion_max)
+    # Smooth the data
+
+    print("Length of First pass dates: ", len(x_data))
+    print("Length of First pass data: ", len(y_data))
+
+    # rearrange the data to create a stacked trace.
+    aggregate_data = []
+    aggregate_dates = []
+    tmp = []
+    for i in range(0, len(x_data) - 1):
+        tmp.append(y_data[i])
+        t1 = posix2utc(x_data[i], "%Y-%m-%d")
+        t2 = posix2utc(x_data[i + 1], "%Y-%m-%d")
+        if t1 != t2:
+            aggregate_data.append(tmp)
+            tmp = []
+
+    for i in range(0, 1440):
+        aggregate_dates.append(i)
+
+    print(len(aggregate_dates))
+    print(len(aggregate_data[1]))
+
+    plot_chart("s4_values.jpg", aggregate_dates, aggregate_data, 0)
+
