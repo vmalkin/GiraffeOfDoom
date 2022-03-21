@@ -13,7 +13,7 @@ optimum_altitude = 25
 
 def database_parse(hourduration):
     starttime = int(time.time()) - (60 * 60 * hourduration)
-    print("Parsing database...")
+    print("Querying database...")
     gpsdb = sqlite3.connect(sat_database)
     db = gpsdb.cursor()
 
@@ -77,7 +77,8 @@ def wrapper(query_interval):
     # parse out readings < 40deg in alt and 0 < s4 < 100
     parsed_query = query_parse(querydata)
 
-
+    # The query result is the avg reading for each minute. this needs to be sliced into UTC days
+    # and stacked
 
 
     # plot_chart("s4_values.jpg", aggregate_dates, aggregate_data, 0)
