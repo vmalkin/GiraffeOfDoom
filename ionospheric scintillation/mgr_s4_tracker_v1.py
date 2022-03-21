@@ -3,10 +3,29 @@ import datetime
 import time
 import plotly.graph_objects as go
 from statistics import mean, stdev, median
+import sqlite3
 import json
 
 sat_database = "gps_satellites.db"
 nullvalue = "none"
+optimum_altitude = 25
+
+
+def database_parse(hourduration):
+    starttime = int(time.time()) - (60 * 60 * hourduration)
+    print("Parsing database...")
+    gpsdb = sqlite3.connect(sat_database)
+    db = gpsdb.cursor()
+
+    result = db.execute('select posixtime, alt, avg(s4) from satdata where posixtime > ? and alt > ? group by posixtime order by posixtime asc', [starttime, optimum_altitude])
+    returnlist = []
+    for item in result:
+        dp = (item[0], item[1], item[2])
+        returnlist.append(dp)
+    print("current query " + str(len(returnlist)) + " records long")
+    gpsdb.commit()
+    db.close()
+    return returnlist
 
 
 def posix2utc(posixtime, timeformat):
@@ -42,8 +61,8 @@ def query_parse(queryresult):
     s4_max = 200
     alt_min = 40
     returnlist = []
-    index_s4 = 4
-    index_alt = 2
+    index_s4 = 2
+    index_alt = 1
     for item in queryresult:
         if item[index_alt] >= alt_min:
             if item[index_s4] >= s4_min:
@@ -53,61 +72,14 @@ def query_parse(queryresult):
 
 
 # Create an overlapping plot of the past x days to show re-occuring daily features in S4 data
-def wrapper(querydata):
+def wrapper(query_interval):
+    querydata = database_parse(query_interval)
+    print(querydata[2])
     # parse out readings < 40deg in alt and 0 < s4 < 100
-    parsed_query = query_parse(querydata)
-    half_window = 10
-    old_x_data = []
-    old_y_data = []
-    tmp = [0]
+    # parsed_query = query_parse(querydata)
 
-    # Create first pass thru data - average value for each minute
-    for i in range(0, len(parsed_query) - 1):
-        dt = parsed_query[i][1]
-        dv = parsed_query[i][4]
-        tmp.append(dv)
 
-        t1 = posix2utc(parsed_query[i][1], '%Y-%m-%d %H:%M')
-        t2 = posix2utc(parsed_query[i + 1][1], '%Y-%m-%d %H:%M')
 
-        if t1 != t2:
-            old_x_data.append(parsed_query[i][1])
-            old_y_data.append(mean(tmp))
-            tmp = []
 
-    # Smooth the data
-    x_data = []
-    y_data = []
-    t = []
-    for i in range(0, len(old_y_data)):
-        t.append(old_y_data[i])
-        if len(t) > half_window * 2:
-            t.pop(0)
-            d = mean(t)
-            y_data.append(d)
-            x_data.append(old_x_data[i - half_window])
-
-    print("Length of First pass dates: ", len(x_data))
-    print("Length of First pass data: ", len(y_data))
-
-    # rearrange the data to create a stacked trace.
-    aggregate_data = []
-    aggregate_dates = []
-    tmp = []
-    for i in range(0, len(x_data) - 1):
-        tmp.append(y_data[i])
-        t1 = posix2utc(x_data[i], "%Y-%m-%d")
-        t2 = posix2utc(x_data[i + 1], "%Y-%m-%d")
-        if t1 != t2:
-            aggregate_data.append(tmp)
-            tmp = []
-
-    for i in range(0, 1440):
-        d = round(((i / 1440) * 24), 2)
-        aggregate_dates.append(d)
-
-    print(len(aggregate_dates))
-    print(len(aggregate_data[1]))
-
-    plot_chart("s4_values.jpg", aggregate_dates, aggregate_data, 0)
+    # plot_chart("s4_values.jpg", aggregate_dates, aggregate_data, 0)
 
