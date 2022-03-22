@@ -1,5 +1,5 @@
 import mgr_s4_tracker_v1
-# import mgr_s4_tracker
+import mgr_s4_tracker
 
 
 import sqlite3
@@ -29,7 +29,7 @@ def database_parse(hourduration):
     db.close()
     return returnlist
 
-interval = 24 * 7
+interval = 24 * 14
 querydata = database_parse(interval)
 
 timeformat = '%Y-%m-%d %H:%M:%S'
@@ -40,7 +40,7 @@ optimum_altitude = 25
 print("***************************** Start Query Processor")
 # mgr_polar_noise_tracks.wrapper(querydata_24)
 mgr_s4_tracker_v1.wrapper(interval)
-
+# mgr_s4_tracker.wrapper(querydata)
 
 
 
