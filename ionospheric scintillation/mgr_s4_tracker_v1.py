@@ -45,17 +45,21 @@ def plot_chart(filename, dates, aggregatedata):
     fig.update_yaxes(range=[5, 30])
     max = len(aggregatedata)
     for i in range(0, max):
-        fig.add_scatter(x=dates, y=aggregatedata[i], mode="lines", connectgaps=True,
-                        line=dict(color='rgba(0, 0, 0, 0.2)'))
+        if i < max - 3:
+            fig.add_scatter(x=dates, y=aggregatedata[i], mode="lines", connectgaps=True,
+                            line=dict(color='rgba(0, 0, 0, 0.2)'))
+        if i == max - 2:
+            fig.add_scatter(x=dates, y=aggregatedata[i], mode="lines", connectgaps=True,
+                            line=dict(color='rgba(255, 125, 0, 1)'))
         if i == max - 1:
             fig.add_scatter(x=dates, y=aggregatedata[i], mode="lines", connectgaps=True,
                             line=dict(color='rgba(255, 0, 0, 1)'))
-    fig.update_layout(width=2400, height=800, title="GPS Noise",
+    fig.update_layout(width=2000, height=800, title="GPS Noise",
                       xaxis_title="Date/time UTC<br><sub>http://DunedinAurora.nz</sub>",
                       yaxis_title="S4 Index",
                       plot_bgcolor="#e0e0e0")
-    # fig.write_image(file=filename, format='jpg')
-    fig.show()
+    fig.write_image(file=filename, format='jpg')
+    # fig.show()
 
 
 def query_parse(queryresult):
@@ -140,8 +144,7 @@ def wrapper(query_interval):
             tmp = []
             for j in range(0, 86400):
                 tmp.append(null)
-        # if i == len(parsed_query) - 1 and t1 - t2 < 70000:
-        #     aggregate_data.append(tmp)
+    aggregate_data.append(tmp)
 
     # Generate list of hours/mins for plotter
     aggregate_dates = []
