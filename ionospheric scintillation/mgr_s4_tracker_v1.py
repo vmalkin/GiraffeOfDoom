@@ -50,12 +50,12 @@ def plot_chart(filename, dates, aggregatedata):
         if i == max - 1:
             fig.add_scatter(x=dates, y=aggregatedata[i], mode="lines", connectgaps=True,
                             line=dict(color='rgba(255, 0, 0, 1)'))
-    fig.update_layout(width=1400, height=600, title="GPS Noise",
+    fig.update_layout(width=2400, height=800, title="GPS Noise",
                       xaxis_title="Date/time UTC<br><sub>http://DunedinAurora.nz</sub>",
                       yaxis_title="S4 Index",
                       plot_bgcolor="#e0e0e0")
-    fig.write_image(file=filename, format='jpg')
-    # fig.show()
+    # fig.write_image(file=filename, format='jpg')
+    fig.show()
 
 
 def query_parse(queryresult):
@@ -140,8 +140,8 @@ def wrapper(query_interval):
             tmp = []
             for j in range(0, 86400):
                 tmp.append(null)
-    print(len(aggregate_data[1]))
-
+        # if i == len(parsed_query) - 1 and t1 - t2 < 70000:
+        #     aggregate_data.append(tmp)
 
     # Generate list of hours/mins for plotter
     aggregate_dates = []
