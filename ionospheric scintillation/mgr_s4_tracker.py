@@ -101,6 +101,7 @@ def wrapper(querydata):
         if t1 != t2:
             aggregate_data.append(tmp)
             tmp = []
+    aggregate_data.append(tmp)
 
     for i in range(0, 1440):
         d = round(((i / 1440) * 24), 2)
