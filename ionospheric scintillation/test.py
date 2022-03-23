@@ -40,7 +40,7 @@ optimum_altitude = 25
 print("***************************** Start Query Processor")
 # mgr_polar_noise_tracks.wrapper(querydata_24)
 mgr_s4_tracker_v1.wrapper(interval)
-mgr_s4_tracker.wrapper(querydata)
+# mgr_s4_tracker.wrapper(querydata)
 
 
 

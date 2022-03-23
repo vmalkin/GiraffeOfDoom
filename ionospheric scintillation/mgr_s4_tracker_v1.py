@@ -40,25 +40,33 @@ def indexposition(posixtime, starttime):
     return interval
 
 
-def plot_chart(filename, dates, aggregatedata):
+def plot_chart(filename, dates, aggregatedata, seriesnames):
+    bkcolour = "#e0e0e0"
+    gridcolour = "#d0d0d0"
     fig = go.Figure()
-    fig.update_yaxes(range=[5, 30])
+    fig.update_yaxes(range=[8, 26], gridcolor=gridcolour)
+    fig.update_xaxes(nticks=48, tickangle=45, gridcolor=gridcolour)
     max = len(aggregatedata)
     for i in range(0, max):
+        # all previous readings
         if i < max - 3:
             fig.add_scatter(x=dates, y=aggregatedata[i], mode="lines", connectgaps=True,
-                            line=dict(color='rgba(0, 0, 0, 0.2)'))
+                            name=seriesnames[i], line=dict(color='rgba(150, 0, 255, 0.2)', width=2))
+        # Yesterday's reading
         if i == max - 2:
             fig.add_scatter(x=dates, y=aggregatedata[i], mode="lines", connectgaps=True,
-                            line=dict(color='rgba(255, 125, 0, 1)'))
+                            name=seriesnames[i], line=dict(color='rgba(150, 0, 255, 1)', width=3))
+        # Today's reading
         if i == max - 1:
             fig.add_scatter(x=dates, y=aggregatedata[i], mode="lines", connectgaps=True,
-                            line=dict(color='rgba(255, 0, 0, 1)'))
-    fig.update_layout(width=2000, height=800, title="GPS Noise",
+                            name=seriesnames[i], line=dict(color='rgba(0, 0, 0, 1)', width=4))
+
+    fig.update_layout(width=1500, height=600, title="GPS Noise (S4 index by proxy). http://DunedinAurora.NZ",
                       xaxis_title="Date/time UTC<br><sub>http://DunedinAurora.nz</sub>",
                       yaxis_title="S4 Index",
                       plot_bgcolor="#e0e0e0")
-    fig.write_image(file=filename, format='jpg')
+    fig.update_layout(plot_bgcolor=bkcolour, paper_bgcolor=bkcolour)
+    fig.write_image(file=filename, format='svg')
     # fig.show()
 
 
@@ -73,13 +81,13 @@ def query_parse(queryresult):
     index_s4 = 2
     index_alt = 1
     for item in queryresult:
-        if item[index_alt] >= alt_min:
+        # if item[index_alt] >= alt_min:
             # if item[index_s4] >= s4_min:
             #     if item[index_s4] <= s4_max:
-            dt = item[0]
-            dd = item[2]
-            d = [dt, dd]
-            returnlist.append(d)
+        dt = item[0]
+        dd = item[2]
+        d = [dt, dd]
+        returnlist.append(d)
     return returnlist
 
 
@@ -148,10 +156,18 @@ def wrapper(query_interval):
 
     # Generate list of hours/mins for plotter
     aggregate_dates = []
-    # aggregate_data = []
     for i in range(0, 86400):
         aggregate_dates.append(posix2utc(i, "%H:%M"))
-        # aggregate_dates.append(i)
 
-    plot_chart("s4_aggregate.jpg", aggregate_dates, aggregate_data)
+    # generate a list of dates for the legend
+    datelist = []
+    d0 = posix2utc(parsed_query[0][0], "%b-%d")
+    datelist.append(d0)
+    for item in parsed_query:
+        d1 = posix2utc(item[0], "%b-%d")
+        if d0 != d1:
+            datelist.append(d1)
+            d0 = d1
+    print(datelist)
+    plot_chart("s4_aggregate.svg", aggregate_dates, aggregate_data, datelist)
 

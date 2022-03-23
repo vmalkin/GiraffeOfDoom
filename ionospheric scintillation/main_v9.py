@@ -9,14 +9,9 @@ import logging
 from statistics import mean, stdev, median
 from threading import Thread
 
-import mgr_save_full_query
-import mgr_sat_plots
-import mgr_polar_noise_tracks
-import mgr_polar_sat_tracks
+import mgr_s4_tracker_v1
 import mgr_polar_s4_noise
-import mgr_s4_stats_json
-import mgr_cumulative_2
-import mgr_s4_count
+import mgr_polar_noise_tracks
 
 
 errorloglevel = logging.CRITICAL
@@ -28,13 +23,14 @@ sat_database = "gps_satellites.db"
 integration_time = 30
 # duration = 60*60*24
 # nullvalue = ""
+s4_interval = 24 * 10
 
 # readings below this altitude for satellites may be distorted due to multi-modal reflection
 optimum_altitude = 25
 
 # This is the query output that will be used to generate graphs and plots etc.
 querydata_24 = []
-querydata_48 = []
+# querydata_48 = []
 current_stats = []
 
 
@@ -54,55 +50,24 @@ class QueryProcessor(Thread):
         while True:
             print("***************************** Start Query Processor")
 
-            # try:
-            #     mgr_save_full_query.wrapper(querydata_24)
-            # except:
-            #     print("\n" + "!!!!!!!!!  Full Query Save Failed  !!!!!!!!!" + "\n")
-            #     logging.warning("SNR failed in MAIN.PY")
+            try:
+                mgr_s4_tracker_v1.wrapper(s4_interval)
+            except:
+                print("\n" + "mgr_s4_tracker_v1.wrapper" + "\n")
+                logging.warning("SNR failed in MAIN.PY")
 
             try:
-                mgr_sat_plots.wrapper(querydata_24)
+                mgr_polar_s4_noise.wrapper(querydata_24)
             except:
-                print("\n" + "!!!!!!!!!  Satellite Plotter Failed  !!!!!!!!!" + "\n")
+                print("\n" + "mgr_polar_s4_noise.wrapper" + "\n")
                 logging.warning("satellite plotter failed in MAIN.PY")
 
             try:
                 mgr_polar_noise_tracks.wrapper(querydata_24)
             except:
-                print("\n" + "!!!!!!!!!  Alt-Az Plotter Failed  !!!!!!!!!" + "\n")
-                logging.warning("AltAz plotter failed in MAIN.PY")
+                print("\n" + "mgr_polar_noise_tracks.wrapper" + "\n")
+                logging.warning("satellite plotter failed in MAIN.PY")
 
-            # try:
-            #     mgr_polar_sat_tracks.wrapper(querydata_24)
-            # except:
-            #     print("\n" + "!!!!!!!!!  24hr Track Plotter Failed  !!!!!!!!!" + "\n")
-            #     logging.warning("24hr Track failed in MAIN.PY")
-
-            try:
-                mgr_polar_s4_noise.wrapper(querydata_24)
-            except:
-                print("\n" + "!!!!!!!!!  Noise Plotter Failed  !!!!!!!!!" + "\n")
-                logging.warning("Noise Event Plotter failed in MAIN.PY")
-
-            # try:
-            #     mgr_s4_stats_json.wrapper()
-            # except:
-            #     print("\n" + "!!!!!!!!!  s4 Stats Plotter & JSON Failed  !!!!!!!!!" + "\n")
-            #     logging.warning("s4 Stats plotter & JSON failed in MAIN.PY")
-
-            try:
-                mgr_s4_count.wrapper()
-            except:
-                print("\n" + "!!!!!!!!!  s4 Count Failed  !!!!!!!!!" + "\n")
-                logging.warning("s4 Count failed in MAIN.PY")
-
-            # try:
-            #     mgr_cumulative_2.wrapper()
-            # except:
-            #     print("\n" + "!!!!!!!!!  Cumulative Count Failed  !!!!!!!!!" + "\n")
-            #     logging.warning("Cumulative Count Failed in MAIN.PY")
-
-            # rings the terminal bell
             print("\a")
             print("******************************* End Query Processor")
             time.sleep(300)
