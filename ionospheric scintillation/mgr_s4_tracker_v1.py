@@ -41,6 +41,7 @@ def indexposition(posixtime, starttime):
 
 
 def plot_chart(filename, dates, aggregatedata, seriesnames):
+    filename = k.dir_images + "/" + filename
     bkcolour = "#e0e0e0"
     gridcolour = "#d0d0d0"
     fig = go.Figure()
