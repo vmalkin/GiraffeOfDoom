@@ -41,9 +41,22 @@ def indexposition(posixtime, starttime):
 
 
 def plot_chart(filename, dates, aggregatedata, seriesnames):
+    # Colours set up for a max of ten days of data!
+
     filename = k.dir_images + "/" + filename
     bkcolour = "#e0e0e0"
     gridcolour = "#d0d0d0"
+    colourdict = [
+        "rgba(79,208,168,0.6)",
+        "rgba(193,166,67,0.6)",
+        "rgba(123,177,91,0.6)",
+        "rgba(192,105,186,0.6)",
+        "rgba(108,123,213,0.6)",
+        "rgba(184,85,60,0.6)",
+        "rgba(185,74,115,0.6)",
+        "rgba(81,44,123,0.6)"
+    ]
+
     fig = go.Figure()
     fig.update_yaxes(range=[8, 26], gridcolor=gridcolour)
     fig.update_xaxes(nticks=48, tickangle=45, gridcolor=gridcolour)
@@ -52,17 +65,17 @@ def plot_chart(filename, dates, aggregatedata, seriesnames):
         # all previous readings
         if i < max - 3:
             fig.add_scatter(x=dates, y=aggregatedata[i], mode="lines", connectgaps=True,
-                            name=seriesnames[i], line=dict(color='rgba(150, 0, 255, 0.2)', width=2))
+                            name=seriesnames[i], line=dict(color=colourdict[i], width=2))
         # Yesterday's reading
         if i == max - 2:
             fig.add_scatter(x=dates, y=aggregatedata[i], mode="lines", connectgaps=True,
-                            name=seriesnames[i], line=dict(color='rgba(150, 0, 255, 1)', width=3))
+                            name=seriesnames[i], line=dict(color='rgba(255, 0, 0, 1)', width=4))
         # Today's reading
         if i == max - 1:
             fig.add_scatter(x=dates, y=aggregatedata[i], mode="lines", connectgaps=True,
                             name=seriesnames[i], line=dict(color='rgba(0, 0, 0, 1)', width=4))
 
-    fig.update_layout(width=1500, height=600, title="GPS Noise (S4 index by proxy). http://DunedinAurora.NZ",
+    fig.update_layout(width=1500, height=600, title="S4 index (GPS Noise). http://DunedinAurora.NZ",
                       xaxis_title="Date/time UTC<br><sub>http://DunedinAurora.nz</sub>",
                       yaxis_title="S4 Index",
                       plot_bgcolor="#e0e0e0")
@@ -169,6 +182,6 @@ def wrapper(query_interval):
         if d0 != d1:
             datelist.append(d1)
             d0 = d1
-    print(datelist)
+
     plot_chart("s4_aggregate.svg", aggregate_dates, aggregate_data, datelist)
 
