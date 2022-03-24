@@ -47,14 +47,14 @@ def plot_chart(filename, dates, aggregatedata, seriesnames):
     bkcolour = "#e0e0e0"
     gridcolour = "#d0d0d0"
     colourdict = [
-        "rgba(79,208,168,0.6)",
-        "rgba(193,166,67,0.6)",
-        "rgba(123,177,91,0.6)",
-        "rgba(192,105,186,0.6)",
-        "rgba(108,123,213,0.6)",
-        "rgba(184,85,60,0.6)",
-        "rgba(185,74,115,0.6)",
-        "rgba(81,44,123,0.6)"
+        "rgba(79,208,168,0.9)",
+        "rgba(193,166,67,0.9)",
+        "rgba(123,177,91,0.9)",
+        "rgba(192,105,186,0.9)",
+        "rgba(108,123,213,0.9)",
+        "rgba(184,85,60,0.9)",
+        "rgba(185,74,115,0.9)",
+        "rgba(81,44,123,0.9)"
     ]
     sundict = [
         [291, 1231],
@@ -100,8 +100,8 @@ def plot_chart(filename, dates, aggregatedata, seriesnames):
                       yaxis_title="S4 Index",
                       plot_bgcolor="#e0e0e0")
     fig.update_layout(plot_bgcolor=bkcolour, paper_bgcolor=bkcolour)
-    fig.write_image(file=filename, format='svg')
-    # fig.show()
+    # fig.write_image(file=filename, format='svg')
+    fig.show()
 
 
 def query_parse(queryresult):
