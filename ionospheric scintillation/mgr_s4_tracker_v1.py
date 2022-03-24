@@ -56,10 +56,30 @@ def plot_chart(filename, dates, aggregatedata, seriesnames):
         "rgba(185,74,115,0.6)",
         "rgba(81,44,123,0.6)"
     ]
-
+    sundict = [
+        [291, 1231],
+        [331, 1211],
+        [373, 1227],
+        [415, 1168],
+        [454, 1056],
+        [483, 1022],
+        [500, 1023],
+        [477, 1051],
+        [427, 1088],
+        [370, 1125],
+        [315, 1168],
+        [283, 1209]
+    ]
+    month_number = int(posix2utc(time.time(), "%m"))
     fig = go.Figure()
     fig.update_yaxes(range=[8, 26], gridcolor=gridcolour)
     fig.update_xaxes(nticks=48, tickangle=45, gridcolor=gridcolour)
+
+    fig.add_vline(x=sundict[month_number][0], annotation_text="&#9790;", annotation_position="top right",
+                  line_width=2, line_color="blue", annotation_font=dict(size=50, color="blue"))
+    fig.add_vline(x=sundict[month_number][1], annotation_text="&#9788;", annotation_position="top left",
+                  line_width=2, line_color="orangered", annotation_font=dict(size=50, color="orangered"))
+
     max = len(aggregatedata)
     for i in range(0, max):
         # all previous readings
@@ -80,8 +100,8 @@ def plot_chart(filename, dates, aggregatedata, seriesnames):
                       yaxis_title="S4 Index",
                       plot_bgcolor="#e0e0e0")
     fig.update_layout(plot_bgcolor=bkcolour, paper_bgcolor=bkcolour)
-    fig.write_image(file=filename, format='svg')
-    # fig.show()
+    # fig.write_image(file=filename, format='svg')
+    fig.show()
 
 
 def query_parse(queryresult):
