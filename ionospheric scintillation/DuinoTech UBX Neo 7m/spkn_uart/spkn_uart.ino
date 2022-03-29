@@ -1,10 +1,15 @@
 
 #include <SparkFun_u-blox_GNSS_Arduino_Library.h> //http://librarymanager/All#SparkFun_u-blox_GNSS
+#include <avr/wdt.h>
+
 SFE_UBLOX_GNSS myGNSS;
 
 #include <SoftwareSerial.h>
 SoftwareSerial mySerial(11, 10); // RX, TX. Pin 10 on Uno goes to TX pin on GNSS module.
 
+// We want to reset the Arduino after 24 hours of running
+unsigned long uptime;
+unsigned long timeout = 86400000;
 
 void setup()
 {
@@ -47,10 +52,22 @@ void setup()
   myGNSS.disableNMEAMessage(UBX_NMEA_RMC, COM_PORT_UART1);
   myGNSS.disableNMEAMessage(UBX_NMEA_GGA, COM_PORT_UART1); //Only leaving GGA & VTG enabled at current navigation rate
   myGNSS.disableNMEAMessage(UBX_NMEA_VTG, COM_PORT_UART1);  
-  myGNSS.setNavigationFrequency(10);
+  myGNSS.setNavigationFrequency(5);
+
+  wdt_enable(WDTO_500MS);
+  
 }
 
 void loop() {
+    wdt_reset();
+    uptime = millis();
+
+    // Test if the arduino has been online for 24 hours, if so, delay so the watchdog timer resets
+    if (uptime > timeout)
+    {
+      delay(2000);
+      }
+    
     while (mySerial.available() > 0)
     {
       Serial.write(mySerial.read());
