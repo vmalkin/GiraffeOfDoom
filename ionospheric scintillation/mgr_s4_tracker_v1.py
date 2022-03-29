@@ -54,7 +54,10 @@ def plot_chart(filename, dates, aggregatedata, seriesnames):
         "rgba(108,123,213,0.9)",
         "rgba(184,85,60,0.9)",
         "rgba(185,74,115,0.9)",
-        "rgba(81,44,123,0.9)"
+        "rgba(81,44,123,0.9)",
+        "rgba(79,208,0,0.9)",
+        "rgba(193,166,0,0.9)",
+        "rgba(123, 177, 0, 0.9)"
     ]
     sundict = [
         [367, 1286],
@@ -83,15 +86,15 @@ def plot_chart(filename, dates, aggregatedata, seriesnames):
     max = len(aggregatedata)
     for i in range(0, max):
         # all previous readings
-        if i < max - 3:
+        if i < max - 2:
             fig.add_scatter(x=dates, y=aggregatedata[i], mode="lines", connectgaps=True,
-                            name=seriesnames[i], line=dict(color=colourdict[i], width=2))
+                                name=seriesnames[i], line=dict(color=colourdict[i], width=2))
         # Yesterday's reading
-        if i == max - 2:
+        elif i == max - 2:
             fig.add_scatter(x=dates, y=aggregatedata[i], mode="lines", connectgaps=True,
                             name=seriesnames[i], line=dict(color='rgba(255, 0, 0, 1)', width=4))
         # Today's reading
-        if i == max - 1:
+        elif i == max - 1:
             fig.add_scatter(x=dates, y=aggregatedata[i], mode="lines", connectgaps=True,
                             name=seriesnames[i], line=dict(color='rgba(0, 0, 0, 1)', width=4))
 
@@ -202,6 +205,7 @@ def wrapper(query_interval):
         if d0 != d1:
             datelist.append(d1)
             d0 = d1
+    print(datelist)
 
     plot_chart("s4_aggregate.svg", aggregate_dates, aggregate_data, datelist)
 
