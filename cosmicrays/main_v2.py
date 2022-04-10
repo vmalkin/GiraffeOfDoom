@@ -17,7 +17,7 @@ class ThreadPlotter(Thread):
         time.sleep(10)
         while True:
             # print("Beginning plot...")
-            data = database_get_data(24*30)
+            data = database_get_data(24*7)
             try:
                 pass
                 mgr_plot_avg_hits.wrapper(data, 7.5)

@@ -21,7 +21,7 @@ logging.info("Created error log for this session")
 timeformat = '%Y-%m-%d %H:%M:%S'
 
 # Only specific station data makes sense as detrended readings.
-stations = ["Ruru_Obs", "GOES_16", "Geomag_Bz"]
+stations = ["Ruru_Obs", "GOES_16", "GOES_17", "Geomag_Bz"]
 # stations = k.stations
 
 finish_time = int(time.time())
