@@ -7,7 +7,6 @@ from statistics import mean
 # Default or global values or constants
 file_list = "files.txt"
 sightings_list = "sightings.txt"
-
 detrender_half_window = 10
 
 # ##############################################################################
