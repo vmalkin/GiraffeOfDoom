@@ -1,16 +1,16 @@
-# This is a sample Python script.
+import standard_stuff as k
+from os import path
 
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
+# Index positions of UTC date and data in each logfile. This could be different...
+index_utcdate = 0
+index_data = 1
 
-
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
-
-
-# Press the green button in the gutter to run the script.
 if __name__ == '__main__':
-    print_hi('PyCharm')
-
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+    # does files.txt exist? if not, abort
+    if path.exists(k.file_list):
+        pass
+        # open each file in the list
+    # parse thru each file, extract date and data value
+    #
+    else:
+        print("FILES.TXT does not exists. Create list of log files then rerun this script.")
