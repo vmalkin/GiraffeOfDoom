@@ -18,7 +18,7 @@ def posix2utc(posixtime, timeformat):
 
 
 def utc2posix(utcstring, timeformat):
-    pass
+    return utcstring
 
 
 # ##############################################################################
