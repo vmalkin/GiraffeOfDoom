@@ -103,8 +103,8 @@ def plot_chart(filename, dates, aggregatedata, seriesnames):
                       yaxis_title="S4 Index",
                       plot_bgcolor="#e0e0e0")
     fig.update_layout(plot_bgcolor=bkcolour, paper_bgcolor=bkcolour)
-    fig.write_image(file=filename, format='svg')
-    # fig.show()
+    # fig.write_image(file=filename, format='svg')
+    fig.show()
 
 
 def query_parse(queryresult):
