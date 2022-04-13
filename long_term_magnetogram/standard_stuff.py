@@ -16,6 +16,11 @@ def posix2utc(posixtime, timeformat):
     utctime = datetime.datetime.utcfromtimestamp(int(posixtime)).strftime(timeformat)
     return utctime
 
+
+def utc2posix(utcstring, timeformat):
+    pass
+
+
 # ##############################################################################
 # A simple detrender that computes a running average across the bulk of data and a simple
 # linear detrend at the ends of the data.
