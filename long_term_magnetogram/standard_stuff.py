@@ -2,7 +2,9 @@
 This file contains any global constants as well as standard methods that I use all the time.
 """
 import datetime
+import time
 from statistics import mean
+from calendar import timegm
 
 # Default or global values or constants
 file_list = "files.txt"
@@ -18,7 +20,9 @@ def posix2utc(posixtime, timeformat):
 
 
 def utc2posix(utcstring, timeformat):
-    return utcstring
+    utc_time = time.strptime(utcstring, timeformat)
+    epoch_time = timegm(utc_time)
+    return epoch_time
 
 
 # ##############################################################################

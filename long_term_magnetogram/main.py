@@ -1,12 +1,16 @@
+import time
+
 import standard_stuff as k
 from os import path
 from statistics import median, mean
 import re
 
+
 # Index positions of UTC date and data in each logfile. This could be different...
 index_utcdate = 0
 index_data = 1
 regex_filename = "\d\d\d\d-\d\d-\d\d.csv"
+rounding_value = 5
 
 
 # Create a bin object. A bin:
@@ -18,12 +22,22 @@ regex_filename = "\d\d\d\d-\d\d-\d\d.csv"
 # Can return a CSV formatted header for data
 class Bin:
     def __init__(self, time):
+        self.storm_threshhold = 4
         self.time = time
         self.data = []
         self.sighting = 0
 
     def avg_dhdt(self):
-        pass
+        return mean(self.data)
+
+    def storm_detected(self):
+        if self.avg_dhdt() >= self.storm_threshhold:
+            return True
+        else:
+            return False
+
+    def return_reportheader(self):
+        return "datetime, average dH/dt, storm detected, sighting reported"
 
     def return_reportstring(self):
         pass
@@ -34,10 +48,10 @@ def median_filter(list_to_parse):
     returnlist = []
     for i in range(1, len(list_to_parse) - 1):
         t = []
-        t.append(list_to_parse[1][i - 1])
-        t.append(list_to_parse[1][i])
-        t.append(list_to_parse[1][i + 1])
-        medvalue = median(t)
+        t.append(list_to_parse[i - 1][1])
+        t.append(list_to_parse[i][1])
+        t.append(list_to_parse[i + 1][1])
+        medvalue = round(median(t), rounding_value)
         dt = list_to_parse[i][0]
         # the new datetime and median values
         newdp = [dt, medvalue]
@@ -50,6 +64,7 @@ def h_to_dhdt(array_time_data):
     for i in range(1, len(array_time_data)):
         tt = array_time_data[i][0]
         dh = array_time_data[i][1] - array_time_data[i - 1][1]
+        dh = round(dh, rounding_value)
         dp = [tt, dh]
         returnlist.append(dp)
     return returnlist
@@ -91,8 +106,8 @@ if __name__ == '__main__':
                             newcsv = newcsv.split(",")
                             # If we have data and not a header
                             if re.match(regex_data, newcsv[index_data]):
-                                posixtime = k.utc2posix(newcsv[0], '%Y-%m-%d %H:%M:%S')
-                                data = newcsv[index_data]
+                                posixtime = k.utc2posix(newcsv[0], "%Y-%m-%d %H:%M:%S.%f")
+                                data = float(newcsv[index_data])
                                 dp = [posixtime, data]
                                 array_time_data.append(dp)
 
@@ -106,7 +121,18 @@ if __name__ == '__main__':
         array_time_data = h_to_dhdt(array_time_data)
 
         # Create a series of 365 dated bins for the previous 365 days
+        nowdate = int(time.time())
+        array_year = []
+        for i in range(365, 0, -1):
+            d = nowdate - i * 86400
+            array_year.append(Bin(d))
+
         # parse thru the list and allocate data values to bins (each bin will have a list of data for the day)
+        for item in array_time_data:
+            tt = item[0]
+            dd = item[1]
+
+
         # open the sightings file. allocate the dates of sightings to each bin.
 
     else:
