@@ -27,20 +27,18 @@ class Bin:
         self.data = []
         self.sighting = 0
 
-    def avg_dhdt(self):
-        return mean(self.data)
+    def dhdt(self):
+        if len(self.data) > 0:
+            value = round((max(self.data) - min(self.data)), rounding_value)
+        else:
+            value = 0
+        return value
 
     def storm_detected(self):
-        if self.avg_dhdt() >= self.storm_threshhold:
-            return True
+        if self.dhdt() >= self.storm_threshhold:
+            return 1
         else:
-            return False
-
-    def return_reportheader(self):
-        return "datetime, average dH/dt, storm detected, sighting reported"
-
-    def return_reportstring(self):
-        pass
+            return 0
 
 
 def median_filter(list_to_parse):
@@ -122,6 +120,8 @@ if __name__ == '__main__':
 
         # Create a series of 365 dated bins for the previous 365 days
         nowdate = int(time.time())
+        startdate = nowdate - 86400 * 365
+
         array_year = []
         for i in range(365, 0, -1):
             d = nowdate - i * 86400
@@ -131,9 +131,23 @@ if __name__ == '__main__':
         for item in array_time_data:
             tt = item[0]
             dd = item[1]
-
+            index = int((tt - startdate) / 86400)
+            if index >= 0:
+                if index < 365:
+                    array_year[index].data.append(dd)
 
         # open the sightings file. allocate the dates of sightings to each bin.
+        with open("sightings.csv", "r") as s:
+            for line in s:
+                t = line.strip()
+                tt = k.utc2posix(t, "%d/%m/%Y")
+                index = int((tt - startdate) / 86400)
+                if index >= 0:
+                    if index < 365:
+                        array_year[index].sighting = 1
+
+        for item in array_year:
+            print(item.time, item.dhdt(), item.storm_detected(), item.sighting)
 
     else:
         print("FILES.TXT does not exists. Create list of log files then rerun this script.")
