@@ -7,8 +7,6 @@ import re
 
 
 # Index positions of UTC date and data in each logfile. This could be different...
-index_utcdate = 0
-index_data = 1
 regex_filename = "\d\d\d\d-\d\d-\d\d.csv"
 rounding_value = 5
 
@@ -22,7 +20,7 @@ rounding_value = 5
 # Can return a CSV formatted header for data
 class Bin:
     def __init__(self, time):
-        self.storm_threshhold = 4
+        self.storm_threshhold = 0.2
         self.time = time
         self.data = []
         self.sighting = 0
@@ -74,6 +72,7 @@ def smooth_data(array_time_data):
     returnlist = []
     halfwindow = 10 * 4
     for i in range(halfwindow, len(array_time_data) - halfwindow):
+        # print("Smoothing " + str(i) + " out of " + str(len(array_time_data)))
         d = []
         for j in range(0 - halfwindow, halfwindow):
             if j == 0:
@@ -86,13 +85,14 @@ def smooth_data(array_time_data):
 
 
 if __name__ == '__main__':
-    regex_data = "[0-9][.][0-9]"
+    regex_data = "/d/d/d/d-/d/d-/d/d /d/d:/d/d:/d/d./d/d"
     array_time_data = []
 
     # does files.txt exist? if not, abort
     if path.exists(k.file_list):
         # load files.txt
         with open(k.file_list, "r") as filelist:
+            print("Loading values from files...")
             for filename in filelist:
                 nw_filename = filename.strip()
                 if re.match(regex_filename, nw_filename):
@@ -103,22 +103,32 @@ if __name__ == '__main__':
                             newcsv = csvline.strip()
                             newcsv = newcsv.split(",")
                             # If we have data and not a header
-                            if re.match(regex_data, newcsv[index_data]):
-                                posixtime = k.utc2posix(newcsv[0], "%Y-%m-%d %H:%M:%S.%f")
-                                data = float(newcsv[index_data])
-                                dp = [posixtime, data]
-                                array_time_data.append(dp)
+                            tt = newcsv[0]
+                            dd = newcsv[1]
+
+                            if tt != "Date/Time (UTC)":
+                                try:
+                                    posixtime = k.utc2posix(newcsv[0], "%Y-%m-%d %H:%M:%S.%f")
+                                    data = float(newcsv[1])
+                                    dp = [posixtime, data]
+                                    array_time_data.append(dp)
+                                except ValueError:
+                                    print(newcsv[0])
 
         # Remove any spikes in data with a median filter.
+        print("Removing spikes in data...")
         array_time_data = median_filter(array_time_data)
 
         # smooth the data
+        print("Smoothing data, this will take a while...")
         array_time_data = smooth_data(array_time_data)
 
         # Convert the data into dh/dt
+        print("Converting to dh/dt...")
         array_time_data = h_to_dhdt(array_time_data)
 
         # Create a series of 365 dated bins for the previous 365 days
+        print("Creating bins...")
         nowdate = int(time.time())
         startdate = nowdate - 86400 * 365
 
@@ -127,27 +137,37 @@ if __name__ == '__main__':
             d = nowdate - i * 86400
             array_year.append(Bin(d))
 
+        print("Populating bin arrays...")
         # parse thru the list and allocate data values to bins (each bin will have a list of data for the day)
         for item in array_time_data:
             tt = item[0]
             dd = item[1]
             index = int((tt - startdate) / 86400)
             if index >= 0:
-                if index < 365:
-                    array_year[index].data.append(dd)
+                array_year[index].data.append(dd)
 
+        print("Adding sightings to bins...")
         # open the sightings file. allocate the dates of sightings to each bin.
         with open("sightings.csv", "r") as s:
             for line in s:
                 t = line.strip()
-                tt = k.utc2posix(t, "%d/%m/%Y")
-                index = int((tt - startdate) / 86400)
-                if index >= 0:
-                    if index < 365:
-                        array_year[index].sighting = 1
+                # regex_dt = "/d/d-/d/d-/d/d/d/d"
+                # if re.match(regex_dt, t):
+                try:
+                    tt = k.utc2posix(t, "%d-%m-%Y")
+                    index = int((tt - startdate) / 86400)
+                    if index >= 0:
+                        if index < 365:
+                            array_year[index].sighting = 1
+                except ValueError:
+                    print(t)
 
-        for item in array_year:
-            print(item.time, item.dhdt(), item.storm_detected(), item.sighting)
+        with open("longterm.csv", "w") as l:
+            for item in array_year:
+                dp = k.posix2utc(item.time, "%Y-%m-%d") + "," + str(item.dhdt()) + "," + str(item.storm_detected()) + "," + str(item.sighting)
+                l.write(dp + "\n")
+        l.close()
 
+        print("FINSIHED!")
     else:
         print("FILES.TXT does not exists. Create list of log files then rerun this script.")
