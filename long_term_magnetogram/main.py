@@ -90,14 +90,14 @@ def smooth_data(array_time_data):
 def plot(dates, dhdt, storm, sighting, carrington_marks):
     plot_width = 1800
     plot_height = 600
-    fig = go.Figure(data=[go.Bar(x=dates, y=dhdt)])
+    fig = go.Figure(data=[go.Bar(x=dates, y=dhdt, name="Geomagnetic Activity")])
     fig.update_layout(width=plot_width, height=plot_height)
-    fig.add_scatter(x=dates, y=storm, mode='markers',
-                    marker_symbol=22, marker_color="red", marker_size=15)
-    fig.add_scatter(x=dates, y=sighting, mode='markers',
-                    marker_symbol=323, marker_color="green", marker_size=15)
-    fig.add_scatter(x=dates, y=carrington_marks, mode='markers',
-                    marker_symbol=20, marker_color="black", marker_size=15)
+    fig.add_scatter(x=dates, y=storm, mode='markers', name="Storm Detected",
+                    marker_symbol=22, marker_color="red", marker_size=10)
+    fig.add_scatter(x=dates, y=sighting, mode='markers', name="Aurora Sighted",
+                    marker_symbol=23, marker_color="green", marker_size=10)
+    fig.add_scatter(x=dates, y=carrington_marks, mode='markers', name="Carrington Rotation",
+                    marker_symbol=20, marker_color="black", marker_size=10)
     fig.show()
 
 
