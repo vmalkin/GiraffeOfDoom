@@ -1,5 +1,5 @@
 import time
-
+from plotly import graph_objects as go
 import standard_stuff as k
 from os import path
 from statistics import median, mean
@@ -24,6 +24,7 @@ class Bin:
         self.time = time
         self.data = []
         self.sighting = 0
+        self.carrington_marker = 0
 
     def dhdt(self):
         if len(self.data) > 0:
@@ -82,6 +83,14 @@ def smooth_data(array_time_data):
         dp = [tt, dd]
         returnlist.append(dp)
     return returnlist
+
+
+def plot(dates, dhdt, storm, sighting, carrington_marks):
+    plot_width = 2400
+    plot_height = 1200
+    fig = go.Figure(data=[go.Bar(x=dates, y=dhdt)])
+    fig.show()
+
 
 
 if __name__ == '__main__':
@@ -162,11 +171,34 @@ if __name__ == '__main__':
                 except ValueError:
                     print(t)
 
-        with open("longterm.csv", "w") as l:
-            for item in array_year:
-                dp = k.posix2utc(item.time, "%Y-%m-%d") + "," + str(item.dhdt()) + "," + str(item.storm_detected()) + "," + str(item.sighting)
-                l.write(dp + "\n")
-        l.close()
+        # Add carrington rotation marker
+        for i in range(0, 365):
+            if i % 27 == 0:
+                array_year[i].carrington_marker = 1
+
+        # with open("aurora_activity.csv", "w") as l:
+        #     l.write("Date/Time(UTC), Geomagnetic Activity, Storm Detected, Aurora Sighted, Carrington Rotation Marker" + "\n")
+        #     for item in array_year:
+        #         dp = k.posix2utc(item.time, "%Y-%m-%d") + "," + str(item.dhdt()) + "," + \
+        #              str(item.storm_detected()) + "," + str(item.sighting) + "," + str(item.carrington_marker)
+        #         l.write(dp + "\n")
+        # l.close()
+
+        dates = []
+        dhdt = []
+        storm = []
+        sighting = []
+        carrington_marks = []
+
+        for item in array_year:
+            dates.append(k.posix2utc((item.time, "%Y-%m-%d")))
+            dhdt.append(item.dhdt())
+            storm.append(item.storm_detected())
+            sighting.append(item.sighting)
+            carrington_marks.append(item.carrington_marker)
+
+        plot(dates, dhdt, storm, sighting, carrington_marks)
+
 
         print("FINSIHED!")
     else:
