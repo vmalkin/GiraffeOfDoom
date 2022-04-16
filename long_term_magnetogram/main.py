@@ -9,7 +9,9 @@ import re
 # Index positions of UTC date and data in each logfile. This could be different...
 regex_filename = "\d\d\d\d-\d\d-\d\d.csv"
 rounding_value = 5
-
+value_storm = 0.4
+value_sighting = 0.35
+value_cmarker = 0.45
 
 # Create a bin object. A bin:
 # Covers a time period
@@ -23,8 +25,8 @@ class Bin:
         self.storm_threshhold = 0.2
         self.time = time
         self.data = []
-        self.sighting = 0
-        self.carrington_marker = 0
+        self.sighting = None
+        self.carrington_marker = None
 
     def dhdt(self):
         if len(self.data) > 0:
@@ -35,9 +37,9 @@ class Bin:
 
     def storm_detected(self):
         if self.dhdt() >= self.storm_threshhold:
-            return 1
+            return value_storm
         else:
-            return 0
+            return None
 
 
 def median_filter(list_to_parse):
@@ -86,9 +88,16 @@ def smooth_data(array_time_data):
 
 
 def plot(dates, dhdt, storm, sighting, carrington_marks):
-    plot_width = 2400
-    plot_height = 1200
+    plot_width = 1800
+    plot_height = 600
     fig = go.Figure(data=[go.Bar(x=dates, y=dhdt)])
+    fig.update_layout(width=plot_width, height=plot_height)
+    fig.add_scatter(x=dates, y=storm, mode='markers',
+                    marker_symbol=22, marker_color="red", marker_size=15)
+    fig.add_scatter(x=dates, y=sighting, mode='markers',
+                    marker_symbol=323, marker_color="green", marker_size=15)
+    fig.add_scatter(x=dates, y=carrington_marks, mode='markers',
+                    marker_symbol=20, marker_color="black", marker_size=15)
     fig.show()
 
 
@@ -167,14 +176,14 @@ if __name__ == '__main__':
                     index = int((tt - startdate) / 86400)
                     if index >= 0:
                         if index < 365:
-                            array_year[index].sighting = 1
+                            array_year[index].sighting = value_sighting
                 except ValueError:
                     print(t)
 
         # Add carrington rotation marker
         for i in range(0, 365):
             if i % 27 == 0:
-                array_year[i].carrington_marker = 1
+                array_year[i].carrington_marker = value_cmarker
 
         # with open("aurora_activity.csv", "w") as l:
         #     l.write("Date/Time(UTC), Geomagnetic Activity, Storm Detected, Aurora Sighted, Carrington Rotation Marker" + "\n")
@@ -191,7 +200,7 @@ if __name__ == '__main__':
         carrington_marks = []
 
         for item in array_year:
-            dates.append(k.posix2utc((item.time, "%Y-%m-%d")))
+            dates.append(k.posix2utc(item.time, "%Y-%m-%d"))
             dhdt.append(item.dhdt())
             storm.append(item.storm_detected())
             sighting.append(item.sighting)
