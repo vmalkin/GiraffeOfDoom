@@ -9,9 +9,9 @@ import re
 # Index positions of UTC date and data in each logfile. This could be different...
 regex_filename = "\d\d\d\d-\d\d-\d\d.csv"
 rounding_value = 5
-value_storm = 0.4
-value_sighting = 0.35
-value_cmarker = 0.45
+value_storm = 0.05
+value_sighting = 0.06
+value_cmarker = 0.01
 
 # Create a bin object. A bin:
 # Covers a time period
@@ -22,11 +22,12 @@ value_cmarker = 0.45
 # Can return a CSV formatted header for data
 class Bin:
     def __init__(self, time):
-        self.storm_threshhold = 0.2
+        self.storm_threshhold = 0.15
         self.time = time
         self.data = []
         self.sighting = None
         self.carrington_marker = None
+        self.equinox = None
 
     def dhdt(self):
         if len(self.data) > 0:
@@ -90,8 +91,15 @@ def smooth_data(array_time_data):
 def plot(dates, dhdt, storm, sighting, carrington_marks):
     plot_width = 1800
     plot_height = 600
-    fig = go.Figure(data=[go.Bar(x=dates, y=dhdt, name="Geomagnetic Activity")])
-    fig.update_layout(width=plot_width, height=plot_height)
+    bgcolor = "#e0e0e0"
+    fig = go.Figure(data=[go.Bar(x=dates, y=dhdt, name="Geomagnetic Activity", marker_color="lightslategrey")])
+    fig.update_layout(width=plot_width, height=plot_height,
+                      legend=dict(orientation="h", yanchor="bottom"),
+                      plot_bgcolor=bgcolor, paper_bgcolor=bgcolor,
+                      font=dict(color="#303030"),
+                      title="Long Term Magnetogram")
+    fig.update_xaxes(nticks=12)
+    fig.update_yaxes(range=[0, 0.3])
     fig.add_scatter(x=dates, y=storm, mode='markers', name="Storm Detected",
                     marker_symbol=22, marker_color="red", marker_size=10)
     fig.add_scatter(x=dates, y=sighting, mode='markers', name="Aurora Sighted",
@@ -207,8 +215,7 @@ if __name__ == '__main__':
             carrington_marks.append(item.carrington_marker)
 
         plot(dates, dhdt, storm, sighting, carrington_marks)
-
-
         print("FINSIHED!")
+
     else:
         print("FILES.TXT does not exists. Create list of log files then rerun this script.")
