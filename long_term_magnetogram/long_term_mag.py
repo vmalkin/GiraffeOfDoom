@@ -45,17 +45,19 @@ class Bin:
 
 def median_filter(list_to_parse):
     # Each element in the list has the format [datetime, data]
+    # The half window value should cover 10 minutes of data
     returnlist = []
-    for i in range(1, len(list_to_parse) - 1):
-        t = []
-        t.append(list_to_parse[i - 1][1])
-        t.append(list_to_parse[i][1])
-        t.append(list_to_parse[i + 1][1])
-        medvalue = round(median(t), rounding_value)
-        dt = list_to_parse[i][0]
-        # the new datetime and median values
-        newdp = [dt, medvalue]
-        returnlist.append(newdp)
+    halfwindow = 5 * 4
+    for i in range(halfwindow, len(array_time_data) - halfwindow):
+        # print("Smoothing " + str(i) + " out of " + str(len(array_time_data)))
+        d = []
+        for j in range(0 - halfwindow, halfwindow):
+            if j == 0:
+                tt = array_time_data[i + j][0]
+            d.append(array_time_data[i + j][1])
+        dd = median(d)
+        dp = [tt, dd]
+        returnlist.append(dp)
     return returnlist
 
 
@@ -73,9 +75,14 @@ def h_to_dhdt(array_time_data):
 def smooth_data(array_time_data):
     # Each element in the list has the format [datetime, data]
     # The half window value should cover 10 minutes of data
+    decade = int(len(array_time_data) / 10)
+    decadecount = 0
     returnlist = []
-    halfwindow = 10 * 4
+    halfwindow = 30 * 4
     for i in range(halfwindow, len(array_time_data) - halfwindow):
+        if i % decade == 0:
+            decadecount = decadecount + 10
+            print("Smoothing " + str(decadecount) + "% completed")
         # print("Smoothing " + str(i) + " out of " + str(len(array_time_data)))
         d = []
         for j in range(0 - halfwindow, halfwindow):
@@ -99,7 +106,7 @@ def plot(dates, dhdt, storm, sighting, carrington_marks):
                       font=dict(color="#303030", size=16),
                       title="Long Term Magnetogram")
     fig.update_xaxes(nticks=24, tickangle=25, ticks="outside", tickwidth=2, tickcolor='black', ticklen=5)
-    fig.update_yaxes(range=[0, 0.3])
+    fig.update_yaxes(range=[0, 0.4])
     fig.add_scatter(x=dates, y=storm, mode='markers', name="Storm Detected",
                     marker_symbol=22, marker_line_color="darkred",
                     marker_color="red", marker_line_width=2, marker_size=10)
@@ -108,8 +115,8 @@ def plot(dates, dhdt, storm, sighting, carrington_marks):
                     marker_color="green", marker_line_width=2, marker_size=10)
     fig.add_scatter(x=dates, y=carrington_marks, mode='markers', name="Carrington Rotation",
                     marker_symbol=20, marker_color="black", marker_size=10)
-    # fig.write_image("ltm.svg")
-    fig.show()
+    fig.write_image("ltm.svg")
+    # fig.show()
 
 
 if __name__ == '__main__':
