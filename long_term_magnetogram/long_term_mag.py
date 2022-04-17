@@ -122,6 +122,8 @@ def plot(dates, dhdt, storm, sighting, carrington_marks):
 if __name__ == '__main__':
     regex_data = "/d/d/d/d-/d/d-/d/d /d/d:/d/d:/d/d./d/d"
     array_time_data = []
+    nowdate = int(time.time())
+    startdate = nowdate - 86400 * 365
 
     # does files.txt exist? if not, abort
     if path.exists(k.file_list):
@@ -131,24 +133,28 @@ if __name__ == '__main__':
             for filename in filelist:
                 nw_filename = filename.strip()
                 if re.match(regex_filename, nw_filename):
-                    # open each file in the list
-                    # parse thru each file, extract date and data value. If valid assemble into master list
-                    with open(nw_filename, "r") as csvdata:
-                        for csvline in csvdata:
-                            newcsv = csvline.strip()
-                            newcsv = newcsv.split(",")
-                            # If we have data and not a header
-                            tt = newcsv[0]
-                            dd = newcsv[1]
+                    # Only process files for the last year, not older.
+                    x = nw_filename.split(".")
+                    xt = k.utc2posix(x[0], "%Y-%m-%d")
+                    if xt >= startdate:
+                        # open each file in the list
+                        # parse thru each file, extract date and data value. If valid assemble into master list
+                        with open(nw_filename, "r") as csvdata:
+                            for csvline in csvdata:
+                                newcsv = csvline.strip()
+                                newcsv = newcsv.split(",")
+                                # If we have data and not a header
+                                tt = newcsv[0]
+                                dd = newcsv[1]
 
-                            if tt != "Date/Time (UTC)":
-                                try:
-                                    posixtime = k.utc2posix(newcsv[0], "%Y-%m-%d %H:%M:%S.%f")
-                                    data = float(newcsv[1])
-                                    dp = [posixtime, data]
-                                    array_time_data.append(dp)
-                                except ValueError:
-                                    print(newcsv[0])
+                                if tt != "Date/Time (UTC)":
+                                    try:
+                                        posixtime = k.utc2posix(newcsv[0], "%Y-%m-%d %H:%M:%S.%f")
+                                        data = float(newcsv[1])
+                                        dp = [posixtime, data]
+                                        array_time_data.append(dp)
+                                    except ValueError:
+                                        print(newcsv[0])
 
         # Remove any spikes in data with a median filter.
         print("Removing spikes in data...")
@@ -164,8 +170,6 @@ if __name__ == '__main__':
 
         # Create a series of 365 dated bins for the previous 365 days
         print("Creating bins...")
-        nowdate = int(time.time())
-        startdate = nowdate - 86400 * 365
 
         array_year = []
         for i in range(365, 0, -1):
