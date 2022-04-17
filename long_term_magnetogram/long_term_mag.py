@@ -22,7 +22,7 @@ value_cmarker = 0.01
 # Can return a CSV formatted header for data
 class Bin:
     def __init__(self, time):
-        self.storm_threshhold = 0.15
+        self.storm_threshhold = 0.09
         self.time = time
         self.data = []
         self.sighting = None
@@ -106,7 +106,7 @@ def plot(dates, dhdt, storm, sighting, carrington_marks):
                       font=dict(color="#303030", size=16),
                       title="Long Term Magnetogram")
     fig.update_xaxes(nticks=24, tickangle=25, ticks="outside", tickwidth=2, tickcolor='black', ticklen=5)
-    fig.update_yaxes(range=[0, 0.4])
+    fig.update_yaxes(range=[0, 0.2])
     fig.add_scatter(x=dates, y=storm, mode='markers', name="Storm Detected",
                     marker_symbol=22, marker_line_color="darkred",
                     marker_color="red", marker_line_width=2, marker_size=10)
