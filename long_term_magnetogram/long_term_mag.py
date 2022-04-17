@@ -90,7 +90,7 @@ def smooth_data(array_time_data):
 
 def plot(dates, dhdt, storm, sighting, carrington_marks):
     plot_width = 1800
-    plot_height = 720
+    plot_height = 750
     bgcolor = "#e0e0e0"
     fig = go.Figure(data=[go.Bar(x=dates, y=dhdt, name="Geomagnetic Activity", marker_color="lightslategrey")])
     fig.update_layout(width=plot_width, height=plot_height,
@@ -98,7 +98,7 @@ def plot(dates, dhdt, storm, sighting, carrington_marks):
                       plot_bgcolor=bgcolor, paper_bgcolor=bgcolor,
                       font=dict(color="#303030", size=16),
                       title="Long Term Magnetogram")
-    fig.update_xaxes(nticks=12)
+    fig.update_xaxes(nticks=24, tickangle=25, ticks="outside", tickwidth=2, tickcolor='black', ticklen=5)
     fig.update_yaxes(range=[0, 0.3])
     fig.add_scatter(x=dates, y=storm, mode='markers', name="Storm Detected",
                     marker_symbol=22, marker_line_color="darkred",
@@ -108,7 +108,8 @@ def plot(dates, dhdt, storm, sighting, carrington_marks):
                     marker_color="green", marker_line_width=2, marker_size=10)
     fig.add_scatter(x=dates, y=carrington_marks, mode='markers', name="Carrington Rotation",
                     marker_symbol=20, marker_color="black", marker_size=10)
-    fig.write_image("ltm.svg")
+    # fig.write_image("ltm.svg")
+    fig.show()
 
 
 if __name__ == '__main__':
