@@ -90,24 +90,25 @@ def smooth_data(array_time_data):
 
 def plot(dates, dhdt, storm, sighting, carrington_marks):
     plot_width = 1800
-    plot_height = 600
+    plot_height = 720
     bgcolor = "#e0e0e0"
     fig = go.Figure(data=[go.Bar(x=dates, y=dhdt, name="Geomagnetic Activity", marker_color="lightslategrey")])
     fig.update_layout(width=plot_width, height=plot_height,
-                      legend=dict(orientation="h", yanchor="bottom"),
+                      legend=dict(orientation="h", xanchor="center", x=0.5),
                       plot_bgcolor=bgcolor, paper_bgcolor=bgcolor,
-                      font=dict(color="#303030"),
+                      font=dict(color="#303030", size=16),
                       title="Long Term Magnetogram")
     fig.update_xaxes(nticks=12)
     fig.update_yaxes(range=[0, 0.3])
     fig.add_scatter(x=dates, y=storm, mode='markers', name="Storm Detected",
-                    marker_symbol=22, marker_color="red", marker_size=10)
+                    marker_symbol=22, marker_line_color="darkred",
+                    marker_color="red", marker_line_width=2, marker_size=10)
     fig.add_scatter(x=dates, y=sighting, mode='markers', name="Aurora Sighted",
-                    marker_symbol=23, marker_color="green", marker_size=10)
+                    marker_symbol=23, marker_line_color="darkgreen",
+                    marker_color="green", marker_line_width=2, marker_size=10)
     fig.add_scatter(x=dates, y=carrington_marks, mode='markers', name="Carrington Rotation",
                     marker_symbol=20, marker_color="black", marker_size=10)
-    fig.show()
-
+    fig.write_image("ltm.svg")
 
 
 if __name__ == '__main__':
