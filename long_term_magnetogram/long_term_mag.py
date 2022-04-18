@@ -130,6 +130,7 @@ def plot(dates, dhdt, storm, sighting, carrington_marks, solstice_marks, cme):
                     marker_symbol=17, marker_line_color="blue",
                     marker_color="cyan", marker_line_width=2, marker_size=10)
     fig.write_image("ltm.svg")
+    fig.write_html("ltm.html")
     # fig.show()
 
 
