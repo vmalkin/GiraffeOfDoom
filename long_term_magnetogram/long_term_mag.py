@@ -224,9 +224,9 @@ if __name__ == '__main__':
         # Add solstice markers
         for item in array_year:
             if k.posix2utc(item.time, "%m-%d") == "03-20":
-                item.solstice = value_equinox
+                item.equinox = value_equinox
             if k.posix2utc(item.time, "%m-%d") == "09-21":
-                item.solstice = value_equinox
+                item.equinox = value_equinox
 
         # Add markers for CMEs
         print("Adding CMEs to bins...")
