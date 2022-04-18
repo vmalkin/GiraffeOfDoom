@@ -6,6 +6,7 @@ import sqlite3
 import os
 import mgr_plot_avg_hits
 import mgr_plot_hits
+import mgr_plot_simple_avg
 from threading import Thread
 
 
@@ -22,6 +23,7 @@ class ThreadPlotter(Thread):
                 pass
                 mgr_plot_avg_hits.wrapper(data, 7.5)
                 mgr_plot_avg_hits.wrapper(data, 5)
+                mgr_plot_simple_avg.wrapper(data, 5)
             except:
                 print("Failed to print cumulative totals")
 
@@ -36,7 +38,7 @@ class ThreadPlotter(Thread):
             #     print("Failed to print dxdt")
 
             # print("Plot finished")
-            time.sleep(1800)
+            time.sleep(3600)
 
 
 database = "events.db"

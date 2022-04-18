@@ -1,3 +1,4 @@
+import mgr_plot_simple_avg
 import mgr_plot_avg_hits
 import sqlite3
 import time
@@ -40,9 +41,8 @@ def database_get_data(hours_duration):
 #         dp = str(dt) + "," + str(da)
 #         data.append(dp)
 
-data = database_get_data(24*3)
+data = database_get_data(24*7)
 tt = int(time.time())
 
-mgr_plot_avg_hits.wrapper(data, 6)
-
-# mgr_plot_cumulative.wrapper(data)
+mgr_plot_simple_avg.wrapper(data, 3)
+# mgr_plot_avg_hits.wrapper(data, 7.5)
