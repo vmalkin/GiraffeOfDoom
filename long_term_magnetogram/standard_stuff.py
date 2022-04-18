@@ -9,6 +9,7 @@ from calendar import timegm
 # Default or global values or constants
 file_list = "files.txt"
 sightings_list = "sightings.txt"
+cme_list = "cme.csv"
 detrender_half_window = 10
 
 # ##############################################################################

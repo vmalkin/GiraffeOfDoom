@@ -9,9 +9,17 @@ import re
 # Index positions of UTC date and data in each logfile. This could be different...
 regex_filename = "\d\d\d\d-\d\d-\d\d.csv"
 rounding_value = 5
-value_storm = 0.05
-value_sighting = 0.06
-value_cmarker = 0.01
+# Positions for markers
+value_base = -0.005
+value_step = 0.01
+value_cmarker = value_base + value_step
+value_solstice = value_cmarker + value_step
+value_storm = value_solstice + value_step
+value_sighting = value_storm + value_step
+value_cme = value_sighting + value_step
+
+
+
 
 # Create a bin object. A bin:
 # Covers a time period
@@ -27,7 +35,8 @@ class Bin:
         self.data = []
         self.sighting = None
         self.carrington_marker = None
-        self.equinox = None
+        self.solstice = None
+        self.cme = None
 
     def dhdt(self):
         if len(self.data) > 0:
@@ -95,7 +104,7 @@ def smooth_data(array_time_data):
     return returnlist
 
 
-def plot(dates, dhdt, storm, sighting, carrington_marks):
+def plot(dates, dhdt, storm, sighting, carrington_marks, solstice_marks, cme):
     plot_width = 1800
     plot_height = 750
     bgcolor = "#e0e0e0"
@@ -115,6 +124,11 @@ def plot(dates, dhdt, storm, sighting, carrington_marks):
                     marker_color="green", marker_line_width=2, marker_size=10)
     fig.add_scatter(x=dates, y=carrington_marks, mode='markers', name="Carrington Rotation",
                     marker_symbol=20, marker_color="black", marker_size=10)
+    fig.add_scatter(x=dates, y=solstice_marks, mode='markers', name="Solstice",
+                    marker=dict(size=12, color="orange", line=dict(width=2, color='red')))
+    fig.add_scatter(x=dates, y=cme, mode='markers', name="CME",
+                    marker_symbol=17, marker_line_color="blue",
+                    marker_color="cyan", marker_line_width=2, marker_size=10)
     fig.write_image("ltm.svg")
     # fig.show()
 
@@ -206,6 +220,30 @@ if __name__ == '__main__':
             if i % 27 == 0:
                 array_year[i].carrington_marker = value_cmarker
 
+        # Add solstice markers
+        for item in array_year:
+            if k.posix2utc(item.time, "%m-%d") == "03-20":
+                item.solstice = value_solstice
+            if k.posix2utc(item.time, "%m-%d") == "09-21":
+                item.solstice = value_solstice
+
+        # Add markers for CMEs
+        print("Adding CMEs to bins...")
+        # open the sightings file. allocate the dates of sightings to each bin.
+        with open("cme.csv", "r") as s:
+            for line in s:
+                t = line.strip()
+                # regex_dt = "/d/d-/d/d-/d/d/d/d"
+                # if re.match(regex_dt, t):
+                try:
+                    tt = k.utc2posix(t, "%d-%m-%Y")
+                    index = int((tt - startdate) / 86400)
+                    if index >= 0:
+                        if index < 365:
+                            array_year[index].cme = value_cme
+                except ValueError:
+                    print(t)
+
         # with open("aurora_activity.csv", "w") as l:
         #     l.write("Date/Time(UTC), Geomagnetic Activity, Storm Detected, Aurora Sighted, Carrington Rotation Marker" + "\n")
         #     for item in array_year:
@@ -219,6 +257,8 @@ if __name__ == '__main__':
         storm = []
         sighting = []
         carrington_marks = []
+        solstice_marks = []
+        cme = []
 
         for item in array_year:
             dates.append(k.posix2utc(item.time, "%Y-%m-%d"))
@@ -226,8 +266,10 @@ if __name__ == '__main__':
             storm.append(item.storm_detected())
             sighting.append(item.sighting)
             carrington_marks.append(item.carrington_marker)
+            solstice_marks.append(item.solstice)
+            cme.append(item.cme)
 
-        plot(dates, dhdt, storm, sighting, carrington_marks)
+        plot(dates, dhdt, storm, sighting, carrington_marks, solstice_marks, cme)
         print("FINSIHED!")
 
     else:
