@@ -13,8 +13,8 @@ rounding_value = 5
 value_base = -0.005
 value_step = 0.01
 value_cmarker = value_base + value_step
-value_solstice = value_cmarker + value_step
-value_storm = value_solstice + value_step
+value_equinox = value_cmarker + value_step
+value_storm = value_equinox + value_step
 value_sighting = value_storm + value_step
 value_cme = value_sighting + value_step
 
@@ -35,7 +35,7 @@ class Bin:
         self.data = []
         self.sighting = None
         self.carrington_marker = None
-        self.solstice = None
+        self.equinox = None
         self.cme = None
 
     def dhdt(self):
@@ -104,7 +104,7 @@ def smooth_data(array_time_data):
     return returnlist
 
 
-def plot(dates, dhdt, storm, sighting, carrington_marks, solstice_marks, cme):
+def plot(dates, dhdt, storm, sighting, carrington_marks, equinox_marks, cme):
     plot_width = 1800
     plot_height = 750
     bgcolor = "#e0e0e0"
@@ -124,7 +124,7 @@ def plot(dates, dhdt, storm, sighting, carrington_marks, solstice_marks, cme):
                     marker_color="green", marker_line_width=2, marker_size=10)
     fig.add_scatter(x=dates, y=carrington_marks, mode='markers', name="Carrington Rotation",
                     marker_symbol=20, marker_color="black", marker_size=10)
-    fig.add_scatter(x=dates, y=solstice_marks, mode='markers', name="Solstice",
+    fig.add_scatter(x=dates, y=equinox_marks, mode='markers', name="Equinox",
                     marker=dict(size=12, color="orange", line=dict(width=2, color='red')))
     fig.add_scatter(x=dates, y=cme, mode='markers', name="CME",
                     marker_symbol=17, marker_line_color="blue",
@@ -224,9 +224,9 @@ if __name__ == '__main__':
         # Add solstice markers
         for item in array_year:
             if k.posix2utc(item.time, "%m-%d") == "03-20":
-                item.solstice = value_solstice
+                item.solstice = value_equinox
             if k.posix2utc(item.time, "%m-%d") == "09-21":
-                item.solstice = value_solstice
+                item.solstice = value_equinox
 
         # Add markers for CMEs
         print("Adding CMEs to bins...")
@@ -258,7 +258,7 @@ if __name__ == '__main__':
         storm = []
         sighting = []
         carrington_marks = []
-        solstice_marks = []
+        equinox_marks = []
         cme = []
 
         for item in array_year:
@@ -267,10 +267,10 @@ if __name__ == '__main__':
             storm.append(item.storm_detected())
             sighting.append(item.sighting)
             carrington_marks.append(item.carrington_marker)
-            solstice_marks.append(item.solstice)
+            equinox_marks.append(item.equinox)
             cme.append(item.cme)
 
-        plot(dates, dhdt, storm, sighting, carrington_marks, solstice_marks, cme)
+        plot(dates, dhdt, storm, sighting, carrington_marks, equinox_marks, cme)
         print("FINSIHED!")
 
     else:
