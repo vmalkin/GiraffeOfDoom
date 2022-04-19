@@ -21,9 +21,9 @@ class ThreadPlotter(Thread):
             data = database_get_data(24*7)
             try:
                 pass
-                mgr_plot_avg_hits.wrapper(data, 7.5)
-                mgr_plot_avg_hits.wrapper(data, 5)
-                mgr_plot_simple_avg.wrapper(data, 5)
+                # mgr_plot_avg_hits.wrapper(data, 7.5)
+                # mgr_plot_avg_hits.wrapper(data, 5)
+                # mgr_plot_simple_avg.wrapper(data, 5)
             except:
                 print("Failed to print cumulative totals")
 

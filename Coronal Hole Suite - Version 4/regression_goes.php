@@ -1,2 +1,2 @@
-<br>Insufficient time has passed to begin forecasting. 0.07 days remaining
+<br>Insufficient time has passed to begin forecasting. 0.997 days remaining
 

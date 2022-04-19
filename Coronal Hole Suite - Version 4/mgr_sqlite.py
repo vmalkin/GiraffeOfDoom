@@ -33,6 +33,7 @@ def db_populate():
     db.execute("insert into sat (sat_name) values (?);", ["discovr"])
     db.execute("insert into sat (sat_name) values (?);", ["goes_primary"])
     db.execute("insert into sat (sat_name) values (?);", ["sdo"])
+
     db.execute("insert into type (data_type) values (?);", ["speed"])
     db.execute("insert into type (data_type) values (?);", ["density"])
     db.execute("insert into type (data_type) values (?);", ["forecast_speed"])
