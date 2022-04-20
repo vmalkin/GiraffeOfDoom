@@ -13,6 +13,7 @@ __author__ = "Vaughn Malkin"
 
 discovr = mgr_discovr_data.SatelliteDataProcessor()
 sun = mgr_solar_image.SolarImageProcessor()
+
 data_manager = mgr_data.DataManager(LOGFILE)
 forecaster = mgr_forecast.Forecaster()
 common_data.report_string = ""
