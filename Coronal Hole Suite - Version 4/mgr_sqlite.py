@@ -13,6 +13,7 @@ def db_create():
     db.execute("drop table if exists sat;")
     db.execute("drop table if exists data;")
     db.execute("drop table if exists type;")
+
     db.execute("create table sat(sat_name text primary key);")
     db.execute("create table type(data_type text primary key);")
     db.execute("create table data("
@@ -72,11 +73,16 @@ def db_last_date():
 def db_get_masterdata(satellite_name):
     data_b = sqlite3.connect(database)
     db = data_b.cursor()
-    result = db.execute("select data. from data;")
+    result = db.execute("select data.posixtime, data.data from data where data.data_type = 'speed'")
+    returnlist = []
     for item in result:
-        returnvalue = item[0]
+        tt = item[0]
+        dd = item[1]
+        dp = str(tt) + "," + str(dd)
+        returnlist.append(dp)
     db.close()
-    return returnvalue
+    print(returnlist)
+    return returnlist
 
 # select
 # data.posixtime, data.data as coronal_hole, data.data as wind_speed, data.data as wind_density,

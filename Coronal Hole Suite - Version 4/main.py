@@ -10,7 +10,7 @@ import os
 import mgr_sqlite
 
 LOGFILE = 'log.csv'
-WAITPERIOD = 86400 * 1
+WAITPERIOD = 86400 * 3
 __version__ = '4.0'
 __author__ = "Vaughn Malkin"
 

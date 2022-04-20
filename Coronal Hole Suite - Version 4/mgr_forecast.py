@@ -43,8 +43,8 @@ class Forecaster:
     def _CH_match_launchdate(self, CHData, launchdate):
         chcover = 0
         for i in range(1, len(CHData)):
-            topvalue = int(CHData[i].posix_date)
-            lowervalue = int(CHData[i - 1].posix_date)
+            topvalue = int(CHData[i][0])
+            lowervalue = int(CHData[i - 1][0])
             launchdate = int(launchdate)
 
             if launchdate <= topvalue and  launchdate > lowervalue:
@@ -190,8 +190,8 @@ class Forecaster:
         # get the launchdate for each datapoints windspeed
         for data_p in CH_data:
             appenddata = []
-            appenddata.append(data_p.launch_date)
-            appenddata.append(data_p.wind_speed)
+            appenddata.append(data_p[0])
+            appenddata.append(data_p[1])
             revised_ch_data.append(appenddata)
 
         # get the coverage for the launch time
@@ -200,7 +200,7 @@ class Forecaster:
         for item in revised_ch_data:
             coverage = self._CH_match_launchdate(CH_data, item[0])
             date = int(item[0])
-            windspeed = item[1]
+            windspeed = float(item[1])
 
             # If we have NO wind data, then we should not add this to the final list
             if windspeed > 0:
