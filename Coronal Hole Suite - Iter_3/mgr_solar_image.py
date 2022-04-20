@@ -28,8 +28,9 @@ getcontext().prec = 6
 
 
 class SolarImageProcessor:
-    def __init__(self):
+    def __init__(self, sun_url):
         self.coverage = 0
+        self.sun_url = sun_url
 
     # ##############
     # M E T H O D S
@@ -209,10 +210,7 @@ class SolarImageProcessor:
             logging.debug("Unable to get syntopic map from NOAA")
             common_data.report_string = common_data.report_string + "Unable to get syntopic map from NOAA.\n"
 
-        # try:
-        # self._save_image_from_url("https://sdo.gsfc.nasa.gov/assets/img/latest/latest_512_0193.jpg", "sun.jpg")
-        # self._save_image_from_url("https://services.swpc.noaa.gov/images/suvi-primary-195.png", "sun.jpg")
-        self._save_image_from_url("https://services.swpc.noaa.gov/images/animations/suvi/primary/195/latest.png","sun.jpg")
+        self._save_image_from_url(self.sun_url,"sun.jpg")
         img = self._image_read('sun.jpg')
 
         # Process the image to get B+W coronal hole image

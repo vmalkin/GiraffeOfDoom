@@ -1,2 +1,2 @@
-<br>Linear approximation is: Predicted windspeed = 430.13 + 621.22 * coronal hole area on meridian     <br>Pearsons correlation |r| = 0.3122
-<br>Average Windspeed is 439.7km/s<br>Space weather transit time is 3.9 days
+<br>Linear approximation is: Predicted windspeed = 430.03 + 622.56 * coronal hole area on meridian     <br>Pearsons correlation |r| = 0.3130
+<br>Average Windspeed is 439.6km/s<br>Space weather transit time is 3.9 days

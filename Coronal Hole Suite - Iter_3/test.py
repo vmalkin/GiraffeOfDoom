@@ -1,4 +1,4 @@
-import mgr_discovr_data
+import mgr_json_data
 import mgr_solar_image
 import mgr_data
 import mgr_plotter

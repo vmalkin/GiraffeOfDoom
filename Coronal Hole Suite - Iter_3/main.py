@@ -1,4 +1,4 @@
-import mgr_discovr_data
+import mgr_json_data
 import mgr_solar_image
 import mgr_data
 import mgr_plotter
@@ -11,8 +11,13 @@ WAITPERIOD = 86400 * 5
 __version__ = '2.0'
 __author__ = "Vaughn Malkin"
 
-discovr = mgr_discovr_data.SatelliteDataProcessor()
-sun = mgr_solar_image.SolarImageProcessor()
+# self._save_image_from_url("https://sdo.gsfc.nasa.gov/assets/img/latest/latest_512_0193.jpg", "sun.jpg")
+# self._save_image_from_url("https://services.swpc.noaa.gov/images/suvi-primary-195.png", "sun.jpg")
+# self._save_image_from_url("https://services.swpc.noaa.gov/images/animations/suvi/primary/195/latest.png", "sun.jpg")
+# solar wind data json http://services.swpc.noaa.gov/products/solar-wind/plasma-2-hour.json
+
+discovr = mgr_json_data.SatelliteDataProcessor("http://services.swpc.noaa.gov/products/solar-wind/plasma-2-hour.json")
+sun = mgr_solar_image.SolarImageProcessor("https://services.swpc.noaa.gov/images/animations/suvi/primary/195/latest.png")
 
 data_manager = mgr_data.DataManager(LOGFILE)
 forecaster = mgr_forecast.Forecaster()

@@ -19,11 +19,12 @@ getcontext().prec = 6
 NULL = ""
 
 class SatelliteDataProcessor:
-    def __init__(self):
+    def __init__(self, sw_json_data):
         logging.info("instantiated Satellite Data Processor")
         self.wind_density = 0
         self.wind_speed = 0
         self.satdata = []
+        self.sw_json_data = sw_json_data
 
 
     def _utc2posix(self, timestamp):
@@ -40,7 +41,7 @@ class SatelliteDataProcessor:
         # ["time_tag","density","speed","temperature"]
         # ["2018-03-19 02:05:00.000","6.35","573.4","330513"]
         try:
-            url = "http://services.swpc.noaa.gov/products/solar-wind/plasma-2-hour.json"
+            url = self.sw_json_data
             response = requests.get(url)
             discovr_data = response.json()  # requests has built in json
         except:
