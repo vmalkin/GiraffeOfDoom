@@ -1,5 +1,5 @@
 report_string = ""
-reading_predicted = "prediction.csv"
+reading_predicted = "prediction_goes.csv"
 reading_actual = "log.csv"
 
 # --- BMP masks for image processing ---
