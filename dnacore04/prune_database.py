@@ -1,4 +1,6 @@
 import sqlite3
+import time
+
 import constants as k
 
 dna_old = sqlite3.connect(k.dbfile)
@@ -52,4 +54,18 @@ dna_new.commit()
 for row in dna_new.execute('select * from station'):
     print(row)
 
+
+# Get last two weeks of data from station_data in the old database.
+
+nt = time.time()
+starttime = nt - (14 * 86400)
+result = dna_old.execute("select * from station_data where posix_time > ?", (starttime,))
+for item in result:
+    dna_new.execute("insert into station_data (station_id, posix_time, data_value) values (?,?,?)", (item[0], item[1], item[2],))
+
+# I always forget this!
+dna_new.commit()
+
+# Close the databases
+dna_old.close()
 dna_new.close()
