@@ -18,7 +18,7 @@ do
  python3 chart_spark_swspeed.py
  python3 chart_spark_swdens.py
  
- python DashboardManager.py
+ python3 DashboardManager.py
  
  echo " "
  echo "Processing completed for this cycle. Waiting 300 seconds... "
