@@ -7,6 +7,11 @@ import mgr_emd
 
 database = "events.db"
 
+def posix2utc(posixtime, timeformat):
+    # '%Y-%m-%d %H:%M'
+    utctime = datetime.datetime.utcfromtimestamp(int(posixtime)).strftime(timeformat)
+    return utctime
+
 
 def utc2posix(value):
     # dateformat = "%Y-%m-%d %H:%M:%S.%f"
@@ -41,8 +46,12 @@ def database_get_data(hours_duration):
 #         dp = str(dt) + "," + str(da)
 #         data.append(dp)
 
-data = database_get_data(24*7)
-tt = int(time.time())
+data = database_get_data(24*30)
 
-mgr_plot_simple_avg.wrapper(data, 3)
-# mgr_plot_avg_hits.wrapper(data, 7.5)
+with open("analysis.csv", "w") as a:
+    for item in data:
+        tp = item
+        tt = posix2utc(tp, "%Y-%m-%d %H:%M:%S")
+        dp = tt + "," + str(tp)
+        a.write(dp + "\n")
+a.close()
