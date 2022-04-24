@@ -44,7 +44,7 @@ def plot(dates, data):
                       title="Muons - Daily count",
                       xaxis_title="Date/time UTC<br><sub>http://DunedinAurora.nz</sub>")
     # title = "muons_avg_" + str(hrs) + "_hr.jpg"
-    fig.show()
+    fig.write_image("muon_daily.jpg")
 
 def wrapper():
     data = database_get_data(24*60)
