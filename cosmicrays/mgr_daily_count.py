@@ -46,32 +46,32 @@ def plot(dates, data):
     # title = "muons_avg_" + str(hrs) + "_hr.jpg"
     fig.show()
 
+def wrapper():
+    data = database_get_data(24*60)
+    # data = [10,20,30,40]
+    data_counts = []
+    data_times = []
+    tmp = []
+    for i in range(0, len(data) - 1):
+        if posix2utc(data[i + 1], "%d") == posix2utc(data[i], "%d"):
+            # print("Match", i, len(data))
+            tmp.append(1)
 
-data = database_get_data(24*60)
-# data = [10,20,30,40]
-data_counts = []
-data_times = []
-tmp = []
-for i in range(0, len(data) - 1):
-    if posix2utc(data[i + 1], "%d") == posix2utc(data[i], "%d"):
-        # print("Match", i, len(data))
-        tmp.append(1)
+        if posix2utc(data[i + 1], "%d") != posix2utc(data[i], "%d"):
+            # print("Not Match", i, len(data))
+            tmp.append(1)
+            tt = posix2utc(data[i], "%Y-%m-%d")
+            dd = sum(tmp)
+            data_counts.append(dd)
+            data_times.append(tt)
+            tmp = []
 
-    if posix2utc(data[i + 1], "%d") != posix2utc(data[i], "%d"):
-        # print("Not Match", i, len(data))
-        tmp.append(1)
-        tt = posix2utc(data[i], "%Y-%m-%d")
-        dd = sum(tmp)
-        data_counts.append(dd)
-        data_times.append(tt)
-        tmp = []
+        if i == len(data) - 2:
+            # print("End", i, len(data))
+            tmp.append(1)
+            tt = posix2utc(data[i], "%Y-%m-%d")
+            dd = sum(tmp)
+            data_counts.append(dd)
+            data_times.append(tt)
 
-    if i == len(data) - 2:
-        # print("End", i, len(data))
-        tmp.append(1)
-        tt = posix2utc(data[i], "%Y-%m-%d")
-        dd = sum(tmp)
-        data_counts.append(dd)
-        data_times.append(tt)
-
-plot(data_times, data_counts)
+    plot(data_times, data_counts)
