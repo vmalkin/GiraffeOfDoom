@@ -1,23 +1,11 @@
+import mgr_daily_count
+
 import sqlite3
 import time
 import datetime
 from plotly import graph_objects as go
 
 database = "events.db"
-
-def posix2utc(posixtime, timeformat):
-    # '%Y-%m-%d %H:%M'
-    utctime = datetime.datetime.utcfromtimestamp(int(posixtime)).strftime(timeformat)
-    return utctime
-
-
-def utc2posix(value):
-    # dateformat = "%Y-%m-%d %H:%M:%S.%f"
-    dateformat = "%Y-%m-%d %H:%M:%S"
-    newdatetime = datetime.datetime.strptime(value, dateformat)
-    newdatetime = time.mktime(newdatetime.timetuple())
-    newdatetime = int(newdatetime)
-    return newdatetime
 
 
 def database_get_data(hours_duration):
@@ -33,6 +21,7 @@ def database_get_data(hours_duration):
     db.close()
     return tempdata
 
+
 def plot(dates, data):
     fig = go.Figure(go.Bar(x=dates, y=data,
                            marker=dict(color='#340059', line=dict(width=0.5, color='#340059'))))
@@ -44,34 +33,11 @@ def plot(dates, data):
                       title="Muons - Daily count",
                       xaxis_title="Date/time UTC<br><sub>http://DunedinAurora.nz</sub>")
     # title = "muons_avg_" + str(hrs) + "_hr.jpg"
-    fig.show()
+    fig.write_image("muon_daily.jpg")
 
 
-data = database_get_data(24*60)
-# data = [10,20,30,40]
-data_counts = []
-data_times = []
-tmp = []
-for i in range(0, len(data) - 1):
-    if posix2utc(data[i + 1], "%d") == posix2utc(data[i], "%d"):
-        # print("Match", i, len(data))
-        tmp.append(1)
-
-    if posix2utc(data[i + 1], "%d") != posix2utc(data[i], "%d"):
-        # print("Not Match", i, len(data))
-        tmp.append(1)
-        tt = posix2utc(data[i], "%Y-%m-%d")
-        dd = sum(tmp)
-        data_counts.append(dd)
-        data_times.append(tt)
-        tmp = []
-
-    if i == len(data) - 2:
-        # print("End", i, len(data))
-        tmp.append(1)
-        tt = posix2utc(data[i], "%Y-%m-%d")
-        dd = sum(tmp)
-        data_counts.append(dd)
-        data_times.append(tt)
-
-plot(data_times, data_counts)
+data = database_get_data(24 * 7)
+try:
+    mgr_daily_count.wrapper()
+except:
+    print("Failed to print cumulative totals")
