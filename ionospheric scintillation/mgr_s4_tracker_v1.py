@@ -47,17 +47,15 @@ def plot_chart(filename, dates, aggregatedata, seriesnames):
     bkcolour = "#e0e0e0"
     gridcolour = "#d0d0d0"
     colourdict = [
-        "rgba(79,208,168,0.9)",
-        "rgba(193,166,67,0.9)",
-        "rgba(123,177,91,0.9)",
-        "rgba(192,105,186,0.9)",
-        "rgba(108,123,213,0.9)",
-        "rgba(184,85,60,0.9)",
-        "rgba(185,74,115,0.9)",
-        "rgba(81,44,123,0.9)",
-        "rgba(79,208,0,0.9)",
-        "rgba(193,166,0,0.9)",
-        "rgba(123, 177, 0, 0.9)"
+        "#d7b3f5",
+        "#8568a0",
+        "#3a2552",
+        "#a5ccd1",
+        "#5c9db4",
+        "#006d9a",
+        "#5de38c",
+        "#37c256",
+        "#00a113"
     ]
     sundict = [
         [367, 1286],
@@ -88,7 +86,7 @@ def plot_chart(filename, dates, aggregatedata, seriesnames):
         # all previous readings
         if i < max - 2:
             fig.add_scatter(x=dates, y=aggregatedata[i], mode="lines", connectgaps=True,
-                                name=seriesnames[i], line=dict(color=colourdict[i], width=2))
+                                name=seriesnames[i], line=dict(color=colourdict[i], width=3))
         # Yesterday's reading
         elif i == max - 2:
             fig.add_scatter(x=dates, y=aggregatedata[i], mode="lines", connectgaps=True,
