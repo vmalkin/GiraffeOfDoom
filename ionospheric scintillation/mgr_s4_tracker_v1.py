@@ -105,8 +105,8 @@ def plot_chart(filename, dates, aggregatedata, seriesnames):
                       legend=dict(orientation="h", yanchor="bottom", x=0.2, y=-0.3))
     fig.update_layout(plot_bgcolor=bkcolour, paper_bgcolor=bkcolour,
                       margin=dict(l=50, r=50, b=100, t=100, pad=4))
-    # fig.write_image(file=filename, format='svg')
-    fig.show()
+    fig.write_image(file=filename, format='svg')
+    # fig.show()
 
 
 def query_parse(queryresult):
