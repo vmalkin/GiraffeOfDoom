@@ -94,11 +94,13 @@ class Satellite:
         # http://mtc-m21b.sid.inpe.br/col/sid.inpe.br/mtc-m21b/2017/08.25.17.52/doc/poster_ionik%20%5BSomente%20leitura%5D.pdf
         returnvalue = 0
         if len(self.intensity) > 2:
-            avg_intensity = mean(self.intensity)
-            sigma = stdev(self.intensity)
-            if avg_intensity > 0:
-                returnvalue = round(((sigma / avg_intensity) * 100), 5)
-
+            try:
+                avg_intensity = mean(self.intensity)
+                sigma = stdev(self.intensity)
+                if avg_intensity > 0:
+                    returnvalue = round(((sigma / avg_intensity) * 100), 5)
+            except:
+                print("Error calculating S4")
         return returnvalue
 
     def get_alt_avg(self):

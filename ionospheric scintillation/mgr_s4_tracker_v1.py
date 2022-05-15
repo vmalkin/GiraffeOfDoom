@@ -47,15 +47,16 @@ def plot_chart(filename, dates, aggregatedata, seriesnames):
     bkcolour = "#e0e0e0"
     gridcolour = "#d0d0d0"
     colourdict = [
-        "#d7b3f5",
-        "#8568a0",
-        "#3a2552",
-        "#a5ccd1",
-        "#5c9db4",
-        "#006d9a",
-        "#5de38c",
-        "#37c256",
-        "#00a113"
+        "rgba(200,200,200, 0.9)",
+         "rgba(188,224,145, 0.9)",
+         "rgba(120,238,90, 0.9)",
+         "rgba(223,184,245, 0.9)",
+         "rgba(254,116,254, 0.9)",
+         "rgba(96,145,17, 0.9)",
+         "rgba(43,25,217, 0.9)",
+         "rgba(4,44,23, 0.9)",
+         "rgba(88,5,93, 0.9)",
+         "rgba(34,7,25, 0.9)"
     ]
     sundict = [
         [367, 1286],
@@ -90,11 +91,11 @@ def plot_chart(filename, dates, aggregatedata, seriesnames):
         # Yesterday's reading
         elif i == max - 2:
             fig.add_scatter(x=dates, y=aggregatedata[i], mode="lines", connectgaps=True,
-                            name=seriesnames[i], line=dict(color='rgba(255, 0, 0, 1)', width=4))
+                            name=seriesnames[i], line=dict(color='rgba(255, 0, 0, 1)', width=5))
         # Today's reading
         elif i == max - 1:
             fig.add_scatter(x=dates, y=aggregatedata[i], mode="lines", connectgaps=True,
-                            name=seriesnames[i], line=dict(color='rgba(0, 0, 0, 1)', width=4))
+                            name=seriesnames[i], line=dict(color='rgba(0, 0, 0, 1)', width=5))
 
     fig.update_layout(width=1500, height=630, title="GPS Signal Noise / S<sub>4</sub> Index. http://DunedinAurora.NZ",
                       xaxis_title="Date/time UTC",
@@ -103,8 +104,8 @@ def plot_chart(filename, dates, aggregatedata, seriesnames):
                       legend=dict(orientation="h", yanchor="bottom", x=0.2, y=-0.3))
     fig.update_layout(plot_bgcolor=bkcolour, paper_bgcolor=bkcolour,
                       margin=dict(l=50, r=50, b=100, t=100, pad=4))
-    fig.write_image(file=filename, format='svg')
-    # fig.show()
+    # fig.write_image(file=filename, format='svg')
+    fig.show()
 
 
 def query_parse(queryresult):
