@@ -4,8 +4,10 @@ import sys
 errorloglevel = logging.ERROR
 logging.basicConfig(filename="errors.log", format='%(asctime)s %(message)s', level=errorloglevel)
 
-class SerialManager():
-    def __init__(self, portName,baudrate,bytesize,parity,stopbits,timeout,xonxoff,rtscts,writeTimeout,dsrdtr,interCharTimeout):
+
+class SerialManager:
+    def __init__(self, portName, baudrate, bytesize, parity, stopbits, timeout, xonxoff,
+                 rtscts, writeTimeout, dsrdtr, interCharTimeout):
         self._portName = portName
         self._baudrate = baudrate
         self._bytesize = bytesize
@@ -19,8 +21,9 @@ class SerialManager():
         self._interCharTimeout = interCharTimeout
 
         try:
-            self.com = serial.Serial(self._portName, self._baudrate, self._bytesize, self._parity, self._stopbits, self._timeout, self._xonxoff,
-                                self._rtscts, self._writeTimeout, self._dsrdtr, self._interCharTimeout)
+            self.com = serial.Serial(self._portName, self._baudrate, self._bytesize, self._parity, self._stopbits,
+                                     self._timeout, self._xonxoff, self._rtscts, self._writeTimeout,
+                                     self._dsrdtr, self._interCharTimeout)
         except serial.SerialException:
             print("CRITICAL ERROR: Com port not responding. Please check parameters")
             logging.critical("CRITICAL ERROR: Unable to open com port. Please check com port parameters and/or hardware!!")
@@ -33,5 +36,5 @@ class SerialManager():
             logData = str(logData, 'latin1').strip()  # convert the byte array to string. strip off unnecessary whitespace
         except serial.serialutil.SerialException:
             logData = ""
-            logging.error("Serial port error " + serial.serialutil.SerialException)
+            logging.error("Serial port error " + str(serial.serialutil.SerialException))
         return logData
