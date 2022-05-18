@@ -57,17 +57,17 @@ class QueryProcessor(Thread):
                 print("\n" + "mgr_s4_tracker_v1.wrapper" + "\n")
                 logging.warning("mgr_s4_tracker_v1.wrapper failed in MAIN.PY")
 
-            try:
-                mgr_polar_s4_noise.wrapper(querydata_24)
-            except:
-                print("\n" + "mgr_polar_s4_noise.wrapper" + "\n")
-                logging.warning("mgr_polar_s4_noise.wrapper failed in MAIN.PY")
+            # try:
+            #     mgr_polar_s4_noise.wrapper(querydata_24)
+            # except:
+            #     print("\n" + "mgr_polar_s4_noise.wrapper" + "\n")
+            #     logging.warning("mgr_polar_s4_noise.wrapper failed in MAIN.PY")
 
-            try:
-                mgr_polar_noise_tracks.wrapper(querydata_24)
-            except:
-                print("\n" + "mgr_polar_noise_tracks.wrapper" + "\n")
-                logging.warning("mgr_polar_noise_tracks.wrapper failed in MAIN.PY")
+            # try:
+            #     mgr_polar_noise_tracks.wrapper(querydata_24)
+            # except:
+            #     print("\n" + "mgr_polar_noise_tracks.wrapper" + "\n")
+            #     logging.warning("mgr_polar_noise_tracks.wrapper failed in MAIN.PY")
 
             try:
                 mgr_s4_count.wrapper()
