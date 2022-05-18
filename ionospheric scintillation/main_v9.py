@@ -101,6 +101,7 @@ class Satellite:
                     returnvalue = round(((sigma / avg_intensity) * 100), 5)
             except:
                 print("Error calculating S4")
+                logging.critical("Error calculating S4")
         return returnvalue
 
     def get_alt_avg(self):
