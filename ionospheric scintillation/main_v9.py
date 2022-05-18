@@ -93,15 +93,14 @@ class Satellite:
     def get_s4(self):
         # http://mtc-m21b.sid.inpe.br/col/sid.inpe.br/mtc-m21b/2017/08.25.17.52/doc/poster_ionik%20%5BSomente%20leitura%5D.pdf
         returnvalue = 0
-        if len(self.intensity) > 2:
-            try:
+        try:
+            if len(self.intensity) > 2:
                 avg_intensity = mean(self.intensity)
                 sigma = stdev(self.intensity)
                 if avg_intensity > 0:
                     returnvalue = round(((sigma / avg_intensity) * 100), 5)
-            except:
-                print("Error calculating S4")
-                logging.critical("Error calculating S4")
+        except TypeError:
+            print("Non-numerical data in array for intensity: ")
         return returnvalue
 
     def get_alt_avg(self):
@@ -188,10 +187,18 @@ def create_directory(dir):
 
 
 def calc_intensity(snr):
-    snr = float(snr)
     intensity = 0
-    if snr != 0:
-        intensity = pow(10, (snr/10))
+    try:
+        snr = float(snr)
+        intensity = 0
+        if snr != 0:
+            intensity = pow(10, (snr/10))
+    except TypeError:
+        print("Type error in data in calc_intensity() " + str(snr))
+        logging.critical("Type error in data in calc_intensity() " + str(snr))
+    except ValueError:
+        print("Value error in data in calc_intensity() " + str(snr))
+        logging.critical("Value error in data in calc_intensity() " + str(snr))
     return intensity
 
 
