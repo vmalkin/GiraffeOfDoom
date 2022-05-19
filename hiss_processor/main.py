@@ -4,14 +4,16 @@ hissfile = "hiss.csv"
 
 class DataPoint:
     def __init__(self, data_csv):
-        self.utc = data_csv[0]
-        self.hz125 = data_csv[2]
-        self.hz240 = data_csv[3]
-        self.hz410 = data_csv[4]
-        self.hz760 = data_csv[5]
-        self.hz1800 = data_csv[6]
-        self.hz4300 = data_csv[7]
-        self.hz9000 = data_csv[8]
+        self.d = data_csv.strip()
+        self.dd = self.d.split(",")
+        self.utc = self.dd[0]
+        self.hz125 = self.dd[1]
+        self.hz240 = self.dd[2]
+        self.hz410 = self.dd[3]
+        self.hz760 = self.dd[4]
+        self.hz1800 = self.dd[5]
+        self.hz4300 = self.dd[6]
+        self.hz9000 = self.dd[7]
 
         self.diff125 = 0
         self.diff240 = 0
@@ -22,8 +24,13 @@ class DataPoint:
         self.diff9000 = 0
 
 
+datapoint_array = []
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
     with open(hissfile, "r") as h:
         for line in h:
-            pass
+            dp = DataPoint(line)
+            datapoint_array.append(dp)
+
+for item in datapoint_array:
+    print(item.hz125)
