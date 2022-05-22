@@ -7,13 +7,13 @@ class DataPoint:
         self.d = data_csv.strip()
         self.dd = self.d.split(",")
         self.utc = self.dd[0]
-        self.hz125 = self.dd[1]
-        self.hz240 = self.dd[2]
-        self.hz410 = self.dd[3]
-        self.hz760 = self.dd[4]
-        self.hz1800 = self.dd[5]
-        self.hz4300 = self.dd[6]
-        self.hz9000 = self.dd[7]
+        self.hz125 = float(self.dd[1])
+        self.hz240 = float(self.dd[2])
+        self.hz410 = float(self.dd[3])
+        self.hz760 = float(self.dd[4])
+        self.hz1800 = float(self.dd[5])
+        self.hz4300 = float(self.dd[6])
+        self.hz9000 = float(self.dd[7])
 
         self.diff125 = 0
         self.diff240 = 0
@@ -32,5 +32,13 @@ if __name__ == '__main__':
             dp = DataPoint(line)
             datapoint_array.append(dp)
 
-for item in datapoint_array:
-    print(item.hz125)
+for i in range(1, len(datapoint_array)):
+    datapoint_array[i].diff125 = datapoint_array[i].hz125 - datapoint_array[i - 1].hz125
+    datapoint_array[i].diff240 = datapoint_array[i].hz240 - datapoint_array[i - 1].hz240
+    datapoint_array[i].diff410 = datapoint_array[i].hz410 - datapoint_array[i - 1].hz410
+    datapoint_array[i].diff760 = datapoint_array[i].hz760 - datapoint_array[i - 1].hz760
+    datapoint_array[i].diff1800 = datapoint_array[i].hz1800 - datapoint_array[i - 1].hz1800
+    datapoint_array[i].diff4300 = datapoint_array[i].hz4300 - datapoint_array[i - 1].hz4300
+    datapoint_array[i].diff9000 = datapoint_array[i].hz9000 - datapoint_array[i - 1].hz9000
+
+
