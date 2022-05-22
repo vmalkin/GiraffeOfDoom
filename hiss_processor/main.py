@@ -7,13 +7,23 @@ class DataPoint:
         self.d = data_csv.strip()
         self.dd = self.d.split(",")
         self.utc = self.dd[0]
-        self.hz125 = float(self.dd[1])
-        self.hz240 = float(self.dd[2])
-        self.hz410 = float(self.dd[3])
-        self.hz760 = float(self.dd[4])
-        self.hz1800 = float(self.dd[5])
-        self.hz4300 = float(self.dd[6])
-        self.hz9000 = float(self.dd[7])
+
+        self.hz125 = 0
+        self.hz240 = 0
+        self.hz410 = 0
+        self.hz760 = 0
+        self.hz1800 = 0
+        self.hz4300 = 0
+        self.hz9000 = 0
+
+        if self.utc != 'YYYY-MM-DD hh:mm:ss':
+            self.hz125 = float(self.dd[1])
+            self.hz240 = float(self.dd[2])
+            self.hz410 = float(self.dd[3])
+            self.hz760 = float(self.dd[4])
+            self.hz1800 = float(self.dd[5])
+            self.hz4300 = float(self.dd[6])
+            self.hz9000 = float(self.dd[7])
 
         self.diff125 = 0
         self.diff240 = 0
