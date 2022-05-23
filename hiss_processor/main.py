@@ -33,6 +33,7 @@ if __name__ == '__main__':
             dp = DataPoint(line)
             datapoint_array.append(dp)
 
-for i in range(1, len(datapoint_array)):
-    for j in range(0, 7):
-        datapoint_array[i].diff_data[j] = datapoint_array[i].diff_data[j] - datapoint_array[i - 1].diff_data[j]
+    # Calculate dh/dt and populate the diffs array in each datapoint
+    for i in range(1, len(datapoint_array)):
+        for j in range(0, 7):
+            datapoint_array[i].diff_data[j] = datapoint_array[i].diff_data[j] - datapoint_array[i - 1].diff_data[j]
