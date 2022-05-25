@@ -323,6 +323,18 @@ def greyscale_img(image_to_process):
     return greyimg
 
 
+def normalise_image(detrended_img):
+    # normlise a numpy array between 0 - 255
+    returnarray = []
+    im_min = detrended_img.min()
+    im_max = detrended_img.max()
+    for i in range(0, len(detrended_img)):
+        newvalue = (detrended_img[i] - im_min) / (im_max - im_min)
+        newvalue = int(newvalue * 255)
+        returnarray.append(newvalue)
+    return returnarray
+
+
 def wrapper(storage_folder, analysis_folder):
     # get a list of the current stored images.
     dirlisting = os.listdir(storage_folder)
@@ -362,14 +374,13 @@ def wrapper(storage_folder, analysis_folder):
                 avg_array.pop(0)
                 avg_img = np.mean(avg_array, axis=0)
 
+                # The detrended image.
                 detrended_img = np.subtract(pic, avg_img)
                 # The resulting values in each detrended image have pixelvalues < 0 < pixelvalues.
                 # These must be normalised to integers between 0 - 255
 
-                print(pic.min(), pic.max())
-                print(avg_img.min(), avg_img.max())
+                detrended_img = normalise_image(detrended_img)
                 print(detrended_img.min(), detrended_img.max())
-
                 ret, detrended_img = cv2.threshold(detrended_img, 3, 255, cv2.THRESH_BINARY)
 
                 # cv2.imshow('avg image', avg_img)
