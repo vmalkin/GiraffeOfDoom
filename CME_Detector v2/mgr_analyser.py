@@ -350,27 +350,30 @@ def wrapper(storage_folder, analysis_folder):
             #  of finding the residual.
             # Pic is used for comparisons and must be float64
             pic = cv2.erode(img_g, kernel1, iterations=1)
+
             # pic = cv2.normalize(src=img_g, dst=None, alpha=0, beta=255, norm_type=cv2.NORM_MINMAX, dtype=cv2.CV_32F)
-            pic = cv2.normalize(src=pic, dst=None, alpha=0, beta=255, norm_type=cv2.NORM_MINMAX)
+            # pic = cv2.normalize(src=pic, dst=None, alpha=0, beta=255, norm_type=cv2.NORM_MINMAX)
             avg_array.append(pic)
 
 
 
             # 100 images is about a day. Start comparing individual images against an "average" image
-            if len(avg_array) >= 100:
+            if len(avg_array) >= 50:
                 # ALWAYS POP
                 avg_array.pop(0)
                 avg_img = np.mean(avg_array, axis=0)
                 avg_img = cv2.normalize(src=avg_img, dst=None, alpha=0, beta=255, norm_type=cv2.NORM_MINMAX, dtype=cv2.CV_8U)
-                print(pic.dtype, avg_img.dtype)
+                # print(pic.dtype, avg_img.dtype)
 
                 # detrended_img = cv2.subtract(pic, avg_img)
                 detrended_img = pic - avg_img
                 ret, detrended_img = cv2.threshold(detrended_img, 3, 255, cv2.THRESH_BINARY)
 
-                cv2.imshow('graycsale image', avg_img)
-                # waitKey() waits for a key press to close the window and 0 specifies indefinite loop
-                cv2.waitKey(0)
+                # cv2.imshow('avg image', avg_img)
+                # cv2.imshow('image', pic)
+                # cv2.imshow('detrended', detrended_img)
+                # # waitKey() waits for a key press to close the window and 0 specifies indefinite loop
+                # cv2.waitKey(0)
 
                 #  convolve the returned residuals image from polar to rectangular co-ords. the data is appended to
                 #  an array
@@ -387,6 +390,9 @@ def wrapper(storage_folder, analysis_folder):
                 array = np.reshape(np.array(t), (radius, angle))
                 #  Just crops the image
                 mask = create_mask(array, angle, radius, 40, 50)
+                mask = cv2.normalize(src=mask, dst=None, alpha=0, beta=255, norm_type=cv2.NORM_MINMAX,
+                                       dtype=cv2.CV_8U)
+                print(array.dtype, mask.dtype)
                 masked = cv2.bitwise_and(array, mask)
 
                 # Pixelcounter to create graphic pf CMEs
