@@ -328,10 +328,17 @@ def normalise_image(detrended_img):
     returnarray = []
     im_min = detrended_img.min()
     im_max = detrended_img.max()
-    for i in range(0, len(detrended_img)):
-        newvalue = (detrended_img[i] - im_min) / (im_max - im_min)
-        newvalue = int(newvalue * 255)
-        returnarray.append(newvalue)
+    # for i in range(0, len(detrended_img)):
+    #     newvalue = (detrended_img[i] - im_min) / (im_max - im_min)
+    #     newvalue = int(newvalue * 255)
+    #     returnarray.append(newvalue)
+
+    for row in detrended_img:
+        for column in row:
+            newvalue = (column - im_min) / (im_max - im_min)
+            newvalue = int(newvalue * 255)
+            returnarray.append(newvalue)
+    returnarray = np.reshape(returnarray, (512, 512))
     return returnarray
 
 
@@ -376,18 +383,20 @@ def wrapper(storage_folder, analysis_folder):
 
                 # The detrended image.
                 detrended_img = np.subtract(pic, avg_img)
+
                 # The resulting values in each detrended image have pixelvalues < 0 < pixelvalues.
                 # These must be normalised to integers between 0 - 255
-
                 detrended_img = normalise_image(detrended_img)
-                print(detrended_img.min(), detrended_img.max())
+
+                cv2.imshow('avg image', avg_img)
+                cv2.imshow('image', pic)
+                cv2.imshow('detrended', detrended_img)
+                # waitKey() waits for a key press to close the window and 0 specifies indefinite loop
+                cv2.waitKey()
+
                 ret, detrended_img = cv2.threshold(detrended_img, 3, 255, cv2.THRESH_BINARY)
 
-                # cv2.imshow('avg image', avg_img)
-                # cv2.imshow('image', pic)
-                # cv2.imshow('detrended', detrended_img)
-                # # waitKey() waits for a key press to close the window and 0 specifies indefinite loop
-                # cv2.waitKey(0)
+
 
                 #  convolve the returned residuals image from polar to rectangular co-ords. the data is appended to
                 #  an array
