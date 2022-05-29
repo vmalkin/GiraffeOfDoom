@@ -339,6 +339,7 @@ def normalise_image(detrended_img):
             newvalue = int(newvalue * 255)
             returnarray.append(newvalue)
     returnarray = np.reshape(returnarray, (512, 512))
+    returnarray = np.array(returnarray, np.uint8)
     return returnarray
 
 
@@ -364,30 +365,35 @@ def wrapper(storage_folder, analysis_folder):
 
         if img is not None:
             img_g = greyscale_img(img)
-            kernel1 = np.ones((3, 3), np.uint8)
+
             # Create an array of pictures with which to create an average
             # that is isued to compare individual images, essentiall a 3D version
             #  of finding the residual.
             # Pic is used for comparisons and must be float64
-            # pic = cv2.erode(img_g, kernel1, iterations=1)
-
             # We will convert images in 1D 64 bit numpy arrays for operations involving averaging, normalising etc.
             pic = np.array(img_g, np.float64)
             avg_array.append(pic)
 
             # 100 images is about a day. Start comparing individual images against an "average" image
-            if len(avg_array) >= 100:
+            if len(avg_array) >= 5:
                 # ALWAYS POP
                 avg_array.pop(0)
                 avg_img = np.mean(avg_array, axis=0)
 
+                avg_img = normalise_image(avg_img)
+                pic = normalise_image(pic)
+
                 # The detrended image.
                 detrended_img = np.subtract(pic, avg_img)
 
+                # detrended_img = cv2.erode(detrended_img, np.ones((5, 5), np.uint8), iterations=1)
+                # detrended_img = cv2.dilate(detrended_img, np.ones((3, 3), np.uint8), iterations=1)
+
                 # The resulting values in each detrended image have pixelvalues < 0 < pixelvalues.
                 # These must be normalised to integers between 0 - 255
-                detrended_img = normalise_image(detrended_img)
+                # detrended_img = normalise_image(detrended_img)
 
+                # print(np.shape(pic), np.shape(avg_img), np.shape(pic))
                 cv2.imshow('avg image', avg_img)
                 cv2.imshow('image', pic)
                 cv2.imshow('detrended', detrended_img)
@@ -417,8 +423,8 @@ def wrapper(storage_folder, analysis_folder):
                 # mask = cv2.normalize(src=mask, dst=None, alpha=0, beta=255, norm_type=cv2.NORM_MINMAX,
                 #                         dtype=cv2.CV_64F)
 
-                # mask = cv2.normalize(src=mask, dst=None, alpha=0, beta=255, norm_type=cv2.NORM_MINMAX,
-                #                        dtype=cv2.CV_8U)
+                mask = cv2.normalize(src=mask, dst=None, alpha=0, beta=255, norm_type=cv2.NORM_MINMAX,
+                                       dtype=cv2.CV_8U)
                 # print(array.dtype, mask.dtype)
                 masked = cv2.bitwise_and(array, mask)
 
