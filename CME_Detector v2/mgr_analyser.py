@@ -375,7 +375,7 @@ def wrapper(storage_folder, analysis_folder):
             avg_array.append(pic)
 
             # 100 images is about a day. Start comparing individual images against an "average" image
-            if len(avg_array) >= 5:
+            if len(avg_array) >= 100:
                 # ALWAYS POP
                 avg_array.pop(0)
                 avg_img = np.mean(avg_array, axis=0)
@@ -385,13 +385,13 @@ def wrapper(storage_folder, analysis_folder):
 
                 # The detrended image.
                 detrended_img = np.subtract(pic, avg_img)
-
-                # detrended_img = cv2.erode(detrended_img, np.ones((5, 5), np.uint8), iterations=1)
-                # detrended_img = cv2.dilate(detrended_img, np.ones((3, 3), np.uint8), iterations=1)
+                detrended_img = normalise_image(detrended_img)
+                detrended_img = cv2.erode(detrended_img, np.ones((3, 3), np.uint8), iterations=1)
+                detrended_img = cv2.dilate(detrended_img, np.ones((3, 3), np.uint8), iterations=1)
 
                 # The resulting values in each detrended image have pixelvalues < 0 < pixelvalues.
                 # These must be normalised to integers between 0 - 255
-                # detrended_img = normalise_image(detrended_img)
+
 
                 # print(np.shape(pic), np.shape(avg_img), np.shape(pic))
                 cv2.imshow('avg image', avg_img)
