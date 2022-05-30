@@ -105,7 +105,9 @@ class Satellite:
         except OverflowError:
             print("Overflow error! ", self.intensity)
             logging.critical("Overflow error! ", self.intensity)
-
+        except:
+            print("Unspecified error in generating S4! ", self.intensity)
+            logging.critical("Unspecified error in generating S4 ", self.intensity)
         return returnvalue
 
     def get_alt_avg(self):
