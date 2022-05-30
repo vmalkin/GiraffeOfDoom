@@ -100,7 +100,12 @@ class Satellite:
                 if avg_intensity > 0:
                     returnvalue = round(((sigma / avg_intensity) * 100), 5)
         except TypeError:
-            print("Non-numerical data in array for intensity: ")
+            print("Non-numerical data in array for intensity: ", self.intensity)
+            logging.critical("Non-numerical data in array for intensity: ", self.intensity)
+        except OverflowError:
+            print("Overflow error! ", self.intensity)
+            logging.critical("Overflow error! ", self.intensity)
+
         return returnvalue
 
     def get_alt_avg(self):
