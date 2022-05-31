@@ -19,10 +19,10 @@ db = dna_core.cursor()
 
 # #######################################################################################
 #   These details must be cusomised for each station
-sigma_file = "s_goes.pkl"
-mean_file = "m_goes.pkl"
-station = "GOES_16"
-plot_title = "Magnetometer dh/dt<br>GOES East"
+sigma_file = "s_goes_w.pkl"
+mean_file = "m_goes_w.pkl"
+station = "GOES_17"
+plot_title = "Magnetometer dh/dt<br>GOES West"
 median_sigma = 0
 median_mean = 0
 # a 10 min window for averaging readings give the number of readings per minute
