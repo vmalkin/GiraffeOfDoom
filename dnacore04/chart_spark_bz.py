@@ -253,8 +253,8 @@ def plot(data, hours, colours):
         orientation='h'
     ))
     fig.update_layout(plot_bgcolor="rgba(0,0,0,0)", paper_bgcolor="rgba(0,0,0,0)")
-    fig.update_layout(width=420, height=1100, title="IMF - Avg Bz")
-    fig.update_layout(font=dict(size=24, color="#ffffff"), margin=dict(l=10, r=20, b=10), xaxis_title="Bz - nT", yaxis_title="UTC")
+    fig.update_layout(width=300, height=1200, title="IMF - Avg Bz")
+    fig.update_layout(font=dict(size=22, color="#ffffff"), margin=dict(l=10, r=20, b=10), xaxis_title="Bz - nT", yaxis_title="UTC")
     fig.update_xaxes(range=[-10, 10], gridcolor='#505050', visible=True)
     savefile = "spk_bz.svg"
     # savefile = "spk_test.svg"
