@@ -40,4 +40,32 @@ if __name__ == '__main__':
         for j in range(0, 7):
             datapoint_array[i].diff_data[j] = datapoint_array[i].diff_data[j] - datapoint_array[i - 1].diff_data[j]
 
-# 6 readings a minute
+    # 6 readings a minute
+    interval = 6 * 60
+
+    hz125 = []
+    hz240 = []
+    hz410 = []
+    hz760 = []
+    hz1800 = []
+    hz4300 = []
+    hz9000 = []
+
+    t125 = []
+    t240 = []
+    t410 = []
+    t760 = []
+    t1800 = []
+    t4300 = []
+    t9000 = []
+
+    for i in range(0, len(datapoint_array)):
+        t125.append(datapoint_array[i].diff_data[0])
+        t240.append(datapoint_array[i].diff_data[1])
+        t410.append(datapoint_array[i].diff_data[2])
+        t760.append(datapoint_array[i].diff_data[3])
+        t1800.append(datapoint_array[i].diff_data[4])
+        t4300.append(datapoint_array[i].diff_data[5])
+        t9000.append(datapoint_array[i].diff_data[6])
+
+        if i % 60 == 0:
