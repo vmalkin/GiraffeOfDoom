@@ -1,3 +1,5 @@
+from statistics import mean
+
 # YYYY-MM-DD hh:mm:ss,125hz,240hz,410hz,760hz,1800hz,4300hz,9000hz
 # 2022-01-15 04:13:34,36.243,33.482,23.342,21.961,17.429,3.902,-3.328
 hissfile = "hiss.csv"
@@ -69,3 +71,33 @@ if __name__ == '__main__':
         t9000.append(datapoint_array[i].diff_data[6])
 
         if i % 60 == 0:
+            d125 = mean(t125)
+            hz125.append([datapoint_array[i].utc, d125])
+
+            d240 = mean(t240)
+            hz240.append([datapoint_array[i].utc, d240])
+
+            d410 = mean(t410)
+            hz410.append([datapoint_array[i].utc, d410])
+
+            d760 = mean(t760)
+            hz760.append([datapoint_array[i].utc, d760])
+
+            d1800 = mean(t1800)
+            hz1800.append([datapoint_array[i].utc, d1800])
+
+            d4300 = mean(t4300)
+            hz4300.append([datapoint_array[i].utc, d4300])
+
+            d9000 = mean(t9000)
+            hz9000.append([datapoint_array[i].utc, d9000])
+
+            t125 = []
+            t240 = []
+            t410 = []
+            t760 = []
+            t1800 = []
+            t4300 = []
+            t9000 = []
+
+
