@@ -12,21 +12,14 @@ class DataPoint:
         self.dd = self.d.split(",")
         self.utc = self.dd[0]
 
-        self.hz_data = []
-        self.diff_data = []
-
-        # prepopulate data array with zeros
-        for i in range(0, 7):
-            self.hz_data.append(0)
+        self.hz_data = [0, 0, 0, 0, 0, 0, 0]
+        self.diff_data = [0, 0, 0, 0, 0, 0, 0]
 
         # Add data if exists to data array
         if self.utc != 'YYYY-MM-DD hh:mm:ss':
-            for i in range(0, 7):
-                self.hz_data.append(self.dd[i])
+            for i in range(1, 7):
+                self.hz_data[i] = self.dd[i]
 
-        # prepopulate diffs array with zeros
-        for i in range(0, 7):
-            self.diff_data.append(0)
 
 
 datapoint_array = []
@@ -40,7 +33,7 @@ if __name__ == '__main__':
     # Calculate dh/dt and populate the diffs array in each datapoint
     for i in range(1, len(datapoint_array)):
         for j in range(0, 7):
-            datapoint_array[i].diff_data[j] = datapoint_array[i].diff_data[j] - datapoint_array[i - 1].diff_data[j]
+            datapoint_array[i].diff_data[j] = float(datapoint_array[i].hz_data[j]) - float(datapoint_array[i - 1].hz_data[j])
 
     # 6 readings a minute
     interval = 6 * 60
@@ -56,7 +49,12 @@ if __name__ == '__main__':
         if i % 60 == 0:
             dt = datapoint_array[i].utc
             for j in range(0, 7):
-                dd = mean(t[j])
+                dd = round(mean(t[j]), 5)
+                dp = str(dt) + "," + str(dd)
+                final[j].append(dp)
+            t = [[], [], [], [], [], [], []]
+
+    print(final[1])
 
 
 
