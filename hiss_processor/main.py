@@ -4,6 +4,7 @@ from statistics import mean
 # 2022-01-15 04:13:34,36.243,33.482,23.342,21.961,17.429,3.902,-3.328
 hissfile = "hiss.csv"
 sightingsfile = "sightings.csv"
+frequencies = ["125hz","240hz","410hz","760hz","1800hz","4300hz","9000hz"]
 
 class DataPoint:
     def __init__(self, data_csv):
@@ -46,7 +47,7 @@ if __name__ == '__main__':
             dp = datapoint_array[i].diff_data[j]
             t[j].append(dp)
 
-        if i % 60 == 0:
+        if i % interval == 0:
             dt = datapoint_array[i].utc
             for j in range(0, 7):
                 dd = round(mean(t[j]), 5)
@@ -54,7 +55,7 @@ if __name__ == '__main__':
                 final[j].append(dp)
             t = [[], [], [], [], [], [], []]
 
-    print(final[1])
 
+    print(final[0])
 
 
