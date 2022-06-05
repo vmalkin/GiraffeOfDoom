@@ -55,7 +55,14 @@ if __name__ == '__main__':
                 final[j].append(dp)
             t = [[], [], [], [], [], [], []]
 
+    for i in range(0, len(final)):
+        filename = frequencies[i] + ".csv"
+        with open(filename, "w") as f:
+            for line in final[i]:
+                f.write(line + "\n")
+            f.close()
 
-    print(final[0])
+
+
 
 
