@@ -12,14 +12,15 @@ class DataPoint:
         self.d = data_csv.strip()
         self.dd = self.d.split(",")
         self.utc = self.dd[0]
+        self.data = self.dd[1:]
 
         self.hz_data = [0, 0, 0, 0, 0, 0, 0]
         self.diff_data = [0, 0, 0, 0, 0, 0, 0]
 
         # Add data if exists to data array
         if self.utc != 'YYYY-MM-DD hh:mm:ss':
-            for i in range(1, 7):
-                self.hz_data[i] = self.dd[i]
+            for i in range(0, 7):
+                self.hz_data[i] = self.data[i]
 
 
 
