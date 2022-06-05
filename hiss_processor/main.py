@@ -10,21 +10,13 @@ class DataPoint:
         self.dd = self.d.split(",")
         self.utc = self.dd[0]
 
-        self.hz_data = []
-        self.diff_data = []
-
-        # prepopulate data array with zeros
-        for i in range(0, 7):
-            self.hz_data.append(0)
+        self.hz_data = [0,0,0,0,0,0,0]
+        self.diff_data = [0,0,0,0,0,0,0]
 
         # Add data if exists to data array
         if self.utc != 'YYYY-MM-DD hh:mm:ss':
-            for i in range(0, 7):
-                self.hz_data.append(self.dd[i])
-
-        # prepopulate diffs array with zeros
-        for i in range(0, 7):
-            self.diff_data.append(0)
+            for i in range(1, 7):
+                self.hz_data[i] = self.dd[i]
 
 
 datapoint_array = []
@@ -38,34 +30,21 @@ if __name__ == '__main__':
     # Calculate dh/dt and populate the diffs array in each datapoint
     for i in range(1, len(datapoint_array)):
         for j in range(0, 7):
-            datapoint_array[i].diff_data[j] = datapoint_array[i].diff_data[j] - datapoint_array[i - 1].diff_data[j]
+            datapoint_array[i].diff_data[j] = float(datapoint_array[i].hz_data[j]) - float(datapoint_array[i - 1].hz_data[j])
 
     # 6 readings a minute
     interval = 6 * 60
 
-    hz125 = []
-    hz240 = []
-    hz410 = []
-    hz760 = []
-    hz1800 = []
-    hz4300 = []
-    hz9000 = []
-
-    t125 = []
-    t240 = []
-    t410 = []
-    t760 = []
-    t1800 = []
-    t4300 = []
-    t9000 = []
+    final = [[],[],[],[],[],[],[]]
+    t = [[],[],[],[],[],[],[]]
 
     for i in range(0, len(datapoint_array)):
-        t125.append(datapoint_array[i].diff_data[0])
-        t240.append(datapoint_array[i].diff_data[1])
-        t410.append(datapoint_array[i].diff_data[2])
-        t760.append(datapoint_array[i].diff_data[3])
-        t1800.append(datapoint_array[i].diff_data[4])
-        t4300.append(datapoint_array[i].diff_data[5])
-        t9000.append(datapoint_array[i].diff_data[6])
+        for j in range(0, 7):
+            dp = datapoint_array[i].diff_data[j]
+            t[j].append(dp)
 
         if i % 60 == 0:
+            dt = datapoint_array[i].utc
+            for j in range(0, 7):
+                dd = mean(t[j])
+
