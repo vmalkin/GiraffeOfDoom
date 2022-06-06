@@ -75,7 +75,7 @@ if __name__ == '__main__':
 
     # Save to file
     for i in range(0, len(final)):
-        # generate states
+        # generate stats
         mm = round(mean(statsvalues[i]), 4)
         sd = stdev(statsvalues[i])
         sd1 = round((mm + sd * 1), 4)
