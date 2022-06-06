@@ -1,3 +1,4 @@
+import math
 from statistics import mean
 import standard_stuff
 
@@ -39,6 +40,10 @@ if __name__ == '__main__':
         for line in s:
             l = line.strip()
             dt = standard_stuff.utc2posix(l, "%d-%m-%Y")
+            for item in datapoint_array:
+                dx = math.sqrt((item.utc - dt) ^ 2)
+                if dx <= 86400:
+                    item.sightings = 1
 
 
     # # Calculate dh/dt and populate the diffs array in each datapoint
