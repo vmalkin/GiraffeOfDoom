@@ -13,13 +13,14 @@ class DataPoint:
         self.d = data_csv.strip()
         self.dd = self.d.split(",")
 
-        self.utc = self.dd[0]
+        self.utc = 0
         self.data = self.dd[1:]
 
         self.hz_data = [0, 0, 0, 0, 0, 0, 0]
 
         # Add data if exists to data array
-        if self.utc != 'YYYY-MM-DD hh:mm:ss':
+        if self.dd[0] != 'YYYY-MM-DD hh:mm:ss':
+            self.utc = standard_stuff.utc2posix(self.dd[0], "%Y-%m-%d %H:%M:%S")
             for i in range(0, 7):
                 self.hz_data[i] = self.data[i]
 
@@ -36,7 +37,8 @@ if __name__ == '__main__':
     # Add sightings to datapoints
     with open(sightingsfile, "r") as s:
         for line in s:
-            pass
+            l = line.strip()
+            dt = standard_stuff.utc2posix(l, "%d-%m-%Y")
 
 
     # # Calculate dh/dt and populate the diffs array in each datapoint
@@ -57,7 +59,6 @@ if __name__ == '__main__':
             t[j].append(dp)
 
         if i % interval == 0:
-            # print(t)
             dt = datapoint_array[i].utc
             for j in range(0, 7):
                 dd = round(mean(t[j]), 5)
