@@ -1,5 +1,5 @@
 import math
-from statistics import mean
+from statistics import mean, stdev
 import standard_stuff
 
 # YYYY-MM-DD hh:mm:ss,125hz,240hz,410hz,760hz,1800hz,4300hz,9000hz
@@ -79,6 +79,7 @@ if __name__ == '__main__':
             t = [[], [], [], [], [], [], []]
             sighting = 0
 
+    # Save to file
     for i in range(0, len(final)):
         filename = frequencies[i] + ".csv"
         with open(filename, "w") as f:
