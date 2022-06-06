@@ -41,7 +41,8 @@ if __name__ == '__main__':
             l = line.strip()
             dt = standard_stuff.utc2posix(l, "%d-%m-%Y")
             for item in datapoint_array:
-                dx = math.sqrt((item.utc - dt) ^ 2)
+                dx = (item.utc - dt) ** 2
+                dx = math.sqrt(dx)
                 if dx <= 86400:
                     item.sightings = 1
 
@@ -57,19 +58,26 @@ if __name__ == '__main__':
 
     final = [[],[],[],[],[],[],[]]
     t = [[],[],[],[],[],[],[]]
+    sighting = 0
 
     for i in range(0, len(datapoint_array)):
+        sighting = sighting + datapoint_array[i].sightings
         for j in range(0, 7):
             dp = float(datapoint_array[i].hz_data[j])
             t[j].append(dp)
 
         if i % interval == 0:
             dt = datapoint_array[i].utc
+            dt = standard_stuff.posix2utc(dt, "%Y-%m-%d %H:%M")
+            ds = 0
+            if sighting > 0:
+                ds = 1
             for j in range(0, 7):
                 dd = round(mean(t[j]), 5)
-                dp = str(dt) + "," + str(dd)
+                dp = str(dt) + "," + str(dd) + "," + str(ds)
                 final[j].append(dp)
             t = [[], [], [], [], [], [], []]
+            sighting = 0
 
     for i in range(0, len(final)):
         filename = frequencies[i] + ".csv"
