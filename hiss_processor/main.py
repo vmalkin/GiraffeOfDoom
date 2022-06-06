@@ -43,20 +43,13 @@ if __name__ == '__main__':
             for item in datapoint_array:
                 dx = (item.utc - dt) ** 2
                 dx = math.sqrt(dx)
-                if dx <= 86400:
+                if dx <= 43200:
                     item.sightings = 1
 
-
-    # # Calculate dh/dt and populate the diffs array in each datapoint
-    # for i in range(1, len(datapoint_array)):
-    #     for j in range(0, 7):
-    #         datapoint_array[i].diff_data[j] = float(datapoint_array[i].hz_data[j]) - float(datapoint_array[i - 1].hz_data[j])
-
-    # Save out averaged readings
-    # 6 readings a minute
     interval = 6 * 60
 
     final = [[],[],[],[],[],[],[]]
+    statsvalues = [[],[],[],[],[],[],[]]
     t = [[],[],[],[],[],[],[]]
     sighting = 0
 
@@ -75,16 +68,28 @@ if __name__ == '__main__':
             for j in range(0, 7):
                 dd = round(mean(t[j]), 5)
                 dp = str(dt) + "," + str(dd) + "," + str(ds)
+                statsvalues[j].append(dd)
                 final[j].append(dp)
             t = [[], [], [], [], [], [], []]
             sighting = 0
 
     # Save to file
     for i in range(0, len(final)):
+        # generate states
+        mm = round(mean(statsvalues[i]), 4)
+        sd = stdev(statsvalues[i])
+        sd1 = round((mm + sd * 1), 4)
+        sd2 = round((mm + sd * 2), 4)
+        sd3 = round((mm + sd * 3), 4)
+        sd4 = round((mm + sd * 4), 4)
+        sd5 = round((mm + sd * 5), 4)
+        statsline = "," + str(mm) + "," + str(sd1) + "," + str(sd2) + "," + str(sd3) + "," + str(sd4) + "," + str(sd5)
+
         filename = frequencies[i] + ".csv"
         with open(filename, "w") as f:
+            f.write("UTC, value, aurora, mean, sd1, sd2, sd3, sd4, sd5\n")
             for line in final[i]:
-                f.write(line + "\n")
+                f.write(line + statsline + "\n")
             f.close()
 
 
