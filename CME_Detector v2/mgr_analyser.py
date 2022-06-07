@@ -217,9 +217,14 @@ def count_nonzero(array):
         num_pixels = 0
     return num_pixels
 
+def count_greys(array):
+    num_pixels = array.sum()
+    return num_pixels
+
 
 def create_mask(image, imagewidth, imageheight, topoffset, bottomoffset):
-    mask = np.zeros(image.shape[:2], dtype="float64")
+    # mask = np.zeros(image.shape[:2], dtype="float64")
+    mask = np.zeros(image.shape[:2], dtype="uint8")
     cv2.rectangle(mask, (0, imageheight - topoffset), (imagewidth, imageheight - bottomoffset), 255, -1)
     return mask
 
@@ -328,10 +333,6 @@ def normalise_image(detrended_img):
     returnarray = []
     im_min = detrended_img.min()
     im_max = detrended_img.max()
-    # for i in range(0, len(detrended_img)):
-    #     newvalue = (detrended_img[i] - im_min) / (im_max - im_min)
-    #     newvalue = int(newvalue * 255)
-    #     returnarray.append(newvalue)
 
     for row in detrended_img:
         for column in row:
@@ -380,29 +381,22 @@ def wrapper(storage_folder, analysis_folder):
                 avg_array.pop(0)
                 avg_img = np.mean(avg_array, axis=0)
 
-                avg_img = normalise_image(avg_img)
-                pic = normalise_image(pic)
+                # avg_img = normalise_image(avg_img)
+                # pic = normalise_image(pic)
 
                 # The detrended image.
                 detrended_img = np.subtract(pic, avg_img)
                 detrended_img = normalise_image(detrended_img)
-                detrended_img = cv2.erode(detrended_img, np.ones((3, 3), np.uint8), iterations=1)
-                detrended_img = cv2.dilate(detrended_img, np.ones((3, 3), np.uint8), iterations=1)
+                detrended_img = cv2.erode(detrended_img, np.ones((5, 5), np.uint8), iterations=1)
+                # detrended_img = cv2.dilate(detrended_img, np.ones((3, 3), np.uint8), iterations=1)
+                # ret, detrended_img = cv2.threshold(detrended_img, 0, 255, cv2.THRESH_BINARY)
 
-                # The resulting values in each detrended image have pixelvalues < 0 < pixelvalues.
-                # These must be normalised to integers between 0 - 255
-
-
-                # print(np.shape(pic), np.shape(avg_img), np.shape(pic))
-                cv2.imshow('avg image', avg_img)
-                cv2.imshow('image', pic)
-                cv2.imshow('detrended', detrended_img)
-                # waitKey() waits for a key press to close the window and 0 specifies indefinite loop
-                cv2.waitKey()
-
-                ret, detrended_img = cv2.threshold(detrended_img, 3, 255, cv2.THRESH_BINARY)
-
-
+                # # print(np.shape(pic), np.shape(avg_img), np.shape(pic))
+                # cv2.imshow('avg image', avg_img)
+                # cv2.imshow('image', pic)
+                # cv2.imshow('detrended', detrended_img)
+                # # waitKey() waits for a key press to close the window and 0 specifies indefinite loop
+                # cv2.waitKey()
 
                 #  convolve the returned residuals image from polar to rectangular co-ords. the data is appended to
                 #  an array
@@ -417,24 +411,26 @@ def wrapper(storage_folder, analysis_folder):
 
                 # Convert the 1D array into a 2D image
                 array = np.reshape(np.array(t), (radius, angle))
+
+
+
                 #  Just crops the image
                 mask = create_mask(array, angle, radius, 40, 50)
 
-                # mask = cv2.normalize(src=mask, dst=None, alpha=0, beta=255, norm_type=cv2.NORM_MINMAX,
-                #                         dtype=cv2.CV_64F)
-
-                mask = cv2.normalize(src=mask, dst=None, alpha=0, beta=255, norm_type=cv2.NORM_MINMAX,
-                                       dtype=cv2.CV_8U)
-                # print(array.dtype, mask.dtype)
                 masked = cv2.bitwise_and(array, mask)
+
+                # cv2.imshow('detrended', masked)
+                # # waitKey() waits for a key press to close the window and 0 specifies indefinite loop
+                # cv2.waitKey()
 
                 # Pixelcounter to create graphic pf CMEs
                 # A full halo CME should produce counts in the order of 3600
-                px = count_nonzero(masked)
+                px = count_greys(masked)
 
                 #  pixelcount as a percentage of the area monitored
-                px = float(px) / 3600
-                px = round(px, 3)
+                px = px / (angle * radius * 25)
+                print(px)
+                # px = round(px, 3)
                 t = dirlisting[i].split("_")
                 posixtime = filehour_converter(t[0], t[1])
                 hr = posix2utc(posixtime, "%Y-%m-%d %H:%M")
