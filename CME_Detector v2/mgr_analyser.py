@@ -391,13 +391,6 @@ def wrapper(storage_folder, analysis_folder):
                 # detrended_img = cv2.dilate(detrended_img, np.ones((3, 3), np.uint8), iterations=1)
                 # ret, detrended_img = cv2.threshold(detrended_img, 0, 255, cv2.THRESH_BINARY)
 
-                # # print(np.shape(pic), np.shape(avg_img), np.shape(pic))
-                # cv2.imshow('avg image', avg_img)
-                # cv2.imshow('image', pic)
-                # cv2.imshow('detrended', detrended_img)
-                # # waitKey() waits for a key press to close the window and 0 specifies indefinite loop
-                # cv2.waitKey()
-
                 #  convolve the returned residuals image from polar to rectangular co-ords. the data is appended to
                 #  an array
                 radius = 220
@@ -418,6 +411,7 @@ def wrapper(storage_folder, analysis_folder):
                 mask = create_mask(array, angle, radius, 40, 50)
 
                 masked = cv2.bitwise_and(array, mask)
+                ret, masked = cv2.threshold(masked, 130, 255, cv2.THRESH_BINARY)
 
                 # cv2.imshow('detrended', masked)
                 # # waitKey() waits for a key press to close the window and 0 specifies indefinite loop
@@ -428,7 +422,7 @@ def wrapper(storage_folder, analysis_folder):
                 px = count_greys(masked)
 
                 #  pixelcount as a percentage of the area monitored
-                px = px / (angle * radius * 25)
+                px = px / (40 * 50 * 25)
 
                 # px = round(px, 3)
                 t = dirlisting[i].split("_")
