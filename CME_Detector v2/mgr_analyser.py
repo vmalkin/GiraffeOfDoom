@@ -429,7 +429,7 @@ def wrapper(storage_folder, analysis_folder):
 
                 #  pixelcount as a percentage of the area monitored
                 px = px / (angle * radius * 25)
-                print(px)
+
                 # px = round(px, 3)
                 t = dirlisting[i].split("_")
                 posixtime = filehour_converter(t[0], t[1])
