@@ -411,7 +411,7 @@ def wrapper(storage_folder, analysis_folder):
                 mask = create_mask(array, angle, radius, 40, 50)
 
                 masked = cv2.bitwise_and(array, mask)
-                ret, masked = cv2.threshold(masked, 130, 255, cv2.THRESH_BINARY)
+                ret, masked = cv2.threshold(masked, 130, 255, cv2.THRESH_TRUNC)
 
                 # cv2.imshow('detrended', masked)
                 # # waitKey() waits for a key press to close the window and 0 specifies indefinite loop
@@ -422,7 +422,7 @@ def wrapper(storage_folder, analysis_folder):
                 px = count_greys(masked)
 
                 #  pixelcount as a percentage of the area monitored
-                px = px / (40 * 50 * 25)
+                px = px / (40 * 50 * 250)
 
                 # px = round(px, 3)
                 t = dirlisting[i].split("_")
