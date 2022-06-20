@@ -30,7 +30,7 @@ def plot(dates, data):
 
 
     fig = go.Figure(go.Bar(x=dates, y=data,
-                           marker=dict(color='#340059', line=dict(width=0.5, color='#340059'))))
+                           marker=dict(color='#505050', line=dict(width=0.5, color='#505050'))))
     fig.add_hline(y=sig_1)
     fig.add_hline(y=sig_2)
     fig.add_hline(y=mn)
