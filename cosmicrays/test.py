@@ -22,8 +22,21 @@ def database_get_data(hours_duration):
 
 
 def plot(dates, data):
+    mn = mean(data)
+    sig_1 = mn - stdev(data) * 2
+    sig_2 = mn - stdev(data) * 1
+    sig_3 = mn + stdev(data) * 1
+    sig_4 = mn + stdev(data) * 2
+
+
     fig = go.Figure(go.Bar(x=dates, y=data,
                            marker=dict(color='#340059', line=dict(width=0.5, color='#340059'))))
+    fig.add_hline(y=sig_1)
+    fig.add_hline(y=sig_2)
+    fig.add_hline(y=mn)
+    fig.add_hline(y=sig_3)
+    fig.add_hline(y=sig_4)
+
     fig.update_xaxes(ticks='outside', tickangle=45)
     # fig.update_yaxes(range=[0, 1],  nticks=2)
     fig.update_layout(font=dict(size=14), title_font_size=21)
@@ -66,9 +79,6 @@ for i in range(0, len(data) - 1):
         dd = sum(tmp)
         data_counts.append(dd)
         data_times.append(tt)
-
-print(mean(data_counts))
-print(stdev(data_counts))
 
 plot(data_times, data_counts)
 
