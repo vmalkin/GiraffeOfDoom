@@ -34,11 +34,11 @@ def plot(dates, data):
                            marker=dict(color='#505050', line=dict(width=0.5, color='#505050')), name="hits per 24 hr"))
     fig.add_trace(go.Scatter(x = dates, y = avg_data, name="3 Day Avg"))
 
-    fig.add_hline(y=sig_1)
-    fig.add_hline(y=sig_2)
-    fig.add_hline(y=mn)
-    fig.add_hline(y=sig_3)
-    fig.add_hline(y=sig_4, name="Fred")
+    fig.add_hline(y=sig_1, line=dict(width=2, color='orange'))
+    fig.add_hline(y=sig_2, line=dict(width=2, color='yellow'))
+    fig.add_hline(y=mn, line=dict(width=2, color='green'))
+    fig.add_hline(y=sig_3, line=dict(width=2, color='yellow'))
+    fig.add_hline(y=sig_4, line=dict(width=2, color='orange'))
 
     fig.update_xaxes(ticks='outside', tickangle=45)
     # fig.update_yaxes(range=[0, 1],  nticks=2)
