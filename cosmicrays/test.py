@@ -22,6 +22,7 @@ def database_get_data(hours_duration):
 
 
 def plot(dates, data):
+    avg_data = running_avg(data)
     mn = mean(data)
     sig_1 = mn - stdev(data) * 2
     sig_2 = mn - stdev(data) * 1
@@ -30,12 +31,14 @@ def plot(dates, data):
 
 
     fig = go.Figure(go.Bar(x=dates, y=data,
-                           marker=dict(color='#505050', line=dict(width=0.5, color='#505050'))))
+                           marker=dict(color='#505050', line=dict(width=0.5, color='#505050')), name="hits per 24 hr"))
+    fig.add_trace(go.Scatter(x = dates, y = avg_data, name="3 Day Avg"))
+
     fig.add_hline(y=sig_1)
     fig.add_hline(y=sig_2)
     fig.add_hline(y=mn)
     fig.add_hline(y=sig_3)
-    fig.add_hline(y=sig_4)
+    fig.add_hline(y=sig_4, name="Fred")
 
     fig.update_xaxes(ticks='outside', tickangle=45)
     # fig.update_yaxes(range=[0, 1],  nticks=2)
@@ -52,6 +55,17 @@ def posix2utc(posixtime, timeformat):
     utctime = datetime.datetime.utcfromtimestamp(int(posixtime)).strftime(timeformat)
     return utctime
 
+def running_avg(series):
+    returnarray = []
+    returnarray.append(None)
+    for i in range(1, len(series) - 1):
+        t = []
+        for j in range(-1, 2):
+            t.append(series[i + j])
+        tt = round(mean(t), 4)
+        returnarray.append(tt)
+    returnarray.append(None)
+    return returnarray
 
 data = database_get_data(24 * 60)
 # data = [10,20,30,40]
