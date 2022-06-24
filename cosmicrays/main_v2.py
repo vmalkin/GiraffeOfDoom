@@ -6,6 +6,7 @@ import sqlite3
 import os
 import mgr_daily_count
 import mgr_plot_hits
+import mgr_emd
 from threading import Thread
 
 
@@ -21,17 +22,20 @@ class ThreadPlotter(Thread):
             try:
                 mgr_daily_count.wrapper()
             except:
-                print("Failed to print cumulative totals")
+                print("Failed to plot cumulative totals")
 
             try:
                 mgr_plot_hits.wrapper(data)
             except:
-                print("Failed to print hits")
+                print("Failed to plot hits")
 
-            # try:
-            #     mgr_plot_flux.wrapper(data)
-            # except:
-            #     print("Failed to print dxdt")
+            try:
+                emd_data = get_emd_data()
+                datetimes = emd_data[0]
+                datavalues = emd_data[1]
+                mgr_emd.wrapper(datavalues, datetimes, "test_emd.jpg")
+            except:
+                print("Failed to plot Empirical Mode Decomposition")
 
             # print("Plot finished")
             time.sleep(3600)
@@ -191,6 +195,40 @@ def check_pixel_coords(pixel_coords, pixel_count):
             result = "blob"
     print(xd, yd, pixel_count, result)
     return result
+
+def get_emd_data():
+    data = database_get_data(24 * 365)
+    # data = [10,20,30,40]
+    data_counts = []
+    data_times = []
+    tmp = []
+    for i in range(0, len(data) - 1):
+        if posix2utc(data[i + 1], "%d") == posix2utc(data[i], "%d"):
+            # print("Match", i, len(data))
+            tmp.append(1)
+
+        if posix2utc(data[i + 1], "%d") != posix2utc(data[i], "%d"):
+            # print("Not Match", i, len(data))
+            tmp.append(1)
+            tt = posix2utc(data[i], "%Y-%m-%d")
+            dd = sum(tmp)
+            data_counts.append(dd)
+            data_times.append(tt)
+            tmp = []
+
+        if i == len(data) - 2:
+            # print("End", i, len(data))
+            tmp.append(1)
+            tt = posix2utc(data[i], "%Y-%m-%d")
+            dd = sum(tmp)
+            data_counts.append(dd)
+            data_times.append(tt)
+
+    returnvalue = []
+    returnvalue.append(data_times)
+    returnvalue.append(data_counts)
+    return returnvalue
+
 
 
 if __name__ == '__main__':

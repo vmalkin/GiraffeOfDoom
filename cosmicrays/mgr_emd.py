@@ -1,5 +1,5 @@
 import plotly.graph_objects as go
-# from plotly.subplots import make_subplots
+from plotly.subplots import make_subplots
 # import matplotlib.pyplot as plt
 import datetime
 import emd
@@ -12,74 +12,25 @@ def posix2utc(posixtime, timeformat):
     return utctime
 
 
-def plot_data(dates, imf, title):
-    width = len(imf[0])
-    for i in range(0, width):
-        data = go.Scatter(x=dates, y=imf[:, i], mode="lines")
-        fig = go.Figure(data)
-        fig.update_layout(height=500)
-        fig.show()
+def plot_data(imf, dates, filename):
+    rownum = imf.shape[1]
+    fig = make_subplots(rows=rownum, cols=1)
+
+    iters = len(imf[0])
+    for i in range(0, iters):
+        fig.add_trace(go.Scatter(x=dates, y=imf[:, i], mode="lines"), row=i, col=1)
+    # fig.update_layout(height=500)
+    fig.show()
 
 
-def wrapper(datafile, plotname):
-    window = 60 * 60 * 24
-    nt = int(datafile[len(datafile) - 1])
-    st = int(datafile[0])
-
-    print("Start time: ", posix2utc(st, '%Y-%m-%d %H:%M'))
-    print("Now time: ", posix2utc(nt, '%Y-%m-%d %H:%M'))
-
-    times = []
-    times.append(0)
-    for i in range(st, nt):
-        times.append(0)
-
-    for item in datafile:
-        index = int(item) - st
-        times[index] = 1
-
-    dates = []
-    data = []
-
-    data_subset = []
-    for i in range(st, nt):
-        index = int(i) - st
-        data_subset.append(times[index])
-        if i > (st + window):
-            da = sum(data_subset)
-            dt = posix2utc(i, '%Y-%m-%d %H:%M')
-            dates.append(dt)
-            data.append(da)
-            data_subset.pop(0)
-
-    n = np.array(data, dtype='float')
-
-    # # --------------------------------------------
-    # seconds = 20 * 60
-    # newdata = []
-    # for i in range(seconds, len(data) - seconds):
-    #     temp = []
-    #     for j in range(0 - seconds, seconds):
-    #         temp.append(data[i + j])
-    #     d = round(mean(temp), 3)
-    #     newdata.append(d)
-    # dates = dates[seconds:]
-    # dates = dates[:-seconds]
-    # print(len(newdata))
-    # print(len(dates))
-    # n = np.array(newdata, dtype='float')
-    # # --------------------------------------------
+def wrapper(emd_data, dates, plotname):
+    n = np.array(emd_data, dtype='float')
 
     sample_rate = len(n)
     imf = emd.sift.iterated_mask_sift(n)
+
     print("Intrinsic mode function parameters: ", imf.shape)
+    plot_data(imf, dates, plotname)
 
-    # emd.plotting.plot_imfs(imf[:sample_rate, :], cmap=True, scale_y=True)
-    # IP, IF, IA = emd.spectra.frequency_transform(imf, sample_rate, 'hilbert')
-    plot_data(dates, imf, plotname)
-
-
-    print("data is " + str(len(imf)) + " records long")
-    print("Plot finished")
 
 

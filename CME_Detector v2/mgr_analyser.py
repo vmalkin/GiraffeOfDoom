@@ -387,9 +387,17 @@ def wrapper(storage_folder, analysis_folder):
                 # The detrended image.
                 detrended_img = np.subtract(pic, avg_img)
                 detrended_img = normalise_image(detrended_img)
+                # cv2.imshow('detrended', detrended_img)
+                # # waitKey() waits for a key press to close the window and 0 specifies indefinite loop
+                # cv2.waitKey()
+
+
                 detrended_img = cv2.erode(detrended_img, np.ones((5, 5), np.uint8), iterations=1)
                 # detrended_img = cv2.dilate(detrended_img, np.ones((3, 3), np.uint8), iterations=1)
                 # ret, detrended_img = cv2.threshold(detrended_img, 0, 255, cv2.THRESH_BINARY)
+
+
+
 
                 #  convolve the returned residuals image from polar to rectangular co-ords. the data is appended to
                 #  an array
@@ -412,10 +420,6 @@ def wrapper(storage_folder, analysis_folder):
 
                 masked = cv2.bitwise_and(array, mask)
                 ret, masked = cv2.threshold(masked, 130, 255, cv2.THRESH_TRUNC)
-
-                # cv2.imshow('detrended', masked)
-                # # waitKey() waits for a key press to close the window and 0 specifies indefinite loop
-                # cv2.waitKey()
 
                 # Pixelcounter to create graphic pf CMEs
                 # A full halo CME should produce counts in the order of 3600
