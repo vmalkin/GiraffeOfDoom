@@ -18,10 +18,11 @@ def plot_data(imf, dates, filename):
 
     iters = len(imf[0])
     for i in range(0, iters):
-        fig.add_trace(go.Scatter(x=dates, y=imf[:, i], mode="lines"), row=i, col=1)
-    # fig.update_layout(height=500)
-    fig.show()
-
+        fig.add_trace(go.Scatter(x=dates, y=imf[:, i], mode="lines"), row=i+1, col=1)
+    fig.update_layout(height=1600, width=1400, title_text="Muon Counts 356 Days - Empirical Mode Decomposition")
+    # fig.show()
+    fig.write_html("emd.html")
+    fig.write_image(filename)
 
 def wrapper(emd_data, dates, plotname):
     n = np.array(emd_data, dtype='float')

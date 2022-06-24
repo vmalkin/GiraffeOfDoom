@@ -1,3 +1,4 @@
+from statistics import mean, stdev
 import sqlite3
 import time
 import datetime
@@ -33,18 +34,57 @@ def database_get_data(hours_duration):
     db.close()
     return tempdata
 
+
+def running_avg(series):
+    returnarray = []
+    returnarray.append(None)
+    for i in range(1, len(series) - 1):
+        t = []
+        for j in range(-1, 2):
+            t.append(series[i + j])
+        tt = round(mean(t), 4)
+        returnarray.append(tt)
+    returnarray.append(None)
+    return returnarray
+
+
 def plot(dates, data):
+    avg_data = running_avg(data)
+    mn = mean(data)
+    sig_1 = mn - stdev(data) * 2
+    sig_4 = mn + stdev(data) * 2
+    sig_2 = mn - stdev(data) * 1
+    sig_3 = mn + stdev(data) * 1
+
     fig = go.Figure(go.Bar(x=dates, y=data,
-                           marker=dict(color='#340059', line=dict(width=0.5, color='#340059'))))
+                           marker=dict(color='#89BFD6', opacity=0.8,
+                                       line=dict(width=1, color="blue")),
+                           name="Count"))
+
+    fig.add_hline(y=mn, line=dict(width=6, color='green'), layer="below", annotation_text="Average")
+    fig.add_hrect(y0=sig_2, y1=sig_3, line_width=0, fillcolor="green", opacity=0.3, layer="below",
+                  annotation_text="± 1 sigma")
+    fig.add_hrect(y0=sig_1, y1=sig_4, line_width=0, fillcolor="green", opacity=0.3, layer="below",
+                  annotation_text="± 2 sigma")
+
+    fig.add_trace(go.Scatter(x = dates, y = avg_data,
+                             line=dict(color='black', width=4),
+                             name="3 Day Avg"))
+
     fig.update_xaxes(ticks='outside', tickangle=45)
     # fig.update_yaxes(range=[0, 1],  nticks=2)
+    fig.update_layout(legend=dict(yanchor="top", y=1.2,
+                                  xanchor="left", x=0.85,
+                                  orientation="h"))
     fig.update_layout(font=dict(size=14), title_font_size=21)
-    fig.update_layout(plot_bgcolor="#a0a0a0", paper_bgcolor="#a0a0a0")
+    fig.update_layout(plot_bgcolor="#c0c0c0", paper_bgcolor="#c0c0c0")
     fig.update_layout(width=1400, height=600,
                       title="Muons - Daily count",
+                      yaxis_title="Daily Count",
                       xaxis_title="Date/time UTC<br><sub>http://DunedinAurora.nz</sub>")
     # title = "muons_avg_" + str(hrs) + "_hr.jpg"
     fig.write_image("muon_daily.jpg")
+
 
 def wrapper():
     data = database_get_data(24*60)
