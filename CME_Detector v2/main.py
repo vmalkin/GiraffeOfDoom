@@ -3,7 +3,7 @@ import time
 import re
 import requests
 import os
-import mgr_analyser
+import mgr_analyser_v2
 import mgr_enhancer
 
 
@@ -114,7 +114,7 @@ if __name__ == "__main__":
 
     # Analyse and enhance stored images
     # try:
-    mgr_analyser.wrapper(storage_folder, analysis_folder)
+    mgr_analyser_v2.wrapper(storage_folder, analysis_folder)
     # except:
     #     print("The Analyser has failed!")
 
