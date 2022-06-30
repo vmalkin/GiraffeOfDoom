@@ -28,7 +28,8 @@ def wrapper(emd_data, dates, plotname):
     n = np.array(emd_data, dtype='float')
 
     sample_rate = len(n)
-    imf = emd.sift.iterated_mask_sift(n)
+    # imf = emd.sift.iterated_mask_sift(n)
+    imf = emd.sift.sift(n, max_imfs=7)
 
     print("Intrinsic mode function parameters: ", imf.shape)
     plot_data(imf, dates, plotname)

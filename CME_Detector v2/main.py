@@ -102,7 +102,7 @@ if __name__ == "__main__":
 
     # Parse for old epoch files that have been added
     print("Getting images for old epoch")
-    # ymd_old = "20220623"
+    ymd_old = "20220628"
     baseURL = "https://soho.nascom.nasa.gov/data/REPROCESSING/Completed/" + year + "/c3/" + ymd_old + "/"
     listofimages = get_imagelist(baseURL)
     newimages = parseimages(listofimages, storage_folder)
