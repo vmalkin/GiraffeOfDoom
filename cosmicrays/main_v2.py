@@ -17,7 +17,7 @@ class ThreadPlotter(Thread):
     def run(self):
         time.sleep(10)
         while True:
-            # print("Beginning plot...")
+            print("*** Beginning plots...")
             data = database_get_data(24*7)
             try:
                 mgr_daily_count.wrapper()
@@ -37,7 +37,7 @@ class ThreadPlotter(Thread):
             except:
                 print("Failed to plot Empirical Mode Decomposition")
 
-            # print("Plot finished")
+            print("*** Plots finished")
             time.sleep(3600)
 
 
