@@ -13,14 +13,11 @@ window = tkinter.Tk()
 myCanvas = tkinter.Canvas(window, bg="white", height=800, width=1200)
 myCanvas.pack()
 
-def canvas_draw_pixel(item_array):
-    for item in item_array:
-        myCanvas.create_rectangle(item.x_pos, item.y_pos, item.x_pos, item.y_pos)
-    # window.after(100, canvas_draw_pixel(item_array))
 
 def value_rand(value):
     v = int(value * random.random())
     return v
+
 
 def value_rand_float(value):
     sw = 0
@@ -29,6 +26,12 @@ def value_rand_float(value):
     v = value * random.random() * sw
     return v
 
+def update_pixels(particle_array):
+    for item in particle_array:
+        item.move()
+    for item in particle_array:
+        myCanvas.create_rectangle(item.x_pos, item.y_pos, item.x_pos, item.y_pos)
+    # window.after(100, update_pixels(particle_array))
 
 if __name__ == "__main__":
     particle_array = []
@@ -41,15 +44,16 @@ if __name__ == "__main__":
         item.x_force = value_rand_float(1)
         item.y_force = value_rand_float(1)
 
-    points = []
+    # move particles
 
-    # Draw dots on the canvas
-    for i in range(0, 5000):
-        for item in particle_array:
-            item.move()
+    for item in particle_array:
+        item.move()
 
-    window.after(1000, canvas_draw_pixel(particle_array))
+    for item in particle_array:
+        myCanvas.create_rectangle(item.x_pos, item.y_pos, item.x_pos, item.y_pos)
 
+    myCanvas.pack()
+    window.after(100, update_pixels(particle_array))
     window.mainloop()
 
 
