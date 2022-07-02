@@ -10,5 +10,3 @@ class Particle:
         move_y = self.y_pos + self.y_force
         self.x_pos = move_x
         self.y_pos = move_y
-
-
