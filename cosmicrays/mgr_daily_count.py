@@ -62,9 +62,9 @@ def plot(dates, data):
                            name="Count"))
 
     fig.add_hline(y=mn, line=dict(width=6, color='green'), layer="below", annotation_text="Average")
-    fig.add_hrect(y0=sig_2, y1=sig_3, line_width=0, fillcolor="green", opacity=0.3, layer="below",
+    fig.add_hrect(y0=sig_2, y1=sig_3, line_width=0, fillcolor="green", opacity=0.4, layer="below",
                   annotation_text="± 1 StdDev")
-    fig.add_hrect(y0=sig_1, y1=sig_4, line_width=0, fillcolor="green", opacity=0.3, layer="below",
+    fig.add_hrect(y0=sig_1, y1=sig_4, line_width=0, fillcolor="green", opacity=0.4, layer="below",
                   annotation_text="± 2 StdDev")
 
     fig.add_trace(go.Scatter(x = dates, y = avg_data,
