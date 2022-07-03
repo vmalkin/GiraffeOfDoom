@@ -58,24 +58,25 @@ def plot_chart(filename, dates, aggregatedata, seriesnames):
         "rgba(150, 0, 0, 0.9)",
         "rgba(150, 0, 0, 1)"
     ]
+    # Sunrise, Sunset
     sundict = [
-        [5, 20.5],
-        [6.86, 19.8],
-        [6.5, 19],
-        [7.25, 18],
-        [7.86, 17.33],
-        [8.33, 17],
-        [8.25, 17.25],
-        [7.5, 17.75],
-        [7.75, 18.25],
-        [6.75, 19],
-        [4.86, 19.8],
-        [4.66, 20.33]
+        [17, 8.5],
+        [18.86, 7.8],
+        [18.5, 7],
+        [19.25, 6],
+        [19.86, 5.33],
+        [20.33, 17],
+        [20.25, 5.25], # July
+        [19.5, 5.75],
+        [19.75, 6.25],
+        [18.75, 7],
+        [16.86, 7.8],
+        [16.66, 8.33]
     ]
     month_number = int(posix2utc(time.time(), "%m"))
     print("Month: ", month_number, sundict[month_number])
-    sunset = sundict[month_number][0] / 24 * chartwidth - 50
-    sunrise = sundict[month_number][1] / 24 * chartwidth - 50
+    sunrise = sundict[month_number][0] / 24 * chartwidth - 50
+    sunset = sundict[month_number][1] / 24 * chartwidth - 50
 
     fig = go.Figure()
     fig.update_yaxes(range=[8, 26], gridcolor=gridcolour)
