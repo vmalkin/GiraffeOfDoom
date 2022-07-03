@@ -42,7 +42,7 @@ def indexposition(posixtime, starttime):
 
 def plot_chart(filename, dates, aggregatedata, seriesnames):
     # Colours set up for a max of ten days of data!
-
+    chartwidth = 1500
     filename = k.dir_images + "/" + filename
     bkcolour = "#e0e0e0"
     gridcolour = "#d0d0d0"
@@ -59,27 +59,31 @@ def plot_chart(filename, dates, aggregatedata, seriesnames):
         "rgba(150, 0, 0, 1)"
     ]
     sundict = [
-        [367, 1286],
-        [412, 1250],
-        [452, 1200],
-        [433, 1082],
-        [471, 1037],
-        [498, 1018],
-        [494, 1033],
-        [457, 1067],
-        [401, 1105],
-        [404, 1204],
-        [357, 1248],
-        [341, 1284]
+        [5, 20.5],
+        [6.86, 19.8],
+        [6.5, 19],
+        [7.25, 18],
+        [7.86, 17.33],
+        [8.33, 17],
+        [8.25, 17.25],
+        [7.5, 17.75],
+        [7.75, 18.25],
+        [6.75, 19],
+        [4.86, 19.8],
+        [4.66, 20.33]
     ]
     month_number = int(posix2utc(time.time(), "%m"))
+    print("Month: ", month_number, sundict[month_number])
+    sunset = sundict[month_number][0] / 24 * chartwidth - 50
+    sunrise = sundict[month_number][1] / 24 * chartwidth - 50
+
     fig = go.Figure()
     fig.update_yaxes(range=[8, 26], gridcolor=gridcolour)
     fig.update_xaxes(nticks=48, tickangle=45, gridcolor=gridcolour)
 
-    fig.add_vline(x=sundict[month_number][0], annotation_text=" &#9790; ", annotation_position="top right",
+    fig.add_vline(x=sunset, annotation_text=" &#9790; ", annotation_position="top right",
                   line_width=2, line_color="blue", annotation_font=dict(size=50, color="blue"))
-    fig.add_vline(x=sundict[month_number][1], annotation_text=" &#9788; ", annotation_position="top left",
+    fig.add_vline(x=sunrise, annotation_text=" &#9788; ", annotation_position="top left",
                   line_width=2, line_color="orangered", annotation_font=dict(size=50, color="orangered"))
 
     max = len(aggregatedata)
@@ -97,7 +101,7 @@ def plot_chart(filename, dates, aggregatedata, seriesnames):
             fig.add_scatter(x=dates, y=aggregatedata[i], mode="lines", connectgaps=True,
                             name=seriesnames[i], line=dict(color='rgba(0, 0, 0, 1)', width=5))
 
-    fig.update_layout(width=1500, height=630, title="GPS Signal Noise / S<sub>4</sub> Index. http://DunedinAurora.NZ",
+    fig.update_layout(width=chartwidth, height=630, title="GPS Signal Noise / S<sub>4</sub> Index. http://DunedinAurora.NZ",
                       xaxis_title="Date/time UTC",
                       yaxis_title="S4 Index - percent",
                       plot_bgcolor="#e0e0e0",
