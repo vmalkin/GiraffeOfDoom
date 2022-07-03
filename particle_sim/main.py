@@ -31,7 +31,8 @@ def update_pixels(particle_array):
         item.move()
     for item in particle_array:
         myCanvas.create_rectangle(item.x_pos, item.y_pos, item.x_pos, item.y_pos)
-    # window.after(100, update_pixels(particle_array))
+    window.after(100, update_pixels(particle_array))
+
 
 if __name__ == "__main__":
     particle_array = []
@@ -45,15 +46,8 @@ if __name__ == "__main__":
         item.y_force = value_rand_float(1)
 
     # move particles
-
-    for item in particle_array:
-        item.move()
-
-    for item in particle_array:
-        myCanvas.create_rectangle(item.x_pos, item.y_pos, item.x_pos, item.y_pos)
+    update_pixels(particle_array)
 
     myCanvas.pack()
     window.after(100, update_pixels(particle_array))
     window.mainloop()
-
-
