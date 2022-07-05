@@ -10,9 +10,9 @@ mycanvas = tk.Canvas(mywindow, background="white",
 mycanvas.grid()
 
 for i in range(0, 200):
-    mycanvas.create_rectangle(100 + i, 100 + i, 101 + i, 101 + i,
+    mycanvas.create_rectangle(100 + i, 100 + i, 100 + i, 100 + i,
                               fill="green", width=0)
-    time.sleep(0.1)
+    time.sleep(0.01)
     mywindow.update()
 
 mywindow.mainloop()
