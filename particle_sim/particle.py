@@ -8,7 +8,7 @@ class Particle:
         self.y_force = random.randrange(-4, 4)
         self.canvas = canvas
         self.image = canvas.create_rectangle(self.x_pos, self.y_pos,
-                                             self.x_pos + 5, self.y_pos + 5,
+                                             self.x_pos + 2, self.y_pos + 2,
                                   fill="green", width=0)
 
     def move(self):

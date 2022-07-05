@@ -16,7 +16,7 @@ for i in range(0, 1000):
     particles.append(Particle(mycanvas, canvas_width, canvas_height))
 
 while True:
-    time.sleep(0.005)
+    # time.sleep(0.005)
     for p in particles:
         p.move()
         mywindow.update()
