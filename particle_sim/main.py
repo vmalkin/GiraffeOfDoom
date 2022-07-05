@@ -1,53 +1,10 @@
-import time
+import tkinter as tk
 
-import particle
-import random
-from plotly import graph_objects as go
-import tkinter
+canvas_width = 1200
+canvas_height = 800
 
-random.seed(version=2)
-max_coord_x = 1200
-max_coord_y = 800
-
-window = tkinter.Tk()
-myCanvas = tkinter.Canvas(window, bg="white", height=800, width=1200)
-myCanvas.pack()
+window = tk.Tk()
+window.title("New Window")
 
 
-def value_rand(value):
-    v = int(value * random.random())
-    return v
-
-
-def value_rand_float(value):
-    sw = 0
-    while sw == 0:
-        sw = random.randrange(-1, 2)
-    v = value * random.random() * sw
-    return v
-
-def update_pixels(particle_array):
-    for item in particle_array:
-        item.move()
-    for item in particle_array:
-        myCanvas.create_rectangle(item.x_pos, item.y_pos, item.x_pos, item.y_pos)
-    window.after(100, update_pixels(particle_array))
-
-
-if __name__ == "__main__":
-    particle_array = []
-    for i in range(0, 1000):
-        particle_array.append(particle.Particle())
-
-    for item in particle_array:
-        item.x_pos = value_rand(max_coord_x)
-        item.y_pos = value_rand(max_coord_y)
-        item.x_force = value_rand_float(1)
-        item.y_force = value_rand_float(1)
-
-    # move particles
-    update_pixels(particle_array)
-
-    myCanvas.pack()
-    window.after(100, update_pixels(particle_array))
-    window.mainloop()
+window.mainloop()

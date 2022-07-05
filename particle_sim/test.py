@@ -29,7 +29,7 @@ class DigitalClock(tk.Tk):
         self.label.pack(expand=True)
 
         # schedule an update every 1 second
-        self.label.after(1000, self.update)
+        self.label.after(100, self.update)
 
     def time_string(self):
         return time.strftime('%H:%M:%S')
@@ -40,7 +40,7 @@ class DigitalClock(tk.Tk):
         self.label.configure(text=self.time_string())
 
         # schedule another timer
-        self.label.after(1000, self.update)
+        self.label.after(100, self.update)
 
 
 if __name__ == "__main__":
