@@ -17,8 +17,8 @@ def clear_canvas():
     mycanvas.delete("all")
 
 
-def draw_pixel(x_pos, y_pos):
-    mycanvas.create_rectangle(x_pos, y_pos, x_pos + 3, y_pos + 3, fill="green", width=0)
+def draw_pixel(x_pos, y_pos, colour):
+    mycanvas.create_rectangle(x_pos, y_pos, x_pos + 2, y_pos + 2, fill=colour, width=0)
 
 
 def create_blank_grid():
@@ -34,7 +34,7 @@ def create_blank_grid():
 if __name__ == "__main__":
     # create array of particles
     particle_array = []
-    for i in range(0, 50):
+    for i in range(0, 10000):
         particle_array.append(Particle(grid_x, grid_y))
 
     # create collision grid
@@ -45,21 +45,50 @@ if __name__ == "__main__":
         grid_collisions[p.x_pos][p.y_pos] = px_active
 
 
+
     while True:
         # create collision grid
         grid_collisions = create_blank_grid()
 
-        # move particles. Update collision grid
+        for p in particle_array:
+            try:
+                grid_collisions[p.x_pos][p.y_pos] = px_active
+            except:
+                pass
+
+        # test for collisions - boundaries
+        for p in particle_array:
+            xx = p.x_pos + p.x_force
+            yy = p.y_pos + p.y_force
+            if xx >= grid_x or xx <= 0:
+                p.bounce_x()
+                p.colour = "cyan"
+            if yy >= grid_y or yy <= 0:
+                p.bounce_y()
+                p.colour = "cyan"
+
+        # test for collisions - other particles
+            if p.x_pos - 1 > 1:
+                if p.x_pos + 1 <= grid_x:
+                    if p.y_pos - 1 > 1:
+                        if p.y_pos + 1 <= grid_y:
+                            if grid_collisions[p.x_pos - 1][p.y_pos] == px_active or grid_collisions[p.x_pos + 1][p.y_pos] == px_active:
+                                p.bounce_x()
+                                p.colour = "red"
+
+                            if grid_collisions[p.x_pos][p.y_pos - 1] == px_active or grid_collisions[p.x_pos][p.y_pos + 1] == px_active:
+                                p.bounce_y()
+                                p.colour = "red"
+
+        # Move particles
         for p in particle_array:
             p.move()
-            grid_collisions[p.x_pos][p.y_pos] = px_active
-
-        # test for collisions
 
         # Draw particles
         mycanvas.delete("all")
         for p in particle_array:
-            draw_pixel(p.x_pos, p.y_pos)
+            if p.visible == True:
+                draw_pixel(p.x_pos, p.y_pos, p.colour)
 
         mywindow.update()
     mywindow.mainloop()

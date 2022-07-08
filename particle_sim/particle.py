@@ -3,10 +3,11 @@ import random
 class Particle:
     def __init__(self, canvas_width, canvas_height):
         self.visible = True
+        self.colour = "green"
         self.canvas_width = canvas_width
         self.canvas_height = canvas_height
-        self.x_pos = random.randrange(1, canvas_width - 1)
-        self.y_pos = random.randrange(1, canvas_height - 1)
+        self.x_pos = random.randrange(2, canvas_width - 2)
+        self.y_pos = random.randrange(2, canvas_height - 2)
         self.x_force = random.randrange(-4, 4)
         self.y_force = random.randrange(-4, 4)
 
