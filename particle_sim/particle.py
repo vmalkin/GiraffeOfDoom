@@ -20,9 +20,9 @@ class Particle:
         self.y_pos = y
 
     def bounce_x(self):
-        loss = 0.99
-        self.x_force = -1 * self.x_force * loss
+        entropy = 0.99
+        self.x_force = -1 * self.x_force * entropy
 
     def bounce_y(self):
-        loss = 0.99
-        self.y_force = -1 * self.y_force * loss
+        entropy = 0.99
+        self.y_force = -1 * self.y_force * entropy
