@@ -5,8 +5,8 @@ class Particle:
         self.visible = True
         self.canvas_width = canvas_width
         self.canvas_height = canvas_height
-        self.x_pos = random.randrange(1, canvas_width)
-        self.y_pos = random.randrange(1, canvas_height)
+        self.x_pos = random.randrange(1, canvas_width - 1)
+        self.y_pos = random.randrange(1, canvas_height - 1)
         self.x_force = random.randrange(-4, 4)
         self.y_force = random.randrange(-4, 4)
 

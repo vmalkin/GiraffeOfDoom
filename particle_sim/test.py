@@ -34,7 +34,7 @@ def create_blank_grid():
 if __name__ == "__main__":
     # create array of particles
     particle_array = []
-    for i in range(0, 100):
+    for i in range(0, 50):
         particle_array.append(Particle(grid_x, grid_y))
 
     # create collision grid
@@ -54,8 +54,10 @@ if __name__ == "__main__":
             p.move()
             grid_collisions[p.x_pos][p.y_pos] = px_active
 
-
         # test for collisions
+
+        # Draw particles
+        mycanvas.delete("all")
         for p in particle_array:
             draw_pixel(p.x_pos, p.y_pos)
 
