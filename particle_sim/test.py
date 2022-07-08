@@ -4,6 +4,7 @@ from particle import Particle
 
 grid_x = 1200
 grid_y = 800
+partical_array_length = 2000
 
 mywindow = tk.Tk()
 mywindow.title("New Window")
@@ -34,7 +35,7 @@ def create_blank_grid():
 if __name__ == "__main__":
     # create array of particles
     particle_array = []
-    for i in range(0, 2000):
+    for i in range(0, partical_array_length):
         particle_array.append(Particle(grid_x, grid_y))
 
     # create collision grid
@@ -62,10 +63,10 @@ if __name__ == "__main__":
             yy = p.y_pos + p.y_force
             if xx >= grid_x or xx <= 0:
                 p.bounce_x()
-                p.colour = "cyan"
+                # p.colour = "cyan"
             if yy >= grid_y or yy <= 0:
                 p.bounce_y()
-                p.colour = "cyan"
+                # p.colour = "cyan"
 
         # test for collisions - other particles
             if p.x_pos - 1 > 1:
@@ -73,12 +74,12 @@ if __name__ == "__main__":
                     if p.y_pos - 1 > 1:
                         if p.y_pos + 1 <= grid_y:
                             if grid_collisions[p.x_pos - 1][p.y_pos] == px_active or grid_collisions[p.x_pos + 1][p.y_pos] == px_active:
-                                p.bounce_x()
-                                p.colour = "red"
+                                p.bounce_y()
+                                # p.colour = "red"
 
                             if grid_collisions[p.x_pos][p.y_pos - 1] == px_active or grid_collisions[p.x_pos][p.y_pos + 1] == px_active:
-                                p.bounce_y()
-                                p.colour = "red"
+                                p.bounce_x()
+                                # p.colour = "red"
 
         # Move particles
         for p in particle_array:
