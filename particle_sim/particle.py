@@ -15,14 +15,14 @@ class Particle:
     def move(self):
         x = self.x_pos + int(self.x_force)
         y = self.y_pos + int(self.y_force)
-
         self.x_pos = x
         self.y_pos = y
 
+
     def bounce_x(self):
-        entropy = 0.8
+        entropy = 1
         self.x_force = -1 * self.x_force * entropy
 
     def bounce_y(self):
-        entropy = 0.8
+        entropy = 1
         self.y_force = -1 * self.y_force * entropy

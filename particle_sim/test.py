@@ -4,7 +4,7 @@ from particle import Particle
 
 grid_x = 1200
 grid_y = 800
-partical_array_length = 2000
+partical_array_length = 10000
 
 mywindow = tk.Tk()
 mywindow.title("New Window")
@@ -19,16 +19,29 @@ def clear_canvas():
 
 
 def draw_pixel(x_pos, y_pos, colour):
-    mycanvas.create_rectangle(x_pos, y_pos, x_pos + 2, y_pos + 2, fill=colour, width=0)
+    mycanvas.create_rectangle(x_pos, y_pos, x_pos + 3, y_pos + 3, fill=colour, width=0)
 
 
 def create_blank_grid():
+    #  CReate blank collisions grid
     grid = []
     for i in range(0, grid_x + 1):
         row = []
         for j in range(0, grid_y + 1):
             row.append(px_dead)
         grid.append(row)
+
+    # Populate collisions grid with borders
+    for i in range(0, grid_x + 1):
+        for j in range(0, grid_y + 1):
+            if i == 0:
+                grid[i][j] = px_active
+            if i == grid_x + 1:
+                grid[i][j] = px_active
+            if j == 0:
+                grid[i][j] = px_active
+            if j == grid_y + 1:
+                grid[i][j] = px_active
     return grid
 
 
@@ -57,16 +70,16 @@ if __name__ == "__main__":
             except:
                 pass
 
-        # test for collisions - boundaries
+        # test for collisions
         for p in particle_array:
-            xx = p.x_pos + p.x_force
-            yy = p.y_pos + p.y_force
-            if xx >= grid_x or xx <= 0:
-                p.bounce_x()
-                # p.colour = "cyan"
-            if yy >= grid_y or yy <= 0:
-                p.bounce_y()
-                # p.colour = "cyan"
+        #     xx = p.x_pos + p.x_force
+        #     yy = p.y_pos + p.y_force
+        #     if xx >= grid_x or xx <= 0:
+        #         p.bounce_x()
+        #         p.colour = "cyan"
+        #     if yy >= grid_y or yy <= 0:
+        #         p.bounce_y()
+        #         p.colour = "cyan"
 
         # test for collisions - other particles
             if p.x_pos - 1 > 1:
@@ -75,11 +88,11 @@ if __name__ == "__main__":
                         if p.y_pos + 1 <= grid_y:
                             if grid_collisions[p.x_pos - 1][p.y_pos] == px_active or grid_collisions[p.x_pos + 1][p.y_pos] == px_active:
                                 p.bounce_y()
-                                # p.colour = "red"
+                                p.colour = "red"
 
                             if grid_collisions[p.x_pos][p.y_pos - 1] == px_active or grid_collisions[p.x_pos][p.y_pos + 1] == px_active:
                                 p.bounce_x()
-                                # p.colour = "red"
+                                p.colour = "red"
 
         # Move particles
         for p in particle_array:
