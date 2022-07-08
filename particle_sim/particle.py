@@ -1,20 +1,24 @@
 import random
 
 class Particle:
-    def __init__(self, canvas, canvas_width, canvas_height):
-        self.x_pos = random.randrange(0, canvas_width)
-        self.y_pos = random.randrange(0, canvas_height)
+    def __init__(self, canvas_width, canvas_height):
+        self.visible = True
+        self.canvas_width = canvas_width
+        self.canvas_height = canvas_height
+        self.x_pos = random.randrange(1, canvas_width)
+        self.y_pos = random.randrange(1, canvas_height)
         self.x_force = random.randrange(-4, 4)
         self.y_force = random.randrange(-4, 4)
-        self.canvas = canvas
-        self.image = canvas.create_rectangle(self.x_pos, self.y_pos,
-                                             self.x_pos + 2, self.y_pos + 2,
-                                  fill="green", width=0)
 
     def move(self):
-        # coords = self.canvas.coords(self.image)
-        # print(coords)
-        self.canvas.move(self.image, self.x_force, self.y_force)
+        x = self.x_pos + self.x_force
+        y = self.y_pos + self.y_force
 
+        self.x_pos = x
+        self.y_pos = y
 
+    def bounce_x(self):
+        self.x_force = -1 * self.x_force
 
+    def bounce_y(self):
+        self.y_force = -1 * self.y_force

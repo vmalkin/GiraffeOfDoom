@@ -1,48 +1,63 @@
 import tkinter as tk
-from tkinter import ttk
 import time
+from particle import Particle
+
+grid_x = 1200
+grid_y = 800
+
+mywindow = tk.Tk()
+mywindow.title("New Window")
+mycanvas = tk.Canvas(mywindow, background="black", height=grid_y, width=grid_x)
+mycanvas.pack()
+
+px_dead = 0
+px_active = 1
+
+def clear_canvas():
+    mycanvas.delete("all")
 
 
-class DigitalClock(tk.Tk):
-    def __init__(self):
-        super().__init__()
+def draw_pixel(x_pos, y_pos):
+    mycanvas.create_rectangle(x_pos, y_pos, x_pos + 3, y_pos + 3, fill="green", width=0)
 
-        # configure the root window
-        self.title('Digital Clock')
-        self.resizable(0, 0)
-        self.geometry('250x80')
-        self['bg'] = 'black'
 
-        # change the background color to black
-        self.style = ttk.Style(self)
-        self.style.configure(
-            'TLabel',
-            background='black',
-            foreground='red')
-
-        # label
-        self.label = ttk.Label(
-            self,
-            text=self.time_string(),
-            font=('Digital-7', 40))
-
-        self.label.pack(expand=True)
-
-        # schedule an update every 1 second
-        self.label.after(100, self.update)
-
-    def time_string(self):
-        return time.strftime('%H:%M:%S')
-
-    def update(self):
-        """ update the label every 1 second """
-
-        self.label.configure(text=self.time_string())
-
-        # schedule another timer
-        self.label.after(100, self.update)
+def create_blank_grid():
+    grid = []
+    for i in range(0, grid_x + 1):
+        row = []
+        for j in range(0, grid_y + 1):
+            row.append(px_dead)
+        grid.append(row)
+    return grid
 
 
 if __name__ == "__main__":
-    clock = DigitalClock()
-    clock.mainloop()
+    # create array of particles
+    particle_array = []
+    for i in range(0, 100):
+        particle_array.append(Particle(grid_x, grid_y))
+
+    # create collision grid
+    grid_collisions = create_blank_grid()
+
+    # populate collision grid with particle positions
+    for p in particle_array:
+        grid_collisions[p.x_pos][p.y_pos] = px_active
+
+
+    while True:
+        # create collision grid
+        grid_collisions = create_blank_grid()
+
+        # move particles. Update collision grid
+        for p in particle_array:
+            p.move()
+            grid_collisions[p.x_pos][p.y_pos] = px_active
+
+
+        # test for collisions
+        for p in particle_array:
+            draw_pixel(p.x_pos, p.y_pos)
+
+        mywindow.update()
+    mywindow.mainloop()
