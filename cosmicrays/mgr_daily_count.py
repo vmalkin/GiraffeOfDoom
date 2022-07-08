@@ -113,5 +113,11 @@ def wrapper():
             dd = sum(tmp)
             data_counts.append(dd)
             data_times.append(tt)
+    try:
+        with open("counts.csv", "w") as c:
+            for item in data_counts:
+                c.write(str(item) + "\n")
+    except:
+        print("Unable to record counts.csv")
 
     plot(data_times, data_counts)
