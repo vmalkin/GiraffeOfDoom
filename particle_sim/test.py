@@ -34,7 +34,7 @@ def create_blank_grid():
 if __name__ == "__main__":
     # create array of particles
     particle_array = []
-    for i in range(0, 10000):
+    for i in range(0, 5000):
         particle_array.append(Particle(grid_x, grid_y))
 
     # create collision grid
