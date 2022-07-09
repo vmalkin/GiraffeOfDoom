@@ -20,10 +20,10 @@ class Particle:
     def __init__(self):
         self.visible = True
         self.colour = "green"
-        self.pos_x = random.randrange(50, 150)
-        self.pos_y = random.randrange(150, 650)
-        self.move_x = random.randrange(1, 4)
-        self.move_y = random.randrange(1, 4)
+        self.pos_x = random.randrange(500, 700)
+        self.pos_y = random.randrange(300, 500)
+        self.move_x = random.randrange(-6, 6)
+        self.move_y = random.randrange(-6, 6)
 
     def movement_x(self):
         return self.pos_x + self.move_x
@@ -46,6 +46,7 @@ def create_blank_grid():
         for j in range(0, grid_y + 1):
             row.append(px_dead)
         grid.append(row)
+
     return grid
 
 
@@ -54,7 +55,7 @@ def clear_canvas():
 
 
 def draw_pixel(x_pos, y_pos, colour):
-    mycanvas.create_rectangle(x_pos, y_pos, x_pos + 1, y_pos + 1, fill=colour, width=0)
+    mycanvas.create_rectangle(x_pos, y_pos, x_pos + 2, y_pos + 2, fill=colour, width=0)
 
 
 if __name__ == "__main__":
@@ -68,20 +69,20 @@ if __name__ == "__main__":
         # Test to see if movement results in boundary violations, if so, bounce
         for p in particle_array:
             if p.movement_x() > grid_x:
-                p.bounce_x()
+                p.visible == False
             if p.movement_x() < 0:
-                p.bounce_x()
+                p.visible == False
             if p.movement_y() > grid_y:
-                p.bounce_y()
+                p.visible == False
             if p.movement_y() < 0:
-                p.bounce_y()
-
+                p.visible == False
 
         # Test for collisions between particles
         # current locations of particles
         grid_collision = create_blank_grid()
         for p in particle_array:
-            grid_collision[p.pos_x][p.pos_y] = px_active
+            if p.visible == True:
+                grid_collision[p.pos_x][p.pos_y] = px_active
         # see if movement for particle causes collision, if so, bounce
         for p in particle_array:
             if grid_collision[p.movement_x()][p.movement_y()] == px_active:
@@ -90,8 +91,9 @@ if __name__ == "__main__":
 
         # move particles
         for p in particle_array:
-            p.pos_x = p.movement_x()
-            p.pos_y = p.movement_y()
+            if p.visible == True:
+                p.pos_x = p.movement_x()
+                p.pos_y = p.movement_y()
 
         # Draw particles
         mycanvas.delete("all")
