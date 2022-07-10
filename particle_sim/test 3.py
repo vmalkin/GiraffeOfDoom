@@ -33,7 +33,7 @@ def clear_canvas():
 def draw_pixel(x_pos, y_pos, colour):
     mycanvas.create_rectangle(x_pos, y_pos, x_pos + 1, y_pos + 1, fill=colour, width=0)
 
-def game_o_life(x, y, grid_display):
+def test(x, y, grid_display):
     count = 0
     if x >= 1:
         if x <= grid_x - 1:
@@ -41,46 +41,42 @@ def game_o_life(x, y, grid_display):
                 if y <= grid_y - 1:
                     for i in range(-1, 2):
                         for j in range(-1, 2):
-                            if grid_display[x + i][y + j] == 1:
-                                count = count + 1
+                            count = grid_display[x + i][y + j] + count
+    count = int(count / 9)
     return count
 
 
 if __name__ == "__main__":
     # create grid of particles
-    grid_temp = create_blank_grid()
     grid_display = create_blank_grid()
+
+    states = {"0": "#2020f0",
+              "1": "#4040f0",
+              "2": "#6060f0",
+              "3": "#8080f0",
+              "4": "#a0a0f0",
+              "5": "#c0c0f0",
+              "6": "#e0e0f0"}
 
     for i in range(0, grid_x):
         for j in range(0, grid_y):
-            k = random.randrange(0, 800)
-            if k == 1:
-                grid_display[i][j] = px_active
-
+            k = random.randrange(0, 5)
+            grid_display[i][j] = k
 
     while True:
         # Draw particles
         mycanvas.delete("all")
-        grid_temp = create_blank_grid()
 
+        grid_temp = create_blank_grid()
         for i in range(0, grid_x):
             for j in range(0, grid_y):
-                neighbors = game_o_life(i, j, grid_display)
-                if neighbors < 2:
-                    grid_temp[i][j] = px_dead
-                if neighbors >= 2 and neighbors <= 2:
-                    grid_temp[i][j] = px_active
-                if neighbors > 2:
-                    grid_temp[i][j] = px_dead
+                grid_temp[i][j] = test(i, j, grid_display)
 
         grid_display = copy.deepcopy(grid_temp)
 
         for i in range(0, grid_x):
             for j in range(0, grid_y):
-                if grid_display[i][j] == px_dead:
-                    draw_pixel(i, j, "black")
-                if grid_display[i][j] == px_active:
-                    draw_pixel(i, j, "green")
+                draw_pixel(i, j, states[str(grid_display[i][j])])
 
         mywindow.update()
     mywindow.mainloop()
