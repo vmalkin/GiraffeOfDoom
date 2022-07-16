@@ -87,7 +87,7 @@ def plot(dates, data):
 
 
 def wrapper():
-    data = database_get_data(24*60)
+    data = database_get_data(24*180)
     # data = [10,20,30,40]
     data_counts = []
     data_times = []
