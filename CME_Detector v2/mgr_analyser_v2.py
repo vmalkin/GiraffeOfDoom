@@ -337,10 +337,11 @@ def normalise_image(detrended_img):
     for row in detrended_img:
         for column in row:
             newvalue = (column - im_min) / (im_max - im_min)
-            newvalue = int(newvalue * 255)
+            newvalue = int(newvalue * 254)
             returnarray.append(newvalue)
     returnarray = np.reshape(returnarray, (512, 512))
     returnarray = np.array(returnarray, np.uint8)
+    # returnarray = np.array(detrended_img, np.uint8)
     return returnarray
 
 
@@ -388,15 +389,13 @@ def wrapper(storage_folder, analysis_folder):
                 detrended_img = np.subtract(pic, avg_img)
                 detrended_img = normalise_image(detrended_img)
 
-
-
                 detrended_img = cv2.erode(detrended_img, np.ones((5, 5), np.uint8), iterations=1)
                 # # detrended_img = cv2.dilate(detrended_img, np.ones((3, 3), np.uint8), iterations=1)
                 # ret, detrended_img = cv2.threshold(detrended_img, 0, 255, cv2.THRESH_BINARY)
 
-                # cv2.imshow('detrended', detrended_img)
-                # # waitKey() waits for a key press to close the window and 0 specifies indefinite loop
-                # cv2.waitKey()
+                cv2.imshow('detrended', detrended_img)
+                # waitKey() waits for a key press to close the window and 0 specifies indefinite loop
+                cv2.waitKey()
 
 
                 #  convolve the returned residuals image from polar to rectangular co-ords. the data is appended to
