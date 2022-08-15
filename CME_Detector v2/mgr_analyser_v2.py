@@ -108,16 +108,16 @@ def plot(dates, pixel_count, filename, width, height):
     fig.update_layout(plot_bgcolor="#a0a0a0", paper_bgcolor="#a0a0a0")
 
     fig.update_xaxes(nticks=25, tickangle=45)
-    fig.update_yaxes(range=[0, 1.01])
+    # fig.update_yaxes(range=[0, 1.01])
 
-    fig.add_hline(y=cme_min, line_color=green, line_width=6, annotation_text="Minor CME",
-                  annotation_font_color=green, annotation_font_size=20, annotation_position="top left")
-
-    fig.add_hline(y=cme_partial, line_color=orange, line_width=6, annotation_text="Partial Halo CME",
-                  annotation_font_color=orange, annotation_font_size=20, annotation_position="top left")
-
-    fig.add_hline(y=1, line_color=red, line_width=6, annotation_text="Full Halo CME",
-                  annotation_font_color=red, annotation_font_size=20, annotation_position="top left")
+    # fig.add_hline(y=cme_min, line_color=green, line_width=6, annotation_text="Minor CME",
+    #               annotation_font_color=green, annotation_font_size=20, annotation_position="top left")
+    #
+    # fig.add_hline(y=cme_partial, line_color=orange, line_width=6, annotation_text="Partial Halo CME",
+    #               annotation_font_color=orange, annotation_font_size=20, annotation_position="top left")
+    #
+    # fig.add_hline(y=1, line_color=red, line_width=6, annotation_text="Full Halo CME",
+    #               annotation_font_color=red, annotation_font_size=20, annotation_position="top left")
     fig.update_traces(line=dict(width=4, color=red))
     fig.write_image(file=savefile, format='jpg')
 
@@ -393,9 +393,9 @@ def wrapper(storage_folder, analysis_folder):
                 # # detrended_img = cv2.dilate(detrended_img, np.ones((3, 3), np.uint8), iterations=1)
                 # ret, detrended_img = cv2.threshold(detrended_img, 0, 255, cv2.THRESH_BINARY)
 
-                cv2.imshow('detrended', detrended_img)
-                # waitKey() waits for a key press to close the window and 0 specifies indefinite loop
-                cv2.waitKey()
+                # cv2.imshow('detrended', detrended_img)
+                # # waitKey() waits for a key press to close the window and 0 specifies indefinite loop
+                # cv2.waitKey()
 
 
                 #  convolve the returned residuals image from polar to rectangular co-ords. the data is appended to
@@ -423,7 +423,7 @@ def wrapper(storage_folder, analysis_folder):
                 px = count_nonzero(masked)
 
                 #  pixelcount as a percentage of the area monitored
-                px = px / (40 * 50 * 250)
+                # px = px / (40 * 50 * 250)
 
                 # px = round(px, 3)
                 t = dirlisting[i].split("_")
@@ -450,6 +450,7 @@ def wrapper(storage_folder, analysis_folder):
             msg = "Unable to load picure " + p
             log_errors(msg)
 
+    print(pixel_count)
     # #  Creat text alert
     text_alert(px_max, px_date)
 
