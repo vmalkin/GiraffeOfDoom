@@ -12,6 +12,7 @@ from calendar import timegm
 import numpy as np
 import re
 import plotly.graph_objects as go
+from plotly.subplots import make_subplots
 
 # datafile = "c://temp//hiss.csv"
 # datafile = "c://temp//harmonics.csv"
@@ -107,11 +108,28 @@ def filter_nulls(data):
 
 def plot_graph(datelabels, headings, data):
     savefile = "hiss.jpg"
+    width = 1500
+    height = 640
+    # fig = go.Figure()
+    # Create figure with secondary y-axis
+    fig = make_subplots(specs=[[{"secondary_y": True}]])
+
+    for i in range(0, len(data)):
+        print(headings[i])
+        fig.add_trace(go.Scatter(x=datelabels, y=data[i], mode="lines", name=headings[i]), secondary_y=True)
+
+    fig.update_layout(width=width, height=height, title="Hiss",
+                      xaxis_title="Date/time UTC<br><sub>http://DunedinAurora.nz</sub>",
+                      yaxis_title="CME Coverage")
+    fig.update_layout(plot_bgcolor="#a0a0a0", paper_bgcolor="#a0a0a0")
+
+    fig.write_image(file=savefile, format='jpg')
+
 
 
 if __name__ == "__main__":
     datalist = open_file(datafile)
-    header = get_header(datafile)
+    # header = get_header(datafile)
     data_last_24_hours = parse_file(datalist)
     npdata = np.array(data_last_24_hours)
     rowlen = npdata.shape[1]
@@ -156,4 +174,5 @@ if __name__ == "__main__":
         newdates.append(datetimes[i])
 
     # CReate a graph in plotly
-    plot_graph(newdates, header, nulled)
+    labels = ["22Hz", "120Hz", "14kHz"]
+    plot_graph(newdates, labels, nulled)
