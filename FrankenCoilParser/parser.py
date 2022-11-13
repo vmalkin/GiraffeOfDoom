@@ -11,6 +11,7 @@ from datetime import datetime
 from calendar import timegm
 import numpy as np
 import re
+import plotly.graph_objects as go
 
 # datafile = "c://temp//hiss.csv"
 # datafile = "c://temp//harmonics.csv"
@@ -18,10 +19,9 @@ datafile = "hiss.csv"
 regex = r"\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d"
 dt_format = "%Y-%m-%d %H:%M:%S"
 stationname = "dna_hiss"
-# stationname = "dna_power_harmonics"
 graphing_file = stationname + "_graph.csv"
-median_window = 1  # Full window = halfwindow * 2 + 1
-average_window = 40
+median_window = 2  # Full window = halfwindow * 2 + 1
+average_window = 90
 
 def filter_average(list):
     returnlist = []
@@ -105,6 +105,10 @@ def filter_nulls(data):
     return returnlist
 
 
+def plot_graph(datelabels, headings, data):
+    savefile = "hiss.jpg"
+
+
 if __name__ == "__main__":
     datalist = open_file(datafile)
     header = get_header(datafile)
@@ -130,17 +134,26 @@ if __name__ == "__main__":
     for data in filtered:
         nulled.append(filter_nulls(data))
 
-    # Reconstitute the lists into a single file for display
-    # AFter the filtering processes, the length of data will differ from the original
-    # data. Start iterating from the correct record in datetime to compensate
+    # # Reconstitute the lists into a single file for display
+    # # AFter the filtering processes, the length of data will differ from the original
+    # # data. Start iterating from the correct record in datetime to compensate
+    # difference = len(datetimes) - len(nulled[0])
+    # startindex = int(difference / 2)
+    # with open(graphing_file, "w") as g:
+    #     g.write(header + "\n")
+    #     for i in range(startindex, len(datetimes) - startindex - 1):
+    #         dp = datetimes[i] + ","
+    #         for data in nulled:
+    #             dp = dp + str(data[i - startindex]) + ","
+    #         dp = dp[:-1]
+    #         g.write(dp + "\n")
+    # g.close()
+
     difference = len(datetimes) - len(nulled[0])
     startindex = int(difference / 2)
-    with open(graphing_file, "w") as g:
-        g.write(header + "\n")
-        for i in range(startindex, len(datetimes) - startindex - 1):
-            dp = datetimes[i] + ","
-            for data in nulled:
-                dp = dp + str(data[i - startindex]) + ","
-            dp = dp[:-1]
-            g.write(dp + "\n")
-    g.close()
+    newdates = []
+    for i in range(startindex, len(datetimes) - startindex - 1):
+        newdates.append(datetimes[i])
+
+    # CReate a graph in plotly
+    plot_graph(newdates, header, nulled)

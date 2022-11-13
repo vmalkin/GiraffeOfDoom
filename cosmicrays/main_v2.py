@@ -260,6 +260,7 @@ if __name__ == '__main__':
     cumulative_image = np.full((sh_y, sh_x), 0)
 
     while True:
+        # Reads the latest image from the camera
         ret, image = camera.read()
         img_g = greyscale_img(image)
 
