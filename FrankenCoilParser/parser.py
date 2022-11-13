@@ -108,15 +108,19 @@ def filter_nulls(data):
 
 def plot_graph(datelabels, headings, data):
     savefile = "hiss.jpg"
-    width = 1500
+    width = 1700
     height = 640
+    colours = ["black", "darkblue", "green"]
     # fig = go.Figure()
     # Create figure with secondary y-axis
     fig = make_subplots(specs=[[{"secondary_y": True}]])
 
     for i in range(0, len(data)):
         print(headings[i])
-        fig.add_trace(go.Scatter(x=datelabels, y=data[i], mode="lines", name=headings[i]), secondary_y=True)
+        fig.add_trace(go.Scatter(x=datelabels, y=data[i], mode="lines", name=headings[i],
+                                 marker = dict(color=colours[i], opacity=1, line=dict(width=4))),
+                      secondary_y=True)
+
 
     fig.update_layout(width=width, height=height, title="Hiss",
                       xaxis_title="Date/time UTC<br><sub>http://DunedinAurora.nz</sub>",
@@ -174,5 +178,5 @@ if __name__ == "__main__":
         newdates.append(datetimes[i])
 
     # CReate a graph in plotly
-    labels = ["22Hz", "120Hz", "14kHz"]
+    labels = ["14000Hz", "128Hz", "28Hz"]
     plot_graph(newdates, labels, nulled)
