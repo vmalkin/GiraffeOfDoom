@@ -115,9 +115,6 @@ def wrapper(storage_folder, images_folder):
                 img_ng = img_ng[0]
                 img_og = img_og[0]
 
-                # img_og = erode_dilate_img(img_og)
-                # img_ng = erode_dilate_img(img_ng)
-
                 # improved histogram function
                 clahe = cv2.createCLAHE(clipLimit=2, tileGridSize=(8, 8))
                 img_og = clahe.apply(img_og)

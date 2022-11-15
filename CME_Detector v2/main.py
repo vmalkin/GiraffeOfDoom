@@ -72,7 +72,7 @@ def get_imagelist(url_to_get):
 if __name__ == "__main__":
     print("Revised CME detector")
     computation_start = time.time()
-    images_folder = "images_512"
+    images_folder = "enhanced_512"
     storage_folder = "lasco_store_512"
     analysis_folder = "analysis_512"
 

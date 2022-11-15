@@ -10,13 +10,13 @@ from statistics import median
 from PIL import Image
 from plotly import graph_objects as go
 
-# offset values when coronagraph mask support-vane in top-right position
-offset_x = -5
-offset_y = 10
+# # offset values when coronagraph mask support-vane in top-right position
+# offset_x = -5
+# offset_y = 10
 
-# # offset values when coronagraph mask support-vane in bottom-left position
-# offset_x = 5
-# offset_y = -10
+# offset values when coronagraph mask support-vane in bottom-left position
+offset_x = 5
+offset_y = -10
 
 image_size = 512
 imagecentre = image_size / 2
@@ -329,20 +329,30 @@ def greyscale_img(image_to_process):
 
 
 def normalise_image(detrended_img):
-    # normlise a numpy array between 0 - 255
-    returnarray = []
-    im_min = detrended_img.min()
-    im_max = detrended_img.max()
-
-    for row in detrended_img:
-        for column in row:
-            newvalue = (column - im_min) / (im_max - im_min)
-            newvalue = int(newvalue * 254)
-            returnarray.append(newvalue)
-    returnarray = np.reshape(returnarray, (512, 512))
-    returnarray = np.array(returnarray, np.uint8)
-    # returnarray = np.array(detrended_img, np.uint8)
+    # # normlise a numpy array between 0 - 255
+    # returnarray = []
+    # im_min = detrended_img.min()
+    # im_max = detrended_img.max()
+    #
+    # for row in detrended_img:
+    #     for column in row:
+    #         newvalue = (column - im_min) / (im_max - im_min)
+    #         newvalue = int(newvalue * 254)
+    #         returnarray.append(newvalue)
+    # returnarray = np.reshape(returnarray, (512, 512))
+    # returnarray = np.array(returnarray, np.uint8)
+    returnarray = np.array(detrended_img, np.uint8)
     return returnarray
+
+
+def erode_dilate_img(image_to_process):
+    # Erode and Dilate the image to clear up noise
+    # Erosion will trim away pixels (noise)
+    # dilation puffs out edges
+    kernel = np.ones((13,13), np.uint8)
+    outputimg = cv2.erode(image_to_process, kernel, iterations=2)
+    outputimg = cv2.dilate(outputimg, kernel, iterations=1)
+    return outputimg
 
 
 def wrapper(storage_folder, analysis_folder):
@@ -364,12 +374,13 @@ def wrapper(storage_folder, analysis_folder):
         # Test that image is not corrupted
 
         img = image_load(p)
+        # img = erode_dilate_img(img)
 
         if img is not None:
             img_g = greyscale_img(img)
 
             # Create an array of pictures with which to create an average
-            # that is isued to compare individual images, essentiall a 3D version
+            # that is used to compare individual images, essentiall a 3D version
             #  of finding the residual.
             # Pic is used for comparisons and must be float64
             # We will convert images in 1D 64 bit numpy arrays for operations involving averaging, normalising etc.
@@ -389,9 +400,9 @@ def wrapper(storage_folder, analysis_folder):
                 detrended_img = np.subtract(pic, avg_img)
                 detrended_img = normalise_image(detrended_img)
 
-                detrended_img = cv2.erode(detrended_img, np.ones((5, 5), np.uint8), iterations=1)
-                # # detrended_img = cv2.dilate(detrended_img, np.ones((3, 3), np.uint8), iterations=1)
-                # ret, detrended_img = cv2.threshold(detrended_img, 0, 255, cv2.THRESH_BINARY)
+                # detrended_img = cv2.erode(detrended_img, np.ones((5, 5), np.uint8), iterations=1)
+                # # # detrended_img = cv2.dilate(detrended_img, np.ones((3, 3), np.uint8), iterations=1)
+                # # ret, detrended_img = cv2.threshold(detrended_img, 0, 255, cv2.THRESH_BINARY)
 
                 # cv2.imshow('detrended', detrended_img)
                 # # waitKey() waits for a key press to close the window and 0 specifies indefinite loop
@@ -450,12 +461,12 @@ def wrapper(storage_folder, analysis_folder):
             msg = "Unable to load picure " + p
             log_errors(msg)
 
-    print(pixel_count)
+    # print(pixel_count)
     # #  Creat text alert
     text_alert(px_max, px_date)
 
     # Create line graphs of CME detections
-    print(len(dates), len(pixel_count))
+    # print(len(dates), len(pixel_count))
     pixel_count = median_filter(pixel_count)
     dates.pop(len(dates) - 1)
     dates.pop(0)
