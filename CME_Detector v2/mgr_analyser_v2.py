@@ -1,5 +1,6 @@
 import os
 import cv2
+import cv2.cv2
 import numpy
 import numpy as np
 from math import sin, cos, radians
@@ -329,19 +330,19 @@ def greyscale_img(image_to_process):
 
 
 def normalise_image(detrended_img):
-    # # normlise a numpy array between 0 - 255
-    # returnarray = []
-    # im_min = detrended_img.min()
-    # im_max = detrended_img.max()
-    #
-    # for row in detrended_img:
-    #     for column in row:
-    #         newvalue = (column - im_min) / (im_max - im_min)
-    #         newvalue = int(newvalue * 254)
-    #         returnarray.append(newvalue)
-    # returnarray = np.reshape(returnarray, (512, 512))
-    # returnarray = np.array(returnarray, np.uint8)
-    returnarray = np.array(detrended_img, np.uint8)
+    # normlise a numpy array between 0 - 255
+    returnarray = []
+    im_min = detrended_img.min()
+    im_max = detrended_img.max()
+
+    for row in detrended_img:
+        for column in row:
+            newvalue = (column - im_min) / (im_max - im_min)
+            newvalue = int(newvalue * 254)
+            returnarray.append(newvalue)
+    returnarray = np.reshape(returnarray, (512, 512))
+    returnarray = np.array(returnarray, np.uint8)
+    # returnarray = np.array(detrended_img, np.uint8)
     return returnarray
 
 
@@ -387,42 +388,50 @@ def wrapper(storage_folder, analysis_folder):
             pic = np.array(img_g, np.float64)
             avg_array.append(pic)
 
+            pic_old = None
+
             # 100 images is about a day. Start comparing individual images against an "average" image
-            if len(avg_array) >= 100:
+            if len(avg_array) >= 3:
                 # ALWAYS POP
                 avg_array.pop(0)
-                avg_img = np.mean(avg_array, axis=0)
+                pic_new = np.mean(avg_array, axis=0)
 
-                avg_img = normalise_image(avg_img)
-                pic = normalise_image(pic)
+                # j = avg_array[-3:]
+                # smoothed_img = np.mean(j, axis=0)
+                #
+                # pic_new = normalise_image(avg_img)
 
-                # # The detrended image.
-                detrended_img = np.subtract(pic, avg_img)
-                # detrended_img = normalise_image(detrended_img)
+                if pic_old == None:
+                    pic_old = np.copy(pic_new)
 
-                # detrended_img = cv2.erode(detrended_img, np.ones((5, 5), np.uint8), iterations=1)
-                # # # detrended_img = cv2.dilate(detrended_img, np.ones((3, 3), np.uint8), iterations=1)
-                # # ret, detrended_img = cv2.threshold(detrended_img, 0, 255, cv2.THRESH_BINARY)
+                x = pic_new - pic_old
+                x = normalise_image(x)
 
-                cv2.imshow('detrended', pic)
+                pic_old = pic_new
+                # smoothed_img = normalise_image(smoothed_img)
+
+                # ret, smoothed_img = cv2.threshold(smoothed_img, 120, 255,cv2.THRESH_TRUNC)
+
+                cv2.imshow('detrended', x)
                 # waitKey() waits for a key press to close the window and 0 specifies indefinite loop
                 cv2.waitKey()
 
-    #
-    #             #  convolve the returned residuals image from polar to rectangular co-ords. the data is appended to
-    #             #  an array
-    #             radius = 220
-    #             angle = 360
-    #             t = []
-    #             for j in range(radius, 0, -1):
-    #                 for k in range(0, angle):
-    #                     coords = polar_to_rectangular(k, j)
-    #                     pixelvalue = detrended_img[coords[1], coords[0]]
-    #                     t.append(pixelvalue)
-    #
-    #             # Convert the 1D array into a 2D image
-    #             array = np.reshape(np.array(t), (radius, angle))
-    #
+
+
+                #  convolve the returned residuals image from polar to rectangular co-ords. the data is appended to
+                #  an array
+                radius = 220
+                angle = 360
+                t = []
+                for j in range(radius, 0, -1):
+                    for k in range(0, angle):
+                        coords = polar_to_rectangular(k, j)
+                        pixelvalue = pic_new[coords[1], coords[0]]
+                        t.append(pixelvalue)
+
+                # Convert the 1D array into a 2D image
+                array = np.reshape(np.array(t), (radius, angle))
+
     #             #  Just crops the image
     #             mask = create_mask(array, angle, radius, 40, 50)
     #
@@ -482,7 +491,7 @@ def wrapper(storage_folder, analysis_folder):
     # listlength = 100
     # if len(imagelist) > listlength:
     #     cut = len(imagelist) - listlength
-
+    #
     #     imagelist = imagelist[cut:]
     # imagelist.sort()
     # print("creating animated GIF...")
