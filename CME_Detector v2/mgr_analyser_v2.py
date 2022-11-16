@@ -230,6 +230,12 @@ def create_mask(image, imagewidth, imageheight, topoffset, bottomoffset):
     return mask
 
 
+def crop_image(image, imagewidth, imageheight, topoffset, bottomoffset):
+    cropped_img = image[imageheight - bottomoffset:imageheight - topoffset, 0:imagewidth]
+    # print(cropped_img)
+    return cropped_img
+
+
 def polar_to_rectangular(angle, distance):
     """
     With our image, we have a line at an angle , radiating from
@@ -387,7 +393,6 @@ def wrapper(storage_folder, analysis_folder):
             pic = np.array(img_g, np.float64)
             avg_array.append(pic)
 
-
             # create an average of "x" number of images
             if len(avg_array) >= 3:
                 # ALWAYS POP
@@ -410,67 +415,65 @@ def wrapper(storage_folder, analysis_folder):
                 # Convert the 1D array into a 2D image
                 array = np.reshape(np.array(t), (radius, angle))
 
-                #  Just crops the image
-                mask = create_mask(array, angle, radius, 40, 50)
-
-                masked = cv2.bitwise_and(array, mask)
+                #  Mask the image
+                # mask = create_mask(array, angle, radius, 40, 50)
+                # masked = cv2.bitwise_and(array, mask)
                 # ret, masked = cv2.threshold(masked, 30, 255, cv2.THRESH_TRUNC)
+                masked = crop_image(array, angle, radius, 40, 50)
 
-                # Pixelcounter to create graphic pf CMEs
-                # A full halo CME should produce counts in the order of 3600
-                px = count_nonzero(masked)
+                # cv2.imshow('detrended', masked)
+                # # waitKey() waits for a key press to close the window and 0 specifies indefinite loop
+                # cv2.waitKey()
 
-                #  pixelcount as a percentage of the area monitored
-                # px = px / (40 * 50 * 250)
-
-                # px = round(px, 3)
-                t = dirlisting[i].split("_")
-                posixtime = filehour_converter(t[0], t[1])
-                hr = posix2utc(posixtime, "%Y-%m-%d %H:%M")
-                # text_alert(px, hr)
-
-                #  For text alerts, CME in the last day
-                if px >= px_max:
-                    if posixtime > (time.time() - 86400):
-                        px_max = px
-                        px_date =  hr
-
-                pixel_count.append(px)
-                dates.append(hr)
-                # Annotate image for display
-                array = annotate_image(array, angle, radius, hr)
-
-                f_image = analysis_folder + "//" + "dt_" + dirlisting[i]
-                image_save(f_image, array)
-
-                print("dt", i, len(dirlisting))
-        else:
-            msg = "Unable to load picure " + p
-            log_errors(msg)
-
-    #  Creat text alert
-    text_alert(px_max, px_date)
-
-    # Create line graphs of CME detections
-    # print(len(dates), len(pixel_count))
-    pixel_count = median_filter(pixel_count)
-    dates.pop(len(dates) - 1)
-    dates.pop(0)
-    plot(dates, pixel_count, "cme_plot.jpg", 1800, 600)
-
-    dates = dates[-100:]
-    pixel_count = pixel_count[-100:]
-    plot_mini(dates, pixel_count)
-
-    # create an animated GIF of the last 24 images from the Analysis folder.
-    imagelist = os.listdir(analysis_folder)
-    imagelist.sort()
-    listlength = 100
-    if len(imagelist) > listlength:
-        cut = len(imagelist) - listlength
-
-        imagelist = imagelist[cut:]
-    imagelist.sort()
-    print("creating animated GIF...")
-
-    create_gif(imagelist, analysis_folder)
+    #             # Pixelcounter to create graphic pf CMEs
+    #             # A full halo CME should produce counts in the order of 3600
+    #             px = count_nonzero(masked)
+    #
+    #             #  pixelcount as a percentage of the area monitored
+    #             # px = px / (40 * 50 * 250)
+    #
+    #             # px = round(px, 3)
+    #             t = dirlisting[i].split("_")
+    #             posixtime = filehour_converter(t[0], t[1])
+    #             hr = posix2utc(posixtime, "%Y-%m-%d %H:%M")
+    #             # text_alert(px, hr)
+    #
+    #             #  For text alerts, CME in the last day
+    #             if px >= px_max:
+    #                 if posixtime > (time.time() - 86400):
+    #                     px_max = px
+    #                     px_date =  hr
+    #
+    #             pixel_count.append(px)
+    #             dates.append(hr)
+    #             # Annotate image for display
+    #             array = annotate_image(array, angle, radius, hr)
+    #
+    #             f_image = analysis_folder + "//" + "dt_" + dirlisting[i]
+    #             # image_save(f_image, array)
+    #             image_save(f_image, masked)
+    #
+    #
+    #             print("dt", i, len(dirlisting))
+    #     else:
+    #         msg = "Unable to load picure " + p
+    #         log_errors(msg)
+    #
+    # #  Creat text alert
+    # text_alert(px_max, px_date)
+    #
+    # # Create line graphs of CME detections
+    #
+    #
+    # # create an animated GIF of the last 24 images from the Analysis folder.
+    # imagelist = os.listdir(analysis_folder)
+    # imagelist.sort()
+    # listlength = 100
+    # if len(imagelist) > listlength:
+    #     cut = len(imagelist) - listlength
+    #
+    #     imagelist = imagelist[cut:]
+    # imagelist.sort()
+    # print("creating animated GIF...")
+    #
+    # create_gif(imagelist, analysis_folder)
