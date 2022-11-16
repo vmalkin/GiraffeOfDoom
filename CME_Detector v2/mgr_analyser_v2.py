@@ -362,61 +362,39 @@ def wrapper(storage_folder, analysis_folder):
 
     # make sure they are in chronological order by name
     dirlisting.sort()
-
+    startflag = True
+    pic_old = None
     avg_array = []
     pixel_count = []
     dates = []
     px_max = cme_min
     px_date = posix2utc((time.time() - 86400), "%Y-%m-%d %H:%M")
 
+    # Parsing thru the list of images
     for i in range (0, len(dirlisting)):
         p = storage_folder + "//" + dirlisting[i]
 
-        # Test that image is not corrupted
-
+        # load and preprocess the image
         img = image_load(p)
         img = erode_dilate_img(img)
 
+        # Occasionally images are loaded that are broken. If this is not the case...
         if img is not None:
+            # greyscale the image
             img_g = greyscale_img(img)
 
-            # Create an array of pictures with which to create an average
-            # that is used to compare individual images, essentiall a 3D version
-            #  of finding the residual.
-            # Pic is used for comparisons and must be float64
-            # We will convert images in 1D 64 bit numpy arrays for operations involving averaging, normalising etc.
+            # Create an array of pictures with which to create a running average image
             pic = np.array(img_g, np.float64)
             avg_array.append(pic)
 
-            pic_old = None
 
-            # 100 images is about a day. Start comparing individual images against an "average" image
+            # create an average of "x" number of images
             if len(avg_array) >= 3:
                 # ALWAYS POP
                 avg_array.pop(0)
+                # the average image
                 pic_new = np.mean(avg_array, axis=0)
-
-                # j = avg_array[-3:]
-                # smoothed_img = np.mean(j, axis=0)
-                #
-                # pic_new = normalise_image(avg_img)
-
-                if pic_old == None:
-                    pic_old = np.copy(pic_new)
-
-                x = pic_new - pic_old
-                x = normalise_image(x)
-
-                pic_old = pic_new
-                # smoothed_img = normalise_image(smoothed_img)
-
-                # ret, smoothed_img = cv2.threshold(smoothed_img, 120, 255,cv2.THRESH_TRUNC)
-
-                cv2.imshow('detrended', x)
-                # waitKey() waits for a key press to close the window and 0 specifies indefinite loop
-                cv2.waitKey()
-
-
+                pic_new = normalise_image(pic_new)
 
                 #  convolve the returned residuals image from polar to rectangular co-ords. the data is appended to
                 #  an array
@@ -432,68 +410,67 @@ def wrapper(storage_folder, analysis_folder):
                 # Convert the 1D array into a 2D image
                 array = np.reshape(np.array(t), (radius, angle))
 
-    #             #  Just crops the image
-    #             mask = create_mask(array, angle, radius, 40, 50)
-    #
-    #             masked = cv2.bitwise_and(array, mask)
-    #             ret, masked = cv2.threshold(masked, 130, 255, cv2.THRESH_TRUNC)
-    #
-    #             # Pixelcounter to create graphic pf CMEs
-    #             # A full halo CME should produce counts in the order of 3600
-    #             px = count_nonzero(masked)
-    #
-    #             #  pixelcount as a percentage of the area monitored
-    #             # px = px / (40 * 50 * 250)
-    #
-    #             # px = round(px, 3)
-    #             t = dirlisting[i].split("_")
-    #             posixtime = filehour_converter(t[0], t[1])
-    #             hr = posix2utc(posixtime, "%Y-%m-%d %H:%M")
-    #             # text_alert(px, hr)
-    #
-    #             #  For text alerts, CME in the last day
-    #             if px >= px_max:
-    #                 if posixtime > (time.time() - 86400):
-    #                     px_max = px
-    #                     px_date =  hr
-    #
-    #             pixel_count.append(px)
-    #             dates.append(hr)
-    #             # Annotate image for display
-    #             array = annotate_image(array, angle, radius, hr)
-    #
-    #             f_image = analysis_folder + "//" + "dt_" + dirlisting[i]
-    #             image_save(f_image, array)
-    #
-    #             print("dt", i, len(dirlisting))
-    #     else:
-    #         msg = "Unable to load picure " + p
-    #         log_errors(msg)
-    #
-    # # print(pixel_count)
-    # # #  Creat text alert
-    # text_alert(px_max, px_date)
-    #
-    # # Create line graphs of CME detections
-    # # print(len(dates), len(pixel_count))
-    # pixel_count = median_filter(pixel_count)
-    # dates.pop(len(dates) - 1)
-    # dates.pop(0)
-    # plot(dates, pixel_count, "cme_plot.jpg", 1800, 600)
-    #
-    # dates = dates[-100:]
-    # pixel_count = pixel_count[-100:]
-    # plot_mini(dates, pixel_count)
-    #
-    # # create an animated GIF of the last 24 images from the Analysis folder.
-    # imagelist = os.listdir(analysis_folder)
-    # imagelist.sort()
-    # listlength = 100
-    # if len(imagelist) > listlength:
-    #     cut = len(imagelist) - listlength
-    #
-    #     imagelist = imagelist[cut:]
-    # imagelist.sort()
-    # print("creating animated GIF...")
-    #
-    # create_gif(imagelist, analysis_folder)
+                #  Just crops the image
+                mask = create_mask(array, angle, radius, 40, 50)
+
+                masked = cv2.bitwise_and(array, mask)
+                # ret, masked = cv2.threshold(masked, 30, 255, cv2.THRESH_TRUNC)
+
+                # Pixelcounter to create graphic pf CMEs
+                # A full halo CME should produce counts in the order of 3600
+                px = count_nonzero(masked)
+
+                #  pixelcount as a percentage of the area monitored
+                # px = px / (40 * 50 * 250)
+
+                # px = round(px, 3)
+                t = dirlisting[i].split("_")
+                posixtime = filehour_converter(t[0], t[1])
+                hr = posix2utc(posixtime, "%Y-%m-%d %H:%M")
+                # text_alert(px, hr)
+
+                #  For text alerts, CME in the last day
+                if px >= px_max:
+                    if posixtime > (time.time() - 86400):
+                        px_max = px
+                        px_date =  hr
+
+                pixel_count.append(px)
+                dates.append(hr)
+                # Annotate image for display
+                array = annotate_image(array, angle, radius, hr)
+
+                f_image = analysis_folder + "//" + "dt_" + dirlisting[i]
+                image_save(f_image, array)
+
+                print("dt", i, len(dirlisting))
+        else:
+            msg = "Unable to load picure " + p
+            log_errors(msg)
+
+    #  Creat text alert
+    text_alert(px_max, px_date)
+
+    # Create line graphs of CME detections
+    # print(len(dates), len(pixel_count))
+    pixel_count = median_filter(pixel_count)
+    dates.pop(len(dates) - 1)
+    dates.pop(0)
+    plot(dates, pixel_count, "cme_plot.jpg", 1800, 600)
+
+    dates = dates[-100:]
+    pixel_count = pixel_count[-100:]
+    plot_mini(dates, pixel_count)
+
+    # create an animated GIF of the last 24 images from the Analysis folder.
+    imagelist = os.listdir(analysis_folder)
+    imagelist.sort()
+    listlength = 100
+    if len(imagelist) > listlength:
+        cut = len(imagelist) - listlength
+
+        imagelist = imagelist[cut:]
+    imagelist.sort()
+    print("creating animated GIF...")
+
+    create_gif(imagelist, analysis_folder)
