@@ -209,25 +209,25 @@ def posix2utc(posixtime, timeformat):
     utctime = datetime.datetime.utcfromtimestamp(int(posixtime)).strftime(timeformat)
     return utctime
 
-
-def count_nonzero(array):
-    # COunt non zero pixels in a zone just above the solar surface.
-    try:
-        num_pixels = cv2.countNonZero(array)
-    except Exception:
-        num_pixels = 0
-    return num_pixels
+#
+# def count_nonzero(array):
+#     # COunt non zero pixels in a zone just above the solar surface.
+#     try:
+#         num_pixels = cv2.countNonZero(array)
+#     except Exception:
+#         num_pixels = 0
+#     return num_pixels
 
 def count_greys(array):
     num_pixels = array.sum()
     return num_pixels
 
 
-def create_mask(image, imagewidth, imageheight, topoffset, bottomoffset):
-    # mask = np.zeros(image.shape[:2], dtype="float64")
-    mask = np.zeros(image.shape[:2], dtype="uint8")
-    cv2.rectangle(mask, (0, imageheight - topoffset), (imagewidth, imageheight - bottomoffset), 255, -1)
-    return mask
+# def create_mask(image, imagewidth, imageheight, topoffset, bottomoffset):
+#     # mask = np.zeros(image.shape[:2], dtype="float64")
+#     mask = np.zeros(image.shape[:2], dtype="uint8")
+#     cv2.rectangle(mask, (0, imageheight - topoffset), (imagewidth, imageheight - bottomoffset), 255, -1)
+#     return mask
 
 
 def crop_image(image, imagewidth, imageheight, topoffset, bottomoffset):
@@ -419,6 +419,8 @@ def wrapper(storage_folder, analysis_folder):
                 # ====================================================================================
                 # determine if there is sufficient change across the cropped image to represent a CME
                 # ====================================================================================
+                value = count_greys(img_cropped)
+                # print(value)
 
                 t = dirlisting[i].split("_")
                 posixtime = filehour_converter(t[0], t[1])
@@ -450,15 +452,15 @@ def wrapper(storage_folder, analysis_folder):
     # # Create line graphs of CME detections
     #
     #
-    # # create an animated GIF of the last 24 images from the Analysis folder.
-    # imagelist = os.listdir(analysis_folder)
-    # imagelist.sort()
-    # listlength = 100
-    # if len(imagelist) > listlength:
-    #     cut = len(imagelist) - listlength
-    #
-    #     imagelist = imagelist[cut:]
-    # imagelist.sort()
-    # print("creating animated GIF...")
-    #
-    # create_gif(imagelist, analysis_folder)
+    # create an animated GIF of the last 24 images from the Analysis folder.
+    imagelist = os.listdir(analysis_folder)
+    imagelist.sort()
+    listlength = 100
+    if len(imagelist) > listlength:
+        cut = len(imagelist) - listlength
+
+        imagelist = imagelist[cut:]
+    imagelist.sort()
+    print("creating animated GIF...")
+
+    create_gif(imagelist, analysis_folder)
