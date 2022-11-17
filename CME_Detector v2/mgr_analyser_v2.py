@@ -414,47 +414,32 @@ def wrapper(storage_folder, analysis_folder):
 
                 # Convert the 1D array into a 2D image
                 array = np.reshape(np.array(t), (radius, angle))
+                img_cropped = crop_image(array, angle, radius, 40, 50)
 
-                #  Mask the image
-                # mask = create_mask(array, angle, radius, 40, 50)
-                # masked = cv2.bitwise_and(array, mask)
-                # ret, masked = cv2.threshold(masked, 30, 255, cv2.THRESH_TRUNC)
-                masked = crop_image(array, angle, radius, 40, 50)
+                # determine if there is sufficient change across the cropped image to represent a CME
 
-                # cv2.imshow('detrended', masked)
-                # # waitKey() waits for a key press to close the window and 0 specifies indefinite loop
-                # cv2.waitKey()
 
-    #             # Pixelcounter to create graphic pf CMEs
-    #             # A full halo CME should produce counts in the order of 3600
-    #             px = count_nonzero(masked)
-    #
-    #             #  pixelcount as a percentage of the area monitored
-    #             # px = px / (40 * 50 * 250)
-    #
-    #             # px = round(px, 3)
-    #             t = dirlisting[i].split("_")
-    #             posixtime = filehour_converter(t[0], t[1])
-    #             hr = posix2utc(posixtime, "%Y-%m-%d %H:%M")
+
+                t = dirlisting[i].split("_")
+                posixtime = filehour_converter(t[0], t[1])
+                hr = posix2utc(posixtime, "%Y-%m-%d %H:%M")
+
     #             # text_alert(px, hr)
-    #
     #             #  For text alerts, CME in the last day
     #             if px >= px_max:
     #                 if posixtime > (time.time() - 86400):
     #                     px_max = px
     #                     px_date =  hr
-    #
+    # #
     #             pixel_count.append(px)
-    #             dates.append(hr)
-    #             # Annotate image for display
-    #             array = annotate_image(array, angle, radius, hr)
+                dates.append(hr)
+                # Annotate image for display
+                array = annotate_image(array, angle, radius, hr)
     #
-    #             f_image = analysis_folder + "//" + "dt_" + dirlisting[i]
-    #             # image_save(f_image, array)
-    #             image_save(f_image, masked)
-    #
-    #
-    #             print("dt", i, len(dirlisting))
+                f_image = analysis_folder + "//" + "dt_" + dirlisting[i]
+                # image_save(f_image, array)
+                image_save(f_image, array)
+                print("dt", i, len(dirlisting))
     #     else:
     #         msg = "Unable to load picure " + p
     #         log_errors(msg)
