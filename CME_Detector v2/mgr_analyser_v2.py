@@ -368,8 +368,9 @@ def wrapper(storage_folder, analysis_folder):
 
     # make sure they are in chronological order by name
     dirlisting.sort()
-    startflag = True
-    pic_old = None
+    # startflag = True
+    # pic_old = None
+
     avg_array = []
     pixel_count = []
     dates = []
@@ -419,12 +420,13 @@ def wrapper(storage_folder, analysis_folder):
                 # ====================================================================================
                 # determine if there is sufficient change across the cropped image to represent a CME
                 # ====================================================================================
-                value = count_greys(img_cropped)
-                # print(value)
-
                 t = dirlisting[i].split("_")
                 posixtime = filehour_converter(t[0], t[1])
+
                 hr = posix2utc(posixtime, "%Y-%m-%d %H:%M")
+                value = count_greys(img_cropped)
+                d = hr + "," + str(value)
+                pixel_count.append(d)
 
     #             # text_alert(px, hr)
     #             #  For text alerts, CME in the last day
@@ -462,5 +464,10 @@ def wrapper(storage_folder, analysis_folder):
         imagelist = imagelist[cut:]
     imagelist.sort()
     print("creating animated GIF...")
-
     create_gif(imagelist, analysis_folder)
+
+    with open("values.csv", "w") as v:
+        for data in pixel_count:
+            d = str(data) + "\n"
+            v.write(d)
+        v.close()
