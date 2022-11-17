@@ -416,9 +416,9 @@ def wrapper(storage_folder, analysis_folder):
                 array = np.reshape(np.array(t), (radius, angle))
                 img_cropped = crop_image(array, angle, radius, 40, 50)
 
+                # ====================================================================================
                 # determine if there is sufficient change across the cropped image to represent a CME
-
-
+                # ====================================================================================
 
                 t = dirlisting[i].split("_")
                 posixtime = filehour_converter(t[0], t[1])
@@ -437,7 +437,7 @@ def wrapper(storage_folder, analysis_folder):
                 array = annotate_image(array, angle, radius, hr)
     #
                 f_image = analysis_folder + "//" + "dt_" + dirlisting[i]
-                # image_save(f_image, array)
+                # image_save(f_image, img_cropped)
                 image_save(f_image, array)
                 print("dt", i, len(dirlisting))
     #     else:
