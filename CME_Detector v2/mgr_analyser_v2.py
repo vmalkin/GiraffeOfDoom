@@ -42,6 +42,15 @@ def create_gif(list, filesfolder):
                       loop=0)
 
 
+def create_video(list):
+    print(list[0].shape)
+    video = cv2.VideoWriter("cme.avi",0, 1, (320, 240))
+    for item in list:
+        video.write(item)
+    video.release()
+
+
+
 def median_filter(data):
     # simple 3 value median filter
     filtered = []
@@ -454,7 +463,7 @@ def wrapper(storage_folder, analysis_folder):
     #
     # # Create line graphs of CME detections
     #
-    #
+
     # create an animated GIF of the last 24 images from the Analysis folder.
     imagelist = os.listdir(analysis_folder)
     imagelist.sort()
@@ -464,8 +473,10 @@ def wrapper(storage_folder, analysis_folder):
 
         imagelist = imagelist[cut:]
     imagelist.sort()
+
     print("creating animated GIF...")
     create_gif(imagelist, analysis_folder)
+    create_video(imagelist)
 
     plot(dates, pixel_count, "cme.jpg", 1700, 600)
 
