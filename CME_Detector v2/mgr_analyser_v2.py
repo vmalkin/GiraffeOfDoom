@@ -425,8 +425,9 @@ def wrapper(storage_folder, analysis_folder):
 
                 hr = posix2utc(posixtime, "%Y-%m-%d %H:%M")
                 value = count_greys(img_cropped)
-                d = hr + "," + str(value)
+                d = value
                 pixel_count.append(d)
+                dates.append(hr)
 
     #             # text_alert(px, hr)
     #             #  For text alerts, CME in the last day
@@ -436,7 +437,7 @@ def wrapper(storage_folder, analysis_folder):
     #                     px_date =  hr
     # #
     #             pixel_count.append(px)
-                dates.append(hr)
+
                 # Annotate image for display
                 array = annotate_image(array, angle, radius, hr)
     #
@@ -466,8 +467,16 @@ def wrapper(storage_folder, analysis_folder):
     print("creating animated GIF...")
     create_gif(imagelist, analysis_folder)
 
-    with open("values.csv", "w") as v:
-        for data in pixel_count:
-            d = str(data) + "\n"
-            v.write(d)
-        v.close()
+    plot(dates, pixel_count, "cme.jpg", 1700, 600)
+
+    # with open("values.csv", "w") as v:
+    #     for data in pixel_count:
+    #         d = str(data) + "\n"
+    #         v.write(d)
+    #     v.close()
+    #
+    # with open("dates.csv", "w") as dd:
+    #     for data in dates:
+    #         d = str(data) + "\n"
+    #         dd.write(d)
+    #     v.close()
