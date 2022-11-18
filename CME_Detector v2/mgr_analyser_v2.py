@@ -42,10 +42,16 @@ def create_gif(list, filesfolder):
                       loop=0)
 
 
-def create_video(list):
-    print(list[0].shape)
-    video = cv2.VideoWriter("cme.avi",0, 1, (320, 240))
+def create_video(list, filesfolder):
+    imagelist = []
     for item in list:
+        j = filesfolder + "/" + item
+        i = cv2.imread(item)
+        imagelist.append(i)
+    print(imagelist[0].shape)
+
+    video = cv2.VideoWriter("cme.avi",0, 1, (imagelist[0].width, imagelist[0].height))
+    for item in imagelist:
         video.write(item)
     video.release()
 
@@ -386,83 +392,83 @@ def wrapper(storage_folder, analysis_folder):
     px_max = cme_min
     px_date = posix2utc((time.time() - 86400), "%Y-%m-%d %H:%M")
 
-    # Parsing thru the list of images
-    for i in range (0, len(dirlisting)):
-        p = storage_folder + "//" + dirlisting[i]
-
-        # load and preprocess the image
-        img = image_load(p)
-        img = erode_dilate_img(img)
-
-        # Occasionally images are loaded that are broken. If this is not the case...
-        if img is not None:
-            # greyscale the image
-            img_g = greyscale_img(img)
-
-            # Create an array of pictures with which to create a running average image
-            pic = np.array(img_g, np.float64)
-            avg_array.append(pic)
-
-            # create an average of "x" number of images
-            if len(avg_array) >= 3:
-                # ALWAYS POP
-                avg_array.pop(0)
-                # the average image
-                pic_new = np.mean(avg_array, axis=0)
-                pic_new = normalise_image(pic_new)
-
-                #  convolve the returned residuals image from polar to rectangular co-ords. the data is appended to
-                #  an array
-                radius = 220
-                angle = 360
-                t = []
-                for j in range(radius, 0, -1):
-                    for k in range(0, angle):
-                        coords = polar_to_rectangular(k, j)
-                        pixelvalue = pic_new[coords[1], coords[0]]
-                        t.append(pixelvalue)
-
-                # Convert the 1D array into a 2D image
-                array = np.reshape(np.array(t), (radius, angle))
-                img_cropped = crop_image(array, angle, radius, 40, 50)
-
-                # ====================================================================================
-                # determine if there is sufficient change across the cropped image to represent a CME
-                # ====================================================================================
-                t = dirlisting[i].split("_")
-                posixtime = filehour_converter(t[0], t[1])
-
-                hr = posix2utc(posixtime, "%Y-%m-%d %H:%M")
-                value = count_greys(img_cropped)
-                d = value
-                pixel_count.append(d)
-                dates.append(hr)
-
-    #             # text_alert(px, hr)
-    #             #  For text alerts, CME in the last day
-    #             if px >= px_max:
-    #                 if posixtime > (time.time() - 86400):
-    #                     px_max = px
-    #                     px_date =  hr
+    # # Parsing thru the list of images
+    # for i in range (0, len(dirlisting)):
+    #     p = storage_folder + "//" + dirlisting[i]
+    #
+    #     # load and preprocess the image
+    #     img = image_load(p)
+    #     img = erode_dilate_img(img)
+    #
+    #     # Occasionally images are loaded that are broken. If this is not the case...
+    #     if img is not None:
+    #         # greyscale the image
+    #         img_g = greyscale_img(img)
+    #
+    #         # Create an array of pictures with which to create a running average image
+    #         pic = np.array(img_g, np.float64)
+    #         avg_array.append(pic)
+    #
+    #         # create an average of "x" number of images
+    #         if len(avg_array) >= 3:
+    #             # ALWAYS POP
+    #             avg_array.pop(0)
+    #             # the average image
+    #             pic_new = np.mean(avg_array, axis=0)
+    #             pic_new = normalise_image(pic_new)
+    #
+    #             #  convolve the returned residuals image from polar to rectangular co-ords. the data is appended to
+    #             #  an array
+    #             radius = 220
+    #             angle = 360
+    #             t = []
+    #             for j in range(radius, 0, -1):
+    #                 for k in range(0, angle):
+    #                     coords = polar_to_rectangular(k, j)
+    #                     pixelvalue = pic_new[coords[1], coords[0]]
+    #                     t.append(pixelvalue)
+    #
+    #             # Convert the 1D array into a 2D image
+    #             array = np.reshape(np.array(t), (radius, angle))
+    #             img_cropped = crop_image(array, angle, radius, 40, 50)
+    #
+    #             # ====================================================================================
+    #             # determine if there is sufficient change across the cropped image to represent a CME
+    #             # ====================================================================================
+    #             t = dirlisting[i].split("_")
+    #             posixtime = filehour_converter(t[0], t[1])
+    #
+    #             hr = posix2utc(posixtime, "%Y-%m-%d %H:%M")
+    #             value = count_greys(img_cropped)
+    #             d = value
+    #             pixel_count.append(d)
+    #             dates.append(hr)
+    #
+    # #             # text_alert(px, hr)
+    # #             #  For text alerts, CME in the last day
+    # #             if px >= px_max:
+    # #                 if posixtime > (time.time() - 86400):
+    # #                     px_max = px
+    # #                     px_date =  hr
+    # # #
+    # #             pixel_count.append(px)
+    #
+    #             # Annotate image for display
+    #             array = annotate_image(array, angle, radius, hr)
     # #
-    #             pixel_count.append(px)
-
-                # Annotate image for display
-                array = annotate_image(array, angle, radius, hr)
-    #
-                f_image = analysis_folder + "//" + "dt_" + dirlisting[i]
-                # image_save(f_image, img_cropped)
-                image_save(f_image, array)
-                print("dt", i, len(dirlisting))
-    #     else:
-    #         msg = "Unable to load picure " + p
-    #         log_errors(msg)
-    #
-    # #  Creat text alert
-    # text_alert(px_max, px_date)
-    #
-    # # Create line graphs of CME detections
-    #
+    #             f_image = analysis_folder + "//" + "dt_" + dirlisting[i]
+    #             # image_save(f_image, img_cropped)
+    #             image_save(f_image, array)
+    #             print("dt", i, len(dirlisting))
+    # #     else:
+    # #         msg = "Unable to load picure " + p
+    # #         log_errors(msg)
+    # #
+    # # #  Creat text alert
+    # # text_alert(px_max, px_date)
+    # #
+    # # # Create line graphs of CME detections
+    # #
 
     # create an animated GIF of the last 24 images from the Analysis folder.
     imagelist = os.listdir(analysis_folder)
@@ -476,7 +482,7 @@ def wrapper(storage_folder, analysis_folder):
 
     print("creating animated GIF...")
     create_gif(imagelist, analysis_folder)
-    create_video(imagelist)
+    create_video(imagelist, analysis_folder)
 
     plot(dates, pixel_count, "cme.jpg", 1700, 600)
 
