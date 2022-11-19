@@ -10,6 +10,7 @@ import calendar
 from statistics import median
 from PIL import Image
 from plotly import graph_objects as go
+from plotly.subplots import make_subplots
 
 # # offset values when coronagraph mask support-vane in top-right position
 # offset_x = -5
@@ -48,7 +49,7 @@ def create_video(list, filesfolder):
         i = cv2.imread(j)
         imagelist.append(i)
 
-    fourcc = cv2.VideoWriter_fourcc(*'avc1')
+    fourcc = cv2.VideoWriter_fourcc(*"mp4v")
 
     video = cv2.VideoWriter("cme.mp4", fourcc, 4, (360, 220))
     for item in imagelist:
@@ -108,6 +109,14 @@ def plot_mini(dates, pixel_count):
                   annotation_font_color="darkslategrey", annotation_font_size=20, annotation_position="top left")
     fig.update_traces(line=dict(width=4, color=red))
     fig.write_image(file=savefile, format='jpg')
+
+
+def plot_diffs(dates, pixel_count, filename, width, height):
+    savefile = filename
+    plotdata = go.Scatter(x=dates, y=pixel_count, mode="lines")
+    fig = make_subplots(specs=[[{"secondary_y": True}]])
+    for rows in pixel_count:
+        fig.add_trace(go.Scatter(x=dates, y=rows, mode="lines"), secondary_y=True)
 
 
 def plot(dates, pixel_count, filename, width, height):
@@ -372,7 +381,8 @@ def wrapper(storage_folder, analysis_folder):
     dirlisting.sort()
     # startflag = True
     # pic_old = None
-
+    cme_sum_new = None
+    cme_sum_old = None
     avg_array = []
     pixel_count = []
     dates = []
@@ -428,10 +438,19 @@ def wrapper(storage_folder, analysis_folder):
                 hr = posix2utc(posixtime, "%Y-%m-%d %H:%M")
 
                 # value = count_greys(img_cropped)
-                arrayofsums = process_columns(img_cropped)
+                cme_sum = process_columns(img_cropped)
+                if cme_sum_new == None:
+                    cme_sum_new = cme_sum
+                    cme_sum_old = cme_sum
+                else:
+                    cme_sum_new = cme_sum
 
-                # pixel_count.append(value)
-                # dates.append(hr)
+                cme_diffs = np.subtract(cme_sum_new, cme_sum_old)
+                cme_sum_old = cme_sum_new
+
+                # value = sum(cme_diffs)
+                pixel_count.append(cme_diffs)
+                dates.append(hr)
 
 
     #             # text_alert(px, hr)
@@ -477,3 +496,6 @@ def wrapper(storage_folder, analysis_folder):
     # pixel_count = median_filter(pixel_count)
     # plot(dates, pixel_count, "cme.jpg", 1700, 600)
 
+    print("creating CME plot...")
+    pixel_count = median_filter(pixel_count)
+    plot_diffs(dates, pixel_count, "cme.jpg", 1700, 600)
