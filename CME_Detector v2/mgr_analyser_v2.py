@@ -113,10 +113,10 @@ def plot_mini(dates, pixel_count):
 
 def plot_diffs(dates, pixel_count, filename, width, height):
     savefile = filename
-    plotdata = go.Scatter(x=dates, y=pixel_count, mode="lines")
     fig = make_subplots(specs=[[{"secondary_y": True}]])
     for rows in pixel_count:
-        fig.add_trace(go.Scatter(x=dates, y=rows, mode="lines"), secondary_y=True)
+        fig.add_trace(go.Scatter(y=rows, mode="lines"), secondary_y=True)
+    fig.write_image(file=savefile, format='jpg')
 
 
 def plot(dates, pixel_count, filename, width, height):
@@ -384,7 +384,8 @@ def wrapper(storage_folder, analysis_folder):
     cme_sum_new = None
     cme_sum_old = None
     avg_array = []
-    pixel_count = []
+    cme_count = []
+    cme_spread = []
     dates = []
     px_max = cme_min
     px_date = posix2utc((time.time() - 86400), "%Y-%m-%d %H:%M")
@@ -448,8 +449,10 @@ def wrapper(storage_folder, analysis_folder):
                 cme_diffs = np.subtract(cme_sum_new, cme_sum_old)
                 cme_sum_old = cme_sum_new
 
-                # value = sum(cme_diffs)
-                pixel_count.append(cme_diffs)
+                value = sum(cme_sum)
+                cme_count.append(value)
+
+                cme_spread.append(cme_diffs)
                 dates.append(hr)
 
 
@@ -492,10 +495,9 @@ def wrapper(storage_folder, analysis_folder):
     print("creating video...")
     create_video(imagelist, analysis_folder)
 
-    # print("creating CME plot...")
-    # pixel_count = median_filter(pixel_count)
-    # plot(dates, pixel_count, "cme.jpg", 1700, 600)
+    print("creating CME plot...")
+    cme_count = median_filter(cme_count)
+    plot(dates, cme_count, "cme.jpg", 1700, 600)
 
     print("creating CME plot...")
-    pixel_count = median_filter(pixel_count)
-    plot_diffs(dates, pixel_count, "cme.jpg", 1700, 600)
+    plot_diffs(dates, cme_spread, "cme_diffs.jpg", 1700, 600)
