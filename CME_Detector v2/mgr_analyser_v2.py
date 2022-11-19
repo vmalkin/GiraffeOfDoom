@@ -116,6 +116,14 @@ def plot_diffs(dates, pixel_count, filename, width, height):
     fig = make_subplots(specs=[[{"secondary_y": True}]])
     for rows in pixel_count:
         fig.add_trace(go.Scatter(y=rows, mode="lines"), secondary_y=True)
+
+    fig.update_layout(font=dict(size=20), title_font_size=21)
+    fig.update_layout(width=width, height=height, title="Coronal Mass Ejections",
+                      xaxis_title="Circumferential Coverage<br><sub>http://DunedinAurora.nz</sub>",
+                      yaxis_title="Pixel Count",
+                      plot_bgcolor="#e0e0e0")
+    fig.update_layout(plot_bgcolor="#a0a0a0", paper_bgcolor="#a0a0a0")
+
     fig.write_image(file=savefile, format='jpg')
 
 
