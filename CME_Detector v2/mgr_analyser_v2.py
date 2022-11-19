@@ -28,12 +28,18 @@ cme_partial = 0.6
 cme_halo = 0.8
 
 
-def analyse_columns(data):
+def process_columns(image):
 # takes a cropped image. Determins a value for each column in the image.
 # A CME should appear as a surge in brighness across several connected columns that
 # changes with time.
 # Streamers are ever present, but although contiguous, change far more slowly
-    pass
+    returnarray = []
+    img = np.array(image)
+    array_length = image.shape[1]
+    for i in range(0, array_length):
+        column_sum = sum(img[:,i])
+        returnarray.append(column_sum)
+    return returnarray
 
 def create_video(list, filesfolder):
     imagelist = []
@@ -420,10 +426,13 @@ def wrapper(storage_folder, analysis_folder):
                 posixtime = filehour_converter(t[0], t[1])
 
                 hr = posix2utc(posixtime, "%Y-%m-%d %H:%M")
-                value = count_greys(img_cropped)
-                d = value
-                pixel_count.append(d)
-                dates.append(hr)
+
+                # value = count_greys(img_cropped)
+                arrayofsums = process_columns(img_cropped)
+
+                # pixel_count.append(value)
+                # dates.append(hr)
+
 
     #             # text_alert(px, hr)
     #             #  For text alerts, CME in the last day
@@ -464,8 +473,7 @@ def wrapper(storage_folder, analysis_folder):
     print("creating video...")
     create_video(imagelist, analysis_folder)
 
-    pixel_count = median_filter(pixel_count)
-
-    print("creating CME plot...")
-    plot(dates, pixel_count, "cme.jpg", 1700, 600)
+    # print("creating CME plot...")
+    # pixel_count = median_filter(pixel_count)
+    # plot(dates, pixel_count, "cme.jpg", 1700, 600)
 
