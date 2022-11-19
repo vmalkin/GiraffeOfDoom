@@ -28,6 +28,13 @@ cme_partial = 0.6
 cme_halo = 0.8
 
 
+def analyse_columns(data):
+# takes a cropped image. Determins a value for each column in the image.
+# A CME should appear as a surge in brighness across several connected columns that
+# changes with time.
+# Streamers are ever present, but although contiguous, change far more slowly
+    pass
+
 def create_video(list, filesfolder):
     imagelist = []
     for item in list:
