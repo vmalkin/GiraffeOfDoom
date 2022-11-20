@@ -113,9 +113,15 @@ def plot_mini(dates, pixel_count):
 
 def plot_diffs(dates, pixel_count, filename, width, height):
     savefile = filename
-    fig = make_subplots(specs=[[{"secondary_y": True}]])
-    for rows in pixel_count:
-        fig.add_trace(go.Scatter(y=rows, mode="lines"), secondary_y=True)
+    # fig = make_subplots(specs=[[{"secondary_y": False}]])
+    # fig = make_subplots()
+    plotdata = go.Scatter(mode="lines")
+    fig = go.Figure(plotdata)
+    for i in range(0, len(pixel_count)):
+        try:
+            fig.add_trace(go.Scatter(y=pixel_count[i], mode="lines", name=dates[i],))
+        except:
+            fig.add_trace(go.Scatter(y=pixel_count[i], mode="lines"))
 
     fig.update_layout(font=dict(size=20), title_font_size=21)
     fig.update_layout(width=width, height=height, title="Coronal Mass Ejections",
@@ -503,9 +509,15 @@ def wrapper(storage_folder, analysis_folder):
     print("creating video...")
     create_video(imagelist, analysis_folder)
 
-    print("creating CME plot...")
+    # The data files need to be truncated to the last 100 entries - approx 24 hours
+    if len(dates) > 100:
+        dates = dates[-100:]
+        cme_count = cme_count[-100:]
+        cme_spread = cme_spread[-100:]
+
+    print("creating CME plot files...")
     cme_count = median_filter(cme_count)
     plot(dates, cme_count, "cme.jpg", 1700, 600)
-
-    print("creating CME plot...")
     plot_diffs(dates, cme_spread, "cme_diffs.jpg", 1700, 600)
+
+    print("All finished!")
