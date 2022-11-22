@@ -516,7 +516,7 @@ def wrapper(storage_folder, analysis_folder):
         cme_spread = cme_spread[-100:]
 
     print("creating CME plot files...")
-    cme_count = median_filter(cme_count)
+    # cme_count = median_filter(cme_count)
     plot(dates, cme_count, "cme.jpg", 1700, 600)
     plot_diffs(dates, cme_spread, "cme_diffs.jpg", 1700, 600)
 
