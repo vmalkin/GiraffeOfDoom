@@ -10,7 +10,8 @@ import calendar
 from statistics import median
 from PIL import Image
 from plotly import graph_objects as go
-from plotly.subplots import make_subplots
+# from plotly.subplots import make_subplots
+import standard_stuff
 
 # # offset values when coronagraph mask support-vane in top-right position
 # offset_x = -5
@@ -510,14 +511,25 @@ def wrapper(storage_folder, analysis_folder):
     create_video(imagelist, analysis_folder)
 
     # The data files need to be truncated to the last 100 entries - approx 24 hours
-    if len(dates) > 200:
-        dates = dates[-100:]
-        cme_count = cme_count[-100:]
-        cme_spread = cme_spread[-100:]
+    trunc = 100
+    if len(dates) > trunc:
+        dates = dates[-trunc:]
+        cme_count = cme_count[-trunc:]
+        cme_spread = cme_spread[-trunc:]
 
     print("creating CME plot files...")
     # cme_count = median_filter(cme_count)
     plot(dates, cme_count, "cme.jpg", 1700, 600)
-    plot_diffs(dates, cme_spread, "cme_diffs.jpg", 1700, 600)
+    dt_end = standard_stuff.calc_end(cme_count)
+    dt_mid = standard_stuff.calc_middle(cme_count)
+    dt_start = standard_stuff.calc_start(cme_count)
+    dt_total = dt_start + dt_mid + dt_end
 
+    detrended = []
+    for dt, cme in zip(dt_total, cme_count):
+        d = cme - dt
+        detrended.append(d)
+    plot(dates, detrended, "cme_dtrend.jpg", 600, 600)
+
+    plot_diffs(dates, cme_spread, "cme_diffs.jpg", 1700, 600)
     print("All finished!")
