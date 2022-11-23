@@ -510,7 +510,7 @@ def wrapper(storage_folder, analysis_folder):
     create_video(imagelist, analysis_folder)
 
     # The data files need to be truncated to the last 100 entries - approx 24 hours
-    if len(dates) > 100:
+    if len(dates) > 200:
         dates = dates[-100:]
         cme_count = cme_count[-100:]
         cme_spread = cme_spread[-100:]
