@@ -529,7 +529,7 @@ def wrapper(storage_folder, analysis_folder):
     for dt, cme in zip(dt_total, cme_count):
         d = cme - dt
         detrended.append(d)
-    plot(dates, detrended, "cme_dtrend.jpg", 600, 600)
+    plot(dates, detrended, "cme_dtrend.jpg", 600, 800)
 
     plot_diffs(dates, cme_spread, "cme_diffs.jpg", 1700, 600)
     print("All finished!")
