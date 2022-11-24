@@ -78,38 +78,38 @@ def dx_dt(data):
     return returndata
 
 
-def plot_mini(dates, pixel_count):
-    savefile = "cme_mini.jpg"
-    # pixel_count = median_filter(pixel_count)
-    dates.pop(0)
-    dates.pop(len(dates) - 1)
-    red = "rgba(150, 0, 0, 1)"
-    green = "rgba(0, 150, 0, 0.8)"
-    orange = "rgba(150, 100, 0, 0.8)"
-
-    plotdata = go.Scatter(x=dates, y=pixel_count, mode="lines")
-    fig = go.Figure(plotdata)
-
-    fig.update_layout(font=dict(size=20), title_font_size=24)
-    fig.update_layout(title="Coronal Mass Ejections",
-                      xaxis_title="Date/time UTC<br><sub>http://DunedinAurora.nz</sub>",
-                      yaxis_title="CME Coverage",
-                      plot_bgcolor="#e0e0e0")
-    fig.update_layout(plot_bgcolor="#a0a0a0", paper_bgcolor="#a0a0a0")
-
-    # fig.update_xaxes(nticks=50, tickangle=45)
-    fig.update_yaxes(range=[0, 1.01])
-
-    fig.add_hline(y=cme_min, line_color=green, line_width=6, annotation_text="Minor CME",
-                  annotation_font_color="darkslategrey", annotation_font_size=20, annotation_position="top left")
-
-    fig.add_hline(y=cme_partial, line_color=orange, line_width=6, annotation_text="Partial Halo CME",
-                  annotation_font_color="darkslategrey", annotation_font_size=20, annotation_position="top left")
-
-    fig.add_hline(y=1, line_color=red, line_width=6, annotation_text="Full Halo CME",
-                  annotation_font_color="darkslategrey", annotation_font_size=20, annotation_position="top left")
-    fig.update_traces(line=dict(width=4, color=red))
-    fig.write_image(file=savefile, format='jpg')
+# def plot_mini(dates, pixel_count):
+#     savefile = "cme_mini.jpg"
+#     # pixel_count = median_filter(pixel_count)
+#     dates.pop(0)
+#     dates.pop(len(dates) - 1)
+#     red = "rgba(150, 0, 0, 1)"
+#     green = "rgba(0, 150, 0, 0.8)"
+#     orange = "rgba(150, 100, 0, 0.8)"
+#
+#     plotdata = go.Scatter(x=dates, y=pixel_count, mode="lines")
+#     fig = go.Figure(plotdata)
+#
+#     fig.update_layout(font=dict(size=20), title_font_size=24)
+#     fig.update_layout(title="Coronal Mass Ejections",
+#                       xaxis_title="Date/time UTC<br><sub>http://DunedinAurora.nz</sub>",
+#                       yaxis_title="CME Coverage",
+#                       plot_bgcolor="#e0e0e0")
+#     fig.update_layout(plot_bgcolor="#a0a0a0", paper_bgcolor="#a0a0a0")
+#
+#     # fig.update_xaxes(nticks=50, tickangle=45)
+#     fig.update_yaxes(range=[0, 1.01])
+#
+#     fig.add_hline(y=cme_min, line_color=green, line_width=6, annotation_text="Minor CME",
+#                   annotation_font_color="darkslategrey", annotation_font_size=20, annotation_position="top left")
+#
+#     fig.add_hline(y=cme_partial, line_color=orange, line_width=6, annotation_text="Partial Halo CME",
+#                   annotation_font_color="darkslategrey", annotation_font_size=20, annotation_position="top left")
+#
+#     fig.add_hline(y=1, line_color=red, line_width=6, annotation_text="Full Halo CME",
+#                   annotation_font_color="darkslategrey", annotation_font_size=20, annotation_position="top left")
+#     fig.update_traces(line=dict(width=4, color=red))
+#     fig.write_image(file=savefile, format='jpg')
 
 
 def plot_diffs(dates, pixel_count, filename, width, height):
@@ -149,12 +149,15 @@ def plot(dates, pixel_count, filename, width, height):
     fig.update_layout(font=dict(size=20), title_font_size=21)
     fig.update_layout(width=width, height=height, title="Coronal Mass Ejections",
                       xaxis_title="Date/time UTC<br><sub>http://DunedinAurora.nz</sub>",
-                      yaxis_title="CME Coverage",
+                      yaxis_title="CME Coverage - %",
                       plot_bgcolor="#e0e0e0")
     fig.update_layout(plot_bgcolor="#a0a0a0", paper_bgcolor="#a0a0a0")
 
     fig.update_xaxes(nticks=25, tickangle=45)
-    # fig.update_yaxes(range=[0, 1.01])
+
+    ymax = max(pixel_count) * 1.1
+    ymin = min(pixel_count) * 0.9
+    fig.update_yaxes(range=[ymin, ymax])
 
     fig.add_hline(y=cme_min, line_color=green, line_width=6, annotation_text="Minor CME",
                   annotation_font_color=green, annotation_font_size=20, annotation_position="top left")
@@ -164,6 +167,7 @@ def plot(dates, pixel_count, filename, width, height):
 
     fig.add_hline(y=1, line_color=red, line_width=6, annotation_text="Full Halo CME",
                   annotation_font_color=red, annotation_font_size=20, annotation_position="top left")
+
     fig.update_traces(line=dict(width=4, color=red))
     fig.write_image(file=savefile, format='jpg')
 
@@ -394,6 +398,12 @@ def wrapper(storage_folder, analysis_folder):
 
     # make sure they are in chronological order by name
     dirlisting.sort()
+
+    # We do not need ALL of the images in the Lasco folder, only the last day or so. Approx
+    # 100 images per day.
+    truncate = 150
+    dirlisting = dirlisting[-truncate:]
+
     # startflag = True
     # pic_old = None
     cme_sum_new = None
@@ -501,21 +511,20 @@ def wrapper(storage_folder, analysis_folder):
     imagelist = os.listdir(analysis_folder)
     imagelist.sort()
     # approx no of images in a day
-    listlength = 100
-    if len(imagelist) > listlength:
-        cut = len(imagelist) - listlength
-        imagelist = imagelist[cut:]
+    listlength = truncate
+    if len(imagelist) > truncate:
+        imagelist = imagelist[-truncate:]
     imagelist.sort()
 
     print("creating video...")
     create_video(imagelist, analysis_folder)
 
     # The data files need to be truncated to the last 100 entries - approx 24 hours
-    trunc = 100
-    if len(dates) > trunc:
-        dates = dates[-trunc:]
-        cme_count = cme_count[-trunc:]
-        cme_spread = cme_spread[-trunc:]
+
+    if len(dates) > truncate:
+        dates = dates[-truncate:]
+        cme_count = cme_count[-truncate:]
+        cme_spread = cme_spread[-truncate:]
 
     print("creating CME plot files...")
     # # cme_count = median_filter(cme_count)
