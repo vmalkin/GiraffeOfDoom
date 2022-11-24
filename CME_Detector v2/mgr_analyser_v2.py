@@ -156,14 +156,14 @@ def plot(dates, pixel_count, filename, width, height):
     fig.update_xaxes(nticks=25, tickangle=45)
     # fig.update_yaxes(range=[0, 1.01])
 
-    # fig.add_hline(y=cme_min, line_color=green, line_width=6, annotation_text="Minor CME",
-    #               annotation_font_color=green, annotation_font_size=20, annotation_position="top left")
-    #
-    # fig.add_hline(y=cme_partial, line_color=orange, line_width=6, annotation_text="Partial Halo CME",
-    #               annotation_font_color=orange, annotation_font_size=20, annotation_position="top left")
-    #
-    # fig.add_hline(y=1, line_color=red, line_width=6, annotation_text="Full Halo CME",
-    #               annotation_font_color=red, annotation_font_size=20, annotation_position="top left")
+    fig.add_hline(y=cme_min, line_color=green, line_width=6, annotation_text="Minor CME",
+                  annotation_font_color=green, annotation_font_size=20, annotation_position="top left")
+
+    fig.add_hline(y=cme_partial, line_color=orange, line_width=6, annotation_text="Partial Halo CME",
+                  annotation_font_color=orange, annotation_font_size=20, annotation_position="top left")
+
+    fig.add_hline(y=1, line_color=red, line_width=6, annotation_text="Full Halo CME",
+                  annotation_font_color=red, annotation_font_size=20, annotation_position="top left")
     fig.update_traces(line=dict(width=4, color=red))
     fig.write_image(file=savefile, format='jpg')
 
@@ -518,18 +518,22 @@ def wrapper(storage_folder, analysis_folder):
         cme_spread = cme_spread[-trunc:]
 
     print("creating CME plot files...")
-    # cme_count = median_filter(cme_count)
-    plot(dates, cme_count, "cme.jpg", 1700, 600)
+    # # cme_count = median_filter(cme_count)
+    # plot(dates, cme_count, "cme.jpg", 1700, 600)
+
+    # Detrend the dme data to flatten out gradual albedo changes
     dt_end = standard_stuff.calc_end(cme_count)
     dt_mid = standard_stuff.calc_middle(cme_count)
     dt_start = standard_stuff.calc_start(cme_count)
     dt_total = dt_start + dt_mid + dt_end
-
+    maxpixels = angle * radius
     detrended = []
     for dt, cme in zip(dt_total, cme_count):
         d = cme - dt
+        d = d / maxpixels
+        d = round(d, 4)
         detrended.append(d)
-    plot(dates, detrended, "cme_dtrend.jpg", 600, 800)
+    plot(dates, detrended, "cme_dtrend.jpg", 1000, 600)
 
     plot_diffs(dates, cme_spread, "cme_diffs.jpg", 1700, 600)
     print("All finished!")
