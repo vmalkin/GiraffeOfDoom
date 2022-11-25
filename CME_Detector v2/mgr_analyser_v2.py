@@ -50,9 +50,9 @@ def create_video(list, filesfolder):
         i = cv2.imread(j)
         imagelist.append(i)
 
-    fourcc = cv2.VideoWriter_fourcc(*"mp4v")
+    fourcc = cv2.VideoWriter_fourcc('X', 'V', 'I', 'D')
 
-    video = cv2.VideoWriter("cme.mp4", fourcc, 4, (360, 220))
+    video = cv2.VideoWriter("cme.avi", fourcc, 4, (360, 220))
     for item in imagelist:
         video.write(item)
     video.release()
