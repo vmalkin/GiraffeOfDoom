@@ -78,38 +78,38 @@ def dx_dt(data):
     return returndata
 
 
-# def plot_mini(dates, pixel_count):
-#     savefile = "cme_mini.jpg"
-#     # pixel_count = median_filter(pixel_count)
-#     dates.pop(0)
-#     dates.pop(len(dates) - 1)
-#     red = "rgba(150, 0, 0, 1)"
-#     green = "rgba(0, 150, 0, 0.8)"
-#     orange = "rgba(150, 100, 0, 0.8)"
-#
-#     plotdata = go.Scatter(x=dates, y=pixel_count, mode="lines")
-#     fig = go.Figure(plotdata)
-#
-#     fig.update_layout(font=dict(size=20), title_font_size=24)
-#     fig.update_layout(title="Coronal Mass Ejections",
-#                       xaxis_title="Date/time UTC<br><sub>http://DunedinAurora.nz</sub>",
-#                       yaxis_title="CME Coverage",
-#                       plot_bgcolor="#e0e0e0")
-#     fig.update_layout(plot_bgcolor="#a0a0a0", paper_bgcolor="#a0a0a0")
-#
-#     # fig.update_xaxes(nticks=50, tickangle=45)
-#     fig.update_yaxes(range=[0, 1.01])
-#
-#     fig.add_hline(y=cme_min, line_color=green, line_width=6, annotation_text="Minor CME",
-#                   annotation_font_color="darkslategrey", annotation_font_size=20, annotation_position="top left")
-#
-#     fig.add_hline(y=cme_partial, line_color=orange, line_width=6, annotation_text="Partial Halo CME",
-#                   annotation_font_color="darkslategrey", annotation_font_size=20, annotation_position="top left")
-#
-#     fig.add_hline(y=1, line_color=red, line_width=6, annotation_text="Full Halo CME",
-#                   annotation_font_color="darkslategrey", annotation_font_size=20, annotation_position="top left")
-#     fig.update_traces(line=dict(width=4, color=red))
-#     fig.write_image(file=savefile, format='jpg')
+def plot_mini(dates, pixel_count):
+    savefile = "cme_mini.jpg"
+    # pixel_count = median_filter(pixel_count)
+    dates.pop(0)
+    dates.pop(len(dates) - 1)
+    red = "rgba(150, 0, 0, 1)"
+    green = "rgba(0, 150, 0, 0.8)"
+    orange = "rgba(150, 100, 0, 0.8)"
+
+    plotdata = go.Scatter(x=dates, y=pixel_count, mode="lines")
+    fig = go.Figure(plotdata)
+
+    fig.update_layout(font=dict(size=20), title_font_size=24)
+    fig.update_layout(title="Coronal Mass Ejections",
+                      xaxis_title="Date/time UTC<br><sub>http://DunedinAurora.nz</sub>",
+                      yaxis_title="CME Coverage",
+                      plot_bgcolor="#e0e0e0")
+    fig.update_layout(plot_bgcolor="#a0a0a0", paper_bgcolor="#a0a0a0")
+
+    # fig.update_xaxes(nticks=50, tickangle=45)
+    fig.update_yaxes(range=[0, 1.01])
+
+    fig.add_hline(y=cme_min, line_color=green, line_width=6, annotation_text="Minor CME",
+                  annotation_font_color="darkslategrey", annotation_font_size=20, annotation_position="top left")
+
+    fig.add_hline(y=cme_partial, line_color=orange, line_width=6, annotation_text="Partial Halo CME",
+                  annotation_font_color="darkslategrey", annotation_font_size=20, annotation_position="top left")
+
+    fig.add_hline(y=1, line_color=red, line_width=6, annotation_text="Full Halo CME",
+                  annotation_font_color="darkslategrey", annotation_font_size=20, annotation_position="top left")
+    fig.update_traces(line=dict(width=4, color=red))
+    fig.write_image(file=savefile, format='jpg')
 
 
 def plot_diffs(dates, pixel_count, filename, width, height):
@@ -149,12 +149,11 @@ def plot(dates, pixel_count, filename, width, height):
     fig.update_layout(font=dict(size=20), title_font_size=21)
     fig.update_layout(width=width, height=height, title="Coronal Mass Ejections",
                       xaxis_title="Date/time UTC<br><sub>http://DunedinAurora.nz</sub>",
-                      yaxis_title="CME Coverage - %",
+                      yaxis_title="CME Coverage",
                       plot_bgcolor="#e0e0e0")
     fig.update_layout(plot_bgcolor="#a0a0a0", paper_bgcolor="#a0a0a0")
 
-    fig.update_xaxes(nticks=25, tickangle=45)
-
+    fig.update_xaxes(nticks=12, tickangle=45)
     ymax = max(pixel_count) * 1.1
     ymin = min(pixel_count) * 0.9
     fig.update_yaxes(range=[ymin, ymax])
@@ -542,7 +541,7 @@ def wrapper(storage_folder, analysis_folder):
         d = d / maxpixels
         d = round(d, 4)
         detrended.append(d)
-    plot(dates, detrended, "cme_dtrend.jpg", 1000, 600)
 
+    plot(dates, detrended, "cme_dtrend.jpg", 1000, 600)
     plot_diffs(dates, cme_spread, "cme_diffs.jpg", 1700, 600)
     print("All finished!")
