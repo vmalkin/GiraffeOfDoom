@@ -113,10 +113,10 @@ if __name__ == "__main__":
         downloadimages(newimages, storage_folder)
 
     # Analyse and enhance stored images
-    # try:
-    mgr_analyser_v2.wrapper(storage_folder, analysis_folder)
-    # except:
-    #     print("The Analyser has failed!")
+    try:
+        mgr_analyser_v2.wrapper(storage_folder, analysis_folder)
+    except:
+        print("The Analyser has failed!")
 
     try:
         mgr_enhancer.wrapper(storage_folder, images_folder)
