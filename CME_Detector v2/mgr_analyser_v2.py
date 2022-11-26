@@ -43,6 +43,21 @@ def process_columns(image):
         returnarray.append(column_sum)
     return returnarray
 
+
+def create_gif(list, filesfolder):
+    imagelist = []
+    for item in list:
+        j = filesfolder + "/" + item
+        i = Image.open(j)
+        imagelist.append(i)
+    imagelist[0].save("cme.gif",
+                      format="GIF",
+                      save_all=True,
+                      append_images=imagelist[1:],
+                      duration=500,
+                      loop=0)
+
+
 def create_video(list, filesfolder):
     imagelist = []
     for item in list:
@@ -411,8 +426,8 @@ def wrapper(storage_folder, analysis_folder):
     cme_count = []
     cme_spread = []
     dates = []
-    px_max = cme_min
-    px_date = posix2utc((time.time() - 86400), "%Y-%m-%d %H:%M")
+    # px_max = cme_min
+    # px_date = posix2utc((time.time() - 86400), "%Y-%m-%d %H:%M")
 
     # Parsing thru the list of images
     for i in range (0, len(dirlisting)):
@@ -479,16 +494,6 @@ def wrapper(storage_folder, analysis_folder):
                 cme_spread.append(cme_diffs)
                 dates.append(hr)
 
-
-    #             # text_alert(px, hr)
-    #             #  For text alerts, CME in the last day
-    #             if px >= px_max:
-    #                 if posixtime > (time.time() - 86400):
-    #                     px_max = px
-    #                     px_date =  hr
-    # #
-    #             pixel_count.append(px)
-
                 # Annotate image for display
                 array = annotate_image(array, angle, radius, hr)
 
@@ -496,15 +501,6 @@ def wrapper(storage_folder, analysis_folder):
                 # image_save(f_image, img_cropped)
                 image_save(f_image, array)
                 print("dt", i, len(dirlisting))
-    #     else:
-    #         msg = "Unable to load picure " + p
-    #         log_errors(msg)
-    #
-    # #  Creat text alert
-    # text_alert(px_max, px_date)
-    #
-    # # Create line graphs of CME detections
-    #
 
     # create video of the last 24 hours from the Analysis folder.
     imagelist = os.listdir(analysis_folder)
@@ -517,9 +513,9 @@ def wrapper(storage_folder, analysis_folder):
 
     print("creating video...")
     create_video(imagelist, analysis_folder)
+    create_gif(imagelist, analysis_folder)
 
     # The data files need to be truncated to the last 100 entries - approx 24 hours
-
     if len(dates) > truncate:
         dates = dates[-truncate:]
         cme_count = cme_count[-truncate:]
@@ -544,4 +540,11 @@ def wrapper(storage_folder, analysis_folder):
 
     plot(dates, detrended, "cme_dtrend.jpg", 1000, 600)
     plot_diffs(dates, cme_spread, "cme_diffs.jpg", 1700, 600)
+
+    # If the max value of the detrended data is over 0.5 then we can write an alert for potential
+    # CMEs to check.
+    px = max(detrended)
+    hr = dates[detrended.index(max(detrended))]
+    text_alert(px, hr)
+
     print("All finished!")
