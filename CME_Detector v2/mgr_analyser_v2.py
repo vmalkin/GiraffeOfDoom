@@ -85,13 +85,6 @@ def median_filter(data):
             t.pop(0)
     return filtered
 
-def dx_dt(data):
-    returndata = []
-    for i in range (1, len(data)):
-        x = data[i] - data[i - 1]
-        returndata.append(x)
-    return returndata
-
 
 def plot_mini(dates, pixel_count):
     savefile = "cme_mini.jpg"
@@ -169,7 +162,12 @@ def plot(dates, pixel_count, filename, width, height):
     fig.update_layout(plot_bgcolor="#a0a0a0", paper_bgcolor="#a0a0a0")
 
     fig.update_xaxes(nticks=12, tickangle=45)
-    ymax = max(pixel_count) * 1.1
+
+    if max(pixel_count) > cme_min:
+        ymax = max(pixel_count) * 1.1
+    else:
+        ymax = cme_min
+
     ymin = min(pixel_count) * 0.9
     fig.update_yaxes(range=[ymin, ymax])
 
