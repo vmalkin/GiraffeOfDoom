@@ -10,7 +10,6 @@ import calendar
 from statistics import median
 from PIL import Image
 from plotly import graph_objects as go
-# from plotly.subplots import make_subplots
 import standard_stuff
 
 # # offset values when coronagraph mask support-vane in top-right position
@@ -413,9 +412,8 @@ def wrapper(storage_folder, analysis_folder):
 
     # We do not need ALL of the images in the Lasco folder, only the last day or so. Approx
     # 100 images per day.
-    truncate = 150
+    truncate = 120
     dirlisting = dirlisting[-truncate:]
-
     avg_array = []
     cme_count = []
     cme_spread = []
@@ -504,7 +502,7 @@ def wrapper(storage_folder, analysis_folder):
         cme_spread = cme_spread[-truncate:]
 
     print("creating CME plot files...")
-    cme_count = median_filter(cme_count)
+    # cme_count = median_filter(cme_count)
     # plot(dates, cme_count, "cme.jpg", 1700, 600)
 
     # Detrend the dme data to flatten out gradual albedo changes
@@ -520,6 +518,7 @@ def wrapper(storage_folder, analysis_folder):
         d = round(d, 4)
         detrended.append(d)
 
+    detrended = median_filter(detrended)
     plot(dates, detrended, "cme_dtrend.jpg", 1000, 600)
     plot_diffs(dates, cme_spread, "cme_diffs.jpg", 1700, 600)
 
