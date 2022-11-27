@@ -144,7 +144,7 @@ def plot_diffs(dates, pixel_count, filename, width, height):
 
 def plot(dates, pixel_count, filename, width, height):
     savefile = filename
-    pixel_count = median_filter(pixel_count)
+    # pixel_count = median_filter(pixel_count)
     dates.pop(0)
     dates.pop(len(dates) - 1)
     red = "rgba(150, 0, 0, 1)"
@@ -168,7 +168,7 @@ def plot(dates, pixel_count, filename, width, height):
     else:
         ymax = cme_min
 
-    ymin = min(pixel_count) * 0.9
+    ymin = min(pixel_count)
     fig.update_yaxes(range=[ymin, ymax])
 
     fig.add_hline(y=cme_min, line_color=green, line_width=6, annotation_text="Minor CME",
@@ -416,16 +416,10 @@ def wrapper(storage_folder, analysis_folder):
     truncate = 150
     dirlisting = dirlisting[-truncate:]
 
-    # startflag = True
-    # pic_old = None
-    cme_sum_new = None
-    cme_sum_old = None
     avg_array = []
     cme_count = []
     cme_spread = []
     dates = []
-    # px_max = cme_min
-    # px_date = posix2utc((time.time() - 86400), "%Y-%m-%d %H:%M")
 
     # Parsing thru the list of images
     for i in range (0, len(dirlisting)):
@@ -463,7 +457,8 @@ def wrapper(storage_folder, analysis_folder):
                         pixelvalue = pic_new[coords[1], coords[0]]
                         t.append(pixelvalue)
 
-                # Convert the 1D array into a 2D image
+                # Convert the 1D array into a 2D image.
+                # Crop the part that is the detection slot for CMEs near the suns surface
                 array = np.reshape(np.array(t), (radius, angle))
                 img_cropped = crop_image(array, angle, radius, 40, 50)
 
@@ -474,22 +469,11 @@ def wrapper(storage_folder, analysis_folder):
                 posixtime = filehour_converter(t[0], t[1])
 
                 hr = posix2utc(posixtime, "%Y-%m-%d %H:%M")
-
-                # value = count_greys(img_cropped)
                 cme_sum = process_columns(img_cropped)
-                if cme_sum_new == None:
-                    cme_sum_new = cme_sum
-                    cme_sum_old = cme_sum
-                else:
-                    cme_sum_new = cme_sum
-
-                cme_diffs = np.subtract(cme_sum_new, cme_sum_old)
-                cme_sum_old = cme_sum_new
-
                 value = sum(cme_sum)
                 cme_count.append(value)
 
-                cme_spread.append(cme_diffs)
+                # cme_spread.append(cme_diffs)
                 dates.append(hr)
 
                 # Annotate image for display
@@ -503,8 +487,8 @@ def wrapper(storage_folder, analysis_folder):
     # create video of the last 24 hours from the Analysis folder.
     imagelist = os.listdir(analysis_folder)
     imagelist.sort()
+
     # approx no of images in a day
-    listlength = truncate
     if len(imagelist) > truncate:
         imagelist = imagelist[-truncate:]
     imagelist.sort()
@@ -520,7 +504,7 @@ def wrapper(storage_folder, analysis_folder):
         cme_spread = cme_spread[-truncate:]
 
     print("creating CME plot files...")
-    # # cme_count = median_filter(cme_count)
+    cme_count = median_filter(cme_count)
     # plot(dates, cme_count, "cme.jpg", 1700, 600)
 
     # Detrend the dme data to flatten out gradual albedo changes
@@ -542,6 +526,7 @@ def wrapper(storage_folder, analysis_folder):
     # If the max value of the detrended data is over 0.5 then we can write an alert for potential
     # CMEs to check.
     px = max(detrended)
+    print(px)
     hr = dates[detrended.index(max(detrended))]
     text_alert(px, hr)
 
