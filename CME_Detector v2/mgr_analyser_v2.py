@@ -85,58 +85,43 @@ def median_filter(data):
     return filtered
 
 
-def plot_mini(dates, pixel_count):
-    savefile = "cme_mini.jpg"
-    # pixel_count = median_filter(pixel_count)
-    dates.pop(0)
-    dates.pop(len(dates) - 1)
-    red = "rgba(150, 0, 0, 1)"
-    green = "rgba(0, 150, 0, 0.8)"
-    orange = "rgba(150, 100, 0, 0.8)"
-
-    plotdata = go.Scatter(x=dates, y=pixel_count, mode="lines")
-    fig = go.Figure(plotdata)
-
-    fig.update_layout(font=dict(size=20), title_font_size=24)
-    fig.update_layout(title="Coronal Mass Ejections",
-                      xaxis_title="Date/time UTC<br><sub>http://DunedinAurora.nz</sub>",
-                      yaxis_title="CME Coverage",
-                      plot_bgcolor="#e0e0e0")
-    fig.update_layout(plot_bgcolor="#a0a0a0", paper_bgcolor="#a0a0a0")
-
-    # fig.update_xaxes(nticks=50, tickangle=45)
-    fig.update_yaxes(range=[0, 1.01])
-
-    fig.add_hline(y=cme_min, line_color=green, line_width=6, annotation_text="Minor CME",
-                  annotation_font_color="darkslategrey", annotation_font_size=20, annotation_position="top left")
-
-    fig.add_hline(y=cme_partial, line_color=orange, line_width=6, annotation_text="Partial Halo CME",
-                  annotation_font_color="darkslategrey", annotation_font_size=20, annotation_position="top left")
-
-    fig.add_hline(y=1, line_color=red, line_width=6, annotation_text="Full Halo CME",
-                  annotation_font_color="darkslategrey", annotation_font_size=20, annotation_position="top left")
-    fig.update_traces(line=dict(width=4, color=red))
-    fig.write_image(file=savefile, format='jpg')
-
-
 def plot_diffs(dates, pixel_count, filename, width, height):
     savefile = filename
-    # fig = make_subplots(specs=[[{"secondary_y": False}]])
-    # fig = make_subplots()
     plotdata = go.Scatter(mode="lines")
     fig = go.Figure(plotdata)
-    for i in range(0, len(pixel_count)):
-        try:
-            fig.add_trace(go.Scatter(y=pixel_count[i], mode="lines", name=dates[i],))
-        except:
-            fig.add_trace(go.Scatter(y=pixel_count[i], mode="lines"))
+    colourstep = int(round(255 / len(pixel_count), 0))
+    verticalstep = int(len(pixel_count[0]) / 4)
 
-    fig.update_layout(font=dict(size=20), title_font_size=21)
-    fig.update_layout(width=width, height=height, title="Coronal Mass Ejections",
+    for i in range(0, len(pixel_count)):
+        j = colourstep * i
+        # linecolour = "rgba(" + str(255 - i) + ", " + str(40 + i) + ", 0, 1)"
+        linecolour = "rgba(" + str(0 + j) + ", 0," + str(255 - j) + ",0.8)"
+        try:
+            fig.add_trace(go.Scatter(y=pixel_count[i], mode="lines", name=dates[i], line=dict(color=linecolour)))
+        except:
+            fig.add_trace(go.Scatter(y=pixel_count[i], mode="lines", line=dict(color=linecolour)))
+
+    fig.update_xaxes(showgrid=False, showticklabels=False)
+    fig.update_yaxes(showgrid=True, gridwidth=1, gridcolor='#505050')
+
+
+    ll = "#909090"
+    fig.add_vline(x=0, line_color=ll, line_width=3, annotation_text="North",
+                  annotation_font_color=ll, annotation_font_size=20, annotation_position="top right")
+    fig.add_vline(x=verticalstep, line_color=ll, line_width=3, annotation_text="East",
+                  annotation_font_color=ll, annotation_font_size=20, annotation_position="top right")
+    fig.add_vline(x=verticalstep * 2, line_color=ll, line_width=3, annotation_text="South",
+                  annotation_font_color=ll, annotation_font_size=20, annotation_position="top right")
+    fig.add_vline(x=verticalstep * 3, line_color=ll, line_width=3, annotation_text="West",
+                  annotation_font_color=ll, annotation_font_size=20, annotation_position="top right")
+
+    fig.update_layout(font=dict(size=20, color="#909090"), title_font_size=21)
+    fig.update_layout(showlegend=False)
+
+    fig.update_layout(width=width, height=height, title="Coronal Brightness over 24 Hours",
                       xaxis_title="Circumferential Coverage<br><sub>http://DunedinAurora.nz</sub>",
-                      yaxis_title="Pixel Count",
-                      plot_bgcolor="#e0e0e0")
-    fig.update_layout(plot_bgcolor="#a0a0a0", paper_bgcolor="#a0a0a0")
+                      yaxis_title="Brightness - Arbitrary Units")
+    fig.update_layout(plot_bgcolor="#000000", paper_bgcolor="#000000")
 
     fig.write_image(file=savefile, format='jpg')
 
@@ -468,6 +453,8 @@ def wrapper(storage_folder, analysis_folder):
 
                 hr = posix2utc(posixtime, "%Y-%m-%d %H:%M")
                 cme_sum = process_columns(img_cropped)
+                # build up an array of the CME column data
+                cme_spread.append(cme_sum)
                 value = sum(cme_sum)
                 cme_count.append(value)
 
