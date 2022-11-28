@@ -85,27 +85,23 @@ def median_filter(data):
     return filtered
 
 
-def plot_diffs(dates, pixel_count, filename, width, height):
+def plot_diffs(pixel_count, filename, width, height):
     savefile = filename
     plotdata = go.Scatter(mode="lines")
     fig = go.Figure(plotdata)
     colourstep = int(round(255 / len(pixel_count), 0))
     verticalstep = int(len(pixel_count[0]) / 4)
 
-    for i in range(0, len(dates)):
+    for i in range(0, len(pixel_count)):
         j = colourstep * i
         # linecolour = "rgba(" + str(255 - i) + ", " + str(40 + i) + ", 0, 1)"
         linecolour = "rgba(" + str(0 + j) + ", 0," + str(255 - j) + ", 1)"
-        try:
-            # fig.add_shape(type="rect", xref="paper", yref="paper", x0=10+i+5,  y0=10, x1=20+i+5, y1=20, fillcolor=linecolour, line_color=linecolour)
-            fig.add_trace(go.Scatter(y=pixel_count[i], mode="lines", name=dates[i], line=dict(color=linecolour, width=2)))
-        except:
-            fig.add_trace(go.Scatter(y=pixel_count[i], mode="lines", line=dict(color="#ffff00", width=3)))
-
+        fig.add_trace(go.Scatter(y=pixel_count[i], mode="lines", line=dict(color=linecolour, width=2)))
+        if i == len(pixel_count) - 1:
+            fig.add_trace(go.Scatter(y=pixel_count[i], mode="lines", line=dict(color="#ffff00", width=2)))
 
     fig.update_xaxes(showgrid=False, showticklabels=False)
     fig.update_yaxes(showgrid=True, gridwidth=1, gridcolor='#505050')
-
 
     ll = "#909090"
     fig.add_vline(x=0, line_color=ll, line_width=3, annotation_text="North",
@@ -396,7 +392,7 @@ def wrapper(storage_folder, analysis_folder):
     # interpolated data in inaccurate
     dirlisting = []
     for name in glob.glob(storage_folder + "/*.jpg"):
-        n = name.split("\\")
+        n = name.split("/")
         nn = n[1]
         dirlisting.append(nn)
 
@@ -515,7 +511,7 @@ def wrapper(storage_folder, analysis_folder):
 
     detrended = median_filter(detrended)
     plot(dates, detrended, "cme_dtrend.jpg", 1000, 600)
-    plot_diffs(dates, cme_spread, "cme_diffs.jpg", 1700, 600)
+    plot_diffs(cme_spread, "cme_diffs.jpg", 1700, 600)
 
     # If the max value of the detrended data is over 0.5 then we can write an alert for potential
     # CMEs to check.
