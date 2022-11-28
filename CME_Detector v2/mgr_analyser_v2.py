@@ -392,7 +392,9 @@ def wrapper(storage_folder, analysis_folder):
     # interpolated data in inaccurate
     dirlisting = []
     for name in glob.glob(storage_folder + "/*.jpg"):
-        n = name.split("/")
+        name = os.path.normpath(name)
+        # print(name)
+        n = name.split("\\")
         nn = n[1]
         dirlisting.append(nn)
 
