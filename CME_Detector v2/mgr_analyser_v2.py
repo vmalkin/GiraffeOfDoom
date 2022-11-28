@@ -95,11 +95,12 @@ def plot_diffs(dates, pixel_count, filename, width, height):
     for i in range(0, len(pixel_count)):
         j = colourstep * i
         # linecolour = "rgba(" + str(255 - i) + ", " + str(40 + i) + ", 0, 1)"
-        linecolour = "rgba(" + str(0 + j) + ", 0," + str(255 - j) + ",0.8)"
+        linecolour = "rgba(" + str(0 + j) + ", 0," + str(255 - j) + ",0.7)"
         try:
-            fig.add_trace(go.Scatter(y=pixel_count[i], mode="lines", name=dates[i], line=dict(color=linecolour)))
+            # fig.add_shape(type="rect", xref="paper", yref="paper", x0=10+i+5,  y0=10, x1=20+i+5, y1=20, fillcolor=linecolour, line_color=linecolour)
+            fig.add_trace(go.Scatter(y=pixel_count[i], mode="lines", name=dates[i], line=dict(color=linecolour, width=5)))
         except:
-            fig.add_trace(go.Scatter(y=pixel_count[i], mode="lines", line=dict(color=linecolour)))
+            fig.add_trace(go.Scatter(y=pixel_count[i], mode="lines", line=dict(color=linecolour, width=5)))
 
     fig.update_xaxes(showgrid=False, showticklabels=False)
     fig.update_yaxes(showgrid=True, gridwidth=1, gridcolor='#505050')
