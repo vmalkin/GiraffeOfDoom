@@ -1,7 +1,6 @@
 import os
 import cv2
 import cv2.cv2
-import numpy
 import numpy as np
 from math import sin, cos, radians
 import datetime
@@ -11,6 +10,7 @@ from statistics import median
 from PIL import Image
 from plotly import graph_objects as go
 import standard_stuff
+import glob
 
 # # offset values when coronagraph mask support-vane in top-right position
 # offset_x = -5
@@ -391,7 +391,12 @@ def erode_dilate_img(image_to_process):
 
 def wrapper(storage_folder, analysis_folder):
     # get a list of the current stored images.
-    dirlisting = os.listdir(storage_folder)
+    # dirlisting = os.listdir(storage_folder)
+    dirlisting = []
+    for name in glob.glob(storage_folder + "/*.jpg"):
+        print(name)
+        dirlisting.append(name)
+    print(dirlisting)
 
     # make sure they are in chronological order by name
     dirlisting.sort()
