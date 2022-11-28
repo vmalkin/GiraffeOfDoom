@@ -85,6 +85,29 @@ def median_filter(data):
     return filtered
 
 
+def plot_diffs_polar(pixel_count, filename, width, height):
+    savefile = filename
+    colourstep = int(round(255 / len(pixel_count), 0))
+    verticalstep = int(len(pixel_count[0]) / 4)
+    theta = []
+    for i in range(0, len(pixel_count)):
+        theta.append(i)
+
+    fig = go.Figure()
+    for i in range(0, len(pixel_count)):
+        j = colourstep * i
+        linecolour = "rgba(" + str(0 + j) + ", 0," + str(255 - j) + ", 1)"
+        fig.add_trace(go.Scatterpolar(
+            r=pixel_count,
+            theta=theta,
+            mode="lines",
+            line_color=linecolour
+        ))
+    fig.write_image(file=savefile, format='jpg')
+
+
+
+
 def plot_diffs(pixel_count, filename, width, height):
     savefile = filename
     plotdata = go.Scatter(mode="lines")
@@ -514,6 +537,7 @@ def wrapper(storage_folder, analysis_folder):
     detrended = median_filter(detrended)
     plot(dates, detrended, "cme_dtrend.jpg", 1000, 600)
     plot_diffs(cme_spread, "cme_diffs.jpg", 1700, 600)
+    plot_diffs_polar(cme_spread, "cme_polar.jpg", 600, 600)
 
     # If the max value of the detrended data is over 0.5 then we can write an alert for potential
     # CMEs to check.
