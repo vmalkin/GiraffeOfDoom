@@ -35,14 +35,20 @@ def parseimages(listofimages, imagestore):
 def downloadimages(listofimages, storagelocation):
     for img in listofimages:
         file = storagelocation + "/" + img
+        i = img.split(".")
+        baddy = str(i[0])
+        badfile = storagelocation + "/" + baddy + ".no"
         img1url = baseURL + img
-        if os.path.exists(file) is False:
-            response1 = get_resource_from_url(img1url)
-            print("Saving file ", file)
-            with open(file, 'wb') as f:
-                # f.write(response1.read())
-                f.write(response1.content)
-            f.close()
+        if os.path.exists(badfile) is False:
+            if os.path.exists(file) is False:
+                response1 = get_resource_from_url(img1url)
+                print("Saving file ", file)
+                with open(file, 'wb') as f:
+                    # f.write(response1.read())
+                    f.write(response1.content)
+                f.close()
+        else:
+            print("Corrupted image bypassed from processing")
 
 
 def get_imagelist(url_to_get):
@@ -102,7 +108,7 @@ if __name__ == "__main__":
 
     # Parse for old epoch files that have been added
     print("Getting images for old epoch")
-    # ymd_old = "20221121"
+    # ymd_old = "20221122"
     baseURL = "https://soho.nascom.nasa.gov/data/REPROCESSING/Completed/" + year + "/c3/" + ymd_old + "/"
     listofimages = get_imagelist(baseURL)
     newimages = parseimages(listofimages, storage_folder)
