@@ -391,12 +391,17 @@ def erode_dilate_img(image_to_process):
 
 def wrapper(storage_folder, analysis_folder):
     # get a list of the current stored images.
+    # IGNORE files with the suffix .no as they are corrupted or reconstructed by the LASCO team, and the
+    # interpolated data in inaccurate
     # dirlisting = os.listdir(storage_folder)
+
     dirlisting = []
     for name in glob.glob(storage_folder + "/*.jpg"):
-        print(name)
-        dirlisting.append(name)
-    print(dirlisting)
+        n = name.split("\\")
+        nn = n[1]
+        dirlisting.append(nn)
+
+
 
     # make sure they are in chronological order by name
     dirlisting.sort()
