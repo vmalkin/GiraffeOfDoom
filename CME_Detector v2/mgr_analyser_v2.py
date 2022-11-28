@@ -119,7 +119,7 @@ def plot_diffs(dates, pixel_count, filename, width, height):
     fig.update_layout(font=dict(size=20, color="#909090"), title_font_size=21)
     fig.update_layout(showlegend=False)
 
-    fig.update_layout(width=width, height=height, title="Coronal Brightness over 24 Hours",
+    fig.update_layout(width=width, height=height, title="Corona Brightness Profile @ 3 Solar Diameters - 24 Hours",
                       xaxis_title="Circumferential Coverage<br><sub>http://DunedinAurora.nz</sub>",
                       yaxis_title="Brightness - Arbitrary Units")
     fig.update_layout(plot_bgcolor="#000000", paper_bgcolor="#000000")
@@ -393,15 +393,11 @@ def wrapper(storage_folder, analysis_folder):
     # get a list of the current stored images.
     # IGNORE files with the suffix .no as they are corrupted or reconstructed by the LASCO team, and the
     # interpolated data in inaccurate
-    # dirlisting = os.listdir(storage_folder)
-
     dirlisting = []
     for name in glob.glob(storage_folder + "/*.jpg"):
         n = name.split("\\")
         nn = n[1]
         dirlisting.append(nn)
-
-
 
     # make sure they are in chronological order by name
     dirlisting.sort()
