@@ -113,14 +113,24 @@ def plot_diffs_polar(pixel_count, filename, width, height):
                 mode="lines",
                 line_color="#ffff00"))
 
-    fig.update_layout(font=dict(size=20, color="#909090"), title_font_size=21)
+    fig.update_layout(font=dict(size=20, color="#e0e0e0"), title_font_size=21)
     fig.update_layout(paper_bgcolor="#404040")
-    fig.update_layout(showlegend=False, width=width, height=height)
-    fig.add_shape(type="circle", fillcolor="yellow", x0=10, y0=10, x1=0, y1=0)
+    fig.update_layout(showlegend=False, width=width, height=height,
+                      title="Solar Corona<br>Brightness & Position Angle - 24 Hrs")
+
+    # The sun
+    fig.add_trace(go.Scatterpolar(r=[0], theta=[0], marker=dict(size=int(width * 0.075), color="gold")))
+
     fig.update_polars(
         bgcolor="#000000",
         angularaxis_direction="clockwise",
-        angularaxis_rotation=90
+        angularaxis_rotation=90,
+        angularaxis_gridcolor="#505050",
+        radialaxis_gridcolor="#505050",
+        radialaxis_showticklabels=False,
+        radialaxis_color="white",
+        radialaxis_linewidth=3,
+        radialaxis=dict(title=dict(text="↤ Normal      CME ↦"))
     )
     fig.write_image(file=savefile, format='jpg')
 
@@ -557,7 +567,7 @@ def wrapper(storage_folder, analysis_folder):
     detrended = median_filter(detrended)
     plot(dates, detrended, "cme_dtrend.jpg", 1000, 600)
     plot_diffs(cme_spread, "cme_diffs.jpg", 1700, 600)
-    plot_diffs_polar(cme_spread, "cme_polar.jpg", 800, 800)
+    plot_diffs_polar(cme_spread, "cme_polar.jpg", 800, 900)
 
     # If the max value of the detrended data is over 0.5 then we can write an alert for potential
     # CMEs to check.
