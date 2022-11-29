@@ -88,7 +88,7 @@ def median_filter(data):
 def plot_diffs_polar(pixel_count, filename, width, height):
     savefile = filename
     colourstep = int(round(255 / len(pixel_count), 0))
-    papercolour = "#505050"
+    papercolour = "#303030"
 
     theta = []
     for i in range(0, len(pixel_count[0])):
@@ -123,21 +123,22 @@ def plot_diffs_polar(pixel_count, filename, width, height):
         x_step = x_step + 0.009
         x1_step = x1_step + 0.009
 
-    # The Sun
-    fig.update_shapes(
-        type="circle",
-        xref="x", yref="y",
-        xsizemode="pixel", ysizemode="pixel",
-        xanchor=0, yanchor=0,
-        x0=-50, y0=-50,
-        x1=50, y1=50,
-        fillcolor="gold")
-
+    # # The Sun
+    # sun_x = int(width / 2) - 80
+    # sun_y = int(height / 2) - 90
+    # fig.update_shapes(
+    #     type="circle",
+    #     # xref="x", yref="y",
+    #     xsizemode="pixel", ysizemode="pixel",
+    #     xanchor=0, yanchor=0,
+    #     x0=sun_x - 50, y0=sun_y - 50,
+    #     x1=sun_x + 50, y1=sun_y + 50,
+    #     fillcolor="gold")
 
     fig.update_layout(font=dict(size=20, color="#e0e0e0"), title_font_size=21)
     fig.update_layout(paper_bgcolor=papercolour)
     fig.update_layout(showlegend=False, width=width, height=height,
-                      title="Solar Corona - 24 Hrs<br>Brightness and Azimuth")
+                      title="Solar Corona - 24 Hrs - Brightness and Azimuth")
 
     fig.update_polars(
         hole=0.2,
@@ -156,8 +157,6 @@ def plot_diffs_polar(pixel_count, filename, width, height):
         radialaxis_tickangle=90
     )
     fig.write_image(file=savefile, format='jpg')
-
-
 
 
 def plot_diffs(pixel_count, filename, width, height):
@@ -591,7 +590,7 @@ def wrapper(storage_folder, analysis_folder):
     detrended = median_filter(detrended)
     plot(dates, detrended, "cme_dtrend.jpg", 1000, 600)
     plot_diffs(cme_spread, "cme_diffs.jpg", 1700, 600)
-    plot_diffs_polar(cme_spread, "cme_polar.jpg", 800, 900)
+    plot_diffs_polar(cme_spread, "cme_polar.jpg", 800, 950)
 
     # If the max value of the detrended data is over 0.5 then we can write an alert for potential
     # CMEs to check.
