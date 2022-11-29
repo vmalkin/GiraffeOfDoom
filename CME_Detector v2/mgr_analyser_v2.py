@@ -122,9 +122,9 @@ def plot_diffs_polar(pixel_count, filename, width, height):
         x_step = x_step + 0.009
         x1_step = x1_step + 0.009
 
-    # # The Sun
-    # fig.add_shape(type="circle", xref="x", yref="y", x0=0.05, y0=0.05, x1=0.06, y1=0.06,
-    #               fillcolor="yellow")
+    # The Sun
+    fig.add_shape(type="circle", xref="paper", yref="paper", x0=0.01, y0=0.01, x1=-0.01, y1=-0.01,
+                  fillcolor="yellow")
 
     fig.update_layout(font=dict(size=20, color="#e0e0e0"), title_font_size=21)
     fig.update_layout(paper_bgcolor="#101010")
