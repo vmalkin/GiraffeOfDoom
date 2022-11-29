@@ -123,22 +123,24 @@ def plot_diffs_polar(pixel_count, filename, width, height):
         x_step = x_step + 0.009
         x1_step = x1_step + 0.009
 
-    # # The Sun
-    # sun_x = int(width / 2) - 80
-    # sun_y = int(height / 2) - 90
-    # fig.update_shapes(
-    #     type="circle",
-    #     # xref="x", yref="y",
-    #     xsizemode="pixel", ysizemode="pixel",
-    #     xanchor=0, yanchor=0,
-    #     x0=sun_x - 50, y0=sun_y - 50,
-    #     x1=sun_x + 50, y1=sun_y + 50,
-    #     fillcolor="gold")
+    # The Sun
+    sun_x = int(width / 2) - 80
+    sun_y = int(height / 2) - 90
+    fig.add_shape(
+        type="circle",
+        # xref="x", yref="y",
+        xsizemode="pixel", ysizemode="pixel",
+        xanchor=0, yanchor=0,
+        x0=sun_x - 50, y0=sun_y - 50,
+        x1=sun_x + 50, y1=sun_y + 50,
+        fillcolor="gold")
 
     fig.update_layout(font=dict(size=20, color="#e0e0e0"), title_font_size=21)
     fig.update_layout(paper_bgcolor=papercolour)
     fig.update_layout(showlegend=False, width=width, height=height,
                       title="Solar Corona - 24 Hrs - Brightness and Azimuth")
+
+    fig.add_annotation(text="Hello", x=0, y=0)
 
     fig.update_polars(
         hole=0.2,
