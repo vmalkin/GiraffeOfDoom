@@ -116,7 +116,7 @@ def plot_diffs_polar(pixel_count, filename, width, height):
     fig.update_layout(font=dict(size=20, color="#e0e0e0"), title_font_size=21)
     fig.update_layout(paper_bgcolor="#404040")
     fig.update_layout(showlegend=False, width=width, height=height,
-                      title="Solar Corona<br>Brightness & Position Angle - 24 Hrs")
+                      title="Solar Corona Brightness Contours - 24 Hrs")
 
     # The sun
     fig.add_trace(go.Scatterpolar(r=[0], theta=[0], marker=dict(size=int(width * 0.075), color="gold")))
@@ -130,7 +130,7 @@ def plot_diffs_polar(pixel_count, filename, width, height):
         radialaxis_showticklabels=False,
         radialaxis_color="white",
         radialaxis_linewidth=3,
-        radialaxis=dict(title=dict(text="↤ brightness ↦"))
+        radialaxis=dict(title=dict(text="brightness"))
     )
     fig.write_image(file=savefile, format='jpg')
 
