@@ -114,13 +114,13 @@ def plot_diffs_polar(pixel_count, filename, width, height):
                 line_color="#ffff00"))
 
     fig.update_layout(font=dict(size=20, color="#e0e0e0"), title_font_size=21)
-    fig.update_layout(paper_bgcolor="#404040")
+    fig.update_layout(paper_bgcolor="#101010")
     fig.update_layout(showlegend=False, width=width, height=height,
-                      title="Solar Corona Brightness Contours - 24 Hrs")
+                      title="Solar Corona - 24 Hrs<br>Brightness and Azimuth")
 
     # The sun
     fig.add_trace(go.Scatterpolar(r=[0], theta=[0], marker=dict(size=int(width * 0.075), color="gold")))
-    fig.add_annotation(xref="paper", yref="paper", x=0.5, y=0.5, text="<min    max>")
+    fig.add_annotation(xref="paper", yref="paper", x=0.78, y=0.48, text="← min                        max →")
     fig.update_polars(
         bgcolor="#000000",
         angularaxis_direction="clockwise",
