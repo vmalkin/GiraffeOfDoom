@@ -89,20 +89,39 @@ def plot_diffs_polar(pixel_count, filename, width, height):
     savefile = filename
     colourstep = int(round(255 / len(pixel_count), 0))
     verticalstep = int(len(pixel_count[0]) / 4)
+
     theta = []
-    for i in range(0, len(pixel_count)):
-        theta.append(i)
+    for i in range(0, len(pixel_count[0])):
+        j = i / len(pixel_count[0]) * 360
+        theta.append(j)
+    theta.append(0)
+
 
     fig = go.Figure()
     for i in range(0, len(pixel_count)):
         j = colourstep * i
         linecolour = "rgba(" + str(0 + j) + ", 0," + str(255 - j) + ", 1)"
         fig.add_trace(go.Scatterpolar(
-            r=pixel_count,
+            r=pixel_count[i],
             theta=theta,
             mode="lines",
-            line_color=linecolour
-        ))
+            line_color=linecolour))
+        if i == len(pixel_count) - 1:
+            fig.add_trace(go.Scatterpolar(
+                r=pixel_count[i],
+                theta=theta,
+                mode="lines",
+                line_color="#ffff00"))
+
+    fig.update_layout(font=dict(size=20, color="#909090"), title_font_size=21)
+    fig.update_layout(paper_bgcolor="#404040")
+    fig.update_layout(showlegend=False, width=width, height=height)
+    fig.add_shape(type="circle", fillcolor="yellow", x0=10, y0=10, x1=0, y1=0)
+    fig.update_polars(
+        bgcolor="#000000",
+        angularaxis_direction="clockwise",
+        angularaxis_rotation=90
+    )
     fig.write_image(file=savefile, format='jpg')
 
 
@@ -137,12 +156,13 @@ def plot_diffs(pixel_count, filename, width, height):
                   annotation_font_color=ll, annotation_font_size=20, annotation_position="top right")
 
     fig.update_layout(font=dict(size=20, color="#909090"), title_font_size=21)
+    fig.update_layout(plot_bgcolor="#000000", paper_bgcolor="#000000")
     fig.update_layout(showlegend=False)
 
     fig.update_layout(width=width, height=height, title="Corona Brightness Profile @ 3 Solar Diameters - 24 Hours",
                       xaxis_title="Circumferential Coverage<br><sub>http://DunedinAurora.nz</sub>",
                       yaxis_title="Brightness - Arbitrary Units")
-    fig.update_layout(plot_bgcolor="#000000", paper_bgcolor="#000000")
+
 
     fig.write_image(file=savefile, format='jpg')
 
@@ -537,7 +557,7 @@ def wrapper(storage_folder, analysis_folder):
     detrended = median_filter(detrended)
     plot(dates, detrended, "cme_dtrend.jpg", 1000, 600)
     plot_diffs(cme_spread, "cme_diffs.jpg", 1700, 600)
-    plot_diffs_polar(cme_spread, "cme_polar.jpg", 600, 600)
+    plot_diffs_polar(cme_spread, "cme_polar.jpg", 800, 800)
 
     # If the max value of the detrended data is over 0.5 then we can write an alert for potential
     # CMEs to check.
