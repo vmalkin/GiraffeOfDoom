@@ -444,10 +444,11 @@ def wrapper(storage_folder, analysis_folder):
     # IGNORE files with the suffix .no as they are corrupted or reconstructed by the LASCO team, and the
     # interpolated data in inaccurate
     dirlisting = []
-    for name in glob.glob(storage_folder + "/*.jpg"):
+    path = os.path.join(storage_folder, "*.jpg")
+    for name in glob.glob(path):
         name = os.path.normpath(name)
-        # print(name)
-        n = name.split("\\")
+        seperator = os.path.sep
+        n = name.split(seperator)
         nn = n[1]
         dirlisting.append(nn)
 
