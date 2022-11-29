@@ -130,7 +130,7 @@ def plot_diffs_polar(pixel_count, filename, width, height):
         radialaxis_showticklabels=False,
         radialaxis_color="white",
         radialaxis_linewidth=3,
-        radialaxis=dict(title=dict(text="↤ Normal      CME ↦"))
+        radialaxis=dict(title=dict(text="↤ brightness ↦"))
     )
     fig.write_image(file=savefile, format='jpg')
 
