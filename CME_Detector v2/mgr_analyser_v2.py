@@ -89,29 +89,38 @@ def plot_diffs_polar(pixel_count, filename, width, height):
     savefile = filename
     colourstep = int(round(255 / len(pixel_count), 0))
     verticalstep = int(len(pixel_count[0]) / 4)
-
     theta = []
     for i in range(0, len(pixel_count[0])):
         j = i / len(pixel_count[0]) * 360
         theta.append(j)
     theta.append(0)
 
-
+    x_step = -0.02
+    x1_step = 0.00
     fig = go.Figure()
     for i in range(0, len(pixel_count)):
         j = colourstep * i
         linecolour = "rgba(" + str(0 + j) + ", 0," + str(255 - j) + ", 1)"
+        fig.add_shape(type="rect", xref="paper", yref="paper", x0=x_step, y0=-0.04, x1=x1_step, y1=-0.02,
+                      line=dict(color=linecolour),
+                      fillcolor=linecolour)
         fig.add_trace(go.Scatterpolar(
             r=pixel_count[i],
             theta=theta,
             mode="lines",
             line_color=linecolour))
+
         if i == len(pixel_count) - 1:
+            fig.add_shape(type="rect", xref="paper", yref="paper", x0=x_step, y0=-0.04, x1=x1_step, y1=-0.02,
+                          line=dict(color="yellow"),
+                          fillcolor="yellow")
             fig.add_trace(go.Scatterpolar(
                 r=pixel_count[i],
                 theta=theta,
                 mode="lines",
                 line_color="#ffff00"))
+        x_step = x_step + 0.009
+        x1_step = x1_step + 0.009
 
     fig.update_layout(font=dict(size=20, color="#e0e0e0"), title_font_size=21)
     fig.update_layout(paper_bgcolor="#101010")
@@ -121,6 +130,8 @@ def plot_diffs_polar(pixel_count, filename, width, height):
     # The sun
     fig.add_trace(go.Scatterpolar(r=[0], theta=[0], marker=dict(size=int(width * 0.075), color="gold")))
     fig.add_annotation(xref="paper", yref="paper", x=0.78, y=0.48, text="← min                        max →")
+
+
     fig.update_polars(
         bgcolor="#000000",
         angularaxis_direction="clockwise",
