@@ -88,7 +88,8 @@ def median_filter(data):
 def plot_diffs_polar(pixel_count, filename, width, height):
     savefile = filename
     colourstep = int(round(255 / len(pixel_count), 0))
-    verticalstep = int(len(pixel_count[0]) / 4)
+    papercolour = "#505050"
+
     theta = []
     for i in range(0, len(pixel_count[0])):
         j = i / len(pixel_count[0]) * 360
@@ -123,25 +124,36 @@ def plot_diffs_polar(pixel_count, filename, width, height):
         x1_step = x1_step + 0.009
 
     # The Sun
-    fig.add_shape(type="circle", xref="paper", yref="paper", x0=0.01, y0=0.01, x1=-0.01, y1=-0.01,
-                  fillcolor="yellow")
+    fig.update_shapes(
+        type="circle",
+        xref="x", yref="y",
+        xsizemode="pixel", ysizemode="pixel",
+        xanchor=0, yanchor=0,
+        x0=-50, y0=-50,
+        x1=50, y1=50,
+        fillcolor="gold")
+
 
     fig.update_layout(font=dict(size=20, color="#e0e0e0"), title_font_size=21)
-    fig.update_layout(paper_bgcolor="#101010")
+    fig.update_layout(paper_bgcolor=papercolour)
     fig.update_layout(showlegend=False, width=width, height=height,
                       title="Solar Corona - 24 Hrs<br>Brightness and Azimuth")
 
     fig.update_polars(
-        hole=0.3,
+        hole=0.2,
         bgcolor="#000000",
+        angularaxis_linecolor=papercolour,
         angularaxis_direction="clockwise",
         angularaxis_rotation=90,
-        angularaxis_gridcolor="#505050",
-        radialaxis_gridcolor="#505050",
+        angularaxis_gridwidth=4,
+        angularaxis_gridcolor=papercolour,
+        radialaxis_gridwidth=4,
+        radialaxis_gridcolor=papercolour,
         radialaxis_showticklabels=True,
         radialaxis_color="white",
         radialaxis_linewidth=3,
-        radialaxis=dict(angle=90)
+        radialaxis=dict(angle=90),
+        radialaxis_tickangle=90
     )
     fig.write_image(file=savefile, format='jpg')
 
