@@ -140,7 +140,8 @@ def plot_diffs_polar(pixel_count, filename, width, height):
     fig.update_layout(showlegend=False, width=width, height=height,
                       title="Solar Corona - 24 Hrs - Brightness and Azimuth")
 
-    fig.add_annotation(text="Hello", x=0, y=0)
+    fig.add_annotation(text="24 Hours ago", x=0.1, y=-0.03)
+    fig.add_annotation(text="NOW", x=1.03, y=-0.03)
 
     fig.update_polars(
         hole=0.2,
