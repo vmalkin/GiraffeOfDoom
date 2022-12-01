@@ -6,7 +6,7 @@ import mgr_forecast
 import time
 import common_data
 
-LOGFILE = 'log.csv'
+LOGFILE = common_data.reading_actual
 WAITPERIOD = 86400 * 5
 __version__ = '2.0'
 __author__ = "Vaughn Malkin"
@@ -35,7 +35,7 @@ if __name__ == "__main__":
     # process latest solar image
     sun.get_meridian_coverage()
 
-    # get current posix time and create the datapoint to append the main data
+    # get current posix time and create the datapoint to append to main data
     posixtime = int(time.time())   # sun.coverage  discovr.wind_speed  discovr.wind_density
     dp = mgr_data.DataPoint(posixtime, sun.coverage, discovr.wind_speed, discovr.wind_density)
     print(dp.return_values())
