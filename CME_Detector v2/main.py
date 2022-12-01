@@ -108,7 +108,7 @@ if __name__ == "__main__":
 
     # Parse for old epoch files that have been added
     print("Getting images for old epoch")
-    ymd_old = "20221127"
+    # ymd_old = "20221129"
     baseURL = "https://soho.nascom.nasa.gov/data/REPROCESSING/Completed/" + year + "/c3/" + ymd_old + "/"
     listofimages = get_imagelist(baseURL)
     newimages = parseimages(listofimages, storage_folder)
@@ -118,16 +118,16 @@ if __name__ == "__main__":
         print("\a")
         downloadimages(newimages, storage_folder)
 
-    # Analyse and enhance stored images
-    try:
-        mgr_analyser_v2.wrapper(storage_folder, analysis_folder)
-    except:
-        print("The Analyser has failed!")
+    # # Analyse and enhance stored images
+    # try:
+    mgr_analyser_v2.wrapper(storage_folder, analysis_folder)
+    # except:
+    #     print("The Analyser has failed!")
 
-    try:
-        mgr_enhancer.wrapper(storage_folder, images_folder)
-    except:
-        print("The Enhancer has failed!")
+    # try:
+    mgr_enhancer.wrapper(storage_folder, images_folder)
+    # except:
+    #     print("The Enhancer has failed!")
 
     computation_end = time.time()
     elapsed_mins = round((computation_end - computation_start) / 60, 1)
