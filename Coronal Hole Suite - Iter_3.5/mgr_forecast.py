@@ -149,7 +149,6 @@ class Forecaster:
     def _regression_analysis(self, CH_data):
         # reduce the CH data to x y values only
         xy_data = self._reduce_chdata(CH_data)
-
         sm_x = self._sum_x(xy_data)
         sm_y = self._sum_y(xy_data)
         sm_x_sqr = self._sum_x_sqr(xy_data)
@@ -168,9 +167,7 @@ class Forecaster:
         rg_b = float(sxy / sxx)
         rg_a = float(mn_y - (rg_b * mn_x))
         pearson_r_value = math.sqrt(math.pow((sxy / math.sqrt(sxx * syy)), 2))
-
         regression_parameters = [rg_a, rg_b, pearson_r_value]
-
         return regression_parameters
 
 
@@ -186,7 +183,6 @@ class Forecaster:
         # revised data will contain a list of [launchdate, windspeed]
         # Windspeed may be zero! Esp if the downlink to the sat fails.
         revised_ch_data = []
-
         # get the launchdate for each datapoints windspeed
         for data_p in CH_data:
             appenddata = []
@@ -196,7 +192,6 @@ class Forecaster:
 
         # get the coverage for the launch time
         coverage_data = []
-
         for item in revised_ch_data:
             coverage = self._CH_match_launchdate(CH_data, item[0])
             date = int(item[0])
@@ -222,7 +217,6 @@ class Forecaster:
         pearson = Decimal(parameters[2])
         common_data.report_string = common_data.report_string + ("<br>Linear approximation is: Predicted windspeed = " + str(rg_a)[:6] + " + " + str(rg_b)[:6] + " * coronal hole area on meridian     <br>Pearsons correlation |r| = " + str(pearson)[:6] + "\n")
         # regression_values = ("<p>Pearsons correlation: |r| = " + str(pearson)[:6])
-
 
         # the array that will hold prediction values
         prediction_list = []
