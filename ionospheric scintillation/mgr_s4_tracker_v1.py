@@ -73,7 +73,7 @@ def plot_chart(filename, dates, aggregatedata, seriesnames):
         [16.86, 7.8],
         [16.66, 8.33]
     ]
-    month_number = int(posix2utc(time.time(), "%m"))
+    month_number = int(posix2utc(time.time(), "%m")) - 1
     print("Month: ", month_number, sundict[month_number])
     sunrise = sundict[month_number][0] / 24 * chartwidth - 50
     sunset = sundict[month_number][1] / 24 * chartwidth - 50
