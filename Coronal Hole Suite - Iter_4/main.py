@@ -7,6 +7,7 @@ import time
 import common_data
 
 import sqlite3
+import os
 
 
 # LOGFILE = common_data.reading_actual
@@ -19,12 +20,21 @@ __author__ = "Vaughn Malkin"
 # self._save_image_from_url("https://services.swpc.noaa.gov/images/animations/suvi/primary/195/latest.png", "sun.jpg")
 # solar wind data json http://services.swpc.noaa.gov/products/solar-wind/plasma-2-hour.json
 
-discovr = mgr_json_data.SatelliteDataProcessor("http://services.swpc.noaa.gov/products/solar-wind/plasma-2-hour.json")
-sun = mgr_solar_image.SolarImageProcessor("https://services.swpc.noaa.gov/images/animations/suvi/primary/195/latest.png")
+# discovr = mgr_json_data.SatelliteDataProcessor("http://services.swpc.noaa.gov/products/solar-wind/plasma-2-hour.json")
+# sun = mgr_solar_image.SolarImageProcessor("https://services.swpc.noaa.gov/images/animations/suvi/primary/195/latest.png")
+#
+# data_manager = mgr_data.DataManager(LOGFILE)
+# forecaster = mgr_forecast.Forecaster()
+# common_data.report_string = ""
 
-data_manager = mgr_data.DataManager(LOGFILE)
-forecaster = mgr_forecast.Forecaster()
-common_data.report_string = ""
+def database_create():
+    db = sqlite3.connect(common_data.database)
+    cursor = db.cursor()
+    cursor.execute()
+
+    db.commit()
+    db.close()
+
 
 if __name__ == "__main__":
     # while True:
@@ -32,7 +42,8 @@ if __name__ == "__main__":
     common_data.report_string = ""
 
     # Check database exists. If not create it.
-    if
+    if os.path.isfile(common_data.database) is False:
+        database_create()
 
 
 
