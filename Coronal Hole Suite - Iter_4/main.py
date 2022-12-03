@@ -1,11 +1,10 @@
 import mgr_json_data
 import mgr_solar_image
-import mgr_data
-import mgr_plotter
-import mgr_forecast
-import time
+# import mgr_data
+# import mgr_plotter
+# import mgr_forecast
+# import time
 import common_data
-
 import sqlite3
 import os
 
@@ -20,8 +19,8 @@ __author__ = "Vaughn Malkin"
 # self._save_image_from_url("https://services.swpc.noaa.gov/images/animations/suvi/primary/195/latest.png", "sun.jpg")
 # solar wind data json http://services.swpc.noaa.gov/products/solar-wind/plasma-2-hour.json
 
-# discovr = mgr_json_data.SatelliteDataProcessor("http://services.swpc.noaa.gov/products/solar-wind/plasma-2-hour.json")
-# sun = mgr_solar_image.SolarImageProcessor("https://services.swpc.noaa.gov/images/animations/suvi/primary/195/latest.png")
+
+sun = mgr_solar_image.SolarImageProcessor("https://services.swpc.noaa.gov/images/animations/suvi/primary/195/latest.png")
 #
 # data_manager = mgr_data.DataManager(LOGFILE)
 # forecaster = mgr_forecast.Forecaster()
@@ -30,8 +29,13 @@ __author__ = "Vaughn Malkin"
 def database_create():
     db = sqlite3.connect(common_data.database)
     cursor = db.cursor()
-    cursor.execute()
-
+    cursor.execute("drop table if exists observation;")
+    cursor.execute("create table observation ("
+                   "date text,"
+                   "speed real"
+                   "density real"
+                   "ch_coverage real"
+                   ");")
     db.commit()
     db.close()
 
@@ -45,14 +49,9 @@ if __name__ == "__main__":
     if os.path.isfile(common_data.database) is False:
         database_create()
 
-
-
-
-
-
-    # # get the wind data and coronal hole coverage. In cases of no information, the returned values will be ZERO!
-    # # Get the satellite data
-    # discovr.get_data()
+    # get the wind data and coronal hole coverage. In cases of no information, the returned values will be ZERO!
+    # Get the satellite data
+    sat_data = mgr_json_data.wrapper("http://services.swpc.noaa.gov/products/solar-wind/plasma-2-hour.json")
     #
     # # process latest solar image
     # sun.get_meridian_coverage()

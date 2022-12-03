@@ -13,14 +13,14 @@ import common_data
 # WARNING
 # ERROR
 # CRITICAL
-errorloglevel = logging.DEBUG
-logging.basicConfig(filename="errors.log", format='%(asctime)s %(message)s', level=errorloglevel)
+# errorloglevel = logging.DEBUG
+# logging.basicConfig(filename="errors.log", format='%(asctime)s %(message)s', level=errorloglevel)
 
 # READING_PREDICTED = "prediction.csv"
 # READING_ACTUAL = "log.csv"
-READING_PREDICTED = common_data.reading_predicted
-READING_ACTUAL = common_data.reading_actual
-NULL = ""
+# READING_PREDICTED = common_data.reading_predicted
+# READING_ACTUAL = common_data.reading_actual
+# NULL = ""
 
 # A plot point, used to aggregate multiple data series for final display.
 
