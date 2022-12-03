@@ -30,12 +30,16 @@ def database_create():
     db = sqlite3.connect(common_data.database)
     cursor = db.cursor()
     cursor.execute("drop table if exists observation;")
+    cursor.execute("drop table if exists prediction;")
     cursor.execute("create table observation ("
-                   "date text,"
-                   "speed real"
-                   "density real"
+                   "datetime text primary key unique,"
+                   "speed real,"
+                   "density real,"
                    "ch_coverage real"
                    ");")
+    # It will be helpful to have an initial zero entry in the table
+    cursor.execute('insert into observation (datetime, speed, density, ch_coverage) '
+                   "values (?,?,?,?);",[0,0,0,0])
     db.commit()
     db.close()
 
