@@ -29,13 +29,16 @@ sun = mgr_solar_image.SolarImageProcessor("https://services.swpc.noaa.gov/images
 def database_create():
     db = sqlite3.connect(common_data.database)
     cursor = db.cursor()
-    cursor.execute("drop table if exists observation;")
-    cursor.execute("drop table if exists prediction;")
-    cursor.execute("create table observation ("
-                   "datetime text primary key unique,"
+    cursor.execute("drop table if exists solarwind;")
+    cursor.execute("drop table if exists coronalhole;")
+    cursor.execute("create table solarwind ("
+                   "datetime text primary key,"
                    "speed real,"
-                   "density real,"
-                   "ch_coverage real"
+                   "density real"
+                   ");")
+    cursor.execute("create table coronalhole ("
+                   "datetime text primary key,"
+                   "coverage real"
                    ");")
     # It will be helpful to have an initial zero entry in the table
     cursor.execute('insert into observation (datetime, speed, density, ch_coverage) '
@@ -44,8 +47,11 @@ def database_create():
     db.close()
 
 
+def database_add_satdata(sat_data):
+    pass
+
+
 if __name__ == "__main__":
-    # while True:
     # reset the resport string
     common_data.report_string = ""
 
@@ -56,7 +62,9 @@ if __name__ == "__main__":
     # get the wind data and coronal hole coverage. In cases of no information, the returned values will be ZERO!
     # Get the satellite data
     sat_data = mgr_json_data.wrapper("http://services.swpc.noaa.gov/products/solar-wind/plasma-2-hour.json")
-    #
+    database_add_satdata(sat_data)
+
+
     # # process latest solar image
     # sun.get_meridian_coverage()
     #
