@@ -29,20 +29,17 @@ sun = mgr_solar_image.SolarImageProcessor("https://services.swpc.noaa.gov/images
 def database_create():
     db = sqlite3.connect(common_data.database)
     cursor = db.cursor()
-    cursor.execute("drop table if exists solarwind;")
-    cursor.execute("drop table if exists coronalhole;")
-    cursor.execute("create table solarwind ("
+    cursor.execute("drop table if exists observations;")
+    cursor.execute("create table observations ("
                    "datetime integer primary key,"
                    "speed real,"
-                   "density real"
+                   "density real,"
+                   "cover real"
                    ");")
-    cursor.execute("create table coronalhole ("
-                   "datetime integer primary key,"
-                   "coverage real"
-                   ");")
+
     # It will be helpful to have an initial zero entry in the table
-    cursor.execute('insert into solarwind (datetime, speed, density) '
-                   "values (?,?,?);",[0,0,0])
+    cursor.execute('insert into observations (datetime, speed, density, cover) '
+                   "values (?,?,?,?);",[0, 0, 0, 0])
     db.commit()
     db.close()
 
