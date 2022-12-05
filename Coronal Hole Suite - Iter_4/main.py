@@ -32,23 +32,44 @@ def database_create():
     cursor.execute("drop table if exists solarwind;")
     cursor.execute("drop table if exists coronalhole;")
     cursor.execute("create table solarwind ("
-                   "datetime text primary key,"
+                   "datetime integer primary key,"
                    "speed real,"
                    "density real"
                    ");")
     cursor.execute("create table coronalhole ("
-                   "datetime text primary key,"
+                   "datetime integer primary key,"
                    "coverage real"
                    ");")
     # It will be helpful to have an initial zero entry in the table
-    cursor.execute('insert into observation (datetime, speed, density, ch_coverage) '
-                   "values (?,?,?,?);",[0,0,0,0])
+    cursor.execute('insert into solarwind (datetime, speed, density) '
+                   "values (?,?,?);",[0,0,0])
     db.commit()
     db.close()
 
 
-def database_add_satdata(sat_data):
-    pass
+def database_add_satdata(sat_data, recent_dt):
+    db = sqlite3.connect(common_data.database)
+    cursor = db.cursor()
+
+    for item in sat_data:
+        if item[0] > recent_dt:
+            print(item)
+            cursor.execute('insert into solarwind (datetime, speed, density) '
+                           'values (?,?,?);', item)
+    db.commit()
+    db.close()
+
+
+
+def database_get_latest_dt():
+    db = sqlite3.connect(common_data.database)
+    cursor = db.cursor()
+    cursor.execute('select max(datetime) from solarwind;')
+    for item in cursor.fetchone():
+        returnvalue = item
+    db.close()
+    return returnvalue
+
 
 
 if __name__ == "__main__":
@@ -62,7 +83,9 @@ if __name__ == "__main__":
     # get the wind data and coronal hole coverage. In cases of no information, the returned values will be ZERO!
     # Get the satellite data
     sat_data = mgr_json_data.wrapper("http://services.swpc.noaa.gov/products/solar-wind/plasma-2-hour.json")
-    database_add_satdata(sat_data)
+    latest_stored_dt = database_get_latest_dt()
+    print(latest_stored_dt)
+    database_add_satdata(sat_data, latest_stored_dt)
 
 
     # # process latest solar image
