@@ -86,7 +86,7 @@ def median_filter(data):
 
 def plot_diffs_polar(pixel_count, filename, width, height):
     savefile = filename
-    colourstep = int(round(255 / len(pixel_count), 0))
+    colourstep = int(round(255 / len(pixel_count), 0)) - 1
     papercolour = "#303030"
 
     theta = []
@@ -98,9 +98,9 @@ def plot_diffs_polar(pixel_count, filename, width, height):
     x_step = -0.02
     x1_step = 0.00
     fig = go.Figure()
-    for i in range(0, len(pixel_count)):
+    for i in range(1, len(pixel_count)):
         j = colourstep * i
-        linecolour = "rgba(" + str(0 + j) + ", 0," + str(255 - j) + ", 1)"
+        linecolour = "rgba(" + str(j) + ", 0," + str(255 - j) + ", 1)"
         fig.add_shape(type="rect", xref="paper", yref="paper", x0=x_step, y0=-0.04, x1=x1_step, y1=-0.02,
                       line=dict(color=linecolour),
                       fillcolor=linecolour)
@@ -165,13 +165,13 @@ def plot_diffs(pixel_count, filename, width, height):
     savefile = filename
     plotdata = go.Scatter(mode="lines")
     fig = go.Figure(plotdata)
-    colourstep = int(round(255 / len(pixel_count), 0))
+    colourstep = int(round(255 / len(pixel_count), 0)) - 1
     verticalstep = int(len(pixel_count[0]) / 4)
 
-    for i in range(0, len(pixel_count)):
+    for i in range(1, len(pixel_count)):
         j = colourstep * i
         # linecolour = "rgba(" + str(255 - i) + ", " + str(40 + i) + ", 0, 1)"
-        linecolour = "rgba(" + str(0 + j) + ", 0," + str(255 - j) + ", 1)"
+        linecolour = "rgba(" + str(j) + ", 0," + str(255 - j) + ", 1)"
         fig.add_trace(go.Scatter(y=pixel_count[i], mode="lines", line=dict(color=linecolour, width=2)))
         if i == len(pixel_count) - 1:
             fig.add_trace(go.Scatter(y=pixel_count[i], mode="lines", line=dict(color="#ffff00", width=2)))
@@ -553,27 +553,27 @@ def wrapper(storage_folder, analysis_folder):
                 image_save(f_image, array)
                 print("dt", i, len(dirlisting))
 
-    # create video of the last 24 hours from the Analysis folder.
-    # approx no of images in a day
-    imagelist = os.listdir(analysis_folder)
-    imagelist.sort()
-    if len(imagelist) > truncate:
-        imagelist = imagelist[-truncate:]
-    imagelist.sort()
-    print("creating video...")
-    create_video(imagelist, analysis_folder, "cme.avi")
-    create_gif(imagelist, analysis_folder, "cme.gif")
+    # # create video of the last 24 hours from the Analysis folder.
+    # # approx no of images in a day
+    # imagelist_analysis = os.listdir(analysis_folder)
+    # imagelist_analysis.sort()
+    # if len(imagelist_analysis) > truncate:
+    #     imagelist_analysis = imagelist_analysis[-truncate:]
+    # imagelist_analysis.sort()
+    # print("creating video...")
+    # create_video(imagelist_analysis, analysis_folder, "cme.avi")
+    # create_gif(imagelist_analysis, analysis_folder, "cme.gif")
 
     # create video of the last 24 hours from the enhanced folder.
     # approx no of images in a day is 30 for the enhanced folder!
-    imagelist = os.listdir("enhanced_512")
-    imagelist.sort()
-    if len(imagelist) > 30:
-        imagelist = imagelist[-truncate:]
-    imagelist.sort()
+    imagelist_enhanced = os.listdir("enhanced_512")
+    imagelist_enhanced.sort()
+    if len(imagelist_enhanced) > 30:
+        imagelist_enhanced = imagelist_enhanced[-truncate:]
+    imagelist_enhanced.sort()
     print("creating video...")
-    create_video(imagelist, "enhanced_512", "whole_disc.avi")
-    create_gif(imagelist, "enhanced_512", "whole_disc.gif")
+    # create_video(imagelist_enhanced, "enhanced_512", "whole_disc.avi")
+    create_gif(imagelist_enhanced, "enhanced_512", "whole_disc.gif")
 
     # The data files need to be truncated to the last 100 entries - approx 24 hours
     if len(dates) > truncate:
