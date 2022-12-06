@@ -51,8 +51,8 @@ def database_add_satdata(sat_data, recent_dt):
     for item in sat_data:
         if item[0] > recent_dt:
             print(item)
-            cursor.execute('insert into solarwind (datetime, speed, density) '
-                           'values (?,?,?);', item)
+            cursor.execute('insert into observations (datetime, speed, density, cover) '
+                           'values (?,?,?,0);', item)
     db.commit()
     db.close()
 
