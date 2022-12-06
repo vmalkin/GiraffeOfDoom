@@ -42,13 +42,13 @@ def process_columns(image):
     return returnarray
 
 
-def create_gif(list, filesfolder):
+def create_gif(list, filesfolder, gif_name):
     imagelist = []
     for item in list:
         j = filesfolder + "/" + item
         i = Image.open(j)
         imagelist.append(i)
-    imagelist[0].save("cme.gif",
+    imagelist[0].save(gif_name,
                       format="GIF",
                       save_all=True,
                       append_images=imagelist[1:],
@@ -56,7 +56,7 @@ def create_gif(list, filesfolder):
                       loop=0)
 
 
-def create_video(list, filesfolder):
+def create_video(list, filesfolder, video_name):
     imagelist = []
     for item in list:
         j = filesfolder + "/" + item
@@ -64,7 +64,7 @@ def create_video(list, filesfolder):
         imagelist.append(i)
 
     fourcc = cv2.VideoWriter_fourcc(*'XVID')
-    video = cv2.VideoWriter("cme.avi", fourcc, 4, (360, 220))
+    video = cv2.VideoWriter(video_name, fourcc, 4, (360, 220))
 
     for item in imagelist:
         video.write(item)
@@ -554,17 +554,26 @@ def wrapper(storage_folder, analysis_folder):
                 print("dt", i, len(dirlisting))
 
     # create video of the last 24 hours from the Analysis folder.
+    # approx no of images in a day
     imagelist = os.listdir(analysis_folder)
     imagelist.sort()
-
-    # approx no of images in a day
     if len(imagelist) > truncate:
         imagelist = imagelist[-truncate:]
     imagelist.sort()
-
     print("creating video...")
-    create_video(imagelist, analysis_folder)
-    create_gif(imagelist, analysis_folder)
+    create_video(imagelist, analysis_folder, "cme.avi")
+    create_gif(imagelist, analysis_folder, "cme.gif")
+
+    # create video of the last 24 hours from the enhanced folder.
+    # approx no of images in a day is 30 for the enhanced folder!
+    imagelist = os.listdir("enhanced_512")
+    imagelist.sort()
+    if len(imagelist) > 30:
+        imagelist = imagelist[-truncate:]
+    imagelist.sort()
+    print("creating video...")
+    create_video(imagelist, "enhanced_512", "whole_disc.avi")
+    create_gif(imagelist, "enhanced_512", "whole_disc.gif")
 
     # The data files need to be truncated to the last 100 entries - approx 24 hours
     if len(dates) > truncate:
@@ -573,9 +582,6 @@ def wrapper(storage_folder, analysis_folder):
         cme_spread = cme_spread[-truncate:]
 
     print("creating CME plot files...")
-    # cme_count = median_filter(cme_count)
-    # plot(dates, cme_count, "cme.jpg", 1700, 600)
-
     # Detrend the dme data to flatten out gradual albedo changes
     dt_end = standard_stuff.calc_end(cme_count)
     dt_mid = standard_stuff.calc_middle(cme_count)

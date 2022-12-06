@@ -90,13 +90,14 @@ if __name__ == "__main__":
         os.makedirs(analysis_folder)
 
     tm = int(time.time())
-    ymd_now = posix2utc(tm, "%Y%m%d")
-    ymd_old = posix2utc((tm - 86400), "%Y%m%d")
+    ymd_now = int(posix2utc(tm, "%Y%m%d"))
+    ymd_old1 = ymd_now - 86400
+    ymd_old2 = ymd_old1 - 86400
     year = posix2utc(tm, "%Y")
 
     # LASCO coronagraph
     print("Getting images for current epoch")
-    baseURL = "https://soho.nascom.nasa.gov/data/REPROCESSING/Completed/" + year + "/c3/" + ymd_now + "/"
+    baseURL = "https://soho.nascom.nasa.gov/data/REPROCESSING/Completed/" + year + "/c3/" + str(ymd_now) + "/"
     listofimages = get_imagelist(baseURL)
     newimages = parseimages(listofimages, storage_folder)
 
@@ -109,7 +110,7 @@ if __name__ == "__main__":
     # Parse for old epoch files that have been added
     print("Getting images for old epoch")
     # ymd_old = "20221204"
-    baseURL = "https://soho.nascom.nasa.gov/data/REPROCESSING/Completed/" + year + "/c3/" + ymd_old + "/"
+    baseURL = "https://soho.nascom.nasa.gov/data/REPROCESSING/Completed/" + year + "/c3/" + str(ymd_old1) + "/"
     listofimages = get_imagelist(baseURL)
     newimages = parseimages(listofimages, storage_folder)
 
@@ -117,6 +118,19 @@ if __name__ == "__main__":
         # rings the terminal bell
         print("\a")
         downloadimages(newimages, storage_folder)
+
+    # Parse for old epoch files that have been added
+    print("Getting images for old epoch")
+    # ymd_old = "20221204"
+    baseURL = "https://soho.nascom.nasa.gov/data/REPROCESSING/Completed/" + year + "/c3/" + str(ymd_old2) + "/"
+    listofimages = get_imagelist(baseURL)
+    newimages = parseimages(listofimages, storage_folder)
+
+    if len(newimages) > 0:
+        # rings the terminal bell
+        print("\a")
+        downloadimages(newimages, storage_folder)
+
 
     # # Analyse and enhance stored images
     # try:
