@@ -86,7 +86,7 @@ def median_filter(data):
 
 def plot_diffs_polar(pixel_count, filename, width, height):
     savefile = filename
-    colourstep = int(round(255 / len(pixel_count), 0)) - 1
+    colourstep = int(round(255 / len(pixel_count), 0))
     papercolour = "#303030"
 
     theta = []
@@ -98,7 +98,7 @@ def plot_diffs_polar(pixel_count, filename, width, height):
     x_step = -0.02
     x1_step = 0.00
     fig = go.Figure()
-    for i in range(1, len(pixel_count)):
+    for i in range(0, len(pixel_count)):
         j = colourstep * i
         linecolour = "rgba(" + str(j) + ", 0," + str(255 - j) + ", 1)"
         fig.add_shape(type="rect", xref="paper", yref="paper", x0=x_step, y0=-0.04, x1=x1_step, y1=-0.02,
@@ -165,10 +165,10 @@ def plot_diffs(pixel_count, filename, width, height):
     savefile = filename
     plotdata = go.Scatter(mode="lines")
     fig = go.Figure(plotdata)
-    colourstep = int(round(255 / len(pixel_count), 0)) - 1
+    colourstep = int(round(255 / len(pixel_count), 0))
     verticalstep = int(len(pixel_count[0]) / 4)
 
-    for i in range(1, len(pixel_count)):
+    for i in range(0, len(pixel_count)):
         j = colourstep * i
         # linecolour = "rgba(" + str(255 - i) + ", " + str(40 + i) + ", 0, 1)"
         linecolour = "rgba(" + str(j) + ", 0," + str(255 - j) + ", 1)"
