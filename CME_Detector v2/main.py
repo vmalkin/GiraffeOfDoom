@@ -78,12 +78,12 @@ def get_imagelist(url_to_get):
 if __name__ == "__main__":
     print("Revised CME detector")
     computation_start = time.time()
-    images_folder = "enhanced_512"
+    enhanced_folder = "enhanced_512"
     storage_folder = "lasco_store_512"
     analysis_folder = "analysis_512"
 
-    if os.path.exists(images_folder) is False:
-        os.makedirs(images_folder)
+    if os.path.exists(enhanced_folder) is False:
+        os.makedirs(enhanced_folder)
     if os.path.exists(storage_folder) is False:
         os.makedirs(storage_folder)
     if os.path.exists(analysis_folder) is False:
@@ -125,16 +125,8 @@ if __name__ == "__main__":
         print("\a")
         downloadimages(newimages, storage_folder)
 
-    # # Analyse and enhance stored images
-    # try:
+    mgr_enhancer.wrapper(storage_folder, enhanced_folder)
     mgr_analyser_v2.wrapper(storage_folder, analysis_folder)
-    # except:
-    #     print("The Analyser has failed!")
-
-    # try:
-    mgr_enhancer.wrapper(storage_folder, images_folder)
-    # except:
-    #     print("The Enhancer has failed!")
 
     computation_end = time.time()
     elapsed_mins = round((computation_end - computation_start) / 60, 1)

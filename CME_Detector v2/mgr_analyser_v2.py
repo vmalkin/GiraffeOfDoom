@@ -568,8 +568,8 @@ def wrapper(storage_folder, analysis_folder):
     # approx no of images in a day is 30 for the enhanced folder!
     imagelist_enhanced = os.listdir("enhanced_512")
     imagelist_enhanced.sort()
-    if len(imagelist_enhanced) > 30:
-        imagelist_enhanced = imagelist_enhanced[-truncate:]
+    if len(imagelist_enhanced) > 40:
+        imagelist_enhanced = imagelist_enhanced[-40:]
     imagelist_enhanced.sort()
     print("creating video...")
     # create_video(imagelist_enhanced, "enhanced_512", "whole_disc.avi")
