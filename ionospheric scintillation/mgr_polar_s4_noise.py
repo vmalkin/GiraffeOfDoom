@@ -107,8 +107,8 @@ def create_colourway(posixtime):
 # query format:
 # ('satID', posixtime, alt, az, s4, snr)
 def wrapper(queryresults):
-    splat_threshold = 40
-    splat_altitude = 40
+    splat_threshold = 20
+    splat_altitude = 20
     alt = []
     az = []
     s4 = []
