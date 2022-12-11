@@ -304,9 +304,9 @@ def text_alert(px, hr):
                 msg = "<p>ALERT: A possible FULL HALO CME has been detected at " + timestring +  " with " + str(int(px * 100)) + "% coverage."
 
     if cme_detect == True:
-        msg = msg + "<br>Confirm Earth impact with STEREO A satellite data: " + stereo_url
+        msg = msg + "<br>Confirm Earth impact with STEREO A satellite data: "
 
-    msg_alert = heading + msg
+    msg_alert = heading + msg + stereo_url
     with open(savefile, "w") as s:
         s.write(msg_alert)
     s.close()
