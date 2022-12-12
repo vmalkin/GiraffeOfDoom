@@ -29,9 +29,9 @@ void setup()
 //  myGNSS.setI2COutput(COM_TYPE_UBX); //Set the I2C port to output both NMEA and UBX messages
 
 //  // Set the speed for update and output
-//  myGNSS.setMeasurementRate(250);
-//  myGNSS.setI2CpollingWait(25); // Set i2cPollingWait to 25ms
-  myGNSS.setNavigationFrequency(10);
+ myGNSS.setMeasurementRate(250);
+ myGNSS.setI2CpollingWait(25); // Set i2cPollingWait to 25ms
+  myGNSS.setNavigationFrequency(2);
   myGNSS.setDynamicModel(DYN_MODEL_STATIONARY);
   //Disable or enable various NMEA sentences over the UART1 interface
   myGNSS.disableNMEAMessage(UBX_NMEA_GLL, COM_PORT_I2C); //Several of these are on by default on ublox board so let's disable them
