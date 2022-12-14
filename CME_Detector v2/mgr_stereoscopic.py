@@ -1,14 +1,57 @@
 import os
+from PIL import Image
+
+stereo = "stereoscopic"
+if os.path.exists(stereo) is False:
+    os.makedirs(stereo)
+
+def create_gif(list, filesfolder, gif_name):
+    imagelist = []
+    for item in list:
+        j = filesfolder + "/" + item
+        i = Image.open(j)
+        imagelist.append(i)
+    imagelist[0].save(gif_name,
+                      format="GIF",
+                      save_all=True,
+                      append_images=imagelist[1:],
+                      duration=500,
+                      loop=0)
 
 def wrapper(directory, interpupilliary_distance_mm):
     # create video of the last 24 hours from the enhanced folder.
     # approx no of images in a day is 30 for the enhanced folder!
-    imagelist_enhanced = os.listdir(directory)
-    imagelist_enhanced.sort()
-    if len(imagelist_enhanced) > 40:
-        imagelist_enhanced = imagelist_enhanced[-40:]
-    imagelist_enhanced.sort()
-    print(imagelist_enhanced)
+    stereoarray = []
+    imagelist = os.listdir(directory)
+    imagelist.sort()
+    truncate = 100
+    if len(imagelist) > truncate:
+        imagelist = imagelist[-truncate:]
+    imagelist.sort()
+    filepath = directory + "/" + imagelist[0]
+    img1 = Image.open(filepath)
+    for i in range(1, len(imagelist)):
+        filepath = directory + "/" + imagelist[i]
+        img2 = Image.open(filepath)
+        w = img2.width
+        h = img2.height
+        stereoimage = Image.new("RGB", [w*2, h])
+        stereoimage.paste(img1)
+        stereoimage.paste(img2, (img2.size[0], 0))
+        stereoarray.append(stereoimage)
+        savefile = stereo + "/" + str(i) + ".jpg"
+        stereoimage.save(savefile)
+        img1 = img2
+
+    stereoarray[0].save("stereo_cme.gif",
+                      format="GIF",
+                      save_all=True,
+                      append_images=stereoarray[1:],
+                      duration=100,
+                      loop=0)
+
+
+
 
 
 folder = "enhanced_512"
