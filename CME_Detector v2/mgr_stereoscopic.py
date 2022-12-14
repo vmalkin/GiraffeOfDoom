@@ -12,7 +12,7 @@ def wrapper(directory):
     stereoarray = []
     imagelist = os.listdir(directory)
     imagelist.sort()
-    truncate = 100
+    truncate = 60
     if len(imagelist) > truncate:
         imagelist = imagelist[-truncate:]
     imagelist.sort()
@@ -27,13 +27,13 @@ def wrapper(directory):
         stereoimage.paste(img1)
         stereoimage.paste(img2, (img2.size[0], 0))
         stereoarray.append(stereoimage)
-        # savefile = stereo + "/" + str(i) + ".jpg"
-        # stereoimage.save(savefile)
+        savefile = stereo + "/" + str(i) + ".jpg"
+        stereoimage.save(savefile)
         img1 = img2
 
     stereoarray[0].save("stereo_cme.gif",
                       format="GIF",
                       save_all=True,
                       append_images=stereoarray[1:],
-                      duration=100,
+                      duration=150,
                       loop=0)
