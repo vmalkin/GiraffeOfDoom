@@ -18,7 +18,7 @@ def create_gif(list, filesfolder, gif_name):
                       duration=500,
                       loop=0)
 
-def wrapper(directory, interpupilliary_distance_mm):
+def wrapper(directory):
     # create video of the last 24 hours from the enhanced folder.
     # approx no of images in a day is 30 for the enhanced folder!
     stereoarray = []
