@@ -5,18 +5,6 @@ stereo = "stereoscopic"
 if os.path.exists(stereo) is False:
     os.makedirs(stereo)
 
-def create_gif(list, filesfolder, gif_name):
-    imagelist = []
-    for item in list:
-        j = filesfolder + "/" + item
-        i = Image.open(j)
-        imagelist.append(i)
-    imagelist[0].save(gif_name,
-                      format="GIF",
-                      save_all=True,
-                      append_images=imagelist[1:],
-                      duration=500,
-                      loop=0)
 
 def wrapper(directory):
     # create video of the last 24 hours from the enhanced folder.
@@ -49,10 +37,3 @@ def wrapper(directory):
                       append_images=stereoarray[1:],
                       duration=100,
                       loop=0)
-
-
-
-
-
-folder = "enhanced_512"
-wrapper(folder, 70)

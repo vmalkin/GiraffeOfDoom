@@ -129,6 +129,7 @@ if __name__ == "__main__":
     mgr_enhancer.wrapper(storage_folder, enhanced_folder)
     mgr_analyser_v2.wrapper(storage_folder, analysis_folder)
     mgr_stereoscopic.wrapper(enhanced_folder)
+
     computation_end = time.time()
     elapsed_mins = round((computation_end - computation_start) / 60, 1)
     print("Elapsed time: ", elapsed_mins)
