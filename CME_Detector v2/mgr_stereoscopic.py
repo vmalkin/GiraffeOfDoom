@@ -27,8 +27,8 @@ def wrapper(directory):
         stereoimage.paste(img1)
         stereoimage.paste(img2, (img2.size[0], 0))
         stereoarray.append(stereoimage)
-        savefile = stereo + "/" + str(i) + ".jpg"
-        stereoimage.save(savefile)
+        # savefile = stereo + "/" + str(i) + ".jpg"
+        # stereoimage.save(savefile)
         img1 = img2
 
     stereoarray[0].save("stereo_cme.gif",
