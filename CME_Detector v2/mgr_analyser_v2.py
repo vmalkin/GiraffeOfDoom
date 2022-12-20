@@ -481,7 +481,7 @@ def wrapper(storage_folder, analysis_folder):
 
     # We do not need ALL of the images in the Lasco folder, only the last day or so. Approx
     # 100 images per day.
-    truncate = 120
+    truncate = 35
     dirlisting = dirlisting[-truncate:]
     avg_array = []
     cme_count = []
