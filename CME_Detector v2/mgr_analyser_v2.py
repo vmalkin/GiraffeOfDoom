@@ -86,7 +86,7 @@ def median_filter(data):
 
 def plot_diffs_polar(pixel_count, filename, width, height):
     savefile = filename
-    colourstep = int(round(255 / len(pixel_count), 0))
+    colourstep = 255 / len(pixel_count)
     papercolour = "#303030"
 
     theta = []
@@ -99,7 +99,7 @@ def plot_diffs_polar(pixel_count, filename, width, height):
     x1_step = 0.00
     fig = go.Figure()
     for i in range(0, len(pixel_count)):
-        j = colourstep * i
+        j = int(colourstep * i)
         linecolour = "rgba(" + str(j) + ", 0," + str(255 - j) + ", 1)"
         fig.add_shape(type="rect", xref="paper", yref="paper", x0=x_step, y0=-0.04, x1=x1_step, y1=-0.02,
                       line=dict(color=linecolour),
@@ -165,11 +165,11 @@ def plot_diffs(pixel_count, filename, width, height):
     savefile = filename
     plotdata = go.Scatter(mode="lines")
     fig = go.Figure(plotdata)
-    colourstep = int(round(255 / len(pixel_count), 0))
+    colourstep = 255 / len(pixel_count)
     verticalstep = int(len(pixel_count[0]) / 4)
 
     for i in range(0, len(pixel_count)):
-        j = colourstep * i
+        j = int(colourstep * i)
         # linecolour = "rgba(" + str(255 - i) + ", " + str(40 + i) + ", 0, 1)"
         linecolour = "rgba(" + str(j) + ", 0," + str(255 - j) + ", 1)"
         fig.add_trace(go.Scatter(y=pixel_count[i], mode="lines", line=dict(color=linecolour, width=2)))
@@ -494,7 +494,8 @@ def wrapper(storage_folder, analysis_folder):
 
         # load and preprocess the image
         img = image_load(p)
-        img = erode_dilate_img(img)
+        # img = erode_dilate_img(img)
+        img = cv2.bitwise_not(img)
 
         # Occasionally images are loaded that are broken. If this is not the case...
         if img is not None:
