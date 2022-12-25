@@ -481,7 +481,7 @@ def wrapper(storage_folder, analysis_folder):
 
     # We do not need ALL of the images in the Lasco folder, only the last day or so. Approx
     # 100 images per day.
-    truncate = 35
+    truncate = 100
     dirlisting = dirlisting[-truncate:]
     avg_array = []
     cme_count = []
@@ -495,7 +495,9 @@ def wrapper(storage_folder, analysis_folder):
         # load and preprocess the image
         img = image_load(p)
         # img = erode_dilate_img(img)
-        img = cv2.bitwise_not(img)
+
+        # This inverts the image colours if we are using the enhanced images as our source, not the analysis images
+        # img = cv2.bitwise_not(img)
 
         # Occasionally images are loaded that are broken. If this is not the case...
         if img is not None:

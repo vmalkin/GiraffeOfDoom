@@ -4,6 +4,7 @@ import datetime
 import time
 import calendar
 import os
+import glob
 
 
 def posix2utc(posixtime, timeformat):
@@ -84,7 +85,16 @@ def image_save(file_name, image_object):
 
 def wrapper(storage_folder, images_folder):
     # get a list of the current stored images.
-    dirlisting = os.listdir(storage_folder)
+    # IGNORE files with the suffix .no as they are corrupted or reconstructed by the LASCO team, and the
+    # interpolated data in inaccurate
+    dirlisting = []
+    path = os.path.join(storage_folder, "*.jpg")
+    for name in glob.glob(path):
+        name = os.path.normpath(name)
+        seperator = os.path.sep
+        n = name.split(seperator)
+        nn = n[1]
+        dirlisting.append(nn)
 
     # make sure they are in chronological order by name
     dirlisting.sort()
