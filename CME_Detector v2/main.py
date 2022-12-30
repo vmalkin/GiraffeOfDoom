@@ -75,6 +75,15 @@ def get_imagelist(url_to_get):
 
     return returnlist
 
+def download_lasco(lasco_url, storage_folder):
+    print(lasco_url)
+    listofimages = get_imagelist(lasco_url)
+    newimages = parseimages(listofimages, storage_folder)
+    if len(newimages) > 0:
+        # rings the terminal bell
+        print("\a")
+        downloadimages(newimages, storage_folder)
+
 
 if __name__ == "__main__":
     print("Revised CME detector")
@@ -98,33 +107,19 @@ if __name__ == "__main__":
 
     # LASCO coronagraph
     baseURL = "https://soho.nascom.nasa.gov/data/REPROCESSING/Completed/" + year + "/c3/" + str(ymd_now) + "/"
-    print(baseURL)
-    listofimages = get_imagelist(baseURL)
-    newimages = parseimages(listofimages, storage_folder)
-    if len(newimages) > 0:
-        # rings the terminal bell
-        print("\a")
-        downloadimages(newimages, storage_folder)
+    download_lasco(baseURL, storage_folder)
 
     # Parse for old epoch files that have been added
     baseURL = "https://soho.nascom.nasa.gov/data/REPROCESSING/Completed/" + year + "/c3/" + str(ymd_old1) + "/"
-    print(baseURL)
-    listofimages = get_imagelist(baseURL)
-    newimages = parseimages(listofimages, storage_folder)
-    if len(newimages) > 0:
-        # rings the terminal bell
-        print("\a")
-        downloadimages(newimages, storage_folder)
+    download_lasco(baseURL, storage_folder)
 
     # Parse for old epoch files that have been added
     baseURL = "https://soho.nascom.nasa.gov/data/REPROCESSING/Completed/" + year + "/c3/" + str(ymd_old2) + "/"
-    print(baseURL)
-    listofimages = get_imagelist(baseURL)
-    newimages = parseimages(listofimages, storage_folder)
-    if len(newimages) > 0:
-        # rings the terminal bell
-        print("\a")
-        downloadimages(newimages, storage_folder)
+    download_lasco(baseURL, storage_folder)
+
+    # # Manual download
+    # baseURL = "https://soho.nascom.nasa.gov/data/REPROCESSING/Completed/" + year + "/c3/" + "20211228" + "/"
+    # download_lasco(baseURL, storage_folder)
 
     mgr_enhancer.wrapper(storage_folder, enhanced_folder)
     mgr_analyser_v2.wrapper(storage_folder, analysis_folder)
