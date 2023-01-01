@@ -26,8 +26,8 @@ publish_dir = "publish"
 
 # Comm port parameters - uncomment and change one of the portNames depending on your OS
 # portName = 'Com42'  # Windows
-portName = '/dev/tty.usbserial-A9MO3C9T' #MacOS
-# portName = '/dev/ttyUSB0'
+# portName = '/dev/tty.usbserial-A9MO3C9T' #MacOS
+portName = '/dev/ttyUSB0'
 baudrate = 9600
 bytesize = 8
 parity = 'N'
