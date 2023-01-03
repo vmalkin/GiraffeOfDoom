@@ -19,6 +19,8 @@ def wrapper(directory):
     filepath = directory + "/" + imagelist[0]
     img1 = Image.open(filepath)
     for i in range(1, len(imagelist)):
+        sf = imagelist[i].split(".")
+        stereo_filename = sf[0]
         filepath = directory + "/" + imagelist[i]
         img2 = Image.open(filepath)
         w = img2.width
@@ -27,7 +29,7 @@ def wrapper(directory):
         stereoimage.paste(img1)
         stereoimage.paste(img2, (img2.size[0], 0))
         stereoarray.append(stereoimage)
-        savefile = stereo + "/" + str(i) + ".jpg"
+        savefile = stereo + "/" + stereo_filename + ".jpg"
         stereoimage.save(savefile)
         img1 = img2
 

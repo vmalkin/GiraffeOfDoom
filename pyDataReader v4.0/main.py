@@ -11,7 +11,6 @@ import sqlite3
 import mgr_binner
 import mgr_detrended_v2
 
-
 __version__ = "4.0"
 errorloglevel = logging.DEBUG
 logging.basicConfig(filename="errors.log", format='%(asctime)s %(message)s', level=errorloglevel)
@@ -206,9 +205,9 @@ if __name__ == "__main__":
         print("Creating log file directory...")
         create_directory(publish_dir)
 
-    db = sqlite3.connect(database)
-    cursor = db.cursor()
-    db.close()
+    # db = sqlite3.connect(database)
+    # cursor = db.cursor()
+    # db.close()
     # The plotting begins here
     while True:
         # single data value from com port
