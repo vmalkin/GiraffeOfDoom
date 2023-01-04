@@ -1,4 +1,5 @@
 from statistics import mean
+from standard_stuff import posix2utc
 
 # The number of readings that equates to one and a half hours of time.
 half_window = 10
@@ -49,26 +50,40 @@ def calc_middle(datalist):
     return returnlist
 
 
-def parse_dates(datalist):
+def plot(dt_dates, dt_detrend, savefile_name):
     pass
 
 
-def wrapper(datalist):
+def wrapper(datalist, publishdirector):
     # If the length of the datalist is long enough, attempt to use the full algorthm,
     # Otherwise use a simple linear approximation
 
-    if len(datalist) < half_window:
-        f = calc_start(datalist)
+    # THE DATALIST IS IN THE FORMAT "posixtime, data" We will need to split this into two lists
+    # Dates and actual data.
+    savefile_name = publishdirector + "//" + "current_detrended.csv"
+
+    dt_dates = []
+    dt_data = []
+    for item in datalist:
+        dt_dates.append(item[0])
+        dt_data.append(item[1])
+
+
+    if len(dt_data) < half_window:
+        f = calc_start(dt_data)
     else:
         # Calculate the detrended data.
-        a = calc_start(datalist)
-        b = calc_middle(datalist)
-        c = calc_end(datalist)
+        a = calc_start(dt_data)
+        b = calc_middle(dt_data)
+        c = calc_end(dt_data)
         f = a + b + c
 
-    # Generate residuals, thus flattening out the original data. T is the final detrended data.
-    t = []
+    # Generate residuals, thus flattening out the original data. dt_detrend
+    # is the final detrended data.
+    dt_detrend = []
     for i in range(0, len(f)):
-        d = round((datalist[i] - f[i]), 3)
-        t.append(d)
-    return t
+        d = round((dt_data[i] - f[i]), 3)
+        dt_detrend.append(d)
+
+    plot(dt_dates, dt_detrend, savefile_name)
+

@@ -13,7 +13,7 @@ import standard_stuff
 import mgr_binner
 import mgr_detrended_v2
 
-__version__ = "4.0"
+__version__ = "5.0"
 errorloglevel = logging.DEBUG
 logging.basicConfig(filename="errors.log", format='%(asctime)s %(message)s', level=errorloglevel)
 
@@ -51,21 +51,18 @@ class ChartThread(Thread):
         while True:
             # Chart data every five minutes
             sleep(300)
-            try:
-                # csv logfile for the last 24 hours
-                mgr_create_daily_logfile.wrapper(current_data)
 
-                # Detrended magnetogram/data
-                mgr_detrended_v2.wrapper(current_data)
+            # csv logfile for the last 24 hours
+            mgr_create_daily_logfile.wrapper(current_data, logfile_dir)
 
-                # unprocessed magnetogram/data
+            # Detrended magnetogram/data
+            mgr_detrended_v2.wrapper(current_data, publish_dir)
 
-                # Empirical Mode Decomposition of last 24 hours
+            # unprocessed magnetogram/data
 
-            except:
-                print("Simple grapher failed")
-                logging.error("Simple grapher failed")
+            # Empirical Mode Decomposition of last 24 hours
 
+            # Brendan Davies Aurora data
 
 class SerialManager:
     def __init__(self, portname, baudrate, bytesize, parity, stopbits, timeout, xonxoff, rtscts, writeTimeout, dsrdtr, interCharTimeout):
@@ -151,7 +148,7 @@ def create_directory(path):
 
 if __name__ == "__main__":
     print("Pything Data Logger")
-    print("(c) Vaughn Malkin, 2015 - 2021")
+    print("(c) Vaughn Malkin, 2015 - 2023")
     print("Version " + __version__)
 
     # the current 24 hours of data are stored here to be shared with various aux functions for plotting etc.
