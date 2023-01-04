@@ -1,5 +1,6 @@
 from statistics import mean
 from standard_stuff import posix2utc
+from plotly import graph_objects as go
 
 # The number of readings that equates to one and a half hours of time.
 half_window = 10
