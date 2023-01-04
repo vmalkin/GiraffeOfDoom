@@ -66,7 +66,7 @@ def wrapper(datalist):
         c = calc_end(datalist)
         f = a + b + c
 
-    # Generate residuals, thus flattening out the original data
+    # Generate residuals, thus flattening out the original data. T is the final detrended data.
     t = []
     for i in range(0, len(f)):
         d = round((datalist[i] - f[i]), 3)

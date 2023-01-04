@@ -8,6 +8,8 @@ from threading import Thread
 import os
 import sqlite3
 
+import mgr_create_daily_logfile
+import standard_stuff
 import mgr_binner
 import mgr_detrended_v2
 
@@ -49,23 +51,16 @@ class ChartThread(Thread):
         while True:
             # Chart data every five minutes
             sleep(300)
-
             try:
-                # Add extra methods here to create different types of charts.
-                print("Create logfiles")
-                # THIs is the basic plotting method that belongs to main.py
-                create_logfile(current_data)
+                # csv logfile for the last 24 hours
+                mgr_create_daily_logfile.wrapper(current_data)
 
-                # new user generated methods for plotting go here
-                full_bins = mgr_binner.wrapper(current_data)
-                save_datafile(full_bins, "bins.csv", publish_dir)
-                # split off brendans data
-                save_datafile(brendan_bins, "something.csv", publish_dir)
-                # Save detrended data
-                data_dtrd = mgr_detrended_v2.wrapper(current_data)
-                save_datafile(data_dtrd, "detrended.csv", publish_dir)
+                # Detrended magnetogram/data
+                mgr_detrended_v2.wrapper(current_data)
 
+                # unprocessed magnetogram/data
 
+                # Empirical Mode Decomposition of last 24 hours
 
             except:
                 print("Simple grapher failed")
@@ -97,25 +92,6 @@ class SerialManager:
         logdata = self.com.readline()  # logData is a byte array, not a string at this point
         logdata = str(logdata, 'ascii').strip()  # convert the byte array to string. strip off unnecessary whitespace
         return logdata
-
-
-def create_logfile(current_data):
-    currentdate = datetime.utcfromtimestamp(int(time())).strftime("%Y-%m-%d")
-    savefile = logfile_dir + "//" + currentdate + ".csv"
-    with open(savefile, "w") as s:
-        s.write("UTC Datetime, Value" + "\n")
-        for item in current_data:
-            dt = posix2utc(item[0])
-            data = item[1]
-            dp = str(dt) + "," + str(data) + "\n"
-            s.write(dp)
-        s.close()
-
-
-def posix2utc(posixtime):
-    timeformat = '%Y-%m-%d %H:%M:%S'
-    utctime = datetime.utcfromtimestamp(int(posixtime)).strftime(timeformat)
-    return utctime
 
 
 def getposixtime():
@@ -219,7 +195,7 @@ if __name__ == "__main__":
 
             # create the datapoint. Print the values for the user.
             database_add_data(current_dt, reading)
-            print(posix2utc(current_dt), reading)
+            print(standard_stuff.posix2utc(current_dt, '%Y-%m-%d %H:%M:%S'), reading)
 
             # populate the current data array to be shared with plotting functions in thread.
             current_data = database_get_data()
