@@ -7,12 +7,12 @@ import os
 import glob
 
 
-# def posix2utc(posixtime, timeformat):
-#     # '%Y-%m-%d %H:%M'
-#     utctime = datetime.datetime.utcfromtimestamp(int(posixtime)).strftime(timeformat)
-#     return utctime
-#
-#
+def posix2utc(posixtime, timeformat):
+    # '%Y-%m-%d %H:%M'
+    utctime = datetime.datetime.utcfromtimestamp(int(posixtime)).strftime(timeformat)
+    return utctime
+
+
 def add_stamp(banner_text, image_object, filename):
     tt = time.time()
     tt = posix2utc(tt, "%Y-%m-%d %H:%M")
