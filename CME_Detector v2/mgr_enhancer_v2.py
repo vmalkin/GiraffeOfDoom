@@ -7,12 +7,12 @@ import os
 import glob
 
 
-def posix2utc(posixtime, timeformat):
-    # '%Y-%m-%d %H:%M'
-    utctime = datetime.datetime.utcfromtimestamp(int(posixtime)).strftime(timeformat)
-    return utctime
-
-
+# def posix2utc(posixtime, timeformat):
+#     # '%Y-%m-%d %H:%M'
+#     utctime = datetime.datetime.utcfromtimestamp(int(posixtime)).strftime(timeformat)
+#     return utctime
+#
+#
 def add_stamp(banner_text, image_object, filename):
     tt = time.time()
     tt = posix2utc(tt, "%Y-%m-%d %H:%M")
@@ -83,12 +83,12 @@ def image_save(file_name, image_object):
     cv2.imwrite(file_name, image_object)
 
 
-def wrapper(storage_folder, images_folder):
+def wrapper(lasco_folder):
     # get a list of the current stored images.
     # IGNORE files with the suffix .no as they are corrupted or reconstructed by the LASCO team, and the
     # interpolated data in inaccurate
     dirlisting = []
-    path = os.path.join(storage_folder, "*.jpg")
+    path = os.path.join(lasco_folder, "*.jpg")
     for name in glob.glob(path):
         name = os.path.normpath(name)
         seperator = os.path.sep
@@ -108,55 +108,36 @@ def wrapper(storage_folder, images_folder):
         test_hourcount = filehour_converter(test[0], test[1])
         testimage = dirlisting[i]
         if test_hourcount - hourcount > (45 * 60):
-            i1 = storage_folder + "/" + hourimage
-            img_1 = image_load(i1)
+        #     i1 = lasco_folder + "/" + hourimage
+        #     img_1 = image_load(i1)
+        #
+        #     i2 = lasco_folder + "/" + testimage
+        #     img_2 = image_load(i2)
+        #
+        #     # try:
+        #     img_og = greyscale_img(img_1)
+        #     img_ng = greyscale_img(img_2)
+        #
+        #     # convert image to a single channel
+        #     img_ng = cv2.split(img_ng)
+        #     img_og = cv2.split(img_og)
+        #     img_ng = img_ng[0]
+        #     img_og = img_og[0]
 
-            i2 = storage_folder + "/" + testimage
-            img_2 = image_load(i2)
 
-            # try:
-            img_og = greyscale_img(img_1)
-            img_ng = greyscale_img(img_2)
 
-            # convert image to a single channel
-            img_ng = cv2.split(img_ng)
-            img_og = cv2.split(img_og)
-            img_ng = img_ng[0]
-            img_og = img_og[0]
 
-            # improved histogram function
-            clahe = cv2.createCLAHE(clipLimit=2, tileGridSize=(8, 8))
-            img_og = clahe.apply(img_og)
-            img_ng = clahe.apply(img_ng)
 
-            # unary operator to invert the image
-            img_ng = ~img_ng
 
-            # combine the images to highlight differences
-            alpha = 1
-            gamma = 0
-            new_image = img_ng.copy()
-            cv2.addWeighted(img_ng, alpha, img_og, 1 - alpha, gamma, new_image)
-
-            # Adjust contrast and brightness
-            d = new_image.copy()
-            alpha = 1.2
-            beta = -50
-            # alpha = 1.2
-            # beta = -30
-            new_image = cv2.convertScaleAbs(d, alpha=alpha, beta=beta)
-
-            new_image = cv2.applyColorMap(new_image, cv2.COLORMAP_BONE)
-
-            # Save the difference image into the images folder
-            add_stamp("Processed at Dunedin Aurora", new_image, hourimage)
-            fname = images_folder + "/" + dirlisting[i]
-            image_save(fname, new_image)
-            # print("Display image created..." + fname)
-
-            # LASTLY.....
-            hourcount = test_hourcount
-            hourimage = testimage
-            # except:
-            #     print("Unable to proces image")
+            # # Save the difference image into the images folder
+            # add_stamp("Processed at Dunedin Aurora", new_image, hourimage)
+            # fname = images_folder + "/" + dirlisting[i]
+            # image_save(fname, new_image)
+            # # print("Display image created..." + fname)
+            #
+            # # LASTLY.....
+            # hourcount = test_hourcount
+            # hourimage = testimage
+            # # except:
+            # #     print("Unable to proces image")
 
