@@ -50,7 +50,7 @@ class ChartThread(Thread):
     def run(self):
         while True:
             # Chart data every five minutes
-            sleep(300)
+            sleep(60)
 
             # csv logfile for the last 24 hours
             mgr_create_daily_logfile.wrapper(current_data, logfile_dir)
@@ -103,7 +103,7 @@ def database_create():
     db.execute('drop table if exists data;')
     db.execute('create table data ('
                'posixtime text,'
-               'datavalue text'
+               'datavalue real'
                ');')
     gpsdb.commit()
     db.close()

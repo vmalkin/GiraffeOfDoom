@@ -1,4 +1,6 @@
 from statistics import mean
+
+import standard_stuff
 from standard_stuff import posix2utc
 from plotly import graph_objects as go
 
@@ -52,7 +54,9 @@ def calc_middle(datalist):
 
 
 def plot(dt_dates, dt_detrend, savefile_name):
-    pass
+    plotdata = go.Scatter(x=dt_dates, y=dt_detrend, mode="lines")
+    fig = go.Figure(plotdata)
+    fig.show()
 
 
 def wrapper(datalist, publishdirector):
@@ -66,7 +70,8 @@ def wrapper(datalist, publishdirector):
     dt_dates = []
     dt_data = []
     for item in datalist:
-        dt_dates.append(item[0])
+        utcdate = standard_stuff.posix2utc(item[0], '%Y-%m-%d %H:%M')
+        dt_dates.append(utcdate)
         dt_data.append(item[1])
 
 
@@ -83,8 +88,13 @@ def wrapper(datalist, publishdirector):
     # is the final detrended data.
     dt_detrend = []
     for i in range(0, len(f)):
-        d = round((dt_data[i] - f[i]), 3)
+        dd = float(dt_data[i])
+        ff = float(f[i])
+        d = round((dd - ff), 3)
         dt_detrend.append(d)
-
-    plot(dt_dates, dt_detrend, savefile_name)
+    try:
+        print("*** Detrended Magnetogram: Created")
+        plot(dt_dates, dt_detrend, savefile_name)
+    except:
+        print("!!! Detrended Magnetogram: FAILED to plot magnetogram")
 

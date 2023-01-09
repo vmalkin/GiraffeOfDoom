@@ -13,3 +13,4 @@ def wrapper(currentdata, logfile_directory):
             dp = dt + "," + da + "\n"
             s.write(dp)
     s.close()
+    print("*** Daily Logfile: Created")
