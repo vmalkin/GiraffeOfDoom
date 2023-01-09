@@ -29,7 +29,7 @@ publish_dir = "publish"
 # portName = 'Com42'  # Windows
 # portName = '/dev/tty.usbserial-A9MO3C9T' #MacOS
 portName = '/dev/ttyUSB0'
-baudrate = 9600
+baudrate = 115200
 bytesize = 8
 parity = 'N'
 stopbits = 1
@@ -156,6 +156,7 @@ if __name__ == "__main__":
 
     # set up for logging
     comport = SerialManager(portName, baudrate, bytesize, parity, stopbits, timeout, xonxoff, rtscts, writeTimeout, dsrdtr, interCharTimeout)
+
     # Thread code to implement charting in a new thread.
     grapher_thread = ChartThread()
     try:
@@ -178,14 +179,10 @@ if __name__ == "__main__":
         print("Creating log file directory...")
         create_directory(publish_dir)
 
-    # db = sqlite3.connect(database)
-    # cursor = db.cursor()
-    # db.close()
     # The plotting begins here
     while True:
         # single data value from com port
         reading = comport.data_recieve()
-
         if re.match(comport_regex, reading):
             # get the current POSIX time
             current_dt = getposixtime()
