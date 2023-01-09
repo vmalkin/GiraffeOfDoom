@@ -73,15 +73,16 @@ def wrapper(lasco_folder):
     # get image list of LASCO files for the last x-hours.
     dirlisting = get_dirlisting(lasco_folder)
     print(dirlisting)
-    # # if time difference between img_x, ing_y < time threshold
-    # for i in range(1, len(dirlisting)):
-    #     if filename_converter(dirlisting[i]) - filename_converter(dirlisting[i - 1]) < time_threshold:
-    #         # Convert img_x, img_y to greyscale
-    #         img_x = image_load(dirlisting[i - 1])
-    #         img_y = image_load(dirlisting[i])
-    #         # Convert img_x, img_y to single channel
-    #         img_x = greyscale_img(img_x)
-    #         img_y = greyscale_img(img_y)
+
+    # if time difference between img_x, ing_y < time threshold
+    for i in range(1, len(dirlisting)):
+        if filename_converter(dirlisting[i]) - filename_converter(dirlisting[i - 1]) < time_threshold:
+            # Convert img_x, img_y to greyscale
+            img_x = image_load(dirlisting[i - 1])
+            img_y = image_load(dirlisting[i])
+            # Convert img_x, img_y to single channel
+            img_x = greyscale_img(img_x)
+            img_y = greyscale_img(img_y)
 
         #   New savefile = img_y name
 
