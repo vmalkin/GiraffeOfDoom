@@ -12,11 +12,12 @@ def calc_start(datalist):
     returnlist = []
     data_start = datalist[0]
 
-    if len(datalist) > half_window - 1:
-        index = half_window
+    if len(datalist) > half_window :
+        index = half_window - 1
     else:
         index = len(datalist) - 1
 
+    print(index)
     data_end = datalist[index]
     rate = (data_end - data_start) / index
     d = data_start
@@ -148,12 +149,12 @@ def wrapper(database, publishdirectory):
     # ########## Filtering and Adjustment before Plotting ##########
     # Smooth the data before plotting
     dt_detrend = standard_stuff.filter_median(dt_detrend, 2)
-    dt_detrend = standard_stuff.filter_mean(dt_detrend, 250)
+    # dt_detrend = standard_stuff.filter_mean(dt_detrend, 250)
 
     # the datetimes will be of a different length now because of the filtering of the data
     # Determin the difference and top and tail the datetimes array.
-    toptail = len(dt_dates) - len(dt_detrend)
-    dt_dates = dt_dates[toptail:-toptail]
+    # toptail = len(dt_dates) - len(dt_detrend)
+    # dt_dates = dt_dates[toptail:-toptail]
     # ########## Filtering and Adjustment before Plotting ##########
 
     try:
