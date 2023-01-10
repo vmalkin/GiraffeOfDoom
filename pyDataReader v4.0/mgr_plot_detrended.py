@@ -5,68 +5,11 @@ import standard_stuff
 import sqlite3
 from plotly import graph_objects as go
 
-# The number of readings that equates to one and a half hours of time.
-half_window = int(30*60*1.5)
+class DataPoint:
+    def __init__(self):
+        pass
 
-def calc_start(datalist):
-    returnlist = []
-    data_start = datalist[0]
-
-    if len(datalist) > half_window :
-        index = half_window - 1
-    else:
-        index = len(datalist) - 1
-
-    print(index)
-    data_end = datalist[index]
-    rate = (data_end - data_start) / index
-    d = data_start
-    returnlist.append(data_start)
-
-    for i in range(0, half_window):
-        d = d + rate
-        returnlist.append(round(d, 4))
-        # print(i, datalist[i], returnlist[i])
-    return returnlist
-
-
-def calc_end(datalist):
-    returnlist = []
-    data_start = datalist[len(datalist) - half_window]
-    data_end = datalist[len(datalist) - 1]
-    rate = (data_end - data_start) / half_window
-    d = data_start
-    returnlist.append(data_start)
-
-    for i in range(len(datalist) - half_window, len(datalist)):
-        d = d + rate
-        returnlist.append(round(d, 4))
-    return returnlist
-
-
-def calc_middle(datalist):
-    returnlist = []
-    t = []
-    for i in range(half_window, len(datalist) - half_window):
-        t.append(datalist[i])
-        if len(t) >= half_window:
-            t.pop(0)
-            t.append(datalist[i])
-            d = mean(t)
-            returnlist.append(round(d, 4))
-        # for j in range(0 - half_window, half_window):
-        #     t.append(float(datalist[i + j]))
-        #
-        # if len(t) > 0:
-        #     d = mean(t)
-        # else:
-        #     d = 0
-        # returnlist.append(round(d,3))
-
-    return returnlist
-
-
-def plot(dt_dates, dt_detrend, savefile_name):
+def plot(dt_dates, dt_detrend, average, savefile_name):
     width = 1500
     height = 500
     backgroundcolour = "#ffffff"
@@ -78,6 +21,11 @@ def plot(dt_dates, dt_detrend, savefile_name):
     fig.update_layout(width=width, height=height, title="H-Component - Detrended",
                       xaxis_title="Date/time UTC<br><sub>http://RuruObservatory.org.nz</sub>",
                       yaxis_title="Magnetic Field Strength - Arbitrary Values")
+
+    if average is not None:
+        fig.add_scatter(x=dt_dates, y=average, mode="lines", connectgaps=True,
+                        line=dict(color="#007090", width=3))
+
     fig.update_layout(plot_bgcolor=backgroundcolour, paper_bgcolor=backgroundcolour)
     fig.update_xaxes(showgrid=True, gridwidth=1, gridcolor=gridcolour)
     fig.update_yaxes(showgrid=True, gridwidth=1, gridcolor=gridcolour)
@@ -92,7 +40,8 @@ def getposixtime():
 
 def database_get_data(dba):
     tempdata = []
-    starttime = getposixtime() - 86400
+    # Grab a bit more than a day so we can do the running average with a bit of lead data
+    starttime = getposixtime() - 91800
     db = sqlite3.connect(dba)
     try:
         cursor = db.cursor()
@@ -109,65 +58,3 @@ def database_get_data(dba):
     return tempdata
 
 def wrapper(database, publishdirectory):
-    print("*** Detrended Magnetogram: STARTED " + standard_stuff.posix2utc(time(), "%Y-%m-%d %H:%M:%S"))
-    processdata = database_get_data(database)
-    # If the length of the datalist is long enough, attempt to use the full algorthm,
-    # Otherwise use a simple linear approximation
-
-    # THE DATALIST IS IN THE FORMAT "posixtime, data" We will need to split this into two lists
-    # Dates and actual data.
-    savefile_name = publishdirectory + os.sep + "plot_detrended.jpg"
-    dt_dates = []
-    dt_data = []
-    for item in processdata:
-        utcdate = standard_stuff.posix2utc(item[0], '%Y-%m-%d %H:%M:%S')
-        dt_dates.append(utcdate)
-        dt_data.append(float(item[1]))
-
-    print("*** Detrended Magnetogram: Beginning detrend...")
-    if len(dt_data) < half_window:
-        f = calc_start(dt_data)
-    else:
-        # Calculate the detrended data.
-        a = calc_start(dt_data)
-        b = calc_middle(dt_data)
-        # c = calc_end(dt_data)
-
-        a_offset = b[0] - a[len(a) - 1]
-        aa = []
-        for item in a:
-            x = item + a_offset
-            aa.append(x)
-
-        f = aa + b
-
-
-    # Generate residuals, thus flattening out the original data. dt_detrend
-    # is the final detrended data.
-    dt_detrend = []
-    max_iters = min(len(f), len(dt_data))
-    for i in range(0, max_iters):
-        dd = float(dt_data[i])
-        ff = float(f[i])
-        d = round((dd - ff), 3)
-        dt_detrend.append(d)
-
-
-    print("*** Detrended Magnetogram: Smoothing detrend")
-    # ########## Filtering and Adjustment before Plotting ##########
-    # Smooth the data before plotting
-    dt_detrend = standard_stuff.filter_median(dt_detrend, 5)
-    # dt_detrend = standard_stuff.filter_mean(dt_detrend, 250)
-
-    # the datetimes will be of a different length now because of the filtering of the data
-    # Determin the difference and top and tail the datetimes array.
-    # toptail = len(dt_dates) - len(dt_detrend)
-    # dt_dates = dt_dates[toptail:-toptail]
-    # ########## Filtering and Adjustment before Plotting ##########
-
-    try:
-        plot(dt_dates, dt_detrend, savefile_name)
-    except:
-        print("!!! Detrended Magnetogram: FAILED to plot magnetogram")
-    print("*** Detrended Magnetogram: FINISHED " + standard_stuff.posix2utc(time(), "%Y-%m-%d %H:%M:%S"))
-
