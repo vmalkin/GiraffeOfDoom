@@ -12,7 +12,7 @@ def calc_start(datalist):
     returnlist = []
     data_start = datalist[0]
 
-    if len(datalist) > half_window:
+    if len(datalist) > half_window - 1:
         index = half_window
     else:
         index = len(datalist) - 1
