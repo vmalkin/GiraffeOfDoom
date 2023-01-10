@@ -55,13 +55,19 @@ def calc_middle(datalist):
 def plot(dt_dates, dt_detrend, savefile_name):
     width = 1500
     height = 500
-    backgroundcolour = "#a0a0a0"
-    plotdata = go.Scatter(x=dt_dates, y=dt_detrend, mode="lines")
+    backgroundcolour = "#ffffff"
+    pencolour = "#600000"
+    gridcolour = "#909090"
+
+    plotdata = go.Scatter(x=dt_dates, y=dt_detrend, mode="lines", line=dict(color=pencolour, width=2))
     fig = go.Figure(plotdata)
     fig.update_layout(width=width, height=height, title="H-Component",
                       xaxis_title="Date/time UTC<br><sub>http://RuruObservatory.org.nz</sub>",
                       yaxis_title="Magnetic Field Strength - Arbitrary Values")
     fig.update_layout(plot_bgcolor=backgroundcolour, paper_bgcolor=backgroundcolour)
+    fig.update_xaxes(showgrid=True, gridwidth=1, gridcolor=gridcolour)
+    fig.update_yaxes(showgrid=True, gridwidth=1, gridcolor=gridcolour)
+
     fig.write_image(savefile_name)
 
 
