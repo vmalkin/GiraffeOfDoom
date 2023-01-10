@@ -115,8 +115,8 @@ def wrapper(dd, publishdirectory):
 
     # ########## Filtering and Adjustment before Plotting ##########
     # Smooth the data before plotting
-    dt_data = standard_stuff.filter_median(dt_data, 2)
-    dt_data = standard_stuff.filter_mean(dt_data, 250)
+    dt_data = standard_stuff.filter_median(dt_data, 5)
+    # dt_data = standard_stuff.filter_mean(dt_data, 250)
 
     # the datetimes will be of a different length now because of the filtering of the data
     # Determin the difference and top and tail the datetimes array.
