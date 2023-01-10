@@ -1,17 +1,17 @@
 import os
+from time import time
 from statistics import mean
-
 import standard_stuff
-from standard_stuff import posix2utc
+import sqlite3
 from plotly import graph_objects as go
 
 # The number of readings that equates to one and a half hours of time.
-half_window = 10
+half_window = int(60 * 60 * 1.5)
 
 def calc_start(datalist):
     returnlist = []
-    data_start = float(datalist[0])
-    data_end = float(datalist[half_window - 1])
+    data_start = datalist[0]
+    data_end = datalist[half_window - 1]
     rate = (data_end - data_start) / half_window
     d = data_start
     returnlist.append(data_start)
@@ -25,8 +25,8 @@ def calc_start(datalist):
 
 def calc_end(datalist):
     returnlist = []
-    data_start = float(datalist[len(datalist) - half_window])
-    data_end = float(datalist[len(datalist) - 1])
+    data_start = datalist[len(datalist) - half_window]
+    data_end = datalist[len(datalist) - 1]
     rate = (data_end - data_start) / half_window
     d = data_start
     returnlist.append(data_start)
@@ -73,7 +73,31 @@ def plot(dt_dates, dt_detrend, savefile_name):
     fig.write_image(savefile_name)
 
 
-def wrapper(datalist, publishdirectory):
+def getposixtime():
+    timevalue = int(time())
+    return timevalue
+
+
+def database_get_data(dba):
+    tempdata = []
+    starttime = getposixtime() - 86400
+    db = sqlite3.connect(dba)
+    try:
+        cursor = db.cursor()
+        result = cursor.execute("select * from data where data.posixtime > ? order by data.posixtime asc", [starttime])
+        for line in result:
+            dt = line[0]
+            da = line[1]
+            d = [dt, da]
+            tempdata.append(d)
+
+    except sqlite3.OperationalError:
+        print("Database is locked, try again!")
+    db.close()
+    return tempdata
+
+def wrapper(database, publishdirectory):
+    processdata = database_get_data(database)
     # If the length of the datalist is long enough, attempt to use the full algorthm,
     # Otherwise use a simple linear approximation
 
@@ -82,7 +106,7 @@ def wrapper(datalist, publishdirectory):
     savefile_name = publishdirectory + os.sep + "plot_detrended.jpg"
     dt_dates = []
     dt_data = []
-    for item in datalist:
+    for item in processdata:
         utcdate = standard_stuff.posix2utc(item[0], '%Y-%m-%d %H:%M:%S')
         dt_dates.append(utcdate)
         dt_data.append(float(item[1]))

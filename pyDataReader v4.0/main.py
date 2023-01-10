@@ -51,16 +51,16 @@ class ChartThread(Thread):
     def run(self):
         while True:
             # Chart data every five minutes
-            sleep(60)
-
-            # csv logfile for the last 24 hours
-            mgr_logfile_daily.wrapper(current_data, logfile_dir)
+            sleep(120)
+            #
+            # # csv logfile for the last 24 hours
+            # mgr_logfile_daily.wrapper(database, logfile_dir)
 
             # Detrended magnetogram/data
-            mgr_plot_detrended.wrapper(current_data, publish_dir)
+            mgr_plot_detrended.wrapper(database, publish_dir)
 
-            # unprocessed magnetogram/data
-            mgr_plot_diurnal.wrapper(current_data, publish_dir)
+            # # unprocessed magnetogram/data
+            # mgr_plot_diurnal.wrapper(database, publish_dir)
 
             # Empirical Mode Decomposition of last 24 hours
 
@@ -119,10 +119,10 @@ def database_add_data(timestamp, datavalue):
     db.close()
 
 
-def database_get_data():
+def database_get_data(dba):
     tempdata = []
     starttime = getposixtime() - 86400
-    db = sqlite3.connect(database)
+    db = sqlite3.connect(dba)
     try:
         cursor = db.cursor()
         result = cursor.execute("select * from data where data.posixtime > ? order by data.posixtime asc", [starttime])
@@ -192,9 +192,6 @@ if __name__ == "__main__":
             # create the datapoint. Print the values for the user.
             database_add_data(current_dt, reading)
             print(standard_stuff.posix2utc(current_dt, '%Y-%m-%d %H:%M:%S'), reading)
-
-            # populate the current data array to be shared with plotting functions in thread.
-            current_data = database_get_data()
 
         else:
             print("Garbage data from device: " + reading)

@@ -1,6 +1,8 @@
 from statistics import mean
 import standard_stuff
 import os
+import sqlite3
+from time import time
 from plotly import graph_objects as go
 
 # The number of readings that equates to one and a half hours of time.
@@ -71,7 +73,33 @@ def plot(dt_dates, dt_detrend, savefile_name):
     fig.write_image(savefile_name)
 
 
-def wrapper(datalist, publishdirectory):
+def getposixtime():
+    timevalue = int(time())
+    return timevalue
+
+
+def database_get_data(dba):
+    tempdata = []
+    starttime = getposixtime() - 86400
+    db = sqlite3.connect(dba)
+    try:
+        cursor = db.cursor()
+        result = cursor.execute("select * from data where data.posixtime > ? order by data.posixtime asc", [starttime])
+        for line in result:
+            dt = line[0]
+            da = line[1]
+            d = [dt, da]
+            tempdata.append(d)
+
+    except sqlite3.OperationalError:
+        print("Database is locked, try again!")
+    db.close()
+    return tempdata
+
+
+
+def wrapper(dd, publishdirectory):
+    datalist = database_get_data(dd)
     # If the length of the datalist is long enough, attempt to use the full algorthm,
     # Otherwise use a simple linear approximation
 
