@@ -3,7 +3,7 @@ This file contains any global constants as well as standard methods that I use a
 """
 import datetime
 import time
-from statistics import mean
+from statistics import mean, median
 from calendar import timegm
 
 # Default or global values or constants
@@ -73,3 +73,33 @@ def calc_middle(datalist):
 
     return returnlist
 # ##############################################################################
+
+def filter_median(numerical_data, filter_halfwindow):
+    # Takes in an array of csv data. single values only.
+    returnarray = []
+    if len(numerical_data) > 2 * filter_halfwindow + 1:
+        for i in range(filter_halfwindow, len(numerical_data) - filter_halfwindow):
+            t = []
+            for j in range(-filter_halfwindow, filter_halfwindow):
+                t.append(numerical_data[i + j])
+            v = mean(t)
+            returnarray.append(v)
+    else:
+        returnarray = numerical_data
+    return returnarray
+
+
+def filter_mean(numerical_data, filter_halfwindow):
+    # Takes in an array of csv data. single values only.
+    returnarray = []
+    if len(numerical_data) > 2 * filter_halfwindow + 1:
+        for i in range(filter_halfwindow, len(numerical_data) - filter_halfwindow):
+            t = []
+            for j in range(-filter_halfwindow, filter_halfwindow):
+                t.append(numerical_data[i + j])
+            v = median(t)
+            returnarray.append(v)
+    else:
+        returnarray = numerical_data
+    return returnarray
+

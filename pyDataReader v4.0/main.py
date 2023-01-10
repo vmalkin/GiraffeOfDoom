@@ -8,10 +8,11 @@ from threading import Thread
 import os
 import sqlite3
 
-import mgr_create_daily_logfile
+import mgr_logfile_daily
+import mgr_plot_diurnal
 import standard_stuff
-import mgr_binner
-import mgr_detrended_v2
+import mgr_plot_hr_bins
+import mgr_plot_detrended
 
 __version__ = "5.0"
 errorloglevel = logging.DEBUG
@@ -53,12 +54,13 @@ class ChartThread(Thread):
             sleep(60)
 
             # csv logfile for the last 24 hours
-            mgr_create_daily_logfile.wrapper(current_data, logfile_dir)
+            mgr_logfile_daily.wrapper(current_data, logfile_dir)
 
             # Detrended magnetogram/data
-            mgr_detrended_v2.wrapper(current_data, publish_dir)
+            mgr_plot_detrended.wrapper(current_data, publish_dir)
 
             # unprocessed magnetogram/data
+            mgr_plot_diurnal.wrapper(current_data, publish_dir)
 
             # Empirical Mode Decomposition of last 24 hours
 
