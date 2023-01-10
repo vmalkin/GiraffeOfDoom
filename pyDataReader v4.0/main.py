@@ -51,7 +51,7 @@ class ChartThread(Thread):
     def run(self):
         while True:
             # Chart data every five minutes
-            sleep(120)
+            sleep(300)
 
             # csv logfile for the last 24 hours
             mgr_logfile_daily.wrapper(database, logfile_dir)
@@ -63,7 +63,6 @@ class ChartThread(Thread):
             mgr_plot_detrended.wrapper(database, publish_dir)
 
             # Empirical Mode Decomposition of last 24 hours
-
             # Brendan Davies Aurora data
 
 class SerialManager:

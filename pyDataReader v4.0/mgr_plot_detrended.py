@@ -11,8 +11,14 @@ half_window = int(30*60*1.5)
 def calc_start(datalist):
     returnlist = []
     data_start = datalist[0]
-    data_end = datalist[half_window - 1]
-    rate = (data_end - data_start) / half_window
+
+    if len(datalist) > half_window:
+        index = half_window
+    else:
+        index = len(datalist) - 1
+
+    data_end = datalist[index]
+    rate = (data_end - data_start) / index
     d = data_start
     returnlist.append(data_start)
 
@@ -130,11 +136,13 @@ def wrapper(database, publishdirectory):
     # Generate residuals, thus flattening out the original data. dt_detrend
     # is the final detrended data.
     dt_detrend = []
-    for i in range(0, len(f)):
+    max_iters = min(len(f), len(dt_data))
+    for i in range(0, max_iters):
         dd = float(dt_data[i])
         ff = float(f[i])
         d = round((dd - ff), 3)
         dt_detrend.append(d)
+
 
     print("*** Detrended Magnetogram: Smoothing detrend")
     # ########## Filtering and Adjustment before Plotting ##########
