@@ -6,7 +6,7 @@ import sqlite3
 from plotly import graph_objects as go
 
 # The number of readings that equates to one and a half hours of time.
-half_window = int(60 * 60 * 1.5)
+half_window = int(30*60*1.5)
 
 def calc_start(datalist):
     returnlist = []
@@ -39,17 +39,22 @@ def calc_end(datalist):
 
 def calc_middle(datalist):
     returnlist = []
-
+    t = []
     for i in range(half_window, len(datalist) - half_window):
-        t = []
-        for j in range(0 - half_window, half_window):
-            t.append(float(datalist[i + j]))
-
-        if len(t) > 0:
+        t.append(datalist[i])
+        if len(t) >= half_window:
+            t.pop(0)
+            t.append(datalist[i])
             d = mean(t)
-        else:
-            d = 0
-        returnlist.append(round(d,3))
+            returnlist.append(round(d, 3))
+        # for j in range(0 - half_window, half_window):
+        #     t.append(float(datalist[i + j]))
+        #
+        # if len(t) > 0:
+        #     d = mean(t)
+        # else:
+        #     d = 0
+        # returnlist.append(round(d,3))
 
     return returnlist
 
@@ -97,6 +102,7 @@ def database_get_data(dba):
     return tempdata
 
 def wrapper(database, publishdirectory):
+    print("*** Detrended Magnetogram: STARTED " + standard_stuff.posix2utc(time(), "%Y-%m-%d %H:%M:%S"))
     processdata = database_get_data(database)
     # If the length of the datalist is long enough, attempt to use the full algorthm,
     # Otherwise use a simple linear approximation
@@ -111,7 +117,7 @@ def wrapper(database, publishdirectory):
         dt_dates.append(utcdate)
         dt_data.append(float(item[1]))
 
-
+    print("*** Detrended Magnetogram: Beginning detrend...")
     if len(dt_data) < half_window:
         f = calc_start(dt_data)
     else:
@@ -130,6 +136,7 @@ def wrapper(database, publishdirectory):
         d = round((dd - ff), 3)
         dt_detrend.append(d)
 
+    print("*** Detrended Magnetogram: Smoothing detrend")
     # ########## Filtering and Adjustment before Plotting ##########
     # Smooth the data before plotting
     dt_detrend = standard_stuff.filter_median(dt_detrend, 2)
@@ -142,8 +149,8 @@ def wrapper(database, publishdirectory):
     # ########## Filtering and Adjustment before Plotting ##########
 
     try:
-        print("*** Detrended Magnetogram: Created")
         plot(dt_dates, dt_detrend, savefile_name)
     except:
         print("!!! Detrended Magnetogram: FAILED to plot magnetogram")
+    print("*** Detrended Magnetogram: FINISHED " + standard_stuff.posix2utc(time(), "%Y-%m-%d %H:%M:%S"))
 

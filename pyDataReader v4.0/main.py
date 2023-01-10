@@ -52,15 +52,15 @@ class ChartThread(Thread):
         while True:
             # Chart data every five minutes
             sleep(120)
-            #
-            # # csv logfile for the last 24 hours
-            # mgr_logfile_daily.wrapper(database, logfile_dir)
+
+            # csv logfile for the last 24 hours
+            mgr_logfile_daily.wrapper(database, logfile_dir)
+
+            # unprocessed magnetogram/data
+            mgr_plot_diurnal.wrapper(database, publish_dir)
 
             # Detrended magnetogram/data
             mgr_plot_detrended.wrapper(database, publish_dir)
-
-            # # unprocessed magnetogram/data
-            # mgr_plot_diurnal.wrapper(database, publish_dir)
 
             # Empirical Mode Decomposition of last 24 hours
 
