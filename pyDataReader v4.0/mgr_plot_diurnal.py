@@ -16,7 +16,8 @@ def plot(dt_dates, dt_detrend, savefile_name):
     pencolour = "#600000"
     gridcolour = "#909090"
 
-    title = "Geomagnetic Field: Horizontal Component. Updated " + standard_stuff.posix2utc(time(), '%Y-%m-%d %H:%M')
+    title = "Geomagnetic Field: Horizontal Component with Diurnal Variation. Updated "
+    title = title + standard_stuff.posix2utc(time(), '%Y-%m-%d %H:%M')
 
     plotdata = go.Scatter(x=dt_dates, y=dt_detrend, mode="lines", line=dict(color=pencolour, width=2))
     fig = go.Figure(plotdata)

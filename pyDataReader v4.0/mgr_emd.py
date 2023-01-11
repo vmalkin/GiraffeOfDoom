@@ -46,7 +46,7 @@ def plot_data(imf, dates, filename):
     iters = len(imf[0])
     for i in range(0, iters):
         fig.add_trace(go.Scatter(x=dates, y=imf[:, i], mode="lines"), row=i+1, col=1)
-    fig.update_layout(height=2000, width=1400, title_text=title)
+    fig.update_layout(height=2000, width=1500, title_text=title)
     fig.update_layout(showlegend=False)
     # fig.show()
     # fig.write_html("emd.html")
