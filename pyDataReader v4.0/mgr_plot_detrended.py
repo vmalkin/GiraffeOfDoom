@@ -5,6 +5,7 @@ import standard_stuff
 import sqlite3
 from plotly import graph_objects as go
 
+null_value = f'null'
 class DataPoint:
     def __init__(self):
         self.posixtime = 0
@@ -22,11 +23,11 @@ def plot(dates, data1, data2, savefile_name):
     plotdata = go.Scatter(x=dates, y=data1, mode="lines", line=dict(color=pencolour, width=2))
     fig = go.Figure(plotdata)
     fig.update_layout(width=width, height=height, title="H-Component - Detrended",
-                      xaxis_title="Date/time UTC<br><sub>http://RuruObservatory.org.nz</sub>",
+                      xaxis_title="Date/time UTC<br>http://RuruObservatory.org.nz",
                       yaxis_title="Magnetic Field Strength - Arbitrary Values")
 
     if data2 is not None:
-        fig.add_scatter(x=dates, y=data2, mode="lines", connectgaps=True,
+        fig.add_scatter(x=dates, y=data2, mode="lines", connectgaps=False,
                         line=dict(color="#002050", width=3))
 
     fig.update_layout(plot_bgcolor=backgroundcolour, paper_bgcolor=backgroundcolour)
@@ -73,7 +74,7 @@ def wrapper(database, publishdirectory):
         array_datapoints.append(d)
 
     # find median value for each datapoint
-    halfwindow_median = 3
+    halfwindow_median = 8
     for i in range(halfwindow_median, len(array_datapoints) - halfwindow_median):
         t = []
         for j in range(-halfwindow_median, halfwindow_median):
@@ -90,23 +91,35 @@ def wrapper(database, publishdirectory):
             array_datapoints[i - halfwindow_average].data_avg = mean(t)
             t.pop(0)
 
-    # Calculate the 3 hour running average
+    # Calculate residuals
+
+    # Create files for plotting
     d_time = []
-    d_median = []
-    d_average = []
+    d_dtrend = []
+    # d_median = []
+    # d_average = []
+
     for d in array_datapoints:
         tt = standard_stuff.posix2utc(d.posixtime, '%Y-%m-%d %H:%M:%S')
         d_time.append(tt)
-        if d.data_medianed is 0:
-            d_median.append(None)
-            d_average.append(None)
+
+        if d.data_avg == 0:
+            d_dtrend.append(null_value)
         else:
-            d_median.append(d.data_medianed)
-            d_average.append((d.data_avg))
+            # Calculate the residual detrended value.
+            dt = d.data_medianed - d.data_avg
+            d_dtrend.append(dt)
+        # if d.data_medianed == 0:
+        #     d_median.append(null_value)
+        # else:
+        #     d_median.append(d.data_medianed)
+        #
+        # if d.data_avg == 0:
+        #     d_average.append(null_value)
+        # else:
+        #     d_average.append(d.data_avg)
 
-    savefile = publishdirectory + os.sep + "test.jpg"
-    plot(d_time, d_median, None, savefile)
+    savefile = publishdirectory + os.sep + "plot_detrend.jpg"
+    plot(d_time, d_dtrend, None, savefile)
 
-    savefile = publishdirectory + os.sep + "test_2.jpg"
-    plot(d_time, d_median, d_average, savefile)
     print("*** Detrended: FINISHED")
