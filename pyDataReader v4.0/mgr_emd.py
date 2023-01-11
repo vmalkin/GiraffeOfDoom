@@ -1,9 +1,11 @@
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
-# import matplotlib.pyplot as plt
 import datetime
+import time
 import emd
 import numpy as np
+import sqlite3
+import os
 from statistics import mean
 
 def posix2utc(posixtime, timeformat):
@@ -11,6 +13,31 @@ def posix2utc(posixtime, timeformat):
     utctime = datetime.datetime.utcfromtimestamp(int(posixtime)).strftime(timeformat)
     return utctime
 
+
+
+def getposixtime():
+    timevalue = int(time())
+    return timevalue
+
+
+def database_get_data(dba):
+    tempdata = []
+    # Grab a bit more than a day so we can do the running average with a bit of lead data
+    starttime = getposixtime() - 86400
+    db = sqlite3.connect(dba)
+    try:
+        cursor = db.cursor()
+        result = cursor.execute("select * from data where data.posixtime > ? order by data.posixtime asc", [starttime])
+        for line in result:
+            dt = line[0]
+            da = line[1]
+            d = [dt, da]
+            tempdata.append(d)
+
+    except sqlite3.OperationalError:
+        print("Database is locked, try again!")
+    db.close()
+    return tempdata
 
 def plot_data(imf, dates, filename):
     rownum = imf.shape[1]
@@ -24,15 +51,28 @@ def plot_data(imf, dates, filename):
     fig.write_html("emd.html")
     fig.write_image(filename)
 
-def wrapper(emd_data, dates, plotname):
-    n = np.array(emd_data, dtype='float')
+def wrapper(database, publishdirectory):
+    print("*** EMD: Starting...")
+    readings = database_get_data(database)
+
+    dt_dates = []
+    dt_readings = []
+    for item in readings:
+        date = posix2utc(item[0], '%Y-%m-%d %H:%M')
+        dt_dates.append(date)
+        dt_readings.append(item[0])
+
+    n = np.array(dt_dates, dtype='float')
 
     sample_rate = len(n)
     # imf = emd.sift.iterated_mask_sift(n)
     imf = emd.sift.sift(n, max_imfs=7)
 
     print("Intrinsic mode function parameters: ", imf.shape)
-    plot_data(imf, dates, plotname)
+
+    savefile = publishdirectory + os.sep + "plot_emd.jpg"
+    plot_data(imf, dt_dates, savefile)
+    print("*** EMD: Finished")
 
 
 

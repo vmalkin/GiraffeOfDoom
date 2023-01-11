@@ -1,16 +1,15 @@
 import serial
 from time import time, sleep
-from datetime import datetime
 import logging
 import re
 import sys
 from threading import Thread
 import os
 import sqlite3
-
+import standard_stuff
 import mgr_logfile_daily
 import mgr_plot_diurnal
-import standard_stuff
+import mgr_emd
 import mgr_plot_detrended
 
 __version__ = "5.0"
@@ -49,9 +48,6 @@ class ChartThread(Thread):
 
     def run(self):
         while True:
-            # Chart data every five minutes
-            sleep(300)
-
             # csv logfile for the last 24 hours
             mgr_logfile_daily.wrapper(database, logfile_dir)
 
@@ -62,8 +58,11 @@ class ChartThread(Thread):
             mgr_plot_detrended.wrapper(database, publish_dir)
 
             # Empirical Mode Decomposition of last 24 hours
+            mgr_emd.wrapper(database, publish_dir)
             # Brendan Davies Aurora data
 
+            # Chart data every five minutes
+            sleep(300)
 
 class SerialManager:
     def __init__(self, portname, baudrate, bytesize, parity, stopbits, timeout, xonxoff, rtscts, writeTimeout, dsrdtr, interCharTimeout):
