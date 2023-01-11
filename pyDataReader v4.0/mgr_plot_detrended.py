@@ -13,7 +13,7 @@ class DataPoint:
         self.data_medianed = 0
         self.data_avg = 0
 
-def plot(dates, data1, data2, savefile_name):
+def plot(dates, data1, data2, title, savefile_name):
     width = 1500
     height = 500
     backgroundcolour = "#ffffff"
@@ -22,7 +22,7 @@ def plot(dates, data1, data2, savefile_name):
 
     plotdata = go.Scatter(x=dates, y=data1, mode="lines", line=dict(color=pencolour, width=2))
     fig = go.Figure(plotdata)
-    fig.update_layout(width=width, height=height, title="Geomagnetic Field: Detrended Horizontal Component",
+    fig.update_layout(width=width, height=height, title=title,
                       xaxis_title="Date/time UTC<br>http://RuruObservatory.org.nz",
                       yaxis_title="Magnetic Field Strength - Arbitrary Values")
 
@@ -97,8 +97,8 @@ def wrapper(database, publishdirectory):
     # Create files for plotting
     d_time = []
     d_dtrend = []
-    # d_median = []
-    # d_average = []
+    d_median = []
+    d_average = []
 
     for d in array_datapoints:
         tt = standard_stuff.posix2utc(d.posixtime, '%Y-%m-%d %H:%M:%S')
@@ -110,17 +110,23 @@ def wrapper(database, publishdirectory):
             # Calculate the residual detrended value.
             dt = d.data_medianed - d.data_avg
             d_dtrend.append(dt)
-        # if d.data_medianed == 0:
-        #     d_median.append(null_value)
-        # else:
-        #     d_median.append(d.data_medianed)
-        #
-        # if d.data_avg == 0:
-        #     d_average.append(null_value)
-        # else:
-        #     d_average.append(d.data_avg)
+
+        if d.data_medianed == 0:
+            d_median.append(null_value)
+        else:
+            d_median.append(d.data_medianed)
+
+        if d.data_avg == 0:
+            d_average.append(null_value)
+        else:
+            d_average.append(d.data_avg)
 
     savefile = publishdirectory + os.sep + "plot_detrend.jpg"
-    plot(d_time, d_dtrend, None, savefile)
+    title = "Geomagnetic Field: Detrended Horizontal Component"
+    plot(d_time, d_dtrend, None, title, savefile)
+
+    savefile = publishdirectory + os.sep + "plot_dt_med.jpg"
+    title = "Geomagnetic Field: Readings and 3hr Average"
+    plot(d_time, d_median, d_average, title, savefile)
 
     print("*** Detrended: FINISHED")
