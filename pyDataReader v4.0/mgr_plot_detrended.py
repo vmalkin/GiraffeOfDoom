@@ -99,9 +99,14 @@ def wrapper(database, publishdirectory):
         d_time.append(tt)
         if d.data_medianed is 0:
             d_median.append(None)
+            d_average.append(None)
         else:
             d_median.append(d.data_medianed)
+            d_average.append((d.data_avg))
 
     savefile = publishdirectory + os.sep + "test.jpg"
     plot(d_time, d_median, None, savefile)
+
+    savefile = publishdirectory + os.sep + "test_2.jpg"
+    plot(d_time, d_median, d_average, savefile)
     print("*** Detrended: FINISHED")
