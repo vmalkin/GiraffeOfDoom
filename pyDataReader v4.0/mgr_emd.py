@@ -16,7 +16,7 @@ def posix2utc(posixtime, timeformat):
 
 
 def getposixtime():
-    timevalue = int(time())
+    timevalue = int(time.time())
     return timevalue
 
 
@@ -46,7 +46,7 @@ def plot_data(imf, dates, filename):
     iters = len(imf[0])
     for i in range(0, iters):
         fig.add_trace(go.Scatter(x=dates, y=imf[:, i], mode="lines"), row=i+1, col=1)
-    fig.update_layout(height=1600, width=1400, title_text="Muon Counts 356 Days - Empirical Mode Decomposition")
+    fig.update_layout(height=2000, width=1400, title_text="Muon Counts 356 Days - Empirical Mode Decomposition")
     # fig.show()
     fig.write_html("emd.html")
     fig.write_image(filename)
@@ -60,13 +60,12 @@ def wrapper(database, publishdirectory):
     for item in readings:
         date = posix2utc(item[0], '%Y-%m-%d %H:%M')
         dt_dates.append(date)
-        dt_readings.append(item[0])
+        dt_readings.append(item[1])
 
-    n = np.array(dt_dates, dtype='float')
-
-    sample_rate = len(n)
+    n = np.array(dt_readings, dtype='float')
+    # sample_rate = len(n)
     # imf = emd.sift.iterated_mask_sift(n)
-    imf = emd.sift.sift(n, max_imfs=7)
+    imf = emd.sift.sift(n, max_imfs=12)
 
     print("Intrinsic mode function parameters: ", imf.shape)
 
