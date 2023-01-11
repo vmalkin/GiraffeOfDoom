@@ -14,7 +14,6 @@ def posix2utc(posixtime, timeformat):
     return utctime
 
 
-
 def getposixtime():
     timevalue = int(time.time())
     return timevalue
@@ -42,11 +41,12 @@ def database_get_data(dba):
 def plot_data(imf, dates, filename):
     rownum = imf.shape[1]
     fig = make_subplots(rows=rownum, cols=1)
+    title = "Empirical Mode Decomposion: H Component data. Updated " + posix2utc(time(), '%Y-%m-%d %H:%M')
 
     iters = len(imf[0])
     for i in range(0, iters):
         fig.add_trace(go.Scatter(x=dates, y=imf[:, i], mode="lines"), row=i+1, col=1)
-    fig.update_layout(height=2000, width=1400, title_text="Muon Counts 356 Days - Empirical Mode Decomposition")
+    fig.update_layout(height=2000, width=1400, title_text=title)
     # fig.show()
     # fig.write_html("emd.html")
     fig.write_image(filename)

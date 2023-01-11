@@ -23,6 +23,7 @@ def plot(dates, data1, data2, title, savefile_name):
     backgroundcolour = "#ffffff"
     pencolour = "#600000"
     gridcolour = "#909090"
+    title = title +  "Updated " + standard_stuff.posix2utc(time(), '%Y-%m-%d %H:%M')
 
     plotdata = go.Scatter(x=dates, y=data1, mode="lines", line=dict(color=pencolour, width=2))
     fig = go.Figure(plotdata)
