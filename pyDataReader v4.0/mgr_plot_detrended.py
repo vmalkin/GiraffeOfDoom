@@ -30,9 +30,10 @@ def plot(dates, data1, data2, savefile_name):
         fig.add_scatter(x=dates, y=data2, mode="lines", connectgaps=False,
                         line=dict(color="#002050", width=3))
 
-    fig.update_layout(plot_bgcolor=backgroundcolour, paper_bgcolor=backgroundcolour)
+    # fig.update_layout(plot_bgcolor=backgroundcolour, paper_bgcolor=backgroundcolour)
     fig.update_xaxes(showgrid=True, gridwidth=1, gridcolor=gridcolour)
-    fig.update_yaxes(showgrid=True, gridwidth=1, gridcolor=gridcolour)
+    fig.update_yaxes(showgrid=True, gridwidth=1, gridcolor=gridcolour,
+                     zeroline=True, zerolinewidth=2, zerolinecolor=gridcolour)
 
     fig.write_image(savefile_name)
 

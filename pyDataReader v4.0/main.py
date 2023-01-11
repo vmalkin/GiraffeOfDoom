@@ -50,6 +50,9 @@ class ChartThread(Thread):
 
     def run(self):
         while True:
+            # Chart data every five minutes
+            sleep(300)
+
             # csv logfile for the last 24 hours
             mgr_logfile_daily.wrapper(database, logfile_dir)
 
@@ -62,8 +65,7 @@ class ChartThread(Thread):
             # Empirical Mode Decomposition of last 24 hours
             # Brendan Davies Aurora data
 
-            # Chart data every five minutes
-            sleep(300)
+
 class SerialManager:
     def __init__(self, portname, baudrate, bytesize, parity, stopbits, timeout, xonxoff, rtscts, writeTimeout, dsrdtr, interCharTimeout):
         self._portname = portname
