@@ -11,7 +11,6 @@ import sqlite3
 import mgr_logfile_daily
 import mgr_plot_diurnal
 import standard_stuff
-import mgr_plot_hr_bins
 import mgr_plot_detrended
 
 __version__ = "5.0"

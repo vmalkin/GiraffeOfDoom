@@ -28,7 +28,7 @@ def plot(dates, data1, data2, title, savefile_name):
 
     if data2 is not None:
         fig.add_scatter(x=dates, y=data2, mode="lines", connectgaps=False,
-                        line=dict(color="#002050", width=3))
+                        line=dict(color="#0080f0", width=3))
 
     fig.update_layout(plot_bgcolor=backgroundcolour, paper_bgcolor=backgroundcolour)
     fig.update_xaxes(showgrid=True, gridwidth=1, gridcolor=gridcolour)
