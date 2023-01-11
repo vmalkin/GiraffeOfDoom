@@ -6,6 +6,9 @@ import sqlite3
 from plotly import graph_objects as go
 
 null_value = f'null'
+halfwindow_median = 8
+halfwindow_average = int(30 * 60 * 1.5)
+
 class DataPoint:
     def __init__(self):
         self.posixtime = 0
@@ -69,7 +72,7 @@ def wrapper(database, publishdirectory):
     print("*** Detrended: START")
     readings = database_get_data(database)
 
-    if len(readings) > int(30*60*3):
+    if len(readings) > halfwindow_average * 2:
         # Create datapont array
         array_datapoints = []
         for item in readings:
@@ -79,7 +82,7 @@ def wrapper(database, publishdirectory):
             array_datapoints.append(d)
 
         # find median value for each datapoint
-        halfwindow_median = 8
+
         for i in range(halfwindow_median, len(array_datapoints) - halfwindow_median):
             t = []
             for j in range(-halfwindow_median, halfwindow_median):
@@ -88,7 +91,7 @@ def wrapper(database, publishdirectory):
             array_datapoints[i].data_medianed = x
 
         # Calculate the running average using a 3 hour window
-        halfwindow_average = int(30 * 60 * 1.5)
+
         t = []
         for i in range(0, len(array_datapoints)):
             t.append(array_datapoints[i].data_medianed)
