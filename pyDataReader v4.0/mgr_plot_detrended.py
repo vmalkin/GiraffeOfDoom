@@ -12,6 +12,7 @@ class DataPoint:
         self.data_raw = 0
         self.data_medianed = 0
         self.data_avg = 0
+        self.residual = 0
 
 def plot(dates, data1, data2, title, savefile_name):
     width = 1500
@@ -91,8 +92,27 @@ def wrapper(database, publishdirectory):
         if len(t) >= 2 * halfwindow_average:
             array_datapoints[i - halfwindow_average].data_avg = mean(t)
             t.pop(0)
+    # Calculate the tail end of the running average outside the window
+    # using a simple linear approximation
+    start = len(array_datapoints) - halfwindow_average - 1
+    finish = len(array_datapoints)
+    t = []
+    initial_value = array_datapoints[start].data_avg
+    t.append(initial_value)
+    for i in range(start, finish):
+        if array_datapoints[i].data_medianed != 0:
+            t.append(array_datapoints[i].data_medianed)
+    increment = (t[len(t) - 1] - t[0]) / len(t)
+    for i in range(start, finish):
+        if array_datapoints[i].data_medianed != 0:
+            array_datapoints[i].data_avg = initial_value
+            initial_value = initial_value + increment
 
-    # Calculate residuals
+    # Calculate the residuals
+    for dp in array_datapoints:
+        if dp.data_avg != 0:
+            if dp.data_medianed !=0:
+                dp.residual = dp.data_medianed - dp.data_avg
 
     # Create files for plotting
     d_time = []
@@ -104,12 +124,10 @@ def wrapper(database, publishdirectory):
         tt = standard_stuff.posix2utc(d.posixtime, '%Y-%m-%d %H:%M:%S')
         d_time.append(tt)
 
-        if d.data_avg == 0:
+        if d.residual == 0:
             d_dtrend.append(null_value)
         else:
-            # Calculate the residual detrended value.
-            dt = d.data_medianed - d.data_avg
-            d_dtrend.append(dt)
+            d_dtrend.append(d.residual)
 
         if d.data_medianed == 0:
             d_median.append(null_value)
