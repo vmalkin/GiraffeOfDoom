@@ -82,7 +82,6 @@ def wrapper(database, publishdirectory):
             array_datapoints.append(d)
 
         # find median value for each datapoint
-
         for i in range(halfwindow_median, len(array_datapoints) - halfwindow_median):
             t = []
             for j in range(-halfwindow_median, halfwindow_median):
@@ -91,7 +90,6 @@ def wrapper(database, publishdirectory):
             array_datapoints[i].data_medianed = x
 
         # Calculate the running average using a 3 hour window
-
         t = []
         for i in range(0, len(array_datapoints)):
             t.append(array_datapoints[i].data_medianed)
