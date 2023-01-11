@@ -26,7 +26,7 @@ def plot(dt_dates, dt_detrend, savefile_name):
     fig.update_xaxes(showgrid=True, gridwidth=1, gridcolor=gridcolour)
     fig.update_yaxes(showgrid=True, gridwidth=1, gridcolor=gridcolour,
                      zeroline=True, zerolinewidth=2, zerolinecolor=gridcolour)
-    fig.update_xaxes(nticks=24, ticks='outside',
+    fig.update_xaxes(nticks=12, ticks='outside',
                      tickangle=45, tickformat="%b %d, %H:%M")
     fig.write_image(savefile_name)
 
@@ -58,34 +58,33 @@ def database_get_data(dba):
 
 
 def wrapper(dd, publishdirectory):
-    datalist = database_get_data(dd)
-    # If the length of the datalist is long enough, attempt to use the full algorthm,
-    # Otherwise use a simple linear approximation
-
     # THE DATALIST IS IN THE FORMAT "posixtime, data" We will need to split this into two lists
     # Dates and actual data.
-    savefile_name = publishdirectory + os.sep + "plot_diurnal.jpg"
-    dt_dates = []
-    dt_data = []
-    for item in datalist:
-        utcdate = standard_stuff.posix2utc(item[0], '%Y-%m-%d %H:%M:%S')
-        dt_dates.append(utcdate)
-        dt_data.append(float(item[1]))
+    datalist = database_get_data(dd)
 
-    # ########## Filtering and Adjustment before Plotting ##########
-    # Smooth the data before plotting
-    dt_data = standard_stuff.filter_median(dt_data, 5)
-    # dt_data = standard_stuff.filter_mean(dt_data, 250)
+    if len(datalist) > half_window:
+        savefile_name = publishdirectory + os.sep + "plot_diurnal.jpg"
+        dt_dates = []
+        dt_data = []
+        for item in datalist:
+            utcdate = standard_stuff.posix2utc(item[0], '%Y-%m-%d %H:%M:%S')
+            dt_dates.append(utcdate)
+            dt_data.append(float(item[1]))
 
-    # the datetimes will be of a different length now because of the filtering of the data
-    # Determin the difference and top and tail the datetimes array.
-    toptail = len(dt_dates) - len(dt_data)
-    dt_dates = dt_dates[toptail:-toptail]
-    # ########## Filtering and Adjustment before Plotting ##########
+        # ########## Filtering and Adjustment before Plotting ##########
+        # Smooth the data before plotting
+        dt_data = standard_stuff.filter_median(dt_data, 5)
+        # dt_data = standard_stuff.filter_mean(dt_data, 250)
 
-    try:
-        print("*** Diurnal Magnetogram: Created")
-        plot(dt_dates, dt_data, savefile_name)
-    except:
-        print("!!! Diurnal Magnetogram: FAILED to plot magnetogram")
+        # the datetimes will be of a different length now because of the filtering of the data
+        # Determin the difference and top and tail the datetimes array.
+        toptail = len(dt_dates) - len(dt_data)
+        dt_dates = dt_dates[toptail:-toptail]
+        # ########## Filtering and Adjustment before Plotting ##########
+
+        try:
+            print("*** Diurnal Magnetogram: Created")
+            plot(dt_dates, dt_data, savefile_name)
+        except:
+            print("!!! Diurnal Magnetogram: FAILED to plot magnetogram")
 

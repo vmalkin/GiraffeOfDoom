@@ -69,84 +69,85 @@ def wrapper(database, publishdirectory):
     print("*** Detrended: START")
     readings = database_get_data(database)
 
-    # Create datapont array
-    array_datapoints = []
-    for item in readings:
-        d = DataPoint()
-        d.posixtime = item[0]
-        d.data_raw = item[1]
-        array_datapoints.append(d)
+    if len(readings) > int(30*60*1.5):
+        # Create datapont array
+        array_datapoints = []
+        for item in readings:
+            d = DataPoint()
+            d.posixtime = item[0]
+            d.data_raw = item[1]
+            array_datapoints.append(d)
 
-    # find median value for each datapoint
-    halfwindow_median = 8
-    for i in range(halfwindow_median, len(array_datapoints) - halfwindow_median):
+        # find median value for each datapoint
+        halfwindow_median = 8
+        for i in range(halfwindow_median, len(array_datapoints) - halfwindow_median):
+            t = []
+            for j in range(-halfwindow_median, halfwindow_median):
+                t.append(array_datapoints[i + j].data_raw)
+            x = median(t)
+            array_datapoints[i].data_medianed = x
+
+        # Calculate the running average using a 3 hour window
+        halfwindow_average = int(30 * 60 * 1.5)
         t = []
-        for j in range(-halfwindow_median, halfwindow_median):
-            t.append(array_datapoints[i + j].data_raw)
-        x = median(t)
-        array_datapoints[i].data_medianed = x
-
-    # Calculate the running average using a 3 hour window
-    halfwindow_average = int(30 * 60 * 1.5)
-    t = []
-    for i in range(0, len(array_datapoints)):
-        t.append(array_datapoints[i].data_medianed)
-        if len(t) >= 2 * halfwindow_average:
-            array_datapoints[i - halfwindow_average].data_avg = mean(t)
-            t.pop(0)
-    # Calculate the tail end of the running average outside the window
-    # using a simple linear approximation
-    start = len(array_datapoints) - halfwindow_average - 1
-    finish = len(array_datapoints)
-    t = []
-    initial_value = array_datapoints[start].data_avg
-    t.append(initial_value)
-    for i in range(start, finish):
-        if array_datapoints[i].data_medianed != 0:
+        for i in range(0, len(array_datapoints)):
             t.append(array_datapoints[i].data_medianed)
-    increment = (t[len(t) - 1] - t[0]) / len(t)
-    for i in range(start, finish):
-        if array_datapoints[i].data_medianed != 0:
-            array_datapoints[i].data_avg = initial_value
-            initial_value = initial_value + increment
+            if len(t) >= 2 * halfwindow_average:
+                array_datapoints[i - halfwindow_average].data_avg = mean(t)
+                t.pop(0)
+        # Calculate the tail end of the running average outside the window
+        # using a simple linear approximation
+        start = len(array_datapoints) - halfwindow_average - 1
+        finish = len(array_datapoints)
+        t = []
+        initial_value = array_datapoints[start].data_avg
+        t.append(initial_value)
+        for i in range(start, finish):
+            if array_datapoints[i].data_medianed != 0:
+                t.append(array_datapoints[i].data_medianed)
+        increment = (t[len(t) - 1] - t[0]) / len(t)
+        for i in range(start, finish):
+            if array_datapoints[i].data_medianed != 0:
+                array_datapoints[i].data_avg = initial_value
+                initial_value = initial_value + increment
 
-    # Calculate the residuals
-    for dp in array_datapoints:
-        if dp.data_avg != 0:
-            if dp.data_medianed !=0:
-                dp.residual = dp.data_medianed - dp.data_avg
+        # Calculate the residuals
+        for dp in array_datapoints:
+            if dp.data_avg != 0:
+                if dp.data_medianed !=0:
+                    dp.residual = dp.data_medianed - dp.data_avg
 
-    # Create files for plotting
-    d_time = []
-    d_dtrend = []
-    d_median = []
-    d_average = []
+        # Create files for plotting
+        d_time = []
+        d_dtrend = []
+        d_median = []
+        d_average = []
 
-    for d in array_datapoints:
-        tt = standard_stuff.posix2utc(d.posixtime, '%Y-%m-%d %H:%M:%S')
-        d_time.append(tt)
+        for d in array_datapoints:
+            tt = standard_stuff.posix2utc(d.posixtime, '%Y-%m-%d %H:%M:%S')
+            d_time.append(tt)
 
-        if d.residual == 0:
-            d_dtrend.append(null_value)
-        else:
-            d_dtrend.append(d.residual)
+            if d.residual == 0:
+                d_dtrend.append(null_value)
+            else:
+                d_dtrend.append(d.residual)
 
-        if d.data_medianed == 0:
-            d_median.append(null_value)
-        else:
-            d_median.append(d.data_medianed)
+            if d.data_medianed == 0:
+                d_median.append(null_value)
+            else:
+                d_median.append(d.data_medianed)
 
-        if d.data_avg == 0:
-            d_average.append(null_value)
-        else:
-            d_average.append(d.data_avg)
+            if d.data_avg == 0:
+                d_average.append(null_value)
+            else:
+                d_average.append(d.data_avg)
 
-    savefile = publishdirectory + os.sep + "plot_detrend.jpg"
-    title = "Geomagnetic Field: Detrended Horizontal Component"
-    plot(d_time, d_dtrend, None, title, savefile)
+        savefile = publishdirectory + os.sep + "plot_detrend.jpg"
+        title = "Geomagnetic Field: Detrended Horizontal Component"
+        plot(d_time, d_dtrend, None, title, savefile)
 
-    savefile = publishdirectory + os.sep + "plot_dt_med.jpg"
-    title = "Geomagnetic Field: Readings and 3hr Average"
-    plot(d_time, d_median, d_average, title, savefile)
+        savefile = publishdirectory + os.sep + "plot_dt_med.jpg"
+        title = "Geomagnetic Field: Horizontal Component and 3hr Average"
+        plot(d_time, d_median, d_average, title, savefile)
 
-    print("*** Detrended: FINISHED")
+        print("*** Detrended: FINISHED")
