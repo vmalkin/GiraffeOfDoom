@@ -41,7 +41,7 @@ def database_get_data(dba):
 def plot_data(imf, dates, filename):
     rownum = imf.shape[1]
     fig = make_subplots(rows=rownum, cols=1)
-    title = "Empirical Mode Decomposion: H Component data. Updated " + posix2utc(time(), '%Y-%m-%d %H:%M')
+    title = "Empirical Mode Decomposion: H Component data. Updated " + posix2utc(time.time(), '%Y-%m-%d %H:%M')
 
     iters = len(imf[0])
     for i in range(0, iters):

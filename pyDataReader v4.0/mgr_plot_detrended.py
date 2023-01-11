@@ -145,11 +145,11 @@ def wrapper(database, publishdirectory):
                 d_average.append(d.data_avg)
 
         savefile = publishdirectory + os.sep + "plot_detrend.jpg"
-        title = "Geomagnetic Field: Detrended Horizontal Component"
+        title = "Geomagnetic Field: Detrended Horizontal Component. "
         plot(d_time, d_dtrend, None, title, savefile)
 
         savefile = publishdirectory + os.sep + "plot_dt_med.jpg"
-        title = "Geomagnetic Field: Horizontal Component and 3hr Average"
+        title = "Geomagnetic Field: Horizontal Component and 3hr Average. "
         plot(d_time, d_median, d_average, title, savefile)
 
         print("*** Detrended: FINISHED")

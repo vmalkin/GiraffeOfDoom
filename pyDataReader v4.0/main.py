@@ -50,6 +50,7 @@ class ChartThread(Thread):
         while True:
             # Chart data every five minutes
             sleep(300)
+
             try:
                 # csv logfile for the last 24 hours
                 mgr_logfile_daily.wrapper(database, logfile_dir)
