@@ -69,7 +69,7 @@ def wrapper(database, publishdirectory):
     print("*** Detrended: START")
     readings = database_get_data(database)
 
-    if len(readings) > int(30*60*1.5):
+    if len(readings) > int(30*60*3):
         # Create datapont array
         array_datapoints = []
         for item in readings:
