@@ -22,7 +22,7 @@ def plot(dates, data1, data2, savefile_name):
 
     plotdata = go.Scatter(x=dates, y=data1, mode="lines", line=dict(color=pencolour, width=2))
     fig = go.Figure(plotdata)
-    fig.update_layout(width=width, height=height, title="H-Component - Detrended",
+    fig.update_layout(width=width, height=height, title="Geomagnetic Field: Detrended Horizontal Component",
                       xaxis_title="Date/time UTC<br>http://RuruObservatory.org.nz",
                       yaxis_title="Magnetic Field Strength - Arbitrary Values")
 

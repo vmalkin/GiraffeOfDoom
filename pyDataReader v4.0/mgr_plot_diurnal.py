@@ -63,7 +63,7 @@ def plot(dt_dates, dt_detrend, savefile_name):
 
     plotdata = go.Scatter(x=dt_dates, y=dt_detrend, mode="lines", line=dict(color=pencolour, width=2))
     fig = go.Figure(plotdata)
-    fig.update_layout(width=width, height=height, title="H-Component",
+    fig.update_layout(width=width, height=height, title="Geomagnetic Field: Horizontal Component",
                       xaxis_title="Date/time UTC<br>http://RuruObservatory.org.nz",
                       yaxis_title="Magnetic Field Strength - Arbitrary Values")
     fig.update_layout(plot_bgcolor=backgroundcolour, paper_bgcolor=backgroundcolour)
