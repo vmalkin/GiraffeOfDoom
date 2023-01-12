@@ -39,17 +39,26 @@ def database_get_data(dba):
     return tempdata
 
 def plot_data(imf, dates, filename):
+    backgroundcolour = "#ffffff"
+    pencolour = "#600000"
+    gridcolour = "#909090"
+
     rownum = imf.shape[1]
     fig = make_subplots(rows=rownum, cols=1)
-    title = "Empirical Mode Decomposion: H Component data. Updated " + posix2utc(time.time(), '%Y-%m-%d %H:%M')
+    title = "Empirical Mode Decomposion: H Component data. "
+    title = title + "<i>Updated " + posix2utc(time.time(), '%Y-%m-%d %H:%M') + "</i>"
 
     iters = len(imf[0])
     for i in range(0, iters):
-        fig.add_trace(go.Scatter(x=dates, y=imf[:, i], mode="lines"), row=i+1, col=1)
+        fig.add_trace(go.Scatter(x=dates, y=imf[:, i], mode="lines", line=dict(color=pencolour, width=2)),
+                      row=i+1, col=1)
     fig.update_layout(height=2000, width=1500, title_text=title)
-    fig.update_layout(showlegend=False)
-    # fig.show()
-    # fig.write_html("emd.html")
+    fig.update_layout(plot_bgcolor=backgroundcolour, paper_bgcolor=backgroundcolour)
+    fig.update_layout(showlegend=False,
+                      font_family="Courier New")
+    fig.update_xaxes(showgrid=True, gridwidth=1, gridcolor=gridcolour)
+    fig.update_yaxes(showgrid=True, gridwidth=1, gridcolor=gridcolour,
+                     zeroline=True, zerolinewidth=2, zerolinecolor=gridcolour)
     fig.write_image(filename)
 
 def wrapper(database, publishdirectory):
