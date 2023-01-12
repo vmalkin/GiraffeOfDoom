@@ -52,7 +52,7 @@ def plot_data(imf, dates, filename):
     for i in range(0, iters):
         fig.add_trace(go.Scatter(x=dates, y=imf[:, i], mode="lines", line=dict(color=pencolour, width=2)),
                       row=i+1, col=1)
-    fig.update_layout(height=2000, width=1500, title_text=title)
+    fig.update_layout(height=3000, width=1500, title_text=title)
     fig.update_layout(plot_bgcolor=backgroundcolour, paper_bgcolor=backgroundcolour)
     fig.update_layout(showlegend=False,
                       font_family="Courier New")
