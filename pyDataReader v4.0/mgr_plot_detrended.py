@@ -36,12 +36,13 @@ def plot(dates, data1, data2, title, savefile_name):
                         line=dict(color="#0080f0", width=3))
 
     fig.update_layout(plot_bgcolor=backgroundcolour, paper_bgcolor=backgroundcolour)
-    fig.update_layout(showlegend=False)
+    fig.update_layout(showlegend=False,
+                      font_family="Courier New")
     fig.update_xaxes(showgrid=True, gridwidth=1, gridcolor=gridcolour)
     fig.update_yaxes(showgrid=True, gridwidth=1, gridcolor=gridcolour,
                      zeroline=True, zerolinewidth=2, zerolinecolor=gridcolour)
-    fig.update_xaxes(nticks=24, ticks='outside',
-                     tickangle=45, tickformat="%b %d, %H:%M")
+    fig.update_xaxes(nticks=12, ticks='outside',
+                     tickformat="%b %d<br>%H:%M")
     fig.write_image(savefile_name)
 
 

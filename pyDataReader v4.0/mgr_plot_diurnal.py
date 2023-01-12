@@ -25,12 +25,13 @@ def plot(dt_dates, dt_detrend, savefile_name):
                       xaxis_title="Date/time UTC<br>http://RuruObservatory.org.nz",
                       yaxis_title="Magnetic Field Strength - Arbitrary Values")
     fig.update_layout(plot_bgcolor=backgroundcolour, paper_bgcolor=backgroundcolour)
-    fig.update_layout(showlegend=False)
+    fig.update_layout(showlegend=False,
+                      font_family="Courier New")
     fig.update_xaxes(showgrid=True, gridwidth=1, gridcolor=gridcolour)
     fig.update_yaxes(showgrid=True, gridwidth=1, gridcolor=gridcolour,
                      zeroline=True, zerolinewidth=2, zerolinecolor=gridcolour)
     fig.update_xaxes(nticks=12, ticks='outside',
-                     tickangle=45, tickformat="%b %d, %H:%M")
+                     tickformat="%b %d<br>%H:%M")
     fig.write_image(savefile_name)
 
 
