@@ -9,6 +9,7 @@ import sqlite3
 import standard_stuff
 import mgr_logfile_daily
 import mgr_plot_diurnal
+import mgr_plot_diffs
 import mgr_emd
 import mgr_plot_detrended
 import mgr_plot_detrended_1hr
@@ -52,6 +53,15 @@ class ChartThread(Thread):
                 print("*** Diurnal: Finish")
             except:
                 print("!!! Diurnal: FAIL")
+                logging.error("ERROR: mgr_plot_diurnal.wrapper() failed")
+
+            try:
+                print("*** dhdt: Start")
+                # unprocessed magnetogram/data
+                mgr_plot_diffs.wrapper(database, publish_dir)
+                print("*** dhdt: Finish")
+            except:
+                print("!!! dhdt: FAIL")
                 logging.error("ERROR: mgr_plot_diurnal.wrapper() failed")
 
             try:

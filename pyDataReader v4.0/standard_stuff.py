@@ -44,11 +44,11 @@ def filter_median(numerical_data, filter_halfwindow):
 def filter_mean(numerical_data, filter_halfwindow):
     # Takes in an array of csv data. single values only.
     returnarray = []
-    if len(numerical_data) > 2 * filter_halfwindow + 1:
-        for i in range(filter_halfwindow, len(numerical_data) - filter_halfwindow):
-            t = []
-            for j in range(-filter_halfwindow, filter_halfwindow):
-                t.append(numerical_data[i + j])
+    t = []
+    for i in range(0, len(numerical_data)):
+        t.append(numerical_data[i])
+        if len(t) >= 2 * filter_halfwindow:
+            t.pop(0)
             v = median(t)
             returnarray.append(v)
     else:
