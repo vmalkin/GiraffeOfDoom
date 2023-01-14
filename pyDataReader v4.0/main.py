@@ -11,6 +11,7 @@ import mgr_logfile_daily
 import mgr_plot_diurnal
 import mgr_emd
 import mgr_plot_detrended
+import mgr_plot_detrended_1hr
 import constants as k
 
 __version__ = "5.0"
@@ -35,29 +36,41 @@ class ChartThread(Thread):
     def run(self):
         while True:
 
-
             try:
                 # csv logfile for the last 24 hours
+                print("*** Logger: Start")
                 mgr_logfile_daily.wrapper(database, logfile_dir)
+                print("*** Logger: Finish")
             except:
+                print("!!! Logger: FAIL")
                 logging.error("ERROR: mgr_logfile_daily.wrapper() failed")
 
             try:
+                print("*** Diurnal: Start")
                 # unprocessed magnetogram/data
                 mgr_plot_diurnal.wrapper(database, publish_dir)
+                print("*** Diurnal: Finish")
             except:
+                print("!!! Diurnal: FAIL")
                 logging.error("ERROR: mgr_plot_diurnal.wrapper() failed")
 
             try:
                 # Detrended magnetogram/data
+                print("*** Detrender: Start")
                 mgr_plot_detrended.wrapper(database, publish_dir)
+                mgr_plot_detrended_1hr.wrapper(database, publish_dir)
+                print("*** Detrender: Finish")
             except:
+                print("!!! Detrender: FAIL")
                 logging.error("ERROR: mgr_plot_detrended.wrapper() failed")
 
             try:
                 # Empirical Mode Decomposition of last 24 hours
+                print("*** EMD: Start")
                 mgr_emd.wrapper(database, publish_dir)
+                print("*** EMD: Finish")
             except:
+                print("!!! EMD: FAIL")
                 logging.error("ERROR: mgr_emd.wrapper() failed")
             # Brendan Davies Aurora data
             # Chart data every five minutes

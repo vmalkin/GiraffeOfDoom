@@ -8,7 +8,7 @@ import constants as k
 
 null_value = f'null'
 halfwindow_median = 8
-halfwindow_average = int(30 * 60 * 1.5)
+halfwindow_average = int(30 * 30)
 
 class DataPoint:
     def __init__(self):
@@ -145,10 +145,10 @@ def wrapper(database, publishdirectory):
             else:
                 d_average.append(d.data_avg)
 
-        savefile = publishdirectory + os.sep + "plot_detrend.jpg"
+        savefile = publishdirectory + os.sep + "plot_detrend_1hr.jpg"
         title = "Geomagnetic Field: Detrended Horizontal Component. "
         plot(d_time, d_dtrend, None, title, savefile)
 
-        savefile = publishdirectory + os.sep + "plot_dt_med.jpg"
+        savefile = publishdirectory + os.sep + "plot_dt_med_1hr.jpg"
         title = "Geomagnetic Field: Horizontal Component and 3hr Average. "
         plot(d_time, d_median, d_average, title, savefile)
