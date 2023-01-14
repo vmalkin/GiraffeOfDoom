@@ -161,7 +161,7 @@ if __name__ == "__main__":
                             k.stopbits,
                             k.timeout,
                             k.xonxoff,
-                            rk.tscts,
+                            k.rtscts,
                             k.writeTimeout,
                             k.dsrdtr,
                             k.interCharTimeout)
