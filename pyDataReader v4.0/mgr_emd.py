@@ -64,7 +64,6 @@ def plot_data(imf, dates, filename):
     fig.write_image(filename)
 
 def wrapper(database, publishdirectory):
-    print("*** EMD: Starting...")
     readings = database_get_data(database)
 
     dt_dates = []
@@ -83,7 +82,6 @@ def wrapper(database, publishdirectory):
 
     savefile = publishdirectory + os.sep + "plot_emd.jpg"
     plot_data(imf, dt_dates, savefile)
-    print("*** EMD: Finished")
 
 
 
