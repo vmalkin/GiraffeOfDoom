@@ -4,6 +4,7 @@ from statistics import mean, median
 import standard_stuff
 import sqlite3
 from plotly import graph_objects as go
+import constants as k
 
 null_value = f'null'
 halfwindow_median = 8
@@ -18,11 +19,11 @@ class DataPoint:
         self.residual = 0
 
 def plot(dates, data1, data2, title, savefile_name):
-    width = 1500
-    height = 500
-    backgroundcolour = "#ffffff"
-    pencolour = "#600000"
-    gridcolour = "#909090"
+    width = k.plot_width
+    height = k.plot_height
+    backgroundcolour = k.plot_backgroundcolour
+    pencolour = k.plot_pencolour
+    gridcolour = k.plot_gridcolour
     title = title +  "<i>Updated " + standard_stuff.posix2utc(time(), '%Y-%m-%d %H:%M') + "</i>"
 
     plotdata = go.Scatter(x=dates, y=data1, mode="lines", line=dict(color=pencolour, width=2))

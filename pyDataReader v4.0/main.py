@@ -11,6 +11,7 @@ import mgr_logfile_daily
 import mgr_plot_diurnal
 import mgr_emd
 import mgr_plot_detrended
+import constants as k
 
 __version__ = "5.0"
 errorloglevel = logging.DEBUG
@@ -19,25 +20,10 @@ logging.basicConfig(filename="errors.log", format='%(asctime)s %(message)s', lev
 # should be set for decimal data only
 comport_regex = r'^(\d*\W\d*)$'
 
-station_id = "ruru"   # ID of magnetometer station
-database = "arraysave.db"
-logfile_dir = "dailylogs"
-publish_dir = "publish"
-
-# Comm port parameters - uncomment and change one of the portNames depending on your OS
-# portName = 'Com42'  # Windows
-# portName = '/dev/tty.usbserial-A9MO3C9T' #MacOS
-portName = '/dev/ttyUSB0'
-baudrate = 115200
-bytesize = 8
-parity = 'N'
-stopbits = 1
-timeout = 60
-xonxoff = False
-rtscts = True
-writeTimeout = None
-dsrdtr = False
-interCharTimeout = None
+station_id = k.station_id
+database = k.database
+logfile_dir = k.logfile_dir
+publish_dir = k.publish_dir
 
 
 # CHARTING FUNCTION AS A THREAD
@@ -168,7 +154,17 @@ if __name__ == "__main__":
     current_data = []
 
     # set up for logging
-    comport = SerialManager(portName, baudrate, bytesize, parity, stopbits, timeout, xonxoff, rtscts, writeTimeout, dsrdtr, interCharTimeout)
+    comport = SerialManager(k.portName,
+                            k.baudrate,
+                            k.bytesize,
+                            k.parity,
+                            k.stopbits,
+                            k.timeout,
+                            k.xonxoff,
+                            rk.tscts,
+                            k.writeTimeout,
+                            k.dsrdtr,
+                            k.interCharTimeout)
 
     # Thread code to implement charting in a new thread.
     grapher_thread = ChartThread()

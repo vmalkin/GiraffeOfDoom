@@ -44,6 +44,7 @@ def plot_data(imf, dates, filename):
     gridcolour = "#909090"
 
     rownum = imf.shape[1]
+    plot_height = rownum * 300
     fig = make_subplots(rows=rownum, cols=1)
     title = "Empirical Mode Decomposion: H Component data. "
     title = title + "<i>Updated " + posix2utc(time.time(), '%Y-%m-%d %H:%M') + "</i>"
@@ -52,7 +53,8 @@ def plot_data(imf, dates, filename):
     for i in range(0, iters):
         fig.add_trace(go.Scatter(x=dates, y=imf[:, i], mode="lines", line=dict(color=pencolour, width=2)),
                       row=i+1, col=1)
-    fig.update_layout(height=3000, width=1500, title_text=title)
+
+    fig.update_layout(height=plot_height, width=1500, title_text=title)
     fig.update_layout(plot_bgcolor=backgroundcolour, paper_bgcolor=backgroundcolour)
     fig.update_layout(showlegend=False,
                       font_family="Courier New")
@@ -77,7 +79,7 @@ def wrapper(database, publishdirectory):
     # imf = emd.sift.iterated_mask_sift(n)
     imf = emd.sift.sift(n, max_imfs=12)
 
-    print("Intrinsic mode function parameters: ", imf.shape)
+    # print("Intrinsic mode function parameters: ", imf.shape[1])
 
     savefile = publishdirectory + os.sep + "plot_emd.jpg"
     plot_data(imf, dt_dates, savefile)

@@ -4,13 +4,14 @@ import os
 import sqlite3
 from time import time
 from plotly import graph_objects as go
+import numpy as np
 import constants as k
 
 # The number of readings that equates to one and a half hours of time.
 half_window = 10
 
 
-def plot(dt_dates, dt_detrend, savefile_name):
+def plot(dt_detrend, savefile_name):
     width = k.plot_width
     height = k.plot_height
     backgroundcolour = k.plot_backgroundcolour
@@ -20,11 +21,11 @@ def plot(dt_dates, dt_detrend, savefile_name):
     title = "Geomagnetic Field: Horizontal Component with Diurnal Variation. "
     title = title +  "<i>Updated " + standard_stuff.posix2utc(time(), '%Y-%m-%d %H:%M') + "</i>"
 
-    plotdata = go.Scatter(x=dt_dates, y=dt_detrend, mode="lines", line=dict(color=pencolour, width=2))
+    plotdata = go.Scatter(y=dt_detrend, mode="lines", line=dict(color=pencolour, width=2))
     fig = go.Figure(plotdata)
     fig.update_layout(width=width, height=height, title=title,
                       xaxis_title="Date/time UTC<br>http://RuruObservatory.org.nz",
-                      yaxis_title="Magnetic Field Strength - Arbitrary Values")
+                      yaxis_title="Frequency")
     fig.update_layout(plot_bgcolor=backgroundcolour, paper_bgcolor=backgroundcolour)
     fig.update_layout(showlegend=False,
                       font_family="Courier New")
@@ -34,7 +35,6 @@ def plot(dt_dates, dt_detrend, savefile_name):
     fig.update_xaxes(nticks=12, ticks='outside',
                      tickformat="%b %d<br>%H:%M")
     fig.write_image(savefile_name)
-
 
 
 def getposixtime():
@@ -63,33 +63,21 @@ def database_get_data(dba):
 
 
 def wrapper(dd, publishdirectory):
+    print("*** Fast Fourier: START")
     # THE DATALIST IS IN THE FORMAT "posixtime, data" We will need to split this into two lists
     # Dates and actual data.
     datalist = database_get_data(dd)
+    t = []
+    for item in datalist:
+        t.append(item[1])
+    fourier = np.fft.fft(t)
+    for item in fourier:
+        print(item)
 
-    if len(datalist) > half_window:
-        savefile_name = publishdirectory + os.sep + "plot_diurnal.jpg"
-        dt_dates = []
-        dt_data = []
-        for item in datalist:
-            utcdate = standard_stuff.posix2utc(item[0], '%Y-%m-%d %H:%M:%S')
-            dt_dates.append(utcdate)
-            dt_data.append(float(item[1]))
-
-        # ########## Filtering and Adjustment before Plotting ##########
-        # Smooth the data before plotting
-        dt_data = standard_stuff.filter_median(dt_data, 5)
-        # dt_data = standard_stuff.filter_mean(dt_data, 250)
-
-        # the datetimes will be of a different length now because of the filtering of the data
-        # Determin the difference and top and tail the datetimes array.
-        toptail = len(dt_dates) - len(dt_data)
-        dt_dates = dt_dates[toptail:-toptail]
-        # ########## Filtering and Adjustment before Plotting ##########
-
-        try:
-            print("*** Diurnal Magnetogram: Created")
-            plot(dt_dates, dt_data, savefile_name)
-        except:
-            print("!!! Diurnal Magnetogram: FAILED to plot magnetogram")
+    # try:
+    # savefile_name = publishdirectory + os.sep + "plot_fft.jpg"
+    # plot(fourier, savefile_name)
+    # print("*** Fast Fourier: END")
+    # except:
+    #     print("!!! Fast Fourier: FAILED to plot fft")
 
