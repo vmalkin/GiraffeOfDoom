@@ -17,7 +17,7 @@ def plot(dt_dates, dt_detrend, savefile_name):
     pencolour = k.plot_pencolour
     gridcolour = k.plot_gridcolour
 
-    title = "Geomagnetic Field: h-component dh by dt. "
+    title = "Geomagnetic Field: Smoothed dH/dt. "
     title = title +  "<i>Updated " + standard_stuff.posix2utc(time(), '%Y-%m-%d %H:%M') + "</i>"
 
     plotdata = go.Scatter(x=dt_dates, y=dt_detrend, mode="lines", line=dict(color=pencolour, width=2))
@@ -81,12 +81,13 @@ def wrapper(dd, publishdirectory):
         # ########## Filtering and Adjustment before Plotting ##########
         # Smooth the data before plotting
         dt_data = standard_stuff.filter_median(dt_data, 3)
-        dt_data = standard_stuff.filter_mean(dt_data, 300)
+        dt_data = standard_stuff.filter_average(dt_data, 600)
+
 
         # the datetimes will be of a different length now because of the filtering of the data
         # Determin the difference and top and tail the datetimes array.
-        toptail = len(dt_dates) - len(dt_data)
-        dt_dates = dt_dates[toptail:-toptail]
+        # toptail = len(dt_dates) - len(dt_data)
+        # dt_dates = dt_dates[toptail:-toptail]
         # ########## Filtering and Adjustment before Plotting ##########
 
         try:

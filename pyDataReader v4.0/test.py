@@ -1,3 +1,7 @@
-import mgr_plot_fft
+import mgr_plot_diffs
+import constants as k
 
-mgr_plot_fft.wrapper("arraysave.db", "publish")
+print("*** dhdt: Start")
+# unprocessed magnetogram/data
+mgr_plot_diffs.wrapper(k.database, k.publish_dir)
+print("*** dhdt: Finish")

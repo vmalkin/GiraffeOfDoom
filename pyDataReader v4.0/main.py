@@ -36,7 +36,6 @@ class ChartThread(Thread):
 
     def run(self):
         while True:
-
             try:
                 # csv logfile for the last 24 hours
                 print("*** Logger: Start")
@@ -68,7 +67,7 @@ class ChartThread(Thread):
                 # Detrended magnetogram/data
                 print("*** Detrender: Start")
                 mgr_plot_detrended.wrapper(database, publish_dir)
-                mgr_plot_detrended_1hr.wrapper(database, publish_dir)
+                # mgr_plot_detrended_1hr.wrapper(database, publish_dir)
                 print("*** Detrender: Finish")
             except:
                 print("!!! Detrender: FAIL")
