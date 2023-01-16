@@ -76,7 +76,7 @@ def wrapper(database, publishdirectory):
     n = np.array(dt_readings, dtype='float')
     sample_rate = len(n)
     # imf = emd.sift.iterated_mask_sift(n)
-    imf = emd.sift.sift(n, max_imfs=12)
+    imf = emd.sift.sift(n, max_imfs=14)
 
     # print("Intrinsic mode function parameters: ", imf.shape[1])
 

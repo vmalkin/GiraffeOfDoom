@@ -3,6 +3,8 @@ import os
 import glob
 import datetime
 import calendar
+import numpy as np
+import math
 
 
 def greyscale_img(image_to_process):
@@ -14,14 +16,14 @@ def greyscale_img(image_to_process):
     return greyimg
 
 
-def image_load(file_name):
-    # Return a None if the image is currupt
-    try:
-        img = cv2.imread(file_name)
-    except Exception as e:
-        print(e)
-        img = None
-    return img
+# def image_load(file_name):
+#     # Return a None if the image is currupt
+#     try:
+#         img = cv2.imread(file_name)
+#     except Exception as e:
+#         print(e)
+#         img = None
+#     return img
 
 
 def image_save(file_name, image_object):
@@ -68,32 +70,35 @@ def filename_converter(filename, switch="posix"):
     return returnstring
 
 
-def wrapper(lasco_folder):
-    time_threshold = 60 * 60 * 12
+def wrapper(lasco_folder, enhanced_folder):
+    time_threshold = 60 * 60
     # get image list of LASCO files for the last x-hours.
     dirlisting = get_dirlisting(lasco_folder)
-    print(dirlisting)
+    dirlisting.sort()
 
     # if time difference between img_x, ing_y < time threshold
     for i in range(1, len(dirlisting)):
-        if filename_converter(dirlisting[i]) - filename_converter(dirlisting[i - 1]) < time_threshold:
-            # Convert img_x, img_y to greyscale
-            img_x = image_load(dirlisting[i - 1])
-            img_y = image_load(dirlisting[i])
-            # Convert img_x, img_y to single channel
-            img_x = greyscale_img(img_x)
-            img_y = greyscale_img(img_y)
+        if filename_converter(dirlisting[i], "posix") - filename_converter(dirlisting[i - 1], "posix") < time_threshold:
+            # load an automatically convert image to greyscale
+            file_2 = dirlisting + os.sep + dirlisting[i]
+            file_1 = dirlisting + os.sep + dirlisting[i - 1]
+            img_2 = cv2.imread(file_1, 0)
+            img_1 = cv2.imread(file_2, 0)
 
-        #   New savefile = img_y name
+            cols = int(img_2.shape[0])
+            rows = int(img_2.shape[1])
 
-    #   for img_x, img_y:
-    #       for same pixel location in img_x, img_y:
-    #           if diff between px_img_x and px_img_y greater than pixel_threshold:
-    #               new_pixel = median pixel value
-    #               else new_pixel = old_pixel
-    #       save new image, img_z
+            threshold = 20
+            denoised = np.full([cols, rows], 60, np.uint8)
+            for i in range(0, rows):
+                for j in range(0, cols):
+                    x = int(img_2[i][j]) - int(img_1[i][j])
+                    x = x * x
+                    x = int(math.sqrt(x))
+                    if x < threshold:
+                        denoised[i][j] = img_2[i][j]
 
-    # CReate embossed effect image
-
-
-wrapper("lasco_store_512")
+                    picture = cv2.GaussianBlur(denoised, (3,3), 0)
+                    clahe = cv2.createCLAHE(clipLimit=2.5, tileGridSize=(10,10))
+                    final = clahe.apply(picture)
+                    # final1 = cv2.bitwise_not(final1)
