@@ -116,7 +116,7 @@ def wrapper(lasco_folder, enhanced_folder):
                         denoised[a][b] = img_2[a][b]
 
             # picture = cv2.GaussianBlur(denoised, (3,3), 0)
-            clahe = cv2.createCLAHE(clipLimit=2.5, tileGridSize=(10,10))
+            clahe = cv2.createCLAHE(clipLimit=1, tileGridSize=(10,10))
             final = clahe.apply(denoised)
             # final = cv2.bitwise_not(denoised)
             # final = denoised
