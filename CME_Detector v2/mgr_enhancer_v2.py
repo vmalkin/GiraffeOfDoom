@@ -93,14 +93,19 @@ def colourise(final):
 
 
 def wrapper(lasco_folder, enhanced_folder):
+    print("*** Enhancer: Start")
     time_threshold = 60 * 60
     # get image list of LASCO files for the last x-hours.
     dirlisting = get_dirlisting(lasco_folder)
     dirlisting.sort()
     anim_enhanced = []
     anim_lasco = []
+
     # if time difference between img_x, ing_y < time threshold
+    print("*** Enhancer: Removing partical hits from files")
     for i in range(1, len(dirlisting)):
+        txt = "Denoising" + str(i) + " / " + str(len(dirlisting))
+        print(txt)
         if filename_converter(dirlisting[i], "posix") - filename_converter(dirlisting[i - 1], "posix") < time_threshold:
             # load an automatically convert image to greyscale
             file_2 = lasco_folder + os.sep + dirlisting[i]
@@ -143,9 +148,11 @@ def wrapper(lasco_folder, enhanced_folder):
             stereoimage.paste(si)
             anim_enhanced.append(stereoimage)
 
+    print("*** Enhancer: Saving GIF")
     anim_enhanced[0].save("cme.gif",
                         format="GIF",
                         save_all=True,
                         append_images=anim_enhanced[1:],
                         duration=50,
                         loop=0)
+    print("*** Enhancer: Finished")
