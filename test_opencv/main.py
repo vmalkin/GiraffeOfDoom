@@ -13,7 +13,7 @@ rows = int(img_1.shape[1])
 
 threshold = 20
 # picture = np.zeros([cols, rows], np.uint8)
-denoised = np.full([cols, rows], 50, np.uint8)
+denoised = np.full([cols, rows], 60, np.uint8)
 for i in range(0, rows):
     for j in range(0, cols):
         x = int(img_2[i][j]) - int(img_1[i][j])
@@ -25,12 +25,12 @@ for i in range(0, rows):
 picture = cv2.GaussianBlur(denoised, (3,3), 0)
 clahe = cv2.createCLAHE(clipLimit=2.5, tileGridSize=(10,10))
 final1 = clahe.apply(picture)
-final1 = cv2.bitwise_not(final1)
+# final1 = cv2.bitwise_not(final1)
 
-img_2 = cv2.bitwise_not(img_2)
+# img_2 = cv2.bitwise_not(img_2)
 cv2.imshow('img_2', img_2)
 
-denoised = cv2.bitwise_not(denoised)
+# denoised = cv2.bitwise_not(denoised)
 cv2.imshow('denoised', denoised)
 
 cv2.imshow('final1', final1)
