@@ -4,7 +4,7 @@ import re
 import requests
 import os
 import mgr_analyser_v2
-import mgr_enhancer
+import mgr_enhancer_v2
 import mgr_stereoscopic
 
 
@@ -70,6 +70,7 @@ def get_imagelist(url_to_get):
             l2 = (l1[1])
             l2 = l2.split("\"")
             filename = l2[0]
+            # if re.search("c3_1024", filename):
             if re.search("c3_512", filename):
                 returnlist.append(filename)
 
@@ -121,10 +122,10 @@ if __name__ == "__main__":
     # baseURL = "https://soho.nascom.nasa.gov/data/REPROCESSING/Completed/" + year + "/c3/" + "20211228" + "/"
     # download_lasco(baseURL, storage_folder)
 
-    mgr_enhancer.wrapper(storage_folder, enhanced_folder)
-    mgr_analyser_v2.wrapper(storage_folder, analysis_folder)
+
+    mgr_enhancer_v2.wrapper(storage_folder, enhanced_folder)
     # mgr_analyser_v2.wrapper(enhanced_folder, analysis_folder)
-    mgr_stereoscopic.wrapper(enhanced_folder)
+    # mgr_stereoscopic.wrapper(enhanced_folder)
 
     computation_end = time.time()
     elapsed_mins = round((computation_end - computation_start) / 60, 1)

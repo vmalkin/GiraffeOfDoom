@@ -5,29 +5,46 @@ import datetime
 import calendar
 import numpy as np
 import math
+import time
+from PIL import Image
+
+def add_stamp(banner_text, image_object, filename):
+    tt = time.time()
+    tt = posix2utc(tt, "%Y-%m-%d %H:%M")
+    cv2. rectangle(image_object, (0, 449), (511, 511), (255, 255, 255), -1)
+    cv2.rectangle(image_object, (0, 0), (511, 20), (255, 255, 255), -1)
+    colour = (0, 0, 0)
+    font = cv2.FONT_HERSHEY_SIMPLEX
+    font_size = 0.5
+    font_color = colour
+    font_thickness = 1
+    banner = banner_text
+    x, y = 5, 15
+    cv2.putText(image_object, banner, (x, y), font, font_size, font_color, font_thickness, cv2.LINE_AA)
+
+    banner = 'LASCO coronagraph. Updated ' + tt + " UTC."
+    x, y = 5, 466
+    cv2.putText(image_object, banner, (x, y), font, font_size, font_color, font_thickness, cv2.LINE_AA)
+
+    font_size = 0.4
+    font_color = colour
+    font_thickness = 1
+
+    banner = filename
+    x, y = 5, 483
+    cv2.putText(image_object, banner, (x, y), font, font_size, font_color, font_thickness, cv2.LINE_AA)
+    banner = 'Courtesy of SOHO/LASCO consortium. SOHO is a project of'
+    x, y = 5, 496
+    cv2.putText(image_object, banner, (x, y), font, font_size, font_color, font_thickness, cv2.LINE_AA)
+    banner = 'international cooperation between ESA and NASA'
+    x, y = 5, 508
+    cv2.putText(image_object, banner, (x, y), font, font_size, font_color, font_thickness, cv2.LINE_AA)
 
 
-def greyscale_img(image_to_process):
-    # converting an Image to grey scale one channel...
-    greyimg = cv2.cvtColor(image_to_process, cv2.COLOR_BGR2GRAY, 1)
-    # return only a single channel
-    greyimg = cv2.split(greyimg)
-    greyimg = greyimg[0]
-    return greyimg
-
-
-# def image_load(file_name):
-#     # Return a None if the image is currupt
-#     try:
-#         img = cv2.imread(file_name)
-#     except Exception as e:
-#         print(e)
-#         img = None
-#     return img
-
-
-def image_save(file_name, image_object):
-    cv2.imwrite(file_name, image_object)
+def posix2utc(posixtime, timeformat):
+    # '%Y-%m-%d %H:%M'
+    utctime = datetime.datetime.utcfromtimestamp(int(posixtime)).strftime(timeformat)
+    return utctime
 
 
 def get_dirlisting(folder):
@@ -75,13 +92,13 @@ def wrapper(lasco_folder, enhanced_folder):
     # get image list of LASCO files for the last x-hours.
     dirlisting = get_dirlisting(lasco_folder)
     dirlisting.sort()
-
+    animation_array = []
     # if time difference between img_x, ing_y < time threshold
     for i in range(1, len(dirlisting)):
         if filename_converter(dirlisting[i], "posix") - filename_converter(dirlisting[i - 1], "posix") < time_threshold:
             # load an automatically convert image to greyscale
-            file_2 = dirlisting + os.sep + dirlisting[i]
-            file_1 = dirlisting + os.sep + dirlisting[i - 1]
+            file_2 = lasco_folder + os.sep + dirlisting[i]
+            file_1 = lasco_folder + os.sep + dirlisting[i - 1]
             img_2 = cv2.imread(file_1, 0)
             img_1 = cv2.imread(file_2, 0)
 
@@ -90,15 +107,31 @@ def wrapper(lasco_folder, enhanced_folder):
 
             threshold = 20
             denoised = np.full([cols, rows], 60, np.uint8)
-            for i in range(0, rows):
-                for j in range(0, cols):
-                    x = int(img_2[i][j]) - int(img_1[i][j])
+            for a in range(0, rows):
+                for b in range(0, cols):
+                    x = int(img_2[a][b]) - int(img_1[a][b])
                     x = x * x
                     x = int(math.sqrt(x))
                     if x < threshold:
-                        denoised[i][j] = img_2[i][j]
+                        denoised[a][b] = img_2[a][b]
 
-                    picture = cv2.GaussianBlur(denoised, (3,3), 0)
-                    clahe = cv2.createCLAHE(clipLimit=2.5, tileGridSize=(10,10))
-                    final = clahe.apply(picture)
-                    # final1 = cv2.bitwise_not(final1)
+            # picture = cv2.GaussianBlur(denoised, (3,3), 0)
+            clahe = cv2.createCLAHE(clipLimit=2.5, tileGridSize=(10,10))
+            final = clahe.apply(denoised)
+            # final = cv2.bitwise_not(denoised)
+            # final = denoised
+            add_stamp("Processed at Dunedin Aurora", final, dirlisting[i])
+            savefile = enhanced_folder + os.sep + dirlisting[i]
+            cv2.imwrite(savefile, final)
+
+            si = Image.open(savefile)
+            stereoimage = Image.new("RGB", [cols, rows])
+            stereoimage.paste(si)
+            animation_array.append(stereoimage)
+
+    animation_array[0].save("cme.gif",
+                        format="GIF",
+                        save_all=True,
+                        append_images=animation_array[1:],
+                        duration=50,
+                        loop=0)
