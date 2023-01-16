@@ -411,19 +411,7 @@ def polar_to_rectangular(angle, distance):
     return [x, y]
 
 
-def image_load(file_name):
-    # Return a None if the image is currupt
-    try:
-        pil_image = Image.open(file_name)
-        # pil_image.verify()
-        pil_image.transpose(Image.FLIP_LEFT_RIGHT)
-        pil_image.close()
-        img = cv2.imread(file_name)
-    except Exception as e:
-        print(e)
-        img = None
 
-    return img
 
 
 def image_save(file_name, image_object):
@@ -490,10 +478,10 @@ def wrapper(storage_folder, analysis_folder):
 
     # Parsing thru the list of images
     for i in range (0, len(dirlisting)):
-        p = storage_folder + "//" + dirlisting[i]
+        p = storage_folder + os.sep + dirlisting[i]
 
         # load and preprocess the image
-        img = image_load(p)
+        img = cv2.imread(p)
         # img = erode_dilate_img(img)
 
         # This inverts the image colours if we are using the enhanced images as our source, not the analysis images
@@ -514,7 +502,7 @@ def wrapper(storage_folder, analysis_folder):
                 avg_array.pop(0)
                 # the average image
                 pic_new = np.mean(avg_array, axis=0)
-                pic_new = normalise_image(pic_new)
+                # pic_new = normalise_image(pic_new)
 
                 #  convolve the returned residuals image from polar to rectangular co-ords. the data is appended to
                 #  an array
@@ -569,14 +557,14 @@ def wrapper(storage_folder, analysis_folder):
 
     # create video of the last 24 hours from the enhanced folder.
     # approx no of images in a day is 30 for the enhanced folder!
-    imagelist_enhanced = os.listdir("enhanced_512")
-    imagelist_enhanced.sort()
-    if len(imagelist_enhanced) > 40:
-        imagelist_enhanced = imagelist_enhanced[-40:]
-    imagelist_enhanced.sort()
-    print("creating video...")
-    # create_video(imagelist_enhanced, "enhanced_512", "whole_disc.avi")
-    create_gif(imagelist_enhanced, "enhanced_512", "whole_disc.gif")
+    # imagelist_enhanced = os.listdir("enhanced_512")
+    # imagelist_enhanced.sort()
+    # if len(imagelist_enhanced) > 40:
+    #     imagelist_enhanced = imagelist_enhanced[-40:]
+    # imagelist_enhanced.sort()
+    # print("creating video...")
+    # # create_video(imagelist_enhanced, "enhanced_512", "whole_disc.avi")
+    # create_gif(imagelist_enhanced, "enhanced_512", "whole_disc.gif")
 
     # The data files need to be truncated to the last 100 entries - approx 24 hours
     if len(dates) > truncate:

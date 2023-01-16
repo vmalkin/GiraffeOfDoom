@@ -87,12 +87,18 @@ def filename_converter(filename, switch="posix"):
     return returnstring
 
 
+def colourise(final):
+    new_image = cv2.applyColorMap(final, cv2.COLORMAP_BONE)
+    return new_image
+
+
 def wrapper(lasco_folder, enhanced_folder):
     time_threshold = 60 * 60
     # get image list of LASCO files for the last x-hours.
     dirlisting = get_dirlisting(lasco_folder)
     dirlisting.sort()
-    animation_array = []
+    anim_enhanced = []
+    anim_lasco = []
     # if time difference between img_x, ing_y < time threshold
     for i in range(1, len(dirlisting)):
         if filename_converter(dirlisting[i], "posix") - filename_converter(dirlisting[i - 1], "posix") < time_threshold:
@@ -115,11 +121,19 @@ def wrapper(lasco_folder, enhanced_folder):
                     if x < threshold:
                         denoised[a][b] = img_2[a][b]
 
-            # picture = cv2.GaussianBlur(denoised, (3,3), 0)
-            clahe = cv2.createCLAHE(clipLimit=1, tileGridSize=(10,10))
-            final = clahe.apply(denoised)
-            # final = cv2.bitwise_not(denoised)
-            # final = denoised
+            picture = denoised
+            # alpha value [1.0-3.0] CONTRAST
+            # beta value [0-100] BRIGHTNESS
+            alpha = 2.5
+            beta = 80
+            picture = cv2.convertScaleAbs(picture, alpha=alpha, beta=beta)
+
+            # clahe = cv2.createCLAHE(clipLimit=2, tileGridSize=(10,10))
+            # picture = clahe.apply(picture)
+
+            # final = cv2.bitwise_not(final)
+            final = colourise(picture)
+
             add_stamp("Processed at Dunedin Aurora", final, dirlisting[i])
             savefile = enhanced_folder + os.sep + dirlisting[i]
             cv2.imwrite(savefile, final)
@@ -127,11 +141,11 @@ def wrapper(lasco_folder, enhanced_folder):
             si = Image.open(savefile)
             stereoimage = Image.new("RGB", [cols, rows])
             stereoimage.paste(si)
-            animation_array.append(stereoimage)
+            anim_enhanced.append(stereoimage)
 
-    animation_array[0].save("cme.gif",
+    anim_enhanced[0].save("cme.gif",
                         format="GIF",
                         save_all=True,
-                        append_images=animation_array[1:],
+                        append_images=anim_enhanced[1:],
                         duration=50,
                         loop=0)
