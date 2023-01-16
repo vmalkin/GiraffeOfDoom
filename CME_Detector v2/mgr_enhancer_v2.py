@@ -125,7 +125,7 @@ def wrapper(lasco_folder, enhanced_folder):
             # alpha value [1.0-3.0] CONTRAST
             # beta value [0-100] BRIGHTNESS
             alpha = 2.5
-            beta = 80
+            beta = 10
             picture = cv2.convertScaleAbs(picture, alpha=alpha, beta=beta)
 
             # clahe = cv2.createCLAHE(clipLimit=2, tileGridSize=(10,10))
