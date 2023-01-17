@@ -122,9 +122,11 @@ if __name__ == "__main__":
     # baseURL = "https://soho.nascom.nasa.gov/data/REPROCESSING/Completed/" + year + "/c3/" + "20211228" + "/"
     # download_lasco(baseURL, storage_folder)
 
-
+    # #####################################################################################################
+    # Processing and analysis of LASCO images happens here
+    # #####################################################################################################
     mgr_enhancer_v2.wrapper(storage_folder, enhanced_folder)
-    mgr_analyser_v2.wrapper(enhanced_folder, analysis_folder)
+    # mgr_analyser_v2.wrapper(enhanced_folder, analysis_folder)
     # mgr_stereoscopic.wrapper(enhanced_folder)
 
     computation_end = time.time()
