@@ -101,6 +101,23 @@ def colourise(final):
     new_image = cv2.applyColorMap(final, cv2.COLORMAP_INFERNO)
     return new_image
 
+def denoise(image_1, image_2):
+    cols = int(image_2.shape[0])
+    rows = int(image_2.shape[1])
+    # If pixels vary over a certain threshold, this is probably noise.
+    threshold = 20
+    # The empty image file that becomes the denoised image
+    denoised = np.full([cols, rows], 60, np.uint8)
+    for a in range(0, rows):
+        for b in range(0, cols):
+            pixel_delta = int(image_2[a][b]) - int(image_1[a][b])
+            pixel_delta = pixel_delta * pixel_delta
+            pixel_delta = int(math.sqrt(pixel_delta))
+            # Try to use the darkest pixel value possible.
+            if pixel_delta < threshold:
+                denoised[a][b] = image_2[a][b]
+    return denoised
+
 
 def wrapper(lasco_folder, enhanced_folder):
     print("*** Enhancer: Start")
@@ -125,38 +142,24 @@ def wrapper(lasco_folder, enhanced_folder):
             img_2 = cv2.imread(file_1, 0)
             img_1 = cv2.imread(file_2, 0)
 
-            cols = int(img_2.shape[0])
-            rows = int(img_2.shape[1])
+            picture = denoise(img_1, img_2)
 
-            # If pixels vary over a certain threshold, this is probably noise.
-            threshold = 20
-            # The empty image file that becomes the denoised image
-            denoised = np.full([cols, rows], 60, np.uint8)
-            for a in range(0, rows):
-                for b in range(0, cols):
-                    pixel_delta = int(img_2[a][b]) - int(img_1[a][b])
-                    pixel_delta = pixel_delta * pixel_delta
-                    pixel_delta = int(math.sqrt(pixel_delta))
-                    # Try to use the darkest pixel value possible.
-                    if pixel_delta < threshold:
-                        denoised[a][b] = img_2[a][b]
-
-            picture = denoised
             # alpha value [1.0-3.0] CONTRAST
             # beta value [0-100] BRIGHTNESS
             alpha = 1.5
             beta = 2
             picture = cv2.convertScaleAbs(picture, alpha=alpha, beta=beta)
-
             clahe = cv2.createCLAHE(clipLimit=2, tileGridSize=(10,10))
             picture = clahe.apply(picture)
 
             # final = cv2.bitwise_not(final)
-            final = colourise(picture)
-
-            add_stamp("Processed at Dunedin Aurora", final, dirlisting[i])
+            final_image = colourise(picture)
+            add_stamp("Processed at Dunedin Aurora", final_image, dirlisting[i])
             savefile = enhanced_folder + os.sep + dirlisting[i]
-            cv2.imwrite(savefile, final)
+            cv2.imwrite(savefile, final_image)
+
+            cols = int(img_2.shape[0])
+            rows = int(img_2.shape[1])
 
             ie = Image.open(savefile)
             img_enh = Image.new("RGB", [cols, rows])
