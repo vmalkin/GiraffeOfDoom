@@ -101,7 +101,7 @@ def colourise(final):
     new_image = cv2.applyColorMap(final, cv2.COLORMAP_INFERNO)
     return new_image
 
-def denoise(image_1, image_2):
+def denoise(image_1, image_2, image_3):
     cols = int(image_2.shape[0])
     rows = int(image_2.shape[1])
     # If pixels vary over a certain threshold, this is probably noise.
@@ -110,14 +110,43 @@ def denoise(image_1, image_2):
     denoised = np.full([cols, rows], 60, np.uint8)
     for a in range(0, rows):
         for b in range(0, cols):
-            pixel_delta = int(image_2[a][b]) - int(image_1[a][b])
-            pixel_delta = pixel_delta * pixel_delta
-            pixel_delta = int(math.sqrt(pixel_delta))
-            # Try to use the darkest pixel value possible.
-            if pixel_delta < threshold:
+            score = 0
+            pixel_1 = [image_1[a][b], image_2[a][b]]
+            pixel_2 = [image_2[a][b], image_3[a][b]]
+            p_d_1 = max(pixel_1) - min(pixel_1)
+            p_d_2 = max(pixel_2) - min(pixel_2)
+            if p_d_1 > threshold:
+                score = score + 1
+            if p_d_2 > threshold:
+                score = score + 1
+            if score < 2:
                 denoised[a][b] = image_2[a][b]
     return denoised
 
+
+def diff_img(image_1, image_2, image_3):
+    d1 = cv2.absdiff(image_3, image_2)
+    d2 = cv2.absdiff(image_2, image_1)
+    return cv2.bitwise_xor(d1, d2)
+
+
+# def denoise(image_1, image_2):
+#     cols = int(image_2.shape[0])
+#     rows = int(image_2.shape[1])
+#     # If pixels vary over a certain threshold, this is probably noise.
+#     threshold = 20
+#     # The empty image file that becomes the denoised image
+#     denoised = np.full([cols, rows], 60, np.uint8)
+#     for a in range(0, rows):
+#         for b in range(0, cols):
+#             score = 0
+#             pixel_1 = [image_1[a][b], image_2[a][b]]
+#             p_d_1 = max(pixel_1) - min(pixel_1)
+#             if p_d_1 > threshold:
+#                 score = score + 1
+#             if score < 1:
+#                 denoised[a][b] = image_2[a][b]
+#     return denoised
 
 def wrapper(lasco_folder, enhanced_folder):
     print("*** Enhancer: Start")
@@ -132,17 +161,19 @@ def wrapper(lasco_folder, enhanced_folder):
 
     # if time difference between img_x, ing_y < time threshold
     print("*** Enhancer: Removing partical hits from files")
-    for i in range(1, len(dirlisting)):
+    for i in range(1, len(dirlisting) - 1):
         txt = "Denoising " + str(i) + " / " + str(len(dirlisting))
         print(txt)
         if filename_converter(dirlisting[i], "posix") - filename_converter(dirlisting[i - 1], "posix") < time_threshold:
             # load an automatically convert image to greyscale
-            file_2 = lasco_folder + os.sep + dirlisting[i]
             file_1 = lasco_folder + os.sep + dirlisting[i - 1]
-            img_2 = cv2.imread(file_1, 0)
-            img_1 = cv2.imread(file_2, 0)
-
-            picture = denoise(img_1, img_2)
+            file_2 = lasco_folder + os.sep + dirlisting[i]
+            file_3 = lasco_folder + os.sep + dirlisting[i + 1]
+            img_1 = cv2.imread(file_1, 0)
+            img_2 = cv2.imread(file_2, 0)
+            img_3 = cv2.imread(file_3, 0)
+            picture = denoise(img_1, img_2, img_3)
+            # picture = diff_img(img_1, img_2, img_3)
 
             # alpha value [1.0-3.0] CONTRAST
             # beta value [0-100] BRIGHTNESS
@@ -152,7 +183,7 @@ def wrapper(lasco_folder, enhanced_folder):
             clahe = cv2.createCLAHE(clipLimit=2, tileGridSize=(10,10))
             picture = clahe.apply(picture)
 
-            # final = cv2.bitwise_not(final)
+            # picture = cv2.bitwise_not(picture)
             final_image = colourise(picture)
             add_stamp("Processed at Dunedin Aurora", final_image, dirlisting[i])
             savefile = enhanced_folder + os.sep + dirlisting[i]
