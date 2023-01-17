@@ -134,10 +134,11 @@ def wrapper(lasco_folder, enhanced_folder):
             denoised = np.full([cols, rows], 60, np.uint8)
             for a in range(0, rows):
                 for b in range(0, cols):
-                    x = int(img_2[a][b]) - int(img_1[a][b])
-                    x = x * x
-                    x = int(math.sqrt(x))
-                    if x < threshold:
+                    pixel_delta = int(img_2[a][b]) - int(img_1[a][b])
+                    pixel_delta = pixel_delta * pixel_delta
+                    pixel_delta = int(math.sqrt(pixel_delta))
+                    # Try to use the darkest pixel value possible.
+                    if pixel_delta < threshold:
                         denoised[a][b] = img_2[a][b]
 
             picture = denoised
