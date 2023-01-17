@@ -170,14 +170,14 @@ def wrapper(lasco_folder, enhanced_folder):
                         format="GIF",
                         save_all=True,
                         append_images=anim_enhanced[1:],
-                        duration=50,
+                        duration=75,
                         loop=0)
 
     anim_lasco[0].save("anim_lasco.gif",
                         format="GIF",
                         save_all=True,
                         append_images=anim_lasco[1:],
-                        duration=50,
+                        duration=75,
                         loop=0)
 
     print("*** Enhancer: Finished")
