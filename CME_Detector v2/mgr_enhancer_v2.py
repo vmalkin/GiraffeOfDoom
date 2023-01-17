@@ -128,7 +128,9 @@ def wrapper(lasco_folder, enhanced_folder):
             cols = int(img_2.shape[0])
             rows = int(img_2.shape[1])
 
+            # If pixels vary over a certain threshold, this is probably noise.
             threshold = 20
+            # The empty image file that becomes the denoised image
             denoised = np.full([cols, rows], 60, np.uint8)
             for a in range(0, rows):
                 for b in range(0, cols):
