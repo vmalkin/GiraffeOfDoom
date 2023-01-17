@@ -109,6 +109,8 @@ def wrapper(lasco_folder, enhanced_folder):
     # get image list of LASCO files for the last x-hours.
     dirlisting = get_dirlisting(lasco_folder)
     dirlisting = shorten_dirlisting(dirlisting)
+    print("Most recent file: ", dirlisting[len(dirlisting) - 1])
+    print("Starting at file: ", dirlisting[0])
     anim_enhanced = []
     anim_lasco = []
 
