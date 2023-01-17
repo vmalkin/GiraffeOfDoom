@@ -60,6 +60,17 @@ def get_dirlisting(folder):
     dirlisting.sort()
     return dirlisting
 
+def shorten_dirlisting(directory_listing):
+    # Return files for the last x hours, as needed.
+    cutoff = time.time() - (86400 * 2)  # the last 2 days
+    returnarray = []
+    for item in directory_listing:
+        dt = filename_converter(item, "posix")
+        if dt > cutoff:
+            returnarray.append(item)
+    print("array for animation: ", len(returnarray))
+    return directory_listing
+
 
 def filename_converter(filename, switch="posix"):
     # Name has format 20221230_2342_c3_512.jpg
@@ -88,7 +99,7 @@ def filename_converter(filename, switch="posix"):
 
 
 def colourise(final):
-    new_image = cv2.applyColorMap(final, cv2.COLORMAP_BONE)
+    new_image = cv2.applyColorMap(final, cv2.COLORMAP_INFERNO)
     return new_image
 
 
@@ -97,14 +108,14 @@ def wrapper(lasco_folder, enhanced_folder):
     time_threshold = 60 * 60
     # get image list of LASCO files for the last x-hours.
     dirlisting = get_dirlisting(lasco_folder)
-    dirlisting.sort()
+    dirlisting = shorten_dirlisting(dirlisting)
     anim_enhanced = []
     anim_lasco = []
 
     # if time difference between img_x, ing_y < time threshold
     print("*** Enhancer: Removing partical hits from files")
     for i in range(1, len(dirlisting)):
-        txt = "Denoising" + str(i) + " / " + str(len(dirlisting))
+        txt = "Denoising " + str(i) + " / " + str(len(dirlisting))
         print(txt)
         if filename_converter(dirlisting[i], "posix") - filename_converter(dirlisting[i - 1], "posix") < time_threshold:
             # load an automatically convert image to greyscale
@@ -129,12 +140,12 @@ def wrapper(lasco_folder, enhanced_folder):
             picture = denoised
             # alpha value [1.0-3.0] CONTRAST
             # beta value [0-100] BRIGHTNESS
-            alpha = 2.5
-            beta = 80
+            alpha = 1.5
+            beta = 2
             picture = cv2.convertScaleAbs(picture, alpha=alpha, beta=beta)
 
-            # clahe = cv2.createCLAHE(clipLimit=2, tileGridSize=(10,10))
-            # picture = clahe.apply(picture)
+            clahe = cv2.createCLAHE(clipLimit=2, tileGridSize=(10,10))
+            picture = clahe.apply(picture)
 
             # final = cv2.bitwise_not(final)
             final = colourise(picture)
@@ -143,16 +154,30 @@ def wrapper(lasco_folder, enhanced_folder):
             savefile = enhanced_folder + os.sep + dirlisting[i]
             cv2.imwrite(savefile, final)
 
-            si = Image.open(savefile)
-            stereoimage = Image.new("RGB", [cols, rows])
-            stereoimage.paste(si)
-            anim_enhanced.append(stereoimage)
+            ie = Image.open(savefile)
+            img_enh = Image.new("RGB", [cols, rows])
+            img_enh.paste(ie)
+            anim_enhanced.append(img_enh)
+
+            lascofile = lasco_folder + os.sep + dirlisting[i]
+            le = Image.open(lascofile)
+            img_las = Image.new("RGB", [cols, rows])
+            img_las.paste(le)
+            anim_lasco.append(img_las)
 
     print("*** Enhancer: Saving GIF")
-    anim_enhanced[0].save("cme.gif",
+    anim_enhanced[0].save("anim_cme.gif",
                         format="GIF",
                         save_all=True,
                         append_images=anim_enhanced[1:],
                         duration=50,
                         loop=0)
+
+    anim_lasco[0].save("anim_lasco.gif",
+                        format="GIF",
+                        save_all=True,
+                        append_images=anim_lasco[1:],
+                        duration=50,
+                        loop=0)
+
     print("*** Enhancer: Finished")

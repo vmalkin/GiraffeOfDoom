@@ -93,6 +93,10 @@ if __name__ == "__main__":
     storage_folder = "lasco_store_512"
     analysis_folder = "analysis_512"
 
+    # enhanced_folder = "enhanced_1024"
+    # storage_folder = "lasco_store_1024"
+    # analysis_folder = "analysis_1024"
+
     if os.path.exists(enhanced_folder) is False:
         os.makedirs(enhanced_folder)
     if os.path.exists(storage_folder) is False:

@@ -544,28 +544,6 @@ def wrapper(storage_folder, analysis_folder):
                 image_save(f_image, array)
                 print("dt", i, len(dirlisting))
 
-    # # create video of the last 24 hours from the Analysis folder.
-    # # approx no of images in a day
-    # imagelist_analysis = os.listdir(analysis_folder)
-    # imagelist_analysis.sort()
-    # if len(imagelist_analysis) > truncate:
-    #     imagelist_analysis = imagelist_analysis[-truncate:]
-    # imagelist_analysis.sort()
-    # print("creating video...")
-    # create_video(imagelist_analysis, analysis_folder, "cme.avi")
-    # create_gif(imagelist_analysis, analysis_folder, "cme.gif")
-
-    # create video of the last 24 hours from the enhanced folder.
-    # approx no of images in a day is 30 for the enhanced folder!
-    # imagelist_enhanced = os.listdir("enhanced_512")
-    # imagelist_enhanced.sort()
-    # if len(imagelist_enhanced) > 40:
-    #     imagelist_enhanced = imagelist_enhanced[-40:]
-    # imagelist_enhanced.sort()
-    # print("creating video...")
-    # # create_video(imagelist_enhanced, "enhanced_512", "whole_disc.avi")
-    # create_gif(imagelist_enhanced, "enhanced_512", "whole_disc.gif")
-
     # The data files need to be truncated to the last 100 entries - approx 24 hours
     if len(dates) > truncate:
         dates = dates[-truncate:]
