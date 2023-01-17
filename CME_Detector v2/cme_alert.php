@@ -1,1 +1,1 @@
-<b>CME Monitor updated at  2023-01-17 02:48 UTC.</b><p>No significant activity detected in the last 24 hours.<a href="https://stereo-ssc.nascom.nasa.gov/browse/2023/01/16/ahead/cor2_rdiff/512/thumbnail.shtml" target="_blank">Stereo Science Centre</a>
+<b>CME Monitor updated at  2023-01-17 00:23 UTC.</b><p>No significant activity detected in the last 24 hours.<a href="https://stereo-ssc.nascom.nasa.gov/browse/2023/01/16/ahead/cor2_rdiff/512/thumbnail.shtml" target="_blank">Stereo Science Centre</a>
