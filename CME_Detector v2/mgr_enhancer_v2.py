@@ -68,8 +68,7 @@ def shorten_dirlisting(directory_listing):
         dt = filename_converter(item, "posix")
         if dt > cutoff:
             returnarray.append(item)
-    print("array for animation: ", len(returnarray))
-    return directory_listing
+    return returnarray
 
 
 def filename_converter(filename, switch="posix"):
