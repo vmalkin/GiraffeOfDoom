@@ -42,48 +42,6 @@ def process_columns(image):
     return returnarray
 
 
-def create_gif(list, filesfolder, gif_name):
-    imagelist = []
-    for item in list:
-        j = filesfolder + "/" + item
-        i = Image.open(j)
-        imagelist.append(i)
-    imagelist[0].save(gif_name,
-                      format="GIF",
-                      save_all=True,
-                      append_images=imagelist[1:],
-                      duration=500,
-                      loop=0)
-
-
-def create_video(list, filesfolder, video_name):
-    imagelist = []
-    for item in list:
-        j = filesfolder + "/" + item
-        i = cv2.imread(j)
-        imagelist.append(i)
-
-    fourcc = cv2.VideoWriter_fourcc(*'XVID')
-    video = cv2.VideoWriter(video_name, fourcc, 4, (360, 220))
-
-    for item in imagelist:
-        video.write(item)
-    video.release()
-
-
-def median_filter(data):
-    # simple 3 value median filter
-    filtered = []
-    t = []
-    for item in data:
-        t.append(float(item))
-        if len(t) == 5:
-            f = median(t)
-            filtered.append(f)
-            t.pop(0)
-    return filtered
-
-
 def plot_diffs_polar(pixel_count, filename, width, height):
     savefile = filename
     colourstep = 255 / len(pixel_count)
@@ -161,46 +119,6 @@ def plot_diffs_polar(pixel_count, filename, width, height):
     fig.write_image(file=savefile, format='jpg')
 
 
-def plot_diffs(pixel_count, filename, width, height):
-    savefile = filename
-    plotdata = go.Scatter(mode="lines")
-    fig = go.Figure(plotdata)
-    colourstep = 255 / len(pixel_count)
-    verticalstep = int(len(pixel_count[0]) / 4)
-
-    for i in range(0, len(pixel_count)):
-        j = int(colourstep * i)
-        # linecolour = "rgba(" + str(255 - i) + ", " + str(40 + i) + ", 0, 1)"
-        linecolour = "rgba(" + str(j) + ", 0," + str(255 - j) + ", 1)"
-        fig.add_trace(go.Scatter(y=pixel_count[i], mode="lines", line=dict(color=linecolour, width=2)))
-        if i == len(pixel_count) - 1:
-            fig.add_trace(go.Scatter(y=pixel_count[i], mode="lines", line=dict(color="#ffff00", width=2)))
-
-    fig.update_xaxes(showgrid=False, showticklabels=False)
-    fig.update_yaxes(showgrid=True, gridwidth=1, gridcolor='#505050')
-
-    ll = "#909090"
-    fig.add_vline(x=0, line_color=ll, line_width=3, annotation_text="North",
-                  annotation_font_color=ll, annotation_font_size=20, annotation_position="top right")
-    fig.add_vline(x=verticalstep, line_color=ll, line_width=3, annotation_text="East",
-                  annotation_font_color=ll, annotation_font_size=20, annotation_position="top right")
-    fig.add_vline(x=verticalstep * 2, line_color=ll, line_width=3, annotation_text="South",
-                  annotation_font_color=ll, annotation_font_size=20, annotation_position="top right")
-    fig.add_vline(x=verticalstep * 3, line_color=ll, line_width=3, annotation_text="West",
-                  annotation_font_color=ll, annotation_font_size=20, annotation_position="top right")
-
-    fig.update_layout(font=dict(size=20, color="#909090"), title_font_size=21)
-    fig.update_layout(plot_bgcolor="#000000", paper_bgcolor="#000000")
-    fig.update_layout(showlegend=False)
-
-    fig.update_layout(width=width, height=height, title="Corona Brightness Profile @ 3 Solar Diameters - 24 Hours",
-                      xaxis_title="Circumferential Coverage<br><sub>http://DunedinAurora.nz</sub>",
-                      yaxis_title="Brightness - Arbitrary Units")
-
-
-    fig.write_image(file=savefile, format='jpg')
-
-
 def plot(dates, pixel_count, filename, width, height):
     savefile = filename
     # pixel_count = median_filter(pixel_count)
@@ -222,22 +140,14 @@ def plot(dates, pixel_count, filename, width, height):
 
     fig.update_xaxes(nticks=12, tickangle=45)
 
-    # if max(pixel_count) > cme_min:
-    #     ymax = max(pixel_count) * 1.1
-    # else:
-    #     ymax = cme_min
-    #
-    # ymin = min(pixel_count)
-    # fig.update_yaxes(range=[ymin, ymax])
-    #
-    # fig.add_hline(y=cme_min, line_color=green, line_width=6, annotation_text="Minor CME",
-    #               annotation_font_color=green, annotation_font_size=20, annotation_position="top left")
-    #
-    # fig.add_hline(y=cme_partial, line_color=orange, line_width=6, annotation_text="Partial Halo CME",
-    #               annotation_font_color=orange, annotation_font_size=20, annotation_position="top left")
-    #
-    # fig.add_hline(y=1, line_color=red, line_width=6, annotation_text="Full Halo CME",
-    #               annotation_font_color=red, annotation_font_size=20, annotation_position="top left")
+    fig.add_hline(y=cme_min, line_color=green, line_width=6, annotation_text="Minor CME",
+                  annotation_font_color=green, annotation_font_size=20, annotation_position="top left")
+
+    fig.add_hline(y=cme_partial, line_color=orange, line_width=6, annotation_text="Partial Halo CME",
+                  annotation_font_color=orange, annotation_font_size=20, annotation_position="top left")
+
+    fig.add_hline(y=1, line_color=red, line_width=6, annotation_text="Full Halo CME",
+                  annotation_font_color=red, annotation_font_size=20, annotation_position="top left")
 
     fig.update_traces(line=dict(width=4, color=red))
     fig.write_image(file=savefile, format='jpg')
@@ -295,7 +205,7 @@ def text_alert(px, hr):
     heading = "<b>CME Monitor updated at " + posix2utc(time.time(), " %Y-%m-%d %H:%M") + " UTC.</b>"
     if px > cme_min:
         cme_detect = True
-        msg = "<p>A possible CME has been detected at " + timestring +  " with " + str(int(px * 100)) + "% coverage."
+        msg = "<p>Minor possible CME activity has been detected at " + timestring +  " with " + str(int(px * 100)) + "% coverage."
         if px >= cme_partial:
             cme_detect = True
             msg = "<p>Warning: A possible PARTIAL HALO CME has been detected  at " + timestring +  " with " + str(int(px * 100)) + "% coverage."
@@ -328,11 +238,6 @@ def posix2utc(posixtime, timeformat):
     # '%Y-%m-%d %H:%M'
     utctime = datetime.datetime.utcfromtimestamp(int(posixtime)).strftime(timeformat)
     return utctime
-
-
-def count_greys(array):
-    num_pixels = array.sum()
-    return num_pixels
 
 
 def crop_image(image, imagewidth, imageheight, topoffset, bottomoffset):
@@ -411,44 +316,8 @@ def polar_to_rectangular(angle, distance):
     return [x, y]
 
 
-
-
-
 def image_save(file_name, image_object):
     cv2.imwrite(file_name, image_object)
-
-
-def greyscale_img(image_to_process):
-    # converting an Image to grey scale one channel...
-    greyimg = cv2.cvtColor(image_to_process, cv2.COLOR_BGR2GRAY, 1)
-    return greyimg
-
-
-def normalise_image(detrended_img):
-    # normlise a numpy array between 0 - 255
-    returnarray = []
-    im_min = detrended_img.min()
-    im_max = detrended_img.max()
-
-    for row in detrended_img:
-        for column in row:
-            newvalue = (column - im_min) / (im_max - im_min)
-            newvalue = int(newvalue * 254)
-            returnarray.append(newvalue)
-    returnarray = np.reshape(returnarray, (512, 512))
-    returnarray = np.array(returnarray, np.uint8)
-    # returnarray = np.array(detrended_img, np.uint8)
-    return returnarray
-
-
-def erode_dilate_img(image_to_process):
-    # Erode and Dilate the image to clear up noise
-    # Erosion will trim away pixels (noise)
-    # dilation puffs out edges
-    kernel = np.ones((3,3), np.uint8)
-    outputimg = cv2.erode(image_to_process, kernel, iterations=2)
-    outputimg = cv2.dilate(outputimg, kernel, iterations=1)
-    return outputimg
 
 
 def filename_converter(filename, switch="posix"):
@@ -535,7 +404,7 @@ def wrapper(storage_folder, analysis_folder):
             avg_array.append(pic)
 
             # create an average of "x" number of images
-            if len(avg_array) >= 3:
+            if len(avg_array) >= 4:
                 # ALWAYS POP
                 avg_array.pop(0)
                 # the average image
@@ -565,10 +434,15 @@ def wrapper(storage_folder, analysis_folder):
                 posixtime = filehour_converter(t[0], t[1])
 
                 hr = posix2utc(posixtime, "%Y-%m-%d %H:%M")
+                # Determins a value for each column in the image. A CME should appear as a surge in brighness
+                # across several connected columns that changes with time.
+                # Streamers are ever present, but although contiguous, change far more slowly
                 cme_sum = process_columns(img_cropped)
+
                 # build up an array of the CME column data
                 cme_spread.append(cme_sum)
                 value = sum(cme_sum)
+                value = value / (360 * 10 * 254)
                 cme_count.append(value)
 
                 # cme_spread.append(cme_diffs)
@@ -589,29 +463,30 @@ def wrapper(storage_folder, analysis_folder):
     #     cme_spread = cme_spread[-truncate:]
 
     print("creating CME plot files...")
-    # Detrend the dme data to flatten out gradual albedo changes
-    dt_end = standard_stuff.calc_end(cme_count)
-    dt_mid = standard_stuff.calc_middle(cme_count)
-    dt_start = standard_stuff.calc_start(cme_count)
-    dt_total = dt_start + dt_mid + dt_end
-    maxpixels = angle * radius
-    detrended = []
-    for dt, cme in zip(dt_total, cme_count):
-        d = cme - dt
-        d = d / maxpixels
-        d = round(d, 4)
-        detrended.append(d)
+    # # Detrend the dme data to flatten out gradual albedo changes
+    # dt_end = standard_stuff.calc_end(cme_count)
+    # dt_mid = standard_stuff.calc_middle(cme_count)
+    # dt_start = standard_stuff.calc_start(cme_count)
+    # dt_total = dt_start + dt_mid + dt_end
+    # maxpixels = angle * radius
+    # detrended = []
+    # for dt, cme in zip(dt_total, cme_count):
+    #     d = cme - dt
+    #     d = d / maxpixels
+    #     d = round(d, 4)
+    #     detrended.append(d)
+    # detrended = median_filter(detrended)
 
-    detrended = median_filter(detrended)
     # plot(dates, detrended, "cme_dtrend.jpg", 1000, 600)
+    plot(dates, cme_count, "cme_value.jpg", 1000, 600)
     # plot_diffs(cme_spread, "cme_diffs.jpg", 1700, 600)
-    # plot_diffs_polar(cme_spread, "cme_polar.jpg", 800, 950)
+    plot_diffs_polar(cme_spread, "cme_polar.jpg", 800, 950)
 
     # If the max value of the detrended data is over 0.5 then we can write an alert for potential
     # CMEs to check.
-    px = max(detrended)
+    px = max(cme_count)
     print(px)
-    hr = dates[detrended.index(max(detrended))]
+    hr = dates[cme_count.index(max(cme_count))]
     text_alert(px, hr)
 
     print("All finished!")
