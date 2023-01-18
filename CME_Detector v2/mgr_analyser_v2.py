@@ -455,7 +455,16 @@ def wrapper(lasco_folder, analysis_folder):
         value = np.sum(a) / (360 * 10 * 254)
         brightness.append(value)
 
+    # analyse the cropped image for where cme brightness occurs.
+    # This becomes a polar plot of the sun's coronal brightness
+    stacked_brightness = []
+    for item in cropped_image:
+        summed_cols = process_columns(item)
+        stacked_brightness.append(summed_cols)
+
     plot(datelist, brightness, "corona_value.jpg", 1000, 600)
+    plot_diffs_polar(stacked_brightness, "cme_polar.jpg", 800, 950)
+
     #
     #             # ====================================================================================
     #             # determine if there is sufficient change across the cropped image to represent a CME
@@ -488,7 +497,7 @@ def wrapper(lasco_folder, analysis_folder):
     #
     # print("creating CME plot files...")
 
-    # plot_diffs_polar(cme_spread, "cme_polar.jpg", 800, 950)
+
     #
     # # If the max value of the detrended data is over 0.5 then we can write an alert for potential
     # # CMEs to check.
