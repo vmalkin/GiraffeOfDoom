@@ -222,22 +222,22 @@ def plot(dates, pixel_count, filename, width, height):
 
     fig.update_xaxes(nticks=12, tickangle=45)
 
-    if max(pixel_count) > cme_min:
-        ymax = max(pixel_count) * 1.1
-    else:
-        ymax = cme_min
-
-    ymin = min(pixel_count)
-    fig.update_yaxes(range=[ymin, ymax])
-
-    fig.add_hline(y=cme_min, line_color=green, line_width=6, annotation_text="Minor CME",
-                  annotation_font_color=green, annotation_font_size=20, annotation_position="top left")
-
-    fig.add_hline(y=cme_partial, line_color=orange, line_width=6, annotation_text="Partial Halo CME",
-                  annotation_font_color=orange, annotation_font_size=20, annotation_position="top left")
-
-    fig.add_hline(y=1, line_color=red, line_width=6, annotation_text="Full Halo CME",
-                  annotation_font_color=red, annotation_font_size=20, annotation_position="top left")
+    # if max(pixel_count) > cme_min:
+    #     ymax = max(pixel_count) * 1.1
+    # else:
+    #     ymax = cme_min
+    #
+    # ymin = min(pixel_count)
+    # fig.update_yaxes(range=[ymin, ymax])
+    #
+    # fig.add_hline(y=cme_min, line_color=green, line_width=6, annotation_text="Minor CME",
+    #               annotation_font_color=green, annotation_font_size=20, annotation_position="top left")
+    #
+    # fig.add_hline(y=cme_partial, line_color=orange, line_width=6, annotation_text="Partial Halo CME",
+    #               annotation_font_color=orange, annotation_font_size=20, annotation_position="top left")
+    #
+    # fig.add_hline(y=1, line_color=red, line_width=6, annotation_text="Full Halo CME",
+    #               annotation_font_color=red, annotation_font_size=20, annotation_position="top left")
 
     fig.update_traces(line=dict(width=4, color=red))
     fig.write_image(file=savefile, format='jpg')
@@ -451,6 +451,42 @@ def erode_dilate_img(image_to_process):
     return outputimg
 
 
+def filename_converter(filename, switch="posix"):
+    # Name has format 20221230_2342_c3_512.jpg
+    f = filename.split("_")
+    yyyymmdd = f[0]
+    hhmm = f[1]
+    year = (yyyymmdd[:4])
+    month = (yyyymmdd[4:6])
+    day = (yyyymmdd[6:])
+    hour = (hhmm[:2])
+    min = (hhmm[2:])
+    utc_string = year + '-' + month + '-' + day + ' ' + hour + ':' + min
+    filename = year + '-' + month + '-' + day + '-' + hour + '-' + min + ".jpg"
+    # utc time string
+    dt = datetime.datetime.strptime(utc_string, '%Y-%m-%d %H:%M')
+
+    if switch == "utc":
+        # utc time string
+        returnstring = datetime.datetime.strptime(utc_string, '%Y-%m-%d %H:%M')
+    elif switch == "filename":
+        returnstring = filename
+    else:
+        returnstring = calendar.timegm(dt.timetuple())
+    # return posix by default
+    return returnstring
+
+
+def shorten_dirlisting(directory_listing):
+    # Return files for the last x hours, as needed.
+    cutoff = time.time() - (86400 * 1)  # the last 2 days
+    returnarray = []
+    for item in directory_listing:
+        dt = filename_converter(item, "posix")
+        if dt > cutoff:
+            returnarray.append(item)
+    return returnarray
+
 def wrapper(storage_folder, analysis_folder):
     # get a list of the current stored images.
     # IGNORE files with the suffix .no as they are corrupted or reconstructed by the LASCO team, and the
@@ -467,30 +503,32 @@ def wrapper(storage_folder, analysis_folder):
     # make sure they are in chronological order by name
     dirlisting.sort()
 
-    # We do not need ALL of the images in the Lasco folder, only the last day or so. Approx
-    # 100 images per day.
-    truncate = 100
-    dirlisting = dirlisting[-truncate:]
+    dirlisting = shorten_dirlisting(dirlisting)
+    # # We do not need ALL of the images in the Lasco folder, only the last day or so. Approx
+    # # 100 images per day.
+    # truncate = 100
+    # dirlisting = dirlisting[-truncate:]
     avg_array = []
     cme_count = []
     cme_spread = []
     dates = []
+
 
     # Parsing thru the list of images
     for i in range (0, len(dirlisting)):
         p = storage_folder + os.sep + dirlisting[i]
 
         # load and preprocess the image
-        img = cv2.imread(p)
+        img_g = cv2.imread(p, 0)
         # img = erode_dilate_img(img)
 
         # This inverts the image colours if we are using the enhanced images as our source, not the analysis images
         # img = cv2.bitwise_not(img)
 
         # Occasionally images are loaded that are broken. If this is not the case...
-        if img is not None:
+        if img_g is not None:
             # greyscale the image
-            img_g = greyscale_img(img)
+            # img_g = greyscale_img(img)
 
             # Create an array of pictures with which to create a running average image
             pic = np.array(img_g, np.float64)
@@ -544,11 +582,11 @@ def wrapper(storage_folder, analysis_folder):
                 image_save(f_image, array)
                 print("dt", i, len(dirlisting))
 
-    # The data files need to be truncated to the last 100 entries - approx 24 hours
-    if len(dates) > truncate:
-        dates = dates[-truncate:]
-        cme_count = cme_count[-truncate:]
-        cme_spread = cme_spread[-truncate:]
+    # # The data files need to be truncated to the last 100 entries - approx 24 hours
+    # if len(dates) > truncate:
+    #     dates = dates[-truncate:]
+    #     cme_count = cme_count[-truncate:]
+    #     cme_spread = cme_spread[-truncate:]
 
     print("creating CME plot files...")
     # Detrend the dme data to flatten out gradual albedo changes
@@ -565,9 +603,9 @@ def wrapper(storage_folder, analysis_folder):
         detrended.append(d)
 
     detrended = median_filter(detrended)
-    plot(dates, detrended, "cme_dtrend.jpg", 1000, 600)
-    plot_diffs(cme_spread, "cme_diffs.jpg", 1700, 600)
-    plot_diffs_polar(cme_spread, "cme_polar.jpg", 800, 950)
+    # plot(dates, detrended, "cme_dtrend.jpg", 1000, 600)
+    # plot_diffs(cme_spread, "cme_diffs.jpg", 1700, 600)
+    # plot_diffs_polar(cme_spread, "cme_polar.jpg", 800, 950)
 
     # If the max value of the detrended data is over 0.5 then we can write an alert for potential
     # CMEs to check.
