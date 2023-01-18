@@ -359,7 +359,7 @@ def shorten_dirlisting(directory_listing):
 
 def median_image(img_1, img_2, img_3):
     t = [img_1, img_2, img_3]
-    p = np.median(t, axis=0)
+    p = np.min(t, axis=0)
     return p
 
 
@@ -400,27 +400,25 @@ def wrapper(lasco_folder, analysis_folder):
         picture = median_image(lasco_array[i - 1], lasco_array[i], lasco_array[i + 1])
         median_pictures.append(picture)
 
-    for item in median_pictures:
-        cv2.imshow("pic", item)
+    # convolve the median images
+    convolved_images = []
+    for image_m in median_pictures:
+        #  convolve the returned residuals image from polar to rectangular co-ords. the data is appended to
+        #  an array
+        radius = 220
+        angle = 360
+        pic_new = np.zeros([radius, angle])
+        for j in range(radius, 0, -1):
+            for k in range(0, angle):
+                coords = polar_to_rectangular(k, j)
+                pic_new[j][k] = image_m[coords[1], coords[0]]
+            # Convert the 1D array into a 2D image.
+            pic_new = np.reshape(pic_new, (radius, angle))
+            convolved_images.append(pic_new)
+
+    for item in convolved_images:
+        cv2.imshow("median_pictures", item)
         cv2.waitKey(0)
-
-    # # convolve the median images
-    # convolved_images = []
-    # for image_m in median_pictures:
-    #     #  convolve the returned residuals image from polar to rectangular co-ords. the data is appended to
-    #     #  an array
-    #     radius = 220
-    #     angle = 360
-    #     pic_new = np.zeros([radius, angle], np.uint8)
-    #     for j in range(radius, 0, -1):
-    #         for k in range(0, angle):
-    #             coords = polar_to_rectangular(k, j)
-    #             pixelvalue = image_m[coords[1], coords[0]]
-    #             pic_new.append(pixelvalue)
-    #         # Convert the 1D array into a 2D image.
-    #         pic_new = np.reshape(pic_new, (radius, angle))
-    #         convolved_images.append(pic_new)
-
 
 
 
