@@ -37,5 +37,5 @@ def wrapper(directory):
                       format="GIF",
                       save_all=True,
                       append_images=stereoarray[1:],
-                      duration=150,
+                      duration=75,
                       loop=0)
