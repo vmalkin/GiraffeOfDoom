@@ -27,3 +27,6 @@ CME_Detector/get_data.bat
 GitGetter/Studio_2.txt
 CME_Detector v2/cme.gif
 *.mp4
+*.gif
+*.php
+*.no
