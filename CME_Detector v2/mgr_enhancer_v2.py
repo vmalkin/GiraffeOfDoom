@@ -147,7 +147,7 @@ def wrapper(lasco_folder, enhanced_folder):
 
             # picture = cv2.bitwise_not(picture)
             final_image = colourise(picture)
-            add_stamp("Processed at Dunedin Aurora", final_image, dirlisting[i])
+            add_stamp("Processed @ DunedinAurora.NZ", final_image, dirlisting[i])
             savefile = enhanced_folder + os.sep + dirlisting[i]
             cv2.imwrite(savefile, final_image)
 
