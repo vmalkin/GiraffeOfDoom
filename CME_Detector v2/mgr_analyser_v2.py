@@ -437,11 +437,11 @@ def wrapper(storage_folder, analysis_folder):
                 # Determins a value for each column in the image. A CME should appear as a surge in brighness
                 # across several connected columns that changes with time.
                 # Streamers are ever present, but although contiguous, change far more slowly
-                cme_sum = process_columns(img_cropped)
+                cme_cols_sum = process_columns(img_cropped)
 
                 # build up an array of the CME column data
-                cme_spread.append(cme_sum)
-                value = sum(cme_sum)
+                cme_spread.append(cme_cols_sum)
+                value = sum(cme_cols_sum)
                 value = value / (360 * 10 * 254)
                 cme_count.append(value)
 
@@ -457,9 +457,7 @@ def wrapper(storage_folder, analysis_folder):
                 print("dt", i, len(dirlisting))
 
     print("creating CME plot files...")
-    # plot(dates, detrended, "cme_dtrend.jpg", 1000, 600)
     plot(dates, cme_count, "cme_value.jpg", 1000, 600)
-    # plot_diffs(cme_spread, "cme_diffs.jpg", 1700, 600)
     plot_diffs_polar(cme_spread, "cme_polar.jpg", 800, 950)
 
     # If the max value of the detrended data is over 0.5 then we can write an alert for potential
