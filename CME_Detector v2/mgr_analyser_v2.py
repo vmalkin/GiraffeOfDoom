@@ -203,7 +203,7 @@ def text_alert(px, hr):
     savefile = "cme_alert.php"
     heading = "<b>CME Monitor updated at " + posix2utc(time.time(), " %Y-%m-%d %H:%M") + " UTC.</b>"
     msg = "<p>Highest level of coronal brightness occurred " + timestring +  " with " + str(int(px * 100)) + "% coverage."
-    msg = msg + "<p>Latest STEREO A images can be found at:<br"
+    msg = msg + "<p>Latest STEREO A images can be found at:<br>"
     # if cme_detect == True:
     #     msg = msg + "<br>Confirm Earth impact with STEREO A satellite data: "
     msg_alert = heading + msg + stereo_url
