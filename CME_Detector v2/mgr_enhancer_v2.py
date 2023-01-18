@@ -137,6 +137,7 @@ def wrapper(lasco_folder, enhanced_folder):
             img_3 = cv2.imread(file_3, 0)
             picture = median_image(img_1, img_2, img_3)
 
+
             # alpha value [1.0-3.0] CONTRAST
             # beta value [0-100] BRIGHTNESS
             alpha = 1.5
@@ -146,10 +147,10 @@ def wrapper(lasco_folder, enhanced_folder):
             picture = clahe.apply(picture)
 
             # picture = cv2.bitwise_not(picture)
-            final_image = colourise(picture)
-            add_stamp("Processed @ DunedinAurora.NZ", final_image, dirlisting[i])
+            picture = colourise(picture)
+            add_stamp("Processed @ DunedinAurora.NZ", picture, dirlisting[i])
             savefile = enhanced_folder + os.sep + dirlisting[i]
-            cv2.imwrite(savefile, final_image)
+            cv2.imwrite(savefile, picture)
 
             cols = int(img_2.shape[0])
             rows = int(img_2.shape[1])

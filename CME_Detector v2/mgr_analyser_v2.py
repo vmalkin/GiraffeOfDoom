@@ -356,12 +356,19 @@ def shorten_dirlisting(directory_listing):
             returnarray.append(item)
     return returnarray
 
-def wrapper(storage_folder, analysis_folder):
+
+def median_image(img_1, img_2, img_3):
+    t = [img_1, img_2, img_3]
+    p = np.median(t, axis=0)
+    return p
+
+
+def wrapper(lasco_folder, analysis_folder):
     # get a list of the current stored images.
     # IGNORE files with the suffix .no as they are corrupted or reconstructed by the LASCO team, and the
     # interpolated data in inaccurate
     dirlisting = []
-    path = os.path.join(storage_folder, "*.jpg")
+    path = os.path.join(lasco_folder, "*.jpg")
     for name in glob.glob(path):
         name = os.path.normpath(name)
         seperator = os.path.sep
@@ -372,99 +379,110 @@ def wrapper(storage_folder, analysis_folder):
     # make sure they are in chronological order by name
     dirlisting.sort()
 
+     # We do not need ALL of the images in the Lasco folder, only the last day or so. Approx
     dirlisting = shorten_dirlisting(dirlisting)
-    # # We do not need ALL of the images in the Lasco folder, only the last day or so. Approx
-    # # 100 images per day.
-    # truncate = 100
-    # dirlisting = dirlisting[-truncate:]
+
     avg_array = []
     cme_count = []
     cme_spread = []
     dates = []
+    lasco_array = []
 
-
-    # Parsing thru the list of images
+    # Add images to lasco array
     for i in range (0, len(dirlisting)):
-        p = storage_folder + os.sep + dirlisting[i]
+        p = lasco_folder + os.sep + dirlisting[i]
+        # load images into the lasco array
+        lasco_array.append(cv2.imread(p, 0))
 
-        # load and preprocess the image
-        img_g = cv2.imread(p, 0)
-        # img = erode_dilate_img(img)
+    # Calculate and store the median image thus removing visual static
+    median_pictures = []
+    for i in range(1, len(lasco_array) - 1):
+        picture = median_image(lasco_array[i - 1], lasco_array[i], lasco_array[i + 1])
+        median_pictures.append(picture)
 
-        # This inverts the image colours if we are using the enhanced images as our source, not the analysis images
-        # img = cv2.bitwise_not(img)
+    for item in median_pictures:
+        cv2.imshow("pic", item)
+        cv2.waitKey(0)
 
-        # Occasionally images are loaded that are broken. If this is not the case...
-        if img_g is not None:
-            # greyscale the image
-            # img_g = greyscale_img(img)
+    # # convolve the median images
+    # convolved_images = []
+    # for image_m in median_pictures:
+    #     #  convolve the returned residuals image from polar to rectangular co-ords. the data is appended to
+    #     #  an array
+    #     radius = 220
+    #     angle = 360
+    #     pic_new = np.zeros([radius, angle], np.uint8)
+    #     for j in range(radius, 0, -1):
+    #         for k in range(0, angle):
+    #             coords = polar_to_rectangular(k, j)
+    #             pixelvalue = image_m[coords[1], coords[0]]
+    #             pic_new.append(pixelvalue)
+    #         # Convert the 1D array into a 2D image.
+    #         pic_new = np.reshape(pic_new, (radius, angle))
+    #         convolved_images.append(pic_new)
 
-            # Create an array of pictures with which to create a running average image
-            pic = np.array(img_g, np.float64)
-            avg_array.append(pic)
 
-            # create an average of "x" number of images
-            if len(avg_array) >= 4:
-                # ALWAYS POP
-                avg_array.pop(0)
-                # the average image
-                pic_new = np.mean(avg_array, axis=0)
-                # pic_new = normalise_image(pic_new)
 
-                #  convolve the returned residuals image from polar to rectangular co-ords. the data is appended to
-                #  an array
-                radius = 220
-                angle = 360
-                t = []
-                for j in range(radius, 0, -1):
-                    for k in range(0, angle):
-                        coords = polar_to_rectangular(k, j)
-                        pixelvalue = pic_new[coords[1], coords[0]]
-                        t.append(pixelvalue)
 
-                # Convert the 1D array into a 2D image.
-                # Crop the part that is the detection slot for CMEs near the suns surface
-                array = np.reshape(np.array(t), (radius, angle))
-                img_cropped = crop_image(array, angle, radius, 40, 50)
 
-                # ====================================================================================
-                # determine if there is sufficient change across the cropped image to represent a CME
-                # ====================================================================================
-                t = dirlisting[i].split("_")
-                posixtime = filehour_converter(t[0], t[1])
+    #
+    #         # Create an array of pictures with which to create a running average image
+    #         pic = np.array(img_g, np.float64)
+    #         avg_array.append(pic)
+    #
+    #         # create an average of "x" number of images
+    #         if len(avg_array) >= 4:
+    #             # ALWAYS POP
+    #             avg_array.pop(0)
+    #             # the average image
+    #             pic_new = np.mean(avg_array, axis=0)
+    #             # pic_new = normalise_image(pic_new)
+    #
 
-                hr = posix2utc(posixtime, "%Y-%m-%d %H:%M")
-                # Determins a value for each column in the image. A CME should appear as a surge in brighness
-                # across several connected columns that changes with time.
-                # Streamers are ever present, but although contiguous, change far more slowly
-                cme_cols_sum = process_columns(img_cropped)
-
-                # build up an array of the CME column data
-                cme_spread.append(cme_cols_sum)
-                value = sum(cme_cols_sum)
-                value = value / (360 * 10 * 254)
-                cme_count.append(value)
-
-                # cme_spread.append(cme_diffs)
-                dates.append(hr)
-
-                # Annotate image for display
-                array = annotate_image(array, angle, radius, hr)
-
-                f_image = analysis_folder + "//" + "dt_" + dirlisting[i]
-                # image_save(f_image, img_cropped)
-                image_save(f_image, array)
-                print("dt", i, len(dirlisting))
-
-    print("creating CME plot files...")
-    plot(dates, cme_count, "cme_value.jpg", 1000, 600)
-    plot_diffs_polar(cme_spread, "cme_polar.jpg", 800, 950)
-
-    # If the max value of the detrended data is over 0.5 then we can write an alert for potential
-    # CMEs to check.
-    px = max(cme_count)
-    print(px)
-    hr = dates[cme_count.index(max(cme_count))]
-    text_alert(px, hr)
-
-    print("All finished!")
+    #
+    #             # Convert the 1D array into a 2D image.
+    #             # Crop the part that is the detection slot for CMEs near the suns surface
+    #             array = np.reshape(np.array(t), (radius, angle))
+    #             img_cropped = crop_image(array, angle, radius, 40, 50)
+    #
+    #             # ====================================================================================
+    #             # determine if there is sufficient change across the cropped image to represent a CME
+    #             # ====================================================================================
+    #             t = dirlisting[i].split("_")
+    #             posixtime = filehour_converter(t[0], t[1])
+    #
+    #             hr = posix2utc(posixtime, "%Y-%m-%d %H:%M")
+    #             # Determins a value for each column in the image. A CME should appear as a surge in brighness
+    #             # across several connected columns that changes with time.
+    #             # Streamers are ever present, but although contiguous, change far more slowly
+    #             cme_cols_sum = process_columns(img_cropped)
+    #
+    #             # build up an array of the CME column data
+    #             cme_spread.append(cme_cols_sum)
+    #             value = sum(cme_cols_sum)
+    #             value = value / (360 * 10 * 254)
+    #             cme_count.append(value)
+    #
+    #             # cme_spread.append(cme_diffs)
+    #             dates.append(hr)
+    #
+    #             # Annotate image for display
+    #             array = annotate_image(array, angle, radius, hr)
+    #
+    #             f_image = analysis_folder + "//" + "dt_" + dirlisting[i]
+    #             # image_save(f_image, img_cropped)
+    #             image_save(f_image, array)
+    #             print("dt", i, len(dirlisting))
+    #
+    # print("creating CME plot files...")
+    # plot(dates, cme_count, "cme_value.jpg", 1000, 600)
+    # plot_diffs_polar(cme_spread, "cme_polar.jpg", 800, 950)
+    #
+    # # If the max value of the detrended data is over 0.5 then we can write an alert for potential
+    # # CMEs to check.
+    # px = max(cme_count)
+    # print(px)
+    # hr = dates[cme_count.index(max(cme_count))]
+    # text_alert(px, hr)
+    #
+    # print("All finished!")
