@@ -98,7 +98,7 @@ def filename_converter(filename, switch="posix"):
 
 
 def colourise(final):
-    new_image = cv2.applyColorMap(final, cv2.COLORMAP_INFERNO)
+    new_image = cv2.applyColorMap(final, cv2.COLORMAP_OCEAN)
     return new_image
 
 
@@ -125,8 +125,8 @@ def wrapper(lasco_folder, enhanced_folder):
     # if time difference between img_x, ing_y < time threshold
     print("*** Enhancer: Removing partical hits from files")
     for i in range(1, len(dirlisting) - 1):
-        txt = "Denoising " + str(i) + " / " + str(len(dirlisting))
-        print(txt)
+        # txt = "Denoising " + str(i) + " / " + str(len(dirlisting))
+        # print(txt)
         if filename_converter(dirlisting[i], "posix") - filename_converter(dirlisting[i - 1], "posix") < time_threshold:
             # load an automatically convert image to greyscale
             file_1 = lasco_folder + os.sep + dirlisting[i - 1]
@@ -137,6 +137,7 @@ def wrapper(lasco_folder, enhanced_folder):
             img_3 = cv2.imread(file_3, 0)
             picture = median_image(img_1, img_2, img_3)
 
+
             # alpha value [1.0-3.0] CONTRAST
             # beta value [0-100] BRIGHTNESS
             alpha = 1.5
@@ -146,10 +147,10 @@ def wrapper(lasco_folder, enhanced_folder):
             picture = clahe.apply(picture)
 
             # picture = cv2.bitwise_not(picture)
-            final_image = colourise(picture)
-            add_stamp("Processed @ DunedinAurora.NZ", final_image, dirlisting[i])
+            picture = colourise(picture)
+            add_stamp("Processed @ DunedinAurora.NZ", picture, dirlisting[i])
             savefile = enhanced_folder + os.sep + dirlisting[i]
-            cv2.imwrite(savefile, final_image)
+            cv2.imwrite(savefile, picture)
 
             cols = int(img_2.shape[0])
             rows = int(img_2.shape[1])

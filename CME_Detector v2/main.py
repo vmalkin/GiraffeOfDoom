@@ -126,8 +126,8 @@ if __name__ == "__main__":
     # Processing and analysis of LASCO images happens here
     # #####################################################################################################
     mgr_enhancer_v2.wrapper(storage_folder, enhanced_folder)
-    mgr_analyser_v2.wrapper(enhanced_folder, analysis_folder)
-    # mgr_stereoscopic.wrapper(enhanced_folder)
+    mgr_analyser_v2.wrapper(storage_folder, analysis_folder)
+    mgr_stereoscopic.wrapper(enhanced_folder)
 
     computation_end = time.time()
     elapsed_mins = round((computation_end - computation_start) / 60, 1)

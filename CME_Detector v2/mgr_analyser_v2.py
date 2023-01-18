@@ -12,11 +12,11 @@ import standard_stuff
 import glob
 
 # offset values when coronagraph mask support-vane in top-right position
-offset_x = -5
+offset_x = -4
 offset_y = 10
 
 # # offset values when coronagraph mask support-vane in bottom-left position
-# offset_x = 5
+# offset_x = 4
 # offset_y = -10
 
 image_size = 512
@@ -24,7 +24,7 @@ imagecentre = image_size / 2
 
 # Parameters for CME detection
 cme_min = 0.4
-cme_partial = 0.6
+cme_partial = 0.5
 cme_halo = 0.8
 
 
@@ -40,48 +40,6 @@ def process_columns(image):
         column_sum = sum(img[:,i])
         returnarray.append(column_sum)
     return returnarray
-
-
-def create_gif(list, filesfolder, gif_name):
-    imagelist = []
-    for item in list:
-        j = filesfolder + "/" + item
-        i = Image.open(j)
-        imagelist.append(i)
-    imagelist[0].save(gif_name,
-                      format="GIF",
-                      save_all=True,
-                      append_images=imagelist[1:],
-                      duration=500,
-                      loop=0)
-
-
-def create_video(list, filesfolder, video_name):
-    imagelist = []
-    for item in list:
-        j = filesfolder + "/" + item
-        i = cv2.imread(j)
-        imagelist.append(i)
-
-    fourcc = cv2.VideoWriter_fourcc(*'XVID')
-    video = cv2.VideoWriter(video_name, fourcc, 4, (360, 220))
-
-    for item in imagelist:
-        video.write(item)
-    video.release()
-
-
-def median_filter(data):
-    # simple 3 value median filter
-    filtered = []
-    t = []
-    for item in data:
-        t.append(float(item))
-        if len(t) == 5:
-            f = median(t)
-            filtered.append(f)
-            t.pop(0)
-    return filtered
 
 
 def plot_diffs_polar(pixel_count, filename, width, height):
@@ -161,46 +119,6 @@ def plot_diffs_polar(pixel_count, filename, width, height):
     fig.write_image(file=savefile, format='jpg')
 
 
-def plot_diffs(pixel_count, filename, width, height):
-    savefile = filename
-    plotdata = go.Scatter(mode="lines")
-    fig = go.Figure(plotdata)
-    colourstep = 255 / len(pixel_count)
-    verticalstep = int(len(pixel_count[0]) / 4)
-
-    for i in range(0, len(pixel_count)):
-        j = int(colourstep * i)
-        # linecolour = "rgba(" + str(255 - i) + ", " + str(40 + i) + ", 0, 1)"
-        linecolour = "rgba(" + str(j) + ", 0," + str(255 - j) + ", 1)"
-        fig.add_trace(go.Scatter(y=pixel_count[i], mode="lines", line=dict(color=linecolour, width=2)))
-        if i == len(pixel_count) - 1:
-            fig.add_trace(go.Scatter(y=pixel_count[i], mode="lines", line=dict(color="#ffff00", width=2)))
-
-    fig.update_xaxes(showgrid=False, showticklabels=False)
-    fig.update_yaxes(showgrid=True, gridwidth=1, gridcolor='#505050')
-
-    ll = "#909090"
-    fig.add_vline(x=0, line_color=ll, line_width=3, annotation_text="North",
-                  annotation_font_color=ll, annotation_font_size=20, annotation_position="top right")
-    fig.add_vline(x=verticalstep, line_color=ll, line_width=3, annotation_text="East",
-                  annotation_font_color=ll, annotation_font_size=20, annotation_position="top right")
-    fig.add_vline(x=verticalstep * 2, line_color=ll, line_width=3, annotation_text="South",
-                  annotation_font_color=ll, annotation_font_size=20, annotation_position="top right")
-    fig.add_vline(x=verticalstep * 3, line_color=ll, line_width=3, annotation_text="West",
-                  annotation_font_color=ll, annotation_font_size=20, annotation_position="top right")
-
-    fig.update_layout(font=dict(size=20, color="#909090"), title_font_size=21)
-    fig.update_layout(plot_bgcolor="#000000", paper_bgcolor="#000000")
-    fig.update_layout(showlegend=False)
-
-    fig.update_layout(width=width, height=height, title="Corona Brightness Profile @ 3 Solar Diameters - 24 Hours",
-                      xaxis_title="Circumferential Coverage<br><sub>http://DunedinAurora.nz</sub>",
-                      yaxis_title="Brightness - Arbitrary Units")
-
-
-    fig.write_image(file=savefile, format='jpg')
-
-
 def plot(dates, pixel_count, filename, width, height):
     savefile = filename
     # pixel_count = median_filter(pixel_count)
@@ -208,38 +126,30 @@ def plot(dates, pixel_count, filename, width, height):
     dates.pop(len(dates) - 1)
     red = "rgba(150, 0, 0, 1)"
     green = "rgba(0, 150, 0, 0.8)"
-    orange = "rgba(150, 100, 0, 0.8)"
+    orange = "rgba(200, 100, 0, 0.8)"
 
     plotdata = go.Scatter(x=dates, y=pixel_count, mode="lines")
     fig = go.Figure(plotdata)
 
     fig.update_layout(font=dict(size=20), title_font_size=21)
-    fig.update_layout(width=width, height=height, title="Coronal Mass Ejections",
+    fig.update_layout(width=width, height=height, title="Total Coronal Brightness @ 3 Solar diameters",
                       xaxis_title="Date/time UTC<br><sub>http://DunedinAurora.nz</sub>",
-                      yaxis_title="CME Coverage",
+                      yaxis_title="Brightness 0 -  1",
                       plot_bgcolor="#e0e0e0")
     fig.update_layout(plot_bgcolor="#a0a0a0", paper_bgcolor="#a0a0a0")
 
     fig.update_xaxes(nticks=12, tickangle=45)
 
-    # if max(pixel_count) > cme_min:
-    #     ymax = max(pixel_count) * 1.1
-    # else:
-    #     ymax = cme_min
-    #
-    # ymin = min(pixel_count)
-    # fig.update_yaxes(range=[ymin, ymax])
-    #
-    # fig.add_hline(y=cme_min, line_color=green, line_width=6, annotation_text="Minor CME",
+    # fig.add_hline(y=cme_min, line_color=green, line_width=6, annotation_text=cme_min,
     #               annotation_font_color=green, annotation_font_size=20, annotation_position="top left")
-    #
-    # fig.add_hline(y=cme_partial, line_color=orange, line_width=6, annotation_text="Partial Halo CME",
+
+    # fig.add_hline(y=cme_partial, line_color=orange, line_width=6, annotation_text="50%",
     #               annotation_font_color=orange, annotation_font_size=20, annotation_position="top left")
     #
-    # fig.add_hline(y=1, line_color=red, line_width=6, annotation_text="Full Halo CME",
+    # fig.add_hline(y=cme_halo, line_color=red, line_width=6, annotation_text="80%",
     #               annotation_font_color=red, annotation_font_size=20, annotation_position="top left")
 
-    fig.update_traces(line=dict(width=4, color=red))
+    fig.update_traces(line=dict(width=8, color=red))
     fig.write_image(file=savefile, format='jpg')
 
 
@@ -291,21 +201,11 @@ def text_alert(px, hr):
     url = "https://stereo-ssc.nascom.nasa.gov/browse/" + new_hr +  "/ahead/cor2_rdiff/512/thumbnail.shtml"
     stereo_url = "<a href=\"" + url + "\" target=\"_blank\">" + "Stereo Science Centre</a>"
     savefile = "cme_alert.php"
-    msg = "<p>No significant activity detected in the last 24 hours."
     heading = "<b>CME Monitor updated at " + posix2utc(time.time(), " %Y-%m-%d %H:%M") + " UTC.</b>"
-    if px > cme_min:
-        cme_detect = True
-        msg = "<p>A possible CME has been detected at " + timestring +  " with " + str(int(px * 100)) + "% coverage."
-        if px >= cme_partial:
-            cme_detect = True
-            msg = "<p>Warning: A possible PARTIAL HALO CME has been detected  at " + timestring +  " with " + str(int(px * 100)) + "% coverage."
-            if px >= cme_halo:
-                cme_detect = True
-                msg = "<p>ALERT: A possible FULL HALO CME has been detected at " + timestring +  " with " + str(int(px * 100)) + "% coverage."
-
-    if cme_detect == True:
-        msg = msg + "<br>Confirm Earth impact with STEREO A satellite data: "
-
+    msg = "<p>Highest level of coronal brightness occurred " + timestring +  " with " + str(int(px * 100)) + "% coverage."
+    msg = msg + "<p>Latest STEREO A images can be found at:<br>"
+    # if cme_detect == True:
+    #     msg = msg + "<br>Confirm Earth impact with STEREO A satellite data: "
     msg_alert = heading + msg + stereo_url
     with open(savefile, "w") as s:
         s.write(msg_alert)
@@ -328,11 +228,6 @@ def posix2utc(posixtime, timeformat):
     # '%Y-%m-%d %H:%M'
     utctime = datetime.datetime.utcfromtimestamp(int(posixtime)).strftime(timeformat)
     return utctime
-
-
-def count_greys(array):
-    num_pixels = array.sum()
-    return num_pixels
 
 
 def crop_image(image, imagewidth, imageheight, topoffset, bottomoffset):
@@ -411,44 +306,8 @@ def polar_to_rectangular(angle, distance):
     return [x, y]
 
 
-
-
-
 def image_save(file_name, image_object):
     cv2.imwrite(file_name, image_object)
-
-
-def greyscale_img(image_to_process):
-    # converting an Image to grey scale one channel...
-    greyimg = cv2.cvtColor(image_to_process, cv2.COLOR_BGR2GRAY, 1)
-    return greyimg
-
-
-def normalise_image(detrended_img):
-    # normlise a numpy array between 0 - 255
-    returnarray = []
-    im_min = detrended_img.min()
-    im_max = detrended_img.max()
-
-    for row in detrended_img:
-        for column in row:
-            newvalue = (column - im_min) / (im_max - im_min)
-            newvalue = int(newvalue * 254)
-            returnarray.append(newvalue)
-    returnarray = np.reshape(returnarray, (512, 512))
-    returnarray = np.array(returnarray, np.uint8)
-    # returnarray = np.array(detrended_img, np.uint8)
-    return returnarray
-
-
-def erode_dilate_img(image_to_process):
-    # Erode and Dilate the image to clear up noise
-    # Erosion will trim away pixels (noise)
-    # dilation puffs out edges
-    kernel = np.ones((3,3), np.uint8)
-    outputimg = cv2.erode(image_to_process, kernel, iterations=2)
-    outputimg = cv2.dilate(outputimg, kernel, iterations=1)
-    return outputimg
 
 
 def filename_converter(filename, switch="posix"):
@@ -468,7 +327,7 @@ def filename_converter(filename, switch="posix"):
 
     if switch == "utc":
         # utc time string
-        returnstring = datetime.datetime.strptime(utc_string, '%Y-%m-%d %H:%M')
+        returnstring = utc_string
     elif switch == "filename":
         returnstring = filename
     else:
@@ -487,12 +346,24 @@ def shorten_dirlisting(directory_listing):
             returnarray.append(item)
     return returnarray
 
-def wrapper(storage_folder, analysis_folder):
+
+def median_image(img_1, img_2, img_3):
+    t = [img_1, img_2, img_3]
+    p = np.median(t, axis=0)
+    return p
+
+
+def wrapper(lasco_folder, analysis_folder):
     # get a list of the current stored images.
     # IGNORE files with the suffix .no as they are corrupted or reconstructed by the LASCO team, and the
     # interpolated data in inaccurate
+
+    # Used in the convolving of the image among other things
+    radius = 220
+    angle = 360
+
     dirlisting = []
-    path = os.path.join(storage_folder, "*.jpg")
+    path = os.path.join(lasco_folder, "*.jpg")
     for name in glob.glob(path):
         name = os.path.normpath(name)
         seperator = os.path.sep
@@ -503,115 +374,91 @@ def wrapper(storage_folder, analysis_folder):
     # make sure they are in chronological order by name
     dirlisting.sort()
 
+     # We do not need ALL of the images in the Lasco folder, only the last day or so. Approx
     dirlisting = shorten_dirlisting(dirlisting)
-    # # We do not need ALL of the images in the Lasco folder, only the last day or so. Approx
-    # # 100 images per day.
-    # truncate = 100
-    # dirlisting = dirlisting[-truncate:]
+
     avg_array = []
     cme_count = []
     cme_spread = []
     dates = []
+    lasco_array = []
 
-
-    # Parsing thru the list of images
+    # Add images to lasco array
     for i in range (0, len(dirlisting)):
-        p = storage_folder + os.sep + dirlisting[i]
+        p = lasco_folder + os.sep + dirlisting[i]
+        # load images into the lasco array
+        lasco_array.append(cv2.imread(p, 0))
 
-        # load and preprocess the image
-        img_g = cv2.imread(p, 0)
-        # img = erode_dilate_img(img)
+    # Calculate and store the median image thus removing visual static
+    # Apply any enhancements as well
+    median_pictures = []
+    for i in range(1, len(lasco_array) - 1):
+        picture = median_image(lasco_array[i - 1], lasco_array[i], lasco_array[i + 1])
+        # alpha value [1.0-3.0] CONTRAST
+        # beta value [0-100] BRIGHTNESS
+        alpha = 1.5
+        beta = 2
+        picture = cv2.convertScaleAbs(picture, alpha=alpha, beta=beta)
+        clahe = cv2.createCLAHE(clipLimit=2, tileGridSize=(10, 10))
+        picture = clahe.apply(picture)
+        median_pictures.append(picture)
 
-        # This inverts the image colours if we are using the enhanced images as our source, not the analysis images
-        # img = cv2.bitwise_not(img)
+    # convolve the median images
+    convolved_images = []
+    for image_m in median_pictures:
+        #  convolve the returned residuals image from polar to rectangular co-ords. the data is appended to
+        #  an array
+        pic_new = np.zeros([radius, angle])
+        for j in range(0, radius):
+            for k in range(0, angle):
+                coords = polar_to_rectangular(k, j)
+                pic_new[j][k] = image_m[coords[1], coords[0]]
+            # Convert the 1D array into a 2D image.
+            pic_new = np.reshape(pic_new, (radius, angle))
+        pic_new = cv2.flip(pic_new, 0)
+        convolved_images.append(pic_new)
 
-        # Occasionally images are loaded that are broken. If this is not the case...
-        if img_g is not None:
-            # greyscale the image
-            # img_g = greyscale_img(img)
+    # Fix dirlisting to have the correct length. Save annotated file to analysis folder
+    dirlisting.pop(len(dirlisting) - 1)
+    dirlisting.pop(0)
+    for i in range(0, len(convolved_images)):
+        dt = filename_converter(dirlisting[i], "utc")
+        savefile = analysis_folder + os.sep + filename_converter(dirlisting[i], "filename")
+        img = annotate_image(convolved_images[i], angle, radius, dt)
+        cv2.imwrite(savefile, img)
 
-            # Create an array of pictures with which to create a running average image
-            pic = np.array(img_g, np.float64)
-            avg_array.append(pic)
+    # Create the cropped image for CME analysis
+    cropped_image = []
+    for img in convolved_images:
+        new_img = crop_image(img, angle, radius, 40, 50)
+        cropped_image.append(new_img)
 
-            # create an average of "x" number of images
-            if len(avg_array) >= 3:
-                # ALWAYS POP
-                avg_array.pop(0)
-                # the average image
-                pic_new = np.mean(avg_array, axis=0)
-                # pic_new = normalise_image(pic_new)
+    # datelist for plotting
+    datelist = []
+    for item in dirlisting:
+        datelist.append(filename_converter(item, "utc"))
 
-                #  convolve the returned residuals image from polar to rectangular co-ords. the data is appended to
-                #  an array
-                radius = 220
-                angle = 360
-                t = []
-                for j in range(radius, 0, -1):
-                    for k in range(0, angle):
-                        coords = polar_to_rectangular(k, j)
-                        pixelvalue = pic_new[coords[1], coords[0]]
-                        t.append(pixelvalue)
+    # calculate the general brightness of the corona near the sun
+    brightness = []
+    for item in cropped_image:
+        a = np.array(item)
+        value = np.sum(a) / (360 * 10 * 254)
+        brightness.append(value)
 
-                # Convert the 1D array into a 2D image.
-                # Crop the part that is the detection slot for CMEs near the suns surface
-                array = np.reshape(np.array(t), (radius, angle))
-                img_cropped = crop_image(array, angle, radius, 40, 50)
+    # analyse the cropped image for where cme brightness occurs.
+    # This becomes a polar plot of the sun's coronal brightness
+    stacked_brightness = []
+    for item in cropped_image:
+        summed_cols = process_columns(item)
+        stacked_brightness.append(summed_cols)
 
-                # ====================================================================================
-                # determine if there is sufficient change across the cropped image to represent a CME
-                # ====================================================================================
-                t = dirlisting[i].split("_")
-                posixtime = filehour_converter(t[0], t[1])
-
-                hr = posix2utc(posixtime, "%Y-%m-%d %H:%M")
-                cme_sum = process_columns(img_cropped)
-                # build up an array of the CME column data
-                cme_spread.append(cme_sum)
-                value = sum(cme_sum)
-                cme_count.append(value)
-
-                # cme_spread.append(cme_diffs)
-                dates.append(hr)
-
-                # Annotate image for display
-                array = annotate_image(array, angle, radius, hr)
-
-                f_image = analysis_folder + "//" + "dt_" + dirlisting[i]
-                # image_save(f_image, img_cropped)
-                image_save(f_image, array)
-                print("dt", i, len(dirlisting))
-
-    # # The data files need to be truncated to the last 100 entries - approx 24 hours
-    # if len(dates) > truncate:
-    #     dates = dates[-truncate:]
-    #     cme_count = cme_count[-truncate:]
-    #     cme_spread = cme_spread[-truncate:]
-
-    print("creating CME plot files...")
-    # Detrend the dme data to flatten out gradual albedo changes
-    dt_end = standard_stuff.calc_end(cme_count)
-    dt_mid = standard_stuff.calc_middle(cme_count)
-    dt_start = standard_stuff.calc_start(cme_count)
-    dt_total = dt_start + dt_mid + dt_end
-    maxpixels = angle * radius
-    detrended = []
-    for dt, cme in zip(dt_total, cme_count):
-        d = cme - dt
-        d = d / maxpixels
-        d = round(d, 4)
-        detrended.append(d)
-
-    detrended = median_filter(detrended)
-    # plot(dates, detrended, "cme_dtrend.jpg", 1000, 600)
-    # plot_diffs(cme_spread, "cme_diffs.jpg", 1700, 600)
-    # plot_diffs_polar(cme_spread, "cme_polar.jpg", 800, 950)
+    plot(datelist, brightness, "corona_value.jpg", 1000, 600)
+    plot_diffs_polar(stacked_brightness, "cme_polar.jpg", 800, 950)
 
     # If the max value of the detrended data is over 0.5 then we can write an alert for potential
     # CMEs to check.
-    px = max(detrended)
+    px = max(brightness)
     print(px)
-    hr = dates[detrended.index(max(detrended))]
+    hr = datelist[brightness.index(max(brightness))]
     text_alert(px, hr)
 
-    print("All finished!")
