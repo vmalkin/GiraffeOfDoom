@@ -201,21 +201,11 @@ def text_alert(px, hr):
     url = "https://stereo-ssc.nascom.nasa.gov/browse/" + new_hr +  "/ahead/cor2_rdiff/512/thumbnail.shtml"
     stereo_url = "<a href=\"" + url + "\" target=\"_blank\">" + "Stereo Science Centre</a>"
     savefile = "cme_alert.php"
-    msg = "<p>No significant activity detected in the last 24 hours."
     heading = "<b>CME Monitor updated at " + posix2utc(time.time(), " %Y-%m-%d %H:%M") + " UTC.</b>"
-    if px > cme_min:
-        cme_detect = True
-        msg = "<p>Minor possible CME activity has been detected at " + timestring +  " with " + str(int(px * 100)) + "% coverage."
-        if px >= cme_partial:
-            cme_detect = True
-            msg = "<p>Warning: A possible PARTIAL HALO CME has been detected  at " + timestring +  " with " + str(int(px * 100)) + "% coverage."
-            if px >= cme_halo:
-                cme_detect = True
-                msg = "<p>ALERT: A possible FULL HALO CME has been detected at " + timestring +  " with " + str(int(px * 100)) + "% coverage."
-
-    if cme_detect == True:
-        msg = msg + "<br>Confirm Earth impact with STEREO A satellite data: "
-
+    msg = "<p>Highest level of coronal brightness occurred " + timestring +  " with " + str(int(px * 100)) + "% coverage."
+    msg = msg + "<p>Latest STEREO A images can be found at:<br"
+    # if cme_detect == True:
+    #     msg = msg + "<br>Confirm Earth impact with STEREO A satellite data: "
     msg_alert = heading + msg + stereo_url
     with open(savefile, "w") as s:
         s.write(msg_alert)
@@ -465,45 +455,10 @@ def wrapper(lasco_folder, analysis_folder):
     plot(datelist, brightness, "corona_value.jpg", 1000, 600)
     plot_diffs_polar(stacked_brightness, "cme_polar.jpg", 800, 950)
 
-    #
-    #             # ====================================================================================
-    #             # determine if there is sufficient change across the cropped image to represent a CME
-    #             # ====================================================================================
-    #             t = dirlisting[i].split("_")
-    #             posixtime = filehour_converter(t[0], t[1])
-    #
-    #             hr = posix2utc(posixtime, "%Y-%m-%d %H:%M")
-    #             # Determins a value for each column in the image. A CME should appear as a surge in brighness
-    #             # across several connected columns that changes with time.
-    #             # Streamers are ever present, but although contiguous, change far more slowly
-    #             cme_cols_sum = process_columns(img_cropped)
-    #
-    #             # build up an array of the CME column data
-    #             cme_spread.append(cme_cols_sum)
-    #             value = sum(cme_cols_sum)
-    #             value = value / (360 * 10 * 254)
-    #             cme_count.append(value)
-    #
-    #             # cme_spread.append(cme_diffs)
-    #             dates.append(hr)
-    #
-    #             # Annotate image for display
-    #             array = annotate_image(array, angle, radius, hr)
-    #
-    #             f_image = analysis_folder + "//" + "dt_" + dirlisting[i]
-    #             # image_save(f_image, img_cropped)
-    #             image_save(f_image, array)
-    #             print("dt", i, len(dirlisting))
-    #
-    # print("creating CME plot files...")
+    # If the max value of the detrended data is over 0.5 then we can write an alert for potential
+    # CMEs to check.
+    px = max(brightness)
+    print(px)
+    hr = datelist[brightness.index(max(brightness))]
+    text_alert(px, hr)
 
-
-    #
-    # # If the max value of the detrended data is over 0.5 then we can write an alert for potential
-    # # CMEs to check.
-    # px = max(cme_count)
-    # print(px)
-    # hr = dates[cme_count.index(max(cme_count))]
-    # text_alert(px, hr)
-    #
-    # print("All finished!")
