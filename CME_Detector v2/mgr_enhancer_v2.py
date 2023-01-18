@@ -101,52 +101,12 @@ def colourise(final):
     new_image = cv2.applyColorMap(final, cv2.COLORMAP_INFERNO)
     return new_image
 
-def denoise(image_1, image_2, image_3):
-    cols = int(image_2.shape[0])
-    rows = int(image_2.shape[1])
-    # If pixels vary over a certain threshold, this is probably noise.
-    threshold = 20
-    # The empty image file that becomes the denoised image
-    denoised = np.full([cols, rows], 60, np.uint8)
-    for a in range(0, rows):
-        for b in range(0, cols):
-            score = 0
-            pixel_1 = [image_1[a][b], image_2[a][b]]
-            pixel_2 = [image_2[a][b], image_3[a][b]]
-            p_d_1 = max(pixel_1) - min(pixel_1)
-            p_d_2 = max(pixel_2) - min(pixel_2)
-            if p_d_1 > threshold:
-                score = score + 1
-            if p_d_2 > threshold:
-                score = score + 1
-            if score < 2:
-                denoised[a][b] = image_2[a][b]
-    return denoised
 
+def median_image(img_1, img_2, img_3):
+    t = [img_1, img_2, img_3]
+    p = np.median(t, axis=0)
+    return p
 
-def diff_img(image_1, image_2, image_3):
-    d1 = cv2.absdiff(image_3, image_2)
-    d2 = cv2.absdiff(image_2, image_1)
-    return cv2.bitwise_xor(d1, d2)
-
-
-# def denoise(image_1, image_2):
-#     cols = int(image_2.shape[0])
-#     rows = int(image_2.shape[1])
-#     # If pixels vary over a certain threshold, this is probably noise.
-#     threshold = 20
-#     # The empty image file that becomes the denoised image
-#     denoised = np.full([cols, rows], 60, np.uint8)
-#     for a in range(0, rows):
-#         for b in range(0, cols):
-#             score = 0
-#             pixel_1 = [image_1[a][b], image_2[a][b]]
-#             p_d_1 = max(pixel_1) - min(pixel_1)
-#             if p_d_1 > threshold:
-#                 score = score + 1
-#             if score < 1:
-#                 denoised[a][b] = image_2[a][b]
-#     return denoised
 
 def wrapper(lasco_folder, enhanced_folder):
     print("*** Enhancer: Start")
@@ -158,6 +118,9 @@ def wrapper(lasco_folder, enhanced_folder):
     print("Starting at file: ", dirlisting[0])
     anim_enhanced = []
     anim_lasco = []
+
+    file = lasco_folder + os.sep + dirlisting[0]
+    image_accumulated = cv2.imread(file, 0)
 
     # if time difference between img_x, ing_y < time threshold
     print("*** Enhancer: Removing partical hits from files")
@@ -172,8 +135,7 @@ def wrapper(lasco_folder, enhanced_folder):
             img_1 = cv2.imread(file_1, 0)
             img_2 = cv2.imread(file_2, 0)
             img_3 = cv2.imread(file_3, 0)
-            picture = denoise(img_1, img_2, img_3)
-            # picture = diff_img(img_1, img_2, img_3)
+            picture = median_image(img_1, img_2, img_3)
 
             # alpha value [1.0-3.0] CONTRAST
             # beta value [0-100] BRIGHTNESS
