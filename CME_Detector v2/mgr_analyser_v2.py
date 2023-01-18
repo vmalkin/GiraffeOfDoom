@@ -456,27 +456,7 @@ def wrapper(storage_folder, analysis_folder):
                 image_save(f_image, array)
                 print("dt", i, len(dirlisting))
 
-    # # The data files need to be truncated to the last 100 entries - approx 24 hours
-    # if len(dates) > truncate:
-    #     dates = dates[-truncate:]
-    #     cme_count = cme_count[-truncate:]
-    #     cme_spread = cme_spread[-truncate:]
-
     print("creating CME plot files...")
-    # # Detrend the dme data to flatten out gradual albedo changes
-    # dt_end = standard_stuff.calc_end(cme_count)
-    # dt_mid = standard_stuff.calc_middle(cme_count)
-    # dt_start = standard_stuff.calc_start(cme_count)
-    # dt_total = dt_start + dt_mid + dt_end
-    # maxpixels = angle * radius
-    # detrended = []
-    # for dt, cme in zip(dt_total, cme_count):
-    #     d = cme - dt
-    #     d = d / maxpixels
-    #     d = round(d, 4)
-    #     detrended.append(d)
-    # detrended = median_filter(detrended)
-
     # plot(dates, detrended, "cme_dtrend.jpg", 1000, 600)
     plot(dates, cme_count, "cme_value.jpg", 1000, 600)
     # plot_diffs(cme_spread, "cme_diffs.jpg", 1700, 600)
