@@ -98,7 +98,7 @@ def filename_converter(filename, switch="posix"):
 
 
 def colourise(final):
-    new_image = cv2.applyColorMap(final, cv2.COLORMAP_INFERNO)
+    new_image = cv2.applyColorMap(final, cv2.COLORMAP_OCEAN)
     return new_image
 
 
