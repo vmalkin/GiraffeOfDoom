@@ -12,7 +12,7 @@ def wrapper(directory):
     stereoarray = []
     imagelist = os.listdir(directory)
     imagelist.sort()
-    truncate = 60
+    truncate = 100
     if len(imagelist) > truncate:
         imagelist = imagelist[-truncate:]
     imagelist.sort()
