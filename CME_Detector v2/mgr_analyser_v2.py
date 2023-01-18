@@ -12,11 +12,11 @@ import standard_stuff
 import glob
 
 # offset values when coronagraph mask support-vane in top-right position
-offset_x = -5
+offset_x = -4
 offset_y = 10
 
 # # offset values when coronagraph mask support-vane in bottom-left position
-# offset_x = 5
+# offset_x = 4
 # offset_y = -10
 
 image_size = 512
@@ -24,7 +24,7 @@ imagecentre = image_size / 2
 
 # Parameters for CME detection
 cme_min = 0.4
-cme_partial = 0.6
+cme_partial = 0.5
 cme_halo = 0.8
 
 
@@ -126,30 +126,30 @@ def plot(dates, pixel_count, filename, width, height):
     dates.pop(len(dates) - 1)
     red = "rgba(150, 0, 0, 1)"
     green = "rgba(0, 150, 0, 0.8)"
-    orange = "rgba(150, 100, 0, 0.8)"
+    orange = "rgba(200, 100, 0, 0.8)"
 
     plotdata = go.Scatter(x=dates, y=pixel_count, mode="lines")
     fig = go.Figure(plotdata)
 
     fig.update_layout(font=dict(size=20), title_font_size=21)
-    fig.update_layout(width=width, height=height, title="Coronal Mass Ejections",
+    fig.update_layout(width=width, height=height, title="Total Coronal Brightness @ 3 Solar diameters",
                       xaxis_title="Date/time UTC<br><sub>http://DunedinAurora.nz</sub>",
-                      yaxis_title="CME Coverage",
+                      yaxis_title="Brightness 0 -  1",
                       plot_bgcolor="#e0e0e0")
     fig.update_layout(plot_bgcolor="#a0a0a0", paper_bgcolor="#a0a0a0")
 
     fig.update_xaxes(nticks=12, tickangle=45)
 
-    fig.add_hline(y=cme_min, line_color=green, line_width=6, annotation_text="Minor CME",
-                  annotation_font_color=green, annotation_font_size=20, annotation_position="top left")
+    # fig.add_hline(y=cme_min, line_color=green, line_width=6, annotation_text=cme_min,
+    #               annotation_font_color=green, annotation_font_size=20, annotation_position="top left")
 
-    fig.add_hline(y=cme_partial, line_color=orange, line_width=6, annotation_text="Partial Halo CME",
-                  annotation_font_color=orange, annotation_font_size=20, annotation_position="top left")
+    # fig.add_hline(y=cme_partial, line_color=orange, line_width=6, annotation_text="50%",
+    #               annotation_font_color=orange, annotation_font_size=20, annotation_position="top left")
+    #
+    # fig.add_hline(y=cme_halo, line_color=red, line_width=6, annotation_text="80%",
+    #               annotation_font_color=red, annotation_font_size=20, annotation_position="top left")
 
-    fig.add_hline(y=1, line_color=red, line_width=6, annotation_text="Full Halo CME",
-                  annotation_font_color=red, annotation_font_size=20, annotation_position="top left")
-
-    fig.update_traces(line=dict(width=4, color=red))
+    fig.update_traces(line=dict(width=8, color=red))
     fig.write_image(file=savefile, format='jpg')
 
 
@@ -337,7 +337,7 @@ def filename_converter(filename, switch="posix"):
 
     if switch == "utc":
         # utc time string
-        returnstring = datetime.datetime.strptime(utc_string, '%Y-%m-%d %H:%M')
+        returnstring = utc_string
     elif switch == "filename":
         returnstring = filename
     else:
@@ -359,7 +359,7 @@ def shorten_dirlisting(directory_listing):
 
 def median_image(img_1, img_2, img_3):
     t = [img_1, img_2, img_3]
-    p = np.min(t, axis=0)
+    p = np.median(t, axis=0)
     return p
 
 
@@ -367,6 +367,11 @@ def wrapper(lasco_folder, analysis_folder):
     # get a list of the current stored images.
     # IGNORE files with the suffix .no as they are corrupted or reconstructed by the LASCO team, and the
     # interpolated data in inaccurate
+
+    # Used in the convolving of the image among other things
+    radius = 220
+    angle = 360
+
     dirlisting = []
     path = os.path.join(lasco_folder, "*.jpg")
     for name in glob.glob(path):
@@ -395,9 +400,17 @@ def wrapper(lasco_folder, analysis_folder):
         lasco_array.append(cv2.imread(p, 0))
 
     # Calculate and store the median image thus removing visual static
+    # Apply any enhancements as well
     median_pictures = []
     for i in range(1, len(lasco_array) - 1):
         picture = median_image(lasco_array[i - 1], lasco_array[i], lasco_array[i + 1])
+        # alpha value [1.0-3.0] CONTRAST
+        # beta value [0-100] BRIGHTNESS
+        alpha = 1.5
+        beta = 2
+        picture = cv2.convertScaleAbs(picture, alpha=alpha, beta=beta)
+        clahe = cv2.createCLAHE(clipLimit=2, tileGridSize=(10, 10))
+        picture = clahe.apply(picture)
         median_pictures.append(picture)
 
     # convolve the median images
@@ -405,43 +418,44 @@ def wrapper(lasco_folder, analysis_folder):
     for image_m in median_pictures:
         #  convolve the returned residuals image from polar to rectangular co-ords. the data is appended to
         #  an array
-        radius = 220
-        angle = 360
         pic_new = np.zeros([radius, angle])
-        for j in range(radius, 0, -1):
+        for j in range(0, radius):
             for k in range(0, angle):
                 coords = polar_to_rectangular(k, j)
                 pic_new[j][k] = image_m[coords[1], coords[0]]
             # Convert the 1D array into a 2D image.
             pic_new = np.reshape(pic_new, (radius, angle))
-            convolved_images.append(pic_new)
+        pic_new = cv2.flip(pic_new, 0)
+        convolved_images.append(pic_new)
 
-    for item in convolved_images:
-        cv2.imshow("median_pictures", item)
-        cv2.waitKey(0)
+    # Fix dirlisting to have the correct length. Save annotated file to analysis folder
+    dirlisting.pop(len(dirlisting) - 1)
+    dirlisting.pop(0)
+    for i in range(0, len(convolved_images)):
+        dt = filename_converter(dirlisting[i], "utc")
+        savefile = analysis_folder + os.sep + filename_converter(dirlisting[i], "filename")
+        img = annotate_image(convolved_images[i], angle, radius, dt)
+        cv2.imwrite(savefile, img)
 
+    # Create the cropped image for CME analysis
+    cropped_image = []
+    for img in convolved_images:
+        new_img = crop_image(img, angle, radius, 40, 50)
+        cropped_image.append(new_img)
 
+    # datelist for plotting
+    datelist = []
+    for item in dirlisting:
+        datelist.append(filename_converter(item, "utc"))
 
+    # calculate the general brightness of the corona near the sun
+    brightness = []
+    for item in cropped_image:
+        a = np.array(item)
+        value = np.sum(a) / (360 * 10 * 254)
+        brightness.append(value)
 
-    #
-    #         # Create an array of pictures with which to create a running average image
-    #         pic = np.array(img_g, np.float64)
-    #         avg_array.append(pic)
-    #
-    #         # create an average of "x" number of images
-    #         if len(avg_array) >= 4:
-    #             # ALWAYS POP
-    #             avg_array.pop(0)
-    #             # the average image
-    #             pic_new = np.mean(avg_array, axis=0)
-    #             # pic_new = normalise_image(pic_new)
-    #
-
-    #
-    #             # Convert the 1D array into a 2D image.
-    #             # Crop the part that is the detection slot for CMEs near the suns surface
-    #             array = np.reshape(np.array(t), (radius, angle))
-    #             img_cropped = crop_image(array, angle, radius, 40, 50)
+    plot(datelist, brightness, "corona_value.jpg", 1000, 600)
     #
     #             # ====================================================================================
     #             # determine if there is sufficient change across the cropped image to represent a CME
@@ -473,7 +487,7 @@ def wrapper(lasco_folder, analysis_folder):
     #             print("dt", i, len(dirlisting))
     #
     # print("creating CME plot files...")
-    # plot(dates, cme_count, "cme_value.jpg", 1000, 600)
+
     # plot_diffs_polar(cme_spread, "cme_polar.jpg", 800, 950)
     #
     # # If the max value of the detrended data is over 0.5 then we can write an alert for potential

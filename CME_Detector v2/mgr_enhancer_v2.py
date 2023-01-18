@@ -125,8 +125,8 @@ def wrapper(lasco_folder, enhanced_folder):
     # if time difference between img_x, ing_y < time threshold
     print("*** Enhancer: Removing partical hits from files")
     for i in range(1, len(dirlisting) - 1):
-        txt = "Denoising " + str(i) + " / " + str(len(dirlisting))
-        print(txt)
+        # txt = "Denoising " + str(i) + " / " + str(len(dirlisting))
+        # print(txt)
         if filename_converter(dirlisting[i], "posix") - filename_converter(dirlisting[i - 1], "posix") < time_threshold:
             # load an automatically convert image to greyscale
             file_1 = lasco_folder + os.sep + dirlisting[i - 1]
