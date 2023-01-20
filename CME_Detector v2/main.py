@@ -125,7 +125,7 @@ if __name__ == "__main__":
     # #####################################################################################################
     # Processing and analysis of LASCO images happens here
     # #####################################################################################################
-    processing_start_date = int(time.time() - (8640 * 2))
+    processing_start_date = int(time.time() - (86400 * 2))
     mgr_enhancer_v2.wrapper(processing_start_date, storage_folder, enhanced_folder)
     mgr_analyser_v2.wrapper(processing_start_date, storage_folder, analysis_folder)
     mgr_stereoscopic.wrapper(processing_start_date, enhanced_folder)
