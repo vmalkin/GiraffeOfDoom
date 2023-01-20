@@ -124,7 +124,7 @@ def wrapper(processing_start_date, lasco_folder, enhanced_folder):
     image_accumulated = cv2.imread(file, 0)
 
     # if time difference between img_x, ing_y < time threshold
-    print("*** Enhancer: Removing partical hits from files")
+    print("*** Enhancer: Removing particle hits from files")
     for i in range(1, len(dirlisting) - 1):
         # txt = "Denoising " + str(i) + " / " + str(len(dirlisting))
         # print(txt)
