@@ -460,7 +460,7 @@ def wrapper(processing_start_date, lasco_folder, analysis_folder):
 
     print("*** Analyser: Generating plots")
     plot(datelist, brightness, "corona_value.jpg", 1000, 600)
-    plot_diffs_polar(stacked_brightness, "cme_polar.jpg", 800, 950)
+    # plot_diffs_polar(stacked_brightness, "cme_polar.jpg", 800, 950)
 
     print("*** Analyser: Creating alert and STEREO A confirmation link")
     # If the max value of the detrended data is over 0.5 then we can write an alert for potential
