@@ -10,9 +10,9 @@ if os.path.exists(stereo) is False:
     os.makedirs(stereo)
 
 
-def shorten_dirlisting(directory_listing):
+def shorten_dirlisting(processing_start_date, directory_listing):
     # Return files for the last x hours, as needed.
-    cutoff = time.time() - (86400 * 2)  # the last 2 days
+    cutoff = processing_start_date
     returnarray = []
     for item in directory_listing:
         dt = filename_converter(item, "posix")
@@ -61,12 +61,12 @@ def get_dirlisting(folder):
     return dirlisting
 
 
-def wrapper(directory):
+def wrapper(processing_start_date, directory):
     # create video of the last 24 hours from the enhanced folder.
     # approx no of images in a day is 30 for the enhanced folder!
     stereoarray = []
     dirlisting = get_dirlisting(directory)
-    dirlisting = shorten_dirlisting(dirlisting)
+    dirlisting = shorten_dirlisting(processing_start_date, dirlisting)
 
 
     filepath = directory + "/" + dirlisting[0]

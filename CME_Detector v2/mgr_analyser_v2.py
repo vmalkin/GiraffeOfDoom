@@ -336,9 +336,9 @@ def filename_converter(filename, switch="posix"):
     return returnstring
 
 
-def shorten_dirlisting(directory_listing):
+def shorten_dirlisting(processing_start_date, directory_listing):
     # Return files for the last x hours, as needed.
-    cutoff = time.time() - (86400 * 1)  # the last 2 days
+    cutoff = processing_start_date
     returnarray = []
     for item in directory_listing:
         dt = filename_converter(item, "posix")
@@ -353,7 +353,8 @@ def median_image(img_1, img_2, img_3):
     return p
 
 
-def wrapper(lasco_folder, analysis_folder):
+def wrapper(processing_start_date, lasco_folder, analysis_folder):
+    print("*** Analyser: Start")
     # get a list of the current stored images.
     # IGNORE files with the suffix .no as they are corrupted or reconstructed by the LASCO team, and the
     # interpolated data in inaccurate
@@ -375,7 +376,7 @@ def wrapper(lasco_folder, analysis_folder):
     dirlisting.sort()
 
      # We do not need ALL of the images in the Lasco folder, only the last day or so. Approx
-    dirlisting = shorten_dirlisting(dirlisting)
+    dirlisting = shorten_dirlisting(processing_start_date, dirlisting)
 
     avg_array = []
     cme_count = []
@@ -389,6 +390,7 @@ def wrapper(lasco_folder, analysis_folder):
         # load images into the lasco array
         lasco_array.append(cv2.imread(p, 0))
 
+    print("*** Analyser: Remove visual static")
     # Calculate and store the median image thus removing visual static
     # Apply any enhancements as well
     median_pictures = []
@@ -403,6 +405,7 @@ def wrapper(lasco_folder, analysis_folder):
         picture = clahe.apply(picture)
         median_pictures.append(picture)
 
+    print("*** Analyser: Convolving images")
     # convolve the median images
     convolved_images = []
     for image_m in median_pictures:
@@ -427,6 +430,7 @@ def wrapper(lasco_folder, analysis_folder):
         img = annotate_image(convolved_images[i], angle, radius, dt)
         cv2.imwrite(savefile, img)
 
+    print("*** Analyser: Creating cropped image for analysis")
     # Create the cropped image for CME analysis
     cropped_image = []
     for img in convolved_images:
@@ -438,6 +442,7 @@ def wrapper(lasco_folder, analysis_folder):
     for item in dirlisting:
         datelist.append(filename_converter(item, "utc"))
 
+    print("*** Analyser: Calculating general brightness of corona")
     # calculate the general brightness of the corona near the sun
     brightness = []
     for item in cropped_image:
@@ -445,6 +450,7 @@ def wrapper(lasco_folder, analysis_folder):
         value = np.sum(a) / (360 * 10 * 254)
         brightness.append(value)
 
+    print("*** Analyser: Calculating radial cordinates of coronal hotspots")
     # analyse the cropped image for where cme brightness occurs.
     # This becomes a polar plot of the sun's coronal brightness
     stacked_brightness = []
@@ -452,13 +458,15 @@ def wrapper(lasco_folder, analysis_folder):
         summed_cols = process_columns(item)
         stacked_brightness.append(summed_cols)
 
+    print("*** Analyser: Generating plots")
     plot(datelist, brightness, "corona_value.jpg", 1000, 600)
     plot_diffs_polar(stacked_brightness, "cme_polar.jpg", 800, 950)
 
+    print("*** Analyser: Creating alert and STEREO A confirmation link")
     # If the max value of the detrended data is over 0.5 then we can write an alert for potential
     # CMEs to check.
     px = max(brightness)
     print(px)
     hr = datelist[brightness.index(max(brightness))]
     text_alert(px, hr)
-
+    print("*** Analyser: Finished")

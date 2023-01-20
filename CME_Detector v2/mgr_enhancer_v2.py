@@ -60,9 +60,9 @@ def get_dirlisting(folder):
     dirlisting.sort()
     return dirlisting
 
-def shorten_dirlisting(directory_listing):
+def shorten_dirlisting(processing_start_date, directory_listing):
     # Return files for the last x hours, as needed.
-    cutoff = time.time() - (86400 * 2)  # the last 2 days
+    cutoff = processing_start_date
     returnarray = []
     for item in directory_listing:
         dt = filename_converter(item, "posix")
@@ -108,12 +108,12 @@ def median_image(img_1, img_2, img_3):
     return p
 
 
-def wrapper(lasco_folder, enhanced_folder):
+def wrapper(processing_start_date, lasco_folder, enhanced_folder):
     print("*** Enhancer: Start")
     time_threshold = 60 * 60
     # get image list of LASCO files for the last x-hours.
     dirlisting = get_dirlisting(lasco_folder)
-    dirlisting = shorten_dirlisting(dirlisting)
+    dirlisting = shorten_dirlisting(processing_start_date, dirlisting)
     print("Most recent file: ", dirlisting[len(dirlisting) - 1])
     print("Starting at file: ", dirlisting[0])
     anim_enhanced = []
