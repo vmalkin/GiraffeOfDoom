@@ -66,7 +66,6 @@ def shorten_dirlisting(processing_start_date, directory_listing):
     returnarray = []
     for item in directory_listing:
         dt = filename_converter(item, "posix")
-        print(cutoff, dt)
         if dt > cutoff:
             returnarray.append(item)
     return returnarray
