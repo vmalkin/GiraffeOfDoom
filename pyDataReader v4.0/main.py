@@ -36,6 +36,8 @@ class ChartThread(Thread):
 
     def run(self):
         while True:
+            # Chart data every five minutes
+            sleep(300)
             try:
                 # csv logfile for the last 24 hours
                 print("*** Logger: Start")
@@ -82,8 +84,7 @@ class ChartThread(Thread):
                 print("!!! EMD: FAIL")
                 logging.error("ERROR: mgr_emd.wrapper() failed")
             # Brendan Davies Aurora data
-            # Chart data every five minutes
-            sleep(300)
+
 
 class SerialManager:
     def __init__(self, portname, baudrate, bytesize, parity, stopbits, timeout, xonxoff, rtscts, writeTimeout, dsrdtr, interCharTimeout):
