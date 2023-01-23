@@ -44,14 +44,14 @@ def filter_median(numerical_data, filter_halfwindow):
 def filter_average(numerical_data, filter_halfwindow):
     # Takes in an array of csv data. single values only.
     returnarray = []
-    t = []
-    if len(numerical_data) > 2 * filter_halfwindow:
-        for i in range(0, len(numerical_data)):
-            t.append(numerical_data[i])
-            if len(t) >= 2 * filter_halfwindow:
-                t.pop(0)
-                v = mean(t)
-                returnarray.append(v)
+    if len(numerical_data) > 2 * filter_halfwindow + 1:
+        for i in range(filter_halfwindow, len(numerical_data) - filter_halfwindow):
+            t = []
+            for j in range(-filter_halfwindow, filter_halfwindow):
+                # if isinstance(numerical_data[i + j], str) is False:
+                t.append(float(numerical_data[i + j]))
+            v = mean(t)
+            returnarray.append(v)
     else:
         returnarray = numerical_data
     return returnarray

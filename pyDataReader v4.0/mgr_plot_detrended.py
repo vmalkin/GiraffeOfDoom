@@ -145,6 +145,8 @@ def wrapper(database, publishdirectory):
             else:
                 d_average.append(d.data_avg)
 
+        # d_dtrend = standard_stuff.filter_average(d_dtrend, 250)
+
         savefile = publishdirectory + os.sep + "plot_detrend.jpg"
         title = "Geomagnetic Field: Detrended Horizontal Component. "
         plot(d_time, d_dtrend, None, title, savefile)

@@ -36,8 +36,6 @@ class ChartThread(Thread):
 
     def run(self):
         while True:
-            # Chart data every five minutes
-            sleep(300)
             try:
                 # csv logfile for the last 24 hours
                 print("*** Logger: Start")
@@ -65,15 +63,15 @@ class ChartThread(Thread):
                 print("!!! dhdt: FAIL")
                 logging.error("ERROR: mgr_plot_diurnal.wrapper() failed")
 
-            try:
-                # Detrended magnetogram/data
-                print("*** Detrender: Start")
-                mgr_plot_detrended.wrapper(database, publish_dir)
-                # mgr_plot_detrended_1hr.wrapper(database, publish_dir)
-                print("*** Detrender: Finish")
-            except:
-                print("!!! Detrender: FAIL")
-                logging.error("ERROR: mgr_plot_detrended.wrapper() failed")
+            # try:
+            #     # Detrended magnetogram/data
+            #     print("*** Detrender: Start")
+            mgr_plot_detrended.wrapper(database, publish_dir)
+            #     # mgr_plot_detrended_1hr.wrapper(database, publish_dir)
+            #     print("*** Detrender: Finish")
+            # except:
+            #     print("!!! Detrender: FAIL")
+            #     logging.error("ERROR: mgr_plot_detrended.wrapper() failed")
 
             try:
                 # Empirical Mode Decomposition of last 24 hours
@@ -84,7 +82,8 @@ class ChartThread(Thread):
                 print("!!! EMD: FAIL")
                 logging.error("ERROR: mgr_emd.wrapper() failed")
             # Brendan Davies Aurora data
-
+            # Chart data every five minutes
+            sleep(300)
 
 class SerialManager:
     def __init__(self, portname, baudrate, bytesize, parity, stopbits, timeout, xonxoff, rtscts, writeTimeout, dsrdtr, interCharTimeout):
