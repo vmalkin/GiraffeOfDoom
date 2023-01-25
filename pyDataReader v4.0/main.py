@@ -12,7 +12,6 @@ import mgr_plot_diurnal
 import mgr_plot_diffs
 import mgr_emd
 import mgr_plot_detrended
-import mgr_plot_detrended_1hr
 import constants as k
 
 __version__ = "5.0"
@@ -67,7 +66,6 @@ class ChartThread(Thread):
                 # Detrended magnetogram/data
                 print("*** Detrender: Start")
                 mgr_plot_detrended.wrapper(database, publish_dir)
-                # mgr_plot_detrended_1hr.wrapper(database, publish_dir)
                 print("*** Detrender: Finish")
             except:
                 print("!!! Detrender: FAIL")
@@ -81,6 +79,7 @@ class ChartThread(Thread):
             except:
                 print("!!! EMD: FAIL")
                 logging.error("ERROR: mgr_emd.wrapper() failed")
+
             # Brendan Davies Aurora data
             # Chart data every five minutes
             sleep(300)
