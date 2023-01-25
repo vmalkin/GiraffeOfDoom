@@ -23,4 +23,5 @@ print("Frame size: ", sh_x, sh_y)
 
 ret, image = camera.read()
 cv2.imshow('Current image',image)
+cv2.waitKey(0)
 
