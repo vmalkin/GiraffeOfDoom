@@ -62,14 +62,14 @@ class ChartThread(Thread):
                 print("!!! dhdt: FAIL")
                 logging.error("ERROR: mgr_plot_diurnal.wrapper() failed")
 
-            try:
-                # Detrended magnetogram/data
-                print("*** Detrender: Start")
-                mgr_plot_detrended.wrapper(database, publish_dir)
-                print("*** Detrender: Finish")
-            except:
-                print("!!! Detrender: FAIL")
-                logging.error("ERROR: mgr_plot_detrended.wrapper() failed")
+            # try:
+        #     # Detrended magnetogram/data
+            print("*** Detrender: Start")
+            mgr_plot_detrended.wrapper(database, publish_dir)
+            #     print("*** Detrender: Finish")
+            # except:
+            #     print("!!! Detrender: FAIL")
+            #     logging.error("ERROR: mgr_plot_detrended.wrapper() failed")
 
             try:
                 # Empirical Mode Decomposition of last 24 hours
@@ -82,6 +82,7 @@ class ChartThread(Thread):
 
             # Brendan Davies Aurora data
             # Chart data every five minutes
+            print("*** PLOTS: FINISHED")
             sleep(300)
 
 class SerialManager:

@@ -20,14 +20,14 @@ class KBin:
 
     def get_datetime(self):
         if len(self.posix_array) > 0:
-            return min(self.posix_array)
+            return max(self.posix_array)
         else:
             return 0
 
     def get_activity(self):
         if len(self.data_array) > 0:
             activity_range = max(self.data_array) - min(self.data_array)
-            return min(activity_range)
+            return activity_range
         else:
             return 0
 
@@ -78,8 +78,12 @@ def plot_kindex(k_plotdates, k_plotvalues, title, savefile):
     gridcolour = k.plot_gridcolour
     title = title + "<i>Updated " + standard_stuff.posix2utc(time(), '%Y-%m-%d %H:%M') + "</i>"
 
-    plotdata = go.bar(x=k_plotdates, y=k_plotvalues, color=pencolour)
+    plotdata = go.Bar(x=k_plotdates, y=k_plotvalues, marker_color=pencolour)
     fig = go.Figure(plotdata)
+
+    fig.update_layout(width=width, height=height, title=title,
+                      xaxis_title="Date/time UTC<br>http://RuruObservatory.org.nz",
+                      yaxis_title="Activity Index")
 
     fig.update_layout(plot_bgcolor=backgroundcolour, paper_bgcolor=backgroundcolour)
     fig.update_layout(showlegend=False,
