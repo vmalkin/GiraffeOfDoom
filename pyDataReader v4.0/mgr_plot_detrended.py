@@ -19,13 +19,13 @@ class KBin:
         self.posix_array = []
 
     def get_datetime(self):
-        if len(self.posix_array) > 0:
-            return max(self.posix_array)
+        if len(self.posix_array) > 2:
+            return min(self.posix_array)
         else:
             return 0
 
     def get_activity(self):
-        if len(self.data_array) > 0:
+        if len(self.data_array) > 2:
             activity_range = max(self.data_array) - min(self.data_array)
             return activity_range
         else:
@@ -201,11 +201,13 @@ def wrapper(database, publishdirectory):
 
         for item in array_datapoints:
             index = int(standard_stuff.posix2utc(item.posixtime, "%H"))
-            k_array[index].posix_array.append(item.posixtime)
-            k_array[index].data_array.append(item.data_medianed)
+            if item.residual > 0:
+                k_array[index].posix_array.append(int(item.posixtime))
+                k_array[index].data_array.append(float(item.residual))
 
         k_array.sort(key=lambda a : int(a.get_datetime()))
         k_array.pop(0)
+        print("*** K_index: array length: ", len(k_array))
 
         k_plotdates = []
         k_plotvalues = []
@@ -214,6 +216,11 @@ def wrapper(database, publishdirectory):
             dv = item.get_activity()
             k_plotdates.append(dt)
             k_plotvalues.append(dv)
+            # print(item.data_array)
+
+        for i in range(0, len(k_plotvalues)):
+            print(k_plotdates[i], k_plotvalues[i])
+        # END k index
         # ######################################################################
 
 
