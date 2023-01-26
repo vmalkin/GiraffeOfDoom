@@ -192,36 +192,36 @@ def wrapper(database, publishdirectory):
             d_median.append(d.data_medianed)
             d_average.append(d.data_3hr_avg)
 
-        # ######################################################################
-        # Calculate the k index
-        k_array = []
-        for i in range(0, 25):
-            k = KBin()
-            k_array.append(k)
-
-        for item in array_datapoints:
-            index = int(standard_stuff.posix2utc(item.posixtime, "%H"))
-            if item.residual > 0:
-                k_array[index].posix_array.append(int(item.posixtime))
-                k_array[index].data_array.append(float(item.residual))
-
-        k_array.sort(key=lambda a : int(a.get_datetime()))
-        k_array.pop(0)
-        print("*** K_index: array length: ", len(k_array))
-
-        k_plotdates = []
-        k_plotvalues = []
-        for item in k_array:
-            dt = standard_stuff.posix2utc(item.get_datetime(), "%Y-%m-%d %H")
-            dv = item.get_activity()
-            k_plotdates.append(dt)
-            k_plotvalues.append(dv)
-            # print(item.data_array)
-
-        for i in range(0, len(k_plotvalues)):
-            print(k_plotdates[i], k_plotvalues[i])
-        # END k index
-        # ######################################################################
+        # # ######################################################################
+        # # Calculate the k index
+        # k_array = []
+        # for i in range(0, 25):
+        #     k = KBin()
+        #     k_array.append(k)
+        #
+        # for item in array_datapoints:
+        #     index = int(standard_stuff.posix2utc(item.posixtime, "%H"))
+        #     if item.residual > 0:
+        #         k_array[index].posix_array.append(int(item.posixtime))
+        #         k_array[index].data_array.append(float(item.residual))
+        #
+        # k_array.sort(key=lambda a : int(a.get_datetime()))
+        # k_array.pop(0)
+        # print("*** K_index: array length: ", len(k_array))
+        #
+        # k_plotdates = []
+        # k_plotvalues = []
+        # for item in k_array:
+        #     dt = standard_stuff.posix2utc(item.get_datetime(), "%Y-%m-%d %H")
+        #     dv = item.get_activity()
+        #     k_plotdates.append(dt)
+        #     k_plotvalues.append(dv)
+        #     # print(item.data_array)
+        #
+        # for i in range(0, len(k_plotvalues)):
+        #     print(k_plotdates[i], k_plotvalues[i])
+        # # END k index
+        # # ######################################################################
 
 
         # For plotting we should remove the default zero value and use a null
