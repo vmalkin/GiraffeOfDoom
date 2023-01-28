@@ -18,12 +18,11 @@ import mgr_s4_count
 errorloglevel = logging.CRITICAL
 logging.basicConfig(filename="errors.log", format='%(asctime)s %(message)s', level=errorloglevel)
 
-com = mgr_comport.SerialManager(k.portName, k.baudrate, k.bytesize, k.parity, k.stopbits, k.timeout, k.xonxoff, k.rtscts, k.writeTimeout, k.dsrdtr, k.interCharTimeout)
-timeformat = '%Y-%m-%d %H:%M:%S'
-sat_database = "gps_satellites.db"
+# com = mgr_comport.SerialManager(k.portName, k.baudrate, k.bytesize, k.parity, k.stopbits, k.timeout, k.xonxoff, k.rtscts, k.writeTimeout, k.dsrdtr, k.interCharTimeout)
+#
 integration_time = 30
-# duration = 60*60*24
-# nullvalue = ""
+duration = 60*60*24
+nullvalue = ""
 s4_interval = 24 * 10
 
 # readings below this altitude for satellites may be distorted due to multi-modal reflection
@@ -39,9 +38,130 @@ class ComportReader(Thread):
     def __init__(self, comportname, threadname):
         Thread.__init__(self, name=threadname)
         self.comportname = comportname
+        self.oldtimer = time.time()
+        self.counter = 0
+        self.maxcounter = 300
+        self.regex_expression = "(\$\w\wGSV),.+"
+
+        # Set up the lists required to average the satellite values so the DB
+        # will store one minute values.
+        self.gpgsv = []
+        for i in range(0, 500):
+            self.gpgsv.append(Satellite(i))
+
+        # glgsv = []
+        # for i in range(0, 500):
+        #     glgsv.append(Satellite(i))
+
+    def nmea_sentence(self, sentence):
+        s = sentence[1:]
+        s = s.split("*")
+        s = s[0].split(",")
+        return s
+
+
+    def satlist_input(self, gsv_sentence):
+        constellation = gsv_sentence[0]
+        increment = 4
+
+        satlist = self.gpgsv
+        if constellation == "glgsv":
+            satlist = self.glgsv
+
+        for i in range(4, len(gsv_sentence) - 3, increment):
+            # needed as occasional cruft seems to be attached to this value and we need it to be an int
+            id = gsv_sentence[i]
+            id = id.strip()
+            if id[:1] == "0":
+                id = id[1:]
+            id = id + ".0"
+            id = int(float(id))
+
+            name = constellation + "_" + str(id)
+            satID = (id)
+            alt = gsv_sentence[i + 1]
+            az = gsv_sentence[i + 2]
+            snr = gsv_sentence[i + 3]
+
+            satlist[satID].id = name
+            if alt == "":
+                satlist[satID].alt.append(0)
+            else:
+                satlist[satID].alt.append(float(alt))
+
+            if az == "":
+                satlist[satID].az.append(0)
+            else:
+                satlist[satID].az.append(float(az))
+
+            # at this step, add the value for intensity too
+            if snr == "":
+                satlist[satID].snr.append(0)
+                satlist[satID].intensity.append(0)
+            else:
+                satlist[satID].snr.append(float(snr))
+                i = calc_intensity(snr)
+                satlist[satID].intensity.append(i)
+
+            satlist[satID].processflag = True
+
 
     def run(self):
-        pass
+        com = mgr_comport.SerialManager(self.comportname, k.baudrate, k.bytesize, k.parity, k.stopbits, k.timeout, k.xonxoff,
+                                        k.rtscts, k.writeTimeout, k.dsrdtr, k.interCharTimeout)
+        while True:
+            # Get com data_s4
+            line = com.data_recieve()
+            if line[:6] == "$GPGSV":
+            # if line[:6] == "$GPGSV" or line[:6] == "$GLGSV":
+                sentence = self.nmea_sentence(self, line)
+
+                # make sure GSV sentence is a multiple of 4
+                if len(sentence) % 4 == 0:
+                    try:
+                        self.satlist_input(sentence)
+                    except:
+                        print(self.comportname + ": There was a problem inputting satellite data_s4 into the lists in MAIN.PY")
+                        print(sentence)
+                    counter = counter + 1
+
+            # Process and reset things!
+            nowtimer = time.time()
+            # at least one minute has elapsed
+            if nowtimer >= (self.oldtimer + 60):
+                posixtime = int(time.time())
+                for s in gpgsv:
+                    if s.processflag is True:
+                        gpsdb = sqlite3.connect(k.sat_database)
+                        db = gpsdb.cursor()
+                        db.execute(
+                            'insert into satdata (comport_id, sat_id, posixtime, alt, az, s4, snr) values (?, ?, ?, ?, ?, ?, ?);',
+                            [self.comportname, s.id, posixtime, s.get_alt_avg(), s.get_az_avg(), s.get_s4(), s.get_snr_avg()])
+                        gpsdb.commit()
+                        db.close()
+
+                # for s in glgsv:
+                #     if s.processflag is True:
+                #         gpsdb = sqlite3.connect(k.sat_database)
+                #         db = gpsdb.cursor()
+                #         db.execute(
+                #             db.execute(
+                #                 'insert into satdata (comport_id, sat_id, posixtime, alt, az, s4, snr) values (?, ?, ?, ?, ?, ?, ?);',
+                #                 [self.comportname, s.id, posixtime, s.get_alt_avg(), s.get_az_avg(), s.get_s4(), s.get_snr_avg()])
+                #         gpsdb.commit()
+                #         db.close()
+
+            gpgsv = []
+            for i in range(0, 500):
+                gpgsv.append(Satellite(i))
+
+            glgsv = []
+            for i in range(0, 500):
+                glgsv.append(Satellite(i))
+
+            print(self.comportname + ": Satellite readings processed: " + str(counter))
+            counter = 0
+            self.oldtimer = nowtimer
 
 
 # *************************************************
@@ -146,7 +266,7 @@ class Satellite:
 
 def database_create():
     print("No database, creating file")
-    gpsdb = sqlite3.connect(sat_database)
+    gpsdb = sqlite3.connect(k.sat_database)
     db = gpsdb.cursor()
     db.execute('drop table if exists satdata;')
     db.execute('create table satdata ('
@@ -162,7 +282,7 @@ def database_create():
     db.close()
 
 
-def posix2utc(posixtime):
+def posix2utc(posixtime, timeformat):
     # print(posixtime)
     # utctime = datetime.datetime.utcfromtimestamp(int(posixtime)).strftime(timeformat)
     utctime = datetime.datetime.utcfromtimestamp(int(posixtime)).strftime(timeformat)
@@ -172,7 +292,7 @@ def posix2utc(posixtime):
 def database_parse(hourduration):
     starttime = int(time.time()) - (60 * 60 * hourduration)
     print("Parsing database...")
-    gpsdb = sqlite3.connect(sat_database)
+    gpsdb = sqlite3.connect(k.sat_database)
     db = gpsdb.cursor()
 
     result = db.execute('select comport_id, sat_id, posixtime, alt, az, s4, snr from satdata where posixtime > ? and alt > ? order by posixtime asc', [starttime, optimum_altitude])
@@ -184,13 +304,6 @@ def database_parse(hourduration):
     gpsdb.commit()
     db.close()
     return returnlist
-
-
-def nmea_sentence(sentence):
-    s = sentence[1:]
-    s = s.split("*")
-    s = s[0].split(",")
-    return s
 
 
 def create_directory(dir):
@@ -219,66 +332,13 @@ def calc_intensity(snr):
     return intensity
 
 
-def satlist_input(gsv_sentence):
-    constellation = gsv_sentence[0]
-    increment = 4
-
-    satlist = gpgsv
-    if constellation == "glgsv":
-        satlist = glgsv
-
-    for i in range(4, len(gsv_sentence) - 3, increment):
-        # needed as occasional cruft seems to be attached to this value and we need it to be an int
-        id = gsv_sentence[i]
-        id = id.strip()
-        if id[:1] == "0":
-            id = id[1:]
-        id = id + ".0"
-        id = int(float(id))
-        
-        name = constellation + "_" + str(id)
-        satID = (id)
-        alt = gsv_sentence[i + 1]
-        az = gsv_sentence[i + 2]
-        snr = gsv_sentence[i + 3]
-
-        satlist[satID].id = name
-        if alt == "":
-            satlist[satID].alt.append(0)
-        else:
-            satlist[satID].alt.append(float(alt))
-
-        if az == "":
-            satlist[satID].az.append(0)
-        else:
-            satlist[satID].az.append(float(az))
-
-        # at this step, add the value for intensity too
-        if snr == "":
-            satlist[satID].snr.append(0)
-            satlist[satID].intensity.append(0)
-        else:
-            satlist[satID].snr.append(float(snr))
-            i = calc_intensity(snr)
-            satlist[satID].intensity.append(i)
-
-        satlist[satID].processflag = True
-
-
 if __name__ == "__main__":
-    queryprocessor = QueryProcessor()
-    try:
-        queryprocessor.start()
-        print("Starting query processor thread...")
-    except:
-        print("Unable to start database query processor thread in MAIN.PY!!")
-
     # initial setup including satellite lists
     # if database not exists, create database
-    if os.path.isfile(sat_database) is False:
+    if os.path.isfile(k.sat_database) is False:
         print("No database file, initialising")
         database_create()
-    if os.path.isfile(sat_database) is True:
+    if os.path.isfile(k.sat_database) is True:
         print("Database file exists")
 
     if os.path.isdir(k.dir_logfiles) is False:
@@ -289,83 +349,11 @@ if __name__ == "__main__":
         print("Creating image file directory...")
         create_directory(k.dir_images)
 
-    # Set up the lists required to average the satellite values so the DB
-    # will store one minute values.
-    gpgsv = []
-    for i in range(0, 500):
-        gpgsv.append(Satellite(i))
+    # Start threads to read comports and process data
+    queryprocessor = QueryProcessor()
+    com_one = ComportReader(k.port1, "com1")
 
-    glgsv = []
-    for i in range(0, 500):
-        glgsv.append(Satellite(i))
-
-    oldtimer = time.time()
-    counter = 0
-    maxcounter = 300
-    regex_expression = "(\$\w\wGSV),.+"
-
-    while True:
-        # Get com data_s4
-        line = com.data_recieve()
-        # print(line[:6])
-
-        # Parse com data_s4 for valid data_s4 GSV sentence ???GSV,
-        # if re.match(regex_expression, line):
-        if line[:6] == "$GPGSV":
-        # if line[:6] == "$GPGSV" or line[:6] == "$GLGSV":
-            # print(line)
-            sentence = nmea_sentence(line)
-            # make sure GSV sentence is a multiple of 4
-            if len(sentence) % 4 == 0:
-                try:
-                    satlist_input(sentence)
-                except:
-                    print("There was a problem inputting satellite data_s4 into the lists in MAIN.PY")
-                    print(sentence)
-                counter = counter + 1
-        # else:
-        #     # print("Sentence did not pass regex")
-        #     # print(line)
+    com_one.start()
+    # queryprocessor.start()
 
 
-        # Process and reset things!
-        nowtimer = time.time()
-        # at least one minute has elapsed
-        if nowtimer >= (oldtimer + 60):
-            posixtime = int(time.time())
-            for s in gpgsv:
-                if s.processflag is True:
-                    gpsdb = sqlite3.connect(sat_database)
-                    db = gpsdb.cursor()
-                    db.execute('insert into satdata (sat_id, posixtime, alt, az, s4, snr) values (?, ?, ?, ?, ?, ?);', [s.id, posixtime, s.get_alt_avg(), s.get_az_avg(), s.get_s4() ,s.get_snr_avg()])
-                    gpsdb.commit()
-                    db.close()
-
-            for s in glgsv:
-                if s.processflag is True:
-                    gpsdb = sqlite3.connect(sat_database)
-                    db = gpsdb.cursor()
-                    db.execute('insert into satdata (sat_id, posixtime, alt, az, s4, snr) values (?, ?, ?, ?, ?, ?);', [s.id, posixtime, s.get_alt_avg(), s.get_az_avg(), s.get_s4() ,s.get_snr_avg()])
-                    gpsdb.commit()
-                    db.close()
-
-            # *************************************************
-            # Generate new query, reset counter.
-            # *************************************************
-            print("Creating output list from database...")
-            querydata_24 = database_parse(24)
-            querydata_48 = database_parse(48)
-
-            print("Resetting Satellite lists...")
-            gpgsv = []
-            for i in range(0, 500):
-                gpgsv.append(Satellite(i))
-
-            glgsv = []
-            for i in range(0, 500):
-                glgsv.append(Satellite(i))
-
-            print("Satellite readings processed: " + str(counter))
-            counter = 0
-            oldtimer = nowtimer
-            print("Done! " + posix2utc(posixtime) + "\n\n")
