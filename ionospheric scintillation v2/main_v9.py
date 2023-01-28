@@ -35,6 +35,15 @@ querydata_24 = []
 current_stats = []
 
 
+class ComportReader(Thread):
+    def __init__(self, comportname, threadname):
+        Thread.__init__(self, name=threadname)
+        self.comportname = comportname
+
+    def run(self):
+        pass
+
+
 # *************************************************
 # Plotter and query processor thread
 # *************************************************
@@ -141,6 +150,7 @@ def database_create():
     db = gpsdb.cursor()
     db.execute('drop table if exists satdata;')
     db.execute('create table satdata ('
+               'comport_id text,'
                'sat_id text,'
                'posixtime integer,'
                'alt real,'
@@ -165,10 +175,10 @@ def database_parse(hourduration):
     gpsdb = sqlite3.connect(sat_database)
     db = gpsdb.cursor()
 
-    result = db.execute('select sat_id, posixtime, alt, az, s4, snr from satdata where posixtime > ? and alt > ? order by posixtime asc', [starttime, optimum_altitude])
+    result = db.execute('select comport_id, sat_id, posixtime, alt, az, s4, snr from satdata where posixtime > ? and alt > ? order by posixtime asc', [starttime, optimum_altitude])
     returnlist = []
     for item in result:
-        dp = (item[0], item[1], item[2], item[3], item[4], item[5])
+        dp = (item[0], item[1], item[2], item[3], item[4], item[5], item[6])
         returnlist.append(dp)
     print("current query " + str(len(returnlist)) + " records long")
     gpsdb.commit()

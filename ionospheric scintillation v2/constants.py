@@ -3,8 +3,8 @@
 # portName = '/dev/tty.usbserial-A702O0K9' #MacOS
 # portName = "/dev/cu.usbmodem1421"
 # portName = '/dev/ttyUSB0'
-# baudrate = 9600 # for SAM module at DUnedin Aurora
-portName = "/dev/ttyACM0"
+port1 = "/dev/ttyACM0"
+port2 = "/dev/ttyACM1"
 baudrate = 115200
 bytesize = 8
 parity = 'N'
