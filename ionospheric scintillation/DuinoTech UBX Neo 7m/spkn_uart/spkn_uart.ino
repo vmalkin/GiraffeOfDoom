@@ -5,7 +5,7 @@
 SFE_UBLOX_GNSS myGNSS;
 
 #include <SoftwareSerial.h>
-SoftwareSerial mySerial(11, 10); // RX, TX. Pin 10 on Uno goes to TX pin on GNSS module.
+SoftwareSerial mySerial(10, 11); // RX, TX. Pin 10 on Uno goes to TX pin on GNSS module.
 
 // We want to reset the Arduino after 24 hours of running
 unsigned long uptime;
@@ -52,7 +52,7 @@ void setup()
   myGNSS.disableNMEAMessage(UBX_NMEA_RMC, COM_PORT_UART1);
   myGNSS.disableNMEAMessage(UBX_NMEA_GGA, COM_PORT_UART1); //Only leaving GGA & VTG enabled at current navigation rate
   myGNSS.disableNMEAMessage(UBX_NMEA_VTG, COM_PORT_UART1);  
-  myGNSS.setNavigationFrequency(5);
+  myGNSS.setNavigationFrequency(1);
 
   wdt_enable(WDTO_500MS);
   
