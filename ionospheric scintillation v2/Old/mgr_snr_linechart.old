@@ -1,0 +1,121 @@
+from matplotlib import pyplot as plt
+from matplotlib import ticker as ticker
+from numpy import NaN
+from datetime import datetime
+from time import time
+
+binsize = 60
+constellation_count = 200
+working_dir = "images"
+
+
+class Satellite:
+    def __init__(self, name):
+        self.name = name
+        self.data = self.create_datastore()
+        self.update_flag = False
+
+    def create_datastore(self):
+        d = []
+        for i in range(0, 1441):
+            d.append(NaN)
+        return d
+
+
+def posix2utc(posixtime):
+    timeformat = '%d  %H:%M'
+    utctime = datetime.utcfromtimestamp(int(posixtime)).strftime(timeformat)
+    return utctime
+
+
+def get_index(currentposix, epoch_start):
+    # div = (epoch_now - epoch_start) / binsize
+    indexvalue = (currentposix - epoch_start) / 60
+    indexvalue = int(round(indexvalue, 0))
+    return indexvalue
+
+def create_satellite_dictionary():
+    """Creates a lookup table so when we supply the satellite name and number, we get a unique index value."""
+    s = {}
+    constellation = "gps_"
+    for i in range (0, constellation_count + 1):
+        key = constellation + str(i)
+        value = i
+        s[key] = value
+
+    constellation = "glonass_"
+    for i in range (1, constellation_count + 1):
+        j = constellation_count + i
+        key = constellation + str(i)
+        value = j
+        s[key] = value
+    return s
+
+
+def parse_query_to_satellite(queryresults):
+    pass
+
+
+def create_snr_chart(satellites, times):
+    chartname = working_dir + "//test.jpg"
+    noise, ax = plt.subplots(figsize=[12, 5], dpi=100)
+    tic_major = 60
+    tic_minor = 15
+    ax.xaxis.set_major_locator(ticker.MultipleLocator(tic_major))
+    ax.xaxis.set_minor_locator(ticker.MultipleLocator(tic_minor))
+
+    ax.tick_params(axis='x', labelrotation=90)
+    ax.set_ylim(0, 55)
+    ax.grid(True, which='major', color="#ccb3b3")
+    ax.grid(True, which='minor', color="#e0e0e0")
+
+    ax.set_title("S/N ratio of GPS satellites above 40deg altitiude.")
+    ax.set_xlabel("Date, UTC Time")
+    ax.set_ylabel("S/N Ratio")
+
+    for s in satellites:
+        if s.update_flag == True:
+            r = []
+            for dp in s.data:
+                r.append(dp)
+            # print(r)
+            plt.plot(times, r, color="black", linewidth=1, alpha=0.8)
+    plt.tight_layout()
+    plt.rcParams.update({'font.size': 6})
+    plt.savefig(chartname)
+    plt.close()
+
+
+def create_timestamps(epoch_start, epoch_now):
+    ts = []
+    for i in range(epoch_start - binsize, epoch_now, binsize):
+        ts.append(posix2utc(i))
+    return ts
+
+def create_constellation():
+    c = []
+    for i in range(0, constellation_count*2):
+        c.append(Satellite(i))
+    return c
+
+# query results format:
+# sat_id, posixtime, alt, az, s4, snr
+def wrapper(queryresults):
+    epoch_now = int(time())
+    epoch_start = epoch_now - (60 * 60 * 24)
+
+    timestamps = create_timestamps(epoch_start, epoch_now)
+    satellite_dictionary = create_satellite_dictionary()
+    constellation = create_constellation()
+
+    for entry in queryresults:
+        if entry[2] >= 20:
+            satellite_name = satellite_dictionary[entry[0]]
+            if satellite_name < (2*constellation_count):
+                data_index = get_index(entry[1], epoch_start)
+                if data_index < 1440 and data_index >= 0:
+                    datavalue = entry[5]
+                    constellation[satellite_name].data[data_index] = datavalue
+                    constellation[satellite_name].update_flag = True
+
+    create_snr_chart(constellation, timestamps)
