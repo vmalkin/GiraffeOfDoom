@@ -445,8 +445,8 @@ def wrapper(processing_start_date, lasco_folder, analysis_folder):
     print("*** Analyser: Calculating general brightness of corona")
     # calculate the general brightness of the corona near the sun
     brightness = []
-    for item in cropped_image:
-        a = np.array(item)
+    for i in range(1, len(cropped_image) - 1):
+        a = np.array(cropped_image[i])
         value = np.sum(a) / (360 * 10 * 254)
         brightness.append(value)
 

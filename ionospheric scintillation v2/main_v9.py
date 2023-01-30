@@ -349,11 +349,12 @@ if __name__ == "__main__":
         print("Creating image file directory...")
         create_directory(k.dir_images)
 
+    # #################################################################################
     # Start threads to read comports and process data
     queryprocessor = QueryProcessor()
     com_one = ComportReader(k.port1, "com1")
 
     com_one.start()
     # queryprocessor.start()
-
+    # #################################################################################
 
