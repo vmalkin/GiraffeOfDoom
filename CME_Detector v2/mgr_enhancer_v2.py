@@ -110,7 +110,7 @@ def median_image(img_1, img_2, img_3):
 
 def wrapper(processing_start_date, lasco_folder, enhanced_folder):
     print("*** Enhancer: Start")
-    time_threshold = 60 * 60
+    time_threshold = 60 * 120
     # get image list of LASCO files for the last x-hours.
     dirlisting = get_dirlisting(lasco_folder)
     dirlisting = shorten_dirlisting(processing_start_date, dirlisting)
