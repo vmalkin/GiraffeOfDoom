@@ -38,20 +38,8 @@ class ComportReader(Thread):
     def __init__(self, comportname, threadname):
         Thread.__init__(self, name=threadname)
         self.comportname = comportname
-        self.oldtimer = time.time()
-        self.counter = 0
-        self.maxcounter = 300
         self.regex_expression = "(\$\w\wGSV),.+"
 
-        # Set up the lists required to average the satellite values so the DB
-        # will store one minute values.
-        self.gpgsv = []
-        for i in range(0, 500):
-            self.gpgsv.append(Satellite(i))
-
-        # glgsv = []
-        # for i in range(0, 500):
-        #     glgsv.append(Satellite(i))
 
     def nmea_sentence(self, sentence):
         s = sentence[1:]
@@ -60,75 +48,64 @@ class ComportReader(Thread):
         return s
 
 
-    def satlist_input(self, gsv_sentence):
-        constellation = gsv_sentence[0]
+    def satlist_input(self, sentence, satellite_list):
+        # The first four items of the list are messagetype, No of messages, message No, visible satellites
+        # Then it's satelliteID, alt, az, SNR, repeating in fours.
         increment = 4
+        for i in range(4, len(sentence) - 3, increment):
+            sat_index = int(sentence[i])
+            sat_alt = sentence[i + 1]
+            sat_az = sentence[i + 2]
+            sat_snr = sentence[i + 3]
 
-        satlist = self.gpgsv
-        if constellation == "glgsv":
-            satlist = self.glgsv
+            if sat_alt != "":
+                satellite_list[sat_index].alt.append(float(sat_alt))
 
-        for i in range(4, len(gsv_sentence) - 3, increment):
-            # needed as occasional cruft seems to be attached to this value and we need it to be an int
-            id = gsv_sentence[i]
-            id = id.strip()
-            if id[:1] == "0":
-                id = id[1:]
-            id = id + ".0"
-            id = int(float(id))
+            if sat_az != "":
+                satellite_list[sat_index].az.append(float(sat_az))
 
-            name = constellation + "_" + str(id)
-            satID = (id)
-            alt = gsv_sentence[i + 1]
-            az = gsv_sentence[i + 2]
-            snr = gsv_sentence[i + 3]
+            if sat_snr != "":
+                satellite_list[sat_index].snr.append(float(sat_snr))
+            satellite_list[sat_index].processflag = True
 
-            satlist[satID].id = name
-            if alt == "":
-                satlist[satID].alt.append(0)
-            else:
-                satlist[satID].alt.append(float(alt))
-
-            if az == "":
-                satlist[satID].az.append(0)
-            else:
-                satlist[satID].az.append(float(az))
-
-            # at this step, add the value for intensity too
-            if snr == "":
-                satlist[satID].snr.append(0)
-                satlist[satID].intensity.append(0)
-            else:
-                satlist[satID].snr.append(float(snr))
-                i = calc_intensity(snr)
-                satlist[satID].intensity.append(i)
-
-            satlist[satID].processflag = True
 
 
     def run(self):
         com = mgr_comport.SerialManager(self.comportname, k.baudrate, k.bytesize, k.parity, k.stopbits, k.timeout, k.xonxoff,
                                         k.rtscts, k.writeTimeout, k.dsrdtr, k.interCharTimeout)
+
+        # Set up the lists required to average the satellite values so the DB
+        # will store one minute values.
+        gpgsv = []
+        for i in range(0, 500):
+            gpgsv.append(Satellite(i))
+
+        glgsv = []
+        for i in range(0, 500):
+            glgsv.append(Satellite(i))
+
+        oldtimer = time.time()
+        # counter = 0
+        # maxcounter = 300
+        # regex_expression = "(\$\w\wGSV),.+"
+
         while True:
-            # Get com data_s4
+            # Get com data
             line = com.data_recieve()
+
             if line[:6] == "$GPGSV":
             # if line[:6] == "$GPGSV" or line[:6] == "$GLGSV":
-                sentence = self.nmea_sentence(self, line)
-
+                sentence = self.nmea_sentence(line)
                 # make sure GSV sentence is a multiple of 4
                 if len(sentence) % 4 == 0:
-                    try:
-                        self.satlist_input(sentence)
-                    except:
-                        print(self.comportname + ": There was a problem inputting satellite data_s4 into the lists in MAIN.PY")
-                        print(sentence)
-                    counter = counter + 1
+                    if sentence[0] == "gpgsv":
+                        self.satlist_input(sentence, gpgsv)
+                    else:
+                        self.satlist_input(sentence, glgsv)
 
-            # Process and reset things!
             nowtimer = time.time()
             # at least one minute has elapsed
-            if nowtimer >= (self.oldtimer + 60):
+            if nowtimer >= (oldtimer + 60):
                 posixtime = int(time.time())
                 for s in gpgsv:
                     if s.processflag is True:
@@ -139,29 +116,20 @@ class ComportReader(Thread):
                             [self.comportname, s.id, posixtime, s.get_alt_avg(), s.get_az_avg(), s.get_s4(), s.get_snr_avg()])
                         gpsdb.commit()
                         db.close()
-
-                # for s in glgsv:
-                #     if s.processflag is True:
-                #         gpsdb = sqlite3.connect(k.sat_database)
-                #         db = gpsdb.cursor()
-                #         db.execute(
-                #             db.execute(
-                #                 'insert into satdata (comport_id, sat_id, posixtime, alt, az, s4, snr) values (?, ?, ?, ?, ?, ?, ?);',
-                #                 [self.comportname, s.id, posixtime, s.get_alt_avg(), s.get_az_avg(), s.get_s4(), s.get_snr_avg()])
-                #         gpsdb.commit()
-                #         db.close()
-
-            gpgsv = []
-            for i in range(0, 500):
-                gpgsv.append(Satellite(i))
-
-            glgsv = []
-            for i in range(0, 500):
-                glgsv.append(Satellite(i))
-
-            print(self.comportname + ": Satellite readings processed: " + str(counter))
-            counter = 0
-            self.oldtimer = nowtimer
+            #
+            #     # for s in glgsv:
+            #     #     if s.processflag is True:
+            #     #         gpsdb = sqlite3.connect(k.sat_database)
+            #     #         db = gpsdb.cursor()
+            #     #         db.execute(
+            #     #             db.execute(
+            #     #                 'insert into satdata (comport_id, sat_id, posixtime, alt, az, s4, snr) values (?, ?, ?, ?, ?, ?, ?);',
+            #     #                 [self.comportname, s.id, posixtime, s.get_alt_avg(), s.get_az_avg(), s.get_s4(), s.get_snr_avg()])
+            #     #         gpsdb.commit()
+            #     #         db.close()
+            #
+            #     print(self.comportname + ": Satellite readings processed: " + str(counter))
+            #     self.oldtimer = nowtimer
 
 
 # *************************************************
@@ -241,25 +209,41 @@ class Satellite:
 
     def get_alt_avg(self):
         x = 0
-        if len(self.alt) > 0:
+        t = []
+        for i in self.alt:
+            if i != 0:
+                t.append(i)
+        if len(t) > 0:
             x = median(self.alt)
         return x
 
     def get_az_avg(self):
         x = 0
-        if len(self.az) > 0:
+        t = []
+        for i in self.az:
+            if i != 0:
+                t.append(i)
+        if len(t) > 0:
             x = median(self.az)
         return x
 
     def get_snr_avg(self):
         x = 0
-        if len(self.snr) > 0:
+        t = []
+        for i in self.snr:
+            if i != 0:
+                t.append(i)
+        if len(t) > 0:
             x = median(self.snr)
         return x
 
     def get_intensity_avg(self):
         x = 0
-        if len(self.intensity) > 0:
+        t = []
+        for i in self.intensity:
+            if i != 0:
+                t.append(i)
+        if len(t) > 0:
             x = median(self.intensity)
         return x
 
@@ -353,8 +337,10 @@ if __name__ == "__main__":
     # Start threads to read comports and process data
     queryprocessor = QueryProcessor()
     com_one = ComportReader(k.port1, "com1")
+    # com_two = ComportReader(k.port2, "com2")
 
     com_one.start()
+    # com_two.start()
     # queryprocessor.start()
     # #################################################################################
 
