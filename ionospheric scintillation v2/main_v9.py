@@ -115,17 +115,20 @@ class ComportReader(Thread):
             nowtimer = time.time()
             # at least one minute has elapsed
             if nowtimer >= (oldtimer + 60):
+                counter = 0
                 posixtime = int(time.time())
                 for s in gpgsv:
                     if s.processflag is True:
-                        print(s.id, s.snr)
-                        gpsdb = sqlite3.connect(k.sat_database)
-                        db = gpsdb.cursor()
-                        db.execute(
-                            'insert into satdata (comport_id, sat_id, posixtime, alt, az, s4, snr) values (?, ?, ?, ?, ?, ?, ?);',
-                            [self.comportname, s.id, posixtime, s.get_alt_avg(), s.get_az_avg(), s.get_s4(), s.get_snr_avg()])
-                        gpsdb.commit()
-                        db.close()
+                        if len(s.snr) > 2:
+                            counter = counter + 1
+                            gpsdb = sqlite3.connect(k.sat_database)
+                            db = gpsdb.cursor()
+                            db.execute(
+                                'insert into satdata (comport_id, sat_id, posixtime, alt, az, s4, snr) values (?, ?, ?, ?, ?, ?, ?);',
+                                [self.comportname, s.id, posixtime, s.get_alt_avg(), s.get_az_avg(), s.get_s4(), s.get_snr_avg()])
+                            gpsdb.commit()
+                            db.close()
+                print(self.comportname, counter, "records added")
 
                 gpgsv = []
                 for i in range(0, 110):
@@ -196,19 +199,24 @@ class Satellite:
         self.alt = []
         self.az = []
         self.snr = []
-        self.intensity = []
+
 
     def calc_intensity(self, snr_array):
+        returnarray = []
         for item in snr_array:
             intensity = pow(10, (item / 10))
-            self.intensity.append(intensity)
-
+            returnarray.append(intensity)
+        return returnarray
 
     def get_s4(self):
         # http://mtc-m21b.sid.inpe.br/col/sid.inpe.br/mtc-m21b/2017/08.25.17.52/doc/poster_ionik%20%5BSomente%20leitura%5D.pdf
-        avg_intensity = mean(self.intensity)
-        sigma = stdev(self.intensity)
-        returnvalue = round(((sigma / avg_intensity) * 100), 5)
+        if len(self.snr) > 2:
+            intensity = self.calc_intensity(self.snr)
+            avg_intensity = mean(intensity)
+            sigma = stdev(intensity)
+            returnvalue = round(((sigma / avg_intensity) * 100), 5)
+        else:
+            returnvalue = 0
         return returnvalue
 
     def get_alt_avg(self):
@@ -229,11 +237,11 @@ class Satellite:
             x = mean(self.snr)
         return x
 
-    def get_intensity_avg(self):
-        x = 0
-        if len(self.intensity) > 0:
-            x = mean(self.intensity)
-        return x
+    # def get_intensity_avg(self):
+    #     x = 0
+    #     if len(self.intensity) > 0:
+    #         x = mean(self.intensity)
+    #     return x
 
 
 def database_create():
@@ -310,10 +318,10 @@ if __name__ == "__main__":
     # Start threads to read comports and process data
     queryprocessor = QueryProcessor()
     com_one = ComportReader(k.port1, "com1")
-    # com_two = ComportReader(k.port2, "com2")
+    com_two = ComportReader(k.port2, "com2")
 
     com_one.start()
-    # com_two.start()
+    com_two.start()
     # queryprocessor.start()
     # #################################################################################
 
