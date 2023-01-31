@@ -58,6 +58,7 @@ class ComportReader(Thread):
             sat_az = sentence[i + 2]
             sat_snr = sentence[i + 3]
 
+
             if sat_alt != "":
                 satellite_list[sat_index].alt.append(float(sat_alt))
 
@@ -77,18 +78,18 @@ class ComportReader(Thread):
         # Set up the lists required to average the satellite values so the DB
         # will store one minute values.
         gpgsv = []
-        for i in range(0, 500):
-            gpgsv.append(Satellite(i))
+        for i in range(0, 110):
+            name = "gps_" + str(i)
+            s = Satellite(name)
+            gpgsv.append(s)
 
         glgsv = []
-        for i in range(0, 500):
-            glgsv.append(Satellite(i))
+        for i in range(0, 110):
+            name = "rus_" + str(i)
+            s = Satellite(name)
+            gpgsv.append(s)
 
         oldtimer = time.time()
-        # counter = 0
-        # maxcounter = 300
-        # regex_expression = "(\$\w\wGSV),.+"
-
         while True:
             # Get com data
             line = com.data_recieve()
@@ -108,28 +109,32 @@ class ComportReader(Thread):
             if nowtimer >= (oldtimer + 60):
                 posixtime = int(time.time())
                 for s in gpgsv:
-                    if s.processflag is True:
-                        gpsdb = sqlite3.connect(k.sat_database)
-                        db = gpsdb.cursor()
-                        db.execute(
-                            'insert into satdata (comport_id, sat_id, posixtime, alt, az, s4, snr) values (?, ?, ?, ?, ?, ?, ?);',
-                            [self.comportname, s.id, posixtime, s.get_alt_avg(), s.get_az_avg(), s.get_s4(), s.get_snr_avg()])
-                        gpsdb.commit()
-                        db.close()
-            #
-            #     # for s in glgsv:
-            #     #     if s.processflag is True:
-            #     #         gpsdb = sqlite3.connect(k.sat_database)
-            #     #         db = gpsdb.cursor()
-            #     #         db.execute(
-            #     #             db.execute(
-            #     #                 'insert into satdata (comport_id, sat_id, posixtime, alt, az, s4, snr) values (?, ?, ?, ?, ?, ?, ?);',
-            #     #                 [self.comportname, s.id, posixtime, s.get_alt_avg(), s.get_az_avg(), s.get_s4(), s.get_snr_avg()])
-            #     #         gpsdb.commit()
-            #     #         db.close()
-            #
-            #     print(self.comportname + ": Satellite readings processed: " + str(counter))
-            #     self.oldtimer = nowtimer
+                    print(s.id)
+                    # if s.processflag is True:
+                    #     pass
+                        # gpsdb = sqlite3.connect(k.sat_database)
+                        # db = gpsdb.cursor()
+                        # db.execute(
+                        #     'insert into satdata (comport_id, sat_id, posixtime, alt, az, s4, snr) values (?, ?, ?, ?, ?, ?, ?);',
+                        #     [self.comportname, s.id, posixtime, s.get_alt_avg(), s.get_az_avg(), s.get_s4(), s.get_snr_avg()])
+                        # gpsdb.commit()
+                        # db.close()
+
+
+                gpgsv = []
+                for i in range(0, 110):
+                    name = "gps_" + str(i)
+                    s = Satellite(name)
+                    gpgsv.append(s)
+
+                glgsv = []
+                for i in range(0, 110):
+                    name = "rus_" + str(i)
+                    s = Satellite(name)
+                    gpgsv.append(s)
+
+                oldtimer = time.time()
+                print("Satellite Lists RESET!")
 
 
 # *************************************************
@@ -209,41 +214,25 @@ class Satellite:
 
     def get_alt_avg(self):
         x = 0
-        t = []
-        for i in self.alt:
-            if i != 0:
-                t.append(i)
-        if len(t) > 0:
+        if len(self.alt) > 0:
             x = median(self.alt)
         return x
 
     def get_az_avg(self):
         x = 0
-        t = []
-        for i in self.az:
-            if i != 0:
-                t.append(i)
-        if len(t) > 0:
+        if len(self.az) > 0:
             x = median(self.az)
         return x
 
     def get_snr_avg(self):
         x = 0
-        t = []
-        for i in self.snr:
-            if i != 0:
-                t.append(i)
-        if len(t) > 0:
+        if len(self.snr) > 0:
             x = median(self.snr)
         return x
 
     def get_intensity_avg(self):
         x = 0
-        t = []
-        for i in self.intensity:
-            if i != 0:
-                t.append(i)
-        if len(t) > 0:
+        if len(self.intensity) > 0:
             x = median(self.intensity)
         return x
 
