@@ -1,4 +1,10 @@
-import mgr_s4_tracker_v1
-s4_interval = 24 * 10
 
-mgr_s4_tracker_v1.wrapper(s4_interval)
+ll = [0,0,0,2,0]
+
+def changelist(h):
+    h[1] = 10
+    return h
+
+print(ll)
+ll = changelist(ll)
+print(ll)

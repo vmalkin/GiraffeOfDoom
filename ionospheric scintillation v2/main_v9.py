@@ -1,3 +1,5 @@
+import re
+
 import constants as k
 import mgr_comport
 import time
@@ -48,6 +50,16 @@ class ComportReader(Thread):
         return s
 
 
+    def sanitise_data(self, item):
+        # Turn a data into a float
+        i = 0
+        regex = "\d\d"
+        if len(item) == 2:
+            if re.match(regex, item):
+                i = float(item)
+        return i
+
+
     def satlist_input(self, sentence, satellite_list):
         # The first four items of the list are messagetype, No of messages, message No, visible satellites
         # Then it's satelliteID, alt, az, SNR, repeating in fours.
@@ -58,17 +70,13 @@ class ComportReader(Thread):
             sat_az = sentence[i + 2]
             sat_snr = sentence[i + 3]
 
+            # if the values are not empty...
+            satellite_list[sat_index].alt.append(self.sanitise_data(sat_alt))
+            satellite_list[sat_index].az.append(self.sanitise_data(sat_az))
+            satellite_list[sat_index].snr.append(self.sanitise_data(sat_snr))
 
-            if sat_alt != "":
-                satellite_list[sat_index].alt.append(float(sat_alt))
-
-            if sat_az != "":
-                satellite_list[sat_index].az.append(float(sat_az))
-
-            if sat_snr != "":
-                satellite_list[sat_index].snr.append(float(sat_snr))
             satellite_list[sat_index].processflag = True
-
+        return satellite_list
 
 
     def run(self):
@@ -85,9 +93,9 @@ class ComportReader(Thread):
 
         glgsv = []
         for i in range(0, 110):
-            name = "rus_" + str(i)
+            name = "glo_" + str(i)
             s = Satellite(name)
-            gpgsv.append(s)
+            glgsv.append(s)
 
         oldtimer = time.time()
         while True:
@@ -99,27 +107,25 @@ class ComportReader(Thread):
                 sentence = self.nmea_sentence(line)
                 # make sure GSV sentence is a multiple of 4
                 if len(sentence) % 4 == 0:
-                    if sentence[0] == "gpgsv":
-                        self.satlist_input(sentence, gpgsv)
+                    if sentence[0] == "GPGSV":
+                        gpgsv = self.satlist_input(sentence, gpgsv)
                     else:
-                        self.satlist_input(sentence, glgsv)
+                        glgsv = self.satlist_input(sentence, glgsv)
 
             nowtimer = time.time()
             # at least one minute has elapsed
             if nowtimer >= (oldtimer + 60):
                 posixtime = int(time.time())
                 for s in gpgsv:
-                    print(s.id)
-                    # if s.processflag is True:
-                    #     pass
-                        # gpsdb = sqlite3.connect(k.sat_database)
-                        # db = gpsdb.cursor()
-                        # db.execute(
-                        #     'insert into satdata (comport_id, sat_id, posixtime, alt, az, s4, snr) values (?, ?, ?, ?, ?, ?, ?);',
-                        #     [self.comportname, s.id, posixtime, s.get_alt_avg(), s.get_az_avg(), s.get_s4(), s.get_snr_avg()])
-                        # gpsdb.commit()
-                        # db.close()
-
+                    if s.processflag is True:
+                        print(s.id, s.snr)
+                        gpsdb = sqlite3.connect(k.sat_database)
+                        db = gpsdb.cursor()
+                        db.execute(
+                            'insert into satdata (comport_id, sat_id, posixtime, alt, az, s4, snr) values (?, ?, ?, ?, ?, ?, ?);',
+                            [self.comportname, s.id, posixtime, s.get_alt_avg(), s.get_az_avg(), s.get_s4(), s.get_snr_avg()])
+                        gpsdb.commit()
+                        db.close()
 
                 gpgsv = []
                 for i in range(0, 110):
@@ -131,7 +137,7 @@ class ComportReader(Thread):
                 for i in range(0, 110):
                     name = "rus_" + str(i)
                     s = Satellite(name)
-                    gpgsv.append(s)
+                    glgsv.append(s)
 
                 oldtimer = time.time()
                 print("Satellite Lists RESET!")
@@ -192,48 +198,41 @@ class Satellite:
         self.snr = []
         self.intensity = []
 
+    def calc_intensity(self, snr_array):
+        for item in snr_array:
+            intensity = pow(10, (item / 10))
+            self.intensity.append(intensity)
+
+
     def get_s4(self):
         # http://mtc-m21b.sid.inpe.br/col/sid.inpe.br/mtc-m21b/2017/08.25.17.52/doc/poster_ionik%20%5BSomente%20leitura%5D.pdf
-        returnvalue = 0
-        try:
-            if len(self.intensity) > 2:
-                avg_intensity = mean(self.intensity)
-                sigma = stdev(self.intensity)
-                if avg_intensity > 0:
-                    returnvalue = round(((sigma / avg_intensity) * 100), 5)
-        except TypeError:
-            print("Non-numerical data in array for intensity: ", self.intensity)
-            logging.critical("Non-numerical data in array for intensity: ", self.intensity)
-        except OverflowError:
-            print("Overflow error! ", self.intensity)
-            logging.critical("Overflow error! ", self.intensity)
-        except:
-            print("Unspecified error in generating S4! ", self.intensity)
-            logging.critical("Unspecified error in generating S4 ", self.intensity)
+        avg_intensity = mean(self.intensity)
+        sigma = stdev(self.intensity)
+        returnvalue = round(((sigma / avg_intensity) * 100), 5)
         return returnvalue
 
     def get_alt_avg(self):
         x = 0
         if len(self.alt) > 0:
-            x = median(self.alt)
+            x = mean(self.alt)
         return x
 
     def get_az_avg(self):
         x = 0
         if len(self.az) > 0:
-            x = median(self.az)
+            x = mean(self.az)
         return x
 
     def get_snr_avg(self):
         x = 0
         if len(self.snr) > 0:
-            x = median(self.snr)
+            x = mean(self.snr)
         return x
 
     def get_intensity_avg(self):
         x = 0
         if len(self.intensity) > 0:
-            x = median(self.intensity)
+            x = mean(self.intensity)
         return x
 
 
@@ -288,21 +287,6 @@ def create_directory(dir):
             print("Unable to create directory")
             logging.critical("CRITICAL ERROR: Unable to create directory in MAIN.PY")
 
-
-def calc_intensity(snr):
-    intensity = 0
-    try:
-        snr = float(snr)
-        intensity = 0
-        if snr != 0:
-            intensity = pow(10, (snr/10))
-    except TypeError:
-        print("Type error in data in calc_intensity() " + str(snr))
-        logging.critical("Type error in data in calc_intensity() " + str(snr))
-    except ValueError:
-        print("Value error in data in calc_intensity() " + str(snr))
-        logging.critical("Value error in data in calc_intensity() " + str(snr))
-    return intensity
 
 
 if __name__ == "__main__":
