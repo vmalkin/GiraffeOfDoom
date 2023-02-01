@@ -91,10 +91,11 @@ def nmea_sentence(sentence):
 def sanitise_data(item):
     # Turn a data into a float
     i = 0
-    regex = "\d\d"
-    if len(item) == 2:
-        if re.match(regex, item):
-            i = float(item)
+    regex = "\d{1,3}[^a-z]"
+    if len(item) > 0:
+        if len(item) <= 3:
+            if re.match(regex, item):
+                i = float(item)
     return i
 
 
