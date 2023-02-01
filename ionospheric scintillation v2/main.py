@@ -30,7 +30,7 @@ class QueryProcessor(Thread):
         while True:
             print("***************************** Start Query Processor")
             print("******************************* End Query Processor")
-            time.sleep(300)
+            time.sleep(600)
             # time.sleep(60)
 
 
