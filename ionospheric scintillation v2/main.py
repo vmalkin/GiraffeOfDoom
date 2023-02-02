@@ -29,6 +29,9 @@ class QueryProcessor(Thread):
 
         while True:
             print("***************************** Start Query Processor")
+            starttime = time.time() - 86400
+            alt = 40
+            result = mgr_database.qry_get_last_24hrs(starttime, alt)
             print("******************************* End Query Processor")
             time.sleep(600)
             # time.sleep(60)
