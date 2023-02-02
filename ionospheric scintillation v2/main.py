@@ -9,6 +9,7 @@ import logging
 from statistics import mean, stdev
 from threading import Thread
 import mgr_database
+import mgr_plot
 import numpy as np
 
 errorloglevel = logging.CRITICAL
@@ -30,14 +31,14 @@ class QueryProcessor(Thread):
 
         while True:
             print("***************************** Start Query Processor")
-            starttime = time.time() - 86400
+            starttime = time.time() - (60 * 60 * 24)
             alt = 40
             result = mgr_database.qry_get_last_24hrs(starttime, alt)
-
             result = np.array(result)
+            mgr_plot.wrapper(result)
 
             print("******************************* End Query Processor")
-            time.sleep(600)
+            time.sleep((60 * 60 * 1))
             # time.sleep(60)
 
 
