@@ -3,10 +3,10 @@ import plotly.graph_objects as go
 import datetime
 def plot_snr(datetimes, satellites, data):
     width = 1500
-    height = 500
+    height = 600
     papercolour = "#000000"
     gridcolour = "#303030"
-    data = go.Scatter(x=datetimes, y=data, mode='markers',
+    data = go.Scatter(x=datetimes, y=data, mode='markers', name="SNR",
                       marker=dict(
                           color='#ffff00',
                           size=5,
@@ -16,10 +16,19 @@ def plot_snr(datetimes, satellites, data):
                               width=1
                           ))
                       )
-
     fig = go.Figure(data)
+
     # No of satellites
-    fig.add_trace(go.Scatter(x=datetimes, y=satellites))
+    fig.add_trace(go.Scatter(x=datetimes, y=satellites, name="No of Satellites", mode="line",
+                             color_continuous_scale=["red", "green", "blue"]))
+
+    fig.update_layout(legend=dict(
+        orientation="h",
+        yanchor="top",
+        xanchor="right",
+        x=1,
+        y=1.2
+    ))
 
     fig.update_xaxes(showgrid=True, gridwidth=1, gridcolor=gridcolour)
     fig.update_yaxes(showgrid=True, gridwidth=1, gridcolor=gridcolour)
@@ -29,7 +38,6 @@ def plot_snr(datetimes, satellites, data):
                       yaxis_title="SNR - dB",
                       plot_bgcolor=papercolour,
                       paper_bgcolor=papercolour)
-
     fig.show()
 
 
