@@ -9,6 +9,7 @@ import logging
 from statistics import mean, stdev
 from threading import Thread
 import mgr_database
+import numpy as np
 
 errorloglevel = logging.CRITICAL
 logging.basicConfig(filename="errors.log", format='%(asctime)s %(message)s', level=errorloglevel)
@@ -32,6 +33,9 @@ class QueryProcessor(Thread):
             starttime = time.time() - 86400
             alt = 40
             result = mgr_database.qry_get_last_24hrs(starttime, alt)
+
+            result = np.array(result)
+
             print("******************************* End Query Processor")
             time.sleep(600)
             # time.sleep(60)

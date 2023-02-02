@@ -24,6 +24,10 @@ def qry_get_last_24hrs(starttime, altitude):
     gpsdb = sqlite3.connect(k.sat_database)
     db = gpsdb.cursor()
     result = db.execute('select * from satdata where posixtime > ? and alt > ? order by posixtime asc;', [starttime, altitude])
+    returnarray = []
+    for item in result:
+        dp = str(item[1]) + "," + str(item[2]) + "," + str(item[3]) + "," + str(item[4]) + "," + str(item[5])
+        returnarray.append(dp)
     gpsdb.commit()
     db.close()
-    return result
+    return returnarray
