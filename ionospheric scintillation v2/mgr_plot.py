@@ -1,7 +1,7 @@
 # Plotters!
 import plotly.graph_objects as go
 import datetime
-def plot_snr(datetimes, satellites, data):
+def plot_snr(datetimes, satellites, data, comport):
     width = 1500
     height = 600
     papercolour = "#000000"
@@ -31,11 +31,11 @@ def plot_snr(datetimes, satellites, data):
         x=1,
         y=1.2
     ))
-
+    title = "Signal to Noise Ratio - GPS device on port " + comport
     fig.update_xaxes(showgrid=True, gridwidth=1, gridcolor=gridcolour)
     fig.update_yaxes(showgrid=True, gridwidth=1, gridcolor=gridcolour)
     fig.update_layout(font=dict(size=16, color="#f0f0f0"), title_font_size=18, )
-    fig.update_layout(width=width, height=height, title="Signal to Noise Ratio - GNSS",
+    fig.update_layout(width=width, height=height, title=title,
                       xaxis_title="Date/time UTC<br><sub>http://DunedinAurora.nz</sub>",
                       yaxis_title="SNR - dB",
                       plot_bgcolor=papercolour,
@@ -50,7 +50,7 @@ def posix2utc(posixtime, timeformat):
     return utctime
 
 
-def wrapper(raw_data):
+def wrapper(raw_data, comport):
     # posix time at index 1
     d = raw_data[:, 1]
     dates = []
@@ -70,4 +70,4 @@ def wrapper(raw_data):
     for item in s:
         snr.append(float(item))
 
-    plot_snr(dates, stl, snr)
+    plot_snr(dates, stl, snr, comport)

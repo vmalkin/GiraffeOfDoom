@@ -35,7 +35,7 @@ class QueryProcessor(Thread):
             alt = 40
             result = mgr_database.qry_get_last_24hrs(starttime, alt)
             result = np.array(result)
-            mgr_plot.wrapper(result)
+            mgr_plot.wrapper(result, k.comport)
 
             print("******************************* End Query Processor")
             time.sleep((60 * 15))
@@ -165,7 +165,7 @@ if __name__ == "__main__":
     queryprocessor = QueryProcessor()
     queryprocessor.start()
 
-    com = mgr_comport.SerialManager(k.port1, k.baudrate, k.bytesize, k.parity, k.stopbits, k.timeout,
+    com = mgr_comport.SerialManager(k.comport, k.baudrate, k.bytesize, k.parity, k.stopbits, k.timeout,
                                     k.xonxoff,
                                     k.rtscts, k.writeTimeout, k.dsrdtr, k.interCharTimeout)
 
@@ -202,10 +202,10 @@ if __name__ == "__main__":
                         db = gpsdb.cursor()
                         db.execute(
                             'insert into satdata (comport_id, sat_id, posixtime, visible_sats, alt, az, snr) values (?, ?, ?, ?, ?, ?, ?);',
-                            [k.port1, s.id, posixtime, s.visible_sats, s.get_alt_avg(), s.get_az_avg(), s.get_snr_avg()])
+                            [k.comport, s.id, posixtime, s.visible_sats, s.get_alt_avg(), s.get_az_avg(), s.get_snr_avg()])
                         gpsdb.commit()
                         db.close()
-            print(posix2utc(nowtimer, '%Y-%m-%d %H:%M'), k.port1, counter, "records added")
+            print(posix2utc(nowtimer, '%Y-%m-%d %H:%M'), k.comport, counter, "records added")
 
             # reset the satellite lists
             gpgsv = satellite_list_create("gps")
