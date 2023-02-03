@@ -40,7 +40,7 @@ def plot_snr(datetimes, satellites, data, comport):
                       yaxis_title="SNR - dB",
                       plot_bgcolor=papercolour,
                       paper_bgcolor=papercolour)
-    fig.show()
+    fig.write_image("snr.svg")
 
 
 def posix2utc(posixtime, timeformat):
