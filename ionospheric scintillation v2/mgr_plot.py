@@ -19,9 +19,10 @@ def plot_snr(datetimes, satellites, data):
     fig = go.Figure(data)
 
     # No of satellites
-    fig.add_trace(go.Scatter(x=datetimes, y=satellites, name="No of Satellites"))
-    # fig.add_trace(go.Scatter(x=datetimes, y=satellites, name="No of Satellites",
-    #                          color_continuous_scale=["red", "green", "blue"]))
+    fig.add_trace(go.Scatter(x=datetimes, y=satellites, name="No of Satellites",
+                             line=dict(color='#ff0000', width=3)
+                             ))
+
 
     fig.update_layout(legend=dict(
         orientation="h",

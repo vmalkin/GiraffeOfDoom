@@ -38,7 +38,7 @@ class QueryProcessor(Thread):
             mgr_plot.wrapper(result)
 
             print("******************************* End Query Processor")
-            time.sleep((60 * 60 * 1))
+            time.sleep((60 * 15))
             # time.sleep(60)
 
 
