@@ -35,7 +35,10 @@ class QueryProcessor(Thread):
             alt = 40
             result = mgr_database.qry_get_last_24hrs(starttime, alt)
             result = np.array(result)
-            mgr_plot.wrapper(result, k.comport)
+            try:
+                mgr_plot.wrapper(result, k.comport)
+            except:
+                print("main.py: error with plotter")
 
             print("******************************* End Query Processor")
             time.sleep((60 * 15))
