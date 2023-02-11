@@ -109,7 +109,7 @@ def plot_bin(bindata, comport):
         x=1,
         y=1.2
     ))
-    title = "Average Signal to Noise Ratio - GPS device on port " + comport
+    title = "Average SNR - GPS device on port " + comport
     fig.update_xaxes(showgrid=True, gridwidth=1, gridcolor=gridcolour)
     fig.update_yaxes(showgrid=True, gridwidth=1, gridcolor=gridcolour)
     fig.update_layout(font=dict(size=16, color="#f0f0f0"), title_font_size=18, )
