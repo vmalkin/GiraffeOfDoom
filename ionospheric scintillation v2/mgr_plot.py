@@ -102,11 +102,6 @@ def plot_bin(bindata, comport):
                       )
     fig = go.Figure(data)
 
-    # # No of satellites
-    # fig.add_trace(go.Scatter(x=datetimes, y=satellites, name="No of Satellites",
-    #                          line=dict(color='#ff0000', width=3)
-    #                          ))
-
     fig.update_layout(legend=dict(
         orientation="h",
         yanchor="top",
@@ -114,13 +109,13 @@ def plot_bin(bindata, comport):
         x=1,
         y=1.2
     ))
-    title = "Signal to Noise Ratio - GPS device on port " + comport
+    title = "Average Signal to Noise Ratio - GPS device on port " + comport
     fig.update_xaxes(showgrid=True, gridwidth=1, gridcolor=gridcolour)
     fig.update_yaxes(showgrid=True, gridwidth=1, gridcolor=gridcolour)
     fig.update_layout(font=dict(size=16, color="#f0f0f0"), title_font_size=18, )
     fig.update_layout(width=width, height=height, title=title,
                       xaxis_title="Date/time UTC<br><sub>http://DunedinAurora.nz</sub>",
-                      yaxis_title="Mean SNR - dB",
+                      yaxis_title="Average SNR - dB",
                       plot_bgcolor=papercolour,
                       paper_bgcolor=papercolour)
     fig.write_image("mean_snr.jpg")
