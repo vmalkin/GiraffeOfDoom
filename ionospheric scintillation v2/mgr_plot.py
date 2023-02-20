@@ -77,18 +77,18 @@ def posix2utc(posixtime, timeformat):
     utctime = datetime.datetime.utcfromtimestamp(int(posixtime)).strftime(timeformat)
     return utctime
 
-def plot_bin(bindata, comport):
+def plot_bin(data, datetimes, comport):
     width = 1500
     height = 600
     papercolour = "#000000"
     gridcolour = "#303030"
 
-    datetimes = []
-    data = []
-    for item in bindata:
-        dt = posix2utc(item.posixdate, "%Y-%m-%d %H:%M")
-        datetimes.append(dt)
-        data.append(item.get_mean())
+    # datetimes = []
+    # data = []
+    # for item in bindata:
+    #     dt = posix2utc(item.posixdate, "%Y-%m-%d %H:%M")
+    #     datetimes.append(dt)
+    #     data.append(item.get_mean())
 
     data = go.Scatter(x=datetimes, y=data, mode='lines', name="Mean SNR",
                       marker=dict(
@@ -123,6 +123,7 @@ def plot_bin(bindata, comport):
 def wrapper(raw_data, comport):
     # ['gps23' '1676086324' '6' '51.0655737704918' '90.0' '42.68852459016394']
     # posix time at index 1
+    halfwindow = 30
     d = raw_data[:, 1]
 
     d_start = int(min(d))
@@ -144,6 +145,21 @@ def wrapper(raw_data, comport):
         dd = posix2utc(item, '%Y-%m-%d %H:%M')
         dates.append(dd)
 
+    # Smooth the binned values.
+    smoothedbins = []
+    smootheddatetime = []
+    t = []
+    for i in range(0, len(binlist)):
+        if len(binlist[i].data) > 0:
+            t.append(binlist[i].get_mean())
+        if len(t) > ((halfwindow * 2) + 1):
+            t.pop(0)
+            sm_value = mean(t)
+            sm_dates = binlist[i - halfwindow].posixdate
+            sm_dates = posix2utc(sm_dates, "%Y-%m-%d %H:%M")
+            smoothedbins.append(sm_value)
+            smootheddatetime.append(sm_dates)
+
     # No of Satellites at index 2
     st = raw_data[:, 2]
     stl = []
@@ -157,4 +173,5 @@ def wrapper(raw_data, comport):
         snr.append(float(item))
 
     plot_snr(dates, stl, snr, comport)
-    plot_bin(binlist, comport)
+
+    plot_bin(smoothedbins, smootheddatetime, comport)
