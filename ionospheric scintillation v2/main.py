@@ -11,6 +11,7 @@ from threading import Thread
 import mgr_database
 import mgr_plot
 import numpy as np
+from calendar import timegm
 
 errorloglevel = logging.CRITICAL
 logging.basicConfig(filename="errors.log", format='%(asctime)s %(message)s', level=errorloglevel)
@@ -33,6 +34,7 @@ class QueryProcessor(Thread):
             print("***************************** Start Query Processor")
             # SOme initial parameters
             starttime = time.time() - (60 * 60 * 24 * 3)
+
             alt = 40
             # The result of the query gets passed into all plotting functions
             result = mgr_database.qry_get_last_24hrs(starttime, alt)
@@ -127,6 +129,12 @@ def posix2utc(posixtime, timeformat):
     # utctime = datetime.datetime.utcfromtimestamp(int(posixtime)).strftime(timeformat)
     utctime = datetime.datetime.utcfromtimestamp(int(posixtime)).strftime(timeformat)
     return utctime
+
+
+def utc2posix(utcstring, timeformat):
+    utc_time = time.strptime(utcstring, timeformat)
+    epoch_time = timegm(utc_time)
+    return epoch_time
 
 
 def create_directory(dir):

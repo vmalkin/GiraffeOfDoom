@@ -1,25 +1,35 @@
-# import re
-from statistics import mean, stdev, median
+import re
+import constants as k
+import mgr_comport
+import time
+import os
+import sqlite3
+import datetime
+import logging
+from statistics import mean, stdev
+from threading import Thread
+import mgr_database
+import mgr_plot
+import numpy as np
+from calendar import timegm
 
-class TestClass:
-    def __init__(self):
-        self.snr = [5,5,5,6,5,4,5,5]
+def utc2posix(utcstring, timeformat):
+    utc_time = time.strptime(utcstring, timeformat)
+    epoch_time = timegm(utc_time)
+    return epoch_time
 
-    def calc_intensity(self, snr_array):
-        returnarray = []
-        for item in snr_array:
-            intensity = pow(10, (item / 10))
-            returnarray.append(intensity)
-        return returnarray
+utctime = "2023-02-20 00:00"
+starttime = utc2posix(utctime, '%Y-%m-%d %H:%M')
+day = 60 * 60 * 24 * 14
+actualstart = starttime - day
+
+alt = 40
+# The result of the query gets passed into all plotting functions
+result = mgr_database.qry_get_last_24hrs(actualstart, alt)
+result = np.array(result)
+
+mgr_plot.wrapper(result, k.comport)
 
 
-    def get_s4(self):
-        # http://mtc-m21b.sid.inpe.br/col/sid.inpe.br/mtc-m21b/2017/08.25.17.52/doc/poster_ionik%20%5BSomente%20leitura%5D.pdf
-        if len(self.snr) > 2:
-            intensity = self.calc_intensity(self.snr)
-            avg_intensity = mean(intensity)
-            sigma = stdev(intensity)
-            returnvalue = round(((sigma / avg_intensity) * 100), 5)
-        else:
-            returnvalue = 0
-        return returnvalue
+
+
