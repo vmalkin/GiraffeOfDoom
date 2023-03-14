@@ -13,6 +13,20 @@ import mgr_plot
 import numpy as np
 from calendar import timegm
 
+class Day:
+    def __init__(self):
+        pass
+
+class D_Hours:
+    def __init__(self):
+        pass
+
+
+class D_Mins:
+    def __init__(self):
+        pass
+
+
 def utc2posix(utcstring, timeformat):
     utc_time = time.strptime(utcstring, timeformat)
     epoch_time = timegm(utc_time)
@@ -27,6 +41,10 @@ alt = 40
 # The result of the query gets passed into all plotting functions
 result = mgr_database.qry_get_last_24hrs(actualstart, alt)
 result = np.array(result)
+
+for line in result:
+    print(line)
+
 
 mgr_plot.wrapper(result, k.comport)
 
