@@ -84,8 +84,8 @@ for day in days:
     print(day.label)
     for hour in day.hours:
         print(hour.label)
-        for minute in hour.minutes:
-            print(minute.get_average())
+        # for minute in hour.minutes:
+        #     print(minute.get_average())
 
 
 
