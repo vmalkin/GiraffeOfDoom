@@ -80,6 +80,13 @@ for row in result:
     days[idx].hours[hr].minutes[mn].datavalue.append(data)
     # print(days[idx].hours[hr].minutes[mn].get_average())
 
+for day in days:
+    print(day.label)
+    for hour in day.hours:
+        print(hour.label)
+        for minute in hour.minutes:
+            print(minute.get_average())
+
 
 
 # mgr_plot.wrapper(result, k.comport)
