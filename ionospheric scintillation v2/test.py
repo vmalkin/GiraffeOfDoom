@@ -1,16 +1,7 @@
-import re
-import constants as k
-import mgr_comport
 import time
-import os
-import sqlite3
 import datetime
-import logging
-from statistics import mean, stdev
-from threading import Thread
 import math
 import mgr_database
-import mgr_plot
 import numpy as np
 from calendar import timegm
 
@@ -75,7 +66,8 @@ for row in result:
     psx = int(row[1])
     hr = posix2utc(psx, '%H')
     mn = posix2utc(psx, '%M')
-    idx
+    idx = math.ceil((idx - start) / day)
+    print(idx)
 
 
 
