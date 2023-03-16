@@ -1,7 +1,9 @@
 import time
+import constants as k
 import datetime
 import math
 import mgr_database
+import mgr_plot
 import numpy as np
 from calendar import timegm
 from statistics import mean, median
@@ -85,13 +87,17 @@ for day in days:
     for hour in day.hours:
         label_hr = str(hour.label)
         for minute in hour.minutes:
-            label_min = str(minute.label)
+            label_min = minute.label
+            if label_min < 10:
+                label_min = '0' + str(label_min)
+            else:
+                label_min = str(label_min)
             label = label_day + " " + label_hr + ":" + label_min
-            print(label)
+            print(label, minute.get_average())
 
 
 
-# mgr_plot.wrapper(result, k.comport)
+mgr_plot.wrapper(result, k.comport)
 
 
 
