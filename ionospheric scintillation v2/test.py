@@ -81,11 +81,13 @@ for row in result:
     # print(days[idx].hours[hr].minutes[mn].get_average())
 
 for day in days:
-    print(day.label)
+    label_day = posix2utc(day.label, '%Y-%m-%d')
     for hour in day.hours:
-        print(hour.label)
-        # for minute in hour.minutes:
-        #     print(minute.get_average())
+        label_hr = str(hour.label)
+        for minute in hour.minutes:
+            label_min = str(minute.label)
+            label = label_day + " " + label_hr + ":" + label_min
+            print(label)
 
 
 
