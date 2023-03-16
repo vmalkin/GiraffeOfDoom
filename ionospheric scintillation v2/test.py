@@ -4,6 +4,10 @@ import math
 import mgr_database
 import numpy as np
 from calendar import timegm
+from statistics import mean, median
+
+nullvalue = None
+
 
 class Dday:
     def __init__(self, datestring):
@@ -27,6 +31,11 @@ class Dmins:
         self.label = label
         self.datavalue = []
 
+    def get_average(self):
+        returnresult = nullvalue
+        if len(self.datavalue) > 0:
+            returnresult = mean(self.datavalue)
+        return returnresult
 
 def posix2utc(posixtime, timeformat):
     # print(posixtime)
@@ -64,10 +73,12 @@ for i in range(start, end, day):
 
 for row in result:
     psx = int(row[1])
-    hr = posix2utc(psx, '%H')
-    mn = posix2utc(psx, '%M')
-    idx = math.ceil((idx - start) / day)
-    print(idx)
+    data = float(row[5])
+    hr = int(posix2utc(psx, '%H'))
+    mn = int(posix2utc(psx, '%M'))
+    idx = int(math.floor((psx - start) / day))
+    days[idx].hours[hr].minutes[mn].datavalue.append(data)
+    # print(days[idx].hours[hr].minutes[mn].get_average())
 
 
 
