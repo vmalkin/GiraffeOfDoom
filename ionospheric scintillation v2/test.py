@@ -7,7 +7,7 @@ import mgr_plot
 import numpy as np
 from calendar import timegm
 from statistics import mean, median
-
+import plotly.graph_objects as go
 nullvalue = None
 
 
@@ -51,6 +51,12 @@ def utc2posix(utcstring, timeformat):
     epoch_time = timegm(utc_time)
     return epoch_time
 
+def stackplot(displaydata):
+    data = go.Scatter()
+    fig = go.Figure(data)
+
+
+
 
 utctime = "2023-02-20 00:00"
 starttime = utc2posix(utctime, '%Y-%m-%d %H:%M')
@@ -82,23 +88,29 @@ for row in result:
     days[idx].hours[hr].minutes[mn].datavalue.append(data)
     # print(days[idx].hours[hr].minutes[mn].get_average())
 
+startflag = False
+displaydata = []
+
 for day in days:
     label_day = posix2utc(day.label, '%Y-%m-%d')
+    temparray = []
     for hour in day.hours:
         label_hr = str(hour.label)
         for minute in hour.minutes:
-            label_min = minute.label
-            if label_min < 10:
-                label_min = '0' + str(label_min)
-            else:
-                label_min = str(label_min)
-            label = label_day + " " + label_hr + ":" + label_min
-            print(label, minute.get_average())
+            if minute.label == 59:
+                startflag = True
 
+            if startflag == True:
+                # label_min = minute.label
+                # if label_min < 10:
+                #     label_min = '0' + str(label_min)
+                # else:
+                #     label_min = str(label_min)
+                # label = label_day + " " + label_hr + ":" + label_min
+                temparray.append(minute.get_average())
+    displaydata.append(temparray)
+
+stackplot(displaydata)
 
 
 mgr_plot.wrapper(result, k.comport)
-
-
-
-
