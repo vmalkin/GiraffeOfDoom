@@ -57,7 +57,7 @@ def stackplot(displaydata, timestamps, label_day):
 
     for item in displaydata:
         fig.add_trace(go.Scatter(x=timestamps, y=item))
-    fig.show()
+    fig.write_image("stackplot.jpg")
 
 
 def heatmap(displaydata, timestamps, label_day):
@@ -74,8 +74,7 @@ def heatmap(displaydata, timestamps, label_day):
     fig.update_layout(font=dict(size=16, color="#f0f0f0"), title_font_size=18, )
     fig.update_layout(plot_bgcolor=papercolour,
                       paper_bgcolor=papercolour)
-
-    fig.show()
+    fig.write_image("heatmap.jpg")
 
 
 def wrapper(result):

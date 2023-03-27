@@ -44,6 +44,7 @@ class QueryProcessor(Thread):
             except:
                 print("main.py: error with plotter")
 
+            # Set up plots for heatmaps of long term readings
             starttime = time.time() - (60 * 60 * 24 * 14)
             alt = 40
             # The result of the query gets passed into all plotting functions
