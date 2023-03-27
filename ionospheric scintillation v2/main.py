@@ -10,6 +10,7 @@ from statistics import mean, stdev
 from threading import Thread
 import mgr_database
 import mgr_plot
+import mgr_heatmaps
 import numpy as np
 from calendar import timegm
 
@@ -34,15 +35,24 @@ class QueryProcessor(Thread):
             print("***************************** Start Query Processor")
             # SOme initial parameters
             starttime = time.time() - (60 * 60 * 24 * 3)
-
             alt = 40
             # The result of the query gets passed into all plotting functions
             result = mgr_database.qry_get_last_24hrs(starttime, alt)
             result = np.array(result)
-            # try:
-            mgr_plot.wrapper(result, k.comport)
-            # except:
-            #     print("main.py: error with plotter")
+            try:
+                mgr_plot.wrapper(result, k.comport)
+            except:
+                print("main.py: error with plotter")
+
+            starttime = time.time() - (60 * 60 * 24 * 14)
+            alt = 40
+            # The result of the query gets passed into all plotting functions
+            result2 = mgr_database.qry_get_last_24hrs(starttime, alt)
+            result2 = np.array(result2)
+            try:
+                mgr_heatmaps.wrapper(result2)
+            except:
+                print("main.py: error with plotter")
 
             print("******************************* End Query Processor")
             time.sleep((60 * 15))
