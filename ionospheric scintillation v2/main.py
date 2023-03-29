@@ -51,7 +51,7 @@ class QueryProcessor(Thread):
             result2 = mgr_database.qry_get_last_24hrs(starttime, alt)
             result2 = np.array(result2)
             try:
-                mgr_heatmaps.wrapper(result2)
+                mgr_heatmaps.wrapper(result2, k.comport)
             except:
                 print("main.py: error with plotter")
 

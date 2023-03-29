@@ -51,21 +51,42 @@ def utc2posix(utcstring, timeformat):
     epoch_time = timegm(utc_time)
     return epoch_time
 
-def stackplot(displaydata, timestamps, label_day):
+def stackplot(displaydata, timestamps, label_day, comport):
+    width = 1500
+    height = 600
+    papercolour = "#000000"
+    gridcolour = "#303030"
+
     data = go.Scatter()
     fig = go.Figure(data)
+    title = "Signal to Noise Ratio for " + comport
+    fig.update_layout(width=width, height=height, title=title,
+                      xaxis_title="Date/time UTC<br><sub>http://DunedinAurora.nz</sub>",
+                      yaxis_title="SNR - dB",
+                      plot_bgcolor=papercolour,
+                      paper_bgcolor=papercolour)
+
+    fig.update_xaxes(showgrid=True, gridwidth=1, gridcolor=gridcolour)
+    fig.update_yaxes(showgrid=True, gridwidth=1, gridcolor=gridcolour)
+    fig.update_layout(font=dict(size=16, color="#f0f0f0"), title_font_size=18, )
 
     for item in displaydata:
         fig.add_trace(go.Scatter(x=timestamps, y=item))
     fig.write_image("stackplot.jpg")
 
 
-def heatmap(displaydata, timestamps, label_day):
+def heatmap(displaydata, timestamps, label_day, comport):
     papercolour = "#000000"
     gridcolour = "#303030"
+    width = 1500
 
     data = go.Heatmap(x=timestamps, y=label_day, z=displaydata, colorscale = 'electric')
     fig = go.Figure(data)
+
+    title = "Heatmap, SNR for " + comport
+    fig.update_layout(width=width, title=title,
+                      xaxis_title="Date/time UTC<br><sub>http://DunedinAurora.nz</sub>",
+                      yaxis_title="SNR - dB")
 
     # for item in displaydata:
     #     fig.add_trace(go.Scatter(x=timestamps, y=item))
@@ -77,7 +98,7 @@ def heatmap(displaydata, timestamps, label_day):
     fig.write_image("heatmap.jpg")
 
 
-def wrapper(result):
+def wrapper(result, comport):
     # utctime = "2023-02-20 00:00"
     # starttime = utc2posix(utctime, '%Y-%m-%d %H:%M')
     # day = 60 * 60 * 24 * 14
@@ -150,7 +171,7 @@ def wrapper(result):
                     temparray.append(minute.get_average())
         displaydata.append(temparray)
 
-    stackplot(displaydata, timestamps, daylabels)
-    heatmap(displaydata, timestamps, daylabels)
+    stackplot(displaydata, timestamps, daylabels, comport)
+    heatmap(displaydata, timestamps, daylabels, comport)
 
 # mgr_plot.wrapper(result, k.comport)
