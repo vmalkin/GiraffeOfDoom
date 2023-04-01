@@ -97,7 +97,7 @@ def heatmap(displaydata, timestamps, label_day, comport):
                       paper_bgcolor=papercolour)
 
     for item in displaydata:
-        print(len(item))
+        print(item)
         fig.add_trace(go.Heatmap(x=timestamps, y=label_day, z=item, colorscale = 'electric'))
 
     fig.write_image("heatmap.jpg")
@@ -135,7 +135,6 @@ def wrapper(result, comport):
         days[idx].hours[hr].minutes[mn].datavalue.append(data)
         # print(days[idx].hours[hr].minutes[mn].get_average())
 
-    startflag = False
     displaydata = []
     timestamps = []
     for i in range(0, 24):
@@ -155,27 +154,21 @@ def wrapper(result, comport):
         daylabels.append(posix2utc(dd.label, "%Y-%m-%d"))
 
     # Create the arrays of each days minute data
-    for day in days:
+    for dd in days:
+        temparray = []
+        for i in range(0, 1440):
+            temparray.append(None)
 
+        for hour in dd.hours:
+            for minute in hour.minutes:
+                idx = int(hour.label) * int(minute.label)
+                data = minute.get_average()
+                temparray[idx] = data
+                ts = str(hour.label) + ":" + str(minute.label)
+                timestamps.append(ts)
+        displaydata.append(temparray)
 
-        # temparray = []
-        # for hour in day.hours:
-        #     label_hr = str(hour.label)
-        #     for minute in hour.minutes:
-        #         if minute.label == 59:
-        #             startflag = True
-        #
-        #         if startflag == True:
-        #             label_min = minute.label
-        #             if label_min < 10:
-        #                 label_min = '0' + str(label_min)
-        #             else:
-        #                 label_min = str(label_min)
-        #             label = label_day + " " + label_hr + ":" + label_min
-        #             temparray.append(minute.get_average())
-        # displaydata.append(temparray)
-    #
-    # stackplot(displaydata, timestamps, daylabels, comport)
+    stackplot(displaydata, timestamps, daylabels, comport)
     # heatmap(displaydata, timestamps, daylabels, comport)
 
 # mgr_plot.wrapper(result, k.comport)
