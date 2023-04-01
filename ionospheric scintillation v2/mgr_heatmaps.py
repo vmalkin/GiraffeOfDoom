@@ -80,7 +80,7 @@ def heatmap(displaydata, timestamps, label_day, comport):
     gridcolour = "#303030"
     width = 1500
 
-    data = go.Heatmap(x=timestamps, y=label_day, z=displaydata, colorscale = 'electric')
+    data = go.Heatmap(x=timestamps, y=label_day, colorscale = 'electric')
     fig = go.Figure(data)
 
     title = "Heatmap, SNR for " + comport
@@ -95,6 +95,11 @@ def heatmap(displaydata, timestamps, label_day, comport):
     fig.update_layout(font=dict(size=16, color="#f0f0f0"), title_font_size=18, )
     fig.update_layout(plot_bgcolor=papercolour,
                       paper_bgcolor=papercolour)
+
+    for item in displaydata:
+        print(len(item))
+        fig.add_trace(go.Heatmap(x=timestamps, y=label_day, z=item, colorscale = 'electric'))
+
     fig.write_image("heatmap.jpg")
 
 
@@ -120,6 +125,7 @@ def wrapper(result, comport):
         dd = Dday(i)
         days.append(dd)
 
+    # Populate the day objects with data
     for row in result:
         psx = int(row[1])
         data = float(row[5])
@@ -143,35 +149,33 @@ def wrapper(result, comport):
             timestring = str(i) + ":" + str(k)
             timestamps.append(timestring)
 
+    # Create the day lables. the y axis of the heatmap
     daylabels = []
-    old_label_day = None
+    for dd in days:
+        daylabels.append(posix2utc(dd.label, "%Y-%m-%d"))
+
+    # Create the arrays of each days minute data
     for day in days:
-        label_day = posix2utc(day.label, '%Y-%m-%d')
 
-        if old_label_day == label_day:
-            pass
-        else:
-            daylabels.append(label_day)
-            old_label_day = label_day
 
-        temparray = []
-        for hour in day.hours:
-            label_hr = str(hour.label)
-            for minute in hour.minutes:
-                if minute.label == 59:
-                    startflag = True
-
-                if startflag == True:
-                    label_min = minute.label
-                    if label_min < 10:
-                        label_min = '0' + str(label_min)
-                    else:
-                        label_min = str(label_min)
-                    label = label_day + " " + label_hr + ":" + label_min
-                    temparray.append(minute.get_average())
-        displaydata.append(temparray)
-
-    stackplot(displaydata, timestamps, daylabels, comport)
-    heatmap(displaydata, timestamps, daylabels, comport)
+        # temparray = []
+        # for hour in day.hours:
+        #     label_hr = str(hour.label)
+        #     for minute in hour.minutes:
+        #         if minute.label == 59:
+        #             startflag = True
+        #
+        #         if startflag == True:
+        #             label_min = minute.label
+        #             if label_min < 10:
+        #                 label_min = '0' + str(label_min)
+        #             else:
+        #                 label_min = str(label_min)
+        #             label = label_day + " " + label_hr + ":" + label_min
+        #             temparray.append(minute.get_average())
+        # displaydata.append(temparray)
+    #
+    # stackplot(displaydata, timestamps, daylabels, comport)
+    # heatmap(displaydata, timestamps, daylabels, comport)
 
 # mgr_plot.wrapper(result, k.comport)
