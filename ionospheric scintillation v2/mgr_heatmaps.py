@@ -13,31 +13,13 @@ nullvalue = None
 
 class Dday:
     def __init__(self, datestring):
-        self.hours = []
+        self.mins = []
         self.label = datestring
-        for i in range(0, 24):
-            h = Dhours(i)
-            self.hours.append(h)
-
-class Dhours:
-    def __init__(self, label):
-        self.label = label
-        self.minutes = []
-        for i in range(0, 60):
-            m = Dmins(i)
-            self.minutes.append(m)
+        for i in range(0, 1440):
+            self.mins.append([])
 
 
-class Dmins:
-    def __init__(self, label):
-        self.label = label
-        self.datavalue = []
 
-    def get_average(self):
-        returnresult = nullvalue
-        if len(self.datavalue) > 0:
-            returnresult = mean(self.datavalue)
-        return returnresult
 
 def posix2utc(posixtime, timeformat):
     # print(posixtime)
@@ -115,54 +97,7 @@ def wrapper(result, comport):
     # duration = (end - start) / day
     # duration = math.ceil(duration)
 
-    days = []
-    for i in range(start, end, day):
-        dd = Dday(i)
-        days.append(dd)
 
-    # Populate the day objects with data
-    for row in result:
-        posix = int(row[1])
-        data = float(row[5])
-        hr = int(posix2utc(posix, '%H'))
-        mn = int(posix2utc(posix, '%M'))
-        idx = int(math.floor((posix - start) / day))
-        days[idx].hours[hr].minutes[mn].datavalue.append(data)
-        # print(days[idx].hours[hr].minutes[mn].get_average())
-
-
-    # Create the day lables. the y axis of the heatmap
-    daylabels = []
-    for dd in days:
-        daylabels.append(posix2utc(dd.label, "%Y-%m-%d"))
-
-    # Create the arrays of each days minute data
-    displaydata = []
-    for dd in days:
-        temparray = []
-        for hour in dd.hours:
-            for minute in hour.minutes:
-                data = minute.get_average()
-                temparray.append(data)
-        displaydata.append(temparray)
-
-    # Make the array of timestamps
-    timestamps = []
-    for i in range(0, 24):
-        if i < 10:
-            hh = "0" +  str(i)
-        else:
-            hh = str(i)
-        for j in range(0, 60):
-            if j < 10:
-                mm = "0" + str(j)
-            else:
-                mm = str(j)
-            ts = hh + ":" + mm
-            timestamps.append(ts)
-
-    # for dd in displaydata:
-    #     print(len(dd))
 
     stackplot(displaydata, timestamps, daylabels, comport)
     heatmap(displaydata, timestamps, daylabels, comport)
