@@ -62,16 +62,24 @@ def database_get_data(dba):
 
 
 
-def wrapper(dd, publishdirectory):
+def wrapper(database, publishdirectory):
     # THE DATALIST IS IN THE FORMAT "posixtime, data" We will need to split this into two lists
     # Dates and actual data.
-    datalist = database_get_data(dd)
+    filename = database.split(".")
+    if filename[1] == "csv":
+        readings = []
+        with open(database, "r") as d:
+            for item in d:
+                dd = item.strip()
+                readings.append(dd)
+    else:
+        readings = database_get_data(database)
 
-    if len(datalist) > half_window:
+    if len(readings) > half_window:
         savefile_name = publishdirectory + os.sep + "plot_diurnal.jpg"
         dt_dates = []
         dt_data = []
-        for item in datalist:
+        for item in readings:
             utcdate = standard_stuff.posix2utc(item[0], '%Y-%m-%d %H:%M:%S')
             dt_dates.append(utcdate)
             dt_data.append(float(item[1]))

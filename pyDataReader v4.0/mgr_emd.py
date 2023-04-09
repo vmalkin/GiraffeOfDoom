@@ -64,7 +64,13 @@ def plot_data(imf, dates, filename):
     fig.write_image(filename)
 
 def wrapper(database, publishdirectory):
-    readings = database_get_data(database)
+    filename = database.split(".")
+    if filename[1] == "csv":
+        readings = []
+        with open(database, "r") as d:
+            for item in d:
+                dd = item.strip()
+                readings.append(dd)
 
     dt_dates = []
     dt_readings = []

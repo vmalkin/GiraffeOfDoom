@@ -62,20 +62,29 @@ def database_get_data(dba):
 
 
 
-def wrapper(dd, publishdirectory):
+def wrapper(database, publishdirectory):
     # THE DATALIST IS IN THE FORMAT "posixtime, data" We will need to split this into two lists
     # Dates and actual data.
-    datalist = database_get_data(dd)
+    filename = database.split(".")
+    filename = database.split(".")
+    if filename[1] == "csv":
+        readings = []
+        with open(database, "r") as d:
+            for item in d:
+                dd = item.strip()
+                readings.append(dd)
+    else:
+        readings = database_get_data(database)
 
-    if len(datalist) > half_window:
+    if len(readings) > half_window:
         savefile_name = publishdirectory + os.sep + "plot_dhdt.jpg"
         dt_dates = []
         dt_data = []
         # Calculate the rate of change.
-        for i in range(1, len(datalist) - 1):
-            utcdate = standard_stuff.posix2utc(datalist[i][0], '%Y-%m-%d %H:%M:%S')
+        for i in range(1, len(readings) - 1):
+            utcdate = standard_stuff.posix2utc(readings[i][0], '%Y-%m-%d %H:%M:%S')
             dt_dates.append(utcdate)
-            d = datalist[i][1] - datalist[i - 1][1]
+            d = float(readings[i][1]) - float(readings[i - 1][1])
             dt_data.append(float(d))
 
         # ########## Filtering and Adjustment before Plotting ##########

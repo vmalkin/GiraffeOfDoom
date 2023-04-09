@@ -62,13 +62,22 @@ def database_get_data(dba):
 
 
 
-def wrapper(dd, publishdirectory):
+def wrapper(database, publishdirectory):
     print("*** Fast Fourier: START")
     # THE DATALIST IS IN THE FORMAT "posixtime, data" We will need to split this into two lists
     # Dates and actual data.
-    datalist = database_get_data(dd)
+    filename = database.split(".")
+    if filename[1] == "csv":
+        readings = []
+        with open(database, "r") as d:
+            for item in d:
+                dd = item.strip()
+                readings.append(dd)
+    else:
+        readings = database_get_data(database)
+
     t = []
-    for item in datalist:
+    for item in readings:
         t.append(item[1])
     fourier = np.fft.fft(t)
     for item in fourier:

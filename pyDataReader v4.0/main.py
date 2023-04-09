@@ -207,7 +207,7 @@ if __name__ == "__main__":
         create_directory(logfile_dir)
         
     if os.path.isdir(publish_dir) is False:
-        print("Creating log file directory...")
+        print("Creating publish directory...")
         create_directory(publish_dir)
 
     # The plotting begins here
