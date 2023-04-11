@@ -8,7 +8,7 @@ station_id = k.station_id
 database = k.database
 logfile_dir = k.logfile_dir
 publish_dir = k.publish_dir
-filename = "2023-03-23.csv"
+filename = "data.csv"
 
 mgr_plot_diurnal.wrapper(filename, publish_dir)
 mgr_plot_diffs.wrapper(filename, publish_dir)
