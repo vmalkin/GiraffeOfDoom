@@ -8,29 +8,10 @@ import constants as k
 
 null_value = f'null'
 # make this the median reading for 60 seconds worth of data
-halfwindow_median = 30
+halfwindow_median = 5
 # readings per minute x 60 mins x 1.5 hours
 halfwindow_average = int(30 * 60 * 1.5)
-
-
-class KBin:
-    def __init__(self):
-        self.data_array = []
-        self.posix_array = []
-
-    def get_datetime(self):
-        if len(self.posix_array) > 2:
-            return min(self.posix_array)
-        else:
-            return 0
-
-    def get_activity(self):
-        if len(self.data_array) > 2:
-            activity_range = max(self.data_array) - min(self.data_array)
-            return activity_range
-        else:
-            return 0
-
+# halfwindow_average = 300
 
 
 class DataPoint:
@@ -137,7 +118,13 @@ def wrapper(database, publishdirectory):
         with open(database, "r") as d:
             for item in d:
                 dd = item.strip()
-                readings.append(dd)
+                ddd = dd.split(",")
+                date = int(float(ddd[0]))
+                data = float(ddd[1])
+                dp = []
+                dp.append(date)
+                dp.append(data)
+                readings.append(dp)
     else:
         readings = database_get_data(database)
 
@@ -160,15 +147,24 @@ def wrapper(database, publishdirectory):
 
         # Calculate the running average using a 3-hour window
         t = []
-        for i in range(0, len(array_datapoints)):
+        for i in range(0, len(array_datapoints) - 1):
             t.append(array_datapoints[i].data_medianed)
             if len(t) >= 2 * halfwindow_average:
-                array_datapoints[i - halfwindow_average].data_3hr_avg = mean(t)
+                array_datapoints[i - halfwindow_average + 1].data_3hr_avg = mean(t)
                 t.pop(0)
+
+        # # Calculate the running average using a 3-hour window
+        # for i in range(halfwindow_average, len(array_datapoints) - halfwindow_average):
+        #     t = []
+        #     for j in range(-halfwindow_average, halfwindow_average):
+        #         t.append(array_datapoints[i + j].data_medianed)
+        #     array_datapoints[i].data_3hr_avg = mean(t)
+
         # Calculate the tail end of the running average outside the window
         # using a simple linear approximation
-        start = len(array_datapoints) - halfwindow_average - 1
+        start = len(array_datapoints) - halfwindow_average -1
         finish = len(array_datapoints)
+
         t = []
         initial_value = array_datapoints[start].data_3hr_avg
         t.append(initial_value)
@@ -200,46 +196,10 @@ def wrapper(database, publishdirectory):
             d_median.append(d.data_medianed)
             d_average.append(d.data_3hr_avg)
 
-        # # ######################################################################
-        # # Calculate the k index
-        # k_array = []
-        # for i in range(0, 25):
-        #     k = KBin()
-        #     k_array.append(k)
-        #
-        # for item in array_datapoints:
-        #     index = int(standard_stuff.posix2utc(item.posixtime, "%H"))
-        #     if item.residual > 0:
-        #         k_array[index].posix_array.append(int(item.posixtime))
-        #         k_array[index].data_array.append(float(item.residual))
-        #
-        # k_array.sort(key=lambda a : int(a.get_datetime()))
-        # k_array.pop(0)
-        # print("*** K_index: array length: ", len(k_array))
-        #
-        # k_plotdates = []
-        # k_plotvalues = []
-        # for item in k_array:
-        #     dt = standard_stuff.posix2utc(item.get_datetime(), "%Y-%m-%d %H")
-        #     dv = item.get_activity()
-        #     k_plotdates.append(dt)
-        #     k_plotvalues.append(dv)
-        #     # print(item.data_array)
-        #
-        # for i in range(0, len(k_plotvalues)):
-        #     print(k_plotdates[i], k_plotvalues[i])
-        # # END k index
-        # # ######################################################################
-
-
         # For plotting we should remove the default zero value and use a null
         d_dtrend = remove_zeros(d_dtrend)
         d_median = remove_zeros(d_median)
         d_average = remove_zeros(d_average)
-
-        savefile = publishdirectory + os.sep + "plot_k_index.jpg"
-        title = "Geomagnetic Field: Hourly Activity Index. "
-        plot_kindex(k_plotdates, k_plotvalues, title, savefile)
 
         savefile = publishdirectory + os.sep + "plot_detrend.jpg"
         title = "Geomagnetic Field: Detrended Horizontal Component. "

@@ -11,6 +11,6 @@ publish_dir = k.publish_dir
 filename = "2023-03-23.csv"
 
 mgr_plot_diurnal.wrapper(filename, publish_dir)
-# mgr_plot_diffs.wrapper(filename, publish_dir)
-# # mgr_plot_detrended.wrapper(filename, publish_dir)
+mgr_plot_diffs.wrapper(filename, publish_dir)
+mgr_plot_detrended.wrapper(filename, publish_dir)
 # mgr_emd.wrapper(filename, publish_dir)
