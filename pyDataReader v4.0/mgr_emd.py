@@ -70,7 +70,15 @@ def wrapper(database, publishdirectory):
         with open(database, "r") as d:
             for item in d:
                 dd = item.strip()
-                readings.append(dd)
+                ddd = dd.split(",")
+                date = int(float(ddd[0]))
+                data = float(ddd[1])
+                dp = []
+                dp.append(date)
+                dp.append(data)
+                readings.append(dp)
+    else:
+        readings = database_get_data(database)
 
     dt_dates = []
     dt_readings = []
