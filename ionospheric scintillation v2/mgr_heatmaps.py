@@ -11,13 +11,16 @@ import plotly.graph_objects as go
 nullvalue = None
 
 
-class Dday:
-    def __init__(self, datestring):
-        self.mins = []
-        self.label = datestring
+class DataMinutes():
+    def __int__(self, datelabel):
+        self.date_label = datelabel
+        self.data = []
 
-        for i in range(0, 1440):
-            self.mins.append([])
+    def get_avg(self):
+        returnvalue = nullvalue
+        if len(self.data) > 0:
+            returnvalue = mean(self.data)
+        return returnvalue
 
 def posix2utc(posixtime, timeformat):
     # print(posixtime)
@@ -94,7 +97,6 @@ def wrapper(result, comport):
     day = 60 * 60 * 24
     # duration = (end - start) / day
     # duration = math.ceil(duration)
-    print(result)
 
 
     # stackplot(displaydata, timestamps, daylabels, comport)
