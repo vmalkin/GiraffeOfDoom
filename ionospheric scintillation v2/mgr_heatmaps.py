@@ -15,11 +15,9 @@ class Dday:
     def __init__(self, datestring):
         self.mins = []
         self.label = datestring
+
         for i in range(0, 1440):
             self.mins.append([])
-
-
-
 
 def posix2utc(posixtime, timeformat):
     # print(posixtime)
@@ -96,18 +94,18 @@ def wrapper(result, comport):
     day = 60 * 60 * 24
     # duration = (end - start) / day
     # duration = math.ceil(duration)
+    print(result)
 
 
-
-    stackplot(displaydata, timestamps, daylabels, comport)
-    heatmap(displaydata, timestamps, daylabels, comport)
-
-    with open("data.csv", "w") as d:
-        for item in result:
-            dd = posix2utc(item[1], "%Y-%m-%d %H:%M:%S")
-            da = item[5]
-            dp = dd + "," + da + "\n"
-            d.write(dp)
-    d.close()
+    # stackplot(displaydata, timestamps, daylabels, comport)
+    # heatmap(displaydata, timestamps, daylabels, comport)
+    #
+    # with open("data.csv", "w") as d:
+    #     for item in result:
+    #         dd = posix2utc(item[1], "%Y-%m-%d %H:%M:%S")
+    #         da = item[5]
+    #         dp = dd + "," + da + "\n"
+    #         d.write(dp)
+    # d.close()
 
 # mgr_plot.wrapper(result, k.comport)
