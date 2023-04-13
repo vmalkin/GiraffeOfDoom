@@ -11,16 +11,14 @@ import plotly.graph_objects as go
 nullvalue = None
 
 
-class DataMinutes():
-    def __int__(self, datelabel):
-        self.date_label = datelabel
-        self.data = []
+class UtcDay:
+    def __int__(self, utcdate, posixstart):
+        self.utcdate = utcdate
+        self.posixstart = posixstart
 
-    def get_avg(self):
-        returnvalue = nullvalue
-        if len(self.data) > 0:
-            returnvalue = mean(self.data)
-        return returnvalue
+        self.data = []
+        for i in range(0,1440):
+            self.data.append([])
 
 def posix2utc(posixtime, timeformat):
     # print(posixtime)
@@ -94,9 +92,23 @@ def heatmap(displaydata, timestamps, label_day, comport):
 def wrapper(result, comport):
     start = int(result[0][1])
     end = int(result[len(result) - 1][1])
-    day = 60 * 60 * 24
-    # duration = (end - start) / day
-    # duration = math.ceil(duration)
+
+    array_days = []
+    current_date = None
+    for i in range(start, end):
+        test_date = posix2utc(i, "%Y-%m-%d")
+        if test_date == current_date:
+            pass
+        else:
+            posixstart = i
+            utcdate = test_date
+            d = UtcDay(utcdate, posixstart)
+            array_days.append(d)
+        current_date = test_date
+
+    print(len(array_days))
+
+
 
 
     # stackplot(displaydata, timestamps, daylabels, comport)
