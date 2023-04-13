@@ -107,8 +107,17 @@ def wrapper(result, comport):
         current_date = test_date
 
     for item in result:
-        posixtime = item[0]
+        posixtime = item[1]
         data = item[5]
+
+        # The day this data belongs in
+        utcdate = posix2utc(posixtime, "%Y-%m-%d")
+        posixday_start = utc2posix(utcdate, "%Y-%m-%d")
+
+        # The index in the minute array of said day...
+        minute_index = int((float(posixtime) - float(posixday_start)) / 60)
+
+
 
 
 
