@@ -92,16 +92,15 @@ def heatmap(displaydata, timestamps, label_day, comport):
     fig.update_layout(font=dict(size=16, color="#f0f0f0"), title_font_size=18, )
     fig.update_layout(plot_bgcolor=papercolour,
                       paper_bgcolor=papercolour)
-
-    fig.show()
-
-    # fig.write_image("heatmap.jpg")
+    # fig.show()
+    fig.write_image("heatmap.jpg")
 
 
 def wrapper(result, comport):
     start = int(result[0][1])
     end = int(result[len(result) - 1][1])
 
+    # CReate the array of UTC Day Objects to hold data
     array_days = []
     current_date = None
     for i in range(start, end):
@@ -115,6 +114,8 @@ def wrapper(result, comport):
             array_days.append(d)
         current_date = test_date
 
+    # Start processing the results to place data in the correct day, and in the correct position in
+    # the minutes of the day.
     for item in result:
         posixtime = item[1]
         data = item[5]
@@ -131,9 +132,15 @@ def wrapper(result, comport):
             if posixday_start == item.posixstart:
                 item.data[minute_index].append(float(data))
 
+    displaydata = []
+    daylabels = []
+    timestamps = None
+    for item in array_days:
+        daylabels.append(item.utcdate)
+        displaydata.append(item.get_avg_array())
 
-    # stackplot(displaydata, timestamps, daylabels, comport)
-    # heatmap(displaydata, timestamps, daylabels, comport)
+    stackplot(displaydata, timestamps, daylabels, comport)
+    heatmap(displaydata, timestamps, daylabels, comport)
     #
     # with open("data.csv", "w") as d:
     #     for item in result:
