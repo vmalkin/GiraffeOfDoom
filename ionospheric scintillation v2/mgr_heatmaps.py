@@ -20,6 +20,15 @@ class DayUTC:
         for i in range(0,1440):
             self.data.append([])
 
+    def get_avg_array(self):
+        returnarray = []
+        for item in self.data:
+            if len(item) == 0:
+                returnarray.append(nullvalue)
+            else:
+                returnarray.append(mean(item))
+        return returnarray
+
 def posix2utc(posixtime, timeformat):
     # print(posixtime)
     # utctime = datetime.datetime.utcfromtimestamp(int(posixtime)).strftime(timeformat)
@@ -117,10 +126,10 @@ def wrapper(result, comport):
         # The index in the minute array of said day...
         minute_index = int((float(posixtime) - float(posixday_start)) / 60)
 
-
-
-
-
+        # this is ugly, but append the data to the correct day and minute
+        for item in array_days:
+            if posixday_start == item.posixstart:
+                item.data[minute_index].append(float(data))
 
 
     # stackplot(displaydata, timestamps, daylabels, comport)
