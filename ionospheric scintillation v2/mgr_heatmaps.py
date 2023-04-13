@@ -11,8 +11,8 @@ import plotly.graph_objects as go
 nullvalue = None
 
 
-class UtcDay:
-    def __int__(self, utcdate, posixstart):
+class DayUTC:
+    def __init__(self, utcdate, posixstart):
         self.utcdate = utcdate
         self.posixstart = posixstart
 
@@ -102,11 +102,14 @@ def wrapper(result, comport):
         else:
             posixstart = i
             utcdate = test_date
-            d = UtcDay(utcdate, posixstart)
+            d = DayUTC(utcdate, posixstart)
             array_days.append(d)
         current_date = test_date
 
-    print(len(array_days))
+    for item in result:
+        posixtime = item[0]
+        data = item[5]
+
 
 
 
