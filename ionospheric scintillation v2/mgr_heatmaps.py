@@ -134,10 +134,29 @@ def wrapper(result, comport):
 
     displaydata = []
     daylabels = []
-    timestamps = None
+    timestamps = []
     for item in array_days:
         daylabels.append(item.utcdate)
         displaydata.append(item.get_avg_array())
+
+    # Create timestamps for horizontal axis
+    for i in range(0, 1440):
+        t = i / 60
+        hr = int(t)
+        mm = (t - hr) * 60
+        mm = int(mm)
+        if len(hr) == 1:
+            hr = "0" + str(hr)
+        else:
+            hr = str(hr)
+
+        if len(mm) == 1:
+            mm = "0" + str(mm)
+        else:
+            hr = str(mm)
+        timestamp = hr + ":" + mm
+        timestamps.append(timestamp)
+
 
     stackplot(displaydata, timestamps, daylabels, comport)
     heatmap(displaydata, timestamps, daylabels, comport)
