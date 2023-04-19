@@ -14,7 +14,7 @@ import mgr_heatmaps
 import numpy as np
 from calendar import timegm
 
-starttime = time.time() - (60 * 60 * 24 * 14)
+starttime = time.time() - (60 * 60 * 24 * 100)
 alt = 40
 # The result of the query gets passed into all plotting functions
 result2 = mgr_database.qry_get_last_24hrs(starttime, alt)

@@ -145,16 +145,18 @@ def wrapper(result, comport):
         hr = int(t)
         mm = (t - hr) * 60
         mm = int(mm)
+        hr = str(hr)
+        mm = str(mm)
         if len(hr) == 1:
-            hr = "0" + str(hr)
+            hr = "0" + hr
         else:
-            hr = str(hr)
+            hr = hr
 
         if len(mm) == 1:
-            mm = "0" + str(mm)
+            mm = "0" + mm
         else:
-            hr = str(mm)
-        timestamp = hr + ":" + mm
+            mm = mm
+        timestamp = str(hr) + ":" + str(mm)
         timestamps.append(timestamp)
 
 
