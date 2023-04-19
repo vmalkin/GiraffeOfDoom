@@ -63,10 +63,14 @@ def stackplot(displaydata, timestamps, label_day, comport):
 
     # ONLY show the last 7 days from the data
 
-    for i in range(len(displaydata) - dayssince, len(displaydata)):
+    for i in range(len(displaydata) - dayssince, len(displaydata) - 1):
         fig.add_trace(go.Scatter(x=timestamps, y=displaydata[i], mode='lines',
                                  line=dict(color="rgba(255,150,0,0.5)", width=2)
                                  ))
+    lastindex = len(displaydata) - 1
+    fig.add_trace(go.Scatter(x=timestamps, y=displaydata[lastindex], mode='lines',
+                             line=dict(color="rgba(255,0,0,1)", width=3)
+                             ))
 
     fig.write_image("stackplot.jpg")
 
