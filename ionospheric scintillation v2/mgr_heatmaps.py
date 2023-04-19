@@ -69,7 +69,7 @@ def stackplot(displaydata, timestamps, label_day, comport):
                                  ))
     lastindex = len(displaydata) - 1
     fig.add_trace(go.Scatter(x=timestamps, y=displaydata[lastindex], mode='lines',
-                             line=dict(color="rgba(255,0,0,1)", width=3)
+                             line=dict(color="rgba(255,255,255,1)", width=2)
                              ))
 
     fig.write_image("stackplot.jpg")
