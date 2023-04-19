@@ -138,6 +138,8 @@ def wrapper(result, comport):
             if posixday_start == item.posixstart:
                 item.data[minute_index].append(float(data))
 
+    # Now iterate through our array of day objects, and populate the charting arrays, that are passed into
+    # the charting functions.
     displaydata = []
     daylabels = []
     timestamps = []
