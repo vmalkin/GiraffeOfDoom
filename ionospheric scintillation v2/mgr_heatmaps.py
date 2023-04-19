@@ -147,6 +147,21 @@ def wrapper(result, comport):
         daylabels.append(item.utcdate)
         displaydata.append(item.get_avg_array())
 
+    daily_average_snr = []
+    for item in displaydata:
+        t = []
+        for thing in item:
+            if thing == None:
+                pass
+            else:
+                t.append(thing)
+        if len(t) > 0:
+            avgitem = mean(t)
+        else:
+            avgitem = 0
+        daily_average_snr.append(avgitem)
+
+
     # Create timestamps for horizontal axis
     for i in range(0, 1440):
         t = i / 60
