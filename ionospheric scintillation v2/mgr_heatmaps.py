@@ -46,10 +46,11 @@ def stackplot(displaydata, timestamps, label_day, comport):
     height = 600
     papercolour = "#000000"
     gridcolour = "#303030"
+    dayssince = 7
 
     data = go.Scatter()
     fig = go.Figure(data)
-    title = "Signal to Noise Ratio for " + comport
+    title = "Signal to Noise Ratio for " + comport + ". (dB). Last " + str(dayssince) + " days."
     fig.update_layout(width=width, height=height, title=title,
                       xaxis_title="Date/time UTC<br><sub>http://DunedinAurora.nz</sub>",
                       yaxis_title="SNR - dB",
@@ -58,10 +59,14 @@ def stackplot(displaydata, timestamps, label_day, comport):
 
     fig.update_xaxes(showgrid=True, gridwidth=1, gridcolor=gridcolour)
     fig.update_yaxes(showgrid=True, gridwidth=1, gridcolor=gridcolour)
-    fig.update_layout(font=dict(size=16, color="#f0f0f0"), title_font_size=18, )
+    fig.update_layout(font=dict(size=16, color="#f0f0f0"), title_font_size=18, showlegend=False)
 
-    for item in displaydata:
-        fig.add_trace(go.Scatter(x=timestamps, y=item, mode='lines'))
+    # ONLY show the last 7 days from the data
+
+    for i in range(len(displaydata) - dayssince, len(displaydata)):
+        fig.add_trace(go.Scatter(x=timestamps, y=displaydata[i], mode='lines',
+                                 line=dict(color="rgba(255,150,0,0.5)", width=2)
+                                 ))
 
     fig.write_image("stackplot.jpg")
 
@@ -70,6 +75,7 @@ def heatmap(displaydata, timestamps, label_day, comport):
     papercolour = "#000000"
     gridcolour = "#303030"
     width = 1500
+    height = len(displaydata) * 25
 
     # # CReate individual heatmap traces
     # data = []
@@ -80,20 +86,20 @@ def heatmap(displaydata, timestamps, label_day, comport):
     data = go.Heatmap(x=timestamps, y=label_day, z=displaydata, colorscale="electric")
     fig = go.Figure(data=data)
 
-    title = "Heatmap, SNR for " + comport
-    fig.update_layout(width=width, title=title,
-                      xaxis_title="Date/time UTC<br><sub>http://DunedinAurora.nz</sub>",
-                      yaxis_title="SNR - dB")
+    title = "Signal to Noise Ratio for " + comport + ". (dB)"
+    fig.update_layout(width=width, height=height, title=title,
+                      xaxis_title="Date/time UTC<br><sub>http://DunedinAurora.nz</sub>")
 
     # for item in displaydata:
     #     fig.add_trace(go.Scatter(x=timestamps, y=item))
-    fig.update_xaxes(showgrid=True, gridwidth=1, gridcolor=gridcolour)
+    fig.update_xaxes(showgrid=True, gridwidth=1, gridcolor=gridcolour, tickangle=50)
     fig.update_yaxes(showgrid=True, gridwidth=1, gridcolor=gridcolour)
     fig.update_layout(font=dict(size=16, color="#f0f0f0"), title_font_size=18, )
     fig.update_layout(plot_bgcolor=papercolour,
                       paper_bgcolor=papercolour)
     # fig.show()
     fig.write_image("heatmap.jpg")
+    fig.write_html("heatmap.html")
 
 
 def wrapper(result, comport):
@@ -159,16 +165,5 @@ def wrapper(result, comport):
         timestamp = str(hr) + ":" + str(mm)
         timestamps.append(timestamp)
 
-
     stackplot(displaydata, timestamps, daylabels, comport)
     heatmap(displaydata, timestamps, daylabels, comport)
-    #
-    # with open("data.csv", "w") as d:
-    #     for item in result:
-    #         dd = posix2utc(item[1], "%Y-%m-%d %H:%M:%S")
-    #         da = item[5]
-    #         dp = dd + "," + da + "\n"
-    #         d.write(dp)
-    # d.close()
-
-# mgr_plot.wrapper(result, k.comport)
