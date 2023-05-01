@@ -1,10 +1,6 @@
 import time
 import constants as k
 import datetime
-import math
-import mgr_database
-import mgr_plot
-import numpy as np
 from calendar import timegm
 from statistics import mean, median
 import plotly.graph_objects as go
@@ -113,11 +109,14 @@ def dailyplot(daylabels, daily_average_snr, comport):
     gridcolour = "#303030"
     width = 1500
     height = 500
+    grid_avg = mean(daily_average_snr)
+    grid_min = grid_avg - 1
+    grid_max = grid_avg + 3
 
     data = go.Bar(x=daylabels, y=daily_average_snr, marker=dict(color='#f08000', opacity=0.8,
                                        line=dict(width=2, color="#ff0000")))
     fig = go.Figure(data)
-    fig.update_yaxes(range=[40, 44])
+    fig.update_yaxes(range=[grid_min, grid_max])
 
     title = "Daily avg SNR for " + comport + ". (dB)"
     fig.update_layout(width=width, height=height, title=title,
@@ -190,7 +189,6 @@ def wrapper(result, comport):
             avgitem = 0
         daily_average_snr.append(avgitem)
 
-    print(daily_average_snr)
     # Create timestamps for horizontal axis
     for i in range(0, 1440):
         t = i / 60
