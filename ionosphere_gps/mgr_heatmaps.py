@@ -109,9 +109,9 @@ def dailyplot(daylabels, daily_average_snr, comport):
     gridcolour = "#303030"
     width = 1500
     height = 500
-    grid_avg = mean(daily_average_snr)
+    grid_avg = median(daily_average_snr)
     grid_min = grid_avg - 1
-    grid_max = grid_avg + 3
+    grid_max = grid_avg + 1
 
     data = go.Bar(x=daylabels, y=daily_average_snr, marker=dict(color='#f08000', opacity=0.8,
                                        line=dict(width=2, color="#ff0000")))
