@@ -3,15 +3,11 @@ import constants as k
 import mgr_comport
 import time
 import os
-import sqlite3
 import datetime
 import logging
-from statistics import mean, stdev
 from threading import Thread
 import mgr_database
-import mgr_plot
-import mgr_heatmaps
-import numpy as np
+
 from calendar import timegm
 
 errorloglevel = logging.CRITICAL
@@ -106,17 +102,25 @@ if __name__ == "__main__":
                                     k.xonxoff,
                                     k.rtscts, k.writeTimeout, k.dsrdtr, k.interCharTimeout)
 
-
-    oldtimer = time.time()
     while True:
         # Get com data
         line = com.data_recieve()
-        print(line)
-        # if line[:6] == "$GPGSV":
+        l = line.split(",")
+        constellation = l[0]
+        lat = l[2]
+        long = l[4]
+        position_fix = l[6]
+        num_sats = l[7]
+        hdop = l[8]
+        alt = l[9]
+        # if the sentence is a GGA sentence from any constellation
+        if l[0] == "$GPGGA":
+            # If we have a valid position fix
+            if position_fix > 0:
+                print(l)
         #     # if line[:6] == "$GPGSV" or line[:6] == "$GLGSV":
         #     sentence = nmea_sentence(line)
         #     # make sure GSV sentence is a multiple of 4
 
-        oldtimer = time.time()
     # #################################################################################
 
