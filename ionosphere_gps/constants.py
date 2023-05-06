@@ -17,7 +17,7 @@ dsrdtr = False
 interCharTimeout = None
 
 timeformat = '%Y-%m-%d %H:%M:%S'
-sat_database = "gps_satellites.db"
+sat_database = "gps.db"
 
 sensor = "UBlox"
 dir_images = "images"
