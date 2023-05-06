@@ -9,13 +9,13 @@ def database_create():
     db = gpsdb.cursor()
     db.execute('drop table if exists satdata;')
     db.execute('create table satdata ('
-               'comport_id text,'
-               'sat_id text,'
                'posixtime integer,'
-               'latitude real,'
-               'longitude real,'
-               'altitude real,'
-               'hdop real'
+               'lat real,'
+               'long real,'
+               'position_fix integer,'
+               'num_sats integer,'
+               'hdop real,'
+               'alt real'
                ');')
     gpsdb.commit()
     db.close()
