@@ -21,10 +21,10 @@ def database_create():
     gpsdb.commit()
     db.close()
 
-def qry_get_last_24hrs(starttime, altitude):
+def qry_get_last_24hrs(starttime):
     gpsdb = sqlite3.connect(k.sat_database)
     db = gpsdb.cursor()
-    result = db.execute('select * from satdata where posixtime > ? order by posixtime asc;', [starttime, altitude])
+    result = db.execute('select * from satdata where posixtime > ? order by posixtime asc;', [starttime])
     returnarray = []
     for item in result:
         dp = [str(item[1]), str(item[2]), str(item[3]), str(item[4]), str(item[5]), str(item[6])]
@@ -37,8 +37,8 @@ def qry_add_data(constellation, posixtime, lat, long, position_fix, num_sats, hd
     values = [constellation, posixtime, lat, long, position_fix, num_sats, hdop, alt]
     db = sqlite3.connect(k.sat_database)
     cursor = db.cursor()
-    result = cursor.execute()
-    print(result)
+    cursor.execute('insert into satdata (constellation, posixtime, lat, long, position_fix, num_sats, hdop, alt) '
+                            'values (?, ?, ?, ?, ?, ?, ?, ?);', values)
     db.commit()
     cursor.close()
     db.close()

@@ -26,7 +26,6 @@ class QueryProcessor(Thread):
 
     def run(self):
         # put query data_s4 processing stuff here.
-
         while True:
             print("***************************** Start Query Processor")
 
@@ -95,8 +94,8 @@ if __name__ == "__main__":
 
     # #################################################################################
     # Start threads to process data
-    # queryprocessor = QueryProcessor()
-    # queryprocessor.start()
+    queryprocessor = QueryProcessor()
+    queryprocessor.start()
 
     com = mgr_comport.SerialManager(k.comport, k.baudrate, k.bytesize, k.parity, k.stopbits, k.timeout,
                                     k.xonxoff,
@@ -108,8 +107,8 @@ if __name__ == "__main__":
         l = line.split(",")
 
         # if the sentence is a GGA sentence from any constellation
-        if l[0] == "$GPGSV" or l[0] == "$GLGSV":
-            constellation = l[0]
+        if l[0] == "$GPGGA" or l[0] == "$GLGGA":
+            constellation = l[0][1:]
             lat = l[2]
             long = l[4]
             position_fix = int(l[6])
@@ -119,10 +118,7 @@ if __name__ == "__main__":
 
             # If we have a valid position fix
             if position_fix > 0:
-                print(l)
-        #     # if line[:6] == "$GPGSV" or line[:6] == "$GLGSV":
-        #     sentence = nmea_sentence(line)
-        #     # make sure GSV sentence is a multiple of 4
-
+                posixtime = int(time.time())
+                mgr_database.qry_add_data(constellation, posixtime, lat, long, position_fix, num_sats, hdop, alt)
     # #################################################################################
 
