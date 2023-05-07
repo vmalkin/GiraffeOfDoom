@@ -21,10 +21,10 @@ def database_create():
     gpsdb.commit()
     db.close()
 
-def qry_get_last_24hrs(starttime):
+def qry_get_last_24hrs(starttime, constellation_label):
     gpsdb = sqlite3.connect(k.sat_database)
     db = gpsdb.cursor()
-    result = db.execute('select * from satdata where posixtime > ? order by posixtime asc;', [starttime])
+    result = db.execute('select * from satdata where constellation like ? and posixtime > ? order by posixtime asc;', [constellation_label, starttime])
     returnarray = []
     for item in result:
         dp = [str(item[1]), str(item[2]), str(item[3]), str(item[4]), str(item[5]), str(item[6])]

@@ -7,6 +7,7 @@ import datetime
 import logging
 from threading import Thread
 import mgr_database
+import mgr_plot
 
 from calendar import timegm
 
@@ -28,41 +29,26 @@ class QueryProcessor(Thread):
         # put query data_s4 processing stuff here.
         while True:
             print("***************************** Start Query Processor")
+            start_time = int(time.time() - 24 * 60 * 60)
+
+            # Get data for each constellation.
+            result = mgr_database.qry_get_last_24hrs(start_time, "GPGGA")
+            mgr_plot.wrapper(result)
 
             print("******************************* End Query Processor")
-            time.sleep((60 * 15))
-            # time.sleep(60)
+            time.sleep((60 * 5))
 
 
-def nmea_sentence(sentence):
-    s = sentence[1:]
-    s = s.split("*")
-    s = s[0].split(",")
-    return s
-
-
-def sanitise_data(item):
-    # Turn a data into a float
-    i = 0
-    regex = "\d{1,3}[^a-z]"
-    if len(item) > 0:
-        if len(item) <= 3:
-            if re.match(regex, item):
-                i = float(item)
-    return i
-
-
-def posix2utc(posixtime, timeformat):
-    # print(posixtime)
-    # utctime = datetime.datetime.utcfromtimestamp(int(posixtime)).strftime(timeformat)
-    utctime = datetime.datetime.utcfromtimestamp(int(posixtime)).strftime(timeformat)
-    return utctime
-
-
-def utc2posix(utcstring, timeformat):
-    utc_time = time.strptime(utcstring, timeformat)
-    epoch_time = timegm(utc_time)
-    return epoch_time
+# def posix2utc(posixtime, timeformat):
+#     # print(posixtime)
+#     # utctime = datetime.datetime.utcfromtimestamp(int(posixtime)).strftime(timeformat)
+#     utctime = datetime.datetime.utcfromtimestamp(int(posixtime)).strftime(timeformat)
+#     return utctime
+#
+# def utc2posix(utcstring, timeformat):
+#     utc_time = time.strptime(utcstring, timeformat)
+#     epoch_time = timegm(utc_time)
+#     return epoch_time
 
 
 def create_directory(dir):
