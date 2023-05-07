@@ -95,8 +95,8 @@ if __name__ == "__main__":
 
     # #################################################################################
     # Start threads to process data
-    queryprocessor = QueryProcessor()
-    queryprocessor.start()
+    # queryprocessor = QueryProcessor()
+    # queryprocessor.start()
 
     com = mgr_comport.SerialManager(k.comport, k.baudrate, k.bytesize, k.parity, k.stopbits, k.timeout,
                                     k.xonxoff,
@@ -106,15 +106,17 @@ if __name__ == "__main__":
         # Get com data
         line = com.data_recieve()
         l = line.split(",")
-        constellation = l[0]
-        lat = l[2]
-        long = l[4]
-        position_fix = l[6]
-        num_sats = l[7]
-        hdop = l[8]
-        alt = l[9]
+
         # if the sentence is a GGA sentence from any constellation
-        if l[0] == "$GPGGA":
+        if l[0] == "$GPGSV" or l[0] == "$GLGSV":
+            constellation = l[0]
+            lat = l[2]
+            long = l[4]
+            position_fix = int(l[6])
+            num_sats = l[7]
+            hdop = l[8]
+            alt = l[9]
+
             # If we have a valid position fix
             if position_fix > 0:
                 print(l)

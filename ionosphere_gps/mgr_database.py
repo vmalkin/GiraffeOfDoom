@@ -33,6 +33,13 @@ def qry_get_last_24hrs(starttime, altitude):
     db.close()
     return returnarray
 
-def qry_add_data(data):
-    # ['$GPGGA', '231326.00', '4552.29227', 'S', '17029.06766', 'E', '2', '10', '0.90', '200.7', 'M', '1.8', 'M', '','0000*77']
+def qry_add_data(constellation, posixtime, lat, long, position_fix, num_sats, hdop, alt):
+    values = [constellation, posixtime, lat, long, position_fix, num_sats, hdop, alt]
+    db = sqlite3.connect(k.sat_database)
+    cursor = db.cursor()
+    result = cursor.execute()
+    print(result)
+    db.commit()
+    cursor.close()
+    db.close()
     pass
