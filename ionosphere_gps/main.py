@@ -1,15 +1,11 @@
-import re
 import constants as k
 import mgr_comport
 import time
 import os
-import datetime
 import logging
 from threading import Thread
 import mgr_database
 import mgr_plot
-
-from calendar import timegm
 
 errorloglevel = logging.CRITICAL
 logging.basicConfig(filename="errors.log", format='%(asctime)s %(message)s', level=errorloglevel)
@@ -51,12 +47,12 @@ class QueryProcessor(Thread):
 #     return epoch_time
 
 
-def create_directory(dir):
+def create_directory(directory):
     try:
-        os.makedirs(dir)
+        os.makedirs(directory)
         print("Directory created.")
     except:
-        if not os.path.isdir(dir):
+        if not os.path.isdir(directory):
             print("Unable to create directory")
             logging.critical("CRITICAL ERROR: Unable to create directory in MAIN.PY")
 
@@ -90,21 +86,20 @@ if __name__ == "__main__":
     while True:
         # Get com data
         line = com.data_recieve()
-        l = line.split(",")
+        csv_line = line.split(",")
 
         # if the sentence is a GGA sentence from any constellation
-        if l[0] == "$GPGGA" or l[0] == "$GLGGA":
-            constellation = l[0][1:]
-            lat = l[2]
-            long = l[4]
-            position_fix = int(l[6])
-            num_sats = l[7]
-            hdop = l[8]
-            alt = l[9]
+        if csv_line[0] == "$GPGGA" or csv_line[0] == "$GLGGA":
+            constellation = csv_line[0][1:]
+            lat = csv_line[2]
+            long = csv_line[4]
+            position_fix = int(csv_line[6])
+            num_sats = csv_line[7]
+            hdop = csv_line[8]
+            alt = csv_line[9]
 
             # If we have a valid position fix
             if position_fix > 0:
                 posixtime = int(time.time())
                 mgr_database.qry_add_data(constellation, posixtime, lat, long, position_fix, num_sats, hdop, alt)
     # #################################################################################
-
