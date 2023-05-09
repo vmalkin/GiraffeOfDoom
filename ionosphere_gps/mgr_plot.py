@@ -1,9 +1,20 @@
 from plotly import graph_objects as go
 import datetime
-
+from statistics import mean
+avg_half_window = 30
 
 def filter_avg(gpsdata):
-    pass
+    returndata = []
+    if len(gpsdata) > avg_half_window * 2:
+        for i in range(avg_half_window, len(gpsdata) - avg_half_window):
+            temp = []
+            for j in range(-avg_half_window, avg_half_window):
+                temp.append(gpsdata[i + j])
+            dp = mean(temp)
+            returndata.append(dp)
+    else:
+        returndata = gpsdata
+    return returndata
 
 
 def data_diffs(data):
@@ -61,32 +72,37 @@ def wrapper(db_data, label):
         hdop.append(float(item[5]))
         altitude.append(float(item[6]))
 
+    datetimes = datetimes[avg_half_window:]
+    datetimes = datetimes[:-avg_half_window]
 
     l = label + "_latitude"
+    latitudes = filter_avg(latitudes)
     plot(latitudes, datetimes, l, "#ffff00")
 
     l = label + "_longitude"
+    longitudes = filter_avg(longitudes)
     plot(longitudes, datetimes, l, "#ffff00")
 
     l = label + " altitude"
+    altitude = filter_avg(altitude)
     plot(altitude, datetimes, l, "#ffff00")
 
     l = label + "_HDOP"
     plot(hdop, datetimes, l, "#ffff00")
 
 
-    # l = label + "_dlat"
-    # latitudes = data_diffs(latitudes)
-    # plot(latitudes, datetimes, l, "#00ff00")
-    #
-    # l = label + "_dlong"
-    # longitudes = data_diffs(longitudes)
-    # plot(longitudes, datetimes, l, "#00ff00")
-    #
-    # l = label + "_dalt"
-    # altitude = data_diffs(altitude)
-    # plot(altitude, datetimes, l, "#00ff00")
-    #
-    # l = label + "_dHDOP"
-    # hdop = data_diffs(hdop)
-    # plot(hdop, datetimes, l, "#00ff00")
+    l = label + "_dlat"
+    latitudes = data_diffs(latitudes)
+    plot(latitudes, datetimes, l, "#00ff00")
+
+    l = label + "_dlong"
+    longitudes = data_diffs(longitudes)
+    plot(longitudes, datetimes, l, "#00ff00")
+
+    l = label + "_dalt"
+    altitude = data_diffs(altitude)
+    plot(altitude, datetimes, l, "#00ff00")
+
+    l = label + "_dHDOP"
+    hdop = data_diffs(hdop)
+    plot(hdop, datetimes, l, "#00ff00")
