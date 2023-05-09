@@ -29,7 +29,7 @@ class QueryProcessor(Thread):
 
             # Get data for each constellation.
             result = mgr_database.qry_get_last_24hrs(start_time, "GPGGA")
-            mgr_plot.wrapper(result)
+            mgr_plot.wrapper(result, "GPS")
 
             print("******************************* End Query Processor")
             time.sleep((60 * 5))

@@ -27,7 +27,7 @@ def qry_get_last_24hrs(starttime, constellation_label):
     result = db.execute('select * from satdata where constellation like ? and posixtime > ? order by posixtime asc;', [constellation_label, starttime])
     returnarray = []
     for item in result:
-        dp = [str(item[1]), str(item[2]), str(item[3]), str(item[4]), str(item[5]), str(item[6])]
+        dp = [str(item[1]), str(item[2]), str(item[3]), str(item[4]), str(item[5]), str(item[6]), str(item[7])]
         returnarray.append(dp)
     gpsdb.commit()
     db.close()
