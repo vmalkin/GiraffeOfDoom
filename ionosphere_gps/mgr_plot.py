@@ -1,7 +1,22 @@
 from plotly import graph_objects as go
 import datetime
-from statistics import mean
+from statistics import mean, stdev
 avg_half_window = 30
+
+
+def get_mean(data):
+    returnvalue = None
+    if len(data) > 0:
+        returnvalue = mean(data)
+    return returnvalue
+
+
+def get_stdev(data):
+    returnvalue = None
+    if len(data) > 0:
+        returnvalue = stdev(data)
+    return returnvalue
+
 
 def filter_avg(gpsdata):
     returndata = []
@@ -36,8 +51,8 @@ def posix2utc(posixtime, timeformat):
 #     epoch_time = timegm(utc_time)
 #     return epoch_time
 def plot(gpsdata, timestamps, label, pencolour):
-    papercolour = "#000000"
-    gridcolour = "#303030"
+    papercolour = "#d0d0d0"
+    gridcolour = "#c0c0c0"
     width = 1500
     height = 500
 
@@ -45,12 +60,29 @@ def plot(gpsdata, timestamps, label, pencolour):
                                      line=dict(color=pencolour, width=1))
     fig =  go.Figure(data)
 
+    avg_data = get_mean(gpsdata)
+    stdv = get_stdev(gpsdata)
+
+    if avg_data == 0:
+        pass
+    else:
+        if stdv == 0:
+            pass
+        else:
+            stats = [avg_data - (2 * stdv),
+                     avg_data - (1 * stdv),
+                     avg_data,
+                     avg_data + (1 * stdv),
+                     avg_data + (2 * stdv)]
+            for line in stats:
+                fig.add_hline(y=line, line_width=2, line_color="green")
+
     title = label
     fig.update_layout(width=width, height=height, title=title,
                       xaxis_title="Date/time UTC<br><sub>http://DunedinAurora.nz</sub>")
-    fig.update_xaxes(showgrid=True, gridwidth=1, gridcolor=gridcolour, tickangle=50)
+    fig.update_xaxes(showgrid=True, gridwidth=1, gridcolor=gridcolour, dtick=3600, tickangle=50)
     fig.update_yaxes(showgrid=True, gridwidth=1, gridcolor=gridcolour)
-    fig.update_layout(font=dict(size=16, color="#f0f0f0"), title_font_size=18, )
+    fig.update_layout(font=dict(size=16, color="#202020"), title_font_size=18, )
     fig.update_layout(plot_bgcolor=papercolour,
                       paper_bgcolor=papercolour)
     savefile = label + ".jpg"
@@ -76,33 +108,30 @@ def wrapper(db_data, label):
     datetimes = datetimes[:-avg_half_window]
 
     l = label + "_latitude"
-    latitudes = filter_avg(latitudes)
-    plot(latitudes, datetimes, l, "#ffff00")
+    plot(latitudes, datetimes, l, "#200050")
 
     l = label + "_longitude"
-    longitudes = filter_avg(longitudes)
-    plot(longitudes, datetimes, l, "#ffff00")
+    plot(longitudes, datetimes, l, "#200050")
 
     l = label + " altitude"
-    altitude = filter_avg(altitude)
-    plot(altitude, datetimes, l, "#ffff00")
+    plot(altitude, datetimes, l, "#200050")
 
     l = label + "_HDOP"
-    plot(hdop, datetimes, l, "#ffff00")
+    plot(hdop, datetimes, l, "#200050")
 
-
-    l = label + "_dlat"
-    latitudes = data_diffs(latitudes)
-    plot(latitudes, datetimes, l, "#00ff00")
-
-    l = label + "_dlong"
-    longitudes = data_diffs(longitudes)
-    plot(longitudes, datetimes, l, "#00ff00")
-
-    l = label + "_dalt"
-    altitude = data_diffs(altitude)
-    plot(altitude, datetimes, l, "#00ff00")
-
-    l = label + "_dHDOP"
-    hdop = data_diffs(hdop)
-    plot(hdop, datetimes, l, "#00ff00")
+    #
+    # l = label + "_dlat"
+    # latitudes = data_diffs(latitudes)
+    # plot(latitudes, datetimes, l, "#00ff00")
+    #
+    # l = label + "_dlong"
+    # longitudes = data_diffs(longitudes)
+    # plot(longitudes, datetimes, l, "#00ff00")
+    #
+    # l = label + "_dalt"
+    # altitude = data_diffs(altitude)
+    # plot(altitude, datetimes, l, "#00ff00")
+    #
+    # l = label + "_dHDOP"
+    # hdop = data_diffs(hdop)
+    # plot(hdop, datetimes, l, "#00ff00")
