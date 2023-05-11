@@ -1,7 +1,9 @@
+import time
+
 from plotly import graph_objects as go
 import datetime
 from statistics import mean, stdev
-avg_half_window = 30
+avg_half_window = 300
 
 
 def get_mean(data):
@@ -54,7 +56,7 @@ def plot(gpsdata, timestamps, label, pencolour):
     papercolour = "#d0d0d0"
     gridcolour = "#c0c0c0"
     width = 1500
-    height = 500
+    height = 550
 
     data = go.Scatter(x=timestamps, y=gpsdata, mode='lines',
                                      line=dict(color=pencolour, width=1))
@@ -70,17 +72,15 @@ def plot(gpsdata, timestamps, label, pencolour):
             pass
         else:
             stats = [avg_data - (2 * stdv),
-                     avg_data - (1 * stdv),
                      avg_data,
-                     avg_data + (1 * stdv),
                      avg_data + (2 * stdv)]
             for line in stats:
-                fig.add_hline(y=line, line_width=2, line_color="green")
+                fig.add_hline(y=line, line_width=2, line_color="#500000", layer="below")
 
     title = label
     fig.update_layout(width=width, height=height, title=title,
                       xaxis_title="Date/time UTC<br><sub>http://DunedinAurora.nz</sub>")
-    fig.update_xaxes(showgrid=True, gridwidth=1, gridcolor=gridcolour, dtick=3600, tickangle=50)
+    fig.update_xaxes(showgrid=True, gridwidth=1, gridcolor=gridcolour, nticks=24, tickangle=50)
     fig.update_yaxes(showgrid=True, gridwidth=1, gridcolor=gridcolour)
     fig.update_layout(font=dict(size=16, color="#202020"), title_font_size=18, )
     fig.update_layout(plot_bgcolor=papercolour,
@@ -89,6 +89,7 @@ def plot(gpsdata, timestamps, label, pencolour):
     fig.write_image(savefile)
 
 def wrapper(db_data, label):
+    starttime = time.time()
     # ['1683423236', '4552.29376', '17029.07', '2', '10', '1.06', '196.4']
     # posixtime, lat, long, position_fix, num_sats, hdop, alt
     datetimes = []
@@ -108,12 +109,15 @@ def wrapper(db_data, label):
     datetimes = datetimes[:-avg_half_window]
 
     l = label + "_latitude"
+    latitudes = filter_avg(latitudes)
     plot(latitudes, datetimes, l, "#200050")
 
     l = label + "_longitude"
+    longitudes = filter_avg(longitudes)
     plot(longitudes, datetimes, l, "#200050")
 
     l = label + " altitude"
+    altitude = filter_avg(altitude)
     plot(altitude, datetimes, l, "#200050")
 
     l = label + "_HDOP"
@@ -135,3 +139,6 @@ def wrapper(db_data, label):
     # l = label + "_dHDOP"
     # hdop = data_diffs(hdop)
     # plot(hdop, datetimes, l, "#00ff00")
+    endtime = time.time()
+    elapsed = (endtime - starttime) / 60
+    print("Processing time: ", elapsed)
