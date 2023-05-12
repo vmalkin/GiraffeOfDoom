@@ -3,7 +3,7 @@ import time
 from plotly import graph_objects as go
 import datetime
 from statistics import mean, stdev
-avg_half_window = 1000
+avg_half_window = 60*15
 
 
 def get_mean(data):
