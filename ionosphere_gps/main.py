@@ -25,7 +25,7 @@ class QueryProcessor(Thread):
         # put query data_s4 processing stuff here.
         while True:
             print("***************************** Start Query Processor")
-            start_time = int(time.time() - 24 * 60 * 60)
+            start_time = int(time.time() - (3 * 24 * 60 * 60))
 
             # Get data for each constellation.
             result = mgr_database.qry_get_last_24hrs(start_time, "GPGGA")

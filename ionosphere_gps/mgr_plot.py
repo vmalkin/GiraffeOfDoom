@@ -3,7 +3,7 @@ import time
 from plotly import graph_objects as go
 import datetime
 from statistics import mean, stdev
-avg_half_window = 60 * 90
+avg_half_window = 1000
 
 
 def get_mean(data):
@@ -24,21 +24,23 @@ def filter_avg(gpsdata):
     returndata = []
     temp = []
     oldprogress = 0
-    for i in range(0, len(gpsdata)):
-        progress = round((i / len(gpsdata)), 2)
-        if oldprogress == progress:
-            pass
-        else:
-            print(progress)
-        oldprogress = progress
+    if len(gpsdata) > 2 * avg_half_window:
+        for i in range(0, len(gpsdata)):
+            progress = round((i / len(gpsdata)), 2)
+            if oldprogress == progress:
+                pass
+            else:
+                print(progress)
+            oldprogress = progress
 
-        temp.append(gpsdata[i])
-        if len(temp) > avg_half_window * 2:
-            temp.pop(0)
-            dp = mean(temp)
-            returndata.append(dp)
+            temp.append(gpsdata[i])
+            if len(temp) > avg_half_window * 2:
+                temp.pop(0)
+                dp = mean(temp)
+                returndata.append(dp)
     else:
         returndata = gpsdata
+
     return returndata
 
 
@@ -46,6 +48,17 @@ def data_diffs(data):
     returnarray = []
     for i in range(1, len(data)):
         diff = data[i] - data[i - 1]
+        returnarray.append(diff)
+    return returnarray
+
+
+def detrend(data, average):
+    # Data is larger than the average by 2*avg_half_window.
+    data = data[avg_half_window:]
+    data = data[:-avg_half_window]
+    returnarray = []
+    for i in range(0, len(average)):
+        diff = data[i] - average[i]
         returnarray.append(diff)
     return returnarray
 
@@ -118,38 +131,25 @@ def wrapper(db_data, label):
 
     print("Processing GPS latitude data")
     l = label + "_latitude"
-    latitudes = filter_avg(latitudes)
-    plot(latitudes, datetimes, l, "#200050")
+    avg_lat = filter_avg(latitudes)
+    dt_lat = detrend(latitudes, avg_lat)
+    plot(dt_lat, datetimes, l, "#200050")
 
     print("Processing GPS longitude data")
     l = label + "_longitude"
-    longitudes = filter_avg(longitudes)
-    plot(longitudes, datetimes, l, "#200050")
+    avg_long = filter_avg(longitudes)
+    dt_long = detrend(longitudes, avg_long)
+    plot(dt_long, datetimes, l, "#200050")
 
     print("Processing GPS altitude data")
     l = label + " altitude"
-    altitude = filter_avg(altitude)
-    plot(altitude, datetimes, l, "#200050")
+    avg_alt = filter_avg(altitude)
+    dt_alt = detrend(altitude, avg_alt)
+    plot(dt_alt, datetimes, l, "#200050")
 
     l = label + "_HDOP"
     plot(hdop, datetimes, l, "#200050")
 
-    #
-    # l = label + "_dlat"
-    # latitudes = data_diffs(latitudes)
-    # plot(latitudes, datetimes, l, "#00ff00")
-    #
-    # l = label + "_dlong"
-    # longitudes = data_diffs(longitudes)
-    # plot(longitudes, datetimes, l, "#00ff00")
-    #
-    # l = label + "_dalt"
-    # altitude = data_diffs(altitude)
-    # plot(altitude, datetimes, l, "#00ff00")
-    #
-    # l = label + "_dHDOP"
-    # hdop = data_diffs(hdop)
-    # plot(hdop, datetimes, l, "#00ff00")
     endtime = time.time()
     elapsed = (endtime - starttime) / 60
     print("Processing time: ", elapsed)
