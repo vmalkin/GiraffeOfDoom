@@ -3,7 +3,7 @@ import time
 from plotly import graph_objects as go
 import datetime
 from statistics import mean, stdev
-avg_half_window = 300
+avg_half_window = 60 * 90
 
 
 def get_mean(data):
@@ -22,11 +22,19 @@ def get_stdev(data):
 
 def filter_avg(gpsdata):
     returndata = []
-    if len(gpsdata) > avg_half_window * 2:
-        for i in range(avg_half_window, len(gpsdata) - avg_half_window):
-            temp = []
-            for j in range(-avg_half_window, avg_half_window):
-                temp.append(gpsdata[i + j])
+    temp = []
+    oldprogress = 0
+    for i in range(0, len(gpsdata)):
+        progress = round((i / len(gpsdata)), 2)
+        if oldprogress == progress:
+            pass
+        else:
+            print(progress)
+        oldprogress = progress
+
+        temp.append(gpsdata[i])
+        if len(temp) > avg_half_window * 2:
+            temp.pop(0)
             dp = mean(temp)
             returndata.append(dp)
     else:
@@ -108,14 +116,17 @@ def wrapper(db_data, label):
     datetimes = datetimes[avg_half_window:]
     datetimes = datetimes[:-avg_half_window]
 
+    print("Processing GPS latitude data")
     l = label + "_latitude"
     latitudes = filter_avg(latitudes)
     plot(latitudes, datetimes, l, "#200050")
 
+    print("Processing GPS longitude data")
     l = label + "_longitude"
     longitudes = filter_avg(longitudes)
     plot(longitudes, datetimes, l, "#200050")
 
+    print("Processing GPS altitude data")
     l = label + " altitude"
     altitude = filter_avg(altitude)
     plot(altitude, datetimes, l, "#200050")
