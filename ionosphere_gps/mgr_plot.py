@@ -132,20 +132,17 @@ def wrapper(db_data, label):
     print("Processing GPS latitude data")
     l = label + "_latitude"
     avg_lat = filter_avg(latitudes)
-    dt_lat = detrend(latitudes, avg_lat)
-    plot(dt_lat, datetimes, l, "#200050")
+    plot(avg_lat, datetimes, l, "#200050")
 
     print("Processing GPS longitude data")
     l = label + "_longitude"
     avg_long = filter_avg(longitudes)
-    dt_long = detrend(longitudes, avg_long)
-    plot(dt_long, datetimes, l, "#200050")
+    plot(avg_long, datetimes, l, "#200050")
 
     print("Processing GPS altitude data")
     l = label + " altitude"
     avg_alt = filter_avg(altitude)
-    dt_alt = detrend(altitude, avg_alt)
-    plot(dt_alt, datetimes, l, "#200050")
+    plot(avg_alt, datetimes, l, "#200050")
 
     l = label + "_HDOP"
     plot(hdop, datetimes, l, "#200050")
