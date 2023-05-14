@@ -7,7 +7,7 @@ from threading import Thread
 import mgr_database
 import mgr_plot
 
-errorloglevel = logging.CRITICAL
+errorloglevel = logging.ERROR
 logging.basicConfig(filename="errors.log", format='%(asctime)s %(message)s', level=errorloglevel)
 
 # readings below this altitude for satellites may be distorted due to multi-modal reflection
@@ -87,19 +87,26 @@ if __name__ == "__main__":
         # Get com data
         line = com.data_recieve()
         csv_line = line.split(",")
+        # print(len(csv_line))
 
-        # if the sentence is a GGA sentence from any constellation
-        if csv_line[0] == "$GPGGA" or csv_line[0] == "$GLGGA":
-            constellation = csv_line[0][1:]
-            lat = csv_line[2]
-            long = csv_line[4]
-            position_fix = int(csv_line[6])
-            num_sats = csv_line[7]
-            hdop = csv_line[8]
-            alt = csv_line[9]
+        if len(csv_line) == 15:
+            # if the sentence is a GGA sentence from any constellation
+            if csv_line[0] == "$GPGGA" or csv_line[0] == "$GLGGA":
+                constellation = csv_line[0][1:]
+                lat = csv_line[2]
+                long = csv_line[4]
+                position_fix = int(csv_line[6])
+                num_sats = csv_line[7]
+                hdop = csv_line[8]
+                alt = csv_line[9]
 
-            # If we have a valid position fix
-            if position_fix > 0:
-                posixtime = int(time.time())
-                mgr_database.qry_add_data(constellation, posixtime, lat, long, position_fix, num_sats, hdop, alt)
+                # If we have a valid position fix
+                if position_fix > 0:
+                    posixtime = int(time.time())
+                    mgr_database.qry_add_data(constellation, posixtime, lat, long, position_fix, num_sats, hdop, alt)
+        else:
+            logdata = "ERROR: Malformed NMEA sentence: " + line
+            print(logdata)
+            logging.error(logdata)
+
     # #################################################################################
