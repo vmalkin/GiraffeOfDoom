@@ -1,8 +1,8 @@
 import serial
 import logging
 import sys
-errorloglevel = logging.CRITICAL
-logging.basicConfig(filename="errors.log", format='%(asctime)s %(message)s', level=errorloglevel)
+errorloglevel = logging.ERROR
+logging.basicConfig(filename="comport.log", format='%(asctime)s %(message)s', level=errorloglevel)
 
 
 class SerialManager:
@@ -36,5 +36,5 @@ class SerialManager:
             logData = str(logData, 'latin1').strip()  # convert the byte array to string. strip off unnecessary whitespace
         except serial.serialutil.SerialException:
             logData = ""
-            logging.critical("Serial port error " + str(serial.serialutil.SerialException))
+            logging.error("Serial port error " + str(serial.serialutil.SerialException))
         return logData

@@ -2,7 +2,7 @@ import time
 
 from plotly import graph_objects as go
 import datetime
-from statistics import mean, stdev
+from statistics import mean, stdev, median
 avg_half_window = 60*15
 
 
@@ -12,6 +12,11 @@ def get_mean(data):
         returnvalue = mean(data)
     return returnvalue
 
+def get_median(data):
+    returnvalue = None
+    if len(data) > 0:
+        returnvalue = median(data)
+    return returnvalue
 
 def get_stdev(data):
     returnvalue = None
@@ -83,22 +88,8 @@ def plot(gpsdata, timestamps, label, pencolour):
                                      line=dict(color=pencolour, width=1))
     fig =  go.Figure(data)
 
-    avg_data = get_mean(gpsdata)
-    stdv = get_stdev(gpsdata)
-
-    if avg_data == 0:
-        pass
-    else:
-        if stdv == 0:
-            pass
-        else:
-            stats = [avg_data - (2 * stdv),
-                     avg_data,
-                     avg_data + (2 * stdv)]
-            for line in stats:
-                fig.add_hline(y=line, line_width=2, line_color="#500000", layer="below")
-
     title = label
+    fig.update_yaxes(range=[4552.278, 4552.294])
     fig.update_layout(width=width, height=height, title=title,
                       xaxis_title="Date/time UTC<br><sub>http://DunedinAurora.nz</sub>")
     fig.update_xaxes(showgrid=True, gridwidth=1, gridcolor=gridcolour, nticks=24, tickangle=50)
@@ -126,27 +117,34 @@ def wrapper(db_data, label):
         hdop.append(float(item[5]))
         altitude.append(float(item[6]))
 
-    datetimes = datetimes[avg_half_window:]
-    datetimes = datetimes[:-avg_half_window]
+    # datetimes = datetimes[avg_half_window:]
+    # datetimes = datetimes[:-avg_half_window]
+    # avg_lat = filter_avg(latitudes)
+    # avg_long = filter_avg(longitudes)
+    # avg_alt = filter_avg(altitude)
+
+    print(min(latitudes))
+    print(max(latitudes))
+    print(" ")
+    print(get_median(latitudes))
+    print(get_mean(latitudes))
+    print(get_stdev(latitudes))
 
     print("Processing GPS latitude data")
     l = label + "_latitude"
-    avg_lat = filter_avg(latitudes)
-    plot(avg_lat, datetimes, l, "#200050")
+    plot(latitudes, datetimes, l, "#200050")
 
-    print("Processing GPS longitude data")
-    l = label + "_longitude"
-    avg_long = filter_avg(longitudes)
-    plot(avg_long, datetimes, l, "#200050")
-
-    print("Processing GPS altitude data")
-    l = label + " altitude"
-    avg_alt = filter_avg(altitude)
-    plot(avg_alt, datetimes, l, "#200050")
-
-    l = label + "_HDOP"
-    plot(hdop, datetimes, l, "#200050")
-
-    endtime = time.time()
-    elapsed = (endtime - starttime) / 60
-    print("Processing time: ", elapsed)
+    # print("Processing GPS longitude data")
+    # l = label + "_longitude"
+    # plot(longitudes, datetimes, l, "#200050")
+    #
+    # print("Processing GPS altitude data")
+    # l = label + " altitude"
+    # plot(altitude, datetimes, l, "#200050")
+    #
+    # l = label + "_HDOP"
+    # plot(hdop, datetimes, l, "#200050")
+    #
+    # endtime = time.time()
+    # elapsed = (endtime - starttime) / 60
+    # print("Processing time: ", elapsed)

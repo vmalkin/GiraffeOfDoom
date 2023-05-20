@@ -8,7 +8,7 @@ import mgr_database
 import mgr_plot
 
 errorloglevel = logging.ERROR
-logging.basicConfig(filename="errors.log", format='%(asctime)s %(message)s', level=errorloglevel)
+logging.basicConfig(filename="gnss.log", format='%(asctime)s %(message)s', level=errorloglevel)
 
 # readings below this altitude for satellites may be distorted due to multi-modal reflection
 optimum_altitude = 25
@@ -92,6 +92,7 @@ if __name__ == "__main__":
         if len(csv_line) == 15:
             # if the sentence is a GGA sentence from any constellation
             if csv_line[0] == "$GPGGA" or csv_line[0] == "$GLGGA":
+                # print(line)
                 constellation = csv_line[0][1:]
                 lat = csv_line[2]
                 long = csv_line[4]
