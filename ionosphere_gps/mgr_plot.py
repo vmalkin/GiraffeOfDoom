@@ -3,7 +3,7 @@ import time
 from plotly import graph_objects as go
 import datetime
 from statistics import mean, stdev, median
-avg_half_window = 60*15
+avg_half_window = 90
 
 
 def get_mean(data):
@@ -42,6 +42,30 @@ def filter_avg(gpsdata):
             if len(temp) > avg_half_window * 2:
                 temp.pop(0)
                 dp = mean(temp)
+                returndata.append(dp)
+    else:
+        returndata = gpsdata
+
+    return returndata
+
+
+def filter_median(gpsdata):
+    returndata = []
+    temp = []
+    oldprogress = 0
+    if len(gpsdata) > 2 * avg_half_window:
+        for i in range(0, len(gpsdata)):
+            progress = round((i / len(gpsdata)), 2)
+            if oldprogress == progress:
+                pass
+            else:
+                print(progress)
+            oldprogress = progress
+
+            temp.append(gpsdata[i])
+            if len(temp) > avg_half_window * 2:
+                temp.pop(0)
+                dp = median(temp)
                 returndata.append(dp)
     else:
         returndata = gpsdata
@@ -89,7 +113,6 @@ def plot(gpsdata, timestamps, label, pencolour):
     fig =  go.Figure(data)
 
     title = label
-    fig.update_yaxes(range=[4552.278, 4552.294])
     fig.update_layout(width=width, height=height, title=title,
                       xaxis_title="Date/time UTC<br><sub>http://DunedinAurora.nz</sub>")
     fig.update_xaxes(showgrid=True, gridwidth=1, gridcolor=gridcolour, nticks=24, tickangle=50)
@@ -99,6 +122,20 @@ def plot(gpsdata, timestamps, label, pencolour):
                       paper_bgcolor=papercolour)
     savefile = label + ".jpg"
     fig.write_image(savefile)
+
+
+def clean_data(dataset, lower_limit, upper_limit):
+    returnarray = []
+    for item in dataset:
+        if item > upper_limit:
+            print("Over upper limit")
+            returnarray.append(None)
+        elif item < lower_limit:
+            print("Under lower limit")
+            returnarray.append(None)
+        else:
+            returnarray.append(item)
+    return returnarray
 
 def wrapper(db_data, label):
     starttime = time.time()
@@ -117,34 +154,32 @@ def wrapper(db_data, label):
         hdop.append(float(item[5]))
         altitude.append(float(item[6]))
 
-    # datetimes = datetimes[avg_half_window:]
-    # datetimes = datetimes[:-avg_half_window]
-    # avg_lat = filter_avg(latitudes)
-    # avg_long = filter_avg(longitudes)
-    # avg_alt = filter_avg(altitude)
-
-    print(min(latitudes))
-    print(max(latitudes))
-    print(" ")
-    print(get_median(latitudes))
-    print(get_mean(latitudes))
-    print(get_stdev(latitudes))
+    datetimes = datetimes[avg_half_window:]
+    datetimes = datetimes[:-avg_half_window]
 
     print("Processing GPS latitude data")
+    # latitudes = clean_data(latitudes, 4551, 4553)
+    latitudes = filter_median(latitudes)
     l = label + "_latitude"
     plot(latitudes, datetimes, l, "#200050")
 
-    # print("Processing GPS longitude data")
-    # l = label + "_longitude"
-    # plot(longitudes, datetimes, l, "#200050")
-    #
-    # print("Processing GPS altitude data")
-    # l = label + " altitude"
-    # plot(altitude, datetimes, l, "#200050")
-    #
-    # l = label + "_HDOP"
-    # plot(hdop, datetimes, l, "#200050")
-    #
-    # endtime = time.time()
-    # elapsed = (endtime - starttime) / 60
-    # print("Processing time: ", elapsed)
+    print("Processing GPS longitude data")
+    # longitudes = clean_data(longitudes, 17027, 17030)
+    longitudes = filter_median(longitudes)
+    l = label + "_longitude"
+    plot(longitudes, datetimes, l, "#200050")
+
+    print("Processing GPS altitude data")
+    # altitude = clean_data(altitude, 150, 250)
+    altitude = filter_median(altitude)
+    l = label + " altitude"
+    plot(altitude, datetimes, l, "#200050")
+
+    l = label + "_HDOP"
+    # hdop = clean_data(hdop, 0, 30)
+    hdop = filter_median(hdop)
+    plot(hdop, datetimes, l, "#200050")
+
+    endtime = time.time()
+    elapsed = (endtime - starttime) / 60
+    print("Processing time: ", elapsed)
