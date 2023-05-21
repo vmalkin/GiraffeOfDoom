@@ -25,28 +25,28 @@ def get_stdev(data):
     return returnvalue
 
 
-def filter_avg(gpsdata):
-    returndata = []
-    temp = []
-    oldprogress = 0
-    if len(gpsdata) > 2 * avg_half_window:
-        for i in range(0, len(gpsdata)):
-            progress = round((i / len(gpsdata)), 2)
-            if oldprogress == progress:
-                pass
-            else:
-                print(progress)
-            oldprogress = progress
-
-            temp.append(gpsdata[i])
-            if len(temp) > avg_half_window * 2:
-                temp.pop(0)
-                dp = mean(temp)
-                returndata.append(dp)
-    else:
-        returndata = gpsdata
-
-    return returndata
+# def filter_avg(gpsdata):
+#     returndata = []
+#     temp = []
+#     oldprogress = 0
+#     if len(gpsdata) > 2 * avg_half_window:
+#         for i in range(0, len(gpsdata)):
+#             progress = round((i / len(gpsdata)), 2)
+#             if oldprogress == progress:
+#                 pass
+#             else:
+#                 print(progress)
+#             oldprogress = progress
+#
+#             temp.append(gpsdata[i])
+#             if len(temp) > avg_half_window * 2:
+#                 temp.pop(0)
+#                 dp = mean(temp)
+#                 returndata.append(dp)
+#     else:
+#         returndata = gpsdata
+#
+#     return returndata
 
 
 def filter_median(gpsdata):
@@ -55,12 +55,12 @@ def filter_median(gpsdata):
     oldprogress = 0
     if len(gpsdata) > 2 * avg_half_window:
         for i in range(0, len(gpsdata)):
-            progress = round((i / len(gpsdata)), 2)
-            if oldprogress == progress:
-                pass
-            else:
-                print(progress)
-            oldprogress = progress
+            # progress = round((i / len(gpsdata)), 2)
+            # if oldprogress == progress:
+            #     pass
+            # else:
+            #     print(progress)
+            # oldprogress = progress
 
             temp.append(gpsdata[i])
             if len(temp) > avg_half_window * 2:
@@ -73,23 +73,23 @@ def filter_median(gpsdata):
     return returndata
 
 
-def data_diffs(data):
-    returnarray = []
-    for i in range(1, len(data)):
-        diff = data[i] - data[i - 1]
-        returnarray.append(diff)
-    return returnarray
+# def data_diffs(data):
+#     returnarray = []
+#     for i in range(1, len(data)):
+#         diff = data[i] - data[i - 1]
+#         returnarray.append(diff)
+#     return returnarray
 
 
-def detrend(data, average):
-    # Data is larger than the average by 2*avg_half_window.
-    data = data[avg_half_window:]
-    data = data[:-avg_half_window]
-    returnarray = []
-    for i in range(0, len(average)):
-        diff = data[i] - average[i]
-        returnarray.append(diff)
-    return returnarray
+# def detrend(data, average):
+#     # Data is larger than the average by 2*avg_half_window.
+#     data = data[avg_half_window:]
+#     data = data[:-avg_half_window]
+#     returnarray = []
+#     for i in range(0, len(average)):
+#         diff = data[i] - average[i]
+#         returnarray.append(diff)
+#     return returnarray
 
 
 def posix2utc(posixtime, timeformat):
@@ -130,9 +130,12 @@ def plot_stacks(gpsdata, timestamps, label, pencolour):
     width = 1500
     height = 550
 
-    data = go.Scatter(x=timestamps, y=gpsdata, mode='lines',
-                                     line=dict(color=pencolour, width=1))
+    data = go.Scatter()
     fig =  go.Figure(data)
+
+    for item in gpsdata:
+        print(len(item))
+        fig.add_scatter(x=timestamps, y=item, mode='lines', line=dict(color=pencolour, width=1))
 
     title = label
     fig.update_layout(width=width, height=height, title=title,
@@ -146,18 +149,18 @@ def plot_stacks(gpsdata, timestamps, label, pencolour):
     fig.write_image(savefile)
 
 
-def clean_data(dataset, lower_limit, upper_limit):
-    returnarray = []
-    for item in dataset:
-        if item > upper_limit:
-            print("Over upper limit")
-            returnarray.append(None)
-        elif item < lower_limit:
-            print("Under lower limit")
-            returnarray.append(None)
-        else:
-            returnarray.append(item)
-    return returnarray
+# def clean_data(dataset, lower_limit, upper_limit):
+#     returnarray = []
+#     for item in dataset:
+#         if item > upper_limit:
+#             print("Over upper limit")
+#             returnarray.append(None)
+#         elif item < lower_limit:
+#             print("Under lower limit")
+#             returnarray.append(None)
+#         else:
+#             returnarray.append(item)
+#     return returnarray
 
 
 def split_data(gpsdata):
@@ -171,6 +174,8 @@ def split_data(gpsdata):
             temp = []
         else:
             temp.append(gpsdata[i])
+    if len(temp) > 0:
+        stacks.append(temp)
     return stacks
 
 
@@ -194,11 +199,27 @@ def wrapper(db_data, label):
 
     datetimes = datetimes[avg_half_window:]
     datetimes = datetimes[:-avg_half_window]
+    datetimes = datetimes[:86400]
 
     latitudes = filter_median(latitudes)
     latitudes = split_data(latitudes)
     l = label + "_latitude"
-    plot_stacks(latitudes, l, "#200050")
+    plot_stacks(latitudes, datetimes, l, "#200050")
+
+    longitudes = filter_median(longitudes)
+    longitudes = split_data(longitudes)
+    l = label + "_longitude"
+    plot_stacks(longitudes, datetimes, l, "#200050")
+
+    altitude = filter_median(altitude)
+    altitude = split_data(altitude)
+    l = label + "_altitude"
+    plot_stacks(altitude, datetimes, l, "#200050")
+
+    hdop = filter_median(hdop)
+    hdop = split_data(hdop)
+    l = label + "_hdop"
+    plot_stacks(hdop, datetimes, l, "#200050")
 
     # print("Processing GPS latitude data")
     # # latitudes = clean_data(latitudes, 4551, 4553)
@@ -226,4 +247,3 @@ def wrapper(db_data, label):
     endtime = time.time()
     elapsed = (endtime - starttime) / 60
     print("Processing time: ", elapsed)
-    print(len(latitudes))
