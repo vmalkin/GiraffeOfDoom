@@ -183,3 +183,4 @@ def wrapper(db_data, label):
     endtime = time.time()
     elapsed = (endtime - starttime) / 60
     print("Processing time: ", elapsed)
+    print(len(latitudes))
