@@ -124,6 +124,28 @@ def plot(gpsdata, timestamps, label, pencolour):
     fig.write_image(savefile)
 
 
+def plot_stacks(gpsdata, timestamps, label, pencolour):
+    papercolour = "#d0d0d0"
+    gridcolour = "#c0c0c0"
+    width = 1500
+    height = 550
+
+    data = go.Scatter(x=timestamps, y=gpsdata, mode='lines',
+                                     line=dict(color=pencolour, width=1))
+    fig =  go.Figure(data)
+
+    title = label
+    fig.update_layout(width=width, height=height, title=title,
+                      xaxis_title="Date/time UTC<br><sub>http://DunedinAurora.nz</sub>")
+    fig.update_xaxes(showgrid=True, gridwidth=1, gridcolor=gridcolour, nticks=24, tickangle=50)
+    fig.update_yaxes(showgrid=True, gridwidth=1, gridcolor=gridcolour)
+    fig.update_layout(font=dict(size=16, color="#202020"), title_font_size=18, )
+    fig.update_layout(plot_bgcolor=papercolour,
+                      paper_bgcolor=papercolour)
+    savefile = label + ".jpg"
+    fig.write_image(savefile)
+
+
 def clean_data(dataset, lower_limit, upper_limit):
     returnarray = []
     for item in dataset:
@@ -136,6 +158,22 @@ def clean_data(dataset, lower_limit, upper_limit):
         else:
             returnarray.append(item)
     return returnarray
+
+
+def split_data(gpsdata):
+    # split data into 24 hour chunks
+    daylength = 86400
+    stacks = []
+    temp = []
+    for i in range(0, len(gpsdata)):
+        if i % daylength == 0:
+            stacks.append(temp)
+            temp = []
+        else:
+            temp.append(gpsdata[i])
+    return stacks
+
+
 
 def wrapper(db_data, label):
     starttime = time.time()
@@ -157,28 +195,33 @@ def wrapper(db_data, label):
     datetimes = datetimes[avg_half_window:]
     datetimes = datetimes[:-avg_half_window]
 
-    print("Processing GPS latitude data")
-    # latitudes = clean_data(latitudes, 4551, 4553)
     latitudes = filter_median(latitudes)
+    latitudes = split_data(latitudes)
     l = label + "_latitude"
-    plot(latitudes, datetimes, l, "#200050")
+    plot_stacks(latitudes, l, "#200050")
 
-    print("Processing GPS longitude data")
-    # longitudes = clean_data(longitudes, 17027, 17030)
-    longitudes = filter_median(longitudes)
-    l = label + "_longitude"
-    plot(longitudes, datetimes, l, "#200050")
-
-    print("Processing GPS altitude data")
-    # altitude = clean_data(altitude, 150, 250)
-    altitude = filter_median(altitude)
-    l = label + " altitude"
-    plot(altitude, datetimes, l, "#200050")
-
-    l = label + "_HDOP"
-    # hdop = clean_data(hdop, 0, 30)
-    hdop = filter_median(hdop)
-    plot(hdop, datetimes, l, "#200050")
+    # print("Processing GPS latitude data")
+    # # latitudes = clean_data(latitudes, 4551, 4553)
+    # latitudes = filter_median(latitudes)
+    # l = label + "_latitude"
+    # plot(latitudes, datetimes, l, "#200050")
+    #
+    # print("Processing GPS longitude data")
+    # # longitudes = clean_data(longitudes, 17027, 17030)
+    # longitudes = filter_median(longitudes)
+    # l = label + "_longitude"
+    # plot(longitudes, datetimes, l, "#200050")
+    #
+    # print("Processing GPS altitude data")
+    # # altitude = clean_data(altitude, 150, 250)
+    # altitude = filter_median(altitude)
+    # l = label + " altitude"
+    # plot(altitude, datetimes, l, "#200050")
+    #
+    # l = label + "_HDOP"
+    # # hdop = clean_data(hdop, 0, 30)
+    # hdop = filter_median(hdop)
+    # plot(hdop, datetimes, l, "#200050")
 
     endtime = time.time()
     elapsed = (endtime - starttime) / 60
