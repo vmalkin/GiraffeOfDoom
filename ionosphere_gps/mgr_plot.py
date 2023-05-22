@@ -1,5 +1,5 @@
 import time
-
+import secrets
 from plotly import graph_objects as go
 import datetime
 from statistics import mean, stdev, median
@@ -129,13 +129,19 @@ def plot_stacks(gpsdata, timestamps, label, pencolour):
     gridcolour = "#c0c0c0"
     width = 1500
     height = 550
-
+    colours = ["#fd4213",
+               "#965297",
+               "#029edd",
+               "#0d63c1",
+               "#042760",
+               "#ffffff",]
     data = go.Scatter()
     fig =  go.Figure(data)
 
-    for item in gpsdata:
-        print(len(item))
-        fig.add_scatter(x=timestamps, y=item, mode='lines', line=dict(color=pencolour, width=1))
+
+    for i in range(0, len(gpsdata)):
+
+        fig.add_scatter(x=timestamps, y=gpsdata[i], mode='lines', line=dict(color=colours[i], width=2))
 
     title = label
     fig.update_layout(width=width, height=height, title=title,
@@ -168,14 +174,17 @@ def split_data(gpsdata):
     daylength = 86400
     stacks = []
     temp = []
-    for i in range(0, len(gpsdata)):
+    # Start at 1 so the first pass thru doesn't create an empty array
+    for i in range(1, len(gpsdata)):
+        temp.append(gpsdata[i])
         if i % daylength == 0:
             stacks.append(temp)
             temp = []
-        else:
-            temp.append(gpsdata[i])
-    if len(temp) > 0:
-        stacks.append(temp)
+        if i % daylength != 0:
+            if i == len(gpsdata) - 1:
+                stacks.append(temp)
+    # for item in stacks:
+    #     print(len(item))
     return stacks
 
 
