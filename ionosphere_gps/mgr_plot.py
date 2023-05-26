@@ -182,6 +182,8 @@ def split_data(gpsdata):
             temp = []
         if i % daylength != 0:
             if i == len(gpsdata) - 1:
+                # We have gotten to the end of the array with a partially filled
+                # temp array. Append this to stacks
                 stacks.append(temp)
     # The first item in stacks is an empty array. Remove it
     stacks.pop(0)
