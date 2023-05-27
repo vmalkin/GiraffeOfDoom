@@ -102,6 +102,7 @@ def posix2utc(posixtime, timeformat):
 #     utc_time = time.strptime(utcstring, timeformat)
 #     epoch_time = timegm(utc_time)
 #     return epoch_time
+
 def plot(gpsdata, timestamps, label, pencolour):
     papercolour = "#d0d0d0"
     gridcolour = "#c0c0c0"
@@ -189,6 +190,20 @@ def split_data(gpsdata):
     stacks.pop(0)
     return stacks
 
+def create_avg_series(split_data):
+    temparray = []
+    for i in range(0, 86400):
+        temparray.append([])
+
+    for i in range(0, len(split_data)):
+        for j in range(0, len(split_data[i])):
+            dp = split_data[i][j]
+            temparray[j].append(dp)
+    returnarray = []
+    for item in temparray:
+        returnarray.append(mean(item))
+
+    return returnarray
 
 
 def wrapper(db_data, label):
@@ -214,23 +229,25 @@ def wrapper(db_data, label):
 
     latitudes = filter_median(latitudes)
     latitudes = split_data(latitudes)
+    avg_series = create_avg_series(latitudes)
+    latitudes.append(avg_series)
     l = label + "_latitude"
     plot_stacks(latitudes, datetimes, l, "#200050")
 
-    longitudes = filter_median(longitudes)
-    longitudes = split_data(longitudes)
-    l = label + "_longitude"
-    plot_stacks(longitudes, datetimes, l, "#200050")
-
-    altitude = filter_median(altitude)
-    altitude = split_data(altitude)
-    l = label + "_altitude"
-    plot_stacks(altitude, datetimes, l, "#200050")
-
-    hdop = filter_median(hdop)
-    hdop = split_data(hdop)
-    l = label + "_hdop"
-    plot_stacks(hdop, datetimes, l, "#200050")
+    # longitudes = filter_median(longitudes)
+    # longitudes = split_data(longitudes)
+    # l = label + "_longitude"
+    # plot_stacks(avg_series, datetimes, l, "#200050")
+    #
+    # altitude = filter_median(altitude)
+    # altitude = split_data(altitude)
+    # l = label + "_altitude"
+    # plot_stacks(altitude, datetimes, l, "#200050")
+    #
+    # hdop = filter_median(hdop)
+    # hdop = split_data(hdop)
+    # l = label + "_hdop"
+    # plot_stacks(hdop, datetimes, l, "#200050")
 
     # print("Processing GPS latitude data")
     # # latitudes = clean_data(latitudes, 4551, 4553)
