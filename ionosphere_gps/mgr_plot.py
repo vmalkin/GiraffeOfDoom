@@ -4,6 +4,7 @@ from plotly import graph_objects as go
 import datetime
 from statistics import mean, stdev, median
 avg_half_window = 90
+median_half_window = 90
 
 
 def get_mean(data):
@@ -25,43 +26,35 @@ def get_stdev(data):
     return returnvalue
 
 
-# def filter_avg(gpsdata):
-#     returndata = []
-#     temp = []
-#     oldprogress = 0
-#     if len(gpsdata) > 2 * avg_half_window:
-#         for i in range(0, len(gpsdata)):
-#             progress = round((i / len(gpsdata)), 2)
-#             if oldprogress == progress:
-#                 pass
-#             else:
-#                 print(progress)
-#             oldprogress = progress
-#
-#             temp.append(gpsdata[i])
-#             if len(temp) > avg_half_window * 2:
-#                 temp.pop(0)
-#                 dp = mean(temp)
-#                 returndata.append(dp)
-#     else:
-#         returndata = gpsdata
-#
-#     return returndata
-
-
-def filter_median(gpsdata):
+def filter_avg(gpsdata):
     returndata = []
     temp = []
     oldprogress = 0
     if len(gpsdata) > 2 * avg_half_window:
         for i in range(0, len(gpsdata)):
-            # progress = round((i / len(gpsdata)), 2)
-            # if oldprogress == progress:
-            #     pass
-            # else:
-            #     print(progress)
-            # oldprogress = progress
+            progress = round((i / len(gpsdata)), 2)
+            if oldprogress == progress:
+                pass
+            else:
+                print("averaging: ", progress)
+            oldprogress = progress
 
+            temp.append(gpsdata[i])
+            if len(temp) > avg_half_window * 2:
+                temp.pop(0)
+                dp = mean(temp)
+                returndata.append(dp)
+    else:
+        returndata = gpsdata
+
+    return returndata
+
+
+def filter_median(gpsdata):
+    returndata = []
+    temp = []
+    if len(gpsdata) > 2 * median_half_window:
+        for i in range(0, len(gpsdata)):
             temp.append(gpsdata[i])
             if len(temp) > avg_half_window * 2:
                 temp.pop(0)
@@ -81,15 +74,17 @@ def filter_median(gpsdata):
 #     return returnarray
 
 
-# def detrend(data, average):
-#     # Data is larger than the average by 2*avg_half_window.
-#     data = data[avg_half_window:]
-#     data = data[:-avg_half_window]
-#     returnarray = []
-#     for i in range(0, len(average)):
-#         diff = data[i] - average[i]
-#         returnarray.append(diff)
-#     return returnarray
+def detrend(data, average):
+    # ensure data arrays are same length - data is usually longer.
+    diff = len(data) - len(average)
+    diff = int(diff / 2)
+    data = data[diff:]
+    data = data[:-diff]
+    returnarray = []
+    for i in range(0, len(average)):
+        diff = data[i] - average[i]
+        returnarray.append(diff)
+    return returnarray
 
 
 def posix2utc(posixtime, timeformat):
@@ -125,87 +120,6 @@ def plot(gpsdata, timestamps, label, pencolour):
     fig.write_image(savefile)
 
 
-def plot_stacks(gpsdata, timestamps, label, pencolour):
-    papercolour = "#d0d0d0"
-    gridcolour = "#c0c0c0"
-    width = 1500
-    height = 550
-    colours = ["#fd4213",
-               "#965297",
-               "#029edd",
-               "#0d63c1",
-               "#042760",
-               "#ffffff",]
-    data = go.Scatter()
-    fig =  go.Figure(data)
-
-
-    for i in range(0, len(gpsdata)):
-
-        fig.add_scatter(x=timestamps, y=gpsdata[i], mode='lines', line=dict(color=colours[i], width=2))
-
-    title = label
-    fig.update_layout(width=width, height=height, title=title,
-                      xaxis_title="Date/time UTC<br><sub>http://DunedinAurora.nz</sub>")
-    fig.update_xaxes(showgrid=True, gridwidth=1, gridcolor=gridcolour, nticks=24, tickangle=50)
-    fig.update_yaxes(showgrid=True, gridwidth=1, gridcolor=gridcolour)
-    fig.update_layout(font=dict(size=16, color="#202020"), title_font_size=18, )
-    fig.update_layout(plot_bgcolor=papercolour,
-                      paper_bgcolor=papercolour)
-    savefile = label + ".jpg"
-    fig.write_image(savefile)
-
-
-# def clean_data(dataset, lower_limit, upper_limit):
-#     returnarray = []
-#     for item in dataset:
-#         if item > upper_limit:
-#             print("Over upper limit")
-#             returnarray.append(None)
-#         elif item < lower_limit:
-#             print("Under lower limit")
-#             returnarray.append(None)
-#         else:
-#             returnarray.append(item)
-#     return returnarray
-
-
-def split_data(gpsdata):
-    # split data into 24 hour chunks
-    daylength = 86400
-    stacks = []
-    temp = []
-
-    for i in range(0, len(gpsdata)):
-        temp.append(gpsdata[i])
-        if i % daylength == 0:
-            stacks.append(temp)
-            temp = []
-        if i % daylength != 0:
-            if i == len(gpsdata) - 1:
-                # We have gotten to the end of the array with a partially filled
-                # temp array. Append this to stacks
-                stacks.append(temp)
-    # The first item in stacks is an empty array. Remove it
-    stacks.pop(0)
-    return stacks
-
-def create_avg_series(split_data):
-    temparray = []
-    for i in range(0, 86400):
-        temparray.append([])
-
-    for i in range(0, len(split_data)):
-        for j in range(0, len(split_data[i])):
-            dp = split_data[i][j]
-            temparray[j].append(dp)
-    returnarray = []
-    for item in temparray:
-        returnarray.append(mean(item))
-
-    return returnarray
-
-
 def wrapper(db_data, label):
     starttime = time.time()
     # ['1683423236', '4552.29376', '17029.07', '2', '10', '1.06', '196.4']
@@ -225,15 +139,12 @@ def wrapper(db_data, label):
 
     datetimes = datetimes[avg_half_window:]
     datetimes = datetimes[:-avg_half_window]
-    datetimes = datetimes[:86400]
 
     latitudes = filter_median(latitudes)
-    latitudes = split_data(latitudes)
-    avg_series = create_avg_series(latitudes)
-
-    latitudes.append(avg_series)
+    avg_latitudes = filter_avg(latitudes)
+    dtrend_lats = detrend(latitudes, avg_latitudes)
     l = label + "_latitude"
-    plot_stacks(latitudes, datetimes, l, "#200050")
+    plot(dtrend_lats, datetimes, l, "#200050")
 
     # longitudes = filter_median(longitudes)
     # longitudes = split_data(longitudes)
