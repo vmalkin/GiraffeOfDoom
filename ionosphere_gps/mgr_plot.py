@@ -3,8 +3,10 @@ import secrets
 from plotly import graph_objects as go
 import datetime
 from statistics import mean, stdev, median
-avg_half_window = 90
-median_half_window = 90
+# one and a half hours is 2700 lots of 2 seconds
+readings_per_minute = 60
+avg_half_window = int(readings_per_minute * 60 * 1.5)
+median_half_window = int(readings_per_minute * 2)
 
 
 def get_mean(data):
