@@ -145,46 +145,24 @@ def wrapper(db_data, label):
     latitudes = filter_median(latitudes)
     avg_latitudes = filter_avg(latitudes)
     dtrend_lats = detrend(latitudes, avg_latitudes)
-    l = label + "_latitude"
+    l = label + "_dlat"
     plot(dtrend_lats, datetimes, l, "#200050")
 
-    # longitudes = filter_median(longitudes)
-    # longitudes = split_data(longitudes)
-    # l = label + "_longitude"
-    # plot_stacks(avg_series, datetimes, l, "#200050")
-    #
-    # altitude = filter_median(altitude)
-    # altitude = split_data(altitude)
-    # l = label + "_altitude"
-    # plot_stacks(altitude, datetimes, l, "#200050")
-    #
-    # hdop = filter_median(hdop)
-    # hdop = split_data(hdop)
-    # l = label + "_hdop"
-    # plot_stacks(hdop, datetimes, l, "#200050")
+    longitudes = filter_median(longitudes)
+    avg_longitudes = filter_avg(longitudes)
+    dtrend_longs = detrend(longitudes, avg_longitudes)
+    l = label + "_dlong"
+    plot(dtrend_longs, datetimes, l, "#200050")
 
-    # print("Processing GPS latitude data")
-    # # latitudes = clean_data(latitudes, 4551, 4553)
-    # latitudes = filter_median(latitudes)
-    # l = label + "_latitude"
-    # plot(latitudes, datetimes, l, "#200050")
-    #
-    # print("Processing GPS longitude data")
-    # # longitudes = clean_data(longitudes, 17027, 17030)
-    # longitudes = filter_median(longitudes)
-    # l = label + "_longitude"
-    # plot(longitudes, datetimes, l, "#200050")
-    #
-    # print("Processing GPS altitude data")
-    # # altitude = clean_data(altitude, 150, 250)
-    # altitude = filter_median(altitude)
-    # l = label + " altitude"
-    # plot(altitude, datetimes, l, "#200050")
-    #
-    # l = label + "_HDOP"
-    # # hdop = clean_data(hdop, 0, 30)
-    # hdop = filter_median(hdop)
-    # plot(hdop, datetimes, l, "#200050")
+    altitude = filter_median(altitude)
+    avg_altitude = filter_avg(altitude)
+    dtrend_alts = detrend(altitude, avg_altitude)
+    l = label + "_dalts"
+    plot(dtrend_alts, datetimes, l, "#200050")
+
+    l = label + "_HDOP"
+    hdop = filter_median(hdop)
+    plot(hdop, datetimes, l, "#200050")
 
     endtime = time.time()
     elapsed = (endtime - starttime) / 60
