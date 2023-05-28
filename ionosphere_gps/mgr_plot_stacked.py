@@ -230,7 +230,7 @@ def wrapper(db_data, label):
     latitudes = filter_median(latitudes)
     latitudes = split_data(latitudes)
     avg_series = create_avg_series(latitudes)
-
+    
     latitudes.append(avg_series)
     l = label + "_latitude"
     plot_stacks(latitudes, datetimes, l, "#200050")
