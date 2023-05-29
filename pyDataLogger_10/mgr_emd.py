@@ -19,10 +19,10 @@ def getposixtime():
     return timevalue
 
 
-def database_get_data(dba):
+def database_get_data(dba, starttime):
     tempdata = []
     # Grab a bit more than a day so we can do the running average with a bit of lead data
-    starttime = getposixtime() - 86400
+    # starttime = getposixtime() - 86400
     db = sqlite3.connect(dba)
     try:
         cursor = db.cursor()
@@ -62,9 +62,10 @@ def plot_data(imf, dates, filename):
     fig.update_yaxes(showgrid=True, gridwidth=1, gridcolor=gridcolour,
                      zeroline=True, zerolinewidth=2, zerolinecolor=gridcolour)
     fig.write_image(filename)
+    fig.write_html("plot_emd.html")
 
-def wrapper(database, publishdirectory):
-    readings = database_get_data(database)
+def wrapper(database, starttime, publishdirectory):
+    readings = database_get_data(database, starttime)
 
     dt_dates = []
     dt_readings = []

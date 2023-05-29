@@ -81,10 +81,10 @@ def getposixtime():
     return timevalue
 
 
-def database_get_data(dba):
+def database_get_data(dba, starttime):
     tempdata = []
     # Grab a bit more than a day so we can do the running average with a bit of lead data
-    starttime = getposixtime() - 91800
+    # starttime = getposixtime() - 91800
     db = sqlite3.connect(dba)
     try:
         cursor = db.cursor()
@@ -111,8 +111,8 @@ def remove_zeros(inputarray):
     return outputarray
 
 
-def wrapper(database, publishdirectory):
-    readings = database_get_data(database)
+def wrapper(database, starttime, publishdirectory):
+    readings = database_get_data(database, starttime)
 
     if len(readings) > halfwindow_average * 2:
         # Create datapont array

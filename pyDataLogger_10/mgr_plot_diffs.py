@@ -42,9 +42,9 @@ def getposixtime():
     return timevalue
 
 
-def database_get_data(dba):
+def database_get_data(dba, starttime):
     tempdata = []
-    starttime = getposixtime() - 86400
+    # starttime = getposixtime() - 86400
     db = sqlite3.connect(dba)
     try:
         cursor = db.cursor()
@@ -62,11 +62,12 @@ def database_get_data(dba):
 
 
 
-def wrapper(database, publishdirectory):
+
+def wrapper(database, starttime, publishdirectory):
     # THE DATALIST IS IN THE FORMAT "posixtime, data" We will need to split this into two lists
     # Dates and actual data.
 
-    readings = database_get_data(database)
+    readings = database_get_data(database, starttime)
 
     if len(readings) > half_window:
         savefile_name = publishdirectory + os.sep + "plot_dhdt.jpg"
@@ -92,7 +93,7 @@ def wrapper(database, publishdirectory):
         # ########## Filtering and Adjustment before Plotting ##########
 
         try:
-            print("*** Diurnal Magnetogram: Created")
+            # print("*** dH/dt Magnetogram: Created")
             plot(dt_dates, dt_data, savefile_name)
         except:
             print("!!! Diurnal Magnetogram: FAILED to plot magnetogram")

@@ -35,6 +35,7 @@ class ChartThread(Thread):
 
     def run(self):
         while True:
+            starttime = getposixtime() - 86400
             try:
                 # csv logfile for the last 24 hours
                 print("*** Logger: Start")

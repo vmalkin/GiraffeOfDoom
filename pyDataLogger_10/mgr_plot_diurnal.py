@@ -90,7 +90,7 @@ def wrapper(database, starttime, publishdirectory):
         # ########## Filtering and Adjustment before Plotting ##########
 
         # try:
-        print("*** Diurnal Magnetogram: Created")
+        # print("*** Diurnal Magnetogram: Created")
         plot(dt_dates, dt_data, savefile_name)
         # except:
         #     print("!!! Diurnal Magnetogram: FAILED to plot magnetogram")
