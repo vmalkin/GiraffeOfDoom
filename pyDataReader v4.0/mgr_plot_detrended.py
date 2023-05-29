@@ -112,21 +112,7 @@ def remove_zeros(inputarray):
 
 
 def wrapper(database, publishdirectory):
-    filename = database.split(".")
-    if filename[1] == "csv":
-        readings = []
-        with open(database, "r") as d:
-            for item in d:
-                dd = item.strip()
-                ddd = dd.split(",")
-                date = int(float(ddd[0]))
-                data = float(ddd[1])
-                dp = []
-                dp.append(date)
-                dp.append(data)
-                readings.append(dp)
-    else:
-        readings = database_get_data(database)
+    readings = database_get_data(database)
 
     if len(readings) > halfwindow_average * 2:
         # Create datapont array

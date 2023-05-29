@@ -66,21 +66,8 @@ def wrapper(database, publishdirectory):
     print("*** Fast Fourier: START")
     # THE DATALIST IS IN THE FORMAT "posixtime, data" We will need to split this into two lists
     # Dates and actual data.
-    filename = database.split(".")
-    if filename[1] == "csv":
-        readings = []
-        with open(database, "r") as d:
-            for item in d:
-                dd = item.strip()
-                ddd = dd.split(",")
-                date = int(float(ddd[0]))
-                data = float(ddd[1])
-                dp = []
-                dp.append(date)
-                dp.append(data)
-                readings.append(dp)
-    else:
-        readings = database_get_data(database)
+
+    readings = database_get_data(database)
 
     t = []
     for item in readings:

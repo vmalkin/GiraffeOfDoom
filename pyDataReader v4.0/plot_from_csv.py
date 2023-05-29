@@ -3,12 +3,15 @@ import mgr_plot_diffs
 import mgr_emd
 import mgr_plot_detrended
 import constants as k
+import standard_stuff
 
 station_id = k.station_id
 database = k.database
 logfile_dir = k.logfile_dir
 publish_dir = k.publish_dir
-filename = "data.csv"
+filename = "dr01_24hr.csv"
+
+
 
 mgr_plot_diurnal.wrapper(filename, publish_dir)
 mgr_plot_diffs.wrapper(filename, publish_dir)
