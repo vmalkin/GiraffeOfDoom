@@ -62,7 +62,7 @@ def plot_data(imf, dates, filename):
     fig.update_yaxes(showgrid=True, gridwidth=1, gridcolor=gridcolour,
                      zeroline=True, zerolinewidth=2, zerolinecolor=gridcolour)
     fig.write_image(filename)
-    fig.write_html("plot_emd.html")
+    fig.write_html("publish/plot_emd.html")
 
 def wrapper(database, starttime, publishdirectory):
     readings = database_get_data(database, starttime)
