@@ -194,24 +194,32 @@ def wrapper(db_data, label):
     latitudes = filter_median(latitudes)
     avg_latitudes = filter_avg(latitudes)
     dtrend_lats = detrend(latitudes, avg_latitudes)
+    split_lat = split_data(dtrend_lats)
     l = label + "_dlat"
-    plot(dtrend_lats, datetimes, l, "#200050")
+    # plot(dtrend_lats, datetimes, l, "#200050")
+    plot_stacks(split_lat, datetimes, l, "#200050")
 
-    # longitudes = filter_median(longitudes)
-    # avg_longitudes = filter_avg(longitudes)
-    # dtrend_longs = detrend(longitudes, avg_longitudes)
-    # l = label + "_dlong"
+    longitudes = filter_median(longitudes)
+    avg_longitudes = filter_avg(longitudes)
+    dtrend_longs = detrend(longitudes, avg_longitudes)
+    split_long = split_data(dtrend_longs)
+    l = label + "_dlong"
     # plot(dtrend_longs, datetimes, l, "#200050")
-    #
-    # altitude = filter_median(altitude)
-    # avg_altitude = filter_avg(altitude)
-    # dtrend_alts = detrend(altitude, avg_altitude)
-    # l = label + "_dalts"
+    plot_stacks(split_long, datetimes, l, "#200050")
+
+    altitude = filter_median(altitude)
+    avg_altitude = filter_avg(altitude)
+    dtrend_alts = detrend(altitude, avg_altitude)
+    split_alt = split_data(dtrend_alts)
+    l = label + "_dalts"
     # plot(dtrend_alts, datetimes, l, "#200050")
-    #
-    # l = label + "_HDOP"
-    # hdop = filter_median(hdop)
+    plot_stacks(split_alt, datetimes, l, "#200050")
+
+    l = label + "_HDOP"
+    hdop = filter_median(hdop)
+    split_hdop = split_data(hdop)
     # plot(hdop, datetimes, l, "#200050")
+    plot_stacks(split_hdop, datetimes, l, "#200050")
 
     endtime = time.time()
     elapsed = (endtime - starttime) / 60
