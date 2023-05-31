@@ -122,6 +122,56 @@ def plot(gpsdata, timestamps, label, pencolour):
     fig.write_image(savefile)
 
 
+def plot_stacks(gpsdata, timestamps, label, pencolour):
+    papercolour = "#d0d0d0"
+    gridcolour = "#c0c0c0"
+    width = 1500
+    height = 550
+    colours = ["#fd4213",
+               "#965297",
+               "#029edd",
+               "#0d63c1",
+               "#042760",
+               "#ffffff",]
+    data = go.Scatter()
+    fig =  go.Figure(data)
+
+
+    for i in range(0, len(gpsdata)):
+
+        fig.add_scatter(x=timestamps, y=gpsdata[i], mode='lines', line=dict(color=colours[i], width=2))
+
+    title = label
+    fig.update_layout(width=width, height=height, title=title,
+                      xaxis_title="Date/time UTC<br><sub>http://DunedinAurora.nz</sub>")
+    fig.update_xaxes(showgrid=True, gridwidth=1, gridcolor=gridcolour, nticks=24, tickangle=50)
+    fig.update_yaxes(showgrid=True, gridwidth=1, gridcolor=gridcolour)
+    fig.update_layout(font=dict(size=16, color="#202020"), title_font_size=18, )
+    fig.update_layout(plot_bgcolor=papercolour,
+                      paper_bgcolor=papercolour)
+    savefile = label + ".jpg"
+    fig.write_image(savefile)
+
+
+def split_data(gpsdata):
+    # split data into 24 hour chunks
+    daylength = 86400
+    stacks = []
+    temp = []
+    # Start at 1 so the first pass thru doesn't create an empty array
+    for i in range(1, len(gpsdata)):
+        temp.append(gpsdata[i])
+        if i % daylength == 0:
+            stacks.append(temp)
+            temp = []
+        if i % daylength != 0:
+            if i == len(gpsdata) - 1:
+                stacks.append(temp)
+    # for item in stacks:
+    #     print(len(item))
+    return stacks
+
+
 def wrapper(db_data, label):
     starttime = time.time()
     # ['1683423236', '4552.29376', '17029.07', '2', '10', '1.06', '196.4']
@@ -139,8 +189,7 @@ def wrapper(db_data, label):
         hdop.append(float(item[5]))
         altitude.append(float(item[6]))
 
-    datetimes = datetimes[avg_half_window:]
-    datetimes = datetimes[:-avg_half_window]
+    datetimes = datetimes[avg_half_window:-avg_half_window]
 
     latitudes = filter_median(latitudes)
     avg_latitudes = filter_avg(latitudes)
@@ -148,21 +197,21 @@ def wrapper(db_data, label):
     l = label + "_dlat"
     plot(dtrend_lats, datetimes, l, "#200050")
 
-    longitudes = filter_median(longitudes)
-    avg_longitudes = filter_avg(longitudes)
-    dtrend_longs = detrend(longitudes, avg_longitudes)
-    l = label + "_dlong"
-    plot(dtrend_longs, datetimes, l, "#200050")
-
-    altitude = filter_median(altitude)
-    avg_altitude = filter_avg(altitude)
-    dtrend_alts = detrend(altitude, avg_altitude)
-    l = label + "_dalts"
-    plot(dtrend_alts, datetimes, l, "#200050")
-
-    l = label + "_HDOP"
-    hdop = filter_median(hdop)
-    plot(hdop, datetimes, l, "#200050")
+    # longitudes = filter_median(longitudes)
+    # avg_longitudes = filter_avg(longitudes)
+    # dtrend_longs = detrend(longitudes, avg_longitudes)
+    # l = label + "_dlong"
+    # plot(dtrend_longs, datetimes, l, "#200050")
+    #
+    # altitude = filter_median(altitude)
+    # avg_altitude = filter_avg(altitude)
+    # dtrend_alts = detrend(altitude, avg_altitude)
+    # l = label + "_dalts"
+    # plot(dtrend_alts, datetimes, l, "#200050")
+    #
+    # l = label + "_HDOP"
+    # hdop = filter_median(hdop)
+    # plot(hdop, datetimes, l, "#200050")
 
     endtime = time.time()
     elapsed = (endtime - starttime) / 60
