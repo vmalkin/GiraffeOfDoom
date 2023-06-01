@@ -78,6 +78,7 @@ def wrapper(database, starttime, publishdirectory):
         reading = round(item[1], 4)
         dt_readings.append(reading)
 
+    print(len(dt_dates), len(dt_readings))
     n = np.array(dt_readings, dtype='float')
     sample_rate = len(n)
     # imf = emd.sift.iterated_mask_sift(n)
