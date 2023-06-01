@@ -14,6 +14,7 @@ filename = "dr01_24hr.csv"
 publish_dir = k.publish_dir
 
 # gpsdb = sqlite3.connect(database)
+# # gpsdb = sqlite3.connect(":memory:")
 # db = gpsdb.cursor()
 # db.execute('drop table if exists data;')
 # db.execute('create table data ('
@@ -48,7 +49,7 @@ publish_dir = k.publish_dir
 #     db.commit()
 # db.close()
 
-mgr_plot_diurnal.wrapper(database, 0, publish_dir)
-mgr_plot_diffs.wrapper(database, 0, publish_dir)
-mgr_plot_detrended.wrapper(database, 0, publish_dir)
+# mgr_plot_diurnal.wrapper(database, 0, publish_dir)
+# mgr_plot_diffs.wrapper(database, 0, publish_dir)
+# mgr_plot_detrended.wrapper(database, 0, publish_dir)
 mgr_emd.wrapper(database, 0, publish_dir)
