@@ -32,7 +32,7 @@ class QueryProcessor(Thread):
             mgr_plot.wrapper(result, "GPS")
 
             print("******************************* End Query Processor")
-            time.sleep((60 * 60))
+            time.sleep((3600))
 
 
 # def posix2utc(posixtime, timeformat):

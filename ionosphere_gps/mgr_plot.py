@@ -5,7 +5,7 @@ import datetime
 from statistics import mean, stdev, median
 # one and a half hours is 2700 lots of 2 seconds
 readings_per_minute = 60
-avg_half_window = int(readings_per_minute * 60 * 1.5)
+avg_half_window = int(readings_per_minute * 60 * 1.0)
 median_half_window = int(readings_per_minute * 2)
 
 
