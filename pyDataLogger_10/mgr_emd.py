@@ -51,7 +51,7 @@ def plot_data(imf, dates, filename):
 
     iters = len(imf[0])
     for i in range(0, iters):
-        fig.add_trace(go.Scatter(y=imf[:, i], mode="lines", line=dict(color=pencolour, width=2)),
+        fig.add_trace(go.Scatter(x=dates, y=imf[:, i], mode="lines", line=dict(color=pencolour, width=2)),
                       row=i+1, col=1)
         # fig.add_trace(go.Scatter(x=dates, y=imf[:, i], mode="lines", line=dict(color=pencolour, width=2)),
         #               row=i+1, col=1)
@@ -73,7 +73,7 @@ def wrapper(database, starttime, publishdirectory):
     dt_dates = []
     dt_readings = []
     for item in readings:
-        date = posix2utc(item[0], '%Y-%m-%d %H:%M')
+        date = posix2utc(item[0], '%Y-%m-%d %H:%M:%S')
         dt_dates.append(date)
         reading = round(item[1], 4)
         dt_readings.append(reading)
