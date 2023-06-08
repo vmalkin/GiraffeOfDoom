@@ -44,7 +44,7 @@ cursor = db.cursor()
 for i in range(0, len(dataarray)):
     cursor.execute("insert into data (posixtime, datavalue) values (?,?);", [dataarray[i][0], dataarray[i][1]] )
     if i / 1000 == 0:
-        pcent = round((i / 1000), 2)
+        pcent = round((i / 1000), 3)
         print("Completion: ", pcent)
     db.commit()
 db.close()
