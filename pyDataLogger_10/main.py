@@ -35,6 +35,7 @@ class ChartThread(Thread):
 
     def run(self):
         while True:
+            beginjob = time.time()
             starttime = getposixtime() - 86400
             try:
                 # csv logfile for the last 24 hours
@@ -84,6 +85,9 @@ class ChartThread(Thread):
             # Brendan Davies Aurora data
             # Chart data every five minutes
             print("*** PLOTS: FINISHED")
+            endjob = time.time()
+            elapsed = (endjob - beginjob) / 60
+            print("*** Elapsed time: ", elapsed)
             sleep(300)
 
 class SerialManager:
