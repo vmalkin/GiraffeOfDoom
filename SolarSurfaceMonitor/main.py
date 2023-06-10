@@ -1,6 +1,16 @@
-import cv2
+#  fix opencv error in windows with:
+#  https://stackoverflow.com/questions/63869389/error-could-not-build-wheels-for-opencv-python-which-use-pep-517-and-cannot-b
+
+import cv2 as cv
 
 if __name__ == '__main__':
-    print_hi('PyCharm')
+    img1 = cv.imread("or_suvi-l2-ci171_g18_s20230525T224000Z_e20230525T224400Z_v1-0-1.png", cv.IMREAD_GRAYSCALE)
+    img2 = cv.imread("or_suvi-l2-ci171_g18_s20230525T224400Z_e20230525T224800Z_v1-0-1.png", cv.IMREAD_GRAYSCALE)
 
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+    imgd = img2 - img1
+
+    cv.imshow('unchanged image', imgd)
+    cv.waitKey(0)
+    cv.destroyAllwindows()
+
+
