@@ -3,6 +3,7 @@ import time
 import datetime
 from calendar import timegm
 
+
 def posix2utc(posixtime, timeformat):
     # '%Y-%m-%d %H:%M'
     utctime = datetime.datetime.utcfromtimestamp(int(posixtime)).strftime(timeformat)
@@ -14,15 +15,26 @@ def utc2posix(utcstring, timeformat):
     epoch_time = timegm(utc_time)
     return epoch_time
 
+
 def wrapper(filepathlist, diffstore, pathsep):
     for i in range(1, len(filepathlist)):
         old_name = filepathlist[i - 1]
+        ot1 = old_name.split("_g18_s")
+        ot2 = ot1[1].split("Z_e")
+        old_time = utc2posix(ot2[0], "%Y%m%dT%H%M%S")
+
         new_name = filepathlist[i]
+        nt1 = new_name.split("_g18_s")
+        nt2 = nt1[1].split("Z_e")
+        new_time = utc2posix(nt2[0], "%Y%m%dT%H%M%S")
 
-        img_old = cv2.imread(old_name, cv2.IMREAD_GRAYSCALE)
-        img_new = cv2.imread(new_name, cv2.IMREAD_GRAYSCALE)
+        if (new_time - old_time) < 86400:
+            img_old = cv2.imread(old_name, cv2.IMREAD_GRAYSCALE)
+            img_new = cv2.imread(new_name, cv2.IMREAD_GRAYSCALE)
 
-        img_diff = img_new - img_old
+            # create the difference
+            img_diff = img_new - img_old
 
-        diff_filename = diffstore + pathsep +  str(i) + "_df.jpg"
-        cv2.imwrite(diff_filename, img_diff)
+            # Give the file the UTC time of the start of the observation
+            diff_filename = diffstore + pathsep + ot2[0] + "_df.jpg"
+            cv2.imwrite(diff_filename, img_diff)
