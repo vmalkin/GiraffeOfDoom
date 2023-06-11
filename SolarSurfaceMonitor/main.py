@@ -37,12 +37,6 @@ def get_resource_from_url(url_to_get):
     return response
 
 
-# def posix2utc(posixtime, timeformat):
-#     # '%Y-%m-%d %H:%M'
-#     utctime = datetime.datetime.utcfromtimestamp(int(posixtime)).strftime(timeformat)
-#     return utctime
-
-
 def parseimages(listofimages, imagestore):
     set_downloads = set(listofimages)
     stored = os.listdir(imagestore)
@@ -104,7 +98,7 @@ if __name__ == "__main__":
     # get the latest SUVI images
     download_suvi(suvi_url, suvi_store)
     localfiles = local_file_list_build(suvi_store)
-    mgr_diffs.wrapper(localfiles)
+    mgr_diffs.wrapper(localfiles, diffs_store, pathsep)
 
 
 
