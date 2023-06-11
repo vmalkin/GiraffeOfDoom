@@ -1,7 +1,7 @@
 import glob
 import requests
 import os
-
+import time
 import mgr_diffs
 
 suvi_store = "suvi_store"
@@ -96,9 +96,13 @@ if __name__ == "__main__":
         os.makedirs(diffs_store)
 
     # get the latest SUVI images
-    download_suvi(suvi_url, suvi_store)
-    localfiles = local_file_list_build(suvi_store)
-    mgr_diffs.wrapper(localfiles, diffs_store, pathsep)
+    while True:
+        download_suvi(suvi_url, suvi_store)
+        print("*** Downloads completed")
+        localfiles = local_file_list_build(suvi_store)
+        mgr_diffs.wrapper(localfiles, diffs_store, pathsep)
+        print("*** Differencing completed. Waiting for next download event...")
+        time.sleep(60*60)
 
 
 
