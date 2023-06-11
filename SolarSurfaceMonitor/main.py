@@ -1,14 +1,29 @@
-import datetime
-import time
-import re
+import glob
 import requests
 import os
+
+import mgr_diffs
 
 suvi_store = "suvi_store"
 diffs_store = "difference_images"
 # file path seperator / or \ ???
 pathsep = os.sep
 suvi_url = "https://services.swpc.noaa.gov/images/animations/suvi/primary/171/"
+
+
+def local_file_list_build(directory):
+    # Builds and returns a list of files contained in the directory.
+    # List is sorted into A --> Z order
+    dirlisting = []
+    path = directory + pathsep + "*.*"
+    for name in glob.glob(path):
+        name = os.path.normpath(name)
+        # seperator = os.path.sep
+        # n = name.split(seperator)
+        # nn = n[1]
+        dirlisting.append(name)
+    dirlisting.sort()
+    return dirlisting
 
 
 def get_resource_from_url(url_to_get):
@@ -38,19 +53,15 @@ def parseimages(listofimages, imagestore):
 
 def downloadimages(listofimages, storagelocation):
     for img in listofimages:
-        file = storagelocation + "/" + img
-        i = img.split(".")
-        baddy = str(i[0])
-        badfile = storagelocation + "/" + baddy + ".no"
-        img1url = baseURL + img
-        if os.path.exists(badfile) is False:
-            if os.path.exists(file) is False:
-                response1 = get_resource_from_url(img1url)
-                print("Saving file ", file)
-                with open(file, 'wb') as f:
-                    # f.write(response1.read())
-                    f.write(response1.content)
-                f.close()
+        file = storagelocation + pathsep + img
+        img1url = suvi_url + img
+        if os.path.exists(file) is False:
+            response1 = get_resource_from_url(img1url)
+            print("Saving file ", file)
+            with open(file, 'wb') as f:
+                # f.write(response1.read())
+                f.write(response1.content)
+            f.close()
         else:
             print("Corrupted image bypassed from processing")
 
@@ -62,21 +73,16 @@ def get_imagelist(url_to_get):
     #  The response is now delimited on newlines. We can get rid lines to only have the HTML with the images
     # Remove the content above and below the table that contains images
 
-    r = r[13:]
-    r = r[:-4]
+    r = r[9:]
+    r = r[:-3]
 
     # Now split the lines around image file names. Return only the ones 512 in size
     returnlist = []
     for line in r:
-        l1 = line.split("href=\"")
-        if len(l1) == 2:
-            l2 = (l1[1])
-            l2 = l2.split("\"")
-            filename = l2[0]
-            # if re.search("c3_1024", filename):
-            if re.search("c3_512", filename):
-                returnlist.append(filename)
-
+        l = line.split("href=")
+        l1 = l[1].split(">or_suvi")
+        f = l1[0][1:-1]
+        returnlist.append(f)
     return returnlist
 
 def download_suvi(lasco_url, storage_folder):
@@ -95,8 +101,10 @@ if __name__ == "__main__":
     if os.path.exists(diffs_store) is False:
         os.makedirs(diffs_store)
 
+    # get the latest SUVI images
     download_suvi(suvi_url, suvi_store)
-
+    localfiles = local_file_list_build(suvi_store)
+    mgr_diffs.wrapper(localfiles)
 
 
 
