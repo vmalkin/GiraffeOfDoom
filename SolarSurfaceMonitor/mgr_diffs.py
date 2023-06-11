@@ -33,14 +33,10 @@ def wrapper(filepathlist, diffstore, pathsep):
             img_new = cv2.imread(new_name, cv2.IMREAD_GRAYSCALE)
 
             img_diff = cv2.absdiff(img_new, img_old)
-            img_diff = cv2.equalizeHist(img_diff)
+            # img_diff = cv2.equalizeHist(img_diff)
             # img_diff = cv2.erode(img_diff, (10,10))
             # img_diff = cv2.dilate(img_diff, (20, 20))
-            # # 0 and 1 or over
-            # contrast = 0
-            # # -127 to 127
-            # brightness = 20
-            # img_diff = cv2.convertScaleAbs(img_diff, contrast, brightness)
+
             # img_diff = cv2.bilateralFilter(img_diff, 5, 13, 13)
 
             # Give the file the UTC time of the start of the observation
