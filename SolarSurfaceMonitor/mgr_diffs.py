@@ -2,7 +2,6 @@ import cv2
 import time
 import datetime
 from calendar import timegm
-
 import numpy as np
 
 
@@ -17,6 +16,7 @@ def utc2posix(utcstring, timeformat):
     epoch_time = timegm(utc_time)
     return epoch_time
 
+
 def create_label(image, text):
     width, height = image.shape
     font = cv2.FONT_HERSHEY_SIMPLEX
@@ -25,7 +25,6 @@ def create_label(image, text):
     font_thickness = 1
     cv2.putText(image, text, (100, height - 100), font, font_size, font_color, font_thickness, cv2.LINE_AA)
     return image
-
 
 
 def wrapper(filepathlist, diffstore, pathsep):
@@ -51,9 +50,9 @@ def wrapper(filepathlist, diffstore, pathsep):
 
             # alpha is the contrast value. To lower the contrast, use 0 < alpha < 1. And for higher contrast use alpha > 1.
             # beta is the brightness value. A good range for brightness value is [-127, 127]
-            alpha = 1
-            beta = 20
-            img_diff = cv2.convertScaleAbs(img_diff, alpha, beta)
+            # alpha = 1
+            # beta = 20
+            # img_diff = cv2.convertScaleAbs(img_diff, alpha, beta)
             # # img_diff = cv2.erode(img_diff, (5,5))
             # # img_diff = cv2.medianBlur(img_diff, 3)
             # # img_diff = cv2.bilateralFilter(img_diff, 5, 13, 13)
