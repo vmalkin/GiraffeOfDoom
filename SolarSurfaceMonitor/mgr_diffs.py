@@ -18,10 +18,11 @@ def utc2posix(utcstring, timeformat):
     return epoch_time
 
 def create_label(image, text):
-    width, height = image.shape
+    width, height, channels = image.shape
     font = cv2.FONT_HERSHEY_SIMPLEX
     font_size = 1
-    font_color = (255, 150, 0)
+    # colours are blue, green, red in opencv
+    font_color = (255, 255, 255)
     font_thickness = 1
     cv2.putText(image, text, (100, height - 100), font, font_size, font_color, font_thickness, cv2.LINE_AA)
     return image
@@ -41,22 +42,42 @@ def wrapper(filepathlist, diffstore, pathsep):
         new_time = utc2posix(nt2[0], "%Y%m%dT%H%M%S")
 
         if (new_time - old_time) < 86400:
-            img_old = cv2.imread(old_name, cv2.IMREAD_GRAYSCALE)
-            img_new = cv2.imread(new_name, cv2.IMREAD_GRAYSCALE)
+            # https: // stackoverflow.com / questions / 58638506 / how - to - make - a - jpg - image - semi - transparent
+            # Make image 50% transparent
+            img_old = cv2.imread(old_name)
+            # img_old = cv2.cvtColor(img_old, cv2.COLOR_BGR2BGRA)
 
-            img_old = np.float32(img_old)
-            img_new = np.float32(img_new)
+            img_new = cv2.imread(new_name)
+            # img_new = cv2.cvtColor(img_new, cv2.COLOR_BGR2BGRA)
 
-            img_diff = img_new - img_old
+            # invert one image
+            img_new = cv2.bitwise_not(img_new)
 
-            # alpha is the contrast value. To lower the contrast, use 0 < alpha < 1. And for higher contrast use alpha > 1.
-            # beta is the brightness value. A good range for brightness value is [-127, 127]
-            alpha = 1
-            beta = 20
-            img_diff = cv2.convertScaleAbs(img_diff, alpha, beta)
-            # # img_diff = cv2.erode(img_diff, (5,5))
-            # # img_diff = cv2.medianBlur(img_diff, 3)
-            # # img_diff = cv2.bilateralFilter(img_diff, 5, 13, 13)
+            # # Remove 2 rows/cols at end and add 2 rows/cols at beginning
+            # img_new = np.delete(img_new, [1279], axis=1)
+            # img_new = np.delete(img_new, [1279], axis=0)
+            #
+            # img_new = np.insert(img_new, 0, [0, 0, 0], axis=1)
+            # # img_new = np.insert(img_new, 0, [0, 0, 0], axis=1)
+            # # img_new = np.insert(img_new, 0, img_new[0], axis=0)
+            # img_new = np.insert(img_new, 0, img_new[0], axis=0)
+
+
+            # add two images together with a pixel offset in x and y
+            img_diff = cv2.addWeighted(img_old, 0.5, img_new, 0.5, 0)
+
+            # lab = cv2.cvtColor(img_diff, cv2.COLOR_BGR2LAB)
+            # l_channel, a, b = cv2.split(lab)
+            # # Applying CLAHE to L-channel
+            # # feel free to try different values for the limit and grid size:
+            # clahe = cv2.createCLAHE(clipLimit=20.0, tileGridSize=(8, 8))
+            # cl = clahe.apply(l_channel)
+            # # merge the CLAHE enhanced L-channel with the a and b channel
+            # limg = cv2.merge((cl, a, b))
+            #
+            # # Converting image from LAB Color model to BGR color spcae
+            # img_diff = cv2.cvtColor(limg, cv2.COLOR_LAB2BGR)
+
 
             timestamp = posix2utc(new_time, "%Y-%m-%d %H:%M UTC")
             img_diff = create_label(img_diff, timestamp)
