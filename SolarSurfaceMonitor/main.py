@@ -2,7 +2,7 @@ import glob
 import requests
 import os
 import time
-import mgr_diffs
+import mgr_diffs_2 as diffs
 
 suvi_store = "suvi_store"
 diffs_store = "difference_images"
@@ -100,7 +100,7 @@ if __name__ == "__main__":
         download_suvi(suvi_url, suvi_store)
         print("*** Downloads completed")
         localfiles = local_file_list_build(suvi_store)
-        mgr_diffs.wrapper(localfiles, diffs_store, pathsep)
+        diffs.wrapper(localfiles, diffs_store, pathsep)
         print("*** Differencing completed. Waiting for next download event...")
         time.sleep(60*60)
 
