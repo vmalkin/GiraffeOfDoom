@@ -56,25 +56,24 @@ def wrapper(filepathlist, diffstore, pathsep):
             # # Set alpha layer semi-transparent with Numpy indexing, B=0, G=1, R=2, A=3
             # img_new[..., 3] = 255
 
-
             divisor = np.full_like(img_old, 2)
             img_old = np.floor_divide(img_old, divisor)
             img_new = np.floor_divide(img_new, divisor)
 
-            img_diff = cv2.addWeighted(img_old, 0.5, img_new, 0.5, 0)
+            img_diff = cv2.addWeighted(img_old, 0.48, img_new, 0.52, 100)
             # img_diff = np.add(img_old, img_new)
 
-            # lab = cv2.cvtColor(img_diff, cv2.COLOR_BGR2LAB)
-            # l_channel, a, b = cv2.split(lab)
-            # # Applying CLAHE to L-channel
-            # # feel free to try different values for the limit and grid size:
-            # clahe = cv2.createCLAHE(clipLimit=20.0, tileGridSize=(8, 8))
-            # cl = clahe.apply(l_channel)
-            # # merge the CLAHE enhanced L-channel with the a and b channel
-            # limg = cv2.merge((cl, a, b))
-            #
-            # # Converting image from LAB Color model to BGR color spcae
-            # img_diff = cv2.cvtColor(limg, cv2.COLOR_LAB2BGR)
+            lab = cv2.cvtColor(img_diff, cv2.COLOR_BGR2LAB)
+            l_channel, a, b = cv2.split(lab)
+            # Applying CLAHE to L-channel
+            # feel free to try different values for the limit and grid size:
+            clahe = cv2.createCLAHE(clipLimit=20.0, tileGridSize=(8, 8))
+            cl = clahe.apply(l_channel)
+            # merge the CLAHE enhanced L-channel with the a and b channel
+            limg = cv2.merge((cl, a, b))
+
+            # Converting image from LAB Color model to BGR color spcae
+            img_diff = cv2.cvtColor(limg, cv2.COLOR_LAB2BGR)
 
 
             timestamp = posix2utc(new_time, "%Y-%m-%d %H:%M UTC")
