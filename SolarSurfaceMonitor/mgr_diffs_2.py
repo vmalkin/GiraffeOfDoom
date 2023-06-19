@@ -46,25 +46,23 @@ def wrapper(filepathlist, diffstore, pathsep):
             # Make image 50% transparent
             img_old = cv2.imread(old_name)
             # img_old = cv2.cvtColor(img_old, cv2.COLOR_BGR2BGRA)
+            # # Set alpha layer semi-transparent with Numpy indexing, B=0, G=1, R=2, A=3
+            # img_old[..., 3] = 255
 
             img_new = cv2.imread(new_name)
-            # img_new = cv2.cvtColor(img_new, cv2.COLOR_BGR2BGRA)
-
             # invert one image
             img_new = cv2.bitwise_not(img_new)
-
-            # # Remove 2 rows/cols at end and add 2 rows/cols at beginning
-            # img_new = np.delete(img_new, [1279], axis=1)
-            # img_new = np.delete(img_new, [1279], axis=0)
-            #
-            # img_new = np.insert(img_new, 0, [0, 0, 0], axis=1)
-            # # img_new = np.insert(img_new, 0, [0, 0, 0], axis=1)
-            # # img_new = np.insert(img_new, 0, img_new[0], axis=0)
-            # img_new = np.insert(img_new, 0, img_new[0], axis=0)
+            # img_new = cv2.cvtColor(img_new, cv2.COLOR_BGR2BGRA)
+            # # Set alpha layer semi-transparent with Numpy indexing, B=0, G=1, R=2, A=3
+            # img_new[..., 3] = 255
 
 
-            # add two images together with a pixel offset in x and y
+            divisor = np.full_like(img_old, 2)
+            img_old = np.floor_divide(img_old, divisor)
+            img_new = np.floor_divide(img_new, divisor)
+
             img_diff = cv2.addWeighted(img_old, 0.5, img_new, 0.5, 0)
+            # img_diff = np.add(img_old, img_new)
 
             # lab = cv2.cvtColor(img_diff, cv2.COLOR_BGR2LAB)
             # l_channel, a, b = cv2.split(lab)
@@ -83,5 +81,9 @@ def wrapper(filepathlist, diffstore, pathsep):
             img_diff = create_label(img_diff, timestamp)
 
             # Give the file the UTC time of the start of the observation
-            diff_filename = diffstore + pathsep + ot2[0] + "_df.jpg"
+            diff_filename = diffstore + pathsep + ot2[0] + "_df.png"
+            # old = diffstore + pathsep + ot2[0] + "_o_df.png"
+            # new = diffstore + pathsep + ot2[0] + "_n_df.png"
             cv2.imwrite(diff_filename, img_diff)
+            # cv2.imwrite(old, img_old)
+            # cv2.imwrite(new, img_new)
