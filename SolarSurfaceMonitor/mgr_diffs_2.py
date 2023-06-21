@@ -18,7 +18,8 @@ def utc2posix(utcstring, timeformat):
     return epoch_time
 
 def create_label(image, text):
-    width, height, channels = image.shape
+    # width, height, channels = image.shape
+    width, height = image.shape
     font = cv2.FONT_HERSHEY_SIMPLEX
     font_size = 1
     # colours are blue, green, red in opencv
@@ -44,45 +45,42 @@ def wrapper(filepathlist, diffstore, pathsep):
         if (new_time - old_time) < 86400:
             # https: // stackoverflow.com / questions / 58638506 / how - to - make - a - jpg - image - semi - transparent
             # Make image 50% transparent
-            img_old = cv2.imread(old_name)
+            img_old = cv2.imread(old_name, 0)
             # img_old = cv2.cvtColor(img_old, cv2.COLOR_BGR2BGRA)
             # # Set alpha layer semi-transparent with Numpy indexing, B=0, G=1, R=2, A=3
             # img_old[..., 3] = 255
 
-            img_new = cv2.imread(new_name)
+            img_new = cv2.imread(new_name, 0)
             # invert one image
             img_new = cv2.bitwise_not(img_new)
             # img_new = cv2.cvtColor(img_new, cv2.COLOR_BGR2BGRA)
             # # Set alpha layer semi-transparent with Numpy indexing, B=0, G=1, R=2, A=3
             # img_new[..., 3] = 255
 
-            divisor = np.full_like(img_old, 2)
-            img_old = np.floor_divide(img_old, divisor)
-            img_new = np.floor_divide(img_new, divisor)
+            # divisor = np.full_like(img_old, 2)
+            # img_old = np.floor_divide(img_old, divisor)
+            # img_new = np.floor_divide(img_new, divisor)
 
-            img_diff = cv2.addWeighted(img_old, 0.48, img_new, 0.52, 100)
-            # img_diff = np.add(img_old, img_new)
+            img_diff = cv2.addWeighted(img_old, 0.5, img_new, 0.5, 0)
+            img_diff = cv2.medianBlur(img_diff, 7)
 
-            lab = cv2.cvtColor(img_diff, cv2.COLOR_BGR2LAB)
-            l_channel, a, b = cv2.split(lab)
-            # Applying CLAHE to L-channel
-            # feel free to try different values for the limit and grid size:
-            clahe = cv2.createCLAHE(clipLimit=20.0, tileGridSize=(8, 8))
-            cl = clahe.apply(l_channel)
-            # merge the CLAHE enhanced L-channel with the a and b channel
-            limg = cv2.merge((cl, a, b))
 
-            # Converting image from LAB Color model to BGR color spcae
-            img_diff = cv2.cvtColor(limg, cv2.COLOR_LAB2BGR)
+            # clahe = cv2.createCLAHE(clipLimit=5.0, tileGridSize=(10, 10))
+            # img_diff = clahe.apply(img_diff)
 
+            # # To lower the contrast, use 0 < alpha < 1. And for higher contrast use alpha > 1.
+            # # beta is the brightness value. A good range for brightness value is [-127, 127]
+            # alpha = 100
+            # beta = 0
+            # img_diff = cv2.convertScaleAbs(img_diff, alpha, beta)
 
             timestamp = posix2utc(new_time, "%Y-%m-%d %H:%M UTC")
-            img_diff = create_label(img_diff, timestamp)
+            # img_diff = create_label(img_diff, timestamp)
 
             # Give the file the UTC time of the start of the observation
-            diff_filename = diffstore + pathsep + ot2[0] + "_df.png"
-            # old = diffstore + pathsep + ot2[0] + "_o_df.png"
-            # new = diffstore + pathsep + ot2[0] + "_n_df.png"
-            cv2.imwrite(diff_filename, img_diff)
-            # cv2.imwrite(old, img_old)
-            # cv2.imwrite(new, img_new)
+            # diff_filename = diffstore + pathsep + ot2[0] + "_df.png"
+            old = diffstore + pathsep + ot2[0] + "_o_df.png"
+            new = diffstore + pathsep + ot2[0] + "_n_df.png"
+            # cv2.imwrite(diff_filename, img_diff)
+            cv2.imwrite(old, img_old)
+            cv2.imwrite(new, img_new)
