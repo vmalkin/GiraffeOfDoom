@@ -28,6 +28,18 @@ def create_label(image, text):
     cv2.putText(image, text, (100, height - 100), font, font_size, font_color, font_thickness, cv2.LINE_AA)
     return image
 
+def image_read_fromfile(name):
+    # Colour?
+    # image = cv2.imread(name)
+
+    # Greyscale?
+    image = cv2.imread(name, 0)
+    return image
+
+def image_translate(imagename, translation_value):
+    # translation_value is the number of rows (x and y)
+    # we want to shift the image by.
+    pass
 
 
 def wrapper(filepathlist, diffstore, pathsep):
@@ -45,17 +57,27 @@ def wrapper(filepathlist, diffstore, pathsep):
         if (new_time - old_time) < 86400:
             # https: // stackoverflow.com / questions / 58638506 / how - to - make - a - jpg - image - semi - transparent
             # Make image 50% transparent
-            img_old = cv2.imread(old_name, 0)
+            img_old = image_read_fromfile(old_name)
             # img_old = cv2.cvtColor(img_old, cv2.COLOR_BGR2BGRA)
             # # Set alpha layer semi-transparent with Numpy indexing, B=0, G=1, R=2, A=3
             # img_old[..., 3] = 255
 
-            img_new = cv2.imread(new_name, 0)
-            # invert one image
-            img_new = cv2.bitwise_not(img_new)
+            img_new = image_read_fromfile(new_name)
+
+            # # invert one image
+            # img_new = cv2.bitwise_not(img_new)
             # img_new = cv2.cvtColor(img_new, cv2.COLOR_BGR2BGRA)
             # # Set alpha layer semi-transparent with Numpy indexing, B=0, G=1, R=2, A=3
             # img_new[..., 3] = 255
+
+            # Remove 2 rows/cols at end and add 2 rows/cols at beginning
+            img_new = np.delete(img_new, [1279], axis=1)
+            img_new = np.delete(img_new, [1279], axis=0)
+
+            # img_new = np.insert(img_new, 0, [0, 0, 0], axis=1)
+            # img_new = np.insert(img_new, 0, [0, 0, 0], axis=1)
+            img_new = np.insert(img_new, 0, img_new[0], axis=0)
+            img_new = np.insert(img_new, 0, img_new[0], axis=0)
 
             # divisor = np.full_like(img_old, 2)
             # img_old = np.floor_divide(img_old, divisor)
@@ -78,9 +100,10 @@ def wrapper(filepathlist, diffstore, pathsep):
             # img_diff = create_label(img_diff, timestamp)
 
             # Give the file the UTC time of the start of the observation
-            # diff_filename = diffstore + pathsep + ot2[0] + "_df.png"
-            old = diffstore + pathsep + ot2[0] + "_o_df.png"
-            new = diffstore + pathsep + ot2[0] + "_n_df.png"
-            # cv2.imwrite(diff_filename, img_diff)
-            cv2.imwrite(old, img_old)
-            cv2.imwrite(new, img_new)
+            diff_filename = diffstore + pathsep + ot2[0] + "_df.png"
+            # old = diffstore + pathsep + ot2[0] + "_o_df.png"
+            # new = diffstore + pathsep + ot2[0] + "_n_df.png"
+            cv2.imwrite(diff_filename, img_diff)
+            # cv2.imwrite(old, img_old)
+            # cv2.imwrite(new, img_new)
+#
