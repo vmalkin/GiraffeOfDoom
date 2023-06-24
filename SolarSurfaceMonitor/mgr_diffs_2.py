@@ -39,7 +39,27 @@ def image_read_fromfile(name):
 def image_translate(imagename, translation_value):
     # translation_value is the number of rows (x and y)
     # we want to shift the image by.
-    pass
+    # Remove 2 rows/cols at end and add 2 rows/cols at beginning
+
+    # width, height, channels = image.shape
+    width, height = imagename.shape
+
+    # delete columns axis = 1
+    for i in range(0, translation_value):
+        imagename = np.delete(imagename, [width - translation_value], axis=1)
+    # delete rows axis = 0
+    for i in range(0, translation_value):
+        imagename = np.delete(imagename, [width - translation_value], axis=0)
+
+    # insert columns
+    for i in range(0, translation_value):
+        # img_new = np.insert(img_new, 0, [0, 0, 0], axis=1)
+        imagename = np.insert(imagename, 0, [0], axis=1)
+    # insert rows
+    for i in range(0, translation_value):
+        imagename = np.insert(imagename, 0, imagename[0], axis=0)
+
+    return imagename
 
 
 def wrapper(filepathlist, diffstore, pathsep):
@@ -58,52 +78,24 @@ def wrapper(filepathlist, diffstore, pathsep):
             # https: // stackoverflow.com / questions / 58638506 / how - to - make - a - jpg - image - semi - transparent
             # Make image 50% transparent
             img_old = image_read_fromfile(old_name)
-            # img_old = cv2.cvtColor(img_old, cv2.COLOR_BGR2BGRA)
-            # # Set alpha layer semi-transparent with Numpy indexing, B=0, G=1, R=2, A=3
-            # img_old[..., 3] = 255
+            # # invert one image
+            img_old = cv2.bitwise_not(img_old)
 
             img_new = image_read_fromfile(new_name)
-
-            # # invert one image
-            # img_new = cv2.bitwise_not(img_new)
-            # img_new = cv2.cvtColor(img_new, cv2.COLOR_BGR2BGRA)
-            # # Set alpha layer semi-transparent with Numpy indexing, B=0, G=1, R=2, A=3
-            # img_new[..., 3] = 255
-
-            # Remove 2 rows/cols at end and add 2 rows/cols at beginning
-            img_new = np.delete(img_new, [1279], axis=1)
-            img_new = np.delete(img_new, [1279], axis=0)
-
-            # img_new = np.insert(img_new, 0, [0, 0, 0], axis=1)
-            # img_new = np.insert(img_new, 0, [0, 0, 0], axis=1)
-            img_new = np.insert(img_new, 0, img_new[0], axis=0)
-            img_new = np.insert(img_new, 0, img_new[0], axis=0)
-
-            # divisor = np.full_like(img_old, 2)
-            # img_old = np.floor_divide(img_old, divisor)
-            # img_new = np.floor_divide(img_new, divisor)
+            img_new = image_translate(img_new, 1)
 
             img_diff = cv2.addWeighted(img_old, 0.5, img_new, 0.5, 0)
-            img_diff = cv2.medianBlur(img_diff, 7)
+            img_diff = cv2.medianBlur(img_diff, 3)
 
+            clahe = cv2.createCLAHE(clipLimit=20, tileGridSize=(10, 10))
+            img_diff = clahe.apply(img_diff)
 
-            # clahe = cv2.createCLAHE(clipLimit=5.0, tileGridSize=(10, 10))
-            # img_diff = clahe.apply(img_diff)
-
-            # # To lower the contrast, use 0 < alpha < 1. And for higher contrast use alpha > 1.
-            # # beta is the brightness value. A good range for brightness value is [-127, 127]
-            # alpha = 100
-            # beta = 0
-            # img_diff = cv2.convertScaleAbs(img_diff, alpha, beta)
-
+            # Add watermark to image
             timestamp = posix2utc(new_time, "%Y-%m-%d %H:%M UTC")
-            # img_diff = create_label(img_diff, timestamp)
+            img_diff = create_label(img_diff, timestamp)
 
             # Give the file the UTC time of the start of the observation
             diff_filename = diffstore + pathsep + ot2[0] + "_df.png"
-            # old = diffstore + pathsep + ot2[0] + "_o_df.png"
-            # new = diffstore + pathsep + ot2[0] + "_n_df.png"
             cv2.imwrite(diff_filename, img_diff)
-            # cv2.imwrite(old, img_old)
-            # cv2.imwrite(new, img_new)
+
 #
