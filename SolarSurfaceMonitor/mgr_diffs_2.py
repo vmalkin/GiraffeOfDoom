@@ -72,6 +72,17 @@ def image_translate(imagename, translation_value):
     return imagename
 
 
+def create_reticle(image):
+    solar_diameter = 380
+    width, height = image.shape
+    x_offset = 0
+    y_offset = 0
+    x_centre = int(width / 2) + x_offset
+    y_centre = int(height / 2) + y_offset
+    cv2.circle(image, (x_centre, y_centre), solar_diameter, (0, 100, 0), 3)
+    return image
+
+
 def wrapper(filepathlist, diffstore, pathsep):
     for i in range(1, len(filepathlist)):
         old_name = filepathlist[i - 1]
@@ -84,7 +95,8 @@ def wrapper(filepathlist, diffstore, pathsep):
         nt2 = nt1[1].split("Z_e")
         new_time = utc2posix(nt2[0], "%Y%m%dT%H%M%S")
 
-        if (new_time - old_time) < 86400:
+        # large gaps im image times should NOT be diffrenced
+        if (new_time - old_time) < (60 * 10):
             # https: // stackoverflow.com / questions / 58638506 / how - to - make - a - jpg - image - semi - transparent
             # Make image 50% transparent
             img_old = image_read_fromfile(old_name)
@@ -94,8 +106,9 @@ def wrapper(filepathlist, diffstore, pathsep):
             img_new = image_read_fromfile(new_name)
             img_new = image_translate(img_new, 1)
 
+            # img_diff = cv2.absdiff(img_old, img_new)
             img_diff = cv2.addWeighted(img_old, 0.5, img_new, 0.5, 0)
-            img_diff = cv2.medianBlur(img_diff, 5)
+            img_diff = cv2.medianBlur(img_diff, 7)
 
             clahe = cv2.createCLAHE(clipLimit=20, tileGridSize=(10, 10))
             img_diff = clahe.apply(img_diff)
@@ -103,9 +116,8 @@ def wrapper(filepathlist, diffstore, pathsep):
             # Add watermark to image
             timestamp = posix2utc(new_time, "%Y-%m-%d %H:%M UTC")
             img_diff = create_label(img_diff, timestamp)
+            img_diff = create_reticle(img_diff)
 
             # Give the file the UTC time of the start of the observation
             diff_filename = diffstore + pathsep + ot2[0] + "_df.png"
             cv2.imwrite(diff_filename, img_diff)
-
-#
