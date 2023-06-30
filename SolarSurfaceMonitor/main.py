@@ -3,6 +3,7 @@ import requests
 import os
 import time
 import mgr_diffs_2 as diffs
+import mgr_gif as make_gif
 
 suvi_store = "suvi_store"
 diffs_store = "difference_images"
@@ -101,6 +102,9 @@ if __name__ == "__main__":
         print("*** Downloads completed")
         localfiles = local_file_list_build(suvi_store)
         diffs.wrapper(localfiles, diffs_store, pathsep)
+
+        diff_files = local_file_list_build(diffs_store)
+        make_gif.wrapper(diff_files)
         print("*** Differencing completed. Waiting for next download event...")
         time.sleep(60*60)
 
