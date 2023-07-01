@@ -100,12 +100,18 @@ if __name__ == "__main__":
     while True:
         download_suvi(suvi_url, suvi_store)
         print("*** Downloads completed")
-        localfiles = local_file_list_build(suvi_store)
-        diffs.wrapper(localfiles, diffs_store, pathsep)
+        try:
+            localfiles = local_file_list_build(suvi_store)
+            diffs.wrapper(localfiles, diffs_store, pathsep)
+        except:
+            print("mgr_diffs_2.py FAILED")
 
-        diff_files = local_file_list_build(diffs_store)
-        make_gif.wrapper(diff_files)
-        print("*** Differencing completed. Waiting for next download event...")
+        try:
+            diff_files = local_file_list_build(diffs_store)
+            make_gif.wrapper(diff_files)
+        except:
+            print("mgr_gif.py FAILED")
+
         time.sleep(60*60)
 
 

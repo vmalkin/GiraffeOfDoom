@@ -28,13 +28,12 @@ def wrapper(filelist):
         filetime = utc2posix(fff[0], timeformat)
         if filetime >= starttime:
             processinglist.append(filepath)
-    print(processinglist)
 
     images = []
     for file in processinglist:
         im = Image.open(file)
         images.append(im)
-    images[0].save("diffs_sun.gif", save_all=True, append_images=images[1:], optimize=False, duration=40, loop=0)
+    images[0].save("diffs_sun.gif", save_all=True, append_images=images[1:], duration=100, loop=0)
     print("*** GIF creation FINISHED")
 
 
