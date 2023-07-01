@@ -84,6 +84,7 @@ def create_reticle(image):
 
 
 def wrapper(filepathlist, diffstore, pathsep):
+    print("*** Differencing started")
     for i in range(1, len(filepathlist)):
         old_name = filepathlist[i - 1]
         ot1 = old_name.split("_g18_s")
@@ -121,3 +122,4 @@ def wrapper(filepathlist, diffstore, pathsep):
             # Give the file the UTC time of the start of the observation
             diff_filename = diffstore + pathsep + ot2[0] + "_df.png"
             cv2.imwrite(diff_filename, img_diff)
+    print("*** Differencing FINISHED")
