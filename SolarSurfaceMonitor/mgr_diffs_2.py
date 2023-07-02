@@ -109,7 +109,7 @@ def wrapper(filepathlist, diffstore, pathsep):
 
             # img_diff = cv2.absdiff(img_old, img_new)
             img_diff = cv2.addWeighted(img_old, 0.5, img_new, 0.5, 0)
-            img_diff = cv2.medianBlur(img_diff, 7)
+            img_diff = cv2.medianBlur(img_diff, 3)
 
             clahe = cv2.createCLAHE(clipLimit=20, tileGridSize=(10, 10))
             img_diff = clahe.apply(img_diff)
