@@ -26,7 +26,7 @@ class Day:
             t.append([])
         return t
 
-    def avg_mins(self, array):
+    def get_avg_mins(self, array):
         returnarray = []
         for item in array:
             if len(item) == 0:
@@ -90,11 +90,13 @@ def wrapper(db_data, label):
             d.long[index_minute].append(float(gpsdata[long]))
             d.alt[index_minute].append(float(gpsdata[alt]))
             d.hdop[index_minute].append(float(gpsdata[hdop]))
+    day_stack.append(d)
     day_stack.pop(0)
 
-    plotdata = day_stack[0].avg_mins(day_stack[0].lat)
-
-    plot(plotdata, None, "test", "#ff0000")
+    for utcday in day_stack:
+        plotdata = utcday.get_avg_mins(utcday.lat)
+        title = utcday.posixstart
+        plot(plotdata, None, str(title), "#ff0000")
 
 
 
