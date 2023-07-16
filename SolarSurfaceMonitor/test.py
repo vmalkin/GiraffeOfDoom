@@ -7,6 +7,7 @@ import mgr_gif as make_gif
 
 pathsep = os.sep
 diffs_store = "difference_images"
+suvi_store = "suvi_store"
 
 def local_file_list_build(directory):
     # Builds and returns a list of files contained in the directory.
@@ -24,4 +25,7 @@ def local_file_list_build(directory):
 
 
 diff_files = local_file_list_build(diffs_store)
-make_gif.wrapper(diff_files)
+localfiles = local_file_list_build(suvi_store)
+
+diffs.wrapper(localfiles, diffs_store, pathsep)
+# make_gif.wrapper(diff_files)
