@@ -105,21 +105,24 @@ def wrapper(filepathlist, diffstore, pathsep):
             img_old = cv2.bitwise_not(img_old)
 
             img_new = image_read_fromfile(new_name)
-            img_new = image_translate(img_new, 1)
+            # img_new = image_translate(img_new, 1)
 
-            # img_diff = cv2.absdiff(img_old, img_new)
-            img_diff = cv2.addWeighted(img_old, 0.5, img_new, 0.5, 0)
-            img_diff = cv2.medianBlur(img_diff, 3)
+            try:
+                # img_diff = cv2.absdiff(img_old, img_new)
+                img_diff = cv2.addWeighted(img_old, 0.5, img_new, 0.5, 0)
+                img_diff = cv2.medianBlur(img_diff, 3)
 
-            clahe = cv2.createCLAHE(clipLimit=20, tileGridSize=(10, 10))
-            img_diff = clahe.apply(img_diff)
+                clahe = cv2.createCLAHE(clipLimit=20, tileGridSize=(10, 10))
+                img_diff = clahe.apply(img_diff)
 
-            # Add watermark to image
-            timestamp = posix2utc(new_time, "%Y-%m-%d %H:%M UTC")
-            img_diff = create_label(img_diff, timestamp)
-            img_diff = create_reticle(img_diff)
+                # Add watermark to image
+                timestamp = posix2utc(new_time, "%Y-%m-%d %H:%M UTC")
+                img_diff = create_label(img_diff, timestamp)
+                img_diff = create_reticle(img_diff)
 
-            # Give the file the UTC time of the start of the observation
-            diff_filename = diffstore + pathsep + ot2[0] + "_df.png"
-            cv2.imwrite(diff_filename, img_diff)
+                # Give the file the UTC time of the start of the observation
+                diff_filename = diffstore + pathsep + ot2[0] + "_df.png"
+                cv2.imwrite(diff_filename, img_diff)
+            except:
+                print("!!! Image diffrencing failed for ", new_name)
     print("*** Differencing FINISHED")

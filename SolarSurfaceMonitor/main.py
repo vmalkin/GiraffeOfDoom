@@ -9,7 +9,7 @@ suvi_store = "suvi_store"
 diffs_store = "difference_images"
 # file path seperator / or \ ???
 pathsep = os.sep
-suvi_url = "https://services.swpc.noaa.gov/images/animations/suvi/primary/171/"
+suvi_url = "https://services.swpc.noaa.gov/images/animations/suvi/primary/195/"
 
 
 def local_file_list_build(directory):
