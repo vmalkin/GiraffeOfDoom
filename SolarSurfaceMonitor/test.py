@@ -2,7 +2,7 @@ import glob
 import requests
 import os
 import time
-import mgr_diffs_2 as diffs
+import mgr_diffs as diffs
 import mgr_gif as make_gif
 
 pathsep = os.sep
