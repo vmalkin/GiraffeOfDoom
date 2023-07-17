@@ -5,11 +5,24 @@ import time
 import mgr_diffs_2 as diffs
 import mgr_gif as make_gif
 
-suvi_store = "suvi_store"
-diffs_store = "difference_images"
+suvidata = {
+    "171" : {
+        "store" : "store_b",
+        "url" : "https://services.swpc.noaa.gov/images/animations/suvi/primary/171/"
+    },
+    "195": {
+        "store": "store_g",
+        "url": "https://services.swpc.noaa.gov/images/animations/suvi/primary/195/"
+    },
+    "284": {
+        "store": "store_r",
+        "url": "https://services.swpc.noaa.gov/images/animations/suvi/primary/284/"
+    }
+}
+
 # file path seperator / or \ ???
 pathsep = os.sep
-suvi_url = "https://services.swpc.noaa.gov/images/animations/suvi/primary/195/"
+
 
 
 def local_file_list_build(directory):
@@ -46,10 +59,10 @@ def parseimages(listofimages, imagestore):
     return newfiles
 
 
-def downloadimages(listofimages, storagelocation):
+def downloadimages(img_url, listofimages, storagelocation):
     for img in listofimages:
         file = storagelocation + pathsep + img
-        img1url = suvi_url + img
+        img1url = img_url + img
         if os.path.exists(file) is False:
             response1 = get_resource_from_url(img1url)
             print("Saving file ", file)
@@ -87,30 +100,33 @@ def download_suvi(lasco_url, storage_folder):
     if len(newimages) > 0:
         # rings the terminal bell
         print("\a")
-        downloadimages(newimages, storage_folder)
+        downloadimages(lasco_url, newimages, storage_folder)
 
 
 if __name__ == "__main__":
-    if os.path.exists(suvi_store) is False:
-        os.makedirs(suvi_store)
-    if os.path.exists(diffs_store) is False:
-        os.makedirs(diffs_store)
+    for key in suvidata:
+        if os.path.exists(suvidata[key]['store']) is False:
+            os.makedirs(suvidata[key]['store'])
+
+    if os.path.exists("difference_images") is False:
+        os.makedirs("difference_images")
 
     # get the latest SUVI images
     while True:
-        download_suvi(suvi_url, suvi_store)
-        print("*** Downloads completed")
-        try:
-            localfiles = local_file_list_build(suvi_store)
-            diffs.wrapper(localfiles, diffs_store, pathsep)
-        except:
-            print("mgr_diffs_2.py FAILED")
+        for key in suvidata:
+            download_suvi(suvidata[key]['url'], suvidata[key]['store'])
+            print("*** Downloads completed")
+        # try:
+        #     localfiles = local_file_list_build(suvi_store)
+        #     diffs.wrapper(localfiles, diffs_store, pathsep)
+        # except:
+        #     print("mgr_diffs_2.py FAILED")
 
-        try:
-            diff_files = local_file_list_build(diffs_store)
-            make_gif.wrapper(diff_files)
-        except:
-            print("mgr_gif.py FAILED")
+        # try:
+        #     diff_files = local_file_list_build(diffs_store)
+        #     make_gif.wrapper(diff_files)
+        # except:
+        #     print("mgr_gif.py FAILED")
 
         time.sleep(60*60)
 
