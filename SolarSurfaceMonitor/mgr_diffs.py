@@ -7,6 +7,7 @@ from calendar import timegm
 
 pathsep = os.sep
 
+
 class ImageMaster:
     def __init__(self):
         self.path_red = None
@@ -24,6 +25,7 @@ def utc2posix(utcstring, timeformat):
     utc_time = time.strptime(utcstring, timeformat)
     epoch_time = timegm(utc_time)
     return epoch_time
+
 
 def local_file_list_build(directory):
     # Builds and returns a list of files contained in the directory.
@@ -52,7 +54,7 @@ def wrapper(suvi_dictionary):
         for pathname in filelist:
             p = pathname.split('_g18_s')
             pp = p[1].split('Z_e')
-            pdate = utc2posix(pp[0],'%Y%m%dT%H%M%S')
+            pdate = utc2posix(pp[0], '%Y%m%dT%H%M%S')
             if pdate >= starttime:
                 t.append(pathname)
         imagelist.append(t)
@@ -65,7 +67,3 @@ def wrapper(suvi_dictionary):
     # add the filepath to the correct imagelist variable.
     # Else add the filepath to the exiting image list variable.
     # At the end of this, we should have a populated image list with path variables populated.
-
-
-
-
