@@ -2,27 +2,29 @@ import glob
 import requests
 import os
 import time
-import mgr_diffs_2 as diffs
+import mgr_diffs as diffs
 import mgr_gif as make_gif
 
 suvidata = {
-    "171" : {
-        "store" : "store_b",
-        "url" : "https://services.swpc.noaa.gov/images/animations/suvi/primary/171/"
+    '171': {
+        'store' : 'store_b',
+        'diffs' : 'diffs_b',
+        'url' : 'https://services.swpc.noaa.gov/images/animations/suvi/primary/171/'
     },
-    "195": {
-        "store": "store_g",
-        "url": "https://services.swpc.noaa.gov/images/animations/suvi/primary/195/"
+    '195': {
+        'store': 'store_g',
+        'diffs' : 'diffs_g',
+        'url': 'https://services.swpc.noaa.gov/images/animations/suvi/primary/195/'
     },
-    "284": {
-        "store": "store_r",
-        "url": "https://services.swpc.noaa.gov/images/animations/suvi/primary/284/"
+    '284': {
+        'store': 'store_r',
+        'diffs' : 'diffs_r',
+        'url': 'https://services.swpc.noaa.gov/images/animations/suvi/primary/284/'
     }
 }
 
 # file path seperator / or \ ???
 pathsep = os.sep
-
 
 
 def local_file_list_build(directory):
@@ -46,8 +48,8 @@ def get_resource_from_url(url_to_get):
         headers = {'User-Agent': 'Mozilla/5.0'}
         response = requests.get(url_to_get, headers=headers)
     except:
-        print("unable to load URL", url_to_get)
-        print("Try: pip install --upgrade certifi")
+        print('unable to load URL', url_to_get)
+        print('Try: pip install --upgrade certifi')
     return response
 
 
@@ -65,7 +67,7 @@ def downloadimages(img_url, listofimages, storagelocation):
         img1url = img_url + img
         if os.path.exists(file) is False:
             response1 = get_resource_from_url(img1url)
-            print("Saving file ", file)
+            print('Saving file ', file)
             with open(file, 'wb') as f:
                 # f.write(response1.read())
                 f.write(response1.content)
@@ -87,11 +89,12 @@ def get_imagelist(url_to_get):
     # Now split the lines around image file names. Return only the ones 512 in size
     returnlist = []
     for line in r:
-        l = line.split("href=")
-        l1 = l[1].split(">or_suvi")
+        l = line.split('href=')
+        l1 = l[1].split('>or_suvi')
         f = l1[0][1:-1]
         returnlist.append(f)
     return returnlist
+
 
 def download_suvi(lasco_url, storage_folder):
     print(lasco_url)
@@ -103,30 +106,26 @@ def download_suvi(lasco_url, storage_folder):
         downloadimages(lasco_url, newimages, storage_folder)
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     for key in suvidata:
         if os.path.exists(suvidata[key]['store']) is False:
             os.makedirs(suvidata[key]['store'])
 
-    if os.path.exists("difference_images") is False:
-        os.makedirs("difference_images")
+        if os.path.exists(suvidata[key]['diffs']) is False:
+            os.makedirs(suvidata[key]['diffs'])
 
     # get the latest SUVI images
     while True:
         for key in suvidata:
             download_suvi(suvidata[key]['url'], suvidata[key]['store'])
-            print("*** Downloads completed")
-        # try:
-        #     localfiles = local_file_list_build(suvi_store)
-        #     diffs.wrapper(localfiles, diffs_store, pathsep)
-        # except:
-        #     print("mgr_diffs_2.py FAILED")
+            print('*** Downloads completed')
 
-        # try:
-        #     diff_files = local_file_list_build(diffs_store)
-        #     make_gif.wrapper(diff_files)
+            img_files = local_file_list_build(suvidata[key]['store'])
+            make_gif.wrapper(img_files, key)
         # except:
         #     print("mgr_gif.py FAILED")
+
+        diffs.wrapper(suvidata)
 
         time.sleep(60*60)
 
