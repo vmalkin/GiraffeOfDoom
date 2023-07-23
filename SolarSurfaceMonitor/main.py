@@ -120,12 +120,13 @@ if __name__ == '__main__':
             download_suvi(suvidata[key]['url'], suvidata[key]['store'])
             print('*** Downloads completed')
 
+        for key in suvidata:
             img_files = local_file_list_build(suvidata[key]['store'])
             make_gif.wrapper(img_files, key)
         # except:
         #     print("mgr_gif.py FAILED")
 
-        diffs.wrapper(suvidata)
+        # diffs.wrapper(suvidata)
 
         time.sleep(60*60)
 
