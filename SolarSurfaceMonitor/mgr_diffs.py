@@ -55,7 +55,27 @@ def wrapper(suvi_dictionary):
             pp = p[1].split('Z_e')
             pdate = utc2posix(pp[0],'%Y%m%dT%H%M%S')
             if pdate >= starttime:
-                print(pathname)
+                for img in imagelist:
+                    if img.namestring == pdate:
+                        if key == '171':
+                            img.path_blue = pathname
+                        if key == '195':
+                            img.path_green = pathname
+                        if key == '284':
+                            img.path_red = pathname
+                        break
+                    else:
+                        i = ImageMaster(pdate)
+                        print(pathname)
+                        if key == '171':
+                            i.path_blue = pathname
+                        if key == '195':
+                            i.path_green = pathname
+                        if key == '284':
+                            i.path_red = pathname
+                        imagelist.append(i)
+
+    print(len(imagelist))
 
     # THe files all have the same datetime component in the name. if this name does not exist in the image list
     #  create a new image
