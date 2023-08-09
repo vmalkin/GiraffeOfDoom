@@ -9,7 +9,8 @@ pathsep = os.sep
 
 
 class ImageMaster:
-    def __init__(self):
+    def __init__(self, timestamp):
+        self.timestamp = timestamp
         self.path_red = None
         self.path_green = None
         self.path_blue = None
@@ -47,20 +48,21 @@ def wrapper(suvi_dictionary):
     # Start with an empty image list
     imagelist = []
 
+
+
     # get the file listing from the first key in the dictionary. we only want files in a particular date range
     for key in suvi_dictionary:
         t = []
         filelist = local_file_list_build(suvi_dictionary[key]['store'])
         for pathname in filelist:
-            p = pathname.split('_g18_s')
+            p = pathname.split('_g16_s')
             pp = p[1].split('Z_e')
             pdate = utc2posix(pp[0], '%Y%m%dT%H%M%S')
             if pdate >= starttime:
-                t.append(pathname)
-        imagelist.append(t)
+                pass
 
-    for item in imagelist:
-        print(item)
+
+
 
     # THe files all have the same datetime component in the name. if this name does not exist in the image list
     #  create a new image
