@@ -59,8 +59,13 @@ def wrapper(suvi_dictionary):
             pp = p[1].split('Z_e')
             pdate = utc2posix(pp[0], '%Y%m%dT%H%M%S')
             if pdate >= starttime:
-                pass
+                isimg = any(img.timestamp == pdate for img in imagelist)
+                if isimg == False:
+                    i = ImageMaster(pdate)
+                    imagelist.append(i)
 
+    for item in imagelist:
+        print(item.timestamp)
 
 
 
