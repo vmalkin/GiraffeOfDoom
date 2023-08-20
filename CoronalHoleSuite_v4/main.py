@@ -79,7 +79,6 @@ if __name__ == "__main__":
     # Get the satellite data
     sat_data = mgr_json_data.wrapper("http://services.swpc.noaa.gov/products/solar-wind/plasma-2-hour.json")
     latest_stored_dt = database_get_latest_dt()
-    print(latest_stored_dt)
     database_add_satdata(sat_data, latest_stored_dt)
 
 

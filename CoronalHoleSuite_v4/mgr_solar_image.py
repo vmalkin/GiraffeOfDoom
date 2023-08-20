@@ -4,11 +4,13 @@
 # to display probably coronal hole locations. 
 # uses the OpenCV library and based on the work of Rotter, Veronig, Temmer & Vrsnak
 # http://oh.geof.unizg.hr/SOLSTEL/images/dissemination/papers/Rotter2015_SoPh290_arxiv.pdf
+import os
 
 import cv2
 import numpy as np
 import urllib.request
 import datetime
+import common_data as k
 import time
 from decimal import Decimal, getcontext
 import logging
@@ -23,7 +25,7 @@ import common_data
 # CRITICAL
 errorloglevel = logging.ERROR
 logging.basicConfig(filename="errors.log", format='%(asctime)s %(message)s', level=errorloglevel)
-
+filepath_sep = os.sep
 getcontext().prec = 6
 
 
@@ -204,6 +206,9 @@ class SolarImageProcessor:
     # W R A P P E R   F U N C T I O N
     # ################################
     def get_meridian_coverage(self):
+        if os.path.exists(k.stored_images_folder) is False:
+            os.makedirs(k.stored_images_folder)
+
         try:
             self._save_image_from_url('https://services.swpc.noaa.gov/images/synoptic-map.jpg', 'syntopic.jpg')
         except:
@@ -231,7 +236,7 @@ class SolarImageProcessor:
 
         try:
             time_now = str(datetime.datetime.utcnow().strftime("%Y_%m_%d_%H_%M"))
-            filename = "sun_jpegs/" + time_now + ".jpg"
+            filename = k.stored_images_folder + filepath_sep + time_now + ".jpg"
             # filename = "sun_jpegs/" + str(int(time.time())) + ".jpg"
             self._image_write(filename, outputimg1)
         except:
