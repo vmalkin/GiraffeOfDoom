@@ -78,8 +78,8 @@ if __name__ == "__main__":
     # get the wind data and coronal hole coverage. In cases of no information, the returned values will be ZERO!
     # Get the satellite data
     sat_data = mgr_json_data.wrapper("http://services.swpc.noaa.gov/products/solar-wind/plasma-2-hour.json")
-    latest_stored_dt = database_get_latest_dt()
-    database_add_satdata(sat_data, latest_stored_dt)
+    latest_stored_datetime = database_get_latest_dt()
+    database_add_satdata(sat_data, latest_stored_datetime)
 
 
     # process latest solar image
