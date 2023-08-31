@@ -30,9 +30,29 @@ def database_create():
     db = sqlite3.connect(common_data.database)
     cursor = db.cursor()
     cursor.execute("drop table if exists satellites;")
-    cursor.execute("drop table if exists solarwind;")
-    cursor.execute("drop table if exists images;")
+    cursor.execute("drop table if exists sw_data;")
+    cursor.execute("drop table if exists imagedata;")
     cursor.execute("drop table if exists observations;")
+
+    cursor.execute("create table satellites ("
+                   "sat_id text primary key,"
+                   ");")
+
+    cursor.execute("create table sw_data ("
+                   "speed real,"
+                   "density real,"
+                   "posix_obs_time integer,"
+                   "posix_launch_time integer,"
+                   "sat_id text,"
+                   "foreign key (sat_id) references satellites(sat_id)"
+                   ");")
+
+    cursor.execute("create table imagedata ("
+                   "posixtime integer,"
+                   "pixel_coverage integer,"
+                   "sat_id text,"
+                   "foreign key (sat_id) references satellites(sat_id)"
+                   ");")
 
     cursor.execute("create table observations ("
                    "datetime integer primary key,"
