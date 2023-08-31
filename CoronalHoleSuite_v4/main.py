@@ -29,7 +29,11 @@ sun = mgr_solar_image.SolarImageProcessor("https://services.swpc.noaa.gov/images
 def database_create():
     db = sqlite3.connect(common_data.database)
     cursor = db.cursor()
+    cursor.execute("drop table if exists satellites;")
+    cursor.execute("drop table if exists solarwind;")
+    cursor.execute("drop table if exists images;")
     cursor.execute("drop table if exists observations;")
+
     cursor.execute("create table observations ("
                    "datetime integer primary key,"
                    "speed real,"
