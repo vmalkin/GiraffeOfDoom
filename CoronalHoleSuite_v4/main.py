@@ -35,30 +35,30 @@ def database_create():
     cursor.execute("drop table if exists observations;")
 
     cursor.execute("create table satellites ("
-                   "sat_id text primary key,"
+                   "sat_id text primary key"
                    ");")
 
     cursor.execute("create table sw_data ("
+                   "posix_obs_time integer primary key,"
                    "speed real,"
                    "density real,"
-                   "posix_obs_time integer,"
                    "posix_launch_time integer,"
                    "sat_id text,"
                    "foreign key (sat_id) references satellites(sat_id)"
                    ");")
 
     cursor.execute("create table imagedata ("
-                   "posixtime integer,"
+                   "posixtime integer primary key,"
                    "pixel_coverage integer,"
                    "sat_id text,"
                    "foreign key (sat_id) references satellites(sat_id)"
                    ");")
 
     cursor.execute("create table observations ("
-                   "datetime integer primary key,"
-                   "speed real,"
-                   "density real,"
-                   "cover real"
+                   "imagetime integer,"
+                   "sw_time integer,"
+                   "foreign key (imagetime) reference imagedata(posixtime),"
+                   "foreign key sw_time references sw_data(posix_obs_time)"
                    ");")
 
     # It will be helpful to have an initial zero entry in the table
