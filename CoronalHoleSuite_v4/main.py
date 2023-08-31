@@ -57,7 +57,7 @@ def database_create():
     cursor.execute("create table observations ("
                    "imagetime integer,"
                    "sw_time integer,"
-                   "foreign key (imagetime) reference imagedata(posixtime),"
+                   "foreign key (imagetime) references imagedata(posixtime),"
                    "foreign key sw_time references sw_data(posix_obs_time)"
                    ");")
 
