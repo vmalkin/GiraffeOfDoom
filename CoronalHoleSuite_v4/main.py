@@ -42,8 +42,8 @@ def database_create():
                    ");")
 
     # It will be helpful to have an initial zero entry in the table
-    cursor.execute('insert into observations (datetime, speed, density, cover) '
-                   "values (?,?,?,?);",[0, 0, 0, 0])
+    # cursor.execute('insert into observations (datetime, speed, density, cover) '
+    #                "values (?,?,?,?);",[0, 0, 0, 0])
     db.commit()
     db.close()
 
