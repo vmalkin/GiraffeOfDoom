@@ -74,23 +74,24 @@ def database_create():
     db.close()
 
 
-def database_add_satdata(sat_data, recent_dt):
+def database_add_sw_data(sat_data, recent_dt):
     db = sqlite3.connect(common_data.database)
     cursor = db.cursor()
 
     for item in sat_data:
         if item[0] > recent_dt:
             print(item)
-            cursor.execute('insert into observations (datetime, speed, density, cover) '
-                           'values (?,?,?,0);', item)
+            cursor.execute('insert into sw_data (posix_obs_time, speed, density) '
+                           'values (?,?,?);', item)
     db.commit()
     db.close()
 
 
-def database_get_latest_dt():
+def database_get_sw_dt():
+
     db = sqlite3.connect(common_data.database)
     cursor = db.cursor()
-    cursor.execute('select max(datetime) from observations;')
+    cursor.execute('select max(posix_obs_time) from sw_data;')
     for item in cursor.fetchone():
         returnvalue = item
     db.close()
@@ -105,12 +106,15 @@ if __name__ == "__main__":
     if os.path.isfile(common_data.database) is False:
         database_create()
 
-    # # get the wind data and coronal hole coverage. In cases of no information, the returned values will be ZERO!
-    # # Get the satellite data
-    # sat_data = mgr_json_data.wrapper("http://services.swpc.noaa.gov/products/solar-wind/plasma-2-hour.json")
-    # latest_stored_datetime = database_get_latest_dt()
-    # database_add_satdata(sat_data, latest_stored_datetime)
+    # get the wind data and coronal hole coverage. In cases of no information, the returned values will be ZERO!
+    # Get the satellite data
+    sat_data = mgr_json_data.wrapper("http://services.swpc.noaa.gov/products/solar-wind/plasma-2-hour.json")
+    datetime_sw = database_get_sw_dt()
 
+    if datetime_sw == None:
+        datetime_sw = 0
+
+    database_add_sw_data(sat_data, datetime_sw)
 
     # process latest solar image
     # sun.get_meridian_coverage()
