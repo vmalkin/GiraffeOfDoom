@@ -38,32 +38,38 @@ def database_create():
                    "sat_id text primary key"
                    ");")
 
-    cursor.execute("create table sw_data ("
-                   "posix_obs_time integer primary key,"
-                   "posix_launch_time integer,"
-                   "speed real,"
-                   "density real,"  
-                   "sat_id text,"
-                   "foreign key (sat_id) references satellites(sat_id)"
-                   ");")
+    cursor.execute('create table sw_data ('
+                   'posix_obs_time integer primary key,'
+                   'posix_launch_time integer,'
+                   'speed real,'
+                   'density real,'  
+                   'sat_id text,'
+                   'foreign key (sat_id) references satellites(sat_id)'
+                   ');')
 
-    cursor.execute("create table imagedata ("
-                   "posixtime integer primary key,"
-                   "pixel_coverage integer,"
-                   "sat_id text,"
-                   "foreign key (sat_id) references satellites(sat_id)"
-                   ");")
+    cursor.execute('create table imagedata ('
+                   'posixtime integer primary key,'
+                   'pixel_coverage integer,'
+                   'sat_id text,'
+                   'foreign key (sat_id) references satellites(sat_id)'
+                   ');')
 
-    cursor.execute("create table observations ("
-                   "imagetime integer,"
-                   "sw_time integer,"
-                   "foreign key (imagetime) references imagedata(posixtime),"
-                   "foreign key sw_time references sw_data(posix_obs_time)"
-                   ");")
+    cursor.execute('create table observations ('
+                   'posixtime integer,'
+                   'posix_obs_time integer,'
+                   'foreign key (posixtime) references imagedata(posixtime),'
+                   'foreign key (posix_obs_time) references sw_data(posix_obs_time)'
+                   ');')
 
-    # It will be helpful to have an initial zero entry in the table
-    # cursor.execute('insert into observations (datetime, speed, density, cover) '
-    #                "values (?,?,?,?);",[0, 0, 0, 0])
+    cursor.execute('insert into satellites (sat_id) '
+                   'values ("goes_west");')
+
+    cursor.execute('insert into satellites (sat_id) '
+                   'values ("goes_east");')
+
+    cursor.execute('insert into satellites (sat_id) '
+                   'values ("dscovr");')
+
     db.commit()
     db.close()
 
@@ -99,18 +105,18 @@ if __name__ == "__main__":
     if os.path.isfile(common_data.database) is False:
         database_create()
 
-    # get the wind data and coronal hole coverage. In cases of no information, the returned values will be ZERO!
-    # Get the satellite data
-    sat_data = mgr_json_data.wrapper("http://services.swpc.noaa.gov/products/solar-wind/plasma-2-hour.json")
-    latest_stored_datetime = database_get_latest_dt()
-    database_add_satdata(sat_data, latest_stored_datetime)
+    # # get the wind data and coronal hole coverage. In cases of no information, the returned values will be ZERO!
+    # # Get the satellite data
+    # sat_data = mgr_json_data.wrapper("http://services.swpc.noaa.gov/products/solar-wind/plasma-2-hour.json")
+    # latest_stored_datetime = database_get_latest_dt()
+    # database_add_satdata(sat_data, latest_stored_datetime)
 
 
     # process latest solar image
-    sun.get_meridian_coverage()
+    # sun.get_meridian_coverage()
 
     # get current posix time and create the datapoint to append to main data
-    posixtime = int(time.time())   # sun.coverage  discovr.wind_speed  discovr.wind_density
+    # posixtime = int(time.time())   # sun.coverage  discovr.wind_speed  discovr.wind_density
     # dp = mgr_data.DataPoint(posixtime, sun.coverage, discovr.wind_speed, discovr.wind_density)
     # print(dp.return_values())
     #
