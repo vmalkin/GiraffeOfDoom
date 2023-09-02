@@ -29,47 +29,30 @@ sun = mgr_solar_image.SolarImageProcessor("https://services.swpc.noaa.gov/images
 def database_create():
     db = sqlite3.connect(common_data.database)
     cursor = db.cursor()
-    cursor.execute("drop table if exists satellites;")
     cursor.execute("drop table if exists sw_data;")
     cursor.execute("drop table if exists imagedata;")
     cursor.execute("drop table if exists observations;")
 
-    cursor.execute("create table satellites ("
-                   "sat_id text primary key"
-                   ");")
-
     cursor.execute('create table sw_data ('
-                   'posix_obs_time integer primary key,'
-                   'posix_launch_time integer,'
+                   'sw_time integer primary key,'
+                   'launch_time integer,'
                    'speed real,'
                    'density real,'  
-                   'sat_id text,'
-                   'foreign key (sat_id) references satellites(sat_id)'
+                   'sat_id text'
                    ');')
 
     cursor.execute('create table imagedata ('
-                   'posixtime integer primary key,'
+                   'img_time integer primary key,'
                    'pixel_coverage integer,'
-                   'sat_id text,'
-                   'foreign key (sat_id) references satellites(sat_id)'
+                   'sat_id text'
                    ');')
 
     cursor.execute('create table observations ('
-                   'posixtime integer,'
-                   'posix_obs_time integer,'
-                   'foreign key (posixtime) references imagedata(posixtime),'
-                   'foreign key (posix_obs_time) references sw_data(posix_obs_time)'
+                   'sw_time integer,'
+                   'img_time integer,'
+                   'foreign key (sw_time) references sw_data(sw_time),'
+                   'foreign key (img_time) references imagedata(img_time)'
                    ');')
-
-    cursor.execute('insert into satellites (sat_id) '
-                   'values ("goes_west");')
-
-    cursor.execute('insert into satellites (sat_id) '
-                   'values ("goes_east");')
-
-    cursor.execute('insert into satellites (sat_id) '
-                   'values ("dscovr");')
-
     db.commit()
     db.close()
 
@@ -81,17 +64,16 @@ def database_add_sw_data(sat_data, recent_dt):
     for item in sat_data:
         if item[0] > recent_dt:
             print(item)
-            cursor.execute('insert into sw_data (posix_obs_time, speed, density) '
-                           'values (?,?,?);', item)
+            cursor.execute('insert into sw_data (sw_time, speed, density, sat_id) '
+                           'values (?,?,?,?);', item)
     db.commit()
     db.close()
 
 
 def database_get_sw_dt():
-
     db = sqlite3.connect(common_data.database)
     cursor = db.cursor()
-    cursor.execute('select max(posix_obs_time) from sw_data;')
+    cursor.execute('select max(sw_time) from sw_data;')
     for item in cursor.fetchone():
         returnvalue = item
     db.close()
@@ -106,15 +88,18 @@ if __name__ == "__main__":
     if os.path.isfile(common_data.database) is False:
         database_create()
 
-    # get the wind data and coronal hole coverage. In cases of no information, the returned values will be ZERO!
-    # Get the satellite data
+    # Solar wind data from DISCOVR
     sat_data = mgr_json_data.wrapper("http://services.swpc.noaa.gov/products/solar-wind/plasma-2-hour.json")
     datetime_sw = database_get_sw_dt()
-
+    # data format:
+    # [1693631580, 547.1, 0.18]
     if datetime_sw == None:
         datetime_sw = 0
-
+    for item in sat_data:
+        item.append("dscovr")
     database_add_sw_data(sat_data, datetime_sw)
+
+    # Solar wind data from Other Satellites goes here
 
     # process latest solar image
     # sun.get_meridian_coverage()
