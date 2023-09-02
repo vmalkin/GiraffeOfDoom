@@ -40,9 +40,9 @@ def database_create():
 
     cursor.execute("create table sw_data ("
                    "posix_obs_time integer primary key,"
-                   "speed real,"
-                   "density real,"
                    "posix_launch_time integer,"
+                   "speed real,"
+                   "density real,"  
                    "sat_id text,"
                    "foreign key (sat_id) references satellites(sat_id)"
                    ");")
