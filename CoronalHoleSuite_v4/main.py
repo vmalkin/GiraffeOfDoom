@@ -3,6 +3,7 @@ import mgr_solar_image
 # import mgr_data
 # import mgr_plotter
 # import mgr_forecast
+import mgr_simple_plot
 import time
 import common_data
 import sqlite3
@@ -63,7 +64,7 @@ def database_add_sw_data(sat_data, recent_dt):
 
     for item in sat_data:
         if item[0] > recent_dt:
-            print(item)
+            # print(item)
             cursor.execute('insert into sw_data (sw_time, speed, density, sat_id) '
                            'values (?,?,?,?);', item)
     db.commit()
@@ -102,6 +103,10 @@ if __name__ == "__main__":
     database_add_sw_data(sat_data, datetime_sw)
 
     # Solar wind data from Other Satellites goes here
+
+    # Simple stackplot of solar wind
+    mgr_simple_plot.wrapper()
+
 
     # process latest solar image
     # sun.get_meridian_coverage()
