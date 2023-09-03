@@ -6,15 +6,19 @@ import sqlite3
 import time
 
 def db_getdata(starttime):
+    returnvalues = []
     item = [starttime]
     db = sqlite3.connect(k.database)
     cursor = db.cursor()
     cursor.execute("select * from sw_data where sw_data.sw_time > ?", item)
     for item in cursor.fetchall():
-        print(item)
+        returnvalues.append(item)
+    return returnvalues
 
 def wrapper():
     # start date is 100 days ago
     starttime = time.time() - (60 * 60 * 24 * 100)
-    db_getdata(starttime)
+    data = db_getdata(starttime)
+    for item in data:
+        print(item)
 
