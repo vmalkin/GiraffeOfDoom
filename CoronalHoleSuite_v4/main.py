@@ -70,10 +70,12 @@ def database_add_sw_data(sat_data, recent_dt):
     db.close()
 
 
-def database_get_sw_dt():
+def database_get_sw_dt(sat_id):
+    item = []
+    item.append(sat_id)
     db = sqlite3.connect(common_data.database)
     cursor = db.cursor()
-    cursor.execute('select max(sw_time) from sw_data;')
+    cursor.execute('select max(sw_time) from sw_data where sw_data.sat_id = ?;', item)
     for item in cursor.fetchone():
         returnvalue = item
     db.close()
@@ -88,9 +90,9 @@ if __name__ == "__main__":
     if os.path.isfile(common_data.database) is False:
         database_create()
 
-    # Solar wind data from DISCOVR
+    # Solar wind data from DSCOVR
     sat_data = mgr_json_data.wrapper("http://services.swpc.noaa.gov/products/solar-wind/plasma-2-hour.json")
-    datetime_sw = database_get_sw_dt()
+    datetime_sw = database_get_sw_dt("dscovr")
     # data format:
     # [1693631580, 547.1, 0.18]
     if datetime_sw == None:
