@@ -4,6 +4,7 @@
 import common_data as k
 import sqlite3
 import time
+import datetime
 
 def db_getdata(starttime):
     returnvalues = []
@@ -15,10 +16,21 @@ def db_getdata(starttime):
         returnvalues.append(item)
     return returnvalues
 
+
+def posix2utc(posixtime, timeformat):
+    # '%Y-%m-%d %H:%M'
+    utctime = datetime.datetime.utcfromtimestamp(int(posixtime)).strftime(timeformat)
+    return utctime
+
+
 def wrapper():
     # start date is 100 days ago
+    # data format:
+    # [1693631580, None, 547.1, 0.18]
     starttime = time.time() - (60 * 60 * 24 * 100)
+    plotlist = []
     data = db_getdata(starttime)
     for item in data:
-        print(item)
+        if item[0] > starttime:
+
 
