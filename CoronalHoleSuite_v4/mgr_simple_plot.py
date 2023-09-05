@@ -32,5 +32,8 @@ def wrapper():
     data = db_getdata(starttime)
     for item in data:
         if item[0] > starttime:
+            dp = [item[0], item[2]]
+            plotlist.append(dp)
+
 
 
