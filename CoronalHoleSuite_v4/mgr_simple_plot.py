@@ -24,10 +24,12 @@ def posix2utc(posixtime, timeformat):
 
 
 def wrapper():
-    # start date is 100 days ago
+    # start date is three Carington Rotatins ago.
+    day = 60 * 60 * 24
+    cr = 3 * k.carrington_rotation * day
     # data format:
     # [1693631580, None, 547.1, 0.18]
-    starttime = time.time() - (60 * 60 * 24 * 100)
+    starttime = time.time() - cr
     plotlist = []
     data = db_getdata(starttime)
     for item in data:
