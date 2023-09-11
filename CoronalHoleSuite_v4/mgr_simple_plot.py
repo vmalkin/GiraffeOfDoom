@@ -6,12 +6,12 @@ import sqlite3
 import time
 import datetime
 
-def db_getdata(starttime):
+def db_getdata(starttime, satellite_name):
     returnvalues = []
-    item = [starttime]
+    item = [starttime, satellite_name]
     db = sqlite3.connect(k.database)
     cursor = db.cursor()
-    cursor.execute("select * from sw_data where sw_data.sw_time > ?", item)
+    cursor.execute("select * from sw_data where sw_data.sw_time > ? and sw_data.sat_id = ?", item)
     for item in cursor.fetchall():
         returnvalues.append(item)
     return returnvalues
@@ -23,19 +23,25 @@ def posix2utc(posixtime, timeformat):
     return utctime
 
 
+def plot(plotlist):
+    pass
+
+
 def wrapper():
-    # start date is three Carington Rotatins ago.
-    day = 60 * 60 * 24
+    # start date is three Carington Rotati0ns ago.
+    # A day is 86400 seconds long
+    day = 86400
     cr = 3 * k.carrington_rotation * day
     # data format:
-    # [1693631580, None, 547.1, 0.18]
+    # [1693631580, None, 547.1, 0.18, sat_id]
     starttime = time.time() - cr
     plotlist = []
-    data = db_getdata(starttime)
+    data = db_getdata(starttime, "dscovr")
     for item in data:
         if item[0] > starttime:
             dp = [item[0], item[2]]
             plotlist.append(dp)
+    plot(plotlist)
 
 
 
