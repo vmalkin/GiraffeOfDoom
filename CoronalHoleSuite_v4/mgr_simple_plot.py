@@ -5,6 +5,7 @@ import common_data as k
 import sqlite3
 import time
 import datetime
+from plotly import graph_objects as go
 
 def db_getdata(starttime, satellite_name):
     returnvalues = []
@@ -23,8 +24,12 @@ def posix2utc(posixtime, timeformat):
     return utctime
 
 
-def plot(plotlist):
+def plot(plotlist, trend):
     pass
+
+
+def create_trend(plotlist):
+    return []
 
 
 def wrapper():
@@ -41,7 +46,9 @@ def wrapper():
         if item[0] > starttime:
             dp = [item[0], item[2]]
             plotlist.append(dp)
-    plot(plotlist)
+
+    trend = create_trend(plotlist)
+    plot(plotlist, trend)
 
 
 
