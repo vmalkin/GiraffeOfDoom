@@ -46,15 +46,18 @@ def wrapper(dataurl):
         returnarray.append([dt, dn, sp])
     else:
         for i in range(1, len(satdata)):
-            if satdata[i][1] == None:
-                pass
-            else:
-                if satdata[i][2] == None:
-                    pass
-                    dt = satdata[i][0]
-                    dt = int(utc2posix(dt, "%Y-%m-%d %H:%M:%S.%f"))
-                    dn = float(satdata[i][1])
-                    sp = float(satdata[i][2])
-                    returnarray.append([dt, sp, dn])
+            dt = satdata[i][0]
+            dt = int(utc2posix(dt, "%Y-%m-%d %H:%M:%S.%f"))
+
+            dn = satdata[i][1]
+            if dn == None:
+                dn = -9999
+                print("ERROR: Null value in density")
+            sp = satdata[i][2]
+            if sp == None:
+                sp = -9999
+                print("ERROR: Null value in speed")
+
+            returnarray.append([dt, sp, dn])
     return returnarray
 

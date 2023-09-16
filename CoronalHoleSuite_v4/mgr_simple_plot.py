@@ -32,6 +32,10 @@ def create_trend(plotlist):
     return []
 
 
+def create_splitdata(plotlist):
+    pass
+
+
 def wrapper():
     # start date is three Carington Rotati0ns ago.
     # A day is 86400 seconds long
@@ -48,7 +52,8 @@ def wrapper():
             plotlist.append(dp)
 
     trend = create_trend(plotlist)
-    plot(plotlist, trend)
+    splitdata = create_splitdata(plotlist)
+    plot(splitdata, trend)
 
 
 

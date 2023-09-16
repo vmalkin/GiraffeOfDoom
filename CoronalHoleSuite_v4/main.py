@@ -61,14 +61,15 @@ def database_create():
 def database_add_sw_data(sat_data, recent_dt):
     db = sqlite3.connect(common_data.database)
     cursor = db.cursor()
-
+    counter = 0
     for item in sat_data:
         if item[0] > recent_dt:
-            # print(item)
+            counter = counter + 1
             cursor.execute('insert into sw_data (sw_time, speed, density, sat_id) '
                            'values (?,?,?,?);', item)
     db.commit()
     db.close()
+    print(str(counter) + " new records added.")
 
 
 def database_get_sw_dt(sat_id):
@@ -89,6 +90,7 @@ if __name__ == "__main__":
 
     # Check database exists. If not create it.
     if os.path.isfile(common_data.database) is False:
+        print("Creating NEW database")
         database_create()
 
     # Solar wind data from DSCOVR
