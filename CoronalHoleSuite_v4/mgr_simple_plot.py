@@ -32,8 +32,20 @@ def create_trend(plotlist):
     return []
 
 
-def create_splitdata(plotlist):
-    pass
+def create_splitdata(plotlist, starttime, cr):
+    # data is at 1 min intervals
+    tempdata = []
+    # round the start to the nearest whole minute, if we are to match with timestamps in data
+    starttime = int(starttime / 60) * 60
+    for i in range(int(starttime), int(starttime + cr), 60):
+        dp = [i, None]
+        tempdata.append(dp)
+    # implement hash function to drop data into the correct slot based on posix time
+    for item in plotlist:
+        index = item[0] - starttime
+        print(str(index) + " / " + str(len(tempdata)))
+
+
 
 
 def wrapper():
@@ -51,9 +63,9 @@ def wrapper():
             dp = [item[0], item[2]]
             plotlist.append(dp)
 
+    splitdata = create_splitdata(plotlist, starttime, cr)
     trend = create_trend(plotlist)
-    splitdata = create_splitdata(plotlist)
+
     plot(splitdata, trend)
 
-
-
+wrapper()

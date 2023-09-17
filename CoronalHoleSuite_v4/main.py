@@ -108,7 +108,7 @@ if __name__ == "__main__":
         # Solar wind data from Other Satellites goes here
 
         # Simple stackplot of solar wind
-        mgr_simple_plot.wrapper()
+        # mgr_simple_plot.wrapper()
 
         # process latest solar image
         # sun.get_meridian_coverage()
@@ -142,4 +142,11 @@ if __name__ == "__main__":
         #         w.write(common_data.report_string + '\n')
         #
         #     # Pause for an hour
-        time.sleep(3600)
+        sleeptime = 3600
+        for i in range(sleeptime, 0, -1):
+            reportstring = "Next download in " + str(i) + " seconds"
+            print(reportstring, end='\n')
+            time.sleep(1)
+
+
+
