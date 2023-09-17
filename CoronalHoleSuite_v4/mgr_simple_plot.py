@@ -42,8 +42,10 @@ def create_splitdata(plotlist, starttime, cr):
         tempdata.append(dp)
     # implement hash function to drop data into the correct slot based on posix time
     for item in plotlist:
-        index = item[0] - starttime
-        print(str(index) + " / " + str(len(tempdata)))
+        index = int((item[0] - starttime) / 60)
+        # j = item.split(",")
+        tempdata[index][1] = item[1]
+    print(tempdata)
 
 
 
