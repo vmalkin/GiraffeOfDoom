@@ -6,6 +6,7 @@ import sqlite3
 import time
 import datetime
 from plotly import graph_objects as go
+import numpy as np
 
 def db_getdata(starttime, satellite_name):
     returnvalues = []
