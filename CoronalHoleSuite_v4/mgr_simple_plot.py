@@ -33,14 +33,18 @@ def create_trend(plotlist):
     return []
 
 
-def create_splitdata(plotlist, starttime, cr):
+def create_splitdata(plotlist, starttime, carrington_rotations):
     # data is at 1 min intervals
     tempdata = []
+
     # round the start to the nearest whole minute, if we are to match with timestamps in data
+    # CREATE the empty array, 1 minute intervals, for the carrington rotation period, to store solar wind data
+    #  for plotting
     starttime = int(starttime / 60) * 60
-    for i in range(int(starttime), int(starttime + cr), 60):
+    for i in range(int(starttime), int(starttime + carrington_rotations), 60):
         dp = [i, None]
         tempdata.append(dp)
+
     # implement hash function to drop data into the correct slot based on posix time
     for item in plotlist:
         index = int((item[0] - starttime) / 60)
