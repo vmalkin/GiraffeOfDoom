@@ -64,15 +64,19 @@ def database_create():
 def database_add_sw_data(sat_data, recent_dt):
     db = sqlite3.connect(k.database)
     cursor = db.cursor()
-    counter = 0
     for item in sat_data:
         if item[0] > recent_dt:
-            counter = counter + 1
             cursor.execute('insert into sw_data (sw_time, speed, density, sat_id) '
                            'values (?,?,?,?);', item)
+
+    i = [recent_dt]
+    r = cursor.execute('select * from sw_data where sw_time > ?', i)
+    for item in r:
+        print("data added: ", item)
+
     db.commit()
     db.close()
-    print(str(counter) + " new records added.")
+
 
 
 def database_get_sw_dt(sat_id):
