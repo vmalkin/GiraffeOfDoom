@@ -53,8 +53,6 @@ def create_splitdata(plotlist, starttime, carrington_rotations):
     print(tempdata)
 
 
-
-
 def wrapper():
     # start date is three Carington Rotati0ns ago.
     # A day is 86400 seconds long
