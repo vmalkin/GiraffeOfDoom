@@ -5,7 +5,7 @@ import mgr_solar_image
 # import mgr_data
 # import mgr_plotter
 # import mgr_forecast
-# import mgr_simple_plot
+import mgr_simple_plot
 import time
 import common_data as k
 import sqlite3
@@ -115,7 +115,7 @@ if __name__ == "__main__":
         # Solar wind data from Other Satellites goes here
 
         # Simple stackplot of solar wind
-        # mgr_simple_plot.wrapper()
+        mgr_simple_plot.wrapper()
 
         # process latest solar image
         # sun.get_meridian_coverage()
