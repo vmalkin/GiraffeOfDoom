@@ -1,11 +1,13 @@
+import sqlite3
+
 import mgr_json_data
 import mgr_solar_image
 # import mgr_data
 # import mgr_plotter
 # import mgr_forecast
-import mgr_simple_plot
+# import mgr_simple_plot
 import time
-import common_data
+import common_data as k
 import sqlite3
 import os
 
@@ -28,19 +30,19 @@ sun = mgr_solar_image.SolarImageProcessor("https://services.swpc.noaa.gov/images
 # common_data.report_string = ""
 
 def database_create():
-    db = sqlite3.connect(common_data.database)
+    db = sqlite3.connect(k.database)
     cursor = db.cursor()
-    cursor.execute("drop table if exists sw_data;")
-    cursor.execute("drop table if exists imagedata;")
-    cursor.execute("drop table if exists observations;")
 
-    cursor.execute('create table sw_data ('
-                   'sw_time integer primary key,'
-                   'launch_time integer,'
-                   'speed real,'
-                   'density real,'  
-                   'sat_id text'
-                   ');')
+    # cursor.execute("drop table if exists sw_data;")
+    # cursor.execute("drop table if exists imagedata;")
+    # cursor.execute("drop table if exists observations;")
+
+    cursor.execute('CREATE TABLE sw_data '
+                   '(sw_time integer primary key, '
+                   'launch_time integer, '
+                   'speed real, '
+                   'density real, '
+                   'sat_id text);')
 
     cursor.execute('create table imagedata ('
                    'img_time integer primary key,'
@@ -54,12 +56,13 @@ def database_create():
                    'foreign key (sw_time) references sw_data(sw_time),'
                    'foreign key (img_time) references imagedata(img_time)'
                    ');')
+
     db.commit()
     db.close()
 
 
 def database_add_sw_data(sat_data, recent_dt):
-    db = sqlite3.connect(common_data.database)
+    db = sqlite3.connect(k.database)
     cursor = db.cursor()
     counter = 0
     for item in sat_data:
@@ -75,7 +78,7 @@ def database_add_sw_data(sat_data, recent_dt):
 def database_get_sw_dt(sat_id):
     item = []
     item.append(sat_id)
-    db = sqlite3.connect(common_data.database)
+    db = sqlite3.connect(k.database)
     cursor = db.cursor()
     cursor.execute('select max(sw_time) from sw_data where sw_data.sat_id = ?;', item)
     for item in cursor.fetchone():
@@ -86,10 +89,10 @@ def database_get_sw_dt(sat_id):
 
 if __name__ == "__main__":
     # reset the resport string
-    common_data.report_string = ""
+    k.report_string = ""
 
     # Check database exists. If not create it.
-    if os.path.isfile(common_data.database) is False:
+    if os.path.isfile(k.database) is False:
         print("Creating NEW database")
         database_create()
 

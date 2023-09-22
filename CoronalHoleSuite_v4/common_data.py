@@ -1,4 +1,4 @@
-database = "coronal_holes.db"
+database = "solar_wind.db"
 report_string = ""
 stored_images_folder = "solar_images"
 
