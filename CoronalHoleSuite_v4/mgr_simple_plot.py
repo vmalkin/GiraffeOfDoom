@@ -54,7 +54,7 @@ def create_splitdata(plotlist, starttime, carrington_rotations):
 
 
 def wrapper():
-    # start date is three Carington Rotati0ns ago.
+    # start date is three Carington Rotations ago.
     # A day is 86400 seconds long
     day = 86400
     cr = 3 * k.carrington_rotation * day
