@@ -50,6 +50,10 @@ def create_splitdata(plotlist, starttime, carrington_rotations):
         index = int((item[0] - starttime) / 60)
         # j = item.split(",")
         tempdata[index][1] = item[1]
+
+    # We now have an array with the correct number of slots for the time, and data dropped into the correct slots
+    # and some slots will have null values if there is no data for that particular time.
+    # Divide that data into daily segments.
     print(tempdata)
 
 
