@@ -151,8 +151,11 @@ if __name__ == "__main__":
         #     # Pause for an hour
         sleeptime = 3600
         for i in range(sleeptime, 0, -1):
-            reportstring = "Next download in " + str(i) + " seconds"
-            print(reportstring, end='\n')
+            j = i % 60
+            if j == 0:
+                mins_left = int(i / 60)
+                reportstring = "Next download in " + str(mins_left) + " minutes"
+                print(reportstring)
             time.sleep(1)
 
 
