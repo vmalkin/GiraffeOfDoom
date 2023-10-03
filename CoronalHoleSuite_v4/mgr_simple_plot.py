@@ -53,7 +53,9 @@ def create_splitdata(plotlist, starttime, carrington_rotations):
 
     # We now have an array with the correct number of slots for the time, and data dropped into the correct slots
     # and some slots will have null values if there is no data for that particular time.
-    # Divide that data into daily segments.
+    # Divide that data into segments one carrington rotation long. This will create an array of arrays that
+    # will get returned to be passed into the plotter, and used to calculate the simeple prediction for the next
+    # carrington rotation.
     print(tempdata)
 
 
