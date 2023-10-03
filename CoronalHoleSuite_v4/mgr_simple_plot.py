@@ -57,30 +57,29 @@ def create_splitdata(plotlist, starttime, carrington_rotations):
     # will get returned to be passed into the plotter, and used to calculate the simeple prediction for the next
     # carrington rotation.
 
-    print(len(tempdata))
-    # step = k.carrington_rotation * 86400
-    # lower = starttime
-    # upper = lower + step
-    # returnlist = []
-    # tmp = []
-    #
-    # for i in range(0, len(tempdata)):
-    #     if i >= lower:
-    #         if i < upper:
-    #             # just the data value
-    #             tmp.append(tempdata[i][1])
-    #
-    #     if i >= upper:
-    #         step_multiple = step_multiple + 1
-    #         lower = upper
-    #         upper = step_multiple * step
-    #         returnlist.append(tmp)
-    #         tmp = []
-    #         # just the data value
-    #         tmp.append(tempdata[i][1])
-    #
-    #     if i == (len(tempdata) - 1):
-    #         returnlist.append(tmp)
+    step = k.carrington_rotation * 86400
+    lower = starttime
+    upper = lower + step
+    returnlist = []
+    tmp = []
+
+    for i in range(0, len(tempdata)):
+        if i >= lower:
+            if i < upper:
+                # just the data value
+                tmp.append(tempdata[i][1])
+
+        if i >= upper:
+            step_multiple = step_multiple + 1
+            lower = upper
+            upper = step_multiple * step
+            returnlist.append(tmp)
+            tmp = []
+            # just the data value
+            tmp.append(tempdata[i][1])
+
+        if i == (len(tempdata) - 1):
+            returnlist.append(tmp)
 
     # return returnlist
 
