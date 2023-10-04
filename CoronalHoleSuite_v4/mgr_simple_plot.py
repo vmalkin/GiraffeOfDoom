@@ -60,25 +60,28 @@ def create_splitdata(plotlist, starttime, carrington_rotations):
     step = k.carrington_rotation * 1440
     lower = starttime
     upper = lower + step
+    step_multiple = 1
     returnlist = []
     tmp = []
 
-    for i in range(0, len(tempdata)):
-        if i >= lower:
-            if i < upper:
+    for item in tempdata:
+        posix_dt = item[0]
+        data = item[1]
+        if posix_dt >= lower:
+            if posix_dt < upper:
                 # just the data value
-                tmp.append(tempdata[i][1])
+                tmp.append(data)
 
-        if i >= upper:
+        if posix_dt >= upper:
             step_multiple = step_multiple + 1
             lower = upper
             upper = step_multiple * step
             returnlist.append(tmp)
             tmp = []
             # just the data value
-            tmp.append(tempdata[i][1])
+            tmp.append(data)
 
-        if i == (len(tempdata) - 1):
+        if posix_dt == (len(tempdata) - 1):
             returnlist.append(tmp)
 
     return returnlist
@@ -103,7 +106,7 @@ def wrapper():
     splitdata = create_splitdata(plotlist, starttime, cr)
 
     for item in splitdata:
-        print(item)
+        print(len(item))
 
 
     # trend = create_trend(plotlist)
