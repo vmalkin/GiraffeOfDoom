@@ -32,82 +32,72 @@ def plot(plotlist, trend):
 def create_trend(plotlist):
     return []
 
+def posixdate_roundto_minute(value):
+    # Round a posix date down to the nearest minute
+    i = int(value / 60) * 60
+    return i
 
-def create_splitdata(plotlist, starttime, carrington_rotations):
-    # data is at 1 min intervals
-    tempdata = []
 
-    # round the start to the nearest whole minute, if we are to match with timestamps in data
-    # CREATE the empty array, 1 minute intervals, for the carrington rotation period, to store solar wind data
-    #  for plotting
-    starttime = int(starttime / 60) * 60
-    for i in range(int(starttime), int(starttime + carrington_rotations), 60):
-        dp = [i, None]
-        tempdata.append(dp)
-
-    # implement hash function to drop data into the correct slot based on posix time
-    for item in plotlist:
-        index = int((item[0] - starttime) / 60)
-        # j = item.split(",")
-        tempdata[index][1] = item[1]
-
-    # We now have an array with the correct number of slots for the time, and data dropped into the correct slots
-    # and some slots will have null values if there is no data for that particular time.
-    # Divide that data into segments one carrington rotation long. This will create an array of arrays that
-    # will get returned to be passed into the plotter, and used to calculate the simple prediction for the next
-    # carrington rotation.
-
-    step = k.carrington_rotation * 1440
-    lower = starttime
+def split_plotarray(plotarray, starttime, endtime):
+    step = posixdate_roundto_minute(86400 * k.carrington_rotation)
+    lower = plotarray[0][0]
     upper = lower + step
     step_multiple = 1
+
     returnlist = []
     tmp = []
 
-    for item in tempdata:
-        posix_dt = item[0]
-        data = item[1]
-        if posix_dt >= lower:
-            if posix_dt < upper:
-                # just the data value
-                tmp.append(data)
+    for i in range(starttime, endtime):
+        if i >= lower:
+            if i < upper:
+                tmp.append(plotarray[i])
 
-        if posix_dt >= upper:
+        if i >= upper:
             step_multiple = step_multiple + 1
             lower = upper
             upper = step_multiple * step
             returnlist.append(tmp)
             tmp = []
-            # just the data value
-            tmp.append(data)
+            tmp.append(plotarray[i])
 
-        if posix_dt == (len(tempdata) - 1):
+        if i == (len(plotarray) - 1):
             returnlist.append(tmp)
-
     return returnlist
-
-
 
 def wrapper():
     # start date is three Carington Rotations ago.
     # A day is 86400 seconds long
     day = 86400
     cr = 3 * k.carrington_rotation * day
+
     # data format:
     # [1693631580, None, 547.1, 0.18, sat_id]
     starttime = time.time() - cr
+    starttime = posixdate_roundto_minute(starttime)
+
+    endtime = starttime + cr
+    endtime = posixdate_roundto_minute(endtime)
+
     plotlist = []
     data = db_getdata(starttime, "dscovr")
+
+    # Prune data to only have posixtime and solar wind speed
     for item in data:
         if item[0] > starttime:
             dp = [item[0], item[2]]
             plotlist.append(dp)
 
-    splitdata = create_splitdata(plotlist, starttime, cr)
+    # Create an array of the last three Carrington rotations. This will have the dates, but be empty
+    plotarray = []
+    for i in range(starttime, endtime):
+        dp = [i, None]
+        plotarray.append(dp)
 
-    for item in splitdata:
-        print(len(item))
+    # Populate the array of Carrington rotations with data from the database.
 
+    # Split the array from [all data], to [[rotation 1], [rotation 2], [rotation 3]] based on the dates.
+    splitdata = split_plotarray(plotarray, starttime, endtime)
+    print(splitdata)
 
     # trend = create_trend(plotlist)
     # plot(splitdata, trend)
