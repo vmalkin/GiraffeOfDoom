@@ -96,6 +96,7 @@ def wrapper():
 
     # Populate the array of Carrington rotations with data from the database.
 
+
     # Split the array from [all data], to [[rotation 1], [rotation 2], [rotation 3]] based on the dates.
     splitdata = split_plotarray(plotarray, starttime, endtime)
 
