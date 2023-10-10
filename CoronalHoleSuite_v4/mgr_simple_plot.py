@@ -41,7 +41,7 @@ def posixdate_roundto_minute(value):
 def split_plotarray(plotarray, starttime, endtime):
     step = (86400 * k.carrington_rotation)
     step = posixdate_roundto_minute(step)
-    lower = plotarray[0][0]
+    lower = starttime
     upper = lower + step
 
     returnlist = []
