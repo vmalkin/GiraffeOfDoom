@@ -39,10 +39,10 @@ def posixdate_roundto_minute(value):
 
 
 def split_plotarray(plotarray, starttime, endtime):
-    step = posixdate_roundto_minute(86400 * k.carrington_rotation)
+    step = (86400 * k.carrington_rotation)
+    step = posixdate_roundto_minute(step)
     lower = plotarray[0][0]
     upper = lower + step
-    step_multiple = 1
 
     returnlist = []
     tmp = []
@@ -50,17 +50,18 @@ def split_plotarray(plotarray, starttime, endtime):
     for i in range(starttime, endtime):
         if i >= lower:
             if i < upper:
+                print(plotarray[i])
                 tmp.append(plotarray[i])
 
         if i >= upper:
-            step_multiple = step_multiple + 1
+            # step_multiple = step_multiple + 1
             lower = upper
-            upper = step_multiple * step
+            upper = upper + step
             returnlist.append(tmp)
             tmp = []
             tmp.append(plotarray[i])
 
-        if i == (len(plotarray) - 1):
+        if i == (endtime - 1):
             returnlist.append(tmp)
     return returnlist
 
@@ -89,7 +90,7 @@ def wrapper():
 
     # Create an array of the last three Carrington rotations. This will have the dates, but be empty
     plotarray = []
-    for i in range(starttime, endtime):
+    for i in range(starttime, endtime, 60):
         dp = [i, None]
         plotarray.append(dp)
 
