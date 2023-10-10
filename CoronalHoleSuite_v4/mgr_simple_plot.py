@@ -47,13 +47,13 @@ def split_plotarray(plotarray, starttime, endtime):
     returnlist = []
     tmp = []
 
-    for i in range(starttime, endtime):
-        if i >= lower:
-            if i < upper:
-                print(plotarray[i])
+    for i in range(0, len(plotarray)):
+        plotdate = plotarray[i][0]
+        if plotdate >= lower:
+            if plotdate < upper:
                 tmp.append(plotarray[i])
 
-        if i >= upper:
+        if plotdate >= upper:
             # step_multiple = step_multiple + 1
             lower = upper
             upper = upper + step
@@ -61,7 +61,7 @@ def split_plotarray(plotarray, starttime, endtime):
             tmp = []
             tmp.append(plotarray[i])
 
-        if i == (endtime - 1):
+        if plotdate == (endtime - 1):
             returnlist.append(tmp)
     return returnlist
 
@@ -98,7 +98,9 @@ def wrapper():
 
     # Split the array from [all data], to [[rotation 1], [rotation 2], [rotation 3]] based on the dates.
     splitdata = split_plotarray(plotarray, starttime, endtime)
-    print(splitdata)
+
+    for item in splitdata:
+        print(len(item))
 
     # trend = create_trend(plotlist)
     # plot(splitdata, trend)
