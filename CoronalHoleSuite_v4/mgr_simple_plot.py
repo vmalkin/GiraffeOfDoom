@@ -100,7 +100,7 @@ def wrapper():
     splitdata = split_plotarray(plotarray, starttime, endtime)
 
     for item in splitdata:
-        print(item[0], item[1], item[2])
+        print(item)
 
     # trend = create_trend(plotlist)
     # plot(splitdata, trend)
