@@ -108,8 +108,13 @@ def wrapper():
         data = item[1]
         plotarray[date] = data
 
+    displaydata = []
+    for item in plotarray:
+        dp = [item, plotarray[item]]
+        displaydata.append(dp)
+
     # Split the array from [all data], to [[rotation 1], [rotation 2], [rotation 3]] based on the dates.
-    splitdata = split_plotarray(plotarray, starttime, endtime)
+    splitdata = split_plotarray(displaydata, starttime, endtime)
 
     # trend = create_trend(plotlist)
     plot(splitdata)
