@@ -25,8 +25,17 @@ def posix2utc(posixtime, timeformat):
     return utctime
 
 
-def plot(plotlist, trend):
-    pass
+def plot(splitlist):
+    plotdata = go.Scatter(mode="lines")
+    fig = go.Figure(plotdata)
+
+    for item in splitlist:
+        tmp = []
+        for d in item:
+            data = d[1]
+            tmp.append(data)
+        fig.add_trace(go.Scatter(y=tmp, mode="lines"))
+    fig.show()
 
 
 def create_trend(plotlist):
@@ -79,31 +88,30 @@ def wrapper():
     endtime = starttime + cr
     endtime = posixdate_roundto_minute(endtime)
 
-    plotlist = []
+    prunedlist = []
     data = db_getdata(starttime, "dscovr")
 
     # Prune data to only have posixtime and solar wind speed
     for item in data:
         if item[0] > starttime:
             dp = [item[0], item[2]]
-            plotlist.append(dp)
+            prunedlist.append(dp)
 
-    # Create an array of the last three Carrington rotations. This will have the dates, but be empty
-    plotarray = []
+    # Create a Dictionary of the last three Carrington rotations. This will have the dates, but be empty
+    plotarray = {}
     for i in range(starttime, endtime, 60):
-        dp = [i, None]
-        plotarray.append(dp)
+        plotarray[i] = None
 
     # Populate the array of Carrington rotations with data from the database.
-
+    for item in prunedlist:
+        date = item[0]
+        data = item[1]
+        plotarray[date] = data
 
     # Split the array from [all data], to [[rotation 1], [rotation 2], [rotation 3]] based on the dates.
     splitdata = split_plotarray(plotarray, starttime, endtime)
 
-    for item in splitdata:
-        print(item)
-
     # trend = create_trend(plotlist)
-    # plot(splitdata, trend)
+    plot(splitdata)
 
 wrapper()
