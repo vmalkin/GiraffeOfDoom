@@ -51,7 +51,7 @@ def plot(splitlist, trend, dates):
     fig.update_layout(font=dict(size=16, color="#202020"), title_font_size=18, )
     fig.update_layout(plot_bgcolor=papercolour,
                       paper_bgcolor=papercolour)
-    fig.add_hline(y=500, line=dict(width=6, color='red'), layer="below", annotation_text="Aurora Threshold")
+    fig.add_hline(y=500, line=dict(width=6, color='green'), layer="below", annotation_text="Aurora Threshold")
     fig.update_yaxes(range=[50, 800])
     savefile = "forecast_simple.jpg"
     fig.write_image(savefile)
@@ -64,28 +64,32 @@ def create_trend(plotlist):
     iterations  = len(plotlist[0])
 
     for i in range(0, iterations):
+        divisor = 0
         r1 = plotlist[0][i][1]
         if r1 == None:
             r1 = 0
         else:
             r1 = r1 * weighting[0]
+            divisor = divisor + 1
 
         r2 = plotlist[1][i][1]
         if r2 == None:
             r2 = 0
         else:
             r2 = r2 * weighting[1]
+            divisor = divisor + 1
 
         r3 = plotlist[2][i][1]
         if r3 == None:
             r3 = 0
         else:
             r3 = r3 * weighting[2]
+            divisor = divisor + 1
 
         r_sum = (r1 + r2 + r3)
 
         if r_sum > 0:
-            avg = float(r_sum / 3)
+            avg = float(r_sum / divisor)
             avg_readings.append(avg)
         else:
             avg_readings.append(None)
@@ -138,6 +142,10 @@ def calc_futuredates(splitdata):
     return returnlist
 
 
+def smooth_data(trend):
+    pass
+
+
 def wrapper():
     # start date is three Carington Rotations ago.
     # A day is 86400 seconds long
@@ -170,6 +178,8 @@ def wrapper():
     for item in prunedlist:
         date = item[0]
         data = item[1]
+        if data < 50:
+            data = None
         plotarray[date] = data
 
     # Convert the dictionary to a plain array
@@ -183,4 +193,5 @@ def wrapper():
     futuredates = calc_futuredates(splitdata)
 
     trend = create_trend(splitdata)
+    # trend = smooth_data(trend)
     plot(splitdata, trend, futuredates)
