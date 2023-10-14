@@ -155,4 +155,3 @@ def wrapper():
 
     trend = create_trend(splitdata)
     plot(splitdata, trend)
-
