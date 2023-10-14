@@ -25,7 +25,7 @@ def posix2utc(posixtime, timeformat):
     return utctime
 
 
-def plot(splitlist):
+def plot(splitlist, trend):
     plotdata = go.Scatter(mode="lines")
     fig = go.Figure(plotdata)
 
@@ -35,11 +35,47 @@ def plot(splitlist):
             data = d[1]
             tmp.append(data)
         fig.add_trace(go.Scatter(y=tmp, mode="lines"))
+
+    fig.add_trace(go.Scatter(y=trend, mode="lines"))
+
     fig.show()
 
 
 def create_trend(plotlist):
-    return []
+    avg_readings = []
+    weighting = [1,1,1]
+    iterations  = len(plotlist[0])
+
+    for i in range(0, iterations):
+        r1 = plotlist[0][i][1]
+        if r1 == None:
+            r1 = 0
+        else:
+            r1 = r1 * weighting[0]
+
+        r2 = plotlist[1][i][1]
+        if r2 == None:
+            r2 = 0
+        else:
+            r2 = r2 * weighting[1]
+
+        r3 = plotlist[2][i][1]
+        if r3 == None:
+            r3 = 0
+        else:
+            r3 = r3 * weighting[2]
+
+        r_sum = (r1 + r2 + r3)
+
+        if r_sum > 0:
+            avg = float(r_sum / 3)
+            avg_readings.append(avg)
+        else:
+            avg_readings.append(None)
+
+    return avg_readings
+
+
 
 def posixdate_roundto_minute(value):
     # Round a posix date down to the nearest minute
@@ -102,12 +138,13 @@ def wrapper():
     for i in range(starttime, endtime, 60):
         plotarray[i] = None
 
-    # Populate the array of Carrington rotations with data from the database.
+    # Populate the dictionary of Carrington rotations with data from the database.
     for item in prunedlist:
         date = item[0]
         data = item[1]
         plotarray[date] = data
 
+    # Convert the dictionary to a plain array
     displaydata = []
     for item in plotarray:
         dp = [item, plotarray[item]]
@@ -116,7 +153,6 @@ def wrapper():
     # Split the array from [all data], to [[rotation 1], [rotation 2], [rotation 3]] based on the dates.
     splitdata = split_plotarray(displaydata, starttime, endtime)
 
-    # trend = create_trend(plotlist)
-    plot(splitdata)
+    trend = create_trend(splitdata)
+    plot(splitdata, trend)
 
-wrapper()
