@@ -25,7 +25,12 @@ def posix2utc(posixtime, timeformat):
     return utctime
 
 
-def plot(splitlist, trend):
+def plot(splitlist, trend, dates):
+    papercolour = "#d0d0d0"
+    gridcolour = "#c0c0c0"
+    width = 1500
+    height = 550
+
     plotdata = go.Scatter(mode="lines")
     fig = go.Figure(plotdata)
 
@@ -34,10 +39,22 @@ def plot(splitlist, trend):
         for d in item:
             data = d[1]
             tmp.append(data)
-        fig.add_trace(go.Scatter(y=tmp, mode="lines"))
+        fig.add_trace(go.Scatter(x=dates, y=tmp, mode="lines", line=dict(color="grey", width=1)))
 
-    fig.add_trace(go.Scatter(y=trend, mode="lines"))
+    fig.add_trace(go.Scatter(x=dates, y=trend, mode="lines", line=dict(color="black", width=2)))
 
+    title = "Simple Solar Wind Forcast"
+    fig.update_layout(width=width, height=height, title=title,
+                      xaxis_title="Date/time UTC<br><sub>http://DunedinAurora.nz</sub>")
+    fig.update_xaxes(showgrid=True, gridwidth=1, gridcolor=gridcolour, nticks=24, tickangle=50)
+    fig.update_yaxes(showgrid=True, gridwidth=1, gridcolor=gridcolour)
+    fig.update_layout(font=dict(size=16, color="#202020"), title_font_size=18, )
+    fig.update_layout(plot_bgcolor=papercolour,
+                      paper_bgcolor=papercolour)
+    fig.add_hline(y=500, line=dict(width=6, color='red'), layer="below", annotation_text="Aurora Threshold")
+    fig.update_yaxes(range=[50, 800])
+    savefile = "forecast_simple.jpg"
+    fig.write_image(savefile)
     fig.show()
 
 
@@ -110,6 +127,17 @@ def split_plotarray(plotarray, starttime, endtime):
             returnlist.append(tmp)
     return returnlist
 
+
+def calc_futuredates(splitdata):
+    returnlist = []
+    for item in splitdata[2]:
+        dt = item[0]
+        dt = dt + (k.carrington_rotation * 24 * 60 * 60)
+        dt = posix2utc(dt, '%Y-%m-%d %H:%M')
+        returnlist.append(dt)
+    return returnlist
+
+
 def wrapper():
     # start date is three Carington Rotations ago.
     # A day is 86400 seconds long
@@ -152,6 +180,7 @@ def wrapper():
 
     # Split the array from [all data], to [[rotation 1], [rotation 2], [rotation 3]] based on the dates.
     splitdata = split_plotarray(displaydata, starttime, endtime)
+    futuredates = calc_futuredates(splitdata)
 
     trend = create_trend(splitdata)
-    plot(splitdata, trend)
+    plot(splitdata, trend, futuredates)
