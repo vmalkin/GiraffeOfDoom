@@ -115,7 +115,7 @@ if __name__ == "__main__":
         # Solar wind data from Other Satellites goes here
 
         # Simple stackplot of solar wind
-        mgr_simple_plot.wrapper()
+        mgr_simple_plot.wrapper("dscovr")
 
         # process latest solar image
         # sun.get_meridian_coverage()
