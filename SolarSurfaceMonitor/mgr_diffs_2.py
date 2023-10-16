@@ -84,15 +84,14 @@ def create_reticle(image):
 
 
 def wrapper(filepathlist, diffstore, pathsep):
-    print("*** Differencing started")
     for i in range(1, len(filepathlist)):
         old_name = filepathlist[i - 1]
-        ot1 = old_name.split("_g18_s")
+        ot1 = old_name.split("_g16_s")
         ot2 = ot1[1].split("Z_e")
         old_time = utc2posix(ot2[0], "%Y%m%dT%H%M%S")
 
         new_name = filepathlist[i]
-        nt1 = new_name.split("_g18_s")
+        nt1 = new_name.split("_g16_s")
         nt2 = nt1[1].split("Z_e")
         new_time = utc2posix(nt2[0], "%Y%m%dT%H%M%S")
 

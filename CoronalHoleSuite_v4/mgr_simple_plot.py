@@ -25,7 +25,7 @@ def posix2utc(posixtime, timeformat):
     return utctime
 
 
-def plot(splitlist, trend, dates):
+def plot(splitlist, trend, storm, dates, sat_id):
     papercolour = "#d0d0d0"
     gridcolour = "#c0c0c0"
     width = 1500
@@ -37,25 +37,30 @@ def plot(splitlist, trend, dates):
     for item in splitlist:
         tmp = []
         for d in item:
+            name = posix2utc(d[0], '%Y-%m-%d')
             data = d[1]
             tmp.append(data)
-        fig.add_trace(go.Scatter(x=dates, y=tmp, mode="lines", line=dict(color="grey", width=1)))
+        fig.add_trace(go.Scatter(x=dates, y=tmp, mode="lines", name=name, line=dict(color="grey", width=1)))
 
-    fig.add_trace(go.Scatter(x=dates, y=trend, mode="lines", line=dict(color="black", width=2)))
+    fig.add_trace(go.Scatter(x=dates, y=trend, mode="lines", name='Forecast', line=dict(color="black", width=2)))
+    fig.add_scatter(x=dates, y=storm, mode='markers', name='Warning',
+                    marker_symbol=1, marker_color='green', marker_line_color='green', marker_size=10)
 
-    title = "Simple Solar Wind Forcast"
+
+    title = "Simple Solar Wind Forcast - 1 Carrington Rotation from Present"
     fig.update_layout(width=width, height=height, title=title,
-                      xaxis_title="Date/time UTC<br><sub>http://DunedinAurora.nz</sub>")
+                      xaxis_title="Forecast Dates<br><sub>http://DunedinAurora.nz</sub>")
     fig.update_xaxes(showgrid=True, gridwidth=1, gridcolor=gridcolour, nticks=24, tickangle=50)
     fig.update_yaxes(showgrid=True, gridwidth=1, gridcolor=gridcolour)
     fig.update_layout(font=dict(size=16, color="#202020"), title_font_size=18, )
     fig.update_layout(plot_bgcolor=papercolour,
                       paper_bgcolor=papercolour)
-    fig.add_hline(y=500, line=dict(width=6, color='green'), layer="below", annotation_text="Aurora Threshold")
-    fig.update_yaxes(range=[50, 800])
-    savefile = "forecast_simple.jpg"
+    fig.add_hline(y=500, line=dict(width=3, color='green'), layer="below")
+
+    fig.update_yaxes(range=[100, 700])
+    savefile = sat_id + "_simple.jpg"
     fig.write_image(savefile)
-    fig.show()
+    # fig.show()
 
 
 def create_trend(plotlist):
@@ -146,7 +151,20 @@ def smooth_data(trend):
     pass
 
 
-def wrapper():
+def create_warnings(trend):
+    returnarray = []
+    for item in trend:
+        if item == None:
+            returnarray.append(None)
+        if item != None:
+            if item > 500:
+                returnarray.append(500)
+            if item < 500:
+                returnarray.append(None)
+    return returnarray
+
+
+def wrapper(sat_id):
     # start date is three Carington Rotations ago.
     # A day is 86400 seconds long
     day = 86400
@@ -161,7 +179,7 @@ def wrapper():
     endtime = posixdate_roundto_minute(endtime)
 
     prunedlist = []
-    data = db_getdata(starttime, "dscovr")
+    data = db_getdata(starttime, sat_id)
 
     # Prune data to only have posixtime and solar wind speed
     for item in data:
@@ -193,5 +211,6 @@ def wrapper():
     futuredates = calc_futuredates(splitdata)
 
     trend = create_trend(splitdata)
+    storm = create_warnings(trend)
     # trend = smooth_data(trend)
-    plot(splitdata, trend, futuredates)
+    plot(splitdata, trend, storm, futuredates, sat_id)

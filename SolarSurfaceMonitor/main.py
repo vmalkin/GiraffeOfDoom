@@ -2,7 +2,7 @@ import glob
 import requests
 import os
 import time
-import mgr_diffs as diffs
+import mgr_diffs_2 as diffs
 import mgr_gif as make_gif
 
 suvidata = {
@@ -126,6 +126,16 @@ if __name__ == '__main__':
         # except:
         #     print("mgr_gif.py FAILED")
 
-        # diffs.wrapper(suvidata)
+        for key in suvidata:
+            img_files = local_file_list_build(suvidata[key]['store'])
+            store_diffs = suvidata[key]['diffs']
+            diffs.wrapper(img_files, store_diffs, pathsep)
 
-        time.sleep(60 * 60)
+        sleeptime = 3600
+        for i in range(sleeptime, 0, -1):
+            j = i % 60
+            if j == 0:
+                mins_left = int(i / 60)
+                reportstring = "Next download in " + str(mins_left) + " minutes"
+                print(reportstring)
+            time.sleep(1)
