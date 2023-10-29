@@ -4,6 +4,7 @@ import glob
 import time
 import datetime
 from calendar import timegm
+import cv2
 
 pathsep = os.sep
 
@@ -59,3 +60,21 @@ def wrapper(suvi_dictionary):
 
     for item in imagelist:
         print(imagelist[item])
+        # if len(imagelist[item]) == 3:
+        #     for file in imagelist[item]:
+        #         try:
+        #             b = cv2.imread(file[0], 0)
+        #             r = cv2.imread(file[1], 0)
+        #             g = cv2.imread(file[2], 0)
+        #             colour_img = cv2.merge([b, g, r])
+        #
+        #             cv2.imshow('combined image', colour_img)
+        #
+        #             # Waits for a keystroke
+        #             cv2.waitKey(0)
+        #
+        #             # Destroys all the windows created
+        #             cv2.destroyAllwindows()
+        #         except:
+        #             pass
+
