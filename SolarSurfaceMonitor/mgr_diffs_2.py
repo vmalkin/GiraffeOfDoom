@@ -123,5 +123,5 @@ def wrapper(filepathlist, diffstore, pathsep):
                 diff_filename = diffstore + pathsep + ot2[0] + "_df.png"
                 cv2.imwrite(diff_filename, img_diff)
             except:
-                print("!!! Image diffrencing failed for ", new_name)
+                print("!!! Image differencing failed for ", new_name)
     print("*** Differencing FINISHED")

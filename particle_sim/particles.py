@@ -14,8 +14,7 @@ mycanvas.pack()
 
 px_dead = 0
 px_active = 1
-px_quantity = 4000
-
+px_quantity = 1000
 class Particle:
     def __init__(self, pos_x=grid_x, pos_y=grid_y ):
         self.visible = True

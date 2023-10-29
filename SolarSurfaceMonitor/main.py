@@ -130,7 +130,7 @@ if __name__ == '__main__':
             img_files = local_file_list_build(suvidata[key]['store'])
             store_diffs = suvidata[key]['diffs']
             diffs.wrapper(img_files, store_diffs, pathsep)
-
+        print("*** All image processing completed")
         sleeptime = 3600
         for i in range(sleeptime, 0, -1):
             j = i % 60
