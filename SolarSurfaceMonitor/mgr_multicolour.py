@@ -36,6 +36,7 @@ def local_file_list_build(directory):
 
 
 def wrapper(suvi_dictionary):
+    print('*** BEGIN multicolour processing')
     starttime = int(time.time()) - 86400
     # Start with an empty image list
     imagelist = {}
@@ -65,6 +66,8 @@ def wrapper(suvi_dictionary):
             pdate = utc2posix(pp[0], '%Y%m%dT%H%M%S')
             imagelist[pdate].append(pathname)
 
+    img_old = None
+    img_diff = None
     for item in imagelist:
         # print(imagelist[item])
         file = imagelist[item]
@@ -78,7 +81,15 @@ def wrapper(suvi_dictionary):
 
         colour_img = cv2.merge([b, g, r])
 
+        if img_old is None:
+            img_old = colour_img
+        else:
+            img_diff = colour_img - img_old
+            filename = diff_folder + pathsep + str(filename) + ".png"
+            cv2.imwrite(filename, img_diff)
+            img_old = colour_img
+
         filename = save_folder + pathsep + str(filename) + ".png"
         cv2.imwrite(filename, colour_img)
 
-
+    print('*** END multicolour processing')

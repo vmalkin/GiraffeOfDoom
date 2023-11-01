@@ -4,6 +4,7 @@ import os
 import time
 import mgr_diffs_2 as diffs
 import mgr_gif as make_anim
+import mgr_multicolour as multicolour
 
 suvidata = {
     '171': {
@@ -120,9 +121,9 @@ if __name__ == '__main__':
             download_suvi(suvidata[key]['url'], suvidata[key]['store'])
             print('*** Downloads completed')
 
-        for key in suvidata:
-            img_files = local_file_list_build(suvidata[key]['store'])
-            make_anim.wrapper(img_files, key)
+        # for key in suvidata:
+        #     img_files = local_file_list_build(suvidata[key]['store'])
+        #     make_anim.wrapper(img_files, key)
         # except:
         #     print("mgr_gif.py FAILED")
 
@@ -130,6 +131,9 @@ if __name__ == '__main__':
             img_files = local_file_list_build(suvidata[key]['store'])
             store_diffs = suvidata[key]['diffs']
             diffs.wrapper(img_files, store_diffs, pathsep)
+
+        multicolour.wrapper(suvidata)
+
         print("*** All image processing completed")
         sleeptime = 3600
         for i in range(sleeptime, 0, -1):
