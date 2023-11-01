@@ -3,7 +3,7 @@ import requests
 import os
 import time
 import mgr_diffs_2 as diffs
-import mgr_gif as make_gif
+import mgr_gif as make_anim
 
 suvidata = {
     '171': {
@@ -122,7 +122,7 @@ if __name__ == '__main__':
 
         for key in suvidata:
             img_files = local_file_list_build(suvidata[key]['store'])
-            make_gif.wrapper(img_files, key)
+            make_anim.wrapper(img_files, key)
         # except:
         #     print("mgr_gif.py FAILED")
 

@@ -39,6 +39,9 @@ def wrapper(suvi_dictionary):
     starttime = int(time.time()) - 86400
     # Start with an empty image list
     imagelist = {}
+    save_folder = 'combined'
+    if os.path.exists(save_folder) is False:
+        os.makedirs(save_folder)
 
     # get the file listing from the first key in the dictionary. we only want files in a particular date range
     for key in suvi_dictionary:
@@ -59,22 +62,14 @@ def wrapper(suvi_dictionary):
             imagelist[pdate].append(pathname)
 
     for item in imagelist:
-        print(imagelist[item])
-        # if len(imagelist[item]) == 3:
-        #     for file in imagelist[item]:
-        #         try:
-        #             b = cv2.imread(file[0], 0)
-        #             r = cv2.imread(file[1], 0)
-        #             g = cv2.imread(file[2], 0)
-        #             colour_img = cv2.merge([b, g, r])
-        #
-        #             cv2.imshow('combined image', colour_img)
-        #
-        #             # Waits for a keystroke
-        #             cv2.waitKey(0)
-        #
-        #             # Destroys all the windows created
-        #             cv2.destroyAllwindows()
-        #         except:
-        #             pass
+        # print(imagelist[item])
+        file = imagelist[item]
+        b = cv2.imread(file[0], 0)
+        r = cv2.imread(file[1], 0)
+        g = cv2.imread(file[2], 0)
+        colour_img = cv2.merge([b, g, r])
+
+        filename = save_folder + pathsep + ot2[0] + ".png"
+        cv2.imwrite(filename, colour_img)
+
 
