@@ -40,8 +40,12 @@ def wrapper(suvi_dictionary):
     # Start with an empty image list
     imagelist = {}
     save_folder = 'combined'
+    diff_folder = 'combined_diffs'
     if os.path.exists(save_folder) is False:
         os.makedirs(save_folder)
+
+    if os.path.exists(diff_folder) is False:
+        os.makedirs(diff_folder)
 
     # get the file listing from the first key in the dictionary. we only want files in a particular date range
     for key in suvi_dictionary:
@@ -67,9 +71,14 @@ def wrapper(suvi_dictionary):
         b = cv2.imread(file[0], 0)
         r = cv2.imread(file[1], 0)
         g = cv2.imread(file[2], 0)
+
+        p = file[0].split('_g16_s')
+        pp = p[1].split('Z_e')
+        filename = utc2posix(pp[0], '%Y%m%dT%H%M%S')
+
         colour_img = cv2.merge([b, g, r])
 
-        filename = save_folder + pathsep + ot2[0] + ".png"
+        filename = save_folder + pathsep + str(filename) + ".png"
         cv2.imwrite(filename, colour_img)
 
 
