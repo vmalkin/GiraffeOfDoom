@@ -58,12 +58,11 @@ def local_file_list_build(directory):
     return dirlisting
 
 
-def wrapper(pathlist):
+def wrapper(pathlist, save_folder):
     print('*** BEGIN multicolour processing')
     starttime = int(time.time()) - 86400
     # Start with an empty image list
     imagelist = {}
-    save_folder = 'combined'
 
     if os.path.exists(save_folder) is False:
         os.makedirs(save_folder)

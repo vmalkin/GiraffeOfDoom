@@ -3,7 +3,7 @@ import requests
 import os
 import time
 import mgr_diffs_2 as diffs
-import mgr_gif as make_anim
+import mgr_mp4 as make_anim
 import mgr_multicolour as multicolour
 
 suvidata = {
@@ -131,7 +131,13 @@ if __name__ == '__main__':
         pathlist = []
         for key in suvidata:
             pathlist.append(suvidata[key]['store'])
-        multicolour.wrapper(pathlist)
+        multicolour.wrapper(pathlist, 'combined')
+
+        # # create multispectral difference images
+        # pathlist = []
+        # for key in suvidata:
+        #     pathlist.append(suvidata[key]['diffs'])
+        # multicolour.wrapper(pathlist, 'combined_diffs')
 
         # Make animations
         folder = 'store_b'
