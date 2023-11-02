@@ -121,18 +121,42 @@ if __name__ == '__main__':
             download_suvi(suvidata[key]['url'], suvidata[key]['store'])
             print('*** Downloads completed')
 
-        # for key in suvidata:
-        #     img_files = local_file_list_build(suvidata[key]['store'])
-        #     make_anim.wrapper(img_files, key)
-        # except:
-        #     print("mgr_gif.py FAILED")
-
+        # Calculate differences for each wavelength
         for key in suvidata:
             img_files = local_file_list_build(suvidata[key]['store'])
             store_diffs = suvidata[key]['diffs']
             diffs.wrapper(img_files, store_diffs, pathsep)
 
-        multicolour.wrapper(suvidata)
+        # create multispectral images
+        pathlist = []
+        for key in suvidata:
+            pathlist.append(suvidata[key]['store'])
+        multicolour.wrapper(pathlist)
+
+        # Make animations
+        folder = 'store_b'
+        img_files = local_file_list_build(folder)
+        # a day is roughly 100 images
+        img_files = img_files[-360:]
+        make_anim.wrapper(img_files, '171A')
+
+        folder = 'store_g'
+        img_files = local_file_list_build(folder)
+        # a day is roughly 100 images
+        img_files = img_files[-360:]
+        make_anim.wrapper(img_files, '194A')
+
+        folder = 'store_r'
+        img_files = local_file_list_build(folder)
+        # a day is roughly 100 images
+        img_files = img_files[-360:]
+        make_anim.wrapper(img_files, '284A')
+
+        folder = 'combined'
+        img_files = local_file_list_build(folder)
+        # a day is roughly 100 images
+        img_files = img_files[-360:]
+        make_anim.wrapper(img_files, '3_colour')
 
         print("*** All image processing completed")
         sleeptime = 3600

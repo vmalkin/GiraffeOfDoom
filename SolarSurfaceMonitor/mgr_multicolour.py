@@ -8,6 +8,29 @@ import cv2
 
 pathsep = os.sep
 
+
+def create_label(image, timestamp):
+    # width, height, channels = image.shape
+    width, height, depth = image.shape
+    label_height = int(height / 10)
+    font_height = int(height / 12)
+    cv2.rectangle(image, (0,0), (width,label_height), (0, 0, 0), -1)
+    cv2.rectangle(image, (0, height - label_height), (width, height), (0, 0, 0), -1)
+
+    font = cv2.FONT_HERSHEY_SIMPLEX
+    font_size = 1
+    # colours are blue, green, red in opencv
+    font_color = (255, 255, 255)
+    font_thickness = 1
+    label0 = "GOES SUVI 171A, 195A, 284A multispectral image."
+    label1 = "Image time: " + timestamp
+    label2 = "Images courtesy of NOAA. Processed at DunedinAurora.NZ"
+    cv2.putText(image, label0, (0, 50), font, font_size, font_color, font_thickness, cv2.LINE_AA)
+    cv2.putText(image, label1, (0, 100), font, font_size, font_color, font_thickness, cv2.LINE_AA)
+    cv2.putText(image, label2, (0, height - 80), font, font_size, font_color, font_thickness, cv2.LINE_AA)
+    return image
+
+
 def posix2utc(posixtime, timeformat):
     # '%Y-%m-%d %H:%M'
     utctime = datetime.datetime.utcfromtimestamp(int(posixtime)).strftime(timeformat)
@@ -35,61 +58,51 @@ def local_file_list_build(directory):
     return dirlisting
 
 
-def wrapper(suvi_dictionary):
+def wrapper(pathlist):
     print('*** BEGIN multicolour processing')
     starttime = int(time.time()) - 86400
     # Start with an empty image list
     imagelist = {}
     save_folder = 'combined'
-    diff_folder = 'combined_diffs'
+
     if os.path.exists(save_folder) is False:
         os.makedirs(save_folder)
 
-    if os.path.exists(diff_folder) is False:
-        os.makedirs(diff_folder)
-
     # get the file listing from the first key in the dictionary. we only want files in a particular date range
-    for key in suvi_dictionary:
-        filelist = local_file_list_build(suvi_dictionary[key]['store'])
-        for pathname in filelist:
-            p = pathname.split('_g16_s')
+    for path in pathlist:
+        filelist = local_file_list_build(path)
+        for filename in filelist:
+            p = filename.split('_g16_s')
             pp = p[1].split('Z_e')
             pdate = utc2posix(pp[0], '%Y%m%dT%H%M%S')
             if pdate >= starttime:
                imagelist[pdate] = []
 
-    for key in suvi_dictionary:
-        filelist = local_file_list_build(suvi_dictionary[key]['store'])
-        for pathname in filelist:
-            p = pathname.split('_g16_s')
+    for path in pathlist:
+        filelist = local_file_list_build(path)
+        for filename in filelist:
+            p = filename.split('_g16_s')
             pp = p[1].split('Z_e')
             pdate = utc2posix(pp[0], '%Y%m%dT%H%M%S')
-            imagelist[pdate].append(pathname)
+            if pdate >= starttime:
+                imagelist[pdate].append(filename)
 
-    img_old = None
-    img_diff = None
     for item in imagelist:
-        # print(imagelist[item])
         file = imagelist[item]
-        b = cv2.imread(file[0], 0)
-        r = cv2.imread(file[1], 0)
-        g = cv2.imread(file[2], 0)
+        if len(file) == 3:
+            b = cv2.imread(file[0], 0)
+            r = cv2.imread(file[1], 0)
+            g = cv2.imread(file[2], 0)
 
-        p = file[0].split('_g16_s')
-        pp = p[1].split('Z_e')
-        filename = utc2posix(pp[0], '%Y%m%dT%H%M%S')
+            p = file[0].split('_g16_s')
+            pp = p[1].split('Z_e')
 
-        colour_img = cv2.merge([b, g, r])
+            filename = pp[0] + "_clr.png"
+            colour_img = cv2.merge([b, g, r])
+            # colour_img = cv2.merge([g, r, b])
 
-        if img_old is None:
-            img_old = colour_img
-        else:
-            img_diff = colour_img - img_old
-            filename = diff_folder + pathsep + str(filename) + ".png"
-            cv2.imwrite(filename, img_diff)
-            img_old = colour_img
-
-        filename = save_folder + pathsep + str(filename) + ".png"
-        cv2.imwrite(filename, colour_img)
+            create_label(colour_img, pp[0])
+            fc = save_folder + pathsep + str(filename)
+            cv2.imwrite(fc, colour_img)
 
     print('*** END multicolour processing')
