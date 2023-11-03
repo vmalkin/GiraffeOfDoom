@@ -1,0 +1,52 @@
+Index: test.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import re\nimport constants as k\nimport mgr_comport\nimport time\nimport os\nimport sqlite3\nimport datetime\nimport logging\nfrom statistics import mean, stdev\nfrom threading import Thread\nimport math\nimport mgr_database\nimport mgr_plot\nimport numpy as np\nfrom calendar import timegm\n\nclass Dday:\n    def __init__(self, datestring):\n        self.hours = []\n        self.label = datestring\n        for i in range(0, 24):\n            h = Dhours(i)\n            self.hours.append(h)\n\nclass Dhours:\n    def __init__(self, label):\n        self.label = label\n        self.minutes = []\n        for i in range(0, 60):\n            m = Dmins(i)\n            self.minutes.append(m)\n\n\nclass Dmins:\n    def __init__(self, label):\n        self.label = label\n        self.datavalue = []\n\n\ndef posix2utc(posixtime, timeformat):\n    # print(posixtime)\n    # utctime = datetime.datetime.utcfromtimestamp(int(posixtime)).strftime(timeformat)\n    utctime = datetime.datetime.utcfromtimestamp(int(posixtime)).strftime(timeformat)\n    return utctime\n\n\ndef utc2posix(utcstring, timeformat):\n    utc_time = time.strptime(utcstring, timeformat)\n    epoch_time = timegm(utc_time)\n    return epoch_time\n\n\nutctime = \"2023-02-20 00:00\"\nstarttime = utc2posix(utctime, '%Y-%m-%d %H:%M')\nday = 60 * 60 * 24 * 14\nactualstart = starttime - day\n\nalt = 40\n# The result of the query gets passed into all plotting functions\nresult = mgr_database.qry_get_last_24hrs(actualstart, alt)\nresult = np.array(result)\n\nstart = int(result[0][1])\nend = int(result[len(result) - 1][1])\nday = 60 * 60 * 24\n# duration = (end - start) / day\n# duration = math.ceil(duration)\n\ndays = []\nfor i in range(start, end, day):\n    dd = Dday(i)\n    days.append(dd)\n\nfor row in result:\n    psx = int(row[1])\n    hr = posix2utc(psx, '%H')\n    mn = posix2utc(psx, '%M')\n    idx\n\n\n\n# mgr_plot.wrapper(result, k.comport)\n\n\n\n\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/test.py b/test.py
+--- a/test.py	
++++ b/test.py	
+@@ -14,6 +14,10 @@
+ import numpy as np
+ from calendar import timegm
+ 
++
++nullvalue = None
++
++
+ class Dday:
+     def __init__(self, datestring):
+         self.hours = []
+@@ -36,6 +40,12 @@
+         self.label = label
+         self.datavalue = []
+ 
++    def get_average(self):
++        returnvalue = nullvalue
++        if len(self.datavalue) > 0:
++            returnvalue =  mean(self.datavalue)
++        return returnvalue
++
+ 
+ def posix2utc(posixtime, timeformat):
+     # print(posixtime)
+@@ -73,9 +83,14 @@
+ 
+ for row in result:
+     psx = int(row[1])
+-    hr = posix2utc(psx, '%H')
+-    mn = posix2utc(psx, '%M')
+-    idx
++    data = float(row[5])
++    hr = int(posix2utc(psx, '%H'))
++    mn = int(posix2utc(psx, '%M'))
++    idx = int(math.floor((psx - start) / day))
++    days[idx].hours[hr].minutes[mn].datavalue.append(data)
++    # print(days[idx].hours[hr].minutes[mn].get_average())
++
++
+ 
+ 
+ 
