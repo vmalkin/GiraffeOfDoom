@@ -1,5 +1,6 @@
 import cv2
 def wrapper(filelist, name):
+    # Create mp4 animation
     print('*** BEGIN MP4', name)
     i = cv2.imread(filelist[0])
     j = i.shape
