@@ -12,6 +12,12 @@ def posix2utc(posixtime, timeformat):
     return utctime
 
 
+def median_image(img_1, img_2, img_3):
+    t = [img_1, img_2, img_3]
+    p = np.median(t, axis=0)
+    return p
+
+
 def utc2posix(utcstring, timeformat):
     utc_time = time.strptime(utcstring, timeformat)
     epoch_time = timegm(utc_time)

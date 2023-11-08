@@ -7,6 +7,7 @@ from calendar import timegm
 import cv2
 import mgr_mp4 as make_anim
 import mgr_multicolour_v2 as multicolour
+import numpy as np
 
 # file path seperator / or \ ???
 pathsep = os.sep
@@ -77,6 +78,10 @@ def local_file_list_build(directory):
     dirlisting.sort()
     return dirlisting
 
+def median_image(img_1, img_2, img_3):
+    t = [img_1, img_2, img_3]
+    p = np.median(t, axis=0)
+    return p
 
 
 pathlist = []
