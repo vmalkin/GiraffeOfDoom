@@ -2,7 +2,6 @@ import cv2
 import time
 import datetime
 from calendar import timegm
-
 import numpy as np
 
 
@@ -13,6 +12,9 @@ def posix2utc(posixtime, timeformat):
 
 
 def median_image(img_1, img_2, img_3):
+    # img_1 = img_1.astype(int)
+    # img_2 = img_2.astype(int)
+    # img_3 = img_3.astype(int)
     t = [img_1, img_2, img_3]
     p = np.median(t, axis=0)
     return p
@@ -131,11 +133,23 @@ def wrapper(filepathlist, diffstore, pathsep):
                 #
                 # # Give the file the UTC time of the start of the observation
                 diff_filename = diffstore + pathsep + ot2[0] + "_df.png"
-                tmp = [diff_filename, img_diff]
+                tmp = [diff_filename, old_time, img_diff]
                 processing_store.append(tmp)
                 # cv2.imwrite(diff_filename, img_diff)
             except:
                 print("!!! Image differencing failed for ", new_name)
-    for item in processing_store:
-        print(item)
+
+    # Apply a median filter to an array of stored images to reduce speckle
+    for i in range(2, len(processing_store)):
+        filename = processing_store[i-1][0]
+        posixtime = processing_store[i-1][1]
+        timestamp = posix2utc(posixtime, '%Y-%m-%d %H:%M')
+        img1 = processing_store[i][2]
+        img2 = processing_store[i-1][2]
+        img3 = processing_store[i-2][2]
+        filtered_img = median_image(img1, img2, img3)
+        filtered_img = create_label(filtered_img, timestamp)
+        filtered_img = create_reticle(filtered_img)
+        cv2.imwrite(filename, filtered_img)
+
     print("*** Differencing FINISHED")
