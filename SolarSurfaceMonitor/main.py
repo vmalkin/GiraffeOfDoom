@@ -124,6 +124,7 @@ if __name__ == '__main__':
         # Calculate differences for each wavelength
         for key in suvidata:
             img_files = local_file_list_build(suvidata[key]['store'])
+            img_files = img_files[-360:]
             store_diffs = suvidata[key]['diffs']
             diffs.wrapper(img_files, store_diffs, pathsep)
 

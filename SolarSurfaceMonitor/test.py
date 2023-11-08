@@ -30,4 +30,16 @@ folder = 'diffs_g'
 img_files = local_file_list_build(folder)
 # a day is roughly 100 images
 img_files = img_files[-360:]
-make_anim.wrapper(img_files, 'diffs_191A')
+make_anim.wrapper(img_files, 'diffs_195A')
+
+folder = 'diffs_b'
+img_files = local_file_list_build(folder)
+# a day is roughly 100 images
+img_files = img_files[-360:]
+make_anim.wrapper(img_files, 'diffs_171A')
+
+folder = 'diffs_r'
+img_files = local_file_list_build(folder)
+# a day is roughly 100 images
+img_files = img_files[-360:]
+make_anim.wrapper(img_files, 'diffs_284A')
