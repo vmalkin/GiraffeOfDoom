@@ -59,7 +59,7 @@ def local_file_list_build(directory):
 
 
 def wrapper(pathlist, save_folder):
-    print('*** BEGIN multicolour processing')
+    print('*** BEGIN multicolour processing ', save_folder)
     starttime = int(time.time()) - 86400
     # Start with an empty image list
     imagelist = {}

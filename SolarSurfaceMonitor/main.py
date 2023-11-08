@@ -134,6 +134,11 @@ if __name__ == '__main__':
             pathlist.append(suvidata[key]['store'])
         multicolour.wrapper(pathlist, 'combined')
 
+        pathlist = []
+        for key in suvidata:
+            pathlist.append(suvidata[key]['diffs'])
+        multicolour.wrapper(pathlist, 'combined_diffs')
+
         # # create multispectral difference images
         # pathlist = []
         # for key in suvidata:
