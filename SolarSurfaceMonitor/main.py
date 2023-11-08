@@ -116,6 +116,7 @@ if __name__ == '__main__':
             os.makedirs(suvidata[key]['diffs'])
 
     while True:
+        starttime = time.time()
         # get the latest SUVI images
         for key in suvidata:
             download_suvi(suvidata[key]['url'], suvidata[key]['store'])
@@ -134,7 +135,13 @@ if __name__ == '__main__':
             pathlist.append(suvidata[key]['store'])
         multicolour.wrapper(pathlist, 'combined')
 
-        # # Make animations
+        # Make animations
+        folder = 'diffs_g'
+        img_files = local_file_list_build(folder)
+        # a day is roughly 100 images
+        img_files = img_files[-360:]
+        make_anim.wrapper(img_files, 'diffs_195A')
+
         # folder = 'store_b'
         # img_files = local_file_list_build(folder)
         # # a day is roughly 100 images
@@ -160,6 +167,9 @@ if __name__ == '__main__':
         # make_anim.wrapper(img_files, '3_colour')
 
         print("*** All image processing completed")
+        finishtime = time.time()
+        elapsedminutes = ((finishtime - starttime) / 60)
+        print("Processing time:", elapsedminutes)
         sleeptime = 3600
         for i in range(sleeptime, 0, -1):
             j = i % 60
