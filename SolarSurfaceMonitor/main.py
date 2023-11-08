@@ -115,13 +115,13 @@ if __name__ == '__main__':
         if os.path.exists(suvidata[key]['diffs']) is False:
             os.makedirs(suvidata[key]['diffs'])
 
-    # get the latest SUVI images
     while True:
+        # get the latest SUVI images
         for key in suvidata:
             download_suvi(suvidata[key]['url'], suvidata[key]['store'])
             print('*** Downloads completed')
 
-        # Calculate differences for each wavelength
+        # Calculate difference images for each wavelength
         for key in suvidata:
             img_files = local_file_list_build(suvidata[key]['store'])
             img_files = img_files[-360:]
