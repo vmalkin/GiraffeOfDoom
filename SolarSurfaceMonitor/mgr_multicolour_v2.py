@@ -43,65 +43,41 @@ def utc2posix(utcstring, timeformat):
     return epoch_time
 
 
-def local_file_list_build(directory):
-    # Builds and returns a list of files contained in the directory.
-    # List is sorted into A --> Z order
-    dirlisting = []
-    path = directory + pathsep + "*.*"
-    for name in glob.glob(path):
-        name = os.path.normpath(name)
-        # seperator = os.path.sep
-        # n = name.split(seperator)
-        # nn = n[1]
-        dirlisting.append(name)
-    dirlisting.sort()
-    return dirlisting
+# def local_file_list_build(directory):
+#     # Builds and returns a list of files contained in the directory.
+#     # List is sorted into A --> Z order
+#     dirlisting = []
+#     path = directory + pathsep + "*.*"
+#     for name in glob.glob(path):
+#         name = os.path.normpath(name)
+#         # seperator = os.path.sep
+#         # n = name.split(seperator)
+#         # nn = n[1]
+#         dirlisting.append(name)
+#     dirlisting.sort()
+#     return dirlisting
 
 
 def wrapper(pathlist, save_folder):
     print('*** BEGIN multicolour processing ', save_folder)
-    starttime = int(time.time()) - 86400
-    # Start with an empty image list
-    imagelist = {}
 
     if os.path.exists(save_folder) is False:
         os.makedirs(save_folder)
 
-    # get the file listing from the first key in the dictionary. we only want files in a particular date range
-    for path in pathlist:
-        filelist = local_file_list_build(path)
-        filelist = filelist[-360:]
-        for filename in filelist:
-            p = filename.split('_g16_s')
-            pp = p[1].split('Z_e')
-            pdate = utc2posix(pp[0], '%Y%m%dT%H%M%S')
-            if pdate >= starttime:
-               imagelist[pdate] = []
+    for i in range(0, len(pathlist)):
+        files = pathlist[i]
+        # print(files)
+        if len(files) == 3:
+            b = cv2.imread(files[0], 0)
+            r = cv2.imread(files[1], 0)
+            g = cv2.imread(files[2], 0)
 
-    for path in pathlist:
-        filelist = local_file_list_build(path)
-        for filename in filelist:
-            p = filename.split('_g16_s')
-            pp = p[1].split('Z_e')
-            pdate = utc2posix(pp[0], '%Y%m%dT%H%M%S')
-            if pdate >= starttime:
-                imagelist[pdate].append(filename)
+            filename = str(i) + ".png"
 
-    for item in imagelist:
-        file = imagelist[item]
-        if len(file) == 3:
-            b = cv2.imread(file[0], 0)
-            r = cv2.imread(file[1], 0)
-            g = cv2.imread(file[2], 0)
-
-            p = file[0].split('_g16_s')
-            pp = p[1].split('Z_e')
-
-            filename = pp[0] + "_clr.png"
             colour_img = cv2.merge([b, g, r])
             # colour_img = cv2.merge([g, r, b])
 
-            create_label(colour_img, pp[0])
+            # create_label(colour_img, pp[0])
             fc = save_folder + pathsep + str(filename)
             cv2.imwrite(fc, colour_img)
 

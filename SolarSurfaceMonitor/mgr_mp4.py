@@ -1,7 +1,6 @@
 import cv2
 def wrapper(filelist, name):
     # Create mp4 animation
-    print('*** BEGIN MP4', name)
     i = cv2.imread(filelist[0])
     j = i.shape
     width = j[0]
@@ -20,7 +19,7 @@ def wrapper(filelist, name):
         frame = cv2.imread(image)
         # Optional step to resize the input image to the dimension stated in the
         # VideoWriter object above
-        # frame = cv2.resize(frame, dsize=(width, height))
+        # frame = cv2.resize(frame, dsize=(400, 400))
         video.write(frame)
 
     # Exit the video writer
