@@ -90,6 +90,8 @@ def create_reticle(image):
 
 
 def wrapper(filepathlist, diffstore, pathsep):
+    print("*** Differencing STARTED ", diffstore)
+    processing_store = []
     for i in range(1, len(filepathlist)):
         old_name = filepathlist[i - 1]
         ot1 = old_name.split("_g16_s")
@@ -120,14 +122,20 @@ def wrapper(filepathlist, diffstore, pathsep):
                 clahe = cv2.createCLAHE(clipLimit=20, tileGridSize=(10, 10))
                 img_diff = clahe.apply(img_diff)
 
-                # Add watermark to image
-                timestamp = posix2utc(new_time, "%Y-%m-%d %H:%M UTC")
-                img_diff = create_label(img_diff, timestamp)
-                img_diff = create_reticle(img_diff)
 
-                # Give the file the UTC time of the start of the observation
+
+                # # Add watermark to image
+                # timestamp = posix2utc(new_time, "%Y-%m-%d %H:%M UTC")
+                # img_diff = create_label(img_diff, timestamp)
+                # img_diff = create_reticle(img_diff)
+                #
+                # # Give the file the UTC time of the start of the observation
                 diff_filename = diffstore + pathsep + ot2[0] + "_df.png"
-                cv2.imwrite(diff_filename, img_diff)
+                tmp = [diff_filename, img_diff]
+                processing_store.append(tmp)
+                # cv2.imwrite(diff_filename, img_diff)
             except:
                 print("!!! Image differencing failed for ", new_name)
+    for item in processing_store:
+        print(item)
     print("*** Differencing FINISHED")

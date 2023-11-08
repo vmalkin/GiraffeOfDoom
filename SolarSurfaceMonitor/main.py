@@ -134,30 +134,30 @@ if __name__ == '__main__':
             pathlist.append(suvidata[key]['store'])
         multicolour.wrapper(pathlist, 'combined')
 
-        # Make animations
-        folder = 'store_b'
-        img_files = local_file_list_build(folder)
-        # a day is roughly 100 images
-        img_files = img_files[-360:]
-        make_anim.wrapper(img_files, '171A')
-
-        folder = 'store_g'
-        img_files = local_file_list_build(folder)
-        # a day is roughly 100 images
-        img_files = img_files[-360:]
-        make_anim.wrapper(img_files, '194A')
-
-        folder = 'store_r'
-        img_files = local_file_list_build(folder)
-        # a day is roughly 100 images
-        img_files = img_files[-360:]
-        make_anim.wrapper(img_files, '284A')
-
-        folder = 'combined'
-        img_files = local_file_list_build(folder)
-        # a day is roughly 100 images
-        img_files = img_files[-360:]
-        make_anim.wrapper(img_files, '3_colour')
+        # # Make animations
+        # folder = 'store_b'
+        # img_files = local_file_list_build(folder)
+        # # a day is roughly 100 images
+        # img_files = img_files[-360:]
+        # make_anim.wrapper(img_files, '171A')
+        #
+        # folder = 'store_g'
+        # img_files = local_file_list_build(folder)
+        # # a day is roughly 100 images
+        # img_files = img_files[-360:]
+        # make_anim.wrapper(img_files, '194A')
+        #
+        # folder = 'store_r'
+        # img_files = local_file_list_build(folder)
+        # # a day is roughly 100 images
+        # img_files = img_files[-360:]
+        # make_anim.wrapper(img_files, '284A')
+        #
+        # folder = 'combined'
+        # img_files = local_file_list_build(folder)
+        # # a day is roughly 100 images
+        # img_files = img_files[-360:]
+        # make_anim.wrapper(img_files, '3_colour')
 
         print("*** All image processing completed")
         sleeptime = 3600
