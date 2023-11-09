@@ -1,6 +1,7 @@
 import cv2
 def wrapper(filelist, name):
     # Create mp4 animation
+    print("*** Begin movie creation: ", name)
     i = cv2.imread(filelist[0])
     j = i.shape
     width = j[0]
@@ -24,4 +25,4 @@ def wrapper(filelist, name):
 
     # Exit the video writer
     video.release()
-    print('*** END MP4')
+    print('*** End movie creation: ', name)

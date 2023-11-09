@@ -172,6 +172,7 @@ if __name__ == '__main__':
         # img_files = img_files[-360:]
         # make_anim.wrapper(img_files, '284A')
         #
+
         folder = 'combined'
         img_files = local_file_list_build(folder)
         # a day is roughly 100 images
