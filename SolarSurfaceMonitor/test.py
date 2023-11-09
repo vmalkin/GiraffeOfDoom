@@ -78,11 +78,6 @@ def local_file_list_build(directory):
     dirlisting.sort()
     return dirlisting
 
-def median_image(img_1, img_2, img_3):
-    t = [img_1, img_2, img_3]
-    p = np.median(t, axis=0)
-    return p
-
 
 pathlist = []
 for key in suvidata:

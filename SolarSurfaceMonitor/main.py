@@ -127,7 +127,7 @@ if __name__ == '__main__':
             img_files = local_file_list_build(suvidata[key]['store'])
             img_files = img_files[-360:]
             store_diffs = suvidata[key]['diffs']
-            diffs.wrapper(img_files, store_diffs, pathsep)
+            diffs.wrapper(img_files, store_diffs, pathsep, key)
 
         # create multispectral images
         pathlist = []
@@ -141,6 +141,18 @@ if __name__ == '__main__':
         # a day is roughly 100 images
         img_files = img_files[-360:]
         make_anim.wrapper(img_files, 'diffs_195A')
+
+        folder = 'diffs_b'
+        img_files = local_file_list_build(folder)
+        # a day is roughly 100 images
+        img_files = img_files[-360:]
+        make_anim.wrapper(img_files, 'diffs_171A')
+
+        folder = 'diffs_r'
+        img_files = local_file_list_build(folder)
+        # a day is roughly 100 images
+        img_files = img_files[-360:]
+        make_anim.wrapper(img_files, 'diffs_284A')
 
         # folder = 'store_b'
         # img_files = local_file_list_build(folder)
@@ -168,7 +180,7 @@ if __name__ == '__main__':
 
         print("*** All image processing completed")
         finishtime = time.time()
-        elapsedminutes = ((finishtime - starttime) / 60)
+        elapsedminutes = round(((finishtime - starttime) / 60),1)
         print("Processing time:", elapsedminutes)
         sleeptime = 3600
         for i in range(sleeptime, 0, -1):

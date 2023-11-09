@@ -25,7 +25,7 @@ def utc2posix(utcstring, timeformat):
     epoch_time = timegm(utc_time)
     return epoch_time
 
-def create_label(image, timestamp):
+def create_label(image, timestamp, wavelength):
     # width, height, channels = image.shape
     width, height = image.shape
     label_height = int(height / 10)
@@ -38,7 +38,7 @@ def create_label(image, timestamp):
     # colours are blue, green, red in opencv
     font_color = (255, 255, 255)
     font_thickness = 1
-    label0 = "GOES SUVI 195A image processed at DunedinAurora.NZ Magnetic Observatory"
+    label0 = "GOES SUVI " + str(wavelength) + "A image processed at DunedinAurora.NZ Magnetic Observatory"
     label1 = "Image time: " + timestamp
     label2 = "Images courtesy of NOAA."
     cv2.putText(image, label0, (0, 50), font, font_size, font_color, font_thickness, cv2.LINE_AA)
@@ -91,7 +91,7 @@ def create_reticle(image):
     return image
 
 
-def wrapper(filepathlist, diffstore, pathsep):
+def wrapper(filepathlist, diffstore, pathsep, wavelength):
     print("*** Differencing STARTED ", diffstore)
     processing_store = []
     for i in range(1, len(filepathlist)):
@@ -148,7 +148,7 @@ def wrapper(filepathlist, diffstore, pathsep):
         img2 = processing_store[i-1][2]
         img3 = processing_store[i-2][2]
         filtered_img = median_image(img1, img2, img3)
-        filtered_img = create_label(filtered_img, timestamp)
+        filtered_img = create_label(filtered_img, timestamp, wavelength)
         filtered_img = create_reticle(filtered_img)
         cv2.imwrite(filename, filtered_img)
 
