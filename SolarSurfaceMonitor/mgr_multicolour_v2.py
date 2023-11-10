@@ -1,9 +1,4 @@
-import numpy as np
 import os
-import glob
-import time
-import datetime
-from calendar import timegm
 import cv2
 
 pathsep = os.sep
@@ -30,17 +25,17 @@ def create_label(image, timestamp):
     cv2.putText(image, label2, (0, height - 80), font, font_size, font_color, font_thickness, cv2.LINE_AA)
     return image
 
-
-def posix2utc(posixtime, timeformat):
-    # '%Y-%m-%d %H:%M'
-    utctime = datetime.datetime.utcfromtimestamp(int(posixtime)).strftime(timeformat)
-    return utctime
-
-
-def utc2posix(utcstring, timeformat):
-    utc_time = time.strptime(utcstring, timeformat)
-    epoch_time = timegm(utc_time)
-    return epoch_time
+#
+# def posix2utc(posixtime, timeformat):
+#     # '%Y-%m-%d %H:%M'
+#     utctime = datetime.datetime.utcfromtimestamp(int(posixtime)).strftime(timeformat)
+#     return utctime
+#
+#
+# def utc2posix(utcstring, timeformat):
+#     utc_time = time.strptime(utcstring, timeformat)
+#     epoch_time = timegm(utc_time)
+#     return epoch_time
 
 
 # def local_file_list_build(directory):
@@ -68,16 +63,16 @@ def wrapper(pathlist, save_folder):
         files = pathlist[i]
         # print(files)
         if len(files) == 3:
+            f = files[0].split('/')
+            filename = f[1]
+            t = filename.split('_')
+            timestamp = t[0]
             b = cv2.imread(files[0], 0)
             r = cv2.imread(files[1], 0)
             g = cv2.imread(files[2], 0)
 
-            filename = str(i) + ".png"
-
             colour_img = cv2.merge([b, g, r])
-            # colour_img = cv2.merge([g, r, b])
-
-            # create_label(colour_img, pp[0])
+            colour_img = create_label(colour_img, timestamp)
             fc = save_folder + pathsep + str(filename)
             cv2.imwrite(fc, colour_img)
 

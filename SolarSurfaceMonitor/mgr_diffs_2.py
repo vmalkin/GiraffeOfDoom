@@ -148,6 +148,16 @@ def wrapper(filepathlist, diffstore, pathsep, wavelength):
         img2 = processing_store[i-1][2]
         img3 = processing_store[i-2][2]
         filtered_img = median_image(img1, img2, img3)
+
+        # Adjust the brightness and contrast
+        # Adjusts the brightness by adding 10 to each pixel value
+        brightness = -150
+        # Adjusts the contrast by scaling the pixel values by 2.3
+        contrast = 2
+        filtered_img = cv2.addWeighted(filtered_img, contrast, np.zeros(filtered_img.shape, filtered_img.dtype), 0, brightness)
+
+        # filtered_img = cv2.normalize(filtered_img, None, 50, 250, cv2.NORM_MINMAX)
+
         filtered_img = create_label(filtered_img, timestamp, wavelength)
         filtered_img = create_reticle(filtered_img)
         cv2.imwrite(filename, filtered_img)

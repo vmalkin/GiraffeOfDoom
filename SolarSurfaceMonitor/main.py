@@ -4,7 +4,7 @@ import os
 import time
 import mgr_diffs_2 as diffs
 import mgr_mp4 as make_anim
-import mgr_multicolour as multicolour
+import mgr_multicolour_v2 as multicolour
 
 suvidata = {
     '171': {
@@ -26,6 +26,26 @@ suvidata = {
 
 # file path seperator / or \ ???
 pathsep = os.sep
+
+
+def process_colourfile_paths(s_data, s_key):
+    pathlist = []
+    for key in s_data:
+        pathlist.append(suvidata[key][s_key])
+
+    img_tmp = []
+    for pathname in pathlist:
+        filenames = local_file_list_build(pathname)
+        filenames = filenames[-360:]
+        img_tmp.append(filenames)
+
+    images_parsed = []
+    for i in range(0, len(img_tmp[0])):
+        tmp = []
+        for j in range(0, len(img_tmp)):
+            tmp.append(img_tmp[j][i])
+        images_parsed.append(tmp)
+    return images_parsed
 
 
 def local_file_list_build(directory):
@@ -130,10 +150,12 @@ if __name__ == '__main__':
             diffs.wrapper(img_files, store_diffs, pathsep, key)
 
         # create multispectral images
-        pathlist = []
-        for key in suvidata:
-            pathlist.append(suvidata[key]['store'])
+        pathlist = process_colourfile_paths(suvidata, 'store')
         multicolour.wrapper(pathlist, 'combined')
+        # create multispectral difference images
+        pathlist = process_colourfile_paths(suvidata, 'diffs')
+        multicolour.wrapper(pathlist, 'combined_diffs')
+
 
         # Make animations
         folder = 'diffs_g'
@@ -154,30 +176,35 @@ if __name__ == '__main__':
         img_files = img_files[-360:]
         make_anim.wrapper(img_files, 'diffs_284A')
 
-        # folder = 'store_b'
-        # img_files = local_file_list_build(folder)
-        # # a day is roughly 100 images
-        # img_files = img_files[-360:]
-        # make_anim.wrapper(img_files, '171A')
-        #
-        # folder = 'store_g'
-        # img_files = local_file_list_build(folder)
-        # # a day is roughly 100 images
-        # img_files = img_files[-360:]
-        # make_anim.wrapper(img_files, '194A')
-        #
-        # folder = 'store_r'
-        # img_files = local_file_list_build(folder)
-        # # a day is roughly 100 images
-        # img_files = img_files[-360:]
-        # make_anim.wrapper(img_files, '284A')
-        #
+        folder = 'store_b'
+        img_files = local_file_list_build(folder)
+        # a day is roughly 100 images
+        img_files = img_files[-360:]
+        make_anim.wrapper(img_files, '171A')
+
+        folder = 'store_g'
+        img_files = local_file_list_build(folder)
+        # a day is roughly 100 images
+        img_files = img_files[-360:]
+        make_anim.wrapper(img_files, '194A')
+
+        folder = 'store_r'
+        img_files = local_file_list_build(folder)
+        # a day is roughly 100 images
+        img_files = img_files[-360:]
+        make_anim.wrapper(img_files, '284A')
 
         folder = 'combined'
         img_files = local_file_list_build(folder)
         # a day is roughly 100 images
         img_files = img_files[-360:]
         make_anim.wrapper(img_files, '3_colour')
+
+        folder = 'combined_diffs'
+        img_files = local_file_list_build(folder)
+        # a day is roughly 100 images
+        img_files = img_files[-360:]
+        make_anim.wrapper(img_files, '3_clr_diff')
 
         print("*** All image processing completed")
         finishtime = time.time()
