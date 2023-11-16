@@ -96,13 +96,14 @@ def wrapper(filepathlist, diffstore, pathsep, wavelength):
     processing_store = []
     for i in range(1, len(filepathlist)):
         old_name = filepathlist[i - 1]
-        ot1 = old_name.split("_g16_s")
-        ot2 = ot1[1].split("Z_e")
+        ot1 = old_name.split("_s")
+        ot2 = ot1[2].split("Z_e")
+
         old_time = utc2posix(ot2[0], "%Y%m%dT%H%M%S")
 
         new_name = filepathlist[i]
-        nt1 = new_name.split("_g16_s")
-        nt2 = nt1[1].split("Z_e")
+        nt1 = new_name.split("_s")
+        nt2 = nt1[2].split("Z_e")
         new_time = utc2posix(nt2[0], "%Y%m%dT%H%M%S")
 
         # large gaps im image times should NOT be diffrenced

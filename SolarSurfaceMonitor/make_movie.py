@@ -19,9 +19,15 @@ def local_file_list_build(directory):
     return dirlisting
 
 if __name__ == '__main__':
-    image_store = 'diffs_b'
+    image_store = 'diffs_r'
     name = 'type_name'
+
+
     filelist = local_file_list_build(image_store)
+    print('length of file listing:', len(filelist))
+    trim_before = 0
+    trim_after = -450
+    filelist = filelist[trim_before:trim_after]
 
     # Create mp4 animation
     print("*** Begin movie creation: ", name)
