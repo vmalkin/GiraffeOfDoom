@@ -157,13 +157,10 @@ if __name__ == '__main__':
             if len(tmp) == 3:
                 multifilelist.append(tmp)
 
-        for item in multifilelist:
-            print(item)
+        multicolour.wrapper(multifilelist, 'combined')
 
-        # multicolour.wrapper(multifilelist, 'combined')
-        # # create multispectral difference images
-        # pathlist = process_colourfile_paths(suvidata, 'diffs')
-        # multicolour.wrapper(pathlist, 'combined_diffs')
+        # create multispectral difference images
+
 
 
         # Make animations
@@ -207,12 +204,12 @@ if __name__ == '__main__':
         img_files = img_files[-360:]
         make_anim.wrapper(img_files, '284A')
 
-        # folder = 'combined'
-        # img_files = local_file_list_build(folder)
-        # # a day is roughly 360 images
-        # img_files = img_files[-360:]
-        # make_anim.wrapper(img_files, '3_colour')
-        #
+        folder = 'combined'
+        img_files = local_file_list_build(folder)
+        # a day is roughly 360 images
+        img_files = img_files[-360:]
+        make_anim.wrapper(img_files, '3_colour')
+
         # folder = 'combined_diffs'
         # img_files = local_file_list_build(folder)
         # # a day is roughly 100 images
