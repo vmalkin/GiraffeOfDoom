@@ -38,22 +38,9 @@ def create_label(image, timestamp):
 #     return epoch_time
 
 
-# def local_file_list_build(directory):
-#     # Builds and returns a list of files contained in the directory.
-#     # List is sorted into A --> Z order
-#     dirlisting = []
-#     path = directory + pathsep + "*.*"
-#     for name in glob.glob(path):
-#         name = os.path.normpath(name)
-#         # seperator = os.path.sep
-#         # n = name.split(seperator)
-#         # nn = n[1]
-#         dirlisting.append(name)
-#     dirlisting.sort()
-#     return dirlisting
 
 
-def wrapper(pathlist, save_folder):
+def wrapper(files_b, files_g, files_r, save_folder):
     print('*** BEGIN multicolour processing ', save_folder)
 
     if os.path.exists(save_folder) is False:
@@ -67,13 +54,15 @@ def wrapper(pathlist, save_folder):
             filename = f[1]
             t = filename.split('_')
             timestamp = t[0]
-            b = cv2.imread(files[0], 0)
-            r = cv2.imread(files[1], 0)
-            g = cv2.imread(files[2], 0)
-
-            colour_img = cv2.merge([b, g, r])
-            colour_img = create_label(colour_img, timestamp)
-            fc = save_folder + pathsep + str(filename)
-            cv2.imwrite(fc, colour_img)
+            try:
+                b = cv2.imread(files[0], 0)
+                r = cv2.imread(files[1], 0)
+                g = cv2.imread(files[2], 0)
+                colour_img = cv2.merge([b, g, r])
+                colour_img = create_label(colour_img, timestamp)
+                fc = save_folder + pathsep + str(filename)
+                cv2.imwrite(fc, colour_img)
+            except:
+                print('!!! Multicolour failed to merge files \n', files)
 
     print('*** END multicolour processing')

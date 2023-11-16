@@ -125,8 +125,6 @@ def wrapper(filepathlist, diffstore, pathsep, wavelength):
                 clahe = cv2.createCLAHE(clipLimit=20, tileGridSize=(10, 10))
                 img_diff = clahe.apply(img_diff)
 
-
-
                 # # Add watermark to image
                 # timestamp = posix2utc(new_time, "%Y-%m-%d %H:%M UTC")
                 # img_diff = create_label(img_diff, timestamp)

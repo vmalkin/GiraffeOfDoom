@@ -36,6 +36,7 @@ def wrapper(filelist, label):
     for file in filelist:
         try:
             im = Image.open(file)
+            im = im.resize((640, 640))
             images.append(im)
         except:
             print('!!! Unable to open image for GIF creation, skipping')
