@@ -40,29 +40,31 @@ def create_label(image, timestamp):
 
 
 
-def wrapper(files_b, files_g, files_r, save_folder):
+def wrapper(multifilelist, save_folder):
     print('*** BEGIN multicolour processing ', save_folder)
 
     if os.path.exists(save_folder) is False:
         os.makedirs(save_folder)
 
-    for i in range(0, len(pathlist)):
-        files = pathlist[i]
-        # print(files)
-        if len(files) == 3:
-            f = files[0].split('/')
-            filename = f[1]
-            t = filename.split('_')
-            timestamp = t[0]
-            try:
-                b = cv2.imread(files[0], 0)
-                r = cv2.imread(files[1], 0)
-                g = cv2.imread(files[2], 0)
-                colour_img = cv2.merge([b, g, r])
-                colour_img = create_label(colour_img, timestamp)
-                fc = save_folder + pathsep + str(filename)
-                cv2.imwrite(fc, colour_img)
-            except:
-                print('!!! Multicolour failed to merge files \n', files)
+
+
+    # for i in range(0, len(pathlist)):
+    #     files = pathlist[i]
+    #     # print(files)
+    #     if len(files) == 3:
+    #         f = files[0].split('/')
+    #         filename = f[1]
+    #         t = filename.split('_')
+    #         timestamp = t[0]
+    #         try:
+    #             b = cv2.imread(files[0], 0)
+    #             r = cv2.imread(files[1], 0)
+    #             g = cv2.imread(files[2], 0)
+    #             colour_img = cv2.merge([b, g, r])
+    #             colour_img = create_label(colour_img, timestamp)
+    #             fc = save_folder + pathsep + str(filename)
+    #             cv2.imwrite(fc, colour_img)
+    #         except:
+    #             print('!!! Multicolour failed to merge files \n', files)
 
     print('*** END multicolour processing')

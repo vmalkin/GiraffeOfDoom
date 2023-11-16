@@ -128,11 +128,39 @@ if __name__ == '__main__':
             diffs.wrapper(img_files, store_diffs, pathsep, key)
 
         # create multispectral images
+        # Files for each datetime, regardless of the wavelength, have the same name
         files_blue = local_file_list_build('store_b')
+        files_blue = files_blue[-360:]
         files_green = local_file_list_build('store_g')
+        files_green = files_green[-360:]
         files_red = local_file_list_build('store_r')
+        files_red = files_red[-360:]
 
-        multicolour.wrapper(files_blue, files_red, files_green, 'combined')
+        multifilelist = []
+        for file_b in files_blue:
+            tmp = []
+            tmp.append(file_b)
+            b = file_b.split('_')
+            start_b = b[4]
+
+            for file_g in files_green:
+                g = file_g.split('_')
+                start_g = g[4]
+                if start_g == start_b:
+                    tmp.append(file_g)
+
+            for file_r in files_red:
+                r = file_r.split('_')
+                start_r = r[4]
+                if start_r == start_b:
+                    tmp.append(file_r)
+            if len(tmp) == 3:
+                multifilelist.append(tmp)
+
+        for item in multifilelist:
+            print(item)
+
+        # multicolour.wrapper(multifilelist, 'combined')
         # # create multispectral difference images
         # pathlist = process_colourfile_paths(suvidata, 'diffs')
         # multicolour.wrapper(pathlist, 'combined_diffs')
