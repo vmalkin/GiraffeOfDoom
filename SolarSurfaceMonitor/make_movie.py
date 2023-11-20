@@ -37,8 +37,9 @@ if __name__ == '__main__':
     height = j[1]
     filename = name + ".mp4"
     # Define codec and create a VideoWriter object
-    # cv2.VideoWriter_fourcc(*"mp4v") or cv2.VideoWriter_fourcc("m", "p", "4", "v")
+    # cv2.VideoWriter_fourcc(*"mp4v") or cv2.VideoWriter_fourcc("m", "p", "4", "v") H264
     fourcc = cv2.VideoWriter_fourcc(*"mp4v")
+    # fourcc = cv2.VideoWriter_fourcc(*"h264")
     video = cv2.VideoWriter(
         filename=filename, fourcc=fourcc, fps=10.0, frameSize=(width, height)
     )
