@@ -15,7 +15,7 @@ def wrapper(filelist, name):
     # width = j[0]
     # height = j[1]
     # filename = name + ".mp4"
-    filename = name + ".vp80"
+    filename = name + ".webm"
     # Define codec and create a VideoWriter object
     # cv2.VideoWriter_fourcc(*"mp4v") or cv2.VideoWriter_fourcc("m", "p", "4", "v")
     # fourcc = cv2.VideoWriter_fourcc(*"mp4v")
