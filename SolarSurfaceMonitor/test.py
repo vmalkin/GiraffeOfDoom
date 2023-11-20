@@ -6,63 +6,12 @@ import datetime
 from calendar import timegm
 import cv2
 import mgr_mp4 as make_anim
-import mgr_multicolour_v2 as multicolour
+import mgr_multicolour_diff as multidiff
 import numpy as np
 
 # file path seperator / or \ ???
 pathsep = os.sep
-#
-# def local_file_list_build(directory):
-#     # Builds and returns a list of files contained in the directory.
-#     # List is sorted into A --> Z order
-#     dirlisting = []
-#     path = directory + pathsep + "*.*"
-#     for name in glob.glob(path):
-#         name = os.path.normpath(name)
-#         # seperator = os.path.sep
-#         # n = name.split(seperator)
-#         # nn = n[1]
-#         dirlisting.append(name)
-#     dirlisting.sort()
-#     return dirlisting
-#
-#
-#
-# folder = 'diffs_g'
-# img_files = local_file_list_build(folder)
-# # a day is roughly 100 images
-# img_files = img_files[-360:]
-# make_anim.wrapper(img_files, 'diffs_195A')
-#
-# folder = 'diffs_b'
-# img_files = local_file_list_build(folder)
-# # a day is roughly 100 images
-# img_files = img_files[-360:]
-# make_anim.wrapper(img_files, 'diffs_171A')
-#
-# folder = 'diffs_r'
-# img_files = local_file_list_build(folder)
-# # a day is roughly 100 images
-# img_files = img_files[-360:]
-# make_anim.wrapper(img_files, 'diffs_284A')
 
-suvidata = {
-    '171': {
-        'store': 'store_b',
-        'diffs': 'diffs_b',
-        'url': 'https://services.swpc.noaa.gov/images/animations/suvi/primary/171/'
-    },
-    '195': {
-        'store': 'store_g',
-        'diffs': 'diffs_g',
-        'url': 'https://services.swpc.noaa.gov/images/animations/suvi/primary/195/'
-    },
-    '284': {
-        'store': 'store_r',
-        'diffs': 'diffs_r',
-        'url': 'https://services.swpc.noaa.gov/images/animations/suvi/primary/284/'
-    }
-}
 
 def local_file_list_build(directory):
     # Builds and returns a list of files contained in the directory.
@@ -79,29 +28,32 @@ def local_file_list_build(directory):
     return dirlisting
 
 
-pathlist = []
-for key in suvidata:
-    pathlist.append(suvidata[key]['diffs'])
+files_blue = local_file_list_build('diffs_b')
+files_blue = files_blue[-360:]
+files_green = local_file_list_build('diffs_g')
+files_green = files_green[-360:]
+files_red = local_file_list_build('diffs_r')
+files_red = files_red[-360:]
 
-img_tmp = []
-for pathname in pathlist:
-    filenames = local_file_list_build(pathname)
-    filenames = filenames[-360:]
-    img_tmp.append(filenames)
-
-images_parsed = []
-for i in range(0, len(img_tmp[0])):
+multifilelist = []
+for file_b in files_blue:
     tmp = []
-    for j in range(0, len(img_tmp)):
-        tmp.append(img_tmp[j][i])
-    images_parsed.append(tmp)
+    tmp.append(file_b)
+    b = file_b.split(pathsep)
+    start_b = b[1]
 
-# image list is in format [[r1, g1, b1], [r2, g2, b2]...]
-multicolour.wrapper(images_parsed, 'test')
+    for file_g in files_green:
+        g = file_g.split(pathsep)
+        start_g = g[1]
+        if start_g == start_b:
+            tmp.append(file_g)
 
-folder = 'test'
-img_files = local_file_list_build(folder)
-# a day is roughly 100 images
-img_files = img_files[-360:]
+    for file_r in files_red:
+        r = file_r.split(pathsep)
+        start_r = r[1]
+        if start_r == start_b:
+            tmp.append(file_r)
+    if len(tmp) == 3:
+        multifilelist.append(tmp)
 
-make_anim.wrapper(img_files, 'test_diffs')
+multidiff.wrapper(multifilelist, 'combined_diffs')
