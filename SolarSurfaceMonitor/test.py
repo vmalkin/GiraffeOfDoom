@@ -1,17 +1,53 @@
-import numpy as np
-import os
 import glob
+import requests
+import os
 import time
-import datetime
-from calendar import timegm
 import cv2
-import mgr_mp4 as make_anim
-import mgr_multicolour_diff as multidiff
-import numpy as np
-
 # file path seperator / or \ ???
 pathsep = os.sep
 
+def wrapper(filelist, name):
+    # Create mp4 animation
+    print("*** Begin movie creation: ", name)
+
+    # try and get the shape from the first valid image. Skip broken ones
+    # for file in filelist:
+    #     try:
+    #         i = cv2.imread(file)
+    #         j = i.shape
+    #         break
+    #     except:
+    #         pass
+    #
+    # width = j[0]
+    # height = j[1]
+    # filename = name + ".mp4"
+    filename = name + ".webm"
+    # Define codec and create a VideoWriter object
+    # cv2.VideoWriter_fourcc(*"mp4v") or cv2.VideoWriter_fourcc("m", "p", "4", "v")
+
+    # fourcc = cv2.VideoWriter_fourcc(*"mp4v")
+    fourcc = cv2.VideoWriter_fourcc('V', 'P', '9', '0')
+    video = cv2.VideoWriter(
+        # filename=filename, fourcc=fourcc, fps=10.0, frameSize=(width, height)
+        filename=filename, fourcc=fourcc, fps=10.0, frameSize=(640, 640)
+    )
+
+    # Read each image and write it to the video
+    for image in filelist:
+        # read the image using OpenCV
+        frame = cv2.imread(image)
+        # Optional step to resize the input image to the dimension stated in the
+        # VideoWriter object above
+        try:
+            frame = cv2.resize(frame, dsize=(640, 640))
+            video.write(frame)
+        except cv2.error:
+            print('!!! Unable to resize video frame')
+
+    # Exit the video writer
+    video.release()
+    print('*** End movie creation: ', name)
 
 def local_file_list_build(directory):
     # Builds and returns a list of files contained in the directory.
@@ -20,40 +56,14 @@ def local_file_list_build(directory):
     path = directory + pathsep + "*.*"
     for name in glob.glob(path):
         name = os.path.normpath(name)
-        # seperator = os.path.sep
-        # n = name.split(seperator)
-        # nn = n[1]
         dirlisting.append(name)
     dirlisting.sort()
     return dirlisting
 
 
-files_blue = local_file_list_build('diffs_b')
-files_blue = files_blue[-360:]
-files_green = local_file_list_build('diffs_g')
-files_green = files_green[-360:]
-files_red = local_file_list_build('diffs_r')
-files_red = files_red[-360:]
-
-multifilelist = []
-for file_b in files_blue:
-    tmp = []
-    tmp.append(file_b)
-    b = file_b.split(pathsep)
-    start_b = b[1]
-
-    for file_g in files_green:
-        g = file_g.split(pathsep)
-        start_g = g[1]
-        if start_g == start_b:
-            tmp.append(file_g)
-
-    for file_r in files_red:
-        r = file_r.split(pathsep)
-        start_r = r[1]
-        if start_r == start_b:
-            tmp.append(file_r)
-    if len(tmp) == 3:
-        multifilelist.append(tmp)
-
-multidiff.wrapper(multifilelist, 'combined_diffs')
+folder = 'diffs_r'
+img_files = local_file_list_build(folder)
+# a day is roughly 360 images
+img_files = img_files[-360:]
+wrapper(img_files, 'diffs_284A')
+# make_gif.wrapper(img_files, 'diffs_284A')

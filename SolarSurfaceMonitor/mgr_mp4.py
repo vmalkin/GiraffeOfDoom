@@ -14,10 +14,12 @@ def wrapper(filelist, name):
     #
     # width = j[0]
     # height = j[1]
-    filename = name + ".mp4"
+    # filename = name + ".mp4"
+    filename = name + ".vp80"
     # Define codec and create a VideoWriter object
     # cv2.VideoWriter_fourcc(*"mp4v") or cv2.VideoWriter_fourcc("m", "p", "4", "v")
-    fourcc = cv2.VideoWriter_fourcc(*"mp4v")
+    # fourcc = cv2.VideoWriter_fourcc(*"mp4v")
+    fourcc = cv2.VideoWriter_fourcc('V', 'P', '8', '0')
     video = cv2.VideoWriter(
         # filename=filename, fourcc=fourcc, fps=10.0, frameSize=(width, height)
         filename=filename, fourcc=fourcc, fps=10.0, frameSize=(640, 640)
