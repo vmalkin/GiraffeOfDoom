@@ -197,41 +197,41 @@ if __name__ == '__main__':
         img_files = local_file_list_build(folder)
         # a day is roughly 360 images
         img_files = img_files[-360:]
-        make_anim.wrapper(img_files, 'diffs_195A')
+        make_anim.wrapper(img_files, 'diffs_195a')
         # make_gif.wrapper(img_files, 'diffs_195A')
 
         folder = 'diffs_b'
         img_files = local_file_list_build(folder)
         # a day is roughly 360 images
         img_files = img_files[-360:]
-        make_anim.wrapper(img_files, 'diffs_171A')
+        make_anim.wrapper(img_files, 'diffs_171a')
         # make_gif.wrapper(img_files, 'diffs_171A')
 
         folder = 'diffs_r'
         img_files = local_file_list_build(folder)
         # a day is roughly 360 images
         img_files = img_files[-360:]
-        make_anim.wrapper(img_files, 'diffs_284A')
+        make_anim.wrapper(img_files, 'diffs_284a')
         # make_gif.wrapper(img_files, 'diffs_284A')
 
         folder = 'store_b'
         img_files = local_file_list_build(folder)
         # a day is roughly 360 images
         img_files = img_files[-360:]
-        make_anim.wrapper(img_files, '171A')
+        make_anim.wrapper(img_files, '171a')
 
 
         folder = 'store_g'
         img_files = local_file_list_build(folder)
         # a day is roughly 360 images
         img_files = img_files[-360:]
-        make_anim.wrapper(img_files, '194A')
+        make_anim.wrapper(img_files, '194a')
 
         folder = 'store_r'
         img_files = local_file_list_build(folder)
         # a day is roughly 360 images
         img_files = img_files[-360:]
-        make_anim.wrapper(img_files, '284A')
+        make_anim.wrapper(img_files, '284a')
 
         folder = 'combined'
         img_files = local_file_list_build(folder)
@@ -244,12 +244,6 @@ if __name__ == '__main__':
         # a day is roughly 360 images
         img_files = img_files[-360:]
         make_anim.wrapper(img_files, '3_clr_diffs')
-
-        # folder = 'combined_diffs'
-        # img_files = local_file_list_build(folder)
-        # # a day is roughly 100 images
-        # img_files = img_files[-360:]
-        # make_anim.wrapper(img_files, '3_clr_diff')
 
         print("*** All image processing completed")
         finishtime = time.time()
