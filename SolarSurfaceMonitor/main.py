@@ -6,6 +6,7 @@ import mgr_diffs_2 as diffs
 import mgr_mp4 as make_anim
 import mgr_gif as make_gif
 import mgr_multicolour_v2 as multicolour
+import mgr_multicolour_diff as multidiff
 
 suvidata = {
     '171': {
@@ -160,8 +161,36 @@ if __name__ == '__main__':
         multicolour.wrapper(multifilelist, 'combined')
 
         # create multispectral difference images
+        # Files for each datetime, regardless of the wavelength, have the same name
+        files_blue = local_file_list_build('diffs_b')
+        files_blue = files_blue[-360:]
+        files_green = local_file_list_build('diffs_g')
+        files_green = files_green[-360:]
+        files_red = local_file_list_build('diffs_r')
+        files_red = files_red[-360:]
 
+        multifilelist = []
+        for file_b in files_blue:
+            tmp = []
+            tmp.append(file_b)
+            b = file_b.split(pathsep)
+            start_b = b[1]
 
+            for file_g in files_green:
+                g = file_g.split(pathsep)
+                start_g = g[1]
+                if start_g == start_b:
+                    tmp.append(file_g)
+
+            for file_r in files_red:
+                r = file_r.split(pathsep)
+                start_r = r[1]
+                if start_r == start_b:
+                    tmp.append(file_r)
+            if len(tmp) == 3:
+                multifilelist.append(tmp)
+
+        multidiff.wrapper(multifilelist, 'combined_diffs')
 
         # Make animations
         folder = 'diffs_g'
@@ -209,6 +238,12 @@ if __name__ == '__main__':
         # a day is roughly 360 images
         img_files = img_files[-360:]
         make_anim.wrapper(img_files, '3_colour')
+
+        folder = 'combined_diffs'
+        img_files = local_file_list_build(folder)
+        # a day is roughly 360 images
+        img_files = img_files[-360:]
+        make_anim.wrapper(img_files, '3_clr_diffs')
 
         # folder = 'combined_diffs'
         # img_files = local_file_list_build(folder)
