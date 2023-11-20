@@ -198,21 +198,21 @@ if __name__ == '__main__':
         # a day is roughly 360 images
         img_files = img_files[-360:]
         make_anim.wrapper(img_files, 'diffs_195A')
-        make_gif.wrapper(img_files, 'diffs_195A')
+        # make_gif.wrapper(img_files, 'diffs_195A')
 
         folder = 'diffs_b'
         img_files = local_file_list_build(folder)
         # a day is roughly 360 images
         img_files = img_files[-360:]
         make_anim.wrapper(img_files, 'diffs_171A')
-        make_gif.wrapper(img_files, 'diffs_171A')
+        # make_gif.wrapper(img_files, 'diffs_171A')
 
         folder = 'diffs_r'
         img_files = local_file_list_build(folder)
         # a day is roughly 360 images
         img_files = img_files[-360:]
         make_anim.wrapper(img_files, 'diffs_284A')
-        make_gif.wrapper(img_files, 'diffs_284A')
+        # make_gif.wrapper(img_files, 'diffs_284A')
 
         folder = 'store_b'
         img_files = local_file_list_build(folder)
