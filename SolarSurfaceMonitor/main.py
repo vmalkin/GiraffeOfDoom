@@ -163,7 +163,6 @@ if __name__ == '__main__':
                     tmp.append(file_r)
             if len(tmp) == 3:
                 multifilelist.append(tmp)
-
         multicolour.wrapper(multifilelist, 'combined')
 
         # create multispectral difference images
@@ -195,7 +194,6 @@ if __name__ == '__main__':
                     tmp.append(file_r)
             if len(tmp) == 3:
                 multifilelist.append(tmp)
-
         multidiff.wrapper(multifilelist, 'combined_diffs')
 
         # Make animations
@@ -220,24 +218,24 @@ if __name__ == '__main__':
         make_anim.wrapper(img_files, 'diffs_284a')
         # make_gif.wrapper(img_files, 'diffs_284A')
 
-        folder = 'store_b'
-        img_files = local_file_list_build(folder)
-        # a day is roughly 360 images
-        img_files = img_files[-360:]
-        make_anim.wrapper(img_files, '171a')
-
-
-        folder = 'store_g'
-        img_files = local_file_list_build(folder)
-        # a day is roughly 360 images
-        img_files = img_files[-360:]
-        make_anim.wrapper(img_files, '194a')
-
-        folder = 'store_r'
-        img_files = local_file_list_build(folder)
-        # a day is roughly 360 images
-        img_files = img_files[-360:]
-        make_anim.wrapper(img_files, '284a')
+        # folder = 'store_b'
+        # img_files = local_file_list_build(folder)
+        # # a day is roughly 360 images
+        # img_files = img_files[-360:]
+        # make_anim.wrapper(img_files, '171a')
+        #
+        #
+        # folder = 'store_g'
+        # img_files = local_file_list_build(folder)
+        # # a day is roughly 360 images
+        # img_files = img_files[-360:]
+        # make_anim.wrapper(img_files, '194a')
+        #
+        # folder = 'store_r'
+        # img_files = local_file_list_build(folder)
+        # # a day is roughly 360 images
+        # img_files = img_files[-360:]
+        # make_anim.wrapper(img_files, '284a')
 
         folder = 'combined'
         img_files = local_file_list_build(folder)
