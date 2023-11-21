@@ -96,6 +96,11 @@ def get_imagelist(url_to_get):
     return returnlist
 
 
+def playbell():
+    # Ring the system bell
+    pass
+
+
 def download_suvi(lasco_url, storage_folder):
     print(lasco_url)
     listofimages = get_imagelist(lasco_url)
@@ -103,6 +108,7 @@ def download_suvi(lasco_url, storage_folder):
     if len(newimages) > 0:
         # rings the terminal bell
         print("\a")
+        playbell()
         downloadimages(lasco_url, newimages, storage_folder)
 
 
