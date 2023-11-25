@@ -43,8 +43,9 @@ def plot(splitlist, trend, storm, dates, sat_id):
         fig.add_trace(go.Scatter(x=dates, y=tmp, mode="lines", name=name, line=dict(color="grey", width=1)))
 
     fig.add_trace(go.Scatter(x=dates, y=trend, mode="lines", name='Forecast', line=dict(color="black", width=2)))
-    fig.add_scatter(x=dates, y=storm, mode='markers', name='Warning',
-                    marker_symbol=1, marker_color='green', marker_line_color='green', marker_size=10)
+
+    marker_colour = 'rgba(255,150,0, 0.1)'
+    fig.add_bar(x=dates, y=storm, name='Solar Wind High', marker_line_color=marker_colour, marker_line_width=3, marker_color=marker_colour)
 
 
     title = "Simple Solar Wind Forcast - 1 Carrington Rotation from Present"
@@ -55,9 +56,9 @@ def plot(splitlist, trend, storm, dates, sat_id):
     fig.update_layout(font=dict(size=16, color="#202020"), title_font_size=18, )
     fig.update_layout(plot_bgcolor=papercolour,
                       paper_bgcolor=papercolour)
-    fig.add_hline(y=500, line=dict(width=3, color='green'), layer="below")
+    fig.add_hline(y=500, line=dict(width=3, color='red'), layer="below", name='Storm Threshold')
 
-    fig.update_yaxes(range=[100, 700])
+    fig.update_yaxes(range=[200, 700])
     savefile = sat_id + "_simple.jpg"
     fig.write_image(savefile)
     # fig.show()
@@ -152,13 +153,14 @@ def smooth_data(trend):
 
 
 def create_warnings(trend):
+    barvalue = 700
     returnarray = []
     for item in trend:
         if item == None:
             returnarray.append(None)
         if item != None:
             if item > 500:
-                returnarray.append(500)
+                returnarray.append(barvalue)
             if item < 500:
                 returnarray.append(None)
     return returnarray
