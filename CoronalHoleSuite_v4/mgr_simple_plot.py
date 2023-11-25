@@ -44,8 +44,8 @@ def plot(splitlist, trend, storm, dates, sat_id):
 
     fig.add_trace(go.Scatter(x=dates, y=trend, mode="lines", name='Forecast', line=dict(color="black", width=2)))
 
-    marker_colour = 'rgba(255,150,0, 0.1)'
-    fig.add_bar(x=dates, y=storm, name='Solar Wind High', marker_line_color=marker_colour, marker_line_width=3, marker_color=marker_colour)
+    marker_colour = 'rgba(255,150,0, 0.5)'
+    fig.add_bar(x=dates, y=storm, name='High Speed', marker_line_color=marker_colour, marker_line_width=3, marker_color=marker_colour)
 
 
     title = "Simple Solar Wind Forcast - Summary of 3 Carrington Rotations to Present"
@@ -66,7 +66,7 @@ def plot(splitlist, trend, storm, dates, sat_id):
 
 def create_trend(plotlist):
     avg_readings = []
-    weighting = [1,1,1]
+    weighting = [0.6, 0.8, 1]
     iterations  = len(plotlist[0])
 
     for i in range(0, iterations):
