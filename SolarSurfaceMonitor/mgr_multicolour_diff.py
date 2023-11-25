@@ -3,7 +3,7 @@ import cv2
 import datetime
 import time
 from calendar import timegm
-import re
+import numpy as np
 
 pathsep = os.sep
 
@@ -71,6 +71,16 @@ def wrapper(multifilelist, save_folder):
             g = cv2.imread(files[2], 0)
             colour_img = cv2.merge([b, g, r])
             colour_img = create_label(colour_img, timestamp)
+
+            # Adjust the brightness and contrast
+            # Adjusts the brightness by adding 10 to each pixel value
+            brightness = -150
+            # Adjusts the contrast by scaling the pixel values by 2.3
+            contrast = 2
+            colour_img = cv2.addWeighted(colour_img, contrast, np.zeros(colour_img.shape, colour_img.dtype), 0,
+                                           brightness)
+
+
             fc = save_folder + pathsep + str(filename)
             cv2.imwrite(fc, colour_img)
 
