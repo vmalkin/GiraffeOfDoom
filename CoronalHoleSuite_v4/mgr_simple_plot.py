@@ -26,7 +26,8 @@ def posix2utc(posixtime, timeformat):
 
 
 def plot(splitlist, trend, storm, dates, sat_id):
-    papercolour = "#d0d0d0"
+    # papercolour = "#d0d0d0"
+    papercolour = "#e0e0e0"
     gridcolour = "#c0c0c0"
     width = 1500
     height = 550
@@ -44,11 +45,11 @@ def plot(splitlist, trend, storm, dates, sat_id):
 
     fig.add_trace(go.Scatter(x=dates, y=trend, mode="lines", name='Forecast', line=dict(color="black", width=2)))
 
-    marker_colour = 'rgba(255,150,0, 0.5)'
+    marker_colour = 'rgba(255,150,0, 0.1)'
     fig.add_bar(x=dates, y=storm, name='High Speed', marker_line_color=marker_colour, marker_line_width=3, marker_color=marker_colour)
 
 
-    title = "Simple Solar Wind Forcast - Summary of 3 Carrington Rotations to Present"
+    title = "Simple Solar Wind Forcast - Average of last 3 Carrington Rotations."
     fig.update_layout(width=width, height=height, title=title,
                       xaxis_title="Forecast Dates<br><sub>http://DunedinAurora.nz</sub>")
     fig.update_xaxes(showgrid=True, gridwidth=1, gridcolor=gridcolour, nticks=24, tickangle=50)
