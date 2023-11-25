@@ -48,7 +48,7 @@ def plot(splitlist, trend, storm, dates, sat_id):
     fig.add_bar(x=dates, y=storm, name='Solar Wind High', marker_line_color=marker_colour, marker_line_width=3, marker_color=marker_colour)
 
 
-    title = "Simple Solar Wind Forcast - 1 Carrington Rotation from Present"
+    title = "Simple Solar Wind Forcast - Summary of 3 Carrington Rotations to Present"
     fig.update_layout(width=width, height=height, title=title,
                       xaxis_title="Forecast Dates<br><sub>http://DunedinAurora.nz</sub>")
     fig.update_xaxes(showgrid=True, gridwidth=1, gridcolor=gridcolour, nticks=24, tickangle=50)
