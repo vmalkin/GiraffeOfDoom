@@ -171,6 +171,7 @@ def create_warnings(trend):
 
 
 def wrapper(sat_id):
+    print('*** Begin SW guestimate')
     # start date is three Carington Rotations ago.
     # A day is 86400 seconds long
     day = 86400
@@ -220,3 +221,4 @@ def wrapper(sat_id):
     storm = create_warnings(trend)
     # trend = smooth_data(trend)
     plot(splitdata, trend, storm, futuredates, sat_id)
+    print('*** End SW guestimate')
