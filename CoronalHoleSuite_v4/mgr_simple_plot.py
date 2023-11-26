@@ -60,7 +60,7 @@ def plot(splitlist, trend, storm, dates, sat_id):
     fig.update_layout(font=dict(size=16, color="#202020"), title_font_size=18, )
     fig.update_layout(plot_bgcolor=papercolour,
                       paper_bgcolor=papercolour)
-    fig.add_hline(y=500, line=dict(width=3, color='red'), layer="below", name='Storm Threshold')
+    fig.add_hline(y=500, line=dict(width=3, color=marker_colour), layer="below", name='Storm Threshold')
 
     fig.update_yaxes(range=[200, 700])
     savefile = sat_id + "_simple.jpg"
