@@ -35,6 +35,7 @@ def plot(splitlist, trend, storm, dates, sat_id):
     plotdata = go.Scatter(mode="lines")
     fig = go.Figure(plotdata)
 
+    # Plot the 3 Carrington rotations
     for item in splitlist:
         tmp = []
         for d in item:
@@ -43,13 +44,15 @@ def plot(splitlist, trend, storm, dates, sat_id):
             tmp.append(data)
         fig.add_trace(go.Scatter(x=dates, y=tmp, mode="lines", name=name, line=dict(color="grey", width=1)))
 
+    # plot the averaged forecast
     fig.add_trace(go.Scatter(x=dates, y=trend, mode="lines", name='Forecast', line=dict(color="black", width=2)))
 
-    marker_colour = 'rgba(255,150,0, 0.1)'
+    # Plot bars showing high solar wind speed over 500km/s
+    marker_colour = 'rgba(255,50,0, 0.1)'
     fig.add_bar(x=dates, y=storm, name='High Speed', marker_line_color=marker_colour, marker_line_width=3, marker_color=marker_colour)
 
 
-    title = "Simple Solar Wind Forcast - Average of last 3 Carrington Rotations."
+    title = "Solar Wind Guesstimate - Average of last 3 Carrington Rotations."
     fig.update_layout(width=width, height=height, title=title,
                       xaxis_title="Forecast Dates<br><sub>http://DunedinAurora.nz</sub>")
     fig.update_xaxes(showgrid=True, gridwidth=1, gridcolor=gridcolour, nticks=24, tickangle=50)
@@ -68,7 +71,7 @@ def plot(splitlist, trend, storm, dates, sat_id):
 def create_trend(plotlist):
     avg_readings = []
     weighting = [0.6, 0.8, 1]
-    iterations  = len(plotlist[0])
+    iterations = len(plotlist[0])
 
     for i in range(0, iterations):
         divisor = 0
