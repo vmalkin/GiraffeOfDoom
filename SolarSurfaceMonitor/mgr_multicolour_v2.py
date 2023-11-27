@@ -64,10 +64,13 @@ def wrapper(multifilelist, save_folder):
             b = cv2.imread(files[0], 0)
             r = cv2.imread(files[1], 0)
             g = cv2.imread(files[2], 0)
-            colour_img = cv2.merge([b, g, r])
-            colour_img = create_label(colour_img, timestamp)
-            fc = save_folder + pathsep + str(filename)
-            cv2.imwrite(fc, colour_img)
+            try:
+                colour_img = cv2.merge([b, g, r])
+                colour_img = create_label(colour_img, timestamp)
+                fc = save_folder + pathsep + str(filename)
+                cv2.imwrite(fc, colour_img)
+            except cv2.error:
+                print('!!! Unable to merge files to colour image')
 
 
     print('*** END multicolour processing')
