@@ -18,20 +18,19 @@ def local_file_list_build(directory):
     return dirlisting
 
 
-folder = 'diffs_r'
+folder = 'diffs_g'
 img_files = local_file_list_build(folder)
 # a day is roughly 360 images
 img_files = img_files[-360:]
 
 returnarray = []
 for item in img_files:
-    dp = ''
     img = cv2.imread(item)
-    result = np.histogram(img, bins=10, range=(0, 256))
+    result = np.histogram(img, bins=5, range=(0, 256))
     # result[0] is histogram, result[1] is datatype, result[2] are bin labels
     histgm = (result[0])
-    for item in histgm:
-        dp = dp + ',' + str(item)
+    # print(histgm[3])
+    dp = str(histgm[0]) + ',' + str(histgm[4])
     returnarray.append(dp)
 
 with open('histograms.csv', 'w') as h:
