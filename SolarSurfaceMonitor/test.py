@@ -17,6 +17,11 @@ def local_file_list_build(directory):
     dirlisting.sort()
     return dirlisting
 
+def getfilename(pathname):
+    p = pathname.split(pathsep)
+    pp = p[1].split('_')
+    return pp[0]
+
 
 folder = 'diffs_g'
 img_files = local_file_list_build(folder)
@@ -29,8 +34,7 @@ for item in img_files:
     result = np.histogram(img, bins=5, range=(0, 256))
     # result[0] is histogram, result[1] is datatype, result[2] are bin labels
     histgm = (result[0])
-    # print(histgm[3])
-    dp = str(histgm[0]) + ',' + str(histgm[4])
+    dp = getfilename(item) + ',' + str(histgm[0]) + ',' + str(histgm[4])
     returnarray.append(dp)
 
 with open('histograms.csv', 'w') as h:
