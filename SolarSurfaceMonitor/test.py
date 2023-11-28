@@ -23,12 +23,24 @@ img_files = local_file_list_build(folder)
 # a day is roughly 360 images
 img_files = img_files[-360:]
 
+returnarray = []
 for item in img_files:
+    dp = ''
     img = cv2.imread(item)
     result = np.histogram(img, bins=10, range=(0, 256))
     # result[0] is histogram, result[1] is datatype, result[2] are bin labels
     histgm = (result[0])
-    print(histgm[2])
+    for item in histgm:
+        dp = dp + ',' + str(item)
+    returnarray.append(dp)
+
+with open('histograms.csv', 'w') as h:
+    for line in returnarray:
+        d = line + '\n'
+        h.write(str(d))
+h.close()
+
+
 
 
 # make_anim.wrapper(img_files, '3_clr_diffs')
