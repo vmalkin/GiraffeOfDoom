@@ -18,13 +18,17 @@ def local_file_list_build(directory):
     return dirlisting
 
 
-folder = 'combined_diffs'
+folder = 'diffs_r'
 img_files = local_file_list_build(folder)
 # a day is roughly 360 images
 img_files = img_files[-360:]
 
 for item in img_files:
     img = cv2.imread(item)
-    print(img.var())
+    result = np.histogram(img, bins=10, range=(0, 256))
+    # result[0] is histogram, result[1] is datatype, result[2] are bin labels
+    histgm = (result[0])
+    print(histgm[2])
+
 
 # make_anim.wrapper(img_files, '3_clr_diffs')
