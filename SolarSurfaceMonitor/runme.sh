@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
 
-source venv/Scripts/Activate
-venv/Scripts/python main.py
+source venv/bin/activate
+venv/bin/python main.py
