@@ -30,18 +30,33 @@ img_files = img_files[-360:]
 
 returnarray = []
 for item in img_files:
+    tmp = []
     img = cv2.imread(item)
     result = np.histogram(img, bins=5, range=(0, 256))
     # result[0] is histogram, result[1] is datatype, result[2] are bin labels
     histgm = (result[0])
-    dp = getfilename(item) + ',' + str(histgm[0]) + ',' + str(histgm[4])
-    returnarray.append(dp)
+    tmp.append(getfilename(item))
+    tmp.append(histgm[0])
+    tmp.append(histgm[4])
+    returnarray.append(tmp)
 
-with open('histograms.csv', 'w') as h:
-    for line in returnarray:
-        d = line + '\n'
-        h.write(str(d))
-h.close()
+returnarray = np.array(returnarray)
+# returnarray = np.array(returnarray)
+
+# numpy.ndarray.astype
+pixels_black = returnarray[:,1]
+pixels_white = returnarray[:,2]
+
+# std_wh = np.std(pixels_white)
+# std_bl = np.std(pixels_black)
+# avg_wh = np.average(pixels_white)
+# avg_bl = np.average(pixels_black)
+# with open('histograms.csv', 'w') as h:
+#     for line in returnarray:
+#         d = line[0] + ',' + str(line[1]) + ',' + str(line[2]) + str(average1) + str(average2) + str(std1) + str(std2)
+#         d = line + '\n'
+#         h.write(str(d))
+# h.close()
 
 
 
