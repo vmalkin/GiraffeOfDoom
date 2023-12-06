@@ -21,7 +21,7 @@ def create_label(image, timestamp):
     # colours are blue, green, red in opencv
     font_color = (255, 255, 255)
     font_thickness = 1
-    label0 = "GOES SUVI multispectral differences image."
+    label0 = "GOES SUVI false colour differences image."
     label1 = "Image time: " + timestamp
     label2 = "Images courtesy of NOAA. (c) 2023 DunedinAurora.NZ"
     cv2.putText(image, label0, (0, 50), font, font_size, font_color, font_thickness, cv2.LINE_AA)
