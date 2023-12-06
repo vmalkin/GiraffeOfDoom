@@ -10,16 +10,19 @@ import mgr_multicolour_diff as multidiff
 
 suvidata = {
     '171': {
+        'title': '',
         'store': 'store_b',
         'diffs': 'diffs_b',
         'url': 'https://services.swpc.noaa.gov/images/animations/suvi/primary/171/'
     },
     '195': {
+        'title': '',
         'store': 'store_g',
         'diffs': 'diffs_g',
         'url': 'https://services.swpc.noaa.gov/images/animations/suvi/primary/195/'
     },
     '284': {
+        'title': '',
         'store': 'store_r',
         'diffs': 'diffs_r',
         'url': 'https://services.swpc.noaa.gov/images/animations/suvi/primary/284/'
