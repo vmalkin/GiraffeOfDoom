@@ -23,7 +23,7 @@ def getfilename(pathname):
     return pp[0]
 
 
-folder = 'diffs_r'
+folder = 'diffs_g'
 img_files = local_file_list_build(folder)
 # a day is roughly 360 images
 img_files = img_files[-360:]
