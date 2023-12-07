@@ -33,6 +33,7 @@ def local_file_list_build(directory):
     dirlisting.sort()
     return dirlisting
 
+
 def getfilename(pathname):
     p = pathname.split(pathsep)
     pp = p[1].split('_')
@@ -61,7 +62,6 @@ for item in img_files:
     # for item in histgm:
     #     tmp.append(item)
     returnarray.append(tmp)
-
 
 px_white = []
 px_black = []
