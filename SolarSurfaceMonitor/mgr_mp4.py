@@ -1,4 +1,13 @@
 import cv2
+
+
+def make_animation_tracker(image, list_length, image_number):
+    width, height, colourdepth = image.shape
+    tracker_length = round((image_number / list_length * width), 0)
+    cv2.line(image, (0, 2), (tracker_length, 2), (0, 0, 255), 5)
+    return image
+
+
 def wrapper(filelist, name):
     # Create mp4 animation
     print("*** Begin movie creation: ", name)
@@ -34,10 +43,14 @@ def wrapper(filelist, name):
     )
 
     # Read each image and write it to the video
-    for image in filelist:
+    for i in range(0, len(filelist)):
         # read the image using OpenCV
-        frame_mp4 = cv2.imread(image)
-        frame_web = cv2.imread(image)
+        frame_mp4 = cv2.imread(filelist[i])
+        frame_web = cv2.imread(filelist[i])
+
+        frame_mp4 = make_animation_tracker(frame_mp4, len(filelist), i)
+        frame_web = make_animation_tracker(frame_web, len(filelist), i)
+
         # Optional step to resize the input image to the dimension stated in the
         # VideoWriter object above
         try:
