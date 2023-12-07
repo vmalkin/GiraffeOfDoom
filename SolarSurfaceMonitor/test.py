@@ -23,7 +23,7 @@ def getfilename(pathname):
     return pp[0]
 
 
-folder = 'diffs_g'
+folder = 'diffs_b'
 img_files = local_file_list_build(folder)
 # a day is roughly 360 images
 img_files = img_files[-360:]
@@ -37,32 +37,40 @@ for item in img_files:
     histgm = (result[0])
 
     tmp.append(getfilename(item))
-    for item in histgm:
-        tmp.append(item)
-    # tmp.append(histgm)
+    tmp.append(histgm[0])
+    tmp.append(histgm[4])
+    # for item in histgm:
+    #     tmp.append(item)
     returnarray.append(tmp)
 # print(returnarray)
 
-# rr = np.array(returnarray)
-# dates = rr[:,1]
-# print(dates)
-# std_wh = np.std(pixels_white)
-# std_bl = np.std(pixels_black)
-# avg_wh = np.average(pixels_white)
-# avg_bl = np.average(pixels_black)
+px_white = []
+px_black = []
+dates = []
+for item in returnarray:
+    dates.append(item[0])
+    px_white.append(item[1])
+    px_black.append(item[2])
 
-with open('histograms.csv', 'w') as h:
-    for line in returnarray:
-        t = ''
-        for item in line:
-            if len(t) == 0:
-                t = t + str(item)
-            else:
-                t = t + ',' + str(item)
+avg_white = np.average(px_white)
+std_white = np.std(px_white)
+avg_black = np.average(px_black)
+std_black = np.std(px_black)
+for i in range(0, len(dates)):
+    print(dates[i], px_white[i], px_black[i], avg_white, avg_black)
 
-        d = t + '\n'
-        h.write(str(d))
-h.close()
+# with open('histograms.csv', 'w') as h:
+#     for line in returnarray:
+#         t = ''
+#         for item in line:
+#             if len(t) == 0:
+#                 t = t + str(item)
+#             else:
+#                 t = t + ',' + str(item)
+#
+#         d = t + '\n'
+#         h.write(str(d))
+# h.close()
 
 
 
