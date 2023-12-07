@@ -4,7 +4,7 @@ import cv2
 def make_animation_tracker(image, list_length, image_number):
     width, height, colourdepth = image.shape
     tracker_length = int(image_number / list_length * width)
-    cv2.line(image, (0, 2), (tracker_length, 2), (0, 0, 255), 5)
+    cv2.line(image, (0, height - 5), (tracker_length, height - 5), (0, 0, 255), 5)
     return image
 
 
