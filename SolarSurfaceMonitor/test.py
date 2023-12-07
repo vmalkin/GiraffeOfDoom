@@ -55,8 +55,11 @@ with open('histograms.csv', 'w') as h:
     for line in returnarray:
         t = ''
         for item in line:
-            t = t + ',' + str(item)
-        # d = line[0] + ',' + str(line[1]) + ',' + str(line[2])
+            if len(t) == 0:
+                t = t + str(item)
+            else:
+                t = t + ',' + str(item)
+
         d = t + '\n'
         h.write(str(d))
 h.close()
