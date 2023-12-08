@@ -40,7 +40,7 @@ def getfilename(pathname):
     return pp[0]
 
 
-folder = 'diffs_b'
+folder = 'diffs_g'
 img_files = local_file_list_build(folder)
 # a day is roughly 360 images
 img_files = img_files[-360:]
@@ -80,12 +80,12 @@ with open('histograms.csv', 'w') as h:
     for i in range(0, len(dates)):
         dt = dates[i]
         if px_white[i] > (avg_white + std_white):
-            cme_wh = 1
+            cme_wh = round(((px_white[i] - avg_white) / std_white), 3)
         else:
             cme_wh = 0
 
         if px_black[i] > (avg_black + std_black):
-            cme_bl = 1
+            cme_bl = round(((px_black[i] - avg_black) / std_black), 3)
         else:
             cme_bl = 0
 
