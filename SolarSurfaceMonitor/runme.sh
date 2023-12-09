@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
 
-source venv/bin/activate
-venv/bin/python main.py
+source /home/vaughn/GiraffeOfDoom/SolarSurfaceMonitor/venv/bin/activate
+/home/vaughn/GiraffeOfDoom/SolarSurfaceMonitor/venv/bin/python main.py
+deactivate

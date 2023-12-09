@@ -7,6 +7,7 @@ import mgr_mp4 as make_anim
 import mgr_gif as make_gif
 import mgr_multicolour_v2 as multicolour
 import mgr_multicolour_diff as multidiff
+import histogram_analysis as histogram_analysis
 
 suvidata = {
     '171': {
@@ -251,6 +252,8 @@ if __name__ == '__main__':
         # a day is roughly 360 images
         img_files = img_files[-360:]
         make_anim.wrapper(img_files, '3_clr_diffs')
+
+        histogram_analysis.wrapper()
 
         print("*** All image processing completed")
         finishtime = time.time()

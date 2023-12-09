@@ -39,57 +39,58 @@ def getfilename(pathname):
     pp = p[1].split('_')
     return pp[0]
 
+def wrapper():
+    print('*** Begin Histogram Analysis')
+    folder = 'diffs_g'
+    img_files = local_file_list_build(folder)
+    # a day is roughly 360 images
+    img_files = img_files[-360:]
 
-folder = 'diffs_g'
-img_files = local_file_list_build(folder)
-# a day is roughly 360 images
-img_files = img_files[-360:]
+    returnarray = []
+    for item in img_files:
+        tmp = []
+        img = cv2.imread(item)
+        # Mask off the outer corona - we're only interested in the solar disc
+        img = create_mask(img)
 
-returnarray = []
-for item in img_files:
-    tmp = []
-    img = cv2.imread(item)
-    # Mask off the outer corona - we're only interested in the solar disc
-    img = create_mask(img)
+        result = np.histogram(img, bins=5, range=(0, 256))
+        # result[0] is histogram, result[1] are bin labels
+        histgm = (result[0])
 
-    result = np.histogram(img, bins=5, range=(0, 256))
-    # result[0] is histogram, result[1] are bin labels
-    histgm = (result[0])
+        tmp.append(getfilename(item))
+        tmp.append(histgm[0])
+        tmp.append(histgm[4])
+        # for item in histgm:
+        #     tmp.append(item)
+        returnarray.append(tmp)
 
-    tmp.append(getfilename(item))
-    tmp.append(histgm[0])
-    tmp.append(histgm[4])
-    # for item in histgm:
-    #     tmp.append(item)
-    returnarray.append(tmp)
+    px_white = []
+    px_black = []
+    dates = []
+    for item in returnarray:
+        dates.append(item[0])
+        px_white.append(item[1])
+        px_black.append(item[2])
 
-px_white = []
-px_black = []
-dates = []
-for item in returnarray:
-    dates.append(item[0])
-    px_white.append(item[1])
-    px_black.append(item[2])
+    avg_white = np.average(px_white)
+    std_white = np.std(px_white)
+    avg_black = np.average(px_black)
+    std_black = np.std(px_black)
 
-avg_white = np.average(px_white)
-std_white = np.std(px_white)
-avg_black = np.average(px_black)
-std_black = np.std(px_black)
+    with open('histograms.csv', 'w') as h:
+        for i in range(0, len(dates)):
+            dt = dates[i]
+            if px_white[i] > (avg_white + std_white):
+                cme_wh = round(((px_white[i] - avg_white) / std_white), 3)
+            else:
+                cme_wh = 0
 
-with open('histograms.csv', 'w') as h:
-    for i in range(0, len(dates)):
-        dt = dates[i]
-        if px_white[i] > (avg_white + std_white):
-            cme_wh = round(((px_white[i] - avg_white) / std_white), 3)
-        else:
-            cme_wh = 0
+            if px_black[i] > (avg_black + std_black):
+                cme_bl = round(((px_black[i] - avg_black) / std_black), 3)
+            else:
+                cme_bl = 0
 
-        if px_black[i] > (avg_black + std_black):
-            cme_bl = round(((px_black[i] - avg_black) / std_black), 3)
-        else:
-            cme_bl = 0
-
-        line = dt + ',' + str(cme_wh) + ',' + str(cme_bl) + '\n'
-        h.write(line)
-h.close()
-
+            line = dt + ',' + str(cme_wh) + ',' + str(cme_bl) + '\n'
+            h.write(line)
+    h.close()
+    print('*** End Histogram Analysis')
