@@ -80,6 +80,7 @@ def wrapper():
     with open('histograms.csv', 'w') as h:
         for i in range(0, len(dates)):
             dt = dates[i]
+            # href=''
             if px_white[i] > (avg_white + std_white):
                 cme_wh = round(((px_white[i] - avg_white) / std_white), 3)
             else:
