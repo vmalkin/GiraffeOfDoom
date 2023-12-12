@@ -7,6 +7,7 @@ import time
 import datetime
 from plotly import graph_objects as go
 import numpy as np
+from statistics import median
 
 def db_getdata(starttime, satellite_name):
     returnvalues = []
@@ -27,7 +28,9 @@ def posix2utc(posixtime, timeformat):
 
 def plot(splitlist, trend, storm, dates, sat_id):
     # papercolour = "#d0d0d0"
-    papercolour = "#e0e0e0"
+    # plotlist_colours = ['#8babf1', '#f57600', '#c44601']
+    plotlist_colours = ['#f1e0e6', '#cfbbc1', '#a49196']
+    papercolour = "#f5f5f5"
     gridcolour = "#c0c0c0"
     width = 1500
     height = 550
@@ -36,19 +39,19 @@ def plot(splitlist, trend, storm, dates, sat_id):
     fig = go.Figure(plotdata)
 
     # Plot the 3 Carrington rotations
-    for item in splitlist:
+    for i in range(0, len(splitlist)):
         tmp = []
-        for d in item:
+        for d in splitlist[i]:
             name = posix2utc(d[0], '%Y-%m-%d')
             data = d[1]
             tmp.append(data)
-        fig.add_trace(go.Scatter(x=dates, y=tmp, mode="lines", name=name, line=dict(color="grey", width=1)))
+        fig.add_trace(go.Scatter(x=dates, y=tmp, mode="lines", name=name, line=dict(color=plotlist_colours[i], width=1)))
 
     # plot the averaged forecast
     fig.add_trace(go.Scatter(x=dates, y=trend, mode="lines", name='Forecast', line=dict(color="black", width=2)))
 
     # Plot bars showing high solar wind speed over 500km/s
-    marker_colour = 'rgba(255,50,0, 0.1)'
+    marker_colour = 'rgba(50,150,0, 0.1)'
     fig.add_bar(x=dates, y=storm, name='High Speed', marker_line_color=marker_colour, marker_line_width=3, marker_color=marker_colour)
 
 
@@ -60,7 +63,7 @@ def plot(splitlist, trend, storm, dates, sat_id):
     fig.update_layout(font=dict(size=16, color="#202020"), title_font_size=18, )
     fig.update_layout(plot_bgcolor=papercolour,
                       paper_bgcolor=papercolour)
-    fig.add_hline(y=500, line=dict(width=3, color=marker_colour), layer="below", name='Storm Threshold')
+    fig.add_hline(y=500, line=dict(width=3, color='rgba(50,150,0, 0.7)'), layer="below", name='Storm Threshold')
 
     fig.update_yaxes(range=[200, 700])
     savefile = sat_id + "_simple.jpg"
@@ -152,10 +155,6 @@ def calc_futuredates(splitdata):
     return returnlist
 
 
-def smooth_data(trend):
-    pass
-
-
 def create_warnings(trend):
     barvalue = 700
     returnarray = []
@@ -168,6 +167,27 @@ def create_warnings(trend):
             if item < 500:
                 returnarray.append(None)
     return returnarray
+
+
+def filter_median(trend):
+    returnarray = []
+    filter_window = 7
+    # if len(trend) < filter_half_window * 2:
+    #     returnarray = trend
+    # else:
+    for i in range(0, len(trend)-filter_window):
+        t = []
+        for j in range(0, filter_window):
+            value = trend[i+j]
+            if value == None:
+                value = 0
+            t.append(value)
+
+        m = median(t)
+        returnarray.append(m)
+
+    return returnarray
+
 
 
 def wrapper(sat_id):
@@ -218,6 +238,7 @@ def wrapper(sat_id):
     futuredates = calc_futuredates(splitdata)
 
     trend = create_trend(splitdata)
+    trend = filter_median(trend)
     storm = create_warnings(trend)
     # trend = smooth_data(trend)
     plot(splitdata, trend, storm, futuredates, sat_id)
