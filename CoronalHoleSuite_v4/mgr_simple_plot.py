@@ -201,11 +201,11 @@ def wrapper(sat_id):
 
     # data format:
     # [1693631580, None, 547.1, 0.18, sat_id]
-    starttime = time.time() - cr
-    starttime = posixdate_roundto_minute(starttime)
-
-    endtime = starttime + cr
+    endtime = time.time()
     endtime = posixdate_roundto_minute(endtime)
+
+    starttime = endtime - cr
+    starttime = posixdate_roundto_minute(starttime)
 
     prunedlist = []
     data = db_getdata(starttime, sat_id)
@@ -215,6 +215,9 @@ def wrapper(sat_id):
         if item[0] > starttime:
             dp = [item[0], item[2]]
             prunedlist.append(dp)
+
+    # Report some basic stats about the data
+
 
     # Create a Dictionary of the last three Carrington rotations. This will have the dates, but be empty
     plotarray = {}
