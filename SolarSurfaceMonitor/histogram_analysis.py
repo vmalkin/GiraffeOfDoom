@@ -42,11 +42,11 @@ def getfilename(pathname):
 
 def plot(event_data):
     fig = go.Figure()
-    papercolour = "#f0f0f0"
+    papercolour = "#e0e0e0"
     gridcolour = "#c0c0c0"
     bar_fill = ['#dca998','#c46e47','#984024']
-    width = 1500
-    height = 550
+    width = 1700
+    height = 500
 
     max_y = 10
     for i in range(0, len(event_data)):
@@ -58,8 +58,8 @@ def plot(event_data):
             dt.append(entries[0])
             d0.append(entries[1])
             d1.append(entries[2])
-        fig.add_bar(x=dt, y=d0, marker_color=bar_fill[i], marker_line_color='black', marker_line_width=1.5)
-        fig.add_bar(x=dt, y=d1, marker_color=bar_fill[i], marker_line_color='white', marker_line_width=1.5)
+        fig.add_bar(x=dt, y=d0, width=1, marker_color=bar_fill[i], marker_line_color='black', marker_line_width=3)
+        fig.add_bar(x=dt, y=d1, width=1, marker_color=bar_fill[i], marker_line_color='white', marker_line_width=3)
 
     # Force y axis to show at least 10
     fig.update_layout(bargap=0)
