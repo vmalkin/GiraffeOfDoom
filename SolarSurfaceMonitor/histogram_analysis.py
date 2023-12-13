@@ -42,6 +42,12 @@ def getfilename(pathname):
 
 def plot(event_data):
     fig = go.Figure()
+    papercolour = "#f5f5f5"
+    gridcolour = "#c0c0c0"
+    width = 1500
+    height = 550
+
+    max_y = 10
     for data in event_data:
         # Each data is is an array [datetime, data1, data2]
         dt = []
@@ -53,10 +59,20 @@ def plot(event_data):
             d1.append(entries[2])
         fig.add_bar(x=dt, y=d0)
         fig.add_bar(x=dt, y=d1)
-        # Force y axis to show at least 10
-        fig.update_yaxes(range=[10, None])
+
+    # Force y axis to show at least 10
+    fig.update_yaxes(range=[1, 20])
+    fig.update_xaxes(tickangle=45, dtick=4, showgrid=True,)
     fig.update_layout(barmode='group')
-    fig.show()
+
+    title = "Solar Surface Event Occurrences."
+    fig.update_layout(width=width, height=height, title=title,
+                      xaxis_title="Forecast Dates<br><sub>http://DunedinAurora.nz</sub>")
+
+    fig.update_layout(font=dict(size=16, color="#202020"), title_font_size=18, )
+    fig.update_layout(plot_bgcolor=papercolour, paper_bgcolor=papercolour)
+
+    fig.write_image('histogram.png')
 
 def wrapper():
     print('*** Begin Histogram Analysis')
