@@ -42,25 +42,27 @@ def getfilename(pathname):
 
 def plot(event_data):
     fig = go.Figure()
-    papercolour = "#f5f5f5"
+    papercolour = "#f0f0f0"
     gridcolour = "#c0c0c0"
+    bar_fill = ['#dca998','#c46e47','#984024']
     width = 1500
     height = 550
 
     max_y = 10
-    for data in event_data:
+    for i in range(0, len(event_data)):
         # Each data is is an array [datetime, data1, data2]
         dt = []
         d0 = []
         d1 = []
-        for entries in data:
+        for entries in event_data[i]:
             dt.append(entries[0])
             d0.append(entries[1])
             d1.append(entries[2])
-        fig.add_bar(x=dt, y=d0)
-        fig.add_bar(x=dt, y=d1)
+        fig.add_bar(x=dt, y=d0, marker_color=bar_fill[i], marker_line_color='black', marker_line_width=1.5)
+        fig.add_bar(x=dt, y=d1, marker_color=bar_fill[i], marker_line_color='white', marker_line_width=1.5)
 
     # Force y axis to show at least 10
+    fig.update_layout(bargap=0)
     fig.update_yaxes(range=[1, 20])
     fig.update_xaxes(tickangle=45, dtick=4, showgrid=True,)
     fig.update_layout(barmode='group')
