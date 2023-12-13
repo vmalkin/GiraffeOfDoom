@@ -52,7 +52,7 @@ def plot(splitlist, trend, storm, dates, sat_id):
 
     # Plot bars showing high solar wind speed over 500km/s
     marker_colour = 'rgba(50,150,0, 0.1)'
-    fig.add_bar(x=dates, y=storm, name='High Speed', marker_line_color=marker_colour, marker_line_width=3, marker_color=marker_colour)
+    fig.add_bar(x=dates, y=storm, name='Storm Period', marker_line_color=marker_colour, marker_line_width=3, marker_color=marker_colour)
 
 
     title = "Solar Wind Guesstimate - Average of last 3 Carrington Rotations."
