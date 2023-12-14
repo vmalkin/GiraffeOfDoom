@@ -45,7 +45,7 @@ def plot(event_data):
     papercolour = "#e0e0e0"
     gridcolour = "#c0c0c0"
     bar_fill = ['#f57600','#fcec0e','#19aecf']
-    width = 2500
+    width = 1500
     height = 500
 
     max_y = 10
@@ -58,8 +58,8 @@ def plot(event_data):
             dt.append(entries[0])
             d0.append(entries[1])
             d1.append(entries[2])
-        fig.add_bar(x=dt, y=d0, width=0.7, marker_color=bar_fill[i], marker_line_color='black', marker_line_width=3)
-        fig.add_bar(x=dt, y=d1, width=0.7, marker_color=bar_fill[i], marker_line_color='white', marker_line_width=3)
+        fig.add_bar(x=dt, y=d0, width=0.3, marker_color=bar_fill[i], marker_line_color='black', marker_line_width=1)
+        fig.add_bar(x=dt, y=d1, width=0.3, marker_color=bar_fill[i], marker_line_color='black', marker_line_width=1)
 
     # Force y axis to show at least 10
     fig.update_layout(bargap=0)
