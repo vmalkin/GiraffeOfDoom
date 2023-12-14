@@ -44,7 +44,7 @@ def plot(event_data):
     fig = go.Figure()
     papercolour = "#e0e0e0"
     gridcolour = "#c0c0c0"
-    bar_fill = ['#dca998','#c46e47','#984024']
+    bar_fill = ['#f57600','#fcec0e','#19aecf']
     width = 1700
     height = 500
 
@@ -58,12 +58,12 @@ def plot(event_data):
             dt.append(entries[0])
             d0.append(entries[1])
             d1.append(entries[2])
-        fig.add_bar(x=dt, y=d0, width=0.5, marker_color=bar_fill[i], marker_line_color='black', marker_line_width=3)
-        fig.add_bar(x=dt, y=d1, width=0.5, marker_color=bar_fill[i], marker_line_color='white', marker_line_width=3)
+        fig.add_bar(x=dt, y=d0, width=0.7, marker_color=bar_fill[i], marker_line_color='black', marker_line_width=3)
+        fig.add_bar(x=dt, y=d1, width=0.7, marker_color=bar_fill[i], marker_line_color='white', marker_line_width=3)
 
     # Force y axis to show at least 10
     fig.update_layout(bargap=0)
-    fig.update_yaxes(range=[0, 20])
+    fig.update_yaxes(range=[1, 20])
     fig.update_xaxes(tickangle=45, dtick=4, showgrid=True,)
     fig.update_layout(barmode='group')
 
