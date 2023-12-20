@@ -3,13 +3,14 @@ import os
 import cv2
 import numpy as np
 from plotly import graph_objects as go
+import common as k
 # file path seperator / or \ ???
 pathsep = os.sep
 
 
 def create_mask(image):
     # Mask off the outer corona and only focus on the image of the sun
-    diameter_ratio = 380 / 1280
+    diameter_ratio = k.solar_diameter / 1280
     width, height, colourdepth = image.shape
     solar_diameter = int(diameter_ratio * width)
     mask = np.zeros((width, height), dtype=np.int8)
@@ -63,7 +64,7 @@ def plot(event_data):
 
     # Force y axis to show at least 10
     fig.update_layout(bargap=0)
-    fig.update_yaxes(range=[1, 20])
+    fig.update_yaxes(range=[0, 20])
     fig.update_xaxes(tickangle=45, dtick=4, showgrid=True,)
     fig.update_layout(barmode='group')
 

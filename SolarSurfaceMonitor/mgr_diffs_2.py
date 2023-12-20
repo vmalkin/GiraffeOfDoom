@@ -3,6 +3,7 @@ import time
 import datetime
 from calendar import timegm
 import numpy as np
+import common as k
 
 
 def posix2utc(posixtime, timeformat):
@@ -81,7 +82,7 @@ def image_translate(imagename, translation_value):
 
 
 def create_reticle(image):
-    solar_diameter = 380
+    solar_diameter = k.solar_diameter
     width, height = image.shape
     x_offset = 0
     y_offset = 0
@@ -118,14 +119,13 @@ def wrapper(filepathlist, diffstore, pathsep, wavelength):
             # img_new = image_translate(img_new, 1)
 
             try:
-                # img_diff = cv2.absdiff(img_old, img_new)
                 # img_diff = np.add(img_old, img_new)
                 # img_diff = cv2.addWeighted(img_old, 0.5, img_new, 0.5, 0)
                 img_diff = cv2.absdiff(img_old,img_new)
                 # img_diff = cv2.medianBlur(img_diff, 3)
 
 
-                clahe = cv2.createCLAHE(clipLimit=20, tileGridSize=(10, 10))
+                clahe = cv2.createCLAHE(clipLimit=40, tileGridSize=(10, 10))
                 img_diff = clahe.apply(img_diff)
 
                 # # Add watermark to image
