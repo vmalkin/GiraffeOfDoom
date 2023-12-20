@@ -112,14 +112,16 @@ def wrapper(filepathlist, diffstore, pathsep, wavelength):
             # Make image 50% transparent
             img_old = image_read_fromfile(old_name)
             # # invert one image
-            img_old = cv2.bitwise_not(img_old)
+
 
             img_new = image_read_fromfile(new_name)
+            img_new = cv2.bitwise_not(img_new)
             # img_new = image_translate(img_new, 1)
 
             try:
                 # img_diff = cv2.absdiff(img_old, img_new)
-                img_diff = cv2.addWeighted(img_old, 0.5, img_new, 0.5, 0)
+                # img_diff = np.add(img_old, img_new)
+                img_diff = cv2.addWeighted(img_old, 1, img_new, 0.5, 0)
                 img_diff = cv2.medianBlur(img_diff, 3)
 
                 clahe = cv2.createCLAHE(clipLimit=20, tileGridSize=(10, 10))
