@@ -233,7 +233,7 @@ if __name__ == '__main__':
         img_files = local_file_list_build(folder)
         # a day is roughly 360 images
         img_files = img_files[-360:]
-        make_anim.wrapper(img_files, '194a')
+        make_anim.wrapper(img_files, '195a')
 
         folder = 'store_r'
         img_files = local_file_list_build(folder)
