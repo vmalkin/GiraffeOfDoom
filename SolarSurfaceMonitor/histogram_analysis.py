@@ -46,7 +46,7 @@ def plot(event_data):
     papercolour = "#e0e0e0"
     gridcolour = "#c0c0c0"
     bar_fill = ['#f57600','#fcec0e','#19aecf']
-    width = 2500
+    width = 1500
     height = 500
 
     max_y = 10
