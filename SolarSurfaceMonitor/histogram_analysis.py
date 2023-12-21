@@ -65,7 +65,7 @@ def plot(event_data):
     # Force y axis to show at least 10
     fig.update_layout(bargap=0)
     fig.update_yaxes(range=[0, 20])
-    fig.update_xaxes(tickangle=45, dtick=4, showgrid=True,)
+    fig.update_xaxes(tickangle=45, dtick=20, showgrid=True,)
     fig.update_layout(barmode='group')
 
     title = "Solar Surface Event Occurrences."
