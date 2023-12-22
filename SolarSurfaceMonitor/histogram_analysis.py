@@ -74,7 +74,7 @@ def plot(event_data):
 
     fig.update_layout(font=dict(size=16, color="#202020"), title_font_size=18, )
     fig.update_layout(plot_bgcolor=papercolour, paper_bgcolor=papercolour)
-
+    fig.write_html('histogram.html')
     fig.write_image('histogram.png')
 
 def wrapper():
