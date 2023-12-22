@@ -59,8 +59,8 @@ def plot(event_data):
             dt.append(entries[0])
             d0.append(entries[1])
             d1.append(entries[2])
-        fig.add_bar(x=dt, y=d0, width=0.7, marker_color=bar_fill[i], marker_line_color='black', marker_line_width=1)
-        fig.add_bar(x=dt, y=d1, width=0.7, marker_color=bar_fill[i], marker_line_color='black', marker_line_width=1)
+        fig.add_bar(x=dt, y=d0, width=0.7, marker_color=bar_fill[i], marker_line_color=bar_fill[i], marker_line_width=1)
+        fig.add_bar(x=dt, y=d1, width=0.7, marker_color=bar_fill[i], marker_line_color=bar_fill[i], marker_line_width=1)
 
     # Force y axis to show at least 10
     fig.update_layout(bargap=0)
