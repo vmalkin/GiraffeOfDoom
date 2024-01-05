@@ -96,10 +96,13 @@ def wrapper():
             # Mask off the outer corona - we're only interested in the solar disc
             img = create_mask(img)
 
+            # CReate a histogram of the image being processed
             result = np.histogram(img, bins=5, range=(0, 256))
+
             # result[0] is histogram, result[1] are bin labels
             histgm = (result[0])
 
+            # CReate an array of the image file name, and the count of all-black and all-white pixels
             tmp.append(getfilename(item))
             tmp.append(histgm[0])
             tmp.append(histgm[4])
@@ -115,6 +118,11 @@ def wrapper():
             px_white.append(item[1])
             px_black.append(item[2])
 
+        # Get simple statistics of the average, and standard deviations for all-black and all-white
+        # pixels for the current day. Use this to determine of any single image is above average, this will
+        # be our simple indicator of rapid change in the image caused by CME or similar events on the sun's surface
+        # It is possible that we might need a better treatment of this? We might want to store STD and AVG over
+        # a period of time and use the median values of those to evaluate individual images?
         avg_white = np.average(px_white)
         std_white = np.std(px_white)
         avg_black = np.average(px_black)
