@@ -80,7 +80,7 @@ def wrapper(multifilelist, save_folder):
             colour_img = cv2.addWeighted(colour_img, contrast, np.zeros(colour_img.shape, colour_img.dtype), 0,
                                            brightness)
 
-
+            colour_img = cv2.cvtColor(colour_img, cv2.COLOR_BGR2GRAY)
             fc = save_folder + pathsep + str(filename)
             cv2.imwrite(fc, colour_img)
 
