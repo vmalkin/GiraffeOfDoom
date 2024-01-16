@@ -2,12 +2,7 @@ import glob
 import requests
 import os
 import time
-import mgr_diffs_2 as diffs
-import mgr_mp4 as make_anim
-import mgr_gif as make_gif
-import mgr_multicolour_v2 as multicolour
-import mgr_multicolour_diff as multidiff
-import histogram_analysis as histogram_analysis
+
 
 
 suvidata = {
