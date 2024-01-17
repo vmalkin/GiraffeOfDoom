@@ -2,29 +2,9 @@ import glob
 import requests
 import os
 import time
+import global_config
 
 
-
-suvidata = {
-    '171': {
-        'title': '',
-        'store': 'store_b',
-        'diffs': 'diffs_b',
-        'url': 'https://services.swpc.noaa.gov/images/animations/suvi/primary/171/'
-    },
-    '195': {
-        'title': '',
-        'store': 'store_g',
-        'diffs': 'diffs_g',
-        'url': 'https://services.swpc.noaa.gov/images/animations/suvi/primary/195/'
-    },
-    '284': {
-        'title': '',
-        'store': 'store_r',
-        'diffs': 'diffs_r',
-        'url': 'https://services.swpc.noaa.gov/images/animations/suvi/primary/284/'
-    }
-}
 
 # file path seperator / or \ ???
 pathsep = os.sep
@@ -113,13 +93,10 @@ def download_suvi(lasco_url, storage_folder):
 
 
 if __name__ == '__main__':
-    print('*** BEGIN image download from sources...')
-    for key in suvidata:
-        if os.path.exists(suvidata[key]['store']) is False:
-            os.makedirs(suvidata[key]['store'])
-
-        if os.path.exists(suvidata[key]['diffs']) is False:
-            os.makedirs(suvidata[key]['diffs'])
+    if os.path.exists(global_config.folder_source_images) is False:
+        os.makedirs(global_config.folder_source_images)
+    if os.path.exists(global_config.folder_output_to_publish) is False:
+        os.makedirs(global_config.folder_output_to_publish)
 
     while True:
         starttime = time.time()
