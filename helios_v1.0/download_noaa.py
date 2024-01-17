@@ -4,7 +4,7 @@ import os
 import time
 import global_config
 
-
+suvidata = global_config.noaa_image_data
 
 # file path seperator / or \ ???
 pathsep = os.sep
@@ -93,16 +93,20 @@ def download_suvi(lasco_url, storage_folder):
 
 
 if __name__ == '__main__':
-    if os.path.exists(global_config.folder_source_images) is False:
-        os.makedirs(global_config.folder_source_images)
+    # indices for url and save folders
+    url = 0
+    savepath = 1
+
+    for item in suvidata:
+        if os.path.exists(item[savepath]) is False:
+            os.makedirs(item[savepath])
+
     if os.path.exists(global_config.folder_output_to_publish) is False:
         os.makedirs(global_config.folder_output_to_publish)
 
-    while True:
-        starttime = time.time()
-        # get the latest SUVI images
-        for key in suvidata:
-            download_suvi(suvidata[key]['url'], suvidata[key]['store'])
-            print('*** Downloads completed')
+    # get the latest SUVI images
+    for item in suvidata:
+        download_suvi(item[url], item[savepath])
+        print('*** Downloads completed')
 
-        print("*** All image downloading COMPLETED")
+    print("*** All image downloading COMPLETED")
