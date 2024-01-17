@@ -1,7 +1,6 @@
 import glob
 import requests
 import os
-import time
 import global_config
 
 suvidata = global_config.noaa_image_data
