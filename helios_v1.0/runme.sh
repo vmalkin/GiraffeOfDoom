@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
-source /home/vaughn/GiraffeOfDoom/SolarSurfaceMonitor/venv/bin/activate
-/home/vaughn/GiraffeOfDoom/SolarSurfaceMonitor/venv/bin/python download_images.py
-deactivate
+venv/bin/python download_lasco.py
+venv/bin/python download_suvi.py
+
+venv/bin/python process_suvi_diffs.py

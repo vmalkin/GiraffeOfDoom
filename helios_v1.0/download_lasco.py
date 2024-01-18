@@ -3,7 +3,7 @@ import time
 import re
 import requests
 import os
-
+import global_config
 
 def get_resource_from_url(url_to_get):
     response = ""
@@ -84,18 +84,18 @@ def download_lasco(lasco_url, storage_folder):
 
 
 if __name__ == "__main__":
-    print("Revised CME detector")
+    # print("Revised CME detector")
     computation_start = time.time()
-    enhanced_folder = "enhanced_512"
-    storage_folder = "lasco_store_512"
-    analysis_folder = "analysis_512"
+    # enhanced_folder = "enhanced_512"
+    storage_folder = global_config.folder_source_images + os.sep + "lasco_store_512"
+    # analysis_folder = "analysis_512"
 
-    if os.path.exists(enhanced_folder) is False:
-        os.makedirs(enhanced_folder)
+    # if os.path.exists(enhanced_folder) is False:
+    #     os.makedirs(enhanced_folder)
     if os.path.exists(storage_folder) is False:
         os.makedirs(storage_folder)
-    if os.path.exists(analysis_folder) is False:
-        os.makedirs(analysis_folder)
+    # if os.path.exists(analysis_folder) is False:
+    #     os.makedirs(analysis_folder)
 
     tm = int(time.time())
     ymd_now = int(posix2utc(tm, "%Y%m%d"))
@@ -122,10 +122,7 @@ if __name__ == "__main__":
     # #####################################################################################################
     # Processing and analysis of LASCO images happens here
     # #####################################################################################################
-    processing_start_date = int(time.time() - (86400 * 2))
-    mgr_enhancer_v2.wrapper(processing_start_date, storage_folder, enhanced_folder)
-    mgr_analyser_v2.wrapper(processing_start_date, storage_folder, analysis_folder)
-    mgr_stereoscopic.wrapper(processing_start_date, enhanced_folder)
+
 
     computation_end = time.time()
     elapsed_mins = round((computation_end - computation_start) / 60, 1)
