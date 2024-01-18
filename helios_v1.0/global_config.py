@@ -21,19 +21,3 @@ noaa_image_data = [
     ]
 ]
 
-tm = int(time.time())
-ymd_now = int(posix2utc(tm, "%Y%m%d"))
-ymd_old1 = ymd_now - 1
-ymd_old2 = ymd_old1 - 1
-year = posix2utc(tm, "%Y")
-
-# LASCO coronagraph
-baseURL = "https://soho.nascom.nasa.gov/data/REPROCESSING/Completed/" + year + "/c3/" + str(ymd_now) + "/"
-
-# Parse for old epoch files that have been added
-baseURL = "https://soho.nascom.nasa.gov/data/REPROCESSING/Completed/" + year + "/c3/" + str(ymd_old1) + "/"
-
-# Parse for old epoch files that have been added
-baseURL = "https://soho.nascom.nasa.gov/data/REPROCESSING/Completed/" + year + "/c3/" + str(ymd_old2) + "/"
-
-lasco_image_data = []
