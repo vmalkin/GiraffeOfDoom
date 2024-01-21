@@ -3,7 +3,20 @@ import time
 import datetime
 from calendar import timegm
 import numpy as np
-import common as k
+import global_config
+import os
+import glob
+
+def local_file_list_build(directory):
+    # Builds and returns a list of files contained in the directory.
+    # List is sorted into A --> Z order
+    dirlisting = []
+    path = directory + os.sep + "*.*"
+    for name in glob.glob(path):
+        name = os.path.normpath(name)
+        dirlisting.append(name)
+    dirlisting.sort()
+    return dirlisting
 
 
 def posix2utc(posixtime, timeformat):
@@ -82,7 +95,7 @@ def image_translate(imagename, translation_value):
 
 
 def create_reticle(image):
-    solar_diameter = k.solar_diameter
+    solar_diameter = 400
     width, height = image.shape
     x_offset = 0
     y_offset = 0
@@ -165,3 +178,18 @@ def wrapper(filepathlist, diffstore, pathsep, wavelength):
         cv2.imwrite(filename, filtered_img)
 
     print("*** Differencing FINISHED")
+
+if __name__ == '__main__':
+    image_store = 1
+    diffs_store = 2
+    name = 3
+    # Calculate difference images for each wavelength
+    for item in global_config.noaa_image_data:
+        if os.path.exists(item[diffs_store]) is False:
+            os.makedirs(item[diffs_store])
+
+    for item in global_config.noaa_image_data:
+        img_files = local_file_list_build(item[image_store])
+        img_files = img_files[-360:]
+        store_diffs = item[diffs_store]
+        wrapper(img_files, store_diffs, os.sep, item[name])
