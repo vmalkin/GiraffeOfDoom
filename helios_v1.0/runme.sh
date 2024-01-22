@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-
 venv/bin/python download_lasco.py
 venv/bin/python download_suvi.py
 
