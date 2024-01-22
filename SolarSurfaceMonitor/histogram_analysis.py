@@ -3,14 +3,13 @@ import os
 import cv2
 import numpy as np
 from plotly import graph_objects as go
-import common as k
 # file path seperator / or \ ???
 pathsep = os.sep
 
 
 def create_mask(image):
     # Mask off the outer corona and only focus on the image of the sun
-    diameter_ratio = k.solar_diameter / 1280
+    diameter_ratio = 380 / 1280
     width, height, colourdepth = image.shape
     solar_diameter = int(diameter_ratio * width)
     mask = np.zeros((width, height), dtype=np.int8)
@@ -59,13 +58,13 @@ def plot(event_data):
             dt.append(entries[0])
             d0.append(entries[1])
             d1.append(entries[2])
-        fig.add_bar(x=dt, y=d0, width=0.7, marker_color=bar_fill[i], marker_line_color='black', marker_line_width=0.5)
-        fig.add_bar(x=dt, y=d1, width=0.7, marker_color=bar_fill[i], marker_line_color='black', marker_line_width=0.5)
+        fig.add_bar(x=dt, y=d0, width=0.3, marker_color=bar_fill[i], marker_line_color='black', marker_line_width=1)
+        fig.add_bar(x=dt, y=d1, width=0.3, marker_color=bar_fill[i], marker_line_color='black', marker_line_width=1)
 
     # Force y axis to show at least 10
     fig.update_layout(bargap=0)
-    fig.update_yaxes(range=[0, 20])
-    fig.update_xaxes(tickangle=45, dtick=20, showgrid=True,)
+    fig.update_yaxes(range=[1, 20])
+    fig.update_xaxes(tickangle=45, dtick=4, showgrid=True,)
     fig.update_layout(barmode='group')
 
     title = "Solar Surface Event Occurrences."
@@ -74,7 +73,7 @@ def plot(event_data):
 
     fig.update_layout(font=dict(size=16, color="#202020"), title_font_size=18, )
     fig.update_layout(plot_bgcolor=papercolour, paper_bgcolor=papercolour)
-    fig.write_html('histogram.html')
+
     fig.write_image('histogram.png')
 
 def wrapper():
@@ -96,13 +95,10 @@ def wrapper():
             # Mask off the outer corona - we're only interested in the solar disc
             img = create_mask(img)
 
-            # CReate a histogram of the image being processed
             result = np.histogram(img, bins=5, range=(0, 256))
-
             # result[0] is histogram, result[1] are bin labels
             histgm = (result[0])
 
-            # CReate an array of the image file name, and the count of all-black and all-white pixels
             tmp.append(getfilename(item))
             tmp.append(histgm[0])
             tmp.append(histgm[4])
@@ -118,11 +114,6 @@ def wrapper():
             px_white.append(item[1])
             px_black.append(item[2])
 
-        # Get simple statistics of the average, and standard deviations for all-black and all-white
-        # pixels for the current day. Use this to determine of any single image is above average, this will
-        # be our simple indicator of rapid change in the image caused by CME or similar events on the sun's surface
-        # It is possible that we might need a better treatment of this? We might want to store STD and AVG over
-        # a period of time and use the median values of those to evaluate individual images?
         avg_white = np.average(px_white)
         std_white = np.std(px_white)
         avg_black = np.average(px_black)

@@ -183,7 +183,6 @@ if __name__ == '__main__':
     image_store = 1
     diffs_store = 2
     name = 3
-
     # Calculate difference images for each wavelength
     for item in global_config.noaa_image_data:
         if os.path.exists(item[diffs_store]) is False:
