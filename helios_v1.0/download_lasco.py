@@ -87,7 +87,7 @@ if __name__ == "__main__":
     # print("Revised CME detector")
     computation_start = time.time()
     # enhanced_folder = "enhanced_512"
-    storage_folder = global_config.folder_source_images + os.sep + "lasco_store_512"
+    storage_folder = global_config.folder_source_images + os.sep + "store_lasco_512"
     # analysis_folder = "analysis_512"
 
     # if os.path.exists(enhanced_folder) is False:
