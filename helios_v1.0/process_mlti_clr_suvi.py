@@ -106,27 +106,30 @@ if __name__ == '__main__':
         files_green = files_green[-360:]
         files_red = local_file_list_build(files[2][store])
         files_red = files_red[-360:]
+        print(files_green)
 
         multifilelist = []
         for file_b in files_blue:
             tmp = []
             tmp.append(file_b)
             b = file_b.split('_')
-            start_b = b[4]
+            start_b = b[6]
 
             for file_g in files_green:
                 g = file_g.split('_')
-                start_g = g[4]
+                start_g = g[6]
                 if start_g == start_b:
                     tmp.append(file_g)
 
             for file_r in files_red:
                 r = file_r.split('_')
-                start_r = r[4]
+                start_r = r[6]
                 if start_r == start_b:
                     tmp.append(file_r)
+
             if len(tmp) == 3:
                 multifilelist.append(tmp)
+
         multicolour.wrapper(multifilelist, savefolder)
 
         # create multispectral difference images
@@ -149,17 +152,17 @@ if __name__ == '__main__':
             tmp = []
             tmp.append(file_b)
             b = file_b.split(pathsep)
-            start_b = b[1]
+            start_b = b[2]
 
             for file_g in files_green:
                 g = file_g.split(pathsep)
-                start_g = g[1]
+                start_g = g[2]
                 if start_g == start_b:
                     tmp.append(file_g)
 
             for file_r in files_red:
                 r = file_r.split(pathsep)
-                start_r = r[1]
+                start_r = r[2]
                 if start_r == start_b:
                     tmp.append(file_r)
             if len(tmp) == 3:

@@ -56,8 +56,8 @@ def wrapper(multifilelist, save_folder):
             # print(splitvalue)
 
             t = files[0].split(pathsep)
+            tt = t[2].split('_')
 
-            tt = t[1].split('_')
             timestamp = tt[0]
             filename = timestamp + '_clr.png'
 

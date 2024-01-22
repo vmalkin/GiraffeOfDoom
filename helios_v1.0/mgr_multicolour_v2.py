@@ -54,7 +54,7 @@ def wrapper(multifilelist, save_folder):
         # print(files)
         if len(files) == 3:
             f = files[0].split('_')
-            t = f[4]
+            t = f[6]
             timestamp = t[1:len(t) - 1]
             filename = timestamp + '_clr.png'
 
