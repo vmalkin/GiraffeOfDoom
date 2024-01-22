@@ -32,10 +32,10 @@ def parseimages(listofimages, imagestore):
 
 def downloadimages(listofimages, storagelocation):
     for img in listofimages:
-        file = storagelocation + "/" + img
+        file = storagelocation + os.sep + img
         i = img.split(".")
         baddy = str(i[0])
-        badfile = storagelocation + "/" + baddy + ".no"
+        badfile = storagelocation + os.sep + baddy + ".no"
         img1url = baseURL + img
         if os.path.exists(badfile) is False:
             if os.path.exists(file) is False:
