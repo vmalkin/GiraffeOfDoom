@@ -63,8 +63,8 @@ def plot(splitlist, trend, storm, dates, sat_id):
     fig.update_layout(font=dict(size=16, color="#202020"), title_font_size=18, )
     fig.update_layout(plot_bgcolor=papercolour,
                       paper_bgcolor=papercolour)
-    fig.add_hline(y=500, line=dict(width=3, color='rgba(50,150,0, 0.7)'), layer="below",
-                  annotation_font_color='rgba(50,150,0, 0.7)', annotation_text='Storm Threshold',
+    fig.add_hline(y=500, line=dict(width=3, color='rgba(10,180,0, 1)'), layer="below",
+                  annotation_font_color='rgba(20,180,0, 1)', annotation_text='Storm Threshold',
                   annotation_position="top right")
 
     fig.update_yaxes(range=[200, 700])
