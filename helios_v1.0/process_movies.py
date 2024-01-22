@@ -24,52 +24,59 @@ if __name__ == '__main__':
         diffs = 2
 
         # Make animations
-        folder = 'diffs_g'
+        folder = data[1][diffs]
         img_files = local_file_list_build(folder)
         # a day is roughly 360 images
         img_files = img_files[-360:]
-        make_anim.wrapper(img_files, 'diffs_195a')
+        outputfile = global_config.folder_output_to_publish + os.sep + 'diffs_195a'
+        make_anim.wrapper(img_files, outputfile)
 
-        folder = 'diffs_b'
+        folder = data[0][diffs]
         img_files = local_file_list_build(folder)
         # a day is roughly 360 images
         img_files = img_files[-360:]
-        make_anim.wrapper(img_files, 'diffs_171a')
+        outputfile = global_config.folder_output_to_publish + os.sep + 'diffs_171a'
+        make_anim.wrapper(img_files, outputfile)
 
-        folder = 'diffs_r'
+        folder = data[2][diffs]
         img_files = local_file_list_build(folder)
         # a day is roughly 360 images
         img_files = img_files[-360:]
-        make_anim.wrapper(img_files, 'diffs_284a')
+        outputfile = global_config.folder_output_to_publish + os.sep + 'diffs_284a'
+        make_anim.wrapper(img_files, outputfile)
 
-        folder = 'store_b'
+        folder = data[0][store]
         img_files = local_file_list_build(folder)
         # a day is roughly 360 images
         img_files = img_files[-360:]
-        make_anim.wrapper(img_files, '171a')
+        outputfile = global_config.folder_output_to_publish + os.sep + '171a'
+        make_anim.wrapper(img_files, outputfile)
 
-
-        folder = 'store_g'
+        folder = data[1][store]
         img_files = local_file_list_build(folder)
         # a day is roughly 360 images
         img_files = img_files[-360:]
-        make_anim.wrapper(img_files, '195a')
+        outputfile = global_config.folder_output_to_publish + os.sep + '195a'
+        make_anim.wrapper(img_files, outputfile)
 
-        folder = 'store_r'
+        folder = data[2][store]
         img_files = local_file_list_build(folder)
         # a day is roughly 360 images
         img_files = img_files[-360:]
-        make_anim.wrapper(img_files, '284a')
+        outputfile = global_config.folder_output_to_publish + os.sep + '284a'
+        make_anim.wrapper(img_files, outputfile)
 
-        folder = 'combined'
+        folder = global_config.folder_source_images + os.sep + 'store_suvi_falseclr'
         img_files = local_file_list_build(folder)
         # a day is roughly 360 images
         img_files = img_files[-360:]
-        make_anim.wrapper(img_files, '3_colour')
+        outputfile = global_config.folder_output_to_publish + os.sep + '3_colour'
+        make_anim.wrapper(img_files, outputfile)
 
-        folder = 'combined_diffs'
+        folder = global_config.folder_source_images + os.sep + 'store_suvi_falsediff'
         img_files = local_file_list_build(folder)
         # a day is roughly 360 images
         img_files = img_files[-360:]
-        make_anim.wrapper(img_files, '3_clr_diffs')
+        outputfile = global_config.folder_output_to_publish + os.sep + '3_clr_diffs'
+        make_anim.wrapper(img_files, outputfile)
 
