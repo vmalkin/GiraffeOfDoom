@@ -80,3 +80,9 @@ if __name__ == '__main__':
         outputfile = global_config.folder_output_to_publish + os.sep + '3_clr_diffs'
         make_anim.wrapper(img_files, outputfile)
 
+        folder = global_config.folder_source_images + os.sep + 'enhanced_lasco'
+        img_files = local_file_list_build(folder)
+        # a day is roughly 360 images
+        img_files = img_files[-360:]
+        outputfile = global_config.folder_output_to_publish + os.sep + 'lasco'
+        make_anim.wrapper(img_files, outputfile)
