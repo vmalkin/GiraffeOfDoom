@@ -47,33 +47,46 @@ def posix2utc(posixtime, timeformat):
     return utctime
 
 
-def get_dirlisting(folder):
+def local_file_list_build(directory):
+    # Builds and returns a list of files contained in the directory.
+    # List is sorted into A --> Z order
     dirlisting = []
-    path = os.path.join(folder, "*.jpg")
+    path = directory + os.sep + "*.*"
     for name in glob.glob(path):
         name = os.path.normpath(name)
-        seperator = os.path.sep
-        n = name.split(seperator)
-        nn = n[1]
-        dirlisting.append(nn)
-        # make sure they are in chronological order by name
+        dirlisting.append(name)
     dirlisting.sort()
     return dirlisting
 
+# def get_dirlisting(folder):
+#     dirlisting = []
+#     path = os.path.join(folder, "*.jpg")
+#     for name in glob.glob(path):
+#         name = os.path.normpath(name)
+#         seperator = os.path.sep
+#         n = name.split(seperator)
+#         nn = n[1]
+#         dirlisting.append(nn)
+#         # make sure they are in chronological order by name
+#     dirlisting.sort()
+#     return dirlisting
+
 def shorten_dirlisting(processing_start_date, directory_listing):
     # Return files for the last x hours, as needed.
-    cutoff = processing_start_date
-    returnarray = []
-    for item in directory_listing:
-        dt = filename_converter(item, "posix")
-        if dt > cutoff:
-            returnarray.append(item)
+    # cutoff = processing_start_date
+    # returnarray = []
+    # for item in directory_listing:
+    #     dt = filename_converter(item, "posix")
+    #     if dt > cutoff:
+    #         returnarray.append(item)
+    returnarray = directory_listing[-360:]
     return returnarray
 
 
 def filename_converter(filename, switch="posix"):
     # Name has format 20221230_2342_c3_512.jpg
     f = filename.split("_")
+
     yyyymmdd = f[0]
     hhmm = f[1]
     year = (yyyymmdd[:4])
@@ -112,7 +125,7 @@ def wrapper(processing_start_date, lasco_folder, enhanced_folder):
     print("*** Enhancer: Start")
     time_threshold = 60 * 120
     # get image list of LASCO files for the last x-hours.
-    dirlisting = get_dirlisting(lasco_folder)
+    dirlisting = local_file_list_build(lasco_folder)
     dirlisting = shorten_dirlisting(processing_start_date, dirlisting)
 
     print("Most recent file: ", dirlisting[len(dirlisting) - 1])
@@ -126,18 +139,17 @@ def wrapper(processing_start_date, lasco_folder, enhanced_folder):
     # if time difference between img_x, ing_y < time threshold
     print("*** Enhancer: Removing particle hits from files")
     for i in range(1, len(dirlisting) - 1):
-        # txt = "Denoising " + str(i) + " / " + str(len(dirlisting))
-        # print(txt)
-        if filename_converter(dirlisting[i], "posix") - filename_converter(dirlisting[i - 1], "posix") < time_threshold:
-            # load an automatically convert image to greyscale
-            file_1 = lasco_folder + os.sep + dirlisting[i - 1]
-            file_2 = lasco_folder + os.sep + dirlisting[i]
-            file_3 = lasco_folder + os.sep + dirlisting[i + 1]
-            img_1 = cv2.imread(file_1, 0)
-            img_2 = cv2.imread(file_2, 0)
-            img_3 = cv2.imread(file_3, 0)
-            picture = median_image(img_1, img_2, img_3)
+        f1 = dirlisting[i - 1].split(os.sep)
+        f2 = dirlisting[i].split(os.sep)
+        f3 = dirlisting[i + 1].split(os.sep)
+        file_1 = f1[2]
+        file_2 = f2[2]
 
+        if filename_converter(file_2, "posix") - filename_converter(file_1, "posix") < time_threshold:
+            img_1 = cv2.imread(dirlisting[i - 1], 0)
+            img_2 = cv2.imread(dirlisting[i], 0)
+            img_3 = cv2.imread(dirlisting[i + 1], 0)
+            picture = median_image(img_1, img_2, img_3)
 
             # alpha value [1.0-3.0] CONTRAST
             # beta value [0-100] BRIGHTNESS
@@ -150,36 +162,7 @@ def wrapper(processing_start_date, lasco_folder, enhanced_folder):
             # picture = cv2.bitwise_not(picture)
             picture = colourise(picture)
             add_stamp("Processed @ DunedinAurora.NZ", picture, dirlisting[i])
-            savefile = enhanced_folder + os.sep + dirlisting[i]
+            savefile = enhanced_folder + os.sep + file_2
             cv2.imwrite(savefile, picture)
-
-            cols = int(img_2.shape[0])
-            rows = int(img_2.shape[1])
-
-            ie = Image.open(savefile)
-            img_enh = Image.new("RGB", [cols, rows])
-            img_enh.paste(ie)
-            anim_enhanced.append(img_enh)
-
-            lascofile = lasco_folder + os.sep + dirlisting[i]
-            le = Image.open(lascofile)
-            img_las = Image.new("RGB", [cols, rows])
-            img_las.paste(le)
-            anim_lasco.append(img_las)
-
-    print("*** Enhancer: Saving GIF")
-    anim_enhanced[0].save("anim_cme.gif",
-                        format="GIF",
-                        save_all=True,
-                        append_images=anim_enhanced[1:],
-                        duration=75,
-                        loop=0)
-
-    anim_lasco[0].save("anim_lasco.gif",
-                        format="GIF",
-                        save_all=True,
-                        append_images=anim_lasco[1:],
-                        duration=75,
-                        loop=0)
 
     print("*** Enhancer: Finished")

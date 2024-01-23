@@ -7,6 +7,7 @@ import time
 import calendar
 from plotly import graph_objects as go
 import glob
+import global_config
 
 # offset values when coronagraph mask support-vane in top-right position
 offset_x = -4
@@ -117,7 +118,7 @@ def plot_diffs_polar(pixel_count, filename, width, height):
 
 
 def plot(dates, pixel_count, filename, width, height):
-    savefile = filename
+    savefile = global_config.folder_output_to_publish + os.sep + filename
     # pixel_count = median_filter(pixel_count)
     dates.pop(0)
     dates.pop(len(dates) - 1)
@@ -197,7 +198,7 @@ def text_alert(px, hr):
     new_hr = hr[0] + "/" + hr[1] + "/" + hr[2]
     url = "https://stereo-ssc.nascom.nasa.gov/browse/" + new_hr +  "/ahead/cor2_rdiff/512/thumbnail.shtml"
     stereo_url = "<a href=\"" + url + "\" target=\"_blank\">" + "Stereo Science Centre</a>"
-    savefile = "cme_alert.php"
+    savefile = global_config.folder_output_to_publish + os.sep + "cme_alert.php"
     heading = "<b>CME Monitor updated at " + posix2utc(time.time(), " %Y-%m-%d %H:%M") + " UTC.</b>"
     msg = "<p>Highest level of coronal brightness occurred " + timestring +  " with " + str(int(px * 100)) + "% coverage."
     msg = msg + "<p>Latest STEREO A images can be found at:<br>"
@@ -333,14 +334,8 @@ def filename_converter(filename, switch="posix"):
     return returnstring
 
 
-def shorten_dirlisting(processing_start_date, directory_listing):
-    # Return files for the last x hours, as needed.
-    cutoff = processing_start_date
-    returnarray = []
-    for item in directory_listing:
-        dt = filename_converter(item, "posix")
-        if dt > cutoff:
-            returnarray.append(item)
+def shorten_dirlisting(directory_listing):
+    returnarray = directory_listing[-360:]
     return returnarray
 
 
@@ -350,7 +345,19 @@ def median_image(img_1, img_2, img_3):
     return p
 
 
-def wrapper(processing_start_date, lasco_folder, analysis_folder):
+def local_file_list_build(directory):
+    # Builds and returns a list of files contained in the directory.
+    # List is sorted into A --> Z order
+    dirlisting = []
+    path = directory + os.sep + "*.*"
+    for name in glob.glob(path):
+        name = os.path.normpath(name)
+        dirlisting.append(name)
+    dirlisting.sort()
+    return dirlisting
+
+
+def wrapper(lasco_folder, analysis_folder):
     print("*** Analyser: Start")
     # get a list of the current stored images.
     # IGNORE files with the suffix .no as they are corrupted or reconstructed by the LASCO team, and the
@@ -360,20 +367,10 @@ def wrapper(processing_start_date, lasco_folder, analysis_folder):
     radius = 220
     angle = 360
 
-    dirlisting = []
-    path = os.path.join(lasco_folder, "*.jpg")
-    for name in glob.glob(path):
-        name = os.path.normpath(name)
-        seperator = os.path.sep
-        n = name.split(seperator)
-        nn = n[1]
-        dirlisting.append(nn)
-
-    # make sure they are in chronological order by name
-    dirlisting.sort()
+    dirlisting = local_file_list_build(lasco_folder)
 
      # We do not need ALL of the images in the Lasco folder, only the last day or so. Approx
-    dirlisting = shorten_dirlisting(processing_start_date, dirlisting)
+    dirlisting = shorten_dirlisting(dirlisting)
 
     avg_array = []
     cme_count = []
@@ -383,7 +380,7 @@ def wrapper(processing_start_date, lasco_folder, analysis_folder):
 
     # Add images to lasco array
     for i in range (0, len(dirlisting)):
-        p = lasco_folder + os.sep + dirlisting[i]
+        p = dirlisting[i]
         # load images into the lasco array
         lasco_array.append(cv2.imread(p, 0))
 
@@ -422,8 +419,10 @@ def wrapper(processing_start_date, lasco_folder, analysis_folder):
     dirlisting.pop(len(dirlisting) - 1)
     dirlisting.pop(0)
     for i in range(0, len(convolved_images)):
-        dt = filename_converter(dirlisting[i], "utc")
-        savefile = analysis_folder + os.sep + filename_converter(dirlisting[i], "filename")
+        d = dirlisting[i].split(os.sep)
+        dd = d[2]
+        dt = filename_converter(dd, "utc")
+        savefile = analysis_folder + os.sep + dd
         img = annotate_image(convolved_images[i], angle, radius, dt)
         cv2.imwrite(savefile, img)
 
@@ -437,7 +436,9 @@ def wrapper(processing_start_date, lasco_folder, analysis_folder):
     # datelist for plotting
     datelist = []
     for item in dirlisting:
-        datelist.append(filename_converter(item, "utc"))
+        i = item.split(os.sep)
+        ii = i[2]
+        datelist.append(filename_converter(ii, "utc"))
 
     print("*** Analyser: Calculating general brightness of corona")
     # calculate the general brightness of the corona near the sun
