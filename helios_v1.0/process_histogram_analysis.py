@@ -39,7 +39,7 @@ def local_file_list_build(directory):
 
 def getfilename(pathname):
     p = pathname.split(pathsep)
-    pp = p[1].split('_')
+    pp = p[2].split('_')
     return pp[0]
 
 
@@ -103,6 +103,12 @@ if __name__ == '__main__':
             # Mask off the outer corona - we're only interested in the solar disc
             img = create_mask(img)
 
+            # cv2.imshow('image', img)
+            # # Waits for a keystroke
+            # cv2.waitKey(0)
+            # # Destroys all the windows created
+            # cv2.destroyAllwindows()
+
             # CReate a histogram of the image being processed
             result = np.histogram(img, bins=5, range=(0, 256))
 
@@ -110,6 +116,7 @@ if __name__ == '__main__':
             histgm = (result[0])
 
             # CReate an array of the image file name, and the count of all-black and all-white pixels
+
             tmp.append(getfilename(item))
             tmp.append(histgm[0])
             tmp.append(histgm[4])
