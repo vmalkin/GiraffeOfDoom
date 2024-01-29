@@ -106,7 +106,6 @@ if __name__ == '__main__':
         files_green = files_green[-360:]
         files_red = local_file_list_build(files[2][store])
         files_red = files_red[-360:]
-        print(files_green)
 
         multifilelist = []
         for file_b in files_blue:
