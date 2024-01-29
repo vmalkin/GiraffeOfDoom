@@ -131,7 +131,7 @@ def plot(dates, pixel_count, filename, width, height):
 
     fig.update_layout(font=dict(size=20), title_font_size=21)
     fig.update_layout(width=width, height=height, title="Total Coronal Brightness @ 3 Solar diameters",
-                      xaxis_title="Date/time UTC<br><sub>http://DunedinAurora.nz</sub>",
+                      xaxis_title="Date/time UTC<br><sub>" + global_config.copyright + " http://DunedinAurora.nz</sub>",
                       yaxis_title="Brightness 0 -  1",
                       plot_bgcolor="#e0e0e0")
     fig.update_layout(plot_bgcolor="#a0a0a0", paper_bgcolor="#a0a0a0")
