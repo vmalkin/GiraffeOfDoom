@@ -73,7 +73,7 @@ def plot(event_data):
 
     title = "Solar Surface Event Occurrences."
     fig.update_layout(width=width, height=height, title=title,
-                      xaxis_title="UTC Datetime<br><sub>http://DunedinAurora.nz</sub>")
+                      xaxis_title="UTC Datetime<br><sub>" + global_config.copyright + " http://DunedinAurora.nz</sub>")
 
     fig.update_layout(font=dict(size=16, color="#202020"), title_font_size=18, )
     fig.update_layout(plot_bgcolor=papercolour, paper_bgcolor=papercolour)
