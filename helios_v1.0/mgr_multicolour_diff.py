@@ -5,6 +5,8 @@ import time
 from calendar import timegm
 import numpy as np
 
+import global_config
+
 pathsep = os.sep
 
 
@@ -23,7 +25,7 @@ def create_label(image, timestamp):
     font_thickness = 1
     label0 = "GOES SUVI false colour differences image."
     label1 = "Image time: " + timestamp
-    label2 = "Images courtesy of NOAA. (c) 2023 DunedinAurora.NZ"
+    label2 = "Images courtesy of NOAA." + global_config.copyright
     cv2.putText(image, label0, (0, 50), font, font_size, font_color, font_thickness, cv2.LINE_AA)
     cv2.putText(image, label1, (0, 100), font, font_size, font_color, font_thickness, cv2.LINE_AA)
     cv2.putText(image, label2, (0, height - 80), font, font_size, font_color, font_thickness, cv2.LINE_AA)

@@ -8,6 +8,9 @@ import math
 import time
 from PIL import Image
 
+import global_config
+
+
 def add_stamp(banner_text, image_object, filename):
     tt = time.time()
     tt = posix2utc(tt, "%Y-%m-%d %H:%M")
@@ -161,7 +164,8 @@ def wrapper(processing_start_date, lasco_folder, enhanced_folder):
 
             # picture = cv2.bitwise_not(picture)
             picture = colourise(picture)
-            add_stamp("Processed @ DunedinAurora.NZ", picture, dirlisting[i])
+            text = 'Processed at ' + global_config.copyright
+            add_stamp(text, picture, dirlisting[i])
             savefile = enhanced_folder + os.sep + file_2
             cv2.imwrite(savefile, picture)
 
