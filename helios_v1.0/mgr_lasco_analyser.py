@@ -340,8 +340,12 @@ def shorten_dirlisting(directory_listing):
 
 
 def median_image(img_1, img_2, img_3):
-    t = [img_1, img_2, img_3]
-    p = np.median(t, axis=0)
+    try:
+        t = [img_1, img_2, img_3]
+        p = np.median(t, axis=0)
+    except:
+        print('Unable to apply median filter to images')
+        p = None
     return p
 
 
@@ -390,14 +394,15 @@ def wrapper(lasco_folder, analysis_folder):
     median_pictures = []
     for i in range(1, len(lasco_array) - 1):
         picture = median_image(lasco_array[i - 1], lasco_array[i], lasco_array[i + 1])
-        # alpha value [1.0-3.0] CONTRAST
-        # beta value [0-100] BRIGHTNESS
-        alpha = 1.5
-        beta = 2
-        picture = cv2.convertScaleAbs(picture, alpha=alpha, beta=beta)
-        clahe = cv2.createCLAHE(clipLimit=2, tileGridSize=(10, 10))
-        picture = clahe.apply(picture)
-        median_pictures.append(picture)
+        if picture is not None:
+            # alpha value [1.0-3.0] CONTRAST
+            # beta value [0-100] BRIGHTNESS
+            alpha = 1.5
+            beta = 2
+            picture = cv2.convertScaleAbs(picture, alpha=alpha, beta=beta)
+            clahe = cv2.createCLAHE(clipLimit=2, tileGridSize=(10, 10))
+            picture = clahe.apply(picture)
+            median_pictures.append(picture)
 
     print("*** Analyser: Convolving images")
     # convolve the median images

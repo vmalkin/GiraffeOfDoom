@@ -119,8 +119,12 @@ def colourise(final):
 
 
 def median_image(img_1, img_2, img_3):
-    t = [img_1, img_2, img_3]
-    p = np.median(t, axis=0)
+    try:
+        t = [img_1, img_2, img_3]
+        p = np.median(t, axis=0)
+    except:
+        print('Unable to apply median filter to images')
+        p = None
     return p
 
 
@@ -154,19 +158,20 @@ def wrapper(processing_start_date, lasco_folder, enhanced_folder):
             img_3 = cv2.imread(dirlisting[i + 1], 0)
             picture = median_image(img_1, img_2, img_3)
 
-            # alpha value [1.0-3.0] CONTRAST
-            # beta value [0-100] BRIGHTNESS
-            alpha = 1.5
-            beta = 2
-            picture = cv2.convertScaleAbs(picture, alpha=alpha, beta=beta)
-            clahe = cv2.createCLAHE(clipLimit=2, tileGridSize=(10,10))
-            picture = clahe.apply(picture)
+            if picture is not None:
+                # alpha value [1.0-3.0] CONTRAST
+                # beta value [0-100] BRIGHTNESS
+                alpha = 1.5
+                beta = 2
+                picture = cv2.convertScaleAbs(picture, alpha=alpha, beta=beta)
+                clahe = cv2.createCLAHE(clipLimit=2, tileGridSize=(10,10))
+                picture = clahe.apply(picture)
 
-            # picture = cv2.bitwise_not(picture)
-            picture = colourise(picture)
-            text = 'Processed at ' + global_config.copyright
-            add_stamp(text, picture, dirlisting[i])
-            savefile = enhanced_folder + os.sep + file_2
-            cv2.imwrite(savefile, picture)
+                # picture = cv2.bitwise_not(picture)
+                picture = colourise(picture)
+                text = 'Processed at ' + global_config.copyright
+                add_stamp(text, picture, dirlisting[i])
+                savefile = enhanced_folder + os.sep + file_2
+                cv2.imwrite(savefile, picture)
 
     print("*** Enhancer: Finished")
