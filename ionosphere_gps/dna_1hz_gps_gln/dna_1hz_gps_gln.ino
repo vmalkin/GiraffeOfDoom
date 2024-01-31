@@ -34,9 +34,9 @@ void setup()
   myGNSS.setNavigationFrequency(2);
   myGNSS.setDynamicModel(DYN_MODEL_STATIONARY);
   //Disable or enable various NMEA sentences over the UART1 interface
-  myGNSS.disableNMEAMessage(UBX_NMEA_GLL, COM_PORT_I2C); //Several of these are on by default on ublox board so let's disable them
+  myGNSS.enableNMEAMessage(UBX_NMEA_MSS, COM_PORT_I2C); //Several of these are on by default on ublox board so let's disable them
   myGNSS.disableNMEAMessage(UBX_NMEA_GSA, COM_PORT_I2C);
-  myGNSS.enableNMEAMessage(UBX_NMEA_GSV, COM_PORT_I2C);
+  myGNSS.disableNMEAMessage(UBX_NMEA_GSV, COM_PORT_I2C);
   myGNSS.disableNMEAMessage(UBX_NMEA_RMC, COM_PORT_I2C);
   myGNSS.disableNMEAMessage(UBX_NMEA_GGA, COM_PORT_I2C); //Only leaving GGA & VTG enabled at current navigation rate
   myGNSS.disableNMEAMessage(UBX_NMEA_VTG, COM_PORT_I2C);  
