@@ -45,6 +45,15 @@ def create_directory(directory):
             logging.critical("CRITICAL ERROR: Unable to create directory in MAIN.PY")
 
 
+def parse_msg_id(msgid):
+    # print(msgid)
+    id_ok = False
+    valid_id = ['$GPGSV', '$GPGGA']
+    for item in valid_id:
+        if msgid == item:
+            id_ok = True
+    return id_ok
+
 if __name__ == "__main__":
     # initial setup including satellite lists
     # if database not exists, create database
@@ -72,13 +81,13 @@ if __name__ == "__main__":
     while True:
         # Get com data
         line = com.data_recieve()
-        # csv_line = line.split(",")
-        # print(len(csv_line))
+        csv_line = line.split(",")
+        # print(line)
 
         # if len(csv_line) == 15:
             # if the sentence is a GGA sentence from any constellation
-            # if csv_line[0] == "$GPGGA" or csv_line[0] == "$GLGGA":
-        print(line)
+        if parse_msg_id(csv_line[0]) is True :
+            print(line)
             #     constellation = csv_line[0][1:]
             #     lat = csv_line[2]
             #     long = csv_line[4]
