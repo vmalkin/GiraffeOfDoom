@@ -4,6 +4,7 @@ import time
 import os
 import logging
 from threading import Thread
+import re
 import mgr_database
 
 
@@ -81,20 +82,17 @@ if __name__ == "__main__":
     while True:
         # Get com data
         line = com.data_recieve()
-        csv_line = line.split(",")
-        # print(line)
+        csv_line = re.split(r'[,|*]', line)
 
-        # if len(csv_line) == 15:
-            # if the sentence is a GGA sentence from any constellation
         if parse_msg_id(csv_line[0]) is True :
-            print(line)
-            #     constellation = csv_line[0][1:]
-            #     lat = csv_line[2]
-            #     long = csv_line[4]
-            #     position_fix = int(csv_line[6])
-            #     num_sats = csv_line[7]
-            #     hdop = csv_line[8]
-            #     alt = csv_line[9]
+            print(csv_line)
+            constellation = csv_line[0][1:]
+            lat = csv_line[2]
+            long = csv_line[4]
+            position_fix = int(csv_line[6])
+            num_sats = csv_line[7]
+            hdop = csv_line[8]
+            alt = csv_line[9]
             #
             #     # If we have a valid position fix
             #     if position_fix > 0:
