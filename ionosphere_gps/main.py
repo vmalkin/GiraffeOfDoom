@@ -48,9 +48,9 @@ def create_directory(directory):
 if __name__ == "__main__":
     # initial setup including satellite lists
     # if database not exists, create database
-    if os.path.isfile(k.sat_database) is False:
-        print("No database file, initialising")
-        mgr_database.database_create()
+    # if os.path.isfile(k.sat_database) is False:
+    #     print("No database file, initialising")
+    #     mgr_database.database_create()
     # if os.path.isfile(k.sat_database) is True:
     #     print("Database file exists")
 
@@ -62,23 +62,23 @@ if __name__ == "__main__":
     #     print("Creating image file directory...")
     #     create_directory(k.dir_images)
 
-    queryprocessor = QueryProcessor()
-    queryprocessor.start()
+    # queryprocessor = QueryProcessor()
+    # queryprocessor.start()
 
-    com = mgr_comport.SerialManager(k.comport, k.baudrate, k.bytesize, k.parity, k.stopbits, k.timeout,
+    com = mgr_comport.SerialManager(k.portName, k.baudrate, k.bytesize, k.parity, k.stopbits, k.timeout,
                                     k.xonxoff,
                                     k.rtscts, k.writeTimeout, k.dsrdtr, k.interCharTimeout)
 
     while True:
         # Get com data
         line = com.data_recieve()
-        csv_line = line.split(",")
+        # csv_line = line.split(",")
         # print(len(csv_line))
 
-        if len(csv_line) == 15:
+        # if len(csv_line) == 15:
             # if the sentence is a GGA sentence from any constellation
             # if csv_line[0] == "$GPGGA" or csv_line[0] == "$GLGGA":
-            #     # print(line)
+        print(line)
             #     constellation = csv_line[0][1:]
             #     lat = csv_line[2]
             #     long = csv_line[4]
@@ -91,7 +91,7 @@ if __name__ == "__main__":
             #     if position_fix > 0:
             #         posixtime = int(time.time())
             #         mgr_database.qry_add_data(constellation, posixtime, lat, long, position_fix, num_sats, hdop, alt)
-        else:
-            # logdata = "ERROR: Malformed NMEA sentence: " + line
-            # print(logdata)
+        # else:
+        #     logdata = "ERROR: Malformed NMEA sentence: " + line
+        #     print(logdata)
             # logging.error(logdata)
