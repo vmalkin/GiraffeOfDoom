@@ -4,10 +4,15 @@ import constants as k
 db = k.sat_database
 
 def database_create():
-    # $GPGGA, 223358.00, 4552.29314, S, 17029.06960, E, 1, 05, 1.74, 198.4, M, 1.8, M,, *79
+    # create database!
     gpsdb = sqlite3.connect(k.sat_database)
     db = gpsdb.cursor()
-    db.execute('drop table if exists satdata;')
+    db.execute('drop table if exists comport;')
+    db.execute('drop table if exists constellation;')
+    db.execute('drop table if exists satellites;')
+    db.execute('drop table if exists observations;')
+    db.execute('drop table if exists gga;')
+
     db.execute('create table satdata ('
                'constellation text,'
                'posixtime integer,'
@@ -20,6 +25,12 @@ def database_create():
                ');')
     gpsdb.commit()
     db.close()
+
+
+def database_initialise():
+    # populate database with initial values
+    pass
+
 
 # def qry_get_last_24hrs(starttime, constellation_label):
 #     gpsdb = sqlite3.connect(k.sat_database)
