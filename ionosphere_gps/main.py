@@ -113,9 +113,5 @@ if __name__ == "__main__":
 
             if msg_id == '$GPGSV':
                 sat_obsv = process_gsv(csv_line)
-        else:
-            logdata = "ERROR: Malformed NMEA sentence: " + line
-            print(logdata)
-            # logging.error(logdata)
 
         # ENTER into database
