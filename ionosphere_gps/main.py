@@ -49,11 +49,16 @@ def create_directory(directory):
 def parse_msg_id(msgid):
     # print(msgid)
     id_ok = False
-    valid_id = ['$GPGSV', '$GPGGA']
+    valid_id = ['$GPGSV', '$GPGGA', '$GPRMC']
     for item in valid_id:
         if msgid == item:
             id_ok = True
     return id_ok
+
+
+def process_gsv(csv_line):
+    pass
+
 
 if __name__ == "__main__":
     # initial setup including satellite lists
@@ -75,30 +80,41 @@ if __name__ == "__main__":
     # queryprocessor = QueryProcessor()
     # queryprocessor.start()
 
+
     com = mgr_comport.SerialManager(k.portName, k.baudrate, k.bytesize, k.parity, k.stopbits, k.timeout,
                                     k.xonxoff,
                                     k.rtscts, k.writeTimeout, k.dsrdtr, k.interCharTimeout)
 
     while True:
         # Get com data
+        # ['$GPGSV', '3', '1', '12', '05', '16', '108', '31', '10', '29', '278', '17', '13', '29', '132', '39', '15', '58', '110', '32', '7B']
+        # ['$GPRMC', '002841.00', 'A', '4551.95891', 'S', '17031.19120', 'E', '0.091', '', '080224', '', '', 'D', '65']
+        #  ['$GPGGA', '002841.00', '4551.95891', 'S', '17031.19120', 'E', '2', '06', '10.32', '23.7', 'M', '1.8', 'M', '', '0000', '72']
         line = com.data_recieve()
         csv_line = re.split(r'[,|*]', line)
+        msg_id = csv_line[0]
 
-        if parse_msg_id(csv_line[0]) is True :
-            print(csv_line)
-            constellation = csv_line[0][1:]
-            lat = csv_line[2]
-            long = csv_line[4]
-            position_fix = int(csv_line[6])
-            num_sats = csv_line[7]
-            hdop = csv_line[8]
-            alt = csv_line[9]
-            #
-            #     # If we have a valid position fix
-            #     if position_fix > 0:
-            #         posixtime = int(time.time())
-            #         mgr_database.qry_add_data(constellation, posixtime, lat, long, position_fix, num_sats, hdop, alt)
-        # else:
-        #     logdata = "ERROR: Malformed NMEA sentence: " + line
-        #     print(logdata)
+        rmc_date = None
+        rmc_time = None
+        gga_hdop = None
+        gga_satnum = None
+        comport = com
+
+        if parse_msg_id(msg_id) is True :
+            # print(csv_line)
+            if msg_id == '$GPRMC':
+                rmc_date = csv_line[9]
+                rmc_time = csv_line[1]
+
+            if msg_id == '$GPGGA':
+                gga_hdop = csv_line[8]
+                gga_satnum = csv_line[7]
+
+            if msg_id == '$GPGSV':
+                sat_obsv = process_gsv(csv_line)
+        else:
+            logdata = "ERROR: Malformed NMEA sentence: " + line
+            print(logdata)
             # logging.error(logdata)
+
+        # ENTER into database
