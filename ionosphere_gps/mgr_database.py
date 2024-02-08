@@ -7,22 +7,32 @@ def database_create():
     # create database!
     gpsdb = sqlite3.connect(k.sat_database)
     db = gpsdb.cursor()
-    db.execute('drop table if exists comport;')
     db.execute('drop table if exists constellation;')
     db.execute('drop table if exists satellites;')
     db.execute('drop table if exists observations;')
     db.execute('drop table if exists gga;')
 
-    db.execute('create table satdata ('
-               'constellation text,'
-               'posixtime integer,'
-               'lat real,'
-               'long real,'
-               'position_fix integer,'
-               'num_sats integer,'
-               'hdop real,'
-               'alt real'
+
+    db.execute('create table constellation ('
+               'foo text,'
+               'bar integer'
                ');')
+
+    db.execute('create table satellites ('
+               'foo text,'
+               'bar integer'
+               ');')
+
+    db.execute('create table observations ('
+               'foo text,'
+               'bar integer'
+               ');')
+
+    db.execute('create table gga ('
+               'foo text,'
+               'bar integer'
+               ');')
+
     gpsdb.commit()
     db.close()
 
