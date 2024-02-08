@@ -1,3 +1,4 @@
+import math
 import constants as k
 import mgr_comport
 import time
@@ -36,6 +37,12 @@ class QueryProcessor(Thread):
 
             print("******************************* End Query Processor")
             time.sleep((1800))
+
+
+def get_rounded_posix_():
+    t = time.time()
+    t = math.floor(t)
+    return t
 
 
 def posix2utc(posixtime, timeformat):
@@ -100,6 +107,7 @@ if __name__ == "__main__":
                                     k.rtscts, k.writeTimeout, k.dsrdtr, k.interCharTimeout)
 
     while True:
+        current_posixtime = get_rounded_posix_()
         # Get com data
         # ['$GPGSV', '3', '1', '12', '05', '16', '108', '31', '10', '29', '278', '17', '13', '29', '132', '39', '15', '58', '110', '32', '7B']
         # ['$GPRMC', '002841.00', 'A', '4551.95891', 'S', '17031.19120', 'E', '0.091', '', '080224', '', '', 'D', '65']
