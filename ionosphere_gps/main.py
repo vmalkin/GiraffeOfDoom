@@ -70,7 +70,8 @@ def create_directory(directory):
 def parse_msg_id(msgid):
     # print(msgid)
     id_ok = False
-    valid_id = ['$GPGSV', '$GPGGA', '$GPRMC']
+    valid_id = ['$GPGSV', '$GPGGA']
+    # valid_id = ['$GPGSV', '$GPGGA', '$GPRMC']
     for item in valid_id:
         if msgid == item:
             id_ok = True
@@ -117,18 +118,12 @@ if __name__ == "__main__":
         csv_line = re.split(r'[,|*]', line)
         msg_id = csv_line[0]
 
-        rmc_date = None
-        rmc_time = None
         gga_hdop = None
         gga_satnum = None
         comport = com
 
         if parse_msg_id(msg_id) is True :
             # print(csv_line)
-            if msg_id == '$GPRMC':
-                rmc_date = csv_line[9]
-                rmc_time = csv_line[1]
-
             if msg_id == '$GPGGA':
                 gga_hdop = csv_line[8]
                 gga_satnum = csv_line[7]
