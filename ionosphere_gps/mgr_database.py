@@ -1,8 +1,6 @@
 import sqlite3
 import constants as k
 
-db = k.sat_database
-
 def database_create():
     # create database!
     gpsdb = sqlite3.connect(k.sat_database)
@@ -47,8 +45,25 @@ def database_create():
 
 def database_initialise():
     # populate database with initial values
-    pass
+    gpsdb = sqlite3.connect(k.sat_database)
+    db = gpsdb.cursor()
 
+    values = ['gps']
+    db.execute('insert into constellation(constellation_id) values (?);', values)
+
+    # for GPS satellites
+    for i in range(1, 33):
+        index = str(i)
+        if len(index) == 1:
+            index = '0' + index
+        id_num = 'GP' + index
+        values = [id_num, 'gps']
+        db.execute('insert into satellite(sat_id, constellation_id) values (?, ?);', values)
+
+    # for GLONASS satellites?
+
+    gpsdb.commit()
+    db.close()
 
 # def qry_get_last_24hrs(starttime, constellation_label):
 #     gpsdb = sqlite3.connect(k.sat_database)

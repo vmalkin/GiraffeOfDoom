@@ -19,6 +19,6 @@ interCharTimeout = None
 timeformat = '%Y-%m-%d %H:%M:%S'
 sat_database = "gps.db"
 
-sensor = "UBlox"
+sensor = "UBlox Neo 7M"
 dir_images = "images"
 dir_logfiles = "logfiles"

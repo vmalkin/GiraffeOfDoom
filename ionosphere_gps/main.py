@@ -88,6 +88,10 @@ if __name__ == "__main__":
     if os.path.isfile(k.sat_database) is False:
         print("No database file, initialising")
         mgr_database.database_create()
+
+        # init with default values in tables.
+        mgr_database.database_initialise()
+
     if os.path.isfile(k.sat_database) is True:
         print("Database file exists")
 
@@ -118,15 +122,12 @@ if __name__ == "__main__":
         csv_line = re.split(r'[,|*]', line)
         msg_id = csv_line[0]
 
-        gga_hdop = None
-        gga_satnum = None
         comport = com
 
         if parse_msg_id(msg_id) is True :
             # print(csv_line)
-            if msg_id == '$GPGGA':
-                gga_hdop = csv_line[8]
-                gga_satnum = csv_line[7]
+            # if msg_id == '$GPGGA':
+            #     pass
 
             if msg_id == '$GPGSV':
                 sat_obsv = process_gsv(csv_line)
