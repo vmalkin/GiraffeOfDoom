@@ -6,6 +6,7 @@ import os
 import logging
 from threading import Thread
 import re
+import standard_stuff
 from datetime import datetime
 from calendar import timegm
 import mgr_database
@@ -43,18 +44,6 @@ def get_rounded_posix_():
     t = time.time()
     t = math.floor(t)
     return t
-
-
-def posix2utc(posixtime, timeformat):
-    # '%Y-%m-%d %H:%M'
-    utctime = datetime.utcfromtimestamp(int(posixtime)).strftime(timeformat)
-    return utctime
-
-
-def utc2posix(utcstring, timeformat):
-    utc_time = time.strptime(utcstring, timeformat)
-    epoch_time = timegm(utc_time)
-    return epoch_time
 
 
 def create_directory(directory):

@@ -51,19 +51,22 @@ def database_initialise():
     values = ['gps']
     db.execute('insert into constellation(constellation_id) values (?);', values)
 
-    # for GPS satellites
+    # for GPS satellites, usually only numbered 1 to 32
     for i in range(1, 33):
-        index = str(i)
-        if len(index) == 1:
-            index = '0' + index
-        id_num = 'GP' + index
+        id_num = convert_satID(i, 'GP')
         values = [id_num, 'gps']
         db.execute('insert into satellite(sat_id, constellation_id) values (?, ?);', values)
-
     # for GLONASS satellites?
 
     gpsdb.commit()
     db.close()
+
+def convert_satID(idNum, constellation):
+    index = str(idNum)
+    if len(index) == 1:
+        index = '0' + index
+    id_num = constellation + index
+    return id_num
 
 # def qry_get_last_24hrs(starttime, constellation_label):
 #     gpsdb = sqlite3.connect(k.sat_database)
