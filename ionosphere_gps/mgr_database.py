@@ -12,25 +12,33 @@ def database_create():
     db.execute('drop table if exists observations;')
     db.execute('drop table if exists gga;')
 
-
     db.execute('create table constellation ('
-               'foo text,'
-               'bar integer'
+               'constellation_id text primary key'
                ');')
 
-    db.execute('create table satellites ('
-               'foo text,'
-               'bar integer'
+    db.execute('create table satellite('
+               'sat_id text primary key,'
+               'constellation_id text foreign key,'
+               'foreign key (constellation_id) references constellation(constellation_id)'
                ');')
 
     db.execute('create table observations ('
-               'foo text,'
-               'bar integer'
+               'sat_id text foreign key,'
+               'posixtime integer,'
+               'alt integer,'
+               'az integer,'
+               'snr integer,'
+               'foreign key (sat_id) references satellite(sat_id)'
                ');')
 
     db.execute('create table gga ('
-               'foo text,'
-               'bar integer'
+               'constellation_id text,'
+               'posixtime integer,'
+               'lat real,'
+               'long real,'
+               'sats_used integer,'
+               'hdop real,'
+               'foreign key (constellation_id) references constellation(constellation_id)'
                ');')
 
     gpsdb.commit()

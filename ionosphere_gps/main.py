@@ -85,19 +85,19 @@ def process_gsv(csv_line):
 if __name__ == "__main__":
     # initial setup including satellite lists
     # if database not exists, create database
-    # if os.path.isfile(k.sat_database) is False:
-    #     print("No database file, initialising")
-    #     mgr_database.database_create()
-    # if os.path.isfile(k.sat_database) is True:
-    #     print("Database file exists")
+    if os.path.isfile(k.sat_database) is False:
+        print("No database file, initialising")
+        mgr_database.database_create()
+    if os.path.isfile(k.sat_database) is True:
+        print("Database file exists")
 
     # if os.path.isdir(k.dir_logfiles) is False:
     #     print("Creating log file directory...")
     #     create_directory(k.dir_logfiles)
-    #
-    # if os.path.isdir(k.dir_images) is False:
-    #     print("Creating image file directory...")
-    #     create_directory(k.dir_images)
+
+    if os.path.isdir(k.dir_images) is False:
+        print("Creating image file directory...")
+        create_directory(k.dir_images)
 
     # queryprocessor = QueryProcessor()
     # queryprocessor.start()
