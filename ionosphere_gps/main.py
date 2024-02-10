@@ -96,7 +96,7 @@ if __name__ == "__main__":
     # queryprocessor.start()
 
 
-    com = mgr_comport.SerialManager(k.portName, k.baudrate, k.bytesize, k.parity, k.stopbits, k.timeout,
+    com = mgr_comport.SerialManager(k.comport, k.baudrate, k.bytesize, k.parity, k.stopbits, k.timeout,
                                     k.xonxoff,
                                     k.rtscts, k.writeTimeout, k.dsrdtr, k.interCharTimeout)
 

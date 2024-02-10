@@ -16,7 +16,7 @@ def database_create():
 
     db.execute('create table satellite('
                'sat_id text primary key,'
-               'constellation_id text foreign key,'
+               'constellation_id text,'
                'foreign key (constellation_id) references constellation(constellation_id)'
                ');')
 
