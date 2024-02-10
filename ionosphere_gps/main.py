@@ -114,11 +114,11 @@ if __name__ == "__main__":
         comport = com
 
         if parse_msg_id(msg_id) is True :
-            # print(csv_line)
             # if msg_id == '$GPGGA':
             #     pass
 
             if msg_id == '$GPGSV':
+                print(csv_line)
                 sat_obsv = process_gsv(csv_line)
 
         # ENTER into database
