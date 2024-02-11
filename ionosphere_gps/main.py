@@ -68,14 +68,24 @@ def parse_msg_id(msgid):
 
 
 def process_gsv(gsv_data):
-    # trim gsv data to just satellite information
-    for item in gsv_data:
-        posixtime = item[0]
-        satdata = item[5:-1]
-        returndata = []
-        for i in range(0, len(satdata), 4):
-            returndata.append(satdata[i: i + 4])
-        mgr_database.db_gpgsv_add(posixtime, returndata)
+    mgr_database.db_gpgsv_add(gsv_data)
+
+def shorten_gsv(csv_line):
+    # only leave id, alt, az, snr data for each satellite
+    satdata = csv_line[4:-1]
+    return satdata
+
+
+def add_satellites(gsv_collection, current_posixtime, gsv):
+    if len(gsv) % 4 == 0:
+        for i in range(0, len(gsv), 4):
+            parsed_data = []
+            parsed_data.append(current_posixtime)
+            single_data = gsv[i: i + 4]
+            for item in single_data:
+                parsed_data.append(item)
+            gsv_collection.append(parsed_data)
+    return  gsv_collection
 
 
 if __name__ == "__main__":
@@ -91,17 +101,12 @@ if __name__ == "__main__":
     if os.path.isfile(k.sat_database) is True:
         print("Database file exists")
 
-    # if os.path.isdir(k.dir_logfiles) is False:
-    #     print("Creating log file directory...")
-    #     create_directory(k.dir_logfiles)
-
     if os.path.isdir(k.dir_images) is False:
         print("Creating image file directory...")
         create_directory(k.dir_images)
 
     # queryprocessor = QueryProcessor()
     # queryprocessor.start()
-
 
     com = mgr_comport.SerialManager(k.comport, k.baudrate, k.bytesize, k.parity, k.stopbits, k.timeout,
                                     k.xonxoff,
@@ -122,12 +127,12 @@ if __name__ == "__main__":
         if parse_msg_id(msg_id) is True :
             # if msg_id == '$GPGGA':
             if msg_id == '$GPGSV':
-                csv_line.insert(0, current_posixtime)
-                gsv_collection.append(csv_line)
+                gsv = shorten_gsv(csv_line)
+                gsv_collection = add_satellites(gsv_collection, current_posixtime, gsv)
                 # Once our collection of gsv data is large enough, process.
                 # This delay reduces the risk of the database being locked for charting
                 if len(gsv_collection) >= 100:
-                    print(len(gsv_collection), gsv_collection)
+                    print(gsv_collection)
                     process_gsv(gsv_collection)
                     gsv_collection = []
         # ENTER into database

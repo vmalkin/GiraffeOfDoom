@@ -61,19 +61,23 @@ def db_initialise():
     gpsdb.commit()
     db.close()
 
-def db_gpgsv_add(posixtime, gsvdata):
+def db_gpgsv_add(gsvdata):
+    # this method expects an array with each element in the array being:
+    # [1707638483, '11', '01', '201', ''] (posix, satID, alt, az, snr)
     gpsdb = sqlite3.connect(k.sat_database)
     db = gpsdb.cursor()
     for item in gsvdata:
-        sat_id = item[0]
-        alt = item[1]
-        az  = item[2]
-        snr = item[3]
-        values = [sat_id, int(posixtime), alt, az, snr]
+        posixtime = item[0]
+        sat_id = item[1]
+        alt = item[2]
+        az  = item[3]
+        snr = item[4]
+        values = [sat_id, posixtime, alt, az, snr]
         db.execute('insert into observations(sat_id, posixtime, alt, az, snr) '
                    'values (?, ?, ?, ?, ?);', values)
     gpsdb.commit()
     db.close()
+    print("GSV data added")
 
 def convert_satID(idNum, constellation):
     index = str(idNum)
