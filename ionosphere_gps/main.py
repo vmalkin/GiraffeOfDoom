@@ -131,7 +131,7 @@ if __name__ == "__main__":
                 gsv_collection = add_satellites(gsv_collection, current_posixtime, gsv)
                 # Once our collection of gsv data is large enough, process.
                 # This delay reduces the risk of the database being locked for charting
-                if len(gsv_collection) >= 100:
+                if len(gsv_collection) >= 600:
                     print(gsv_collection)
                     process_gsv(gsv_collection)
                     gsv_collection = []

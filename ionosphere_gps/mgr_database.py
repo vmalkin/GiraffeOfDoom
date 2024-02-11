@@ -77,7 +77,7 @@ def db_gpgsv_add(gsvdata):
                    'values (?, ?, ?, ?, ?);', values)
     gpsdb.commit()
     db.close()
-    print("GSV data added")
+    print(len(gsvdata), " records. GSV data added")
 
 def convert_satID(idNum, constellation):
     index = str(idNum)
