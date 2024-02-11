@@ -1,4 +1,6 @@
 import sqlite3
+import time
+
 import constants as k
 
 def db_create():
@@ -53,13 +55,14 @@ def db_initialise():
 
     # for GPS satellites, usually only numbered 1 to 32
     for i in range(1, 33):
-        id_num = convert_satID(i, 'GP')
+        id_num = convert_sat_id(i, 'GP')
         values = [id_num, 'gps']
         db.execute('insert into satellite(sat_id, constellation_id) values (?, ?);', values)
     # for GLONASS satellites?
 
     gpsdb.commit()
     db.close()
+
 
 def db_gpgsv_add(gsvdata):
     # this method expects an array with each element in the array being:
@@ -69,9 +72,9 @@ def db_gpgsv_add(gsvdata):
     for item in gsvdata:
         posixtime = item[0]
         # sat id must match IDs entered in satellites table.
-        sat_id = convert_satID(item[1], 'GP')
+        sat_id = convert_sat_id(item[1], 'GP')
         alt = item[2]
-        az  = item[3]
+        az = item[3]
         snr = item[4]
         values = [sat_id, posixtime, alt, az, snr]
         db.execute('insert into observations(sat_id, posixtime, alt, az, snr) '
@@ -80,8 +83,22 @@ def db_gpgsv_add(gsvdata):
     db.close()
 
 
-def convert_satID(idNum, constellation):
-    index = str(idNum)
+def db_get_24hr_gsv():
+    returnarray = []
+    starttime = time.time() - 86400
+    values = [starttime]
+    gpsdb = sqlite3.connect(k.sat_database)
+    db = gpsdb.cursor()
+    result = db.execute('select * from observations where posixtime > ? '
+                        'order by posixtime asc', values)
+    for item in result:
+        returnarray.append(item)
+    db.close()
+    return returnarray
+
+
+def convert_sat_id(id_num, constellation):
+    index = str(id_num)
     if len(index) == 1:
         index = '0' + index
     id_num = constellation + index
