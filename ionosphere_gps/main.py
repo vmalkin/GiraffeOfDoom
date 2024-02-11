@@ -73,7 +73,6 @@ def process_gsv(gsv_data):
         posixtime = item[0]
         satdata = item[5:-1]
         returndata = []
-        print("  ")
         for i in range(0, len(satdata), 4):
             returndata.append(satdata[i: i + 4])
         mgr_database.db_gpgsv_add(posixtime, returndata)
@@ -125,7 +124,9 @@ if __name__ == "__main__":
             if msg_id == '$GPGSV':
                 csv_line.insert(0, current_posixtime)
                 gsv_collection.append(csv_line)
-                if len(gsv_collection) >= 50:
+                # Once our collection of gsv data is large enough, process.
+                # This delay reduces the risk of the database being locked for charting
+                if len(gsv_collection) >= 100:
                     print(len(gsv_collection), gsv_collection)
                     process_gsv(gsv_collection)
                     gsv_collection = []

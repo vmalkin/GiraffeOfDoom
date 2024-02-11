@@ -69,11 +69,9 @@ def db_gpgsv_add(posixtime, gsvdata):
         alt = item[1]
         az  = item[2]
         snr = item[3]
-
         values = [sat_id, int(posixtime), alt, az, snr]
         db.execute('insert into observations(sat_id, posixtime, alt, az, snr) '
                    'values (?, ?, ?, ?, ?);', values)
-        # print(values)
     gpsdb.commit()
     db.close()
 
