@@ -21,7 +21,7 @@ def db_create():
                ');')
 
     db.execute('create table observations ('
-               'sat_id text foreign key,'
+               'sat_id text,'
                'posixtime integer,'
                'alt integer,'
                'az integer,'
@@ -62,13 +62,19 @@ def db_initialise():
     db.close()
 
 def db_gpgsv_add(posixtime, gsvdata):
-    # gpsdb = sqlite3.connect(k.sat_database)
-    # db = gpsdb.cursor()
+    gpsdb = sqlite3.connect(k.sat_database)
+    db = gpsdb.cursor()
     for item in gsvdata:
-        print(posixtime, item)
-    #     db.execute('insert into constellation(constellation_id) values (?);', item)
-    # gpsdb.commit()
-    # db.close()
+        sat_id = item[0]
+        alt = item[1]
+        az  = item[2]
+        snr = item[3]
+
+        values = [sat_id, int(posixtime), alt, az, snr]
+        db.execute('insert into observations(sat_id, posixtime, alt, az, snr) '
+                   'values (?, ?, ?, ?, ?);', values)
+    gpsdb.commit()
+    db.close()
 
 def convert_satID(idNum, constellation):
     index = str(idNum)

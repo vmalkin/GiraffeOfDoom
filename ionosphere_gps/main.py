@@ -108,6 +108,7 @@ if __name__ == "__main__":
 
     while True:
         current_posixtime = get_rounded_posix_()
+        gsv_collection = []
         # Get com data
         # ['$GPGSV', '3', '1', '12', '05', '16', '108', '31', '10', '29', '278', '17', '13', '29', '132', '39', '15', '58', '110', '32', '7B']
         # ['$GPRMC', '002841.00', 'A', '4551.95891', 'S', '17031.19120', 'E', '0.091', '', '080224', '', '', 'D', '65']
@@ -117,10 +118,18 @@ if __name__ == "__main__":
         csv_line = re.split(r'[,|*]', line)
         msg_id = csv_line[0]
 
+        # if a valid NMEA message ID
         if parse_msg_id(msg_id) is True :
             # if msg_id == '$GPGGA':
             #     pass
             if msg_id == '$GPGSV':
-                sat_obsv = process_gsv(current_posixtime, csv_line)
+                csv_line.insert(0, current_posixtime)
+                gsv_collection.append(csv_line)
+                print(len(gsv_collection))
+                #
+                # if current_posixtime % 10 == 0:
+                #     print("  ")
 
+                    # process_gsv(current_posixtime, csv_line)
+                    # gsv_collection = []
         # ENTER into database
