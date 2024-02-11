@@ -7,14 +7,15 @@ import logging
 from threading import Thread
 import re
 import standard_stuff
-from datetime import datetime
-from calendar import timegm
+import random
+# from datetime import datetime
+# from calendar import timegm
 import mgr_database
 
 
 errorloglevel = logging.ERROR
 logging.basicConfig(filename="gnss.log", format='%(asctime)s %(message)s', level=errorloglevel)
-
+random.seed()
 # readings below this altitude for satellites may be distorted due to multi-modal reflection
 optimum_altitude = 25
 
@@ -37,7 +38,9 @@ class QueryProcessor(Thread):
             # mgr_plot.wrapper(result, "GPS")
 
             print("******************************* End Query Processor")
-            time.sleep((1800))
+            wiggle = random.randint(-180, 180)
+            sleeptime = (60 * 15) + wiggle
+            time.sleep((sleeptime))
 
 
 def get_rounded_posix_():
@@ -105,8 +108,8 @@ if __name__ == "__main__":
         print("Creating image file directory...")
         create_directory(k.dir_images)
 
-    # queryprocessor = QueryProcessor()
-    # queryprocessor.start()
+    queryprocessor = QueryProcessor()
+    queryprocessor.start()
 
     com = mgr_comport.SerialManager(k.comport, k.baudrate, k.bytesize, k.parity, k.stopbits, k.timeout,
                                     k.xonxoff,
