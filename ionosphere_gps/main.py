@@ -132,7 +132,8 @@ if __name__ == "__main__":
                 # Once our collection of gsv data is large enough, process.
                 # This delay reduces the risk of the database being locked for charting
                 if len(gsv_collection) >= 600:
-                    print(gsv_collection)
                     process_gsv(gsv_collection)
                     gsv_collection = []
+                    now = standard_stuff.posix2utc(current_posixtime, '%Y-%m-%d %H:%M')
+                    print(now, "GSV data added.")
         # ENTER into database
