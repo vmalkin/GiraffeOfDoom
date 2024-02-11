@@ -68,7 +68,8 @@ def db_gpgsv_add(gsvdata):
     db = gpsdb.cursor()
     for item in gsvdata:
         posixtime = item[0]
-        sat_id = item[1]
+        # sat id must match IDs entered in satellites table.
+        sat_id = convert_satID(item[1], 'GP')
         alt = item[2]
         az  = item[3]
         snr = item[4]
