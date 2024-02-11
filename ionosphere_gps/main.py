@@ -42,6 +42,7 @@ class QueryProcessor(Thread):
             print("******************************* End Query Processor")
             wiggle = random.randint(-180, 180)
             sleeptime = (60 * 15) + wiggle
+            print('Next plot in ' + str(sleeptime) + ' seconds.')
             time.sleep((sleeptime))
 
 
