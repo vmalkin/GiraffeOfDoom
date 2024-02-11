@@ -1,7 +1,7 @@
 import sqlite3
 import constants as k
 
-def database_create():
+def db_create():
     # create database!
     gpsdb = sqlite3.connect(k.sat_database)
     db = gpsdb.cursor()
@@ -43,7 +43,7 @@ def database_create():
     db.close()
 
 
-def database_initialise():
+def db_initialise():
     # populate database with initial values
     gpsdb = sqlite3.connect(k.sat_database)
     db = gpsdb.cursor()
@@ -60,6 +60,15 @@ def database_initialise():
 
     gpsdb.commit()
     db.close()
+
+def db_gpgsv_add(posixtime, gsvdata):
+    # gpsdb = sqlite3.connect(k.sat_database)
+    # db = gpsdb.cursor()
+    for item in gsvdata:
+        print(posixtime, item)
+    #     db.execute('insert into constellation(constellation_id) values (?);', item)
+    # gpsdb.commit()
+    # db.close()
 
 def convert_satID(idNum, constellation):
     index = str(idNum)

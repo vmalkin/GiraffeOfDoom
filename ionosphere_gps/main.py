@@ -67,8 +67,14 @@ def parse_msg_id(msgid):
     return id_ok
 
 
-def process_gsv(csv_line):
-    pass
+def process_gsv(posixtime, csv_line):
+    # trim gsv data to just satellite information
+    satdata = csv_line[4:-1]
+    returndata = []
+    print("  ")
+    for i in range(0, len(satdata), 4):
+        returndata.append(satdata[i: i + 4])
+    mgr_database.db_gpgsv_add(posixtime, returndata)
 
 
 if __name__ == "__main__":
@@ -76,10 +82,10 @@ if __name__ == "__main__":
     # if database not exists, create database
     if os.path.isfile(k.sat_database) is False:
         print("No database file, initialising")
-        mgr_database.database_create()
+        mgr_database.db_create()
 
         # init with default values in tables.
-        mgr_database.database_initialise()
+        mgr_database.db_initialise()
 
     if os.path.isfile(k.sat_database) is True:
         print("Database file exists")
@@ -111,14 +117,10 @@ if __name__ == "__main__":
         csv_line = re.split(r'[,|*]', line)
         msg_id = csv_line[0]
 
-        comport = com
-
         if parse_msg_id(msg_id) is True :
             # if msg_id == '$GPGGA':
             #     pass
-
             if msg_id == '$GPGSV':
-                print(csv_line)
-                sat_obsv = process_gsv(csv_line)
+                sat_obsv = process_gsv(current_posixtime, csv_line)
 
         # ENTER into database
