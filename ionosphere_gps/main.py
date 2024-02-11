@@ -67,14 +67,16 @@ def parse_msg_id(msgid):
     return id_ok
 
 
-def process_gsv(posixtime, csv_line):
+def process_gsv(gsv_data):
     # trim gsv data to just satellite information
-    satdata = csv_line[4:-1]
-    returndata = []
-    print("  ")
-    for i in range(0, len(satdata), 4):
-        returndata.append(satdata[i: i + 4])
-    mgr_database.db_gpgsv_add(posixtime, returndata)
+    for item in gsv_data:
+        posixtime = item[0]
+        satdata = item[5:-1]
+        returndata = []
+        print("  ")
+        for i in range(0, len(satdata), 4):
+            returndata.append(satdata[i: i + 4])
+        mgr_database.db_gpgsv_add(posixtime, returndata)
 
 
 if __name__ == "__main__":
@@ -105,10 +107,9 @@ if __name__ == "__main__":
     com = mgr_comport.SerialManager(k.comport, k.baudrate, k.bytesize, k.parity, k.stopbits, k.timeout,
                                     k.xonxoff,
                                     k.rtscts, k.writeTimeout, k.dsrdtr, k.interCharTimeout)
-
+    gsv_collection = []
     while True:
         current_posixtime = get_rounded_posix_()
-        gsv_collection = []
         # Get com data
         # ['$GPGSV', '3', '1', '12', '05', '16', '108', '31', '10', '29', '278', '17', '13', '29', '132', '39', '15', '58', '110', '32', '7B']
         # ['$GPRMC', '002841.00', 'A', '4551.95891', 'S', '17031.19120', 'E', '0.091', '', '080224', '', '', 'D', '65']
@@ -121,15 +122,11 @@ if __name__ == "__main__":
         # if a valid NMEA message ID
         if parse_msg_id(msg_id) is True :
             # if msg_id == '$GPGGA':
-            #     pass
             if msg_id == '$GPGSV':
                 csv_line.insert(0, current_posixtime)
                 gsv_collection.append(csv_line)
-                print(len(gsv_collection))
-                #
-                # if current_posixtime % 10 == 0:
-                #     print("  ")
-
-                    # process_gsv(current_posixtime, csv_line)
-                    # gsv_collection = []
+                if len(gsv_collection) >= 50:
+                    print(len(gsv_collection), gsv_collection)
+                    process_gsv(gsv_collection)
+                    gsv_collection = []
         # ENTER into database
