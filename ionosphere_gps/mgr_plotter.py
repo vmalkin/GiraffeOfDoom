@@ -9,6 +9,7 @@ def basicplot(plotdata):
         alt.append(item[2])
         az.append(item[3])
 
-    data = go.Scatter(x=az, y=alt)
+    data = go.Scatter(x=az, y=alt, mode='markers')
     fig = go.Figure(data)
     fig.show()
+
