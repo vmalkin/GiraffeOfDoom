@@ -90,7 +90,7 @@ def db_get_24hr_gsv():
     gpsdb = sqlite3.connect(k.sat_database)
     db = gpsdb.cursor()
     result = db.execute('select * from observations where posixtime > ? '
-                        'order by posixtime asc', values)
+                        'order by sat_id asc, posixtime asc ', values)
     for item in result:
         returnarray.append(item)
     db.close()

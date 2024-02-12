@@ -134,6 +134,7 @@ if __name__ == "__main__":
             # if msg_id == '$GPGGA':
             if msg_id == '$GPGSV':
                 gsv = shorten_gsv(csv_line)
+                # print(gsv)
                 gsv_collection = add_satellites(gsv_collection, current_posixtime, gsv)
                 # Once our collection of gsv data is large enough, process.
                 # This delay reduces the risk of the database being locked for charting
