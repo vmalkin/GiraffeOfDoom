@@ -17,7 +17,7 @@ now = time.time()
 # mgr_plotter.basicplot(data)
 
 query_result = mgr_database.db_get_24hr_gsv()
-mgr_plotter.basicplot(query_result)
+mgr_plotter.polarplot_paths(query_result)
 # with open('data.csv', 'w') as d:
 #     for line in query_result:
 #         dp = ''
