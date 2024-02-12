@@ -1,3 +1,5 @@
+import math
+
 from plotly import graph_objects as go
 import random
 
@@ -37,16 +39,19 @@ def polarplot_paths(plotdata):
                       bgcolor="#101010")
     rad_data = []
     theta_data = []
+    snr_data = []
     label_old = plotdata[0][0]
     for item in plotdata:
         label = item[0]
         r = item[2]
         th = item[3]
+        snr = item[4]
         rad_data.append(r)
         theta_data.append(th)
+        snr_data.append(snr)
         if label_old != label:
             clr = '#' + str(random.randint(10, 99)) + str(random.randint(10, 99)) + str(random.randint(10, 99))
-            fig.add_scatterpolargl(r=rad_data, theta=theta_data, mode='markers', marker=dict(color=clr, size=5))
+            fig.add_scatterpolargl(r=rad_data, theta=theta_data, mode='markers', marker=dict(color=clr, size=4))
             label_old = label
             rad_data = []
             theta_data = []
