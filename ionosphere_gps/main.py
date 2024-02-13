@@ -44,7 +44,8 @@ class QueryProcessor(Thread):
 
             print('latest_sats.txt updated with latest sighting time')
             query_result = mgr_database.db_get_latest_sats()
-            with open('latest_sats.txt', 'w') as l:
+            savefile = k.dir_images + os.sep + 'latest_sats.txt'
+            with open(savefile, 'w') as l:
                 for item in query_result:
                     name = item[0]
                     date = standard_stuff.posix2utc(item[1], '%Y-%m-%d %H:%M')
