@@ -27,7 +27,7 @@ def basicplot(plotdata):
 
 def polarplot_paths(plotdata):
     fig = go.Figure()
-    fig.update_layout(width=900, height=900, showlegend=False)
+    fig.update_layout(width=1200, height=1200, showlegend=False)
     fig.update_layout(polar=dict(angularaxis=dict(rotation=-90, direction="counterclockwise", gridcolor="#505050", color="#000000")))
     fig.update_polars(radialaxis_tickangle=270, radialaxis_angle=270,
                       radialaxis=dict(autorange="reversed", color="#909090", gridcolor="#505050", range=[0, 90]),
@@ -45,10 +45,12 @@ def polarplot_paths(plotdata):
         theta_data.append(th)
         snr_data.append(snr)
         if label_old != label:
+
             clr = '#' + str(random.randint(10, 99)) + str(random.randint(10, 99)) + str(random.randint(10, 99))
             # fig.add_scatterpolargl(r=rad_data, theta=theta_data, mode='markers', marker=dict(color=clr, size=snr_data))
             fig.add_scatterpolargl(r=rad_data, theta=theta_data, mode='markers', marker=dict(color=clr, size=4))
-            fig.add_scatterpolargl(r=[r], theta=[th], mode='markers', marker=dict(color='#ffffff', size=10))
+            fig.add_scatterpolargl(r=[r], theta=[th], mode='markers+text', text=label_old,
+                                   textfont=dict(color="#ffffff"),marker=dict(color='#ffffff', size=1))
             label_old = label
             rad_data = []
             theta_data = []

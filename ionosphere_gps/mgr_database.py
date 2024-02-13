@@ -101,7 +101,7 @@ def db_get_snr(timestart):
     gpsdb = sqlite3.connect(k.sat_database)
     db = gpsdb.cursor()
     result = db.execute('select posixtime, snr from observations where posixtime > ? '
-                        'and alt > 1;', values)
+                        'and alt > 20;', values)
     for item in result:
         returnarray.append(item)
     db.close()
