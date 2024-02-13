@@ -32,7 +32,7 @@ class QueryProcessor(Thread):
         # put query data_s4 processing stuff here.
         while True:
             print("***************************** Start Query Processor")
-            last_6_hours = time.time() - (60 * 60 * 6)
+            last_6_hours = time.time() - (60 * 60 * 1)
             query_result = mgr_database.db_get_gsv(last_6_hours)
             mgr_plotter.polarplot_paths(query_result)
 

@@ -8,7 +8,6 @@ random.seed()
 
 def basicplot(plotdata):
     # ('gp01', now + 1, 20, 100, 34)
-    print('Perform plot')
     data = go.Scattergl(mode='markers')
     fig = go.Figure(data)
     fig.update_layout(width=3600, height=900, plot_bgcolor='black')
@@ -50,7 +49,7 @@ def polarplot_paths(plotdata):
             # fig.add_scatterpolargl(r=rad_data, theta=theta_data, mode='markers', marker=dict(color=clr, size=snr_data))
             fig.add_scatterpolargl(r=rad_data, theta=theta_data, mode='markers', marker=dict(color=clr, size=4))
             fig.add_scatterpolargl(r=[r], theta=[th], mode='markers+text', text=label_old,
-                                   textfont=dict(color="#ffffff"),marker=dict(color='#ffffff', size=1))
+                                   textfont=dict(color="#ff7700"),marker=dict(color='#ff7700', size=1))
             label_old = label
             rad_data = []
             theta_data = []
