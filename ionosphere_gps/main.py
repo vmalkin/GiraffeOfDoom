@@ -40,6 +40,15 @@ class QueryProcessor(Thread):
             query_result = mgr_database.db_get_snr(start)
             mgr_plotter.basicplot(query_result)
 
+            query_result = mgr_database.db_get_latest_sats()
+            with open('latest_sats.txt', 'w') as l:
+                for item in query_result:
+                    name = item[0]
+                    date = standard_stuff.posix2utc(item[1], '%Y-%m-%d %H:%M')
+                    dp = name + ',' + date + '\n'
+                    l.write(dp)
+            l.close()
+
 
             # Get data for each constellation.
             # result = mgr_database.qry_get_last_24hrs(start_time, "GPGGA")
@@ -94,9 +103,11 @@ def add_satellites(gsv_collection, current_posixtime, gsv):
             parsed_data = []
             parsed_data.append(current_posixtime)
             single_data = gsv[i: i + 4]
+            # print(single_data)
             for item in single_data:
                 parsed_data.append(item)
             gsv_collection.append(parsed_data)
+    # print(" ")
     return  gsv_collection
 
 
@@ -140,7 +151,7 @@ if __name__ == "__main__":
             # if msg_id == '$GPGGA':
             if msg_id == '$GPGSV':
                 gsv = shorten_gsv(csv_line)
-                # print(gsv)
+                # print(line)
                 gsv_collection = add_satellites(gsv_collection, current_posixtime, gsv)
                 # Once our collection of gsv data is large enough, process.
                 # This delay reduces the risk of the database being locked for charting

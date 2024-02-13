@@ -107,6 +107,15 @@ def db_get_snr(timestart):
     db.close()
     return returnarray
 
+def db_get_latest_sats():
+    returnarray = []
+    gpsdb = sqlite3.connect(k.sat_database)
+    db = gpsdb.cursor()
+    result = db.execute('select sat_id, max(posixtime) from observations group by sat_id;')
+    for item in result:
+        returnarray.append(item)
+    db.close()
+    return returnarray
 
 def convert_sat_id(id_num, constellation):
     index = str(id_num)
