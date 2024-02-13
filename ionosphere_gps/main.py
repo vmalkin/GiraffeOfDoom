@@ -32,14 +32,17 @@ class QueryProcessor(Thread):
         # put query data_s4 processing stuff here.
         while True:
             print("***************************** Start Query Processor")
+            print('Plot last hour GPS tracks')
             last_6_hours = time.time() - (60 * 60 * 1)
             query_result = mgr_database.db_get_gsv(last_6_hours)
             mgr_plotter.polarplot_paths(query_result)
 
+            print('Plot SNR')
             start = time.time() - (60 * 60 * 24)
             query_result = mgr_database.db_get_snr(start)
             mgr_plotter.basicplot(query_result)
 
+            print('latest_sats.txt updated with latest sighting time')
             query_result = mgr_database.db_get_latest_sats()
             with open('latest_sats.txt', 'w') as l:
                 for item in query_result:
