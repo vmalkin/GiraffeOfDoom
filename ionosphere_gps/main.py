@@ -32,8 +32,14 @@ class QueryProcessor(Thread):
         # put query data_s4 processing stuff here.
         while True:
             print("***************************** Start Query Processor")
-            query_result = mgr_database.db_get_24hr_gsv()
+            last_6_hours = time.time() - (60 * 60 * 6)
+            query_result = mgr_database.db_get_gsv(last_6_hours)
             mgr_plotter.polarplot_paths(query_result)
+
+            start = time.time() - (60 * 60 * 24)
+            query_result = mgr_database.db_get_snr(start)
+            mgr_plotter.basicplot(query_result)
+
 
             # Get data for each constellation.
             # result = mgr_database.qry_get_last_24hrs(start_time, "GPGGA")

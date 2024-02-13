@@ -1,38 +1,33 @@
 import math
-
 from plotly import graph_objects as go
 import random
+import standard_stuff
 
 random.seed()
 
 
-# def basicplot(plotdata):
-#     # ('gp01', now + 1, 20, 100, 34)
-#     print('Perform plot')
-#     data = go.Scattergl(mode='markers')
-#     fig = go.Figure(data)
-#     fig.update_layout(width=3600, height=900)
-#
-#     alt_data = []
-#     az_data = []
-#     label_old = plotdata[0][0]
-#     for item in plotdata:
-#         label = item[0]
-#         alt = item[2]
-#         az = item[3]
-#         alt_data.append(alt)
-#         az_data.append(az)
-#         if label_old != label:
-#             clr = '#' + str(random.randint(10, 99)) + str(random.randint(10, 99)) + str(random.randint(10, 99))
-#             fig.add_scattergl(x=az_data, y=alt_data, mode='markers', marker=dict(color=clr, size=10))
-#             label_old = label
-#             alt_data = []
-#             az_data = []
-#     fig.write_image('basicplot.png')
+def basicplot(plotdata):
+    # ('gp01', now + 1, 20, 100, 34)
+    print('Perform plot')
+    data = go.Scattergl(mode='markers')
+    fig = go.Figure(data)
+    fig.update_layout(width=3600, height=900, plot_bgcolor='black')
+
+    timedata = []
+    snr_data = []
+
+    for item in plotdata:
+        pxtime = standard_stuff.posix2utc(item[0], '%Y-%m-%d %H:%M')
+        snr = item[1]
+        timedata.append(pxtime)
+        snr_data.append(snr)
+
+    fig.add_scattergl(x=timedata, y=snr_data, mode='markers', marker=dict(color='#ffff00', size=5))
+    fig.write_image('basicplot.png')
 
 def polarplot_paths(plotdata):
     fig = go.Figure()
-    fig.update_layout(width=900, height=900)
+    fig.update_layout(width=900, height=900, showlegend=False)
     fig.update_layout(polar=dict(angularaxis=dict(rotation=-90, direction="counterclockwise", gridcolor="#505050", color="#000000")))
     fig.update_polars(radialaxis_tickangle=270, radialaxis_angle=270,
                       radialaxis=dict(autorange="reversed", color="#909090", gridcolor="#505050", range=[0, 90]),
@@ -41,18 +36,21 @@ def polarplot_paths(plotdata):
     theta_data = []
     snr_data = []
     label_old = plotdata[0][0]
-    for item in plotdata:
-        label = item[0]
-        r = item[2]
-        th = item[3]
-        snr = item[4]
+    for i in range(0, len(plotdata)):
+        label = plotdata[i][0]
+        r = plotdata[i][2]
+        th = plotdata[i][3]
+        snr = plotdata[i][4]
         rad_data.append(r)
         theta_data.append(th)
         snr_data.append(snr)
         if label_old != label:
             clr = '#' + str(random.randint(10, 99)) + str(random.randint(10, 99)) + str(random.randint(10, 99))
+            # fig.add_scatterpolargl(r=rad_data, theta=theta_data, mode='markers', marker=dict(color=clr, size=snr_data))
             fig.add_scatterpolargl(r=rad_data, theta=theta_data, mode='markers', marker=dict(color=clr, size=4))
+            fig.add_scatterpolargl(r=[r], theta=[th], mode='markers', marker=dict(color='#ffffff', size=10))
             label_old = label
             rad_data = []
             theta_data = []
     fig.write_image('polar_tracks.png')
+

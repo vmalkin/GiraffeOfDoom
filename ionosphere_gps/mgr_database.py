@@ -83,14 +83,25 @@ def db_gpgsv_add(gsvdata):
     db.close()
 
 
-def db_get_24hr_gsv():
+def db_get_gsv(timestart):
     returnarray = []
-    starttime = time.time() - 86400
-    values = [starttime]
+    values = [timestart]
     gpsdb = sqlite3.connect(k.sat_database)
     db = gpsdb.cursor()
     result = db.execute('select * from observations where posixtime > ? '
                         'order by sat_id asc, posixtime asc ', values)
+    for item in result:
+        returnarray.append(item)
+    db.close()
+    return returnarray
+
+def db_get_snr(timestart):
+    returnarray = []
+    values = [timestart]
+    gpsdb = sqlite3.connect(k.sat_database)
+    db = gpsdb.cursor()
+    result = db.execute('select posixtime, snr from observations where posixtime > ? '
+                        'and alt > 1;', values)
     for item in result:
         returnarray.append(item)
     db.close()

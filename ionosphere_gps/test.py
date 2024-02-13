@@ -2,26 +2,11 @@ import mgr_database
 import mgr_plotter
 import time
 
-now = time.time()
+# last_6_hours = time.time() - (60*60*12)
+# query_result = mgr_database.db_get_gsv(last_6_hours)
+# mgr_plotter.polarplot_paths(query_result)
 
-# data =[
-#     ('gp01', now + 1, 20, 100, 34),
-#     ('gp01', now + 2, 20, 100, 33),
-#     ('gp01', now + 3, 21, 101, 32),
-#     ('gp01', now + 4, 21, 102, 31),
-#     ('gp01', now + 5, 23, 102, 32),
-#     ('gp01', now + 6, 24, 103, 29),
-#     ('gp01', now + 7, 24, 105, 26)
-# ]
-#
-# mgr_plotter.basicplot(data)
+start = time.time() - (60*60*24)
+query_result = mgr_database.db_get_snr(start)
+mgr_plotter.basicplot(query_result)
 
-query_result = mgr_database.db_get_24hr_gsv()
-mgr_plotter.polarplot_paths(query_result)
-# with open('data.csv', 'w') as d:
-#     for line in query_result:
-#         dp = ''
-#         for e in line:
-#            dp = dp + ',' + str(e)
-#         d.write(dp + '\n')
-# d.close()
