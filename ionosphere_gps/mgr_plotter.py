@@ -2,6 +2,8 @@ import math
 from plotly import graph_objects as go
 import random
 import standard_stuff
+import constants as k
+import os
 
 random.seed()
 
@@ -22,7 +24,8 @@ def basicplot(plotdata):
         snr_data.append(snr)
 
     fig.add_scattergl(x=timedata, y=snr_data, mode='markers', marker=dict(color='#ffff00', size=5))
-    fig.write_image('basicplot.png')
+    savefile = k.dir_images + os.sep + 'basic_snr.jpg'
+    fig.write_image(savefile)
 
 def polarplot_paths(plotdata):
     fig = go.Figure()
@@ -53,5 +56,6 @@ def polarplot_paths(plotdata):
             label_old = label
             rad_data = []
             theta_data = []
-    fig.write_image('polar_tracks.png')
+    savefile = k.dir_images + os.sep + 'basic_tracks.jpg'
+    fig.write_image(savefile)
 
