@@ -8,11 +8,12 @@ from statistics import mean
 random.seed()
 
 def snr_azimuth(plotdata):
+    label_text = 'SNR vs Azimuth'
     # ('gp01', now + 1, 20, 100, 34)
     data = go.Scattergl(mode='markers')
     fig = go.Figure(data)
     fig.update_layout(width=2000, height=600, plot_bgcolor='black')
-
+    fig.update_layout(title=label_text)
     az_data = []
     snr_data = []
     for item in plotdata:
@@ -27,6 +28,7 @@ def snr_azimuth(plotdata):
 
 
 def snr_time(plotdata):
+    label_text = 'SNR vs Time'
     timedata = []
     snr_data = []
 
@@ -56,42 +58,13 @@ def snr_time(plotdata):
     data = go.Scattergl(x=timedata, y=snr_data, mode='markers', marker=dict(color='#ffff00', size=2))
     fig = go.Figure(data)
     fig.update_layout(width=2000, height=600, plot_bgcolor='black', )
+    fig.update_layout(title=label_text)
     savefile = k.dir_images + os.sep + 'snr_time.png'
     fig.write_image(savefile)
 
 
-def snr_trend_time(plotdata):
-    timedata = []
-    snr_data = []
-
-    index_snr = 1
-    index_time = 0
-    # bin the data
-    time_current = plotdata[0][index_time]
-    tmp = []
-
-    for i in range(0, len(plotdata) - 1):
-        current_snr =  plotdata[i][index_snr]
-        if current_snr != '':
-            tmp.append(int(current_snr))
-        time_next = plotdata[i + 1][index_time]
-
-        if time_next != time_current:
-            if len(tmp) > 0:
-                avg_snr = mean(tmp)
-            else:
-                avg_snr = 0
-            t = standard_stuff.posix2utc(time_current, '%Y-%m-%d %H:%M')
-            timedata.append(t)
-            snr_data.append(avg_snr)
-            tmp = []
-            time_current = time_next
-    # data = go.Scattergl(x=timedata, y=snr_data, mode='markers', marker=dict(color='rgba(255,255,0,0.2)', size=2))
-    data = go.Scattergl(x=timedata, y=snr_data, mode='markers', marker=dict(color='#ffff00', size=2))
-    fig = go.Figure(data)
-    fig.update_layout(width=2000, height=600, plot_bgcolor='black', )
-    savefile = k.dir_images + os.sep + 'snr_time.png'
-    fig.write_image(savefile)
+def snr_hourly(plotdata):
+    pass
 
 
 def polarplot_paths(plotdata):

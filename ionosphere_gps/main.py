@@ -48,7 +48,7 @@ class QueryProcessor(Thread):
             mgr_plotter.plot_multi_snr(query_result)
 
             print('Plot SNR vs Azimuth')
-            start = time.time() - (60 * 60 * 3)
+            start = time.time() - (60 * 60 * 24)
             query_result = mgr_database.db_get_gsv(start)
             mgr_plotter.snr_azimuth(query_result)
 
