@@ -77,11 +77,12 @@ def plot_multi_snr(plotdata):
         if label_old != label:
             label_text = 'SNR plot for ' + label
             print(label_text)
-            data = go.Scattergl(x=px_data, y=alt_data, mode='markers', text='Altitude', marker=dict(color='#ff7700', size=2))
+            data = go.Scattergl(x=px_data, y=alt_data, mode='markers', name='Altitude', marker=dict(color='#ff7700', size=2))
             fig = go.Figure(data)
-            fig.add_scattergl(x=px_data, y=snr_data, mode='markers', text='SNR', marker=dict(color='#007700', size=2))
+            fig.add_scattergl(x=px_data, y=snr_data, mode='markers', name='SNR', marker=dict(color='#007700', size=2))
             fig.update_layout(width=1200, height=500, plot_bgcolor='black')
             fig.update_layout(title=label_text)
+            fig.update_yaxes(range=[0, 90])
 
             savefile = k.dir_images + os.sep + label + '_snr.png'
             fig.write_image(savefile)

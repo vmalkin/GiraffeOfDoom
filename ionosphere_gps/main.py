@@ -38,9 +38,14 @@ class QueryProcessor(Thread):
             mgr_plotter.polarplot_paths(query_result)
 
             print('Plot SNR')
-            start = time.time() - (60 * 60 * 24)
+            start = time.time() - (60 * 60 * 24 * 3)
             query_result = mgr_database.db_get_snr(start)
             mgr_plotter.basicplot(query_result)
+
+            print('Plot satellite SNRs')
+            start = time.time() - (60 * 60 * 24)
+            query_result = mgr_database.db_get_gsv(start)
+            mgr_plotter.plot_multi_snr(query_result)
 
             print('latest_sats.txt updated with latest sighting time')
             query_result = mgr_database.db_get_latest_sats()
