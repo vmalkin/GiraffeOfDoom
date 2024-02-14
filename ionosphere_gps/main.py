@@ -34,7 +34,7 @@ class QueryProcessor(Thread):
             print("***************************** Start Query Processor")
             print('Plot last hour GPS tracks')
             last_6_hours = time.time() - (60 * 60 * 1)
-            query_result = mgr_database.db_get_gsv(last_6_hours)
+            query_result = mgr_database.db_get_gsv(last_6_hours, 1)
             mgr_plotter.polarplot_paths(query_result)
 
             print('Plot SNR vs Time')
@@ -44,12 +44,12 @@ class QueryProcessor(Thread):
 
             print('Plot satellite SNRs')
             start = time.time() - (60 * 60 * 24)
-            query_result = mgr_database.db_get_gsv(start)
+            query_result = mgr_database.db_get_gsv(start, 1)
             mgr_plotter.plot_multi_snr(query_result)
 
             print('Plot SNR vs Azimuth')
             start = time.time() - (60 * 60 * 24)
-            query_result = mgr_database.db_get_gsv(start)
+            query_result = mgr_database.db_get_gsv(start, 20)
             mgr_plotter.snr_azimuth(query_result)
 
             print('latest_sats.txt updated with latest sighting time')
