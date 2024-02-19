@@ -7,7 +7,7 @@ import time
 import datetime
 from plotly import graph_objects as go
 import numpy as np
-from statistics import median
+from statistics import median, mean
 
 def db_getdata(starttime, satellite_name):
     returnvalues = []
@@ -28,8 +28,8 @@ def posix2utc(posixtime, timeformat):
 
 def plot(splitlist, trend, storm, dates, sat_id):
     # papercolour = "#d0d0d0"
-    # plotlist_colours = ['#8babf1', '#f57600', '#c44601']
-    plotlist_colours = ['#f1e0e6', '#cfbbc1', '#a49196']
+    plotlist_colours = ['#cfb2be', '#d79180', '#b1493e']
+    # plotlist_colours = ['#f1e0e6', '#cfbbc1', '#a49196']
     papercolour = "#f5f5f5"
     gridcolour = "#c0c0c0"
     width = 1500
@@ -45,10 +45,11 @@ def plot(splitlist, trend, storm, dates, sat_id):
             name = posix2utc(d[0], '%Y-%m-%d')
             data = d[1]
             tmp.append(data)
-        fig.add_trace(go.Scatter(x=dates, y=tmp, mode="lines", name=name, line=dict(color=plotlist_colours[i], width=1)))
+        # fig.add_trace(go.Scatter(x=dates, y=tmp, mode="lines", name=name, line=dict(color=plotlist_colours[i], width=1)))
+        fig.add_trace(go.Scatter(x=dates, y=tmp, mode="lines", name=name, line=dict(width=1)))
 
     # plot the averaged forecast
-    fig.add_trace(go.Scatter(x=dates, y=trend, mode="lines", name='Forecast', line=dict(color="black", width=2)))
+    fig.add_trace(go.Scatter(x=dates, y=trend, mode="lines", name='Guesstimate', line=dict(color="black", width=4)))
 
     # Plot bars showing high solar wind speed over 500km/s
     marker_colour = 'rgba(50,150,0, 0.1)'
@@ -75,7 +76,9 @@ def plot(splitlist, trend, storm, dates, sat_id):
 
 def create_trend(plotlist):
     avg_readings = []
-    weighting = [0.6, 0.8, 1]
+    # weighting = [0.8, 0.95, 1]
+    # weighting = [0.6, 0.8, 1]
+    weighting = [1, 1, 1]
     iterations = len(plotlist[0])
 
     for i in range(0, iterations):
@@ -191,6 +194,24 @@ def filter_median(trend):
     return returnarray
 
 
+def filter_average(numerical_data, filter_halfwindow):
+    # Takes in an array of csv data. single values only.
+    returnarray = []
+
+    if len(numerical_data) > 2 * filter_halfwindow + 1:
+        for i in range(filter_halfwindow, len(numerical_data) - filter_halfwindow):
+            t = []
+            for j in range(-filter_halfwindow, filter_halfwindow):
+                # if isinstance(numerical_data[i + j], str) is False:
+                t.append(float(numerical_data[i + j]))
+            v = mean(t)
+            returnarray.append(v)
+    else:
+        print('Unable to average input array')
+        returnarray = numerical_data
+
+    return returnarray
+
 
 def wrapper(sat_id):
     print('*** Begin SW guestimate')
@@ -209,7 +230,6 @@ def wrapper(sat_id):
 
     prunedlist = []
     data = db_getdata(starttime, sat_id)
-
     # Prune data to only have posixtime and solar wind speed
     for item in data:
         if item[0] > starttime:
@@ -244,7 +264,8 @@ def wrapper(sat_id):
 
     trend = create_trend(splitdata)
     trend = filter_median(trend)
+    trend = filter_average(trend, 60 * 1)
     storm = create_warnings(trend)
-    # trend = smooth_data(trend)
+
     plot(splitdata, trend, storm, futuredates, sat_id)
     print('*** End SW guestimate')
