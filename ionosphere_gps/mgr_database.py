@@ -83,6 +83,16 @@ def db_gpgsv_add(gsvdata):
     db.close()
 
 
+def db_get_avgsnr(timestart, altitude):
+    returnarray = []
+    values = [timestart, altitude]
+    gpsdb = sqlite3.connect(k.sat_database)
+    db = gpsdb.cursor()
+    result = db.execute('select snr from observations where posixtime > ? and alt > ?', values)
+    for item in result:
+        returnarray.append(item[0])
+    return returnarray
+
 
 def db_get_gsv(timestart, altitude):
     returnarray = []
