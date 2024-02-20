@@ -83,6 +83,7 @@ def db_gpgsv_add(gsvdata):
     db.close()
 
 
+
 def db_get_gsv(timestart, altitude):
     returnarray = []
     values = [timestart, altitude]
