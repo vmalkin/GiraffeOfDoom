@@ -129,7 +129,6 @@ def avg_snr_time(now, start, query_result):
 
     avg_data = standard_stuff.filter_average(avg_data, 30)
 
-
     label_text = 'Average SNR'
     data = go.Scattergl(x=timestamps, y=avg_data, mode='markers', marker=dict(color='#ffff00', size=2))
     fig = go.Figure(data)
