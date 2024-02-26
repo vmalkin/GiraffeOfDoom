@@ -64,7 +64,7 @@ def db_create():
 #     db.close()
 
 
-def db_gpgsv_add(gsvdata):
+def db_gpgsv_add(gsvdata, constellation_id):
     # this method expects an array with each element in the array being:
     # [1707638483, '11', '01', '201', ''] (posix, satID, alt, az, snr)
     gpsdb = sqlite3.connect(k.sat_database)
@@ -72,26 +72,26 @@ def db_gpgsv_add(gsvdata):
     for item in gsvdata:
         posixtime = item[0]
         # sat id must match IDs entered in satellites table.
-        sat_id = convert_sat_id(item[1], 'GP')
+        sat_id = convert_sat_id(item[1])
         alt = item[2]
         az = item[3]
         snr = item[4]
-        values = [sat_id, posixtime, alt, az, snr]
+        values = [constellation_id, sat_id, posixtime, alt, az, snr]
         db.execute('insert into observations(constellation, sat_id, posixtime, alt, az, snr) '
                    'values (?, ?, ?, ?, ?, ?);', values)
     gpsdb.commit()
     db.close()
 
 
-def db_get_avgsnr(timestart, altitude):
-    returnarray = []
-    values = [timestart, altitude]
-    gpsdb = sqlite3.connect(k.sat_database)
-    db = gpsdb.cursor()
-    result = db.execute('select snr from observations where posixtime > ? and alt > ?', values)
-    for item in result:
-        returnarray.append(item[0])
-    return returnarray
+# def db_get_avgsnr(timestart, altitude):
+#     returnarray = []
+#     values = [timestart, altitude]
+#     gpsdb = sqlite3.connect(k.sat_database)
+#     db = gpsdb.cursor()
+#     result = db.execute('select snr from observations where posixtime > ? and alt > ?', values)
+#     for item in result:
+#         returnarray.append(item[0])
+#     return returnarray
 
 
 def db_get_gsv(timestart, altitude):
@@ -128,9 +128,9 @@ def db_get_latest_sats():
     db.close()
     return returnarray
 
-def convert_sat_id(id_num, constellation):
+def convert_sat_id(id_num):
     index = str(id_num)
     if len(index) == 1:
         index = '0' + index
-    id_num = constellation + index
+    id_num = index
     return id_num

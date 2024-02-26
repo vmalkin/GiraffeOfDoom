@@ -63,10 +63,6 @@ def snr_time(plotdata):
     fig.write_image(savefile)
 
 
-def snr_hourly(plotdata):
-    pass
-
-
 def polarplot_paths(plotdata):
     fig = go.Figure()
     fig.update_layout(width=1200, height=1200, showlegend=False)
@@ -99,35 +95,35 @@ def polarplot_paths(plotdata):
     fig.write_image(savefile)
 
 
-def plot_multi_snr(plotdata):
-    # ('gp01', now + 1, 20, 100, 34)
-    label_old = plotdata[0][0]
-    px_data = []
-    snr_data = []
-    alt_data = []
-    for i in range(0, len(plotdata)):
-        label = plotdata[i][0]
-        psx = plotdata[i][1]
-        alt = plotdata[i][2]
-        snr = plotdata[i][4]
-
-        px_data.append(standard_stuff.posix2utc(psx, '%Y-%m-%d %H:%M'))
-        snr_data.append(snr)
-        alt_data.append(alt)
-
-        if label_old != label:
-            label_text = 'SNR plot for ' + label
-            print(label_text)
-            data = go.Scattergl(x=px_data, y=alt_data, mode='markers', name='Altitude', marker=dict(color='#ff7700', size=2))
-            fig = go.Figure(data)
-            fig.add_scattergl(x=px_data, y=snr_data, mode='markers', name='SNR', marker=dict(color='#007700', size=2))
-            fig.update_layout(width=1200, height=500, plot_bgcolor='black')
-            fig.update_layout(title=label_text)
-            fig.update_yaxes(range=[0, 90])
-
-            savefile = k.dir_images + os.sep + label + '_snr.png'
-            fig.write_image(savefile)
-            px_data = []
-            snr_data = []
-            alt_data = []
-            label_old = label
+# def plot_multi_snr(plotdata):
+#     # ('gp01', now + 1, 20, 100, 34)
+#     label_old = plotdata[0][0]
+#     px_data = []
+#     snr_data = []
+#     alt_data = []
+#     for i in range(0, len(plotdata)):
+#         label = plotdata[i][0]
+#         psx = plotdata[i][1]
+#         alt = plotdata[i][2]
+#         snr = plotdata[i][4]
+#
+#         px_data.append(standard_stuff.posix2utc(psx, '%Y-%m-%d %H:%M'))
+#         snr_data.append(snr)
+#         alt_data.append(alt)
+#
+#         if label_old != label:
+#             label_text = 'SNR plot for ' + label
+#             print(label_text)
+#             data = go.Scattergl(x=px_data, y=alt_data, mode='markers', name='Altitude', marker=dict(color='#ff7700', size=2))
+#             fig = go.Figure(data)
+#             fig.add_scattergl(x=px_data, y=snr_data, mode='markers', name='SNR', marker=dict(color='#007700', size=2))
+#             fig.update_layout(width=1200, height=500, plot_bgcolor='black')
+#             fig.update_layout(title=label_text)
+#             fig.update_yaxes(range=[0, 90])
+#
+#             savefile = k.dir_images + os.sep + label + '_snr.png'
+#             fig.write_image(savefile)
+#             px_data = []
+#             snr_data = []
+#             alt_data = []
+#             label_old = label

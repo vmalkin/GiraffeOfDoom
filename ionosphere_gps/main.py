@@ -33,35 +33,35 @@ class QueryProcessor(Thread):
         while True:
             print("***************************** Start Query Processor")
             print('Plot last hour GPS tracks')
-            last_6_hours = time.time() - (60 * 60 * 1)
+            last_6_hours = time.time() - (60 * 60 * 6)
             query_result = mgr_database.db_get_gsv(last_6_hours, 1)
             mgr_plotter.polarplot_paths(query_result)
 
-            print('Plot SNR vs Time')
-            start = time.time() - (60 * 60 * 24)
-            query_result = mgr_database.db_get_snr(start)
-            mgr_plotter.snr_time(query_result)
+            # print('Plot SNR vs Time')
+            # start = time.time() - (60 * 60 * 24)
+            # query_result = mgr_database.db_get_snr(start)
+            # mgr_plotter.snr_time(query_result)
 
-            print('Plot satellite SNRs')
-            start = time.time() - (60 * 60 * 24)
-            query_result = mgr_database.db_get_gsv(start, 1)
-            mgr_plotter.plot_multi_snr(query_result)
+            # print('Plot satellite SNRs')
+            # start = time.time() - (60 * 60 * 24)
+            # query_result = mgr_database.db_get_gsv(start, 1)
+            # mgr_plotter.plot_multi_snr(query_result)
 
             print('Plot SNR vs Azimuth')
             start = time.time() - (60 * 60 * 24)
             query_result = mgr_database.db_get_gsv(start, 20)
             mgr_plotter.snr_azimuth(query_result)
 
-            print('latest_sats.txt updated with latest sighting time')
-            query_result = mgr_database.db_get_latest_sats()
-            savefile = k.dir_images + os.sep + 'latest_sats.txt'
-            with open(savefile, 'w') as l:
-                for item in query_result:
-                    name = item[0]
-                    date = standard_stuff.posix2utc(item[1], '%Y-%m-%d %H:%M')
-                    dp = name + ',' + date + '\n'
-                    l.write(dp)
-            l.close()
+            # print('latest_sats.txt updated with latest sighting time')
+            # query_result = mgr_database.db_get_latest_sats()
+            # savefile = k.dir_images + os.sep + 'latest_sats.txt'
+            # with open(savefile, 'w') as l:
+            #     for item in query_result:
+            #         name = item[0]
+            #         date = standard_stuff.posix2utc(item[1], '%Y-%m-%d %H:%M')
+            #         dp = name + ',' + date + '\n'
+            #         l.write(dp)
+            # l.close()
 
 
             # Get data for each constellation.
@@ -102,9 +102,6 @@ def parse_msg_id(msgid):
     return id_ok
 
 
-def process_gsv(gsv_data):
-    mgr_database.db_gpgsv_add(gsv_data)
-
 def shorten_gsv(csv_line):
     # only leave id, alt, az, snr data for each satellite
     satdata = csv_line[4:-1]
@@ -131,9 +128,6 @@ if __name__ == "__main__":
     if os.path.isfile(k.sat_database) is False:
         print("No database file, initialising")
         mgr_database.db_create()
-
-        # init with default values in tables.
-        mgr_database.db_initialise()
 
     if os.path.isfile(k.sat_database) is True:
         print("Database file exists")
@@ -170,7 +164,7 @@ if __name__ == "__main__":
                 # Once our collection of gsv data is large enough, process.
                 # This delay reduces the risk of the database being locked for charting
                 if len(gsv_collection) >= 3000:
-                    process_gsv(gsv_collection)
+                    mgr_database.db_gpgsv_add(gsv_collection, 'GP')
                     gsv_collection = []
                     now = standard_stuff.posix2utc(current_posixtime, '%Y-%m-%d %H:%M')
                     print(now, "GSV data added.")
