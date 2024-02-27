@@ -144,10 +144,10 @@ def avg_snr_time(now, start, query_result):
 
     label_text = 'Average SNR'
     fig = go.Figure()
-    fig.add_trace(go.Scattergl(x=timestamps, y=final_data, mode='markers', marker=dict(color='#ffff00', size=2), yaxis='y1'))
+    fig.add_trace(go.Scattergl(x=timestamps, y=final_data, mode='markers', marker=dict(color='#ffff00', size=3), yaxis='y1'))
 
     # data = go.Scattergl(x=timestamps, y=final_data, mode='markers', marker=dict(color='#ffff00', size=2))
-    fig.add_trace(go.Scattergl(x=timestamps, y=diff_data, mode='markers', marker=dict(color='green', size=2), yaxis='y2'))
+    fig.add_trace(go.Scattergl(x=timestamps, y=diff_data, mode='markers', marker=dict(color='green', size=3), yaxis='y2'))
     fig.update_layout(width=1500, height=700, plot_bgcolor='black', )
     # fig.update_yaxes(range=[15, 40])
     fig.update_layout(title=label_text)
