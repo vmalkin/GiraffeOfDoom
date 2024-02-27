@@ -83,11 +83,18 @@ def polarplot_paths(plotdata):
     for i in range(0, len(plotdata)):
         label = plotdata[i][0] + plotdata[i][1]
         r = plotdata[i][3]
+        if r == '':
+            r = None
+
         th = plotdata[i][4]
-        snr = plotdata[i][5]
+        if th == '':
+            th = None
+
+
+        # snr = plotdata[i][5]
         rad_data.append(r)
         theta_data.append(th)
-        snr_data.append(snr)
+        # snr_data.append(snr)
         if label_old != label:
             clr = '#' + str(random.randint(10, 99)) + str(random.randint(10, 99)) + str(random.randint(10, 99))
             # fig.add_scatterpolargl(r=rad_data, theta=theta_data, mode='markers', marker=dict(color=clr, size=snr_data))
@@ -127,13 +134,22 @@ def avg_snr_time(now, start, query_result):
             v = mean(data[i])
             avg_data[i] = v
 
-    avg_data = standard_stuff.filter_average(avg_data, 30)
+    diff_data = []
+    for i in range(1, len(avg_data)):
+        d = avg_data[i] - avg_data[i - 1]
+        diff_data.append(d)
+
+    final_data = standard_stuff.filter_average(avg_data, 30)
+    diff_data = standard_stuff.filter_average(diff_data, 30)
 
     label_text = 'Average SNR'
-    data = go.Scattergl(x=timestamps, y=avg_data, mode='markers', marker=dict(color='#ffff00', size=2))
-    fig = go.Figure(data)
-    fig.update_layout(width=1500, height=500, plot_bgcolor='black', )
-    fig.update_yaxes(range=[15, 40])
+    fig = go.Figure()
+    fig.add_trace(go.Scattergl(x=timestamps, y=final_data, mode='markers', marker=dict(color='#ffff00', size=2), yaxis='y1'))
+
+    # data = go.Scattergl(x=timestamps, y=final_data, mode='markers', marker=dict(color='#ffff00', size=2))
+    fig.add_trace(go.Scattergl(x=timestamps, y=diff_data, mode='markers', marker=dict(color='green', size=2), yaxis='y2'))
+    fig.update_layout(width=1500, height=700, plot_bgcolor='black', )
+    # fig.update_yaxes(range=[15, 40])
     fig.update_layout(title=label_text)
     savefile = k.dir_images + os.sep + 'avg_snr_time.png'
     fig.write_image(savefile)
