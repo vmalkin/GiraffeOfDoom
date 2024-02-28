@@ -10,7 +10,7 @@ random.seed()
 colour_paper = 'lavender'
 colour_gridlines = 'beaver'
 colour_plotbackground = '#c0d3cf'
-colour_pen = '#4a6762'
+colour_pen = '#2f211a'
 plotdimensions = [1500, 700]
 fontsize_title = 20
 fontsize_axis = 15
@@ -21,7 +21,7 @@ def snr_azimuth(plotdata):
     # ('gp01', now + 1, 20, 100, 34)
     data = go.Scattergl(mode='markers')
     fig = go.Figure(data)
-    fig.update_layout(width=plotdimensions[0], height=500,
+    fig.update_layout(width=plotdimensions[0], height=400,
                             paper_bgcolor=colour_paper, plot_bgcolor=colour_plotbackground)
     fig.update_layout(title=label_text)
     az_data = []
@@ -39,11 +39,12 @@ def snr_azimuth(plotdata):
 
 def polarplot_paths(plotdata):
     fig = go.Figure()
-    fig.update_layout(width=1200, height=1200, showlegend=False)
-    fig.update_layout(polar=dict(angularaxis=dict(rotation=-90, direction="counterclockwise", gridcolor="#505050", color="#000000")))
+    fig.update_layout(width=plotdimensions[1], height=plotdimensions[1], showlegend=False)
+    fig.update_layout(polar=dict(angularaxis=dict(rotation=-90, direction="counterclockwise",
+                                                  gridcolor=colour_paper, color="#000000")))
     fig.update_polars(radialaxis_tickangle=270, radialaxis_angle=270,
                       radialaxis=dict(autorange="reversed", color="#909090", gridcolor="#505050", range=[0, 90]),
-                      bgcolor="#101010")
+                      bgcolor=colour_plotbackground)
     rad_data = []
     theta_data = []
     snr_data = []
@@ -63,8 +64,8 @@ def polarplot_paths(plotdata):
         theta_data.append(th)
         # snr_data.append(snr)
         if label_old != label:
-            clr = '#' + str(random.randint(10, 99)) + str(random.randint(10, 99)) + str(random.randint(10, 99))
-            # fig.add_scatterpolargl(r=rad_data, theta=theta_data, mode='markers', marker=dict(color=clr, size=snr_data))
+            # clr = '#' + str(random.randint(10, 99)) + str(random.randint(10, 99)) + str(random.randint(10, 99))
+            clr = colour_pen
             fig.add_scatterpolargl(r=rad_data, theta=theta_data, mode='markers', marker=dict(color=clr, size=4))
             fig.add_scatterpolargl(r=[r], theta=[th], mode='markers+text', text=label_old,
                                    textfont=dict(color="#ff7700", size=25), marker=dict(color='#ff7700', size=1))
