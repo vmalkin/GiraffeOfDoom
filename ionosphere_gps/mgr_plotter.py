@@ -1,4 +1,5 @@
 from plotly import graph_objects as go
+from plotly.subplots import make_subplots
 import random
 import standard_stuff
 import constants as k
@@ -6,9 +7,11 @@ import os
 from statistics import mean
 
 random.seed()
-colour_paper = ''
-colour_gridlines = ''
-colour_plotbackground = ''
+colour_paper = 'lavender'
+colour_gridlines = 'beaver'
+colour_plotbackground = '#c0d3cf'
+colour_pen = '#4a6762'
+plotdimensions = [1500, 700]
 fontsize_title = 20
 fontsize_axis = 15
 
@@ -18,7 +21,8 @@ def snr_azimuth(plotdata):
     # ('gp01', now + 1, 20, 100, 34)
     data = go.Scattergl(mode='markers')
     fig = go.Figure(data)
-    fig.update_layout(width=1500, height=500, plot_bgcolor='black')
+    fig.update_layout(width=plotdimensions[0], height=500,
+                            paper_bgcolor=colour_paper, plot_bgcolor=colour_plotbackground)
     fig.update_layout(title=label_text)
     az_data = []
     snr_data = []
@@ -28,45 +32,9 @@ def snr_azimuth(plotdata):
         az_data.append(az)
         snr_data.append(snr)
 
-    fig.add_scattergl(x=az_data, y=snr_data, mode='markers', marker=dict(color='orange', size=4))
+    fig.add_scattergl(x=az_data, y=snr_data, mode='markers', marker=dict(color=colour_pen, size=4))
     savefile = k.dir_images + os.sep + 'snr_azimuth.png'
     fig.write_image(savefile)
-
-#
-# def snr_time(plotdata):
-#     label_text = 'SNR vs Time'
-#     timedata = []
-#     snr_data = []
-#
-#     index_snr = 1
-#     index_time = 0
-#     # bin the data
-#     time_current = plotdata[0][index_time]
-#     tmp = []
-#
-#     for i in range(0, len(plotdata) - 1):
-#         current_snr =  plotdata[i][index_snr]
-#         if current_snr != '':
-#             tmp.append(int(current_snr))
-#         time_next = plotdata[i + 1][index_time]
-#
-#         if time_next != time_current:
-#             if len(tmp) > 0:
-#                 avg_snr = mean(tmp)
-#             else:
-#                 avg_snr = 0
-#             t = standard_stuff.posix2utc(time_current, '%Y-%m-%d %H:%M')
-#             timedata.append(t)
-#             snr_data.append(avg_snr)
-#             tmp = []
-#             time_current = time_next
-#
-#     data = go.Scattergl(x=timedata, y=snr_data, mode='markers', marker=dict(color='#ffff00', size=2))
-#     fig = go.Figure(data)
-#     fig.update_layout(width=2000, height=600, plot_bgcolor='black', )
-#     fig.update_layout(title=label_text)
-#     savefile = k.dir_images + os.sep + 'snr_time.png'
-#     fig.write_image(savefile)
 
 
 def polarplot_paths(plotdata):
@@ -90,7 +58,6 @@ def polarplot_paths(plotdata):
         if th == '':
             th = None
 
-
         # snr = plotdata[i][5]
         rad_data.append(r)
         theta_data.append(th)
@@ -107,15 +74,17 @@ def polarplot_paths(plotdata):
     savefile = k.dir_images + os.sep + 'basic_tracks.png'
     fig.write_image(savefile)
 
+
 def avg_snr_time(now, start, query_result):
     # create array of timestamps for plotting
     timestamps = []
-    for i in range(start, now):
+    for i in range(start, now + 3):
         t = standard_stuff.posix2utc(i, '%Y-%m-%d %H:%M:%S')
         timestamps.append(t)
+
     # create array of data for averaging
     data = []
-    for i in range(start, now):
+    for i in range(start, now + 3):
         data.append([])
 
     for d in query_result:
@@ -126,7 +95,7 @@ def avg_snr_time(now, start, query_result):
             data[index_value].append(snr)
 
     avg_data = []
-    for i in range(start, now):
+    for i in range(start, now + 3):
         avg_data.append(0)
 
     for i in range(0, len(data)):
@@ -140,19 +109,34 @@ def avg_snr_time(now, start, query_result):
         diff_data.append(d)
 
     final_data = standard_stuff.filter_average(avg_data, 30)
-    diff_data = standard_stuff.filter_average(diff_data, 30)
+    diff_data = standard_stuff.filter_average(diff_data, 20)
+
+    fig_snr = go.Figure()
+    fig_diffs = go.Figure()
+
+    fig_snr.add_trace(
+        go.Scattergl(x=timestamps, y=final_data, mode='markers', marker=dict(color=colour_pen, size=2))
+    )
+    fig_diffs.add_trace(
+        go.Scattergl(x=timestamps, y=diff_data, mode='markers', marker=dict(color=colour_pen, size=2))
+    )
 
     label_text = 'Average SNR'
-    fig = go.Figure()
-    fig.add_trace(go.Scattergl(x=timestamps, y=final_data, mode='markers', marker=dict(color='#ffff00', size=3), yaxis='y1'))
+    fig_snr.update_layout(width=plotdimensions[0], height=plotdimensions[1],
+                            paper_bgcolor=colour_paper, plot_bgcolor=colour_plotbackground)
+    fig_snr.update_yaxes(range=[15, 40])
+    fig_snr.update_layout(title=label_text)
+    savefile = k.dir_images + os.sep + 'snr_avg_time.png'
+    fig_snr.write_image(savefile)
 
-    # data = go.Scattergl(x=timestamps, y=final_data, mode='markers', marker=dict(color='#ffff00', size=2))
-    fig.add_trace(go.Scattergl(x=timestamps, y=diff_data, mode='markers', marker=dict(color='green', size=3), yaxis='y2'))
-    fig.update_layout(width=1500, height=700, plot_bgcolor='black', )
-    # fig.update_yaxes(range=[15, 40])
-    fig.update_layout(title=label_text)
-    savefile = k.dir_images + os.sep + 'avg_snr_time.png'
-    fig.write_image(savefile)
+    label_text = 'SNR Differences'
+    fig_diffs.update_layout(width=plotdimensions[0], height=plotdimensions[1],
+                            paper_bgcolor=colour_paper, plot_bgcolor=colour_plotbackground)
+    fig_diffs.update_yaxes(range=[-0.5, 0.5])
+    fig_diffs.update_layout(title=label_text)
+    savefile = k.dir_images + os.sep + 'snr_diffs_time.png'
+    fig_diffs.write_image(savefile)
+
 
 
 

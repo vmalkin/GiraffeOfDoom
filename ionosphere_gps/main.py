@@ -31,6 +31,11 @@ class QueryProcessor(Thread):
     def run(self):
         # put query data_s4 processing stuff here.
         while True:
+            wiggle = random.randint(-180, 180)
+            sleeptime = (60 * 15) + wiggle
+            print('Next plot in ' + str(sleeptime) + ' seconds.')
+            time.sleep((sleeptime))
+
             print("***************************** Start Query Processor")
             now = int(time.time())
 
@@ -47,40 +52,8 @@ class QueryProcessor(Thread):
             query_result = mgr_database.db_get_gsv(start, 20)
             mgr_plotter.avg_snr_time(now, start, query_result)
 
-            # print('Plot SNR vs Time')
-            # start = time.time() - (60 * 60 * 24)
-            # query_result = mgr_database.db_get_snr(start)
-            # mgr_plotter.snr_time(query_result)
-
-            # print('Plot satellite SNRs')
-            # start = time.time() - (60 * 60 * 24)
-            # query_result = mgr_database.db_get_gsv(start, 1)
-            # mgr_plotter.plot_multi_snr(query_result)
-
-
-
-
-            # print('latest_sats.txt updated with latest sighting time')
-            # query_result = mgr_database.db_get_latest_sats()
-            # savefile = k.dir_images + os.sep + 'latest_sats.txt'
-            # with open(savefile, 'w') as l:
-            #     for item in query_result:
-            #         name = item[0]
-            #         date = standard_stuff.posix2utc(item[1], '%Y-%m-%d %H:%M')
-            #         dp = name + ',' + date + '\n'
-            #         l.write(dp)
-            # l.close()
-
-
-            # Get data for each constellation.
-            # result = mgr_database.qry_get_last_24hrs(start_time, "GPGGA")
-            # mgr_plot.wrapper(result, "GPS")
-
             print("******************************* End Query Processor")
-            wiggle = random.randint(-180, 180)
-            sleeptime = (60 * 15) + wiggle
-            print('Next plot in ' + str(sleeptime) + ' seconds.')
-            time.sleep((sleeptime))
+
 
 
 def get_rounded_posix_():
