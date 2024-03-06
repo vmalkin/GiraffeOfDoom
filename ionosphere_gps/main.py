@@ -40,7 +40,7 @@ class QueryProcessor(Thread):
             now = int(time.time())
 
             print('Plot last hour GPS tracks')
-            last_6_hours = now - (60 * 60 * 6)
+            last_6_hours = now - (60 * 60 * 2)
             query_result = mgr_database.db_get_gsv(last_6_hours, 1)
             mgr_plotter.polarplot_paths(query_result)
 
