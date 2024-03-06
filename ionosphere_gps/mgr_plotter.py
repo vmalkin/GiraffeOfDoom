@@ -124,7 +124,7 @@ def avg_snr_time(now, start, query_result):
         go.Scattergl(x=timestamps, y=diff_data, mode='markers', marker=dict(color=colour_pen, size=2))
     )
 
-    label_text = 'Average SNR - median and average filtered'
+    label_text = 'Average SNR'
     fig_snr.update_layout(width=plotdimensions[0], height=plotdimensions[1],
                             paper_bgcolor=colour_paper, plot_bgcolor=colour_plotbackground)
     fig_snr.update_yaxes(range=[15, 40])
@@ -132,7 +132,7 @@ def avg_snr_time(now, start, query_result):
     savefile = k.dir_images + os.sep + 'snr_avg_time.png'
     fig_snr.write_image(savefile)
 
-    label_text = 'SNR Differences'
+    label_text = 'SNR Differences - median and average filtered'
     fig_diffs.update_layout(width=plotdimensions[0], height=plotdimensions[1],
                             paper_bgcolor=colour_paper, plot_bgcolor=colour_plotbackground)
     fig_diffs.update_yaxes(range=[-0.3, 0.3])
