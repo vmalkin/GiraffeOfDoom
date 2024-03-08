@@ -3,7 +3,7 @@ import requests
 import os
 import global_config
 
-suvidata = global_config.noaa_image_data
+goes_dict = global_config.goes_dict
 
 # file path seperator / or \ ???
 pathsep = os.sep
@@ -92,20 +92,30 @@ def download_suvi(lasco_url, storage_folder):
 
 
 if __name__ == '__main__':
-    # indices for url and save folders
-    url = 0
-    savepath = 1
+    # Check for save folders
+    for sat in goes_dict:
+        if os.path.exists(goes_dict[sat]['false_colour']) is False:
+            os.makedirs(goes_dict[sat]['false_colour'])
 
-    for item in suvidata:
-        if os.path.exists(item[savepath]) is False:
-            os.makedirs(item[savepath])
+        if os.path.exists(goes_dict[sat]['false_diffs']) is False:
+            os.makedirs(goes_dict[sat]['false_diffs'])
+
+    for sat in goes_dict:
+        for key in goes_dict[sat]['wavelengths']:
+            if os.path.exists(goes_dict[sat]['wavelengths'][key]['store']) is False:
+                os.makedirs(goes_dict[sat]['wavelengths'][key]['store'])
+
+            if os.path.exists(goes_dict[sat]['wavelengths'][key]['diffs']) is False:
+                os.makedirs(goes_dict[sat]['wavelengths'][key]['diffs'])
 
     if os.path.exists(global_config.folder_output_to_publish) is False:
         os.makedirs(global_config.folder_output_to_publish)
 
     # get the latest SUVI images
-    for item in suvidata:
-        download_suvi(item[url], item[savepath])
-        print('*** Downloads completed')
+    for sat in goes_dict:
+        for key in goes_dict[sat]['wavelengths']:
+            url = goes_dict[sat]['wavelengths'][key]['url']
+            savepath = goes_dict[sat]['wavelengths'][key]['store']
+            download_suvi(url, savepath)
 
     print("*** All image downloading COMPLETED")

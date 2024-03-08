@@ -7,6 +7,8 @@ import global_config
 import os
 import glob
 
+goes_dict = global_config.goes_dict
+
 def local_file_list_build(directory):
     # Builds and returns a list of files contained in the directory.
     # List is sorted into A --> Z order
@@ -112,8 +114,6 @@ def wrapper(filepathlist, diffstore, pathsep, wavelength):
         old_name = filepathlist[i - 1]
         ot1 = old_name.split("_s")
         ot2 = ot1[2].split("_e")
-        print(ot1)
-
         old_time = utc2posix(ot2[0], "%Y%m%dT%H%M%SZ")
 
         new_name = filepathlist[i]
@@ -181,16 +181,13 @@ def wrapper(filepathlist, diffstore, pathsep, wavelength):
     print("*** Differencing FINISHED")
 
 if __name__ == '__main__':
-    image_store = 1
-    diffs_store = 2
-    name = 3
     # Calculate difference images for each wavelength
-    for item in global_config.noaa_image_data:
-        if os.path.exists(item[diffs_store]) is False:
-            os.makedirs(item[diffs_store])
+    for sat in goes_dict:
+        for key in goes_dict[sat]['wavelengths']:
+            name = sat
+            image_diffs = goes_dict[sat]['wavelengths'][key]['diffs']
+            image_store = goes_dict[sat]['wavelengths'][key]['store']
 
-    for item in global_config.noaa_image_data:
-        img_files = local_file_list_build(item[image_store])
-        img_files = img_files[-360:]
-        store_diffs = item[diffs_store]
-        wrapper(img_files, store_diffs, os.sep, item[name])
+            img_files = local_file_list_build(image_store)
+            img_files = img_files[-360:]
+            wrapper(img_files, image_diffs, os.sep, name)

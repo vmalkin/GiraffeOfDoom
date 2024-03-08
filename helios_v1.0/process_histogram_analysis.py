@@ -43,7 +43,7 @@ def getfilename(pathname):
     return pp[0]
 
 
-def plot(event_data):
+def plot(event_data, sat_name):
     fig = go.Figure()
     papercolour = "#e0e0e0"
     gridcolour = "#c0c0c0"
@@ -71,14 +71,14 @@ def plot(event_data):
     fig.update_xaxes(tickangle=45, dtick=20, showgrid=True,)
     fig.update_layout(barmode='group')
 
-    title = "Solar Surface Event Occurrences."
+    title = "Solar Surface Event Occurrences: " + sat_name
     fig.update_layout(width=width, height=height, title=title,
                       xaxis_title="UTC Datetime<br><sub>" + global_config.copyright + " http://DunedinAurora.nz</sub>")
 
     fig.update_layout(font=dict(size=16, color="#202020"), title_font_size=18, )
     fig.update_layout(plot_bgcolor=papercolour, paper_bgcolor=papercolour)
-    file_html = global_config.folder_output_to_publish + os.sep + 'histogram.html'
-    file_png = global_config.folder_output_to_publish + os.sep + 'histogram.png'
+    file_html = global_config.folder_output_to_publish + os.sep +  sat_name + '_hist.html'
+    file_png = global_config.folder_output_to_publish + os.sep + sat_name + '_hist.png'
     fig.write_html(file_html)
     fig.write_image(file_png)
 
@@ -88,10 +88,13 @@ if __name__ == '__main__':
     # Supply a list of sub folders with diffs images in them to analyse
     data = global_config.noaa_image_data
     folder = 2
-    folders = [data[0][folder], data[1][folder], data[2][folder], ]
-    solar_surface_events = []
+    folders_x = [data[0][folder], data[1][folder], data[2][folder]]
+    folders_y = [data[3][folder], data[4][folder], data[5][folder]]
 
-    for folder in folders:
+    solar_surface_events_x = []
+    solar_surface_events_y = []
+
+    for folder in folders_x:
         img_files = local_file_list_build(folder)
         # a day is roughly 360 images
         img_files = img_files[-360:]
@@ -158,7 +161,78 @@ if __name__ == '__main__':
 
             line = [dt, cme_wh, cme_bl]
             events.append(line)
-        solar_surface_events.append(events)
+        solar_surface_events_x.append(events)
 
-    plot(solar_surface_events)
+
+    for folder in folders_y:
+        img_files = local_file_list_build(folder)
+        # a day is roughly 360 images
+        img_files = img_files[-360:]
+
+        returnarray = []
+        for item in img_files:
+            tmp = []
+            img = cv2.imread(item)
+            # Mask off the outer corona - we're only interested in the solar disc
+            img = create_mask(img)
+
+            # cv2.imshow('image', img)
+            # # Waits for a keystroke
+            # cv2.waitKey(0)
+            # # Destroys all the windows created
+            # cv2.destroyAllwindows()
+
+            # CReate a histogram of the image being processed
+            result = np.histogram(img, bins=5, range=(0, 256))
+
+            # result[0] is histogram, result[1] are bin labels
+            histgm = (result[0])
+
+            # CReate an array of the image file name, and the count of all-black and all-white pixels
+
+            tmp.append(getfilename(item))
+            tmp.append(histgm[0])
+            tmp.append(histgm[4])
+            # for item in histgm:
+            #     tmp.append(item)
+            returnarray.append(tmp)
+
+        px_white = []
+        px_black = []
+        dates = []
+        for item in returnarray:
+            dates.append(item[0])
+            px_white.append(item[1])
+            px_black.append(item[2])
+
+        # Get simple statistics of the average, and standard deviations for all-black and all-white
+        # pixels for the current day. Use this to determine of any single image is above average, this will
+        # be our simple indicator of rapid change in the image caused by CME or similar events on the sun's surface
+        # It is possible that we might need a better treatment of this? We might want to store STD and AVG over
+        # a period of time and use the median values of those to evaluate individual images?
+        avg_white = np.average(px_white)
+        std_white = np.std(px_white)
+        avg_black = np.average(px_black)
+        std_black = np.std(px_black)
+
+        events = []
+        for i in range(0, len(dates)):
+            dt = dates[i]
+            # href=''
+            if px_white[i] > (avg_white + std_white):
+                cme_wh = round(((px_white[i] - avg_white) / std_white), 3)
+            else:
+                cme_wh = 0
+
+            if px_black[i] > (avg_black + std_black):
+                cme_bl = round(((px_black[i] - avg_black) / std_black), 3)
+            else:
+                cme_bl = 0
+
+            line = [dt, cme_wh, cme_bl]
+            events.append(line)
+        solar_surface_events_y.append(events)
+
+    plot(solar_surface_events_x, 'GOES Primary')
+    plot(solar_surface_events_y, 'GOES Secondary')
     print('*** End Histogram Analysis')
