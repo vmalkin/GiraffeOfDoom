@@ -59,11 +59,8 @@ def wrapper(multifilelist, save_folder):
 
             t = files[0].split(pathsep)
             tt = t[2].split('_')
-
             timestamp = tt[0]
-            filename = timestamp + '_clr.png'
-
-            timestamp = utc2posix(timestamp, '%Y%m%dT%H%M%S')
+            timestamp = utc2posix(timestamp, '%Y%m%dT%H%M%SZ')
             timestamp = posix2utc(timestamp, '%Y-%m-%d %H:%M')
 
             b = cv2.imread(files[0], 0)
