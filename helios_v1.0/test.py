@@ -9,5 +9,5 @@ for sat in goes_dict:
     for key in goes_dict[sat]['wavelengths']:
         # print(goes_dict[sat]['wavelengths'][key]['url'])
         print(key)
-        print(goes_dict[sat]['wavelengths'][key]['store'])
+        print(goes_dict[sat]['wavelengths'][key]['diffs'])
 

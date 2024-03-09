@@ -54,12 +54,12 @@ def wrapper(multifilelist, save_folder):
         files = item
         # print(files)
         if len(files) == 3:
-            f = files[0].split('_')
-            t = f[6]
-            timestamp = t[1:len(t) - 1]
+            f = files[0].split(os.sep)
+            t = f[2].split('_')
+            timestamp = t[0]
             filename = timestamp + '_clr.png'
 
-            timestamp = utc2posix(timestamp, '%Y%m%dT%H%M%S')
+            timestamp = utc2posix(timestamp, '%Y%m%dT%H%M%SZ')
             timestamp = posix2utc(timestamp, '%Y-%m-%d %H:%M')
 
             b = cv2.imread(files[0], 0)
