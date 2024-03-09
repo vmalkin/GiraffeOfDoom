@@ -185,4 +185,4 @@ if __name__ == '__main__':
                 multifilelist.append(tmp)
 
         print(sat)
-        multicolour.wrapper(multifilelist, savefolder)
+        multidiff.wrapper(multifilelist, savefolder)

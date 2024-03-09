@@ -57,6 +57,7 @@ def wrapper(multifilelist, save_folder):
             f = files[0].split(os.sep)
             t = f[2].split('_')
             timestamp = t[3][1:-1]
+            # print(timestamp)
             filename = timestamp + '_clr.png'
 
             timestamp = utc2posix(timestamp, '%Y%m%dT%H%M%S')
