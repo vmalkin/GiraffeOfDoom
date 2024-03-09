@@ -56,10 +56,10 @@ def wrapper(multifilelist, save_folder):
         if len(files) == 3:
             f = files[0].split(os.sep)
             t = f[2].split('_')
-            timestamp = t[0]
+            timestamp = t[3][1:-1]
             filename = timestamp + '_clr.png'
 
-            timestamp = utc2posix(timestamp, '%Y%m%dT%H%M%SZ')
+            timestamp = utc2posix(timestamp, '%Y%m%dT%H%M%S')
             timestamp = posix2utc(timestamp, '%Y-%m-%d %H:%M')
 
             b = cv2.imread(files[0], 0)
