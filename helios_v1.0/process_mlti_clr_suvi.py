@@ -7,6 +7,8 @@ import global_config
 import mgr_multicolour_v2 as multicolour
 import mgr_multicolour_diff as multidiff
 
+goes_dict = global_config.goes_dict
+
 pathsep = os.sep
 
 def local_file_list_build(directory):
@@ -94,147 +96,124 @@ def download_suvi(lasco_url, storage_folder):
 if __name__ == '__main__':
         # create multispectral images
         # Files for each datetime, regardless of the wavelength, have the same name
-        files = global_config.noaa_image_data
-        store = 1
-        savefolder_x = global_config.folder_source_images + pathsep + 'store_suvi_false_x'
-        savefolder_y = global_config.folder_source_images + pathsep + 'store_suvi_false_y'
 
-        if os.path.exists(savefolder_x) is False:
-            os.makedirs(savefolder_x)
+        for sat in goes_dict:
+            savefolder = goes_dict[sat]['false_colour']
+            files_blue = None
+            files_green = None
+            files_red = None
 
-        if os.path.exists(savefolder_y) is False:
-            os.makedirs(savefolder_y)
+            for key in goes_dict[sat]['wavelengths']:
+                store = goes_dict[sat]['wavelengths'][key]['store']
 
-        files_blue_x = local_file_list_build(files[0][store])
-        files_blue_x = files_blue_x[-360:]
-        files_green_x = local_file_list_build(files[1][store])
-        files_green_x = files_green_x[-360:]
-        files_red_x = local_file_list_build(files[2][store])
-        files_red_x = files_red_x[-360:]
+                if key == '171':
+                    files_blue = local_file_list_build(store)
+                    files_blue = files_blue[-360:]
 
-        files_blue_y = local_file_list_build(files[0][store])
-        files_blue_y = files_blue_y[-360:]
-        files_green_y = local_file_list_build(files[1][store])
-        files_green_y = files_green_y[-360:]
-        files_red_y = local_file_list_build(files[2][store])
-        files_red_y = files_red_y[-360:]
+                if key == '195':
+                    files_green = local_file_list_build(store)
+                    files_green = files_green[-360:]
 
-        multifilelist_x = []
-        for file_b in files_blue_x:
-            tmp = []
-            tmp.append(file_b)
-            b = file_b.split('_')
-            start_b = b[6]
+                if key == '284':
+                    files_red = local_file_list_build(store)
+                    files_red = files_red[-360:]
 
-            for file_g in files_green_x:
-                g = file_g.split('_')
-                start_g = g[6]
-                if start_g == start_b:
-                    tmp.append(file_g)
 
-            for file_r in files_red_x:
-                r = file_r.split('_')
-                start_r = r[6]
-                if start_r == start_b:
-                    tmp.append(file_r)
 
-            if len(tmp) == 3:
-                multifilelist_x.append(tmp)
+            multifilelist = []
+            for file_b in files_blue:
+                tmp = []
+                tmp.append(file_b)
+                b = file_b.split('_')
+                start_b = b[6]
 
-        multifilelist_y = []
-        for file_b in files_blue_y:
-            tmp = []
-            tmp.append(file_b)
-            b = file_b.split('_')
-            start_b = b[6]
+                for file_g in files_green:
+                    g = file_g.split('_')
+                    start_g = g[6]
+                    if start_g == start_b:
+                        tmp.append(file_g)
 
-            for file_g in files_green_y:
-                g = file_g.split('_')
-                start_g = g[6]
-                if start_g == start_b:
-                    tmp.append(file_g)
+                for file_r in files_red:
+                    r = file_r.split('_')
+                    start_r = r[6]
+                    if start_r == start_b:
+                        tmp.append(file_r)
 
-            for file_r in files_red_y:
-                r = file_r.split('_')
-                start_r = r[6]
-                if start_r == start_b:
-                    tmp.append(file_r)
+                if len(tmp) == 3:
+                    multifilelist.append(tmp)
 
-            if len(tmp) == 3:
-                multifilelist_y.append(tmp)
+                multicolour.wrapper(multifilelist, savefolder)
 
-        multicolour.wrapper(multifilelist_x, savefolder_x)
-        multicolour.wrapper(multifilelist_y, savefolder_y)
 
-        # create multispectral difference images
-        # Files for each datetime, regardless of the wavelength, have the same name
-        files = global_config.noaa_image_data
-        diffs = 2
-        savefolder_x = global_config.folder_source_images + pathsep + 'store_suvi_fdiff_x'
-        if os.path.exists(savefolder_x) is False:
-            os.makedirs(savefolder_x)
-
-        savefolder_y = global_config.folder_source_images + pathsep + 'store_suvi_fdiff_y'
-        if os.path.exists(savefolder_y) is False:
-            os.makedirs(savefolder_y)
-
-        files_blue_x = local_file_list_build(files[0][diffs])
-        files_blue_x = files_blue_x[-360:]
-        files_green_x = local_file_list_build(files[1][diffs])
-        files_green_x = files_green_x[-360:]
-        files_red_x = local_file_list_build(files[2][diffs])
-        files_red_x = files_red_x[-360:]
-
-        files_blue_y = local_file_list_build(files[0][diffs])
-        files_blue_y = files_blue_y[-360:]
-        files_green_y = local_file_list_build(files[1][diffs])
-        files_green_y = files_green_y[-360:]
-        files_red_y = local_file_list_build(files[2][diffs])
-        files_red_y = files_red_y[-360:]
-
-        multifilelist_x = []
-        for file_b in files_blue_x:
-            tmp = []
-            tmp.append(file_b)
-            b = file_b.split('_')
-            start_b = b[6]
-
-            for file_g in files_green_x:
-                g = file_g.split('_')
-                start_g = g[6]
-                if start_g == start_b:
-                    tmp.append(file_g)
-
-            for file_r in files_red_x:
-                r = file_r.split('_')
-                start_r = r[6]
-                if start_r == start_b:
-                    tmp.append(file_r)
-
-            if len(tmp) == 3:
-                multifilelist_x.append(tmp)
-
-        multifilelist_y = []
-        for file_b in files_blue_y:
-            tmp = []
-            tmp.append(file_b)
-            b = file_b.split('_')
-            start_b = b[6]
-
-            for file_g in files_green_y:
-                g = file_g.split('_')
-                start_g = g[6]
-                if start_g == start_b:
-                    tmp.append(file_g)
-
-            for file_r in files_red_y:
-                r = file_r.split('_')
-                start_r = r[6]
-                if start_r == start_b:
-                    tmp.append(file_r)
-
-            if len(tmp) == 3:
-                multifilelist_y.append(tmp)
-
-        multicolour.wrapper(multifilelist_x, savefolder_x)
-        multicolour.wrapper(multifilelist_y, savefolder_y)
+        # # create multispectral difference images
+        # # Files for each datetime, regardless of the wavelength, have the same name
+        # files = global_config.noaa_image_data
+        # diffs = 2
+        # savefolder_x = global_config.folder_source_images + pathsep + 'store_suvi_fdiff_x'
+        # if os.path.exists(savefolder_x) is False:
+        #     os.makedirs(savefolder_x)
+        #
+        # savefolder_y = global_config.folder_source_images + pathsep + 'store_suvi_fdiff_y'
+        # if os.path.exists(savefolder_y) is False:
+        #     os.makedirs(savefolder_y)
+        #
+        # files_blue_x = local_file_list_build(files[0][diffs])
+        # files_blue_x = files_blue_x[-360:]
+        # files_green_x = local_file_list_build(files[1][diffs])
+        # files_green_x = files_green_x[-360:]
+        # files_red_x = local_file_list_build(files[2][diffs])
+        # files_red_x = files_red_x[-360:]
+        #
+        # files_blue_y = local_file_list_build(files[0][diffs])
+        # files_blue_y = files_blue_y[-360:]
+        # files_green_y = local_file_list_build(files[1][diffs])
+        # files_green_y = files_green_y[-360:]
+        # files_red_y = local_file_list_build(files[2][diffs])
+        # files_red_y = files_red_y[-360:]
+        #
+        # multifilelist_x = []
+        # for file_b in files_blue_x:
+        #     tmp = []
+        #     tmp.append(file_b)
+        #     b = file_b.split('_')
+        #     start_b = b[6]
+        #
+        #     for file_g in files_green_x:
+        #         g = file_g.split('_')
+        #         start_g = g[6]
+        #         if start_g == start_b:
+        #             tmp.append(file_g)
+        #
+        #     for file_r in files_red_x:
+        #         r = file_r.split('_')
+        #         start_r = r[6]
+        #         if start_r == start_b:
+        #             tmp.append(file_r)
+        #
+        #     if len(tmp) == 3:
+        #         multifilelist_x.append(tmp)
+        #
+        # multifilelist_y = []
+        # for file_b in files_blue_y:
+        #     tmp = []
+        #     tmp.append(file_b)
+        #     b = file_b.split('_')
+        #     start_b = b[6]
+        #
+        #     for file_g in files_green_y:
+        #         g = file_g.split('_')
+        #         start_g = g[6]
+        #         if start_g == start_b:
+        #             tmp.append(file_g)
+        #
+        #     for file_r in files_red_y:
+        #         r = file_r.split('_')
+        #         start_r = r[6]
+        #         if start_r == start_b:
+        #             tmp.append(file_r)
+        #
+        #     if len(tmp) == 3:
+        #         multifilelist_y.append(tmp)
+        #
+        # multicolour.wrapper(multifilelist_x, savefolder_x)
+        # multicolour.wrapper(multifilelist_y, savefolder_y)
