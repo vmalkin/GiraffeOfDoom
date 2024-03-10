@@ -19,66 +19,46 @@ def local_file_list_build(directory):
 
 
 if __name__ == '__main__':
-        data = global_config.goes_dict
-        # store = 1
-        # diffs = 2
+        goes_data = global_config.goes_dict
+        for sat in goes_data:
+                sat_name = sat
+                for key in goes_data[sat]['wavelengths']:
+                        # print(goes_dict[sat]['wavelengths'][key]['url'])
+                        print(key)
+                        print(goes_data[sat]['wavelengths'][key]['diffs'])
+                        satname = sat
+                        wavelength = key
+                        diffs = goes_data[sat]['wavelengths'][key]['diffs']
+                        store = goes_data[sat]['wavelengths'][key]['store']
 
-        # Make animations
-        folder = data[1][diffs]
-        img_files = local_file_list_build(folder)
-        # a day is roughly 360 images
-        img_files = img_files[-360:]
-        outputfile = global_config.folder_output_to_publish + os.sep + 'diffs_195a'
-        make_anim.wrapper(img_files, outputfile)
+                        img_files = local_file_list_build(store)
+                        diff_files = local_file_list_build(diffs)
 
-        folder = data[0][diffs]
-        img_files = local_file_list_build(folder)
-        # a day is roughly 360 images
-        img_files = img_files[-360:]
-        outputfile = global_config.folder_output_to_publish + os.sep + 'diffs_171a'
-        make_anim.wrapper(img_files, outputfile)
+                        # a day is roughly 360 images
+                        img_files = img_files[-360:]
+                        diff_files = diff_files[-360:]
+                        img_movie = satname + "_" +wavelength + "_" + "img"
+                        diff_movie = satname + "_" +wavelength + "_" + "diff"
+                        imgfile = global_config.folder_output_to_publish + os.sep + img_movie
+                        difffile = global_config.folder_output_to_publish + os.sep + diff_movie
+                        make_anim.wrapper(img_files, imgfile)
+                        make_anim.wrapper(diff_files, difffile)
 
-        folder = data[2][diffs]
-        img_files = local_file_list_build(folder)
-        # a day is roughly 360 images
-        img_files = img_files[-360:]
-        outputfile = global_config.folder_output_to_publish + os.sep + 'diffs_284a'
-        make_anim.wrapper(img_files, outputfile)
+        for sat in goes_data:
+            sat_name = sat
+            fc_images = goes_data[sat]['false_colour']
+            fc_diffs = goes_data[sat]['false_diffs']
 
-        folder = data[0][store]
-        img_files = local_file_list_build(folder)
-        # a day is roughly 360 images
-        img_files = img_files[-360:]
-        outputfile = global_config.folder_output_to_publish + os.sep + '171a'
-        make_anim.wrapper(img_files, outputfile)
+            # a day is roughly 360 images
+            fc_files = local_file_list_build(fc_images)
+            fc_files = fc_files[-360:]
+            diff_files = local_file_list_build(fc_diffs)
+            diff_files = diff_files[-360:]
 
-        folder = data[1][store]
-        img_files = local_file_list_build(folder)
-        # a day is roughly 360 images
-        img_files = img_files[-360:]
-        outputfile = global_config.folder_output_to_publish + os.sep + '195a'
-        make_anim.wrapper(img_files, outputfile)
-
-        folder = data[2][store]
-        img_files = local_file_list_build(folder)
-        # a day is roughly 360 images
-        img_files = img_files[-360:]
-        outputfile = global_config.folder_output_to_publish + os.sep + '284a'
-        make_anim.wrapper(img_files, outputfile)
-
-        folder = global_config.folder_source_images + os.sep + 'store_suvi_falseclr'
-        img_files = local_file_list_build(folder)
-        # a day is roughly 360 images
-        img_files = img_files[-360:]
-        outputfile = global_config.folder_output_to_publish + os.sep + '3_colour'
-        make_anim.wrapper(img_files, outputfile)
-
-        folder = global_config.folder_source_images + os.sep + 'store_suvi_falsediff'
-        img_files = local_file_list_build(folder)
-        # a day is roughly 360 images
-        img_files = img_files[-360:]
-        outputfile = global_config.folder_output_to_publish + os.sep + '3_clr_diffs'
-        make_anim.wrapper(img_files, outputfile)
+            fc_output = global_config.folder_output_to_publish + os.sep + sat + '_3_clr'
+            fc_df_output = global_config.folder_output_to_publish + os.sep + sat + '3_clr_df'
+            make_anim.wrapper(fc_files, fc_output)
+            make_anim.wrapper(diff_files, fc_df_output)
 
         folder = global_config.folder_source_images + os.sep + 'enhanced_lasco'
         img_files = local_file_list_build(folder)

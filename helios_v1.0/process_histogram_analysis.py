@@ -86,7 +86,11 @@ if __name__ == '__main__':
     print('*** Begin Histogram Analysis')
 
     # Supply a list of sub folders with diffs images in them to analyse
-    data = global_config.noaa_image_data
+    data = global_config.goes_dict
+
+
+
+
     folder = 2
     folders_x = [data[0][folder], data[1][folder], data[2][folder]]
     folders_y = [data[3][folder], data[4][folder], data[5][folder]]

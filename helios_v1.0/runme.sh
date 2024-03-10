@@ -9,7 +9,7 @@ while [ true ]; do
   venv/bin/python process_mlti_clr_suvi.py
 #  venv/bin/python process_histogram_analysis.py
 
-#  venv/bin/python process_movies.py
+  venv/bin/python process_movies.py
   
   echo 'PAUSING for 1 hour...'
   sleep 1h
