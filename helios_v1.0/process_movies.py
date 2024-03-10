@@ -56,7 +56,7 @@ if __name__ == '__main__':
             diff_files = diff_files[-360:]
 
             fc_output = global_config.folder_output_to_publish + os.sep + sat + '_3_clr'
-            fc_df_output = global_config.folder_output_to_publish + os.sep + sat + '3_clr_df'
+            fc_df_output = global_config.folder_output_to_publish + os.sep + sat + '_3_clr_df'
             make_anim.wrapper(fc_files, fc_output)
             make_anim.wrapper(diff_files, fc_df_output)
 
