@@ -148,7 +148,7 @@ if __name__ == '__main__':
                 events.append(line)
             solar_surface_events.append(events)
 
-        plot(solar_surface_events, 'GOES Primary')
+        plot(solar_surface_events, sat)
         print('*** End Histogram Analysis')
 
     #
