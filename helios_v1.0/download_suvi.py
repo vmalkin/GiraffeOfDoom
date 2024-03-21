@@ -44,6 +44,7 @@ def downloadimages(img_url, listofimages, storagelocation):
     for img in listofimages:
         file = storagelocation + pathsep + img
         img1url = img_url + img
+        # print(file, img1url)
         if os.path.exists(file) is False:
             response1 = get_resource_from_url(img1url)
             print('Saving file ', file)
@@ -71,6 +72,7 @@ def get_imagelist(url_to_get):
         l = line.split('href=')
         l1 = l[1].split('>or_suvi')
         f = l1[0][1:-1]
+        # print(f)
         returnlist.append(f)
     return returnlist
 
