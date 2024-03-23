@@ -19,9 +19,9 @@ def local_file_list_build(directory):
 
 
 if __name__ == '__main__':
-        data = global_config.noaa_image_data
-        store = 1
-        diffs = 2
+        # data = global_config.noaa_image_data
+        # store = 1
+        # diffs = 2
 
         # Make animations
         folder = global_config.folder_source_images + os.sep + 'custom'
