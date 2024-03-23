@@ -9,13 +9,13 @@ from plotly import graph_objects as go
 import glob
 import global_config
 
-# offset values when coronagraph mask support-vane in top-right position
-offset_x = -4
-offset_y = 10
+# # offset values when coronagraph mask support-vane in top-right position
+# offset_x = -4
+# offset_y = 10
 
-# # offset values when coronagraph mask support-vane in bottom-left position
-# offset_x = 4
-# offset_y = -10
+# offset values when coronagraph mask support-vane in bottom-left position
+offset_x = 4
+offset_y = -10
 
 image_size = 512
 imagecentre = image_size / 2
@@ -41,7 +41,7 @@ def process_columns(image):
 
 
 def plot_diffs_polar(pixel_count, filename, width, height):
-    savefile = filename
+    savefile = global_config.folder_output_to_publish + os.sep + filename
     colourstep = 255 / len(pixel_count)
     papercolour = "#303030"
 
@@ -463,7 +463,7 @@ def wrapper(lasco_folder, analysis_folder):
 
     print("*** Analyser: Generating plots")
     plot(datelist, brightness, "corona_value.jpg", 1000, 600)
-    # plot_diffs_polar(stacked_brightness, "cme_polar.jpg", 800, 950)
+    plot_diffs_polar(stacked_brightness, "cme_polar.jpg", 800, 950)
 
     print("*** Analyser: Creating alert and STEREO A confirmation link")
     # If the max value of the detrended data is over 0.5 then we can write an alert for potential
