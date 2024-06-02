@@ -44,8 +44,8 @@ class ThreadPlotter(Thread):
 database = "events.db"
 averaging_iterations = 100
 highpass_threshold = 3
-current_camera = 0
-blob_size = 4
+current_camera = 2
+blob_size = 2
 
 # milli sec
 exposure_win = -1
