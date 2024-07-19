@@ -1,6 +1,6 @@
 import cv2
 
-current_camera = 0
+current_camera = 14
 
 def camera_setup_c270(cam):
     cam.set(cv2.CAP_PROP_GAIN, 255)
