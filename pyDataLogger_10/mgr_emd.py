@@ -79,10 +79,10 @@ def wrapper(database, starttime, publishdirectory):
         dt_readings.append(reading)
 
     print(len(dt_dates), len(dt_readings))
-    n = np.array(dt_readings, dtype='float')
-    sample_rate = len(n)
+    nn = np.array(dt_readings, dtype='float')
+    # sample_rate = len(nn)
     # imf = emd.sift.iterated_mask_sift(n)
-    imf = emd.sift.sift(n)
+    imf = emd.sift.complete_ensemble_sift(nn)
 
     # print("Intrinsic mode function parameters: ", imf.shape[1])
 

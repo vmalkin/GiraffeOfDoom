@@ -9,13 +9,13 @@ from plotly import graph_objects as go
 import glob
 import global_config
 
-# # offset values when coronagraph mask support-vane in top-right position
-# offset_x = -4
-# offset_y = 10
+# offset values when coronagraph mask support-vane in top-right position
+offset_x = -4
+offset_y = 10
 
 # offset values when coronagraph mask support-vane in bottom-left position
-offset_x = 4
-offset_y = -10
+# offset_x = 4
+# offset_y = -10
 
 image_size = 512
 imagecentre = image_size / 2
