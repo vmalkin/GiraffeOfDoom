@@ -4,7 +4,6 @@ import datetime
 import time
 import emd
 import numpy as np
-import sqlite3
 import os
 from statistics import mean
 
@@ -75,12 +74,13 @@ def wrapper(database, starttime, publishdirectory):
     for item in readings:
         date = posix2utc(item[0], '%Y-%m-%d %H:%M:%S')
         dt_dates.append(date)
-        reading = round(item[1], 4)
+        reading = item[1]
         dt_readings.append(reading)
 
     print(len(dt_dates), len(dt_readings))
+    dt_readings = [1,2,3,4,3,2,1,2,3,4,3,2,1,2,3,4,3,2,1,2,3,4,3,2,1,2,3,4,3,2,1]
     nn = np.array(dt_readings, dtype='float')
-    # sample_rate = len(nn)
+
     # imf = emd.sift.iterated_mask_sift(n)
     # imf = emd.sift.complete_ensemble_sift(nn)
     imf = emd.sift.sift(nn)

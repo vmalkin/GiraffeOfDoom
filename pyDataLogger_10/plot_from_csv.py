@@ -10,7 +10,7 @@ import time
 starttime = 0
 station_id = k.station_id
 database = "temp.db"
-filename = "dr01_24hr.csv"
+filename = "output.csv"
 publish_dir = k.publish_dir
 
 gpsdb = sqlite3.connect(database)
@@ -46,14 +46,14 @@ for i in range(0, len(dataarray)):
     if i % 1000 == 0:
         pcent = round(float(i / len(dataarray)), 3)
         print("Completion: ", pcent)
-    db.commit()
+db.commit()
 db.close()
 
 beginjob = time.time()
 mgr_plot_diurnal.wrapper(database, 0, publish_dir)
 mgr_plot_diffs.wrapper(database, 0, publish_dir)
 mgr_plot_detrended.wrapper(database, 0, publish_dir)
-mgr_emd.wrapper(database, 0, publish_dir)
+# mgr_emd.wrapper(database, 0, publish_dir)
 endjob = time.time()
 elapsed = (endjob - beginjob) / 60
 print("Elapsed time: ", elapsed)
