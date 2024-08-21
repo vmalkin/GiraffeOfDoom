@@ -16,9 +16,9 @@ print(x.shape)
 
 imf = emd.sift.sift(x)
 print(imf)
-# IP, IF, IA = emd.spectra.frequency_transform(imf, sample_rate, 'hilbert')
-# freq_range = (0, 10, 100)  # 0 to 10Hz in 100 steps
-# f, hht = emd.spectra.hilberthuang(IF, IA, freq_range, sum_time=False)
+IP, IF, IA = emd.spectra.frequency_transform(imf, sample_rate, 'hilbert')
+freq_range = (0, 10, 100)  # 0 to 10Hz in 100 steps
+f, hht = emd.spectra.hilberthuang(IF, IA, freq_range, sum_time=False)
 
 # import matplotlib.pyplot as plt
 # plt.figure(figsize=(16, 8))

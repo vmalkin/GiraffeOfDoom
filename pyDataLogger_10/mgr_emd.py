@@ -5,6 +5,7 @@ import time
 import emd
 import numpy as np
 import os
+import sqlite3
 from statistics import mean
 
 def posix2utc(posixtime, timeformat):
@@ -78,12 +79,11 @@ def wrapper(database, starttime, publishdirectory):
         dt_readings.append(reading)
 
     print(len(dt_dates), len(dt_readings))
-    dt_readings = [1,2,3,4,3,2,1,2,3,4,3,2,1,2,3,4,3,2,1,2,3,4,3,2,1,2,3,4,3,2,1]
     nn = np.array(dt_readings, dtype='float')
 
     # imf = emd.sift.iterated_mask_sift(n)
     # imf = emd.sift.complete_ensemble_sift(nn)
-    imf = emd.sift.sift(nn)
+    imf = emd.sift.sift(nn, max_imfs=10)
 
     savefile = publishdirectory + os.sep + "plot_emd.jpg"
     plot_data(imf, dt_dates, savefile)
