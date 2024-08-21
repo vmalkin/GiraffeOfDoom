@@ -82,9 +82,8 @@ def wrapper(database, starttime, publishdirectory):
     nn = np.array(dt_readings, dtype='float')
     # sample_rate = len(nn)
     # imf = emd.sift.iterated_mask_sift(n)
-    imf = emd.sift.complete_ensemble_sift(nn)
-
-    # print("Intrinsic mode function parameters: ", imf.shape[1])
+    # imf = emd.sift.complete_ensemble_sift(nn)
+    imf = emd.sift.sift(nn)
 
     savefile = publishdirectory + os.sep + "plot_emd.jpg"
     plot_data(imf, dt_dates, savefile)
