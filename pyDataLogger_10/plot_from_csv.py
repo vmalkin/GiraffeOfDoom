@@ -1,6 +1,6 @@
 import mgr_plot_diurnal
 import mgr_plot_diffs
-import mgr_emd
+# import mgr_emd
 import mgr_plot_detrended
 import constants as k
 import standard_stuff
