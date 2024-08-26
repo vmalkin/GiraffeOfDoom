@@ -1,9 +1,8 @@
 import standard_stuff
-
-from time import time
+import constants as k
+import time
 from statistics import mean
 from plotly import graph_objects as go
-
 
 data_file = 'output.csv'
 lag_minutes = 60
@@ -57,7 +56,6 @@ for i in range(0, lag_minutes):
 
     final_auto_correlation.append(tmp)
 
-import constants as k
 width = k.plot_width
 height = k.plot_height
 backgroundcolour = k.plot_backgroundcolour
@@ -72,7 +70,7 @@ fig = go.Figure(plotdata)
 # plotdata = go.Scatter(x=dt_dates, y=dt_detrend, mode="lines", line=dict(color=pencolour, width=2))
 
 for series in final_auto_correlation:
-   fig.add_trace(go.Bar(x=series))
+   fig.add_trace(go.Bar(y=series))
 
 fig.update_layout(width=width, height=height, title=title,
                   xaxis_title="Date/time UTC<br>http://RuruObservatory.org.nz",
