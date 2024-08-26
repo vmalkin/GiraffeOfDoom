@@ -65,12 +65,12 @@ gridcolour = k.plot_gridcolour
 title = "Auto-correlation. "
 title = title +  "<i>Updated " + standard_stuff.posix2utc(time(), '%Y-%m-%d %H:%M') + "</i>"
 
-plotdata = go.Histogram()
+plotdata = go.Bar()
 fig = go.Figure(plotdata)
 # plotdata = go.Scatter(x=dt_dates, y=dt_detrend, mode="lines", line=dict(color=pencolour, width=2))
 
 for series in final_auto_correlation:
-   fig.add_trace(go.Histogram(x=series))
+   fig.add_trace(go.Bar(y=series))
 
 fig.update_layout(width=width, height=height, title=title,
                   xaxis_title="Date/time UTC<br>http://RuruObservatory.org.nz",
