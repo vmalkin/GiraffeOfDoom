@@ -1,5 +1,5 @@
 import standard_stuff
-import constants as k
+import constants as constants
 import time
 from statistics import mean
 from plotly import graph_objects as go
@@ -56,21 +56,21 @@ for i in range(0, lag_minutes):
 
     final_auto_correlation.append(tmp)
 
-width = k.plot_width
-height = k.plot_height
-backgroundcolour = k.plot_backgroundcolour
-pencolour = k.plot_pencolour
-gridcolour = k.plot_gridcolour
+width = constants.plot_width
+height = constants.plot_height
+backgroundcolour = constants.plot_backgroundcolour
+pencolour = constants.plot_pencolour
+gridcolour = constants.plot_gridcolour
 
 title = "Auto-correlation. "
-title = title +  "<i>Updated " + standard_stuff.posix2utc(time(), '%Y-%m-%d %H:%M') + "</i>"
+title = title +  "<i>Updated " + standard_stuff.posix2utc(time.time(), '%Y-%m-%d %H:%M') + "</i>"
 
 plotdata = go.Bar()
 fig = go.Figure(plotdata)
 # plotdata = go.Scatter(x=dt_dates, y=dt_detrend, mode="lines", line=dict(color=pencolour, width=2))
 
 for series in final_auto_correlation:
-   fig.add_trace(go.Bar(y=series))
+   fig.add_trace(go.Bar(y=series, marker_color=pencolour, marker_line_color=pencolour))
 
 fig.update_layout(width=width, height=height, title=title,
                   xaxis_title="Date/time UTC<br>http://RuruObservatory.org.nz",
