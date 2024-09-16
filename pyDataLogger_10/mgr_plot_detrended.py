@@ -10,7 +10,7 @@ null_value = f'null'
 # make this the median reading for 60 seconds worth of data
 halfwindow_median = 5
 # readings per minute x 60 mins x 1.5 hours
-halfwindow_average = int(30 * 60 * 1.5)
+halfwindow_average = int(60 * 60 * 1.5)
 # halfwindow_average = 300
 
 
