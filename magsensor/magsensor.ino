@@ -40,7 +40,7 @@
 Adafruit_HMC5883_Unified mag = Adafruit_HMC5883_Unified(12345);
 
 int CYCLE = 1000;  /* Approx 1000 iterations per second */
-double COUNT = 5;
+double COUNT = 1;
 
 void displaySensorDetails(void)
 {
@@ -82,9 +82,9 @@ void loop(void)
   /* Get a new sensor event */ 
   // sensors_event_t event; 
   // mag.getEvent(&event);
-  double magX = 0;
-  double magY = 0; 
-  double magZ = 0;
+  float magX = 0;
+  float magY = 0; 
+  float magZ = 0;
   
   /* Display the results (magnetic vector values are in micro-Tesla (uT)) */
   //Serial.print("X: "); Serial.print(event.magnetic.x); Serial.print("  ");
@@ -112,7 +112,9 @@ void loop(void)
   magY = magY/(COUNT * CYCLE); 
   magZ = magZ/(COUNT * CYCLE); 
 
-  Serial.println(magX,3);
+float report = sqrt((magX * magX) + (magY * magY));
+Serial.println(report, 3);
+//  Serial.print(magX,3);
 //  Serial.print(",");
 //  Serial.print(magY,3);
 //  Serial.print(",");

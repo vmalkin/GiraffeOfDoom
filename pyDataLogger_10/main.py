@@ -35,12 +35,15 @@ class ChartThread(Thread):
 
     def run(self):
         while True:
-            beginjob = time.time()
+            beginjob = time()
             starttime = getposixtime() - 86400
+
+            returned_data = database_get_data(database, starttime)
+
             try:
                 # csv logfile for the last 24 hours
                 print("*** Logger: Start")
-                mgr_logfile_daily.wrapper(database, logfile_dir)
+                mgr_logfile_daily.wrapper(returned_data, logfile_dir)
                 print("*** Logger: Finish")
             except:
                 print("!!! Logger: FAIL")
@@ -49,7 +52,7 @@ class ChartThread(Thread):
             try:
                 print("*** Diurnal: Start")
                 # unprocessed magnetogram/data
-                mgr_plot_diurnal.wrapper(database, publish_dir)
+                mgr_plot_diurnal.wrapper(returned_data, publish_dir)
                 print("*** Diurnal: Finish")
             except:
                 print("!!! Diurnal: FAIL")
@@ -58,25 +61,25 @@ class ChartThread(Thread):
             try:
                 print("*** dhdt: Start")
                 # unprocessed magnetogram/data
-                mgr_plot_diffs.wrapper(database, publish_dir)
+                mgr_plot_diffs.wrapper(returned_data, publish_dir)
                 print("*** dhdt: Finish")
             except:
                 print("!!! dhdt: FAIL")
                 logging.error("ERROR: mgr_plot_diurnal.wrapper() failed")
 
-            # try:
-        #     # Detrended magnetogram/data
-            print("*** Detrender: Start")
-            mgr_plot_detrended.wrapper(database, publish_dir)
-            #     print("*** Detrender: Finish")
-            # except:
-            #     print("!!! Detrender: FAIL")
-            #     logging.error("ERROR: mgr_plot_detrended.wrapper() failed")
+            try:
+                # Detrended magnetogram/data
+                print("*** Detrender: Start")
+                mgr_plot_detrended.wrapper(returned_data, publish_dir)
+                print("*** Detrender: Finish")
+            except:
+                print("!!! Detrender: FAIL")
+                logging.error("ERROR: mgr_plot_detrended.wrapper() failed")
 
             try:
                 # Empirical Mode Decomposition of last 24 hours
                 print("*** EMD: Start")
-                mgr_emd.wrapper(database, publish_dir)
+                mgr_emd.wrapper(returned_data, publish_dir)
                 print("*** EMD: Finish")
             except:
                 print("!!! EMD: FAIL")
@@ -85,7 +88,7 @@ class ChartThread(Thread):
             # Brendan Davies Aurora data
             # Chart data every five minutes
             print("*** PLOTS: FINISHED")
-            endjob = time.time()
+            endjob = time()
             elapsed = (endjob - beginjob) / 60
             print("*** Elapsed time: ", elapsed)
             sleep(300)
@@ -142,10 +145,10 @@ def database_add_data(timestamp, datavalue):
     db.commit()
     db.close()
 
-
-def database_get_data(dba):
+def database_get_data(dba, starttime):
     tempdata = []
-    starttime = getposixtime() - 86400
+    # Grab a bit more than a day so we can do the running average with a bit of lead data
+    # starttime = getposixtime() - 91800
     db = sqlite3.connect(dba)
     try:
         cursor = db.cursor()

@@ -27,9 +27,9 @@ def database_get_data(dba):
     return tempdata
 
 
-def wrapper(database, logfile_directory):
+def wrapper(data, logfile_directory):
     # Current data is CSV file with format "posixtime, datavalue"
-    currentdata = database_get_data(database)
+    currentdata = data
     tmp = []
     filename = posix2utc(time(), '%Y-%m-%d') + ".csv"
     savefile_name = logfile_directory + os.sep +  filename

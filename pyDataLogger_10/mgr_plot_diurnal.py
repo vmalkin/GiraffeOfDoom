@@ -63,10 +63,10 @@ def database_get_data(dba, starttime):
 
 
 
-def wrapper(database, starttime, publishdirectory):
+def wrapper(returneddata, publishdirectory):
     # THE DATALIST IS IN THE FORMAT "posixtime, data" We will need to split this into two lists
     # Dates and actual data.
-    readings = database_get_data(database, starttime)
+    readings = returneddata
 
     if len(readings) > half_window:
         savefile_name = publishdirectory + os.sep + "plot_diurnal.jpg"

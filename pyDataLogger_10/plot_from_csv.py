@@ -1,6 +1,6 @@
 import mgr_plot_diurnal
 import mgr_plot_diffs
-# import mgr_emd
+import mgr_emd
 import mgr_plot_detrended
 import constants as k
 import standard_stuff
@@ -53,7 +53,7 @@ beginjob = time.time()
 mgr_plot_diurnal.wrapper(database, 0, publish_dir)
 mgr_plot_diffs.wrapper(database, 0, publish_dir)
 mgr_plot_detrended.wrapper(database, 0, publish_dir)
-# mgr_emd.wrapper(database, 0, publish_dir)
+mgr_emd.wrapper(database, 0, publish_dir)
 endjob = time.time()
 elapsed = (endjob - beginjob) / 60
 print("Elapsed time: ", elapsed)

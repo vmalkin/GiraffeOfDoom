@@ -111,8 +111,8 @@ def remove_zeros(inputarray):
     return outputarray
 
 
-def wrapper(database, starttime, publishdirectory):
-    readings = database_get_data(database, starttime)
+def wrapper(data, publishdirectory):
+    readings = data
 
     if len(readings) > halfwindow_average * 2:
         # Create datapont array
