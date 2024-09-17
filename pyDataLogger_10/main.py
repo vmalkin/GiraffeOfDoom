@@ -14,7 +14,7 @@ import mgr_emd
 import mgr_plot_detrended
 import constants as k
 
-__version__ = "5.0"
+__version__ = "5.2"
 errorloglevel = logging.DEBUG
 logging.basicConfig(filename="errors.log", format='%(asctime)s %(message)s', level=errorloglevel)
 
