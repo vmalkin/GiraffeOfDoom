@@ -8,9 +8,9 @@ import constants as k
 
 null_value = f'null'
 # make this the median reading for 60 seconds worth of data
-halfwindow_median = 5
+halfwindow_median = k.device_rpm
 # readings per minute x 60 mins x 1.5 hours
-halfwindow_average = int(60 * 60 * 1.5)
+halfwindow_average = int(k.device_rpm * 60 * 1.5)
 # halfwindow_average = 300
 
 

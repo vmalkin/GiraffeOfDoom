@@ -5,6 +5,9 @@ database = "arraysave.db"
 logfile_dir = "dailylogs"
 publish_dir = "publish"
 
+# The number of readings per minute the device spits out
+device_rpm = 60
+
 # Comm port parameters - uncomment and change one of the portNames depending on your OS
 # portName = 'Com42'   # Windows
 # portName = '/dev/tty.usbserial-A9MO3C9T'   #MacOS

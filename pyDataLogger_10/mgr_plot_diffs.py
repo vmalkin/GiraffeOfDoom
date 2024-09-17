@@ -7,7 +7,7 @@ from plotly import graph_objects as go
 import constants as k
 
 # The number of readings that equates to one and a half hours of time.
-half_window = 10
+half_window = k.device_rpm * 60 * 1.5
 
 
 def plot(dt_dates, dt_detrend, savefile_name):
