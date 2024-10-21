@@ -23,7 +23,8 @@ def local_file_list_build(directory):
 
 def posix2utc(posixtime, timeformat):
     # '%Y-%m-%d %H:%M'
-    utctime = datetime.datetime.utcfromtimestamp(int(posixtime)).strftime(timeformat)
+    # utctime = datetime.datetime.utcfromtimestamp(int(posixtime)).strftime(timeformat)
+    utctime = datetime.datetime.fromtimestamp(int(posixtime), datetime.UTC).strftime(timeformat)
     return utctime
 
 
