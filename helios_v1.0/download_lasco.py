@@ -18,7 +18,8 @@ def get_resource_from_url(url_to_get):
 
 def posix2utc(posixtime, timeformat):
     # '%Y-%m-%d %H:%M'
-    utctime = datetime.datetime.utcfromtimestamp(int(posixtime)).strftime(timeformat)
+    # utctime = datetime.datetime.utcfromtimestamp(int(posixtime)).strftime(timeformat)
+    utctime = datetime.datetime.fromtimestamp(int(posixtime), datetime.UTC).strftime(timeformat)
     return utctime
 
 
