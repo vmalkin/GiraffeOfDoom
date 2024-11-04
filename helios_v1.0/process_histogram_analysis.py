@@ -130,6 +130,7 @@ if __name__ == '__main__':
             avg_black = np.average(px_black)
             std_black = np.std(px_black)
 
+            #
             events = []
             for i in range(0, len(dates)):
                 dt = dates[i]
