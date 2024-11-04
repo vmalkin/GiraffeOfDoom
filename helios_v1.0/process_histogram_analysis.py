@@ -121,7 +121,7 @@ if __name__ == '__main__':
                 px_black.append(item[2])
 
             # Get simple statistics of the average, and standard deviations for all-black and all-white
-            # pixels for the current day. Use this to determine of any single image is above average, this will
+            # pixels for the current 24 hour period. Use this to determine of any single image is above average, this will
             # be our simple indicator of rapid change in the image caused by CME or similar events on the sun's surface
             # It is possible that we might need a better treatment of this? We might want to store STD and AVG over
             # a period of time and use the median values of those to evaluate individual images?
