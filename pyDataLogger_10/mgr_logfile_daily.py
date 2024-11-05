@@ -1,5 +1,4 @@
 from standard_stuff import posix2utc
-import sqlite3
 from time import time
 import os
 
@@ -7,24 +6,6 @@ def getposixtime():
     timevalue = int(time())
     return timevalue
 
-
-def database_get_data(dba):
-    tempdata = []
-    starttime = getposixtime() - 86400
-    db = sqlite3.connect(dba)
-    try:
-        cursor = db.cursor()
-        result = cursor.execute("select * from data where data.posixtime > ? order by data.posixtime asc", [starttime])
-        for line in result:
-            dt = line[0]
-            da = line[1]
-            d = [dt, da]
-            tempdata.append(d)
-
-    except sqlite3.OperationalError:
-        print("Database is locked, try again!")
-    db.close()
-    return tempdata
 
 
 def wrapper(data, logfile_directory):
