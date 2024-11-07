@@ -108,8 +108,6 @@ if __name__ == '__main__':
                 tmp.append(getfilename(item))
                 tmp.append(histgm[0])
                 tmp.append(histgm[4])
-                # for item in histgm:
-                #     tmp.append(item)
                 returnarray.append(tmp)
 
             px_white = []
