@@ -74,7 +74,7 @@ def plot(event_data, sat_name):
     title = "Solar Surface Event Occurrences: " + sat_name
     fig.update_layout(width=width, height=height, title=title,
                       xaxis_title="UTC Datetime<br><sub>" + global_config.copyright + " http://DunedinAurora.nz</sub>")
-
+    fig.update_layout(yaxis_title="Px Count - Sigmas")
     fig.update_layout(font=dict(size=16, color="#202020"), title_font_size=18, )
     fig.update_layout(plot_bgcolor=papercolour, paper_bgcolor=papercolour)
     file_html = global_config.folder_output_to_publish + os.sep +  sat_name + '_hist.html'
@@ -152,4 +152,4 @@ if __name__ == '__main__':
             solar_surface_events.append(events)
 
         plot(solar_surface_events, sat)
-        print('*** End Histogram Analysis')
+    print('*** End Histogram Analysis')
