@@ -134,12 +134,14 @@ if __name__ == '__main__':
             events = []
             for i in range(0, len(dates)):
                 dt = dates[i]
-                # href=''
+
+                # White pixel count in Sigmas, if the pixel count is over 1 Sigma
                 if px_white[i] > (avg_white + std_white):
                     cme_wh = round(((px_white[i] - avg_white) / std_white), 3)
                 else:
                     cme_wh = 0
 
+                # Black pixel count in Sigmas, if the pixel count is over 1 Sigma
                 if px_black[i] > (avg_black + std_black):
                     cme_bl = round(((px_black[i] - avg_black) / std_black), 3)
                 else:
