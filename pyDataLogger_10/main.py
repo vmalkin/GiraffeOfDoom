@@ -7,17 +7,14 @@ from threading import Thread
 import os
 import sqlite3
 import constants as k
-# from numpy.doc.constants import constants
-
 import standard_stuff
 import mgr_logfile
 import mgr_plot_diurnal
 import mgr_plot_diffs
 import mgr_emd
 import mgr_plot_detrended
-import constants as k
 
-__version__ = "5.2"
+__version__ = "10.0"
 errorloglevel = logging.DEBUG
 logging.basicConfig(filename="errors.log", format='%(asctime)s %(message)s', level=errorloglevel)
 
@@ -59,7 +56,7 @@ class ChartThread(Thread):
                 logging.error("ERROR: mgr_logfile_daily.wrapper() failed")
 
             try:
-                # csv logfile for the last 24 hours
+                # csv logfile for the last Brendan Davies
                 print("*** Brendan Davies Info: Start")
                 savefile_name = k.logfile_dir + os.sep + "brendan_davies.csv"
                 mgr_logfile.wrapper(brendans_data, savefile_name)
@@ -109,7 +106,6 @@ class ChartThread(Thread):
                 print("!!! EMD: FAIL")
                 logging.error("ERROR: mgr_emd.wrapper() failed")
 
-            # Brendan Davies Aurora data
             # Chart data every five minutes
             print("*** PLOTS: FINISHED")
             endjob = time()
@@ -201,7 +197,7 @@ def create_directory(path):
 
 if __name__ == "__main__":
     print("Pything Data Logger")
-    print("(c) Vaughn Malkin, 2015 - 2023")
+    print("(c) Vaughn Malkin, 2015 - 2025")
     print("Version " + __version__)
 
     # the current 24 hours of data are stored here to be shared with various aux functions for plotting etc.
