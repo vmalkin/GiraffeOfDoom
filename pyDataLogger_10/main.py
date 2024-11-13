@@ -37,9 +37,11 @@ class ChartThread(Thread):
         while True:
             beginjob = time()
             starttime = getposixtime() - 86400
+            starttime_fourhours = getposixtime() - (60 * 60 * 4)
             brendans_start = getposixtime() - (10 * 60)
 
             returned_data = database_get_data(database, starttime)
+            fourhour_data = database_get_data(database, starttime_fourhours)
             brendans_data = database_get_data(database, brendans_start)
 
             try:
@@ -86,25 +88,25 @@ class ChartThread(Thread):
                 print("!!! dhdt: FAIL")
                 logging.error("ERROR: mgr_plot_diurnal.wrapper() failed")
 
-            try:
-                # Detrended magnetogram/data
-                print("*** Detrender: Start")
-                mgr_plot_detrended.wrapper(returned_data, publish_dir)
-                print("*** Detrender: Finish")
+            # try:
+            #     # Detrended magnetogram/data
+            #     print("*** Detrender: Start")
+            #     mgr_plot_detrended.wrapper(returned_data, publish_dir)
+            #     print("*** Detrender: Finish")
+            #
+            # except:
+            #     print("!!! Detrender: FAIL")
+            #     logging.error("ERROR: mgr_plot_detrended.wrapper() failed")
 
-            except:
-                print("!!! Detrender: FAIL")
-                logging.error("ERROR: mgr_plot_detrended.wrapper() failed")
-
-            try:
-                # Empirical Mode Decomposition of last 24 hours
-                print("*** EMD: Start")
-                mgr_emd.wrapper(returned_data, publish_dir)
-                print("*** EMD: Finish")
-
-            except:
-                print("!!! EMD: FAIL")
-                logging.error("ERROR: mgr_emd.wrapper() failed")
+            # try:
+            #     # Empirical Mode Decomposition of last 24 hours
+            #     print("*** EMD: Start")
+            #     mgr_emd.wrapper(returned_data, publish_dir)
+            #     print("*** EMD: Finish")
+            #
+            # except:
+            #     print("!!! EMD: FAIL")
+            #     logging.error("ERROR: mgr_emd.wrapper() failed")
 
             # Chart data every five minutes
             print("*** PLOTS: FINISHED")
