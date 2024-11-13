@@ -5,7 +5,6 @@ import numpy as np
 from plotly import graph_objects as go
 import global_config
 
-
 # file path seperator / or \ ???
 pathsep = os.sep
 
@@ -20,7 +19,7 @@ def create_mask(image):
     y_offset = 0
     x_centre = int(width / 2) + x_offset
     y_centre = int(height / 2) + y_offset
-    cv2.circle(mask, (x_centre, y_centre), solar_diameter, (255,255,255), -1)
+    cv2.circle(mask, (x_centre, y_centre), solar_diameter, (255, 255, 255), -1)
     image = cv2.bitwise_and(image, image, mask=mask)
     return image
 
@@ -46,12 +45,12 @@ def getfilename(pathname):
 def plot(event_data, sat_name):
     fig = go.Figure()
     papercolour = "#e0e0e0"
-    gridcolour = "#c0c0c0"
-    bar_fill = ['#f57600','#fcec0e','#19aecf']
+    # gridcolour = "#c0c0c0"
+    bar_fill = ['#f57600', '#fcec0e', '#19aecf']
     width = 1500
     height = 500
 
-    max_y = 10
+    # max_y = 10
     for i in range(0, len(event_data)):
         # Each data is is an array [datetime, data1, data2]
         dt = []
@@ -77,10 +76,11 @@ def plot(event_data, sat_name):
     fig.update_layout(yaxis_title="Px Count - Sigmas")
     fig.update_layout(font=dict(size=16, color="#202020"), title_font_size=18, )
     fig.update_layout(plot_bgcolor=papercolour, paper_bgcolor=papercolour)
-    file_html = global_config.folder_output_to_publish + os.sep +  sat_name + '_hist.html'
+    file_html = global_config.folder_output_to_publish + os.sep + sat_name + '_hist.html'
     file_png = global_config.folder_output_to_publish + os.sep + sat_name + '_hist.png'
     fig.write_html(file_html)
     fig.write_image(file_png)
+
 
 if __name__ == '__main__':
     print('*** Begin Histogram Analysis')
@@ -119,10 +119,10 @@ if __name__ == '__main__':
                 px_black.append(item[2])
 
             # Get simple statistics of the average, and standard deviations for all-black and all-white
-            # pixels for the current 24 hour period. Use this to determine of any single image is above average, this will
-            # be our simple indicator of rapid change in the image caused by CME or similar events on the sun's surface
-            # It is possible that we might need a better treatment of this? We might want to store STD and AVG over
-            # a period of time and use the median values of those to evaluate individual images?
+            # pixels for the current 24 hour period. Use this to determine of any single image is above average, this
+            # will be our simple indicator of rapid change in the image caused by CME or similar events on the sun's
+            # surface. It is possible that we might need a better treatment of this? We might want to store STD and
+            # AVG over a period of time and use the median values of those to evaluate individual images?
             avg_white = np.average(px_white)
             std_white = np.std(px_white)
             avg_black = np.average(px_black)
