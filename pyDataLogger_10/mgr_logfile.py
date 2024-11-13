@@ -1,19 +1,10 @@
 from standard_stuff import posix2utc
-from time import time
-import os
 
-def getposixtime():
-    timevalue = int(time())
-    return timevalue
-
-
-
-def wrapper(data, logfile_directory):
+def wrapper(data, savefilepath):
     # Current data is CSV file with format "posixtime, datavalue"
     currentdata = data
-    tmp = []
-    filename = posix2utc(time(), '%Y-%m-%d') + ".csv"
-    savefile_name = logfile_directory + os.sep +  filename
+    # tmp = []
+    savefile_name = savefilepath
 
     with open(savefile_name, "w") as s:
         s.write("Datetime UTC, Datavalue Arbitrary Units\n")

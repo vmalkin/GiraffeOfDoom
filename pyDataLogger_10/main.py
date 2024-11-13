@@ -6,8 +6,11 @@ import sys
 from threading import Thread
 import os
 import sqlite3
+import constants as k
+# from numpy.doc.constants import constants
+
 import standard_stuff
-import mgr_logfile_daily
+import mgr_logfile
 import mgr_plot_diurnal
 import mgr_plot_diffs
 import mgr_emd
@@ -37,23 +40,41 @@ class ChartThread(Thread):
         while True:
             beginjob = time()
             starttime = getposixtime() - 86400
+            brendans_start = getposixtime() - (10 * 60)
 
             returned_data = database_get_data(database, starttime)
+            brendans_data = database_get_data(database, brendans_start)
 
             try:
                 # csv logfile for the last 24 hours
                 print("*** Logger: Start")
-                mgr_logfile_daily.wrapper(returned_data, logfile_dir)
+                filename = standard_stuff.posix2utc(time(), '%Y-%m-%d') + ".csv"
+                savefile_name = k.logfile_dir + os.sep + filename
+
+                mgr_logfile.wrapper(returned_data, savefile_name)
                 print("*** Logger: Finish")
+
             except:
                 print("!!! Logger: FAIL")
                 logging.error("ERROR: mgr_logfile_daily.wrapper() failed")
+
+            try:
+                # csv logfile for the last 24 hours
+                print("*** Brendan Davies Info: Start")
+                savefile_name = k.logfile_dir + os.sep + "brendan_davies.csv"
+                mgr_logfile.wrapper(brendans_data, savefile_name)
+                print("*** Brendan Davies Info: Finished")
+
+            except:
+                print("!!! Brendan Davies Info: FAIL")
+                logging.error("ERROR: Brendan Davies Info mgr_logfile_daily.wrapper() failed")
 
             try:
                 print("*** Diurnal: Start")
                 # unprocessed magnetogram/data
                 mgr_plot_diurnal.wrapper(returned_data, publish_dir)
                 print("*** Diurnal: Finish")
+
             except:
                 print("!!! Diurnal: FAIL")
                 logging.error("ERROR: mgr_plot_diurnal.wrapper() failed")
@@ -63,6 +84,7 @@ class ChartThread(Thread):
                 # unprocessed magnetogram/data
                 mgr_plot_diffs.wrapper(returned_data, publish_dir)
                 print("*** dhdt: Finish")
+
             except:
                 print("!!! dhdt: FAIL")
                 logging.error("ERROR: mgr_plot_diurnal.wrapper() failed")
@@ -72,6 +94,7 @@ class ChartThread(Thread):
                 print("*** Detrender: Start")
                 mgr_plot_detrended.wrapper(returned_data, publish_dir)
                 print("*** Detrender: Finish")
+
             except:
                 print("!!! Detrender: FAIL")
                 logging.error("ERROR: mgr_plot_detrended.wrapper() failed")
@@ -81,6 +104,7 @@ class ChartThread(Thread):
                 print("*** EMD: Start")
                 mgr_emd.wrapper(returned_data, publish_dir)
                 print("*** EMD: Finish")
+
             except:
                 print("!!! EMD: FAIL")
                 logging.error("ERROR: mgr_emd.wrapper() failed")
