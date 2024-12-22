@@ -1,7 +1,7 @@
 """
 This file contains any global constants as well as standard methods that I use all the time.
 """
-import datetime
+from datetime import datetime, timezone
 import time
 from statistics import mean, median
 from calendar import timegm
@@ -16,7 +16,8 @@ detrender_half_window = 10
 # general utility methods
 def posix2utc(posixtime, timeformat):
     # '%Y-%m-%d %H:%M'
-    utctime = datetime.datetime.utcfromtimestamp(int(posixtime)).strftime(timeformat)
+    # utctime = datetime.datetime.utcfromtimestamp(int(posixtime)).strftime(timeformat)
+    utctime = datetime.fromtimestamp(int(posixtime), tz=timezone.utc).strftime(timeformat)
     return utctime
 
 
