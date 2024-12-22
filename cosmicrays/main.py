@@ -1,7 +1,7 @@
 import time
 import cv2
 import numpy as np
-import datetime
+from datetime import datetime, timezone
 import sqlite3
 import os
 import mgr_daily_count
@@ -69,7 +69,8 @@ def image_save(file_name, image_object):
 
 def posix2utc(posixtime, timeformat):
     # '%Y-%m-%d %H:%M'
-    utctime = datetime.datetime.utcfromtimestamp(int(posixtime)).strftime(timeformat)
+    # utctime = datetime.datetime.utcfromtimestamp(int(posixtime)).strftime(timeformat)
+    utctime = datetime.fromtimestamp(int(posixtime), tz=timezone.utc).strftime(timeformat)
     return utctime
 
 
