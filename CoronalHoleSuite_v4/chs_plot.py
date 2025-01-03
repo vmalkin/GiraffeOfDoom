@@ -27,6 +27,7 @@ def posix2utc(posixtime, timeformat):
 
 
 def plot(splitlist, trend, storm, dates, sat_id):
+    print(splitlist)
     # papercolour = "#d0d0d0"
     plotlist_colours = ['#cfb2be', '#d79180', '#b1493e']
     # plotlist_colours = ['#f1e0e6', '#cfbbc1', '#a49196']
@@ -70,8 +71,8 @@ def plot(splitlist, trend, storm, dates, sat_id):
 
     fig.update_yaxes(range=[200, 700])
     savefile = sat_id + "_simple.jpg"
-    fig.write_image(savefile)
-    # fig.show()
+    # fig.write_image(savefile)
+    fig.show()
 
 
 def create_trend(plotlist):
@@ -242,7 +243,7 @@ def wrapper(sat_id):
     # Create a Dictionary of the last three Carrington rotations. This will have the dates, but be empty
     plotarray = {}
     for i in range(starttime, endtime, 60):
-        plotarray[i] = None
+        plotarray[i] = 0
 
     # Populate the dictionary of Carrington rotations with data from the database.
     for item in prunedlist:

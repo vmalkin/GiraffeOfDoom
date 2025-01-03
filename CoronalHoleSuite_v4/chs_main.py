@@ -1,11 +1,11 @@
 import sqlite3
 
-import mgr_json_data
-import mgr_solar_image
+import chs_json_data
+import chs_sun_img
 # import mgr_data
 # import mgr_plotter
 # import mgr_forecast
-import mgr_simple_plot
+import chs_plot
 import time
 import common_data as k
 import sqlite3
@@ -23,7 +23,7 @@ __author__ = "Vaughn Malkin"
 # solar wind data json http://services.swpc.noaa.gov/products/solar-wind/plasma-2-hour.json
 
 
-sun = mgr_solar_image.SolarImageProcessor("https://services.swpc.noaa.gov/images/animations/suvi/primary/195/latest.png")
+sun = chs_sun_img.SolarImageProcessor("https://services.swpc.noaa.gov/images/animations/suvi/primary/195/latest.png")
 #
 # data_manager = mgr_data.DataManager(LOGFILE)
 # forecaster = mgr_forecast.Forecaster()
@@ -56,7 +56,6 @@ def database_create():
                    'foreign key (sw_time) references sw_data(sw_time),'
                    'foreign key (img_time) references imagedata(img_time)'
                    ');')
-
     db.commit()
     db.close()
 
@@ -76,7 +75,6 @@ def database_add_sw_data(sat_data, recent_dt):
 
     db.commit()
     db.close()
-
 
 
 def database_get_sw_dt(sat_id):
@@ -102,7 +100,7 @@ if __name__ == "__main__":
 
     while True:
         # Solar wind data from DSCOVR
-        sat_data = mgr_json_data.wrapper("http://services.swpc.noaa.gov/products/solar-wind/plasma-2-hour.json")
+        sat_data = chs_json_data.wrapper("http://services.swpc.noaa.gov/products/solar-wind/plasma-2-hour.json")
         datetime_sw = database_get_sw_dt("dscovr")
         # data format:
         # [1693631580, 547.1, 0.18]
@@ -115,7 +113,7 @@ if __name__ == "__main__":
         # Solar wind data from Other Satellites goes here
 
         # Simple stackplot of solar wind
-        mgr_simple_plot.wrapper("dscovr")
+        chs_plot.wrapper("dscovr")
 
         # process latest solar image
         # sun.get_meridian_coverage()

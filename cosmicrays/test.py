@@ -3,6 +3,8 @@ import sqlite3
 import time
 import datetime
 from plotly import graph_objects as go
+import mgr_daily_count
+import mgr_plot_hits
 import mgr_emd
 
 database = "events.db"
@@ -76,34 +78,38 @@ def running_avg(series):
     returnarray.append(None)
     return returnarray
 
-data = database_get_data(24 * 365)
-# data = [10,20,30,40]
-data_counts = []
-data_times = []
-tmp = []
-for i in range(0, len(data) - 1):
-    if posix2utc(data[i + 1], "%d") == posix2utc(data[i], "%d"):
-        # print("Match", i, len(data))
-        tmp.append(1)
+data = database_get_data(24*7)
+mgr_plot_hits.wrapper(data)
+mgr_daily_count.wrapper()
 
-    if posix2utc(data[i + 1], "%d") != posix2utc(data[i], "%d"):
-        # print("Not Match", i, len(data))
-        tmp.append(1)
-        tt = posix2utc(data[i], "%Y-%m-%d")
-        dd = sum(tmp)
-        data_counts.append(dd)
-        data_times.append(tt)
-        tmp = []
-
-    if i == len(data) - 2:
-        # print("End", i, len(data))
-        tmp.append(1)
-        tt = posix2utc(data[i], "%Y-%m-%d")
-        dd = sum(tmp)
-        data_counts.append(dd)
-        data_times.append(tt)
-
-plot(data_times, data_counts)
+# data = database_get_data(24 * 365)
+# # data = [10,20,30,40]
+# data_counts = []
+# data_times = []
+# tmp = []
+# for i in range(0, len(data) - 1):
+#     if posix2utc(data[i + 1], "%d") == posix2utc(data[i], "%d"):
+#         # print("Match", i, len(data))
+#         tmp.append(1)
+#
+#     if posix2utc(data[i + 1], "%d") != posix2utc(data[i], "%d"):
+#         # print("Not Match", i, len(data))
+#         tmp.append(1)
+#         tt = posix2utc(data[i], "%Y-%m-%d")
+#         dd = sum(tmp)
+#         data_counts.append(dd)
+#         data_times.append(tt)
+#         tmp = []
+#
+#     if i == len(data) - 2:
+#         # print("End", i, len(data))
+#         tmp.append(1)
+#         tt = posix2utc(data[i], "%Y-%m-%d")
+#         dd = sum(tmp)
+#         data_counts.append(dd)
+#         data_times.append(tt)
+#
+# plot(data_times, data_counts)
 
 # database = "events.db"
 #

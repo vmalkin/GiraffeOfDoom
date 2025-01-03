@@ -83,7 +83,8 @@ def plot(dates, data):
                       yaxis_title="Daily Count",
                       xaxis_title="Date/time UTC<br><sub>http://DunedinAurora.nz</sub>")
     # title = "muons_avg_" + str(hrs) + "_hr.jpg"
-    fig.write_image("muon_daily.jpg")
+    # fig.write_image("muon_daily.jpg")
+    fig.show()
 
 
 def wrapper():

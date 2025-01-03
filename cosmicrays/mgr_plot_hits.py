@@ -19,8 +19,8 @@ def plot(dates, data, ticknumber, count):
     fig.update_layout(width=1400, height=400,
                       title=title,
                       xaxis_title="Date/time UTC<br><sub>http://DunedinAurora.nz</sub>")
-    fig.write_image("muon_hits.jpg")
-    # fig.show()
+    # fig.write_image("muon_hits.jpg")
+    fig.show()
 
 def wrapper(data):
     nt = int(data[len(data) - 1])
