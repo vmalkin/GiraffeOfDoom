@@ -4,6 +4,8 @@ import re
 import requests
 import os
 import global_config
+import standard_stuff
+
 
 def get_resource_from_url(url_to_get):
     response = ""
@@ -14,14 +16,6 @@ def get_resource_from_url(url_to_get):
         print("unable to load URL", url_to_get)
         print("Try: pip install --upgrade certifi")
     return response
-
-
-def posix2utc(posixtime, timeformat):
-    # '%Y-%m-%d %H:%M'
-    # utctime = datetime.datetime.utcfromtimestamp(int(posixtime)).strftime(timeformat)
-    utctime = datetime.datetime.fromtimestamp(int(posixtime), datetime.UTC).strftime(timeformat)
-    return utctime
-
 
 def parseimages(listofimages, imagestore):
     set_downloads = set(listofimages)
@@ -99,10 +93,10 @@ if __name__ == "__main__":
     #     os.makedirs(analysis_folder)
 
     tm = int(time.time())
-    ymd_now = int(posix2utc(tm, "%Y%m%d"))
+    ymd_now = int(standard_stuff.posix2utc(tm, "%Y%m%d"))
     ymd_old1 = ymd_now - 1
     ymd_old2 = ymd_old1 - 1
-    year = posix2utc(tm, "%Y")
+    year = standard_stuff.posix2utc(tm, "%Y")
 
     # LASCO coronagraph
     baseURL = "https://soho.nascom.nasa.gov/data/REPROCESSING/Completed/" + year + "/c3/" + str(ymd_now) + "/"

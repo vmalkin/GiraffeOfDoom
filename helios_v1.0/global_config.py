@@ -5,6 +5,15 @@ copyright = 'DunedinAurora.NZ, (c) 2024.'
 folder_source_images = 'source'
 folder_output_to_publish = 'publish'
 solar_wind_database = 'solarwind.db'
+report_string = ""
+stored_images_folder = "solar_images"
+
+# in metres
+astronomical_unit = 150000000000
+
+# in days
+carrington_rotation = 27.2753
+
 
 goes_dict = {
     'primary': {

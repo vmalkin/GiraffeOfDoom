@@ -11,6 +11,8 @@ while [ true ]; do
 
   venv/bin/python process_movies.py
   
+  venv/bin/python chs_main.py
+  
   echo 'PAUSING for 1 hour...'
   sleep 1h
 done
