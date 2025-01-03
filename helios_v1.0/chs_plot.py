@@ -1,7 +1,7 @@
 # THis will generate a simple line plot of solar wind speed for the last 3 carrington rotations
 # and highlight repeating events.
 
-import common_data as k
+import global_config as k
 import sqlite3
 import time
 import datetime
@@ -12,7 +12,7 @@ from statistics import median, mean
 def db_getdata(starttime, satellite_name):
     returnvalues = []
     item = [starttime, satellite_name]
-    db = sqlite3.connect(k.database)
+    db = sqlite3.connect(k.solar_wind_database)
     cursor = db.cursor()
     cursor.execute("select * from sw_data where sw_data.sw_time > ? and sw_data.sat_id = ?", item)
     for item in cursor.fetchall():
@@ -27,7 +27,6 @@ def posix2utc(posixtime, timeformat):
 
 
 def plot(splitlist, trend, storm, dates, sat_id):
-    print(splitlist)
     # papercolour = "#d0d0d0"
     plotlist_colours = ['#cfb2be', '#d79180', '#b1493e']
     # plotlist_colours = ['#f1e0e6', '#cfbbc1', '#a49196']
@@ -70,9 +69,9 @@ def plot(splitlist, trend, storm, dates, sat_id):
                   annotation_position="top right")
 
     fig.update_yaxes(range=[200, 700])
-    savefile = sat_id + "_simple.jpg"
-    # fig.write_image(savefile)
-    fig.show()
+    savefile = k.folder_output_to_publish + k.filesep + sat_id + "_simple.jpg"
+    fig.write_image(savefile)
+    # fig.show()
 
 
 def create_trend(plotlist):

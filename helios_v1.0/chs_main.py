@@ -7,10 +7,9 @@ import chs_sun_img
 # import mgr_forecast
 import chs_plot
 import time
-import common_data as k
+import global_config as k
 import sqlite3
 import os
-
 
 # LOGFILE = common_data.reading_actual
 # WAITPERIOD = 86400 * 5
@@ -30,7 +29,7 @@ sun = chs_sun_img.SolarImageProcessor("https://services.swpc.noaa.gov/images/ani
 # common_data.report_string = ""
 
 def database_create():
-    db = sqlite3.connect(k.database)
+    db = sqlite3.connect(k.solar_wind_database)
     cursor = db.cursor()
 
     # cursor.execute("drop table if exists sw_data;")
@@ -61,7 +60,7 @@ def database_create():
 
 
 def database_add_sw_data(sat_data, recent_dt):
-    db = sqlite3.connect(k.database)
+    db = sqlite3.connect(k.solar_wind_database)
     cursor = db.cursor()
     for item in sat_data:
         if item[0] > recent_dt:
@@ -80,7 +79,7 @@ def database_add_sw_data(sat_data, recent_dt):
 def database_get_sw_dt(sat_id):
     item = []
     item.append(sat_id)
-    db = sqlite3.connect(k.database)
+    db = sqlite3.connect(k.solar_wind_database)
     cursor = db.cursor()
     cursor.execute('select max(sw_time) from sw_data where sw_data.sat_id = ?;', item)
     for item in cursor.fetchone():
@@ -94,67 +93,67 @@ if __name__ == "__main__":
     k.report_string = ""
 
     # Check database exists. If not create it.
-    if os.path.isfile(k.database) is False:
+    if os.path.isfile(k.solar_wind_database) is False:
         print("Creating NEW database")
         database_create()
 
-    while True:
-        # Solar wind data from DSCOVR
-        sat_data = chs_json_data.wrapper("http://services.swpc.noaa.gov/products/solar-wind/plasma-2-hour.json")
-        datetime_sw = database_get_sw_dt("dscovr")
-        # data format:
-        # [1693631580, 547.1, 0.18]
-        if datetime_sw == None:
-            datetime_sw = 0
-        for item in sat_data:
-            item.append("dscovr")
-        database_add_sw_data(sat_data, datetime_sw)
 
-        # Solar wind data from Other Satellites goes here
+    # Solar wind data from DSCOVR
+    sat_data = chs_json_data.wrapper("http://services.swpc.noaa.gov/products/solar-wind/plasma-2-hour.json")
+    datetime_sw = database_get_sw_dt("dscovr")
+    # data format:
+    # [1693631580, 547.1, 0.18]
+    if datetime_sw == None:
+        datetime_sw = 0
+    for item in sat_data:
+        item.append("dscovr")
+    database_add_sw_data(sat_data, datetime_sw)
 
-        # Simple stackplot of solar wind
-        chs_plot.wrapper("dscovr")
+    # Solar wind data from Other Satellites goes here
 
-        # process latest solar image
-        # sun.get_meridian_coverage()
+    # Simple stackplot of solar wind
+    chs_plot.wrapper("dscovr")
 
-        # get current posix time and create the datapoint to append to main data
-        # posixtime = int(time.time())   # sun.coverage  discovr.wind_speed  discovr.wind_density
-        # dp = mgr_data.DataPoint(posixtime, sun.coverage, discovr.wind_speed, discovr.wind_density)
-        # print(dp.return_values())
-        #
-        # # append the new datapoint and process the master datalist
-        # data_manager.append_datapoint(dp)
-        # data_manager.process_new_data()
-        #
-        # # Calculate if enough time has elapsed to start running the forecasting.
-        # startdate = int(data_manager.master_data[0].posix_date)
-        # nowdate = int(data_manager.master_data[len(data_manager.master_data) - 1].posix_date)
-        # elapsedtime = nowdate - startdate
-        # timeleft = (WAITPERIOD - elapsedtime) / (60 * 60 * 24)
-        #
-        # if elapsedtime >= WAITPERIOD:
-        #     # create the forecast
-        #     forecaster.calculate_forecast(data_manager.master_data)
-        #
-        #     # Instantiate the prediction plotter, this will load it with the lates values. Plot the final data
-        #     prediction_plotter = mgr_plotter.Plotter()
-        #     prediction_plotter.plot_data()
-        # else:
-        #     common_data.report_string = common_data.report_string + ("<br>Insufficient time has passed to begin forecasting. " + str(timeleft)[:5] + " days remaining" + "\n")
-        #     print(common_data.report_string)
-        #     with open(common_data.regression_ouput, 'w') as w:
-        #         w.write(common_data.report_string + '\n')
-        #
-        #     # Pause for an hour
-        sleeptime = 3600
-        for i in range(sleeptime, 0, -1):
-            j = i % 60
-            if j == 0:
-                mins_left = int(i / 60)
-                reportstring = "Next download in " + str(mins_left) + " minutes"
-                print(reportstring)
-            time.sleep(1)
+    # process latest solar image
+    # sun.get_meridian_coverage()
+
+    # get current posix time and create the datapoint to append to main data
+    # posixtime = int(time.time())   # sun.coverage  discovr.wind_speed  discovr.wind_density
+    # dp = mgr_data.DataPoint(posixtime, sun.coverage, discovr.wind_speed, discovr.wind_density)
+    # print(dp.return_values())
+    #
+    # # append the new datapoint and process the master datalist
+    # data_manager.append_datapoint(dp)
+    # data_manager.process_new_data()
+    #
+    # # Calculate if enough time has elapsed to start running the forecasting.
+    # startdate = int(data_manager.master_data[0].posix_date)
+    # nowdate = int(data_manager.master_data[len(data_manager.master_data) - 1].posix_date)
+    # elapsedtime = nowdate - startdate
+    # timeleft = (WAITPERIOD - elapsedtime) / (60 * 60 * 24)
+    #
+    # if elapsedtime >= WAITPERIOD:
+    #     # create the forecast
+    #     forecaster.calculate_forecast(data_manager.master_data)
+    #
+    #     # Instantiate the prediction plotter, this will load it with the lates values. Plot the final data
+    #     prediction_plotter = mgr_plotter.Plotter()
+    #     prediction_plotter.plot_data()
+    # else:
+    #     common_data.report_string = common_data.report_string + ("<br>Insufficient time has passed to begin forecasting. " + str(timeleft)[:5] + " days remaining" + "\n")
+    #     print(common_data.report_string)
+    #     with open(common_data.regression_ouput, 'w') as w:
+    #         w.write(common_data.report_string + '\n')
+    #
+    #     # Pause for an hour
+    # sleeptime = 3600
+    # for i in range(sleeptime, 0, -1):
+    #     j = i % 60
+    #     if j == 0:
+    #         mins_left = int(i / 60)
+    #         reportstring = "Next download in " + str(mins_left) + " minutes"
+    #         print(reportstring)
+    #     time.sleep(1)
 
 
 

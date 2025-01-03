@@ -10,11 +10,11 @@ import cv2
 import numpy as np
 import urllib.request
 import datetime
-import common_data as k
+import global_config as k
 import time
 from decimal import Decimal, getcontext
 import logging
-import common_data
+
 
 # setup error logging
 # logging levels in order of severity:
@@ -213,7 +213,7 @@ class SolarImageProcessor:
             self._save_image_from_url('https://services.swpc.noaa.gov/images/synoptic-map.jpg', 'syntopic.jpg')
         except:
             logging.debug("Unable to get syntopic map from NOAA")
-            common_data.report_string = common_data.report_string + "Unable to get syntopic map from NOAA.\n"
+            k.report_string = k.report_string + "Unable to get syntopic map from NOAA.\n"
 
         self._save_image_from_url(self.sun_url,"sun.jpg")
         img = self._image_read('sun.jpg')

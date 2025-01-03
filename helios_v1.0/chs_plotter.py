@@ -4,7 +4,7 @@ multiple series in it for use in APIS like Highcharts, etc.
 """
 import logging
 import time
-import common_data
+import global_config as k
 
 # setup error logging
 # logging levels in order of severity:

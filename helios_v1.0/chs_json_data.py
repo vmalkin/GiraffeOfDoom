@@ -1,7 +1,7 @@
 import requests
 import time
 import datetime
-import common_data
+import global_config as k
 from calendar import timegm
 
 def posix2utc(posixtime, timeformat):
@@ -39,7 +39,7 @@ def wrapper(dataurl):
     satdata = _get_json(dataurl)
     if satdata == "no_data":
         # Unable to get DISCOVR data
-        common_data.report_string = common_data.report_string + "Satellite does not have new solar wind data to report \n"
+        k.report_string = k.report_string + "Satellite does not have new solar wind data to report \n"
         dt = 0
         dn = 0
         sp = 0
