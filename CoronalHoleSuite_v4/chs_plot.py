@@ -243,7 +243,7 @@ def wrapper(sat_id):
     # Create a Dictionary of the last three Carrington rotations. This will have the dates, but be empty
     plotarray = {}
     for i in range(starttime, endtime, 60):
-        plotarray[i] = 0
+        plotarray[i] = None
 
     # Populate the dictionary of Carrington rotations with data from the database.
     for item in prunedlist:
