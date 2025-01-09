@@ -4,7 +4,7 @@ import numpy as np
 plt.style.use('_mpl-gallery')
 
 def plot_alt_az(queryresult, savefile):
-    fig, ax = plt.subplots()
+    fig, ax = plt.subplots(layout="constrained", figsize=(9,3), dpi=140)
     # datetime = []
     altitude = []
     azimuth = []
@@ -26,3 +26,4 @@ def plot_alt_az(queryresult, savefile):
     ax.scatter(azimuth, altitude)
     ax.set(xlim=(0, 360), ylim=(0, 90))
     plt.savefig(savefile)
+    # plt.show()

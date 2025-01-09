@@ -8,9 +8,7 @@ from threading import Thread
 import re
 import standard_stuff
 import random
-import mgr_plotter
-# from datetime import datetime
-# from calendar import timegm
+import mgr_matplot
 import mgr_database
 
 
@@ -39,18 +37,11 @@ class QueryProcessor(Thread):
             print("***************************** Start Query Processor")
             now = int(time.time())
 
-            print('Plot last hour GPS tracks')
-            last_6_hours = now - (60 * 60 * 2)
-            query_result = mgr_database.db_get_gsv(last_6_hours, 1)
-            mgr_plotter.polarplot_paths(query_result)
-
-            print('Plot SNR vs Azimuth')
-            mgr_plotter.snr_azimuth(query_result)
-
-            print('Plot Average SNR')
-            start = now - (60 * 60 * 24)
-            query_result = mgr_database.db_get_gsv(start, 20)
-            mgr_plotter.avg_snr_time(now, start, query_result)
+            print('Plot last 24 hour GPS tracks')
+            last_24_hours = now - (60 * 60 * 24)
+            query_result = mgr_database.db_get_gsv(last_24_hours, 20)
+            savefile = k.dir_images + os.sep + "simple_altaz.jpg"
+            mgr_matplot.plot_alt_az(query_result, savefile)
 
             print("******************************* End Query Processor")
 
