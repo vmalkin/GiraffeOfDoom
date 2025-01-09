@@ -15,9 +15,13 @@ def plot_alt_az(queryresult, savefile):
 
         if item[3] == '':
             alt = np.nan
+        else:
+            alt = int(alt)
             # print("Null altitude value")
         if item[4] == '':
             azi = np.nan
+        else:
+            azi = int(azi)
             # print("Null azimuth value")
 
         altitude.append(alt)
@@ -38,15 +42,19 @@ def plot_polar_positions(queryresult, savefile):
 
         if item[3] == '':
             alt = np.nan
+        else:
+            alt = int(alt)
             # print("Null altitude value")
         if item[4] == '':
             azi = np.nan
+        else:
+            azi = int(azi)
             # print("Null azimuth value")
 
         altitude.append(alt)
         azimuth.append(azi)
 
-    fig = plt.figure()
-    ax = fig.add_subplot(projection='polar', layout="constrained", figsize=(5,5), dpi=140)
-    ax.scatter(azimuth, altitude, cmap='hsv', alpha=0.75)
-    plt.show
+    fig, ax = plt.figure()
+    ax = fig.add_subplot(projection='polar')
+    ax.scatter(azimuth, altitude)
+    plt.show()
