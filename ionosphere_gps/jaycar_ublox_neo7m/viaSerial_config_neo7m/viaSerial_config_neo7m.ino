@@ -62,11 +62,11 @@ void setup()
 
   delay(5000);
   // myGNSS.enableNMEAMessage(UBX_NMEA_GGA, COM_PORT_UART1);
-  // myGNSS.enableNMEAMessage(UBX_NMEA_GSV, COM_PORT_UART1);
+  myGNSS.enableNMEAMessage(UBX_NMEA_GSV, COM_PORT_UART1);
   // myGNSS.disableNMEAMessage(UBX_NMEA_GST, COM_PORT_UART1);
-  myGNSS.enableNMEAMessage(UBX_NMEA_GLL, COM_PORT_UART1);
-  myGNSS.disableNMEAMessage(UBX_NMEA_GSV, COM_PORT_UART1);
-  // myGNSS.disableNMEAMessage(UBX_NMEA_GSA, COM_PORT_UART1);
+  // myGNSS.enableNMEAMessage(UBX_NMEA_GLL, COM_PORT_UART1);
+  myGNSS.disableNMEAMessage(UBX_NMEA_GLL, COM_PORT_UART1);
+  myGNSS.disableNMEAMessage(UBX_NMEA_GSA, COM_PORT_UART1);
   myGNSS.disableNMEAMessage(UBX_NMEA_GGA, COM_PORT_UART1);
   myGNSS.disableNMEAMessage(UBX_NMEA_VTG, COM_PORT_UART1);
   myGNSS.disableNMEAMessage(UBX_NMEA_RMC, COM_PORT_UART1);
