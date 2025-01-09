@@ -74,7 +74,7 @@ def polarplot_paths(plotdata):
             theta_data = []
     savefile = k.dir_images + os.sep + 'basic_tracks.png'
     fig.write_image(savefile)
-
+    # fig.show()
 
 def avg_snr_time(now, start, query_result):
     # create array of timestamps for plotting
