@@ -22,7 +22,7 @@ def plot_alt_az(queryresult, savefile):
 
         altitude.append(alt)
         azimuth.append(azi)
-    # print(azimuth)
+
     ax.scatter(azimuth, altitude)
     ax.set(xlim=(0, 360), ylim=(0, 90))
     plt.savefig(savefile)
