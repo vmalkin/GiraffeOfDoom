@@ -112,7 +112,7 @@ def plot_polar_noise(queryresult, savefile):
     ax = fig.add_subplot(projection='polar')
 
 
-    ax.scatter(azimuth, altitude, s=10, c=signalnoise, cmap='Blues', alpha=0.5)
+    ax.scatter(azimuth, altitude, s=5, c=signalnoise, cmap='Blues', alpha=0.5)
     ax.set_rmax(0)
     ax.set_rmin(90)
     ax.set_theta_zero_location("S")

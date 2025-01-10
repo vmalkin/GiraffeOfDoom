@@ -30,7 +30,7 @@ class QueryProcessor(Thread):
         # put query data_s4 processing stuff here.
         while True:
             wiggle = random.randint(-180, 180)
-            sleeptime = (60 * 15) + wiggle
+            sleeptime = (60 * 10) + wiggle
             print('Next plot in ' + str(sleeptime) + ' seconds.')
             time.sleep((sleeptime))
 
