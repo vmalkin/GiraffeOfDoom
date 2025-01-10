@@ -9,7 +9,7 @@ now = int(time.time())
 
 print('Plot last 24 hour GPS tracks')
 now = int(time.time())
-timeinterval = now - (60 * 60 * 12)
+timeinterval = now - (60 * 60 * 6)
 query_result = mgr_database.db_get_gsv(timeinterval, 1)
 
 savefile = k.dir_images + os.sep + "simple_polar_snr.png"

@@ -1,46 +1,7 @@
+import time
 import matplotlib.pyplot as plt
 import numpy as np
-
-def s4_proxy():
-    pass
-
-# def plot_alt_az(queryresult, savefile):
-#     fig, ax = plt.subplots(layout="constrained", figsize=(15,5), dpi=140)
-#     # datetime = []
-#     altitude = []
-#     azimuth = []
-#     signalnoise = []
-#     for item in queryresult:
-#         # datetime.append(item[2])
-#         alt = item[3]
-#         azi = item[4]
-#         snr = item[5]
-#
-#         if item[3] == '':
-#             alt = np.nan
-#         else:
-#             alt = int(alt)
-#             # print("Null altitude value")
-#         if item[4] == '':
-#             azi = np.nan
-#         else:
-#             azi = int(azi)
-#             # print("Null azimuth value")
-#         if item[5] == '':
-#             snr = np.nan
-#         else:
-#             snr = int(snr)
-#
-#         altitude.append(alt)
-#         azimuth.append(azi)
-#         signalnoise.append(snr)
-#
-#     ax.scatter(azimuth, altitude, s=50, c=signalnoise, cmap='afmhot', alpha=0.5)
-#     ax.set(xlim=(0, 360), ylim=(0, 90))
-#     ax.set_title("GPS Tracks - 25 hours")
-#     plt.savefig(savefile)
-#     # plt.show()
-
+import standard_stuff
 
 def plot_polar_noise(queryresult, savefile):
     # plt.style.use('_mpl-gallery')
@@ -76,16 +37,17 @@ def plot_polar_noise(queryresult, savefile):
         altitude.append(alt)
         azimuth.append(azi)
         signalnoise.append(snr)
+    pt = time.time()
+    ut = standard_stuff.posix2utc(pt, '%Y-%m-%d %H:%M')
+    plot_title = "6 Hour SNR Tracks - " + ut
 
     fig = plt.figure(layout="constrained", figsize=(6, 6), dpi=140)
     ax = fig.add_subplot(projection='polar')
-
-
     ax.scatter(azimuth, altitude, s=5, c=signalnoise, cmap='Blues', alpha=0.5)
     ax.set_rmax(0)
     ax.set_rmin(90)
     ax.set_theta_zero_location("S")
     ax.set_theta_direction(1)
-    ax.set_title("GPS SNR Tracks - 6 hours")
+    ax.set_title(plot_title)
     # plt.show()
     plt.savefig(savefile)
