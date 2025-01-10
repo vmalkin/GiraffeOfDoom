@@ -51,3 +51,8 @@ def plot_polar_noise(queryresult, savefile):
     ax.set_title(plot_title)
     # plt.show()
     plt.savefig(savefile)
+
+def plot_time_snr(queryresult, savefile):
+    # ('constellation', 'satID', posixtime, alt, azi, snr)
+    pass
+
