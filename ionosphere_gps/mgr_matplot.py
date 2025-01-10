@@ -1,6 +1,9 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
+def s4_proxy():
+    pass
+
 # def plot_alt_az(queryresult, savefile):
 #     fig, ax = plt.subplots(layout="constrained", figsize=(15,5), dpi=140)
 #     # datetime = []
@@ -56,12 +59,14 @@ def plot_polar_noise(queryresult, savefile):
         else:
             alt = int(alt)
             # print("Null altitude value")
+
         if item[4] == '':
             azi = np.nan
         else:
             # azimuths have to be in radians, even tho the graph shows them as degrees
             azi = azi * (np.pi / 180)
             # print("Null azimuth value")
+
         if item[5] == '':
             snr = np.nan
         else:
@@ -81,6 +86,6 @@ def plot_polar_noise(queryresult, savefile):
     ax.set_rmin(90)
     ax.set_theta_zero_location("S")
     ax.set_theta_direction(1)
-    ax.set_title("GPS SNR Tracks - 24 hours")
+    ax.set_title("GPS SNR Tracks - 6 hours")
     # plt.show()
     plt.savefig(savefile)
