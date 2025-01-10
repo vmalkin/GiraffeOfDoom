@@ -16,7 +16,7 @@ detrender_half_window = 10
 # general utility methods
 def posix2utc(posixtime, timeformat):
     # '%Y-%m-%d %H:%M'
-    utctime = datetime.datetime.utcfromtimestamp(int(posixtime)).strftime(timeformat)
+    utctime = datetime.fromtimestamp(int(posixtime), tz=datetime.timezone.utc).strftime(timeformat)
     return utctime
 
 
