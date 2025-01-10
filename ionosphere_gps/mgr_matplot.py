@@ -27,12 +27,14 @@ def plot_alt_az(queryresult, savefile):
         altitude.append(alt)
         azimuth.append(azi)
 
-    ax.scatter(azimuth, altitude, c="seagreen")
+    ax.scatter(azimuth, altitude, s=3, c="seagreen")
     ax.set(xlim=(0, 360), ylim=(0, 90))
+    ax.set_title("GPS Tracks")
     plt.savefig(savefile)
     # plt.show()
 
 def plot_polar_positions(queryresult, savefile):
+    # Polar plot Theta axis is in radians!
     altitude = []
     azimuth = []
     for item in queryresult:
@@ -48,7 +50,7 @@ def plot_polar_positions(queryresult, savefile):
         if item[4] == '':
             azi = np.nan
         else:
-            azi = int(azi)
+            azi = azi * (np.pi / 180)
             # print("Null azimuth value")
 
         altitude.append(alt)
@@ -56,11 +58,12 @@ def plot_polar_positions(queryresult, savefile):
 
     fig = plt.figure(figsize=(6, 6))
     ax = fig.add_subplot(projection='polar')
-    ax.scatter(azimuth, altitude, c="seagreen")
+
+    ax.scatter(azimuth, altitude, s=3, c="seagreen")
     ax.set_rmax(0)
     ax.set_rmin(90)
     ax.set_theta_zero_location("N")
     ax.set_theta_direction(-1)
-    ax.set_title("Pretty polar error bars")
+    ax.set_title("GPS Tracks")
     # plt.show()
     plt.savefig(savefile)
