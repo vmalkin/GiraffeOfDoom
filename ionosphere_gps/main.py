@@ -42,6 +42,12 @@ class QueryProcessor(Thread):
 
             savefile = k.dir_images + os.sep + "simple_polar_snr.png"
             mgr_matplot.plot_polar_noise(query_result, savefile)
+
+            # timeinterval = now - (60 * 60 * 24)
+            # queryresult = mgr_database.db_get_grouped_snr(timeinterval)
+            # savefile = k.dir_images + os.sep + "simple_time_snr.png"
+            # mgr_matplot.plot_time_snr(queryresult, savefile)
+
             print("******************************* End Query Processor")
 
 

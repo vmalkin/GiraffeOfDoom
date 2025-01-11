@@ -15,20 +15,20 @@ def plot_polar_noise(queryresult, savefile):
         azi = item[4]
         snr = item[5]
 
-        if item[3] == '':
+        if alt == '':
             alt = np.nan
         else:
             alt = int(alt)
             # print("Null altitude value")
 
-        if item[4] == '':
+        if azi == '':
             azi = np.nan
         else:
             # azimuths have to be in radians, even tho the graph shows them as degrees
             azi = azi * (np.pi / 180)
             # print("Null azimuth value")
 
-        if item[5] == '':
+        if snr == '':
             snr = np.nan
         else:
             snr = int(snr)
@@ -54,5 +54,33 @@ def plot_polar_noise(queryresult, savefile):
 
 def plot_time_snr(queryresult, savefile):
     # ('constellation', 'satID', posixtime, alt, azi, snr)
-    pass
+    posixtime = []
+    signalnoise = []
+
+    for item in queryresult:
+        psx = item[0]
+        snr = item[1]
+
+        if psx == '':
+            psx = np.nan
+        else:
+            psx = standard_stuff.posix2utc(psx, '%H:%M:%S')
+            # psx = int(psx)
+
+        if snr == '':
+            snr = np.nan
+        else:
+            snr = int(snr)
+
+        posixtime.append(psx)
+        signalnoise.append(snr)
+
+    fig, ax = plt.subplots(layout="constrained", figsize=(10, 3), dpi=140)
+    ax.plot(posixtime, signalnoise, c="orange")
+    pt = time.time()
+    ut = standard_stuff.posix2utc(pt, '%Y-%m-%d %H:%M:%S')
+    plot_title = "6 Hour SNR Tracks - " + ut
+    ax.set_title(plot_title)
+    # plt.show()
+    plt.savefig(savefile)
 
