@@ -100,7 +100,7 @@ if __name__ == "__main__":
 
         if len(collection) >= 60 * 5:
             mgr_database.db_data_add(collection)
-            gsv_collection = []
+            collection = []
             now = standard_stuff.posix2utc(current_posixtime, '%Y-%m-%d %H:%M')
             print(now, "Barometer data added.")
         # # ENTER into database
