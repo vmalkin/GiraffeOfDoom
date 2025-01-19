@@ -64,7 +64,7 @@ def plot_time_dxdt(queryresult, savefile):
     for i in range(1, len(signal)):
         d = signal[i] - signal[i - 1]
         dx.append(d)
-    psx.pop(0)
+    posixtime.pop(0)
 
     fig, ax = plt.subplots(layout="constrained", figsize=(10, 3), dpi=140)
     ax.plot(posixtime, dx, c="orange")
