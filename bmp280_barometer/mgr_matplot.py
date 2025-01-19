@@ -64,10 +64,13 @@ def plot_time_dxdt(queryresult, savefile):
     for i in range(1, len(signal)):
         d = signal[i] - signal[i - 1]
         dx.append(d)
-    posixtime.pop(0)
+
+    filterwindow = 10
+    posixtime = posixtime[(filterwindow * 2) + 1:]
+    new_dx = standard_stuff.filter_average(dx, filterwindow)
 
     fig, ax = plt.subplots(layout="constrained", figsize=(10, 3), dpi=140)
-    ax.plot(posixtime, dx, c="orange")
+    ax.plot(posixtime, new_dx, c="orange")
     pt = time.time()
     ut = standard_stuff.posix2utc(pt, '%Y-%m-%d %H:%M:%S')
     plot_title = "dx-dt (Pascals) - " + ut
