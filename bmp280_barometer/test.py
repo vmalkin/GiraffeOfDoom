@@ -8,5 +8,7 @@ now = int(time.time())
 timeinterval = now - (60 * 60 * 24)
 queryresult = mgr_database.db_get_pressure(timeinterval)
 savefile = k.dir_images + os.sep + "pressure.png"
-mgr_matplot.plot_time_snr(queryresult, savefile)
+mgr_matplot.plot_time_data(queryresult, savefile)
+savefile = k.dir_images + os.sep + "dxdt.png"
+mgr_matplot.plot_time_dxdt(queryresult, savefile)
 
