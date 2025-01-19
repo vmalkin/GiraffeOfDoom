@@ -63,10 +63,13 @@ def create_directory(directory):
 def add_data(collection, current_posixtime, csv_line):
     # Will need to add a try except here. Just return the collection
     # if there's a problem.
-    temp = csv_line[0]
-    pressure = csv_line[1]
-    dp = [current_posixtime, temp, pressure]
-    collection.append(dp)
+    try:
+        temp = csv_line[0]
+        pressure = csv_line[1]
+        dp = [current_posixtime, temp, pressure]
+        collection.append(dp)
+    except:
+        print("Unable to parse data to add to collection")
     return collection
 
 
