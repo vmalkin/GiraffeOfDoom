@@ -32,7 +32,7 @@ class QueryProcessor(Thread):
             wiggle = random.randint(-180, 180)
             sleeptime = (60 * 15) + wiggle
             print('Next plot in ' + str(sleeptime) + ' seconds.')
-            time.sleep((sleeptime))
+            time.sleep(sleeptime)
 
             print("***************************** Start Query Processor")
             now = int(time.time())
@@ -68,7 +68,6 @@ def add_data(collection, current_posixtime, csv_line):
     dp = [current_posixtime, temp, pressure]
     collection.append(dp)
     return collection
-
 
 
 if __name__ == "__main__":
