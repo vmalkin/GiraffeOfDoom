@@ -40,8 +40,8 @@ class QueryProcessor(Thread):
             queryresult = mgr_database.db_get_pressure(timeinterval)
             savefile = k.dir_images + os.sep + "pressure.png"
             mgr_matplot.plot_time_data(queryresult, savefile)
-            savefile = k.dir_images + os.sep + "dxdt.png"
-            mgr_matplot.plot_time_dxdt(queryresult, savefile)
+            # savefile = k.dir_images + os.sep + "dxdt.png"
+            # mgr_matplot.plot_time_dxdt(queryresult, savefile)
 
             print("******************************* End Query Processor")
 
