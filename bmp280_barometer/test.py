@@ -5,7 +5,7 @@ import os
 import constants as k
 
 now = int(time.time())
-timeinterval = now - (60 * 60 * 26)
+timeinterval = now - (60 * 60 * 6)
 queryresult = mgr_database.db_get_pressure(timeinterval)
 savefile = k.dir_images + os.sep + "pressure_24.png"
 print("Plot pressure 25 hours")
