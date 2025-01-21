@@ -86,25 +86,40 @@ def plot_detrended(queryresult, halfwindow, savefile):
         d = [pxtm, prss]
         rawdata.append(d)
 
-    datetimes = []
+    newdatetimes = []
     newdata = []
-    if len(rawdata) > 2 * halfwindow + 1:
-        for i in range(halfwindow, len(rawdata) - halfwindow):
-            avg_press = []
+    subarray = []
+    # if len(rawdata) > 2 * halfwindow + 1:
+    #     for i in range(halfwindow, len(rawdata) - halfwindow):
+    #         avg_press = []
+    #
+    #         for j in range(0 - halfwindow, halfwindow):
+    #             avg_press.append(rawdata[i + j][1])
+    #
+    #         pxtime = rawdata[i][0]
+    #         pressure = rawdata[i][1]
+    #         pressure_avg = np.mean(avg_press)
+    #         detrend = pressure - pressure_avg
+    #
+    #         datetimes.append(standard_stuff.posix2utc(pxtime, '%Y-%m-%d %H:%M:%S'))
+    #         newdata.append(detrend)
 
-            for j in range(0 - halfwindow, halfwindow):
-                avg_press.append(rawdata[i + j][1])
+    # Iterate over data in a single pass to perform rolling average with a window of 2 * halfwindow
+    for i in range(0, len(rawdata)):
+        utc = standard_stuff.posix2utc(rawdata[i][0], '%Y-%m-%d %H:%M:%S')
+        data = rawdata[i][1]
+        subarray.append(data)
+        if len(subarray) >= (2 * halfwindow):
+            average_pressure = np.mean(subarray)
+            newdatetimes.append(utc)
+            # Calculate the detrended data
+            ndata = data - average_pressure
+            newdata.append(ndata)
+            subarray.pop(0)
 
-            pxtime = rawdata[i][0]
-            pressure = rawdata[i][1]
-            pressure_avg = np.mean(avg_press)
-            detrend = pressure - pressure_avg
-
-            datetimes.append(standard_stuff.posix2utc(pxtime, '%Y-%m-%d %H:%M:%S'))
-            newdata.append(detrend)
 
     fig, ax = plt.subplots(layout="constrained", figsize=(16, 4), dpi=140)
-    ax.plot(datetimes, newdata, c="orange")
+    ax.plot(newdatetimes, newdata, c="orange")
     pt = time.time()
     ut = standard_stuff.posix2utc(pt, '%Y-%m-%d %H:%M:%S')
     plot_title = "Detrended Pressure (Pascals) - " + ut
