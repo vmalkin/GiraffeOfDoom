@@ -14,8 +14,8 @@ mgr_matplot.plot_time_data(queryresult, savefile)
 # savefile = k.dir_images + os.sep + "dxdt.png"
 # mgr_matplot.plot_time_dxdt(queryresult, savefile)
 
-savefile = k.dir_images + os.sep + "detrended_24.png"
-halfwindow = 60 * 2.5
-print("Plot detrended pressure 25 hours")
-mgr_matplot.plot_detrended(queryresult, halfwindow, savefile)
+# savefile = k.dir_images + os.sep + "detrended_24.png"
+# halfwindow = 60 * 2.5
+# print("Plot detrended pressure 25 hours")
+# mgr_matplot.plot_detrended(queryresult, halfwindow, savefile)
 
