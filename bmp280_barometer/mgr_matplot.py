@@ -28,8 +28,8 @@ def plot_time_data(queryresult, savefile):
         signal.append(sgn)
 
     fig, ax = plt.subplots(layout="constrained", figsize=(16, 10), dpi=140)
-    with plt.style.context('Solarize_Light2'):
-        ax.plot(posixtime, signal, c="orange")
+    plt.style.context('Solarize_Light2')
+    ax.plot(posixtime, signal, c="orange")
 
     pt = time.time()
     ut = standard_stuff.posix2utc(pt, '%Y-%m-%d %H:%M:%S')
@@ -73,8 +73,8 @@ def plot_time_dxdt(queryresult, savefile):
 
 
     fig, ax = plt.subplots(layout="constrained", figsize=(16, 10), dpi=140)
-    with plt.style.context('Solarize_Light2'):
-        ax.plot(posixtime, new_dx, c="orange")
+    plt.style.context('Solarize_Light2')
+    ax.plot(posixtime, new_dx, c="orange")
     pt = time.time()
     ut = standard_stuff.posix2utc(pt, '%Y-%m-%d %H:%M:%S')
     plot_title = "dx-dt (Pascals) - " + ut
@@ -108,8 +108,7 @@ def plot_detrended(queryresult, halfwindow, savefile):
             subarray.pop(0)
 
     fig, ax = plt.subplots(layout="constrained", figsize=(16, 4), dpi=140)
-    with plt.style.context('Solarize_Light2'):
-        ax.plot(newdatetimes, newdata, c="orange")
+    ax.plot(newdatetimes, newdata, c="orange")
     pt = time.time()
     ut = standard_stuff.posix2utc(pt, '%Y-%m-%d %H:%M:%S')
     plot_title = "Detrended Pressure (Pascals) - " + ut
