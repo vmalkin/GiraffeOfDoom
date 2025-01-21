@@ -107,14 +107,14 @@ def plot_detrended(queryresult, halfwindow, savefile):
     # Iterate over data in a single pass to perform rolling average with a window of 2 * halfwindow
     for i in range(0, len(rawdata)):
         utc = standard_stuff.posix2utc(rawdata[i][0], '%Y-%m-%d %H:%M:%S')
-        data = rawdata[i][1]
-        subarray.append(data)
+        pressure = rawdata[i][1]
+        subarray.append(pressure)
         if len(subarray) >= (2 * halfwindow):
             average_pressure = np.mean(subarray)
             newdatetimes.append(utc)
             # Calculate the detrended data
-            ndata = data - average_pressure
-            newdata.append(ndata)
+            detrended_pressure = pressure - average_pressure
+            newdata.append(detrended_pressure)
             subarray.pop(0)
 
 
