@@ -27,6 +27,7 @@ def plot_time_data(queryresult, savefile):
         posixtime.append(psx)
         signal.append(sgn)
 
+    plt.style.use('solarize_light2')
     fig, ax = plt.subplots(layout="constrained", figsize=(16, 10), dpi=140)
     ax.plot(posixtime, signal, c="orange")
     pt = time.time()
@@ -69,6 +70,7 @@ def plot_time_dxdt(queryresult, savefile):
     posixtime = posixtime[(filterwindow * 2) + 1:]
     new_dx = standard_stuff.filter_average(dx, filterwindow)
 
+    plt.style.use('solarize_light2')
     fig, ax = plt.subplots(layout="constrained", figsize=(16, 10), dpi=140)
     ax.plot(posixtime, new_dx, c="orange")
     pt = time.time()
@@ -117,7 +119,7 @@ def plot_detrended(queryresult, halfwindow, savefile):
             newdata.append(detrended_pressure)
             subarray.pop(0)
 
-
+    plt.style.use('solarize_light2')
     fig, ax = plt.subplots(layout="constrained", figsize=(16, 4), dpi=140)
     ax.plot(newdatetimes, newdata, c="orange")
     pt = time.time()
