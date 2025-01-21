@@ -22,28 +22,28 @@ optimum_altitude = 25
 # *************************************************
 # Plotter and query processor thread
 # *************************************************
-class QueryProcessor(Thread):
-    def __init__(self):
-        Thread.__init__(self, name="QueryProcessor")
-
-    def run(self):
-        # put query data_s4 processing stuff here.
-        while True:
-            wiggle = random.randint(-180, 180)
-            sleeptime = (60 * 15) + wiggle
-            print('Next plot in ' + str(sleeptime) + ' seconds.')
-            time.sleep(sleeptime)
-
-            print("***************************** Start Query Processor")
-            now = int(time.time())
-            timeinterval = now - (60 * 60 * 24)
-            queryresult = mgr_database.db_get_pressure(timeinterval)
-            savefile = k.dir_images + os.sep + "pressure.png"
-            mgr_matplot.plot_time_data(queryresult, savefile)
-            # savefile = k.dir_images + os.sep + "dxdt.png"
-            # mgr_matplot.plot_time_dxdt(queryresult, savefile)
-
-            print("******************************* End Query Processor")
+# class QueryProcessor(Thread):
+#     def __init__(self):
+#         Thread.__init__(self, name="QueryProcessor")
+#
+#     def run(self):
+#         # put query data_s4 processing stuff here.
+#         while True:
+#             wiggle = random.randint(-180, 180)
+#             sleeptime = (60 * 15) + wiggle
+#             print('Next plot in ' + str(sleeptime) + ' seconds.')
+#             time.sleep(sleeptime)
+#
+#             print("***************************** Start Query Processor")
+#             now = int(time.time())
+#             timeinterval = now - (60 * 60 * 24)
+#             queryresult = mgr_database.db_get_pressure(timeinterval)
+#             savefile = k.dir_images + os.sep + "pressure.png"
+#             mgr_matplot.plot_time_data(queryresult, savefile)
+#             # savefile = k.dir_images + os.sep + "dxdt.png"
+#             # mgr_matplot.plot_time_dxdt(queryresult, savefile)
+#
+#             print("******************************* End Query Processor")
 
 
 def get_rounded_posix_():
@@ -89,8 +89,8 @@ if __name__ == "__main__":
         print("Creating image file directory...")
         create_directory(k.dir_images)
 
-    queryprocessor = QueryProcessor()
-    queryprocessor.start()
+    # queryprocessor = QueryProcessor()
+    # queryprocessor.start()
 
     com = mgr_comport.SerialManager(k.comport, k.baudrate, k.bytesize, k.parity, k.stopbits, k.timeout,
                                     k.xonxoff,

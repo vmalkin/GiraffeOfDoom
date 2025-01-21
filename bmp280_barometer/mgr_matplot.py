@@ -28,7 +28,9 @@ def plot_time_data(queryresult, savefile):
         signal.append(sgn)
 
     fig, ax = plt.subplots(layout="constrained", figsize=(16, 10), dpi=140)
+    plt.style.context('Solarize_Light2')
     ax.plot(posixtime, signal, c="orange")
+
     pt = time.time()
     ut = standard_stuff.posix2utc(pt, '%Y-%m-%d %H:%M:%S')
     plot_title = "Barometric Pressure (Pascals) - " + ut
@@ -69,7 +71,9 @@ def plot_time_dxdt(queryresult, savefile):
     posixtime = posixtime[(filterwindow * 2) + 1:]
     new_dx = standard_stuff.filter_average(dx, filterwindow)
 
+
     fig, ax = plt.subplots(layout="constrained", figsize=(16, 10), dpi=140)
+    plt.style.context('Solarize_Light2')
     ax.plot(posixtime, new_dx, c="orange")
     pt = time.time()
     ut = standard_stuff.posix2utc(pt, '%Y-%m-%d %H:%M:%S')
@@ -89,20 +93,6 @@ def plot_detrended(queryresult, halfwindow, savefile):
     newdatetimes = []
     newdata = []
     subarray = []
-    # if len(rawdata) > 2 * halfwindow + 1:
-    #     for i in range(halfwindow, len(rawdata) - halfwindow):
-    #         avg_press = []
-    #
-    #         for j in range(0 - halfwindow, halfwindow):
-    #             avg_press.append(rawdata[i + j][1])
-    #
-    #         pxtime = rawdata[i][0]
-    #         pressure = rawdata[i][1]
-    #         pressure_avg = np.mean(avg_press)
-    #         detrend = pressure - pressure_avg
-    #
-    #         datetimes.append(standard_stuff.posix2utc(pxtime, '%Y-%m-%d %H:%M:%S'))
-    #         newdata.append(detrend)
 
     # Iterate over data in a single pass to perform rolling average with a window of 2 * halfwindow
     for i in range(0, len(rawdata)):
@@ -116,7 +106,6 @@ def plot_detrended(queryresult, halfwindow, savefile):
             detrended_pressure = pressure - average_pressure
             newdata.append(detrended_pressure)
             subarray.pop(0)
-
 
     fig, ax = plt.subplots(layout="constrained", figsize=(16, 4), dpi=140)
     ax.plot(newdatetimes, newdata, c="orange")
