@@ -42,14 +42,14 @@ def plot_time_data(queryresult, decimation, savefile):
     plt.savefig(savefile)
 
 
-def plot_time_dxdt(queryresult, savefile):
+def plot_time_dxdt(queryresult, decimation, savefile):
     # ('constellation', 'satID', posixtime, alt, azi, snr)
     posixtime = []
     signal = []
 
-    for item in queryresult:
-        psx = item[0]
-        sgn = item[1]
+    for i in range(0, len(queryresult), decimation):
+        psx = queryresult[i][0]
+        sgn = queryresult[i][1]
 
         if psx == '':
             psx = np.nan
@@ -75,7 +75,7 @@ def plot_time_dxdt(queryresult, savefile):
     new_dx = standard_stuff.filter_average(dx, filterwindow)
 
 
-    fig, ax = plt.subplots(layout="constrained", figsize=(16, 8), dpi=140)
+    fig, ax = plt.subplots(layout="constrained", figsize=(16, 5), dpi=140)
     plt.style.context('Solarize_Light2')
     ax.plot(posixtime, new_dx, c="orange")
     tick_spacing = 60
