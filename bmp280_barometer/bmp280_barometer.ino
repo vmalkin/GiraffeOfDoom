@@ -44,7 +44,7 @@ void setup() {
   //   while (1) delay(10);
   // }
 
-  // /* Default settings from datasheet. */
+  /* Default settings from datasheet. */
   // bmp.setSampling(Adafruit_BMP280::MODE_NORMAL,     /* Operating Mode. */
   //                 Adafruit_BMP280::SAMPLING_X2,     /* Temp. oversampling */
   //                 Adafruit_BMP280::SAMPLING_X16,    /* Pressure oversampling */
@@ -53,10 +53,10 @@ void setup() {
   /* Default settings from datasheet. */
 
   // Settings for weather station incl disbale filter, so sensitive to pressure events!
-  bmp.setSampling(Adafruit_BMP280::MODE_FORCED,     /* Operating Mode. */
-                  Adafruit_BMP280::SAMPLING_X1,     /* Temp. oversampling */
-                  Adafruit_BMP280::SAMPLING_X1,    /* Pressure oversampling */
-                  Adafruit_BMP280::FILTER_X1,      /* Filtering. */
+  bmp.setSampling(Adafruit_BMP280::MODE_NORMAL,     /* Operating Mode. */
+                  Adafruit_BMP280::SAMPLING_X2,     /* Temp. oversampling */
+                  Adafruit_BMP280::SAMPLING_X16,    /* Pressure oversampling */
+                  Adafruit_BMP280::FILTER_OFF,      /* Filtering. */
                   Adafruit_BMP280::STANDBY_MS_500); /* Standby time. */
 
   // bmp_temp->printSensorDetails();
