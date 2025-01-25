@@ -70,7 +70,7 @@ def plot_time_dxdt(queryresult, decimation, savefile):
         d = signal[i] - signal[i - 1]
         dx.append(d)
 
-    filterwindow = 20
+    filterwindow = 5
     posixtime = posixtime[(filterwindow * 2) + 1:]
     new_dx = standard_stuff.filter_average(dx, filterwindow)
 
