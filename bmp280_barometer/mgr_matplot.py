@@ -126,5 +126,38 @@ def plot_detrended(queryresult, decimation, halfwindow, savefile):
     # plt.show()
     plt.savefig(savefile)
 
+def plot_stats(queryresult, decimation, halfwindow, savefile):
+    rawdata = []
+    for item in queryresult:
+        pxtm = int(item[0])
+        prss = float(item[1])
+        d = [pxtm, prss]
+        rawdata.append(d)
 
+    newdatetimes = []
+    data_stdev = []
+    subarray = []
 
+    # Iterate over data in a single pass to perform rolling average with a window of 2 * halfwindow
+    for i in range(0, len(rawdata), decimation):
+        utc = standard_stuff.posix2utc(rawdata[i][0], '%Y-%m-%d %H:%M:%S')
+        pressure = rawdata[i][1]
+        subarray.append(pressure)
+        if len(subarray) >= (2 * halfwindow):
+            d_stdev = np.std(subarray)
+            data_stdev.append(d_stdev)
+            newdatetimes.append(utc)
+            subarray.pop(0)
+
+    fig, ax = plt.subplots(layout="constrained", figsize=(16, 5), dpi=140)
+    ax.plot(newdatetimes, data_stdev, c="green")
+
+    tick_spacing = 60
+    ax.xaxis.set_major_locator(ticker.MultipleLocator(tick_spacing))
+    plt.xticks(rotation=90)
+    pt = time.time()
+    ut = standard_stuff.posix2utc(pt, '%Y-%m-%d %H:%M:%S')
+    plot_title = "Standard Deviation (Pascals) - " + ut
+    ax.set_title(plot_title)
+    # plt.show()
+    plt.savefig(savefile)
