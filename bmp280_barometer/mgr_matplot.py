@@ -27,9 +27,9 @@ def plot_time_data(queryresult, decimation, readings_per_tick, texttitle, savefi
 
         posixtime.append(psx)
         signal.append(sgn)
-
-    print("length of data ", len(signal))
-    print("tick interval ", readings_per_tick)
+    #
+    # print("length of data ", len(signal))
+    # print("tick interval ", readings_per_tick)
 
     fig, ax = plt.subplots(layout="constrained", figsize=(16, 8), dpi=140)
     # plt.style.context('Solarize_Light2')
