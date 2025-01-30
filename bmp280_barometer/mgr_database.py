@@ -26,7 +26,6 @@ def db_data_add(gsvdata):
     db = gpsdb.cursor()
     for item in gsvdata:
         posixtime = item[0]
-        # sat id must match IDs entered in satellites table.
         temperature = item[1]
         pressure = item[2]
         values = [posixtime, temperature, pressure]
