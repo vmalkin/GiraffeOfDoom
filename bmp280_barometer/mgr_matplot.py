@@ -27,12 +27,9 @@ def plot_time_data(queryresult, decimation, readings_per_tick, texttitle, savefi
 
         posixtime.append(psx)
         signal.append(sgn)
-    #
-    # print("length of data ", len(signal))
-    # print("tick interval ", readings_per_tick)
 
+    plt.style.use('Solarize_Light2')
     fig, ax = plt.subplots(layout="constrained", figsize=(16, 8), dpi=140)
-    # plt.style.context('Solarize_Light2')
     ax.plot(posixtime, signal, c="orange")
 
     tick_spacing = readings_per_tick
@@ -41,13 +38,14 @@ def plot_time_data(queryresult, decimation, readings_per_tick, texttitle, savefi
 
     pt = time.time()
     ut = standard_stuff.posix2utc(pt, '%Y-%m-%d %H:%M')
-    plot_title = texttitle + "(Pascals) - " + ut
+    plot_title = texttitle + " (Pascals) - " + ut
+
     ax.set_title(plot_title)
     # plt.show()
     plt.savefig(savefile)
 
 
-def plot_detrended(queryresult, decimation, readings_per_tick, halfwindow, savefile):
+def plot_detrended(queryresult, decimation, readings_per_tick, halfwindow, texttitle, savefile):
     rawdata = []
     for item in queryresult:
         pxtm = int(item[0])
@@ -71,7 +69,10 @@ def plot_detrended(queryresult, decimation, readings_per_tick, halfwindow, savef
             detrended_pressure = pressure - average_pressure
             newdata.append(detrended_pressure)
             subarray.pop(0)
+    print("leng of data: ", len(newdata))
+    print("tick interval: ",readings_per_tick)
 
+    plt.style.use('Solarize_Light2')
     fig, ax = plt.subplots(layout="constrained", figsize=(16, 5), dpi=140)
     ax.plot(newdatetimes, newdata, c="orange")
     tick_spacing = readings_per_tick
@@ -79,7 +80,7 @@ def plot_detrended(queryresult, decimation, readings_per_tick, halfwindow, savef
     plt.xticks(rotation=90)
     pt = time.time()
     ut = standard_stuff.posix2utc(pt, '%Y-%m-%d %H:%M:%S')
-    plot_title = "Detrended Pressure (Pascals) - " + ut
+    plot_title = texttitle + " " + ut
     ax.set_title(plot_title)
     # plt.show()
     plt.savefig(savefile)
@@ -107,7 +108,7 @@ def plot_stats(queryresult, decimation, readings_per_tick, halfwindow, savefile)
             data_stdev.append(d_stdev)
             newdatetimes.append(utc)
             subarray.pop(0)
-
+    plt.style.use('Solarize_Light2')
     fig, ax = plt.subplots(layout="constrained", figsize=(16, 5), dpi=140)
     ax.plot(newdatetimes, data_stdev, c="green")
 

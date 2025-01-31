@@ -4,7 +4,6 @@ import mgr_comport
 import time
 import os
 import logging
-from threading import Thread
 import re
 import standard_stuff
 import random
