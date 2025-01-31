@@ -98,6 +98,7 @@ if __name__ == "__main__":
     while True:
         current_posixtime = get_rounded_posix_()
         line = com.data_recieve()
+        print(line)
         csv_line = re.split(r'[,|*]', line)
 
         collection = add_data(collection, current_posixtime, csv_line)
