@@ -16,10 +16,11 @@ mgr_matplot.plot_time_data(queryresult, decimation, readings_per_tick, "Pressure
 
 print("Plot detrended pressure seven days")
 savefile = k.dir_images + os.sep + "7days_dt_pressure.png"
-readings_per_minute = 1
+readings_per_minute = 2
 decimation = int(60 / readings_per_minute)
 readings_per_tick = readings_per_minute * 60 * 12
-halfwindow = int(60 / decimation) * 5
+halfwindow = int(60 / decimation) * 60 * 1.5
+print("*** Detrended half window size: ", halfwindow)
 mgr_matplot.plot_detrended(queryresult, decimation, readings_per_tick, halfwindow, "Detrended Pressure Seven Day", savefile)
 
 print("Plot pressure one day")
@@ -45,5 +46,6 @@ readings_per_minute = 1
 decimation = int(60 / readings_per_minute)
 readings_per_tick = readings_per_minute * 60 * 1
 halfwindow = int(60 / decimation) * 5
+print("*** Detrended half window size: ", halfwindow)
 mgr_matplot.plot_detrended(queryresult, decimation, readings_per_tick, halfwindow, "Detrended Pressure One Day", savefile)
 
