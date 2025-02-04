@@ -1,5 +1,6 @@
 import mgr_database
 import mgr_matplot
+# import mgr_emd
 import time
 import os
 import constants as k
@@ -49,3 +50,5 @@ halfwindow = int(60 / decimation) * 5
 print("*** Detrended half window size: ", halfwindow)
 mgr_matplot.plot_detrended(queryresult, decimation, readings_per_tick, halfwindow, "Detrended Pressure One Day", savefile)
 
+# savefile = k.dir_images + os.sep + "emd.png"
+# mgr_emd.wrapper(queryresult, savefile)

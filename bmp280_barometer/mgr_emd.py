@@ -65,7 +65,7 @@ def plot_data(imf, dates, filename):
     fig.write_image(filename)
     fig.write_html("publish/plot_emd.html")
 
-def wrapper(data, publishdirectory):
+def wrapper(data, savefile):
     readings = data
 
     dt_dates = []
@@ -83,7 +83,6 @@ def wrapper(data, publishdirectory):
     # imf = emd.sift.complete_ensemble_sift(nn)
     imf = emd.sift.sift(nn)
 
-    savefile = publishdirectory + os.sep + "plot_emd.jpg"
     plot_data(imf, dt_dates, savefile)
 
 
