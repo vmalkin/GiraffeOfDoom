@@ -9,8 +9,8 @@ html = html_bytes.decode("utf-8")
 soup = BeautifulSoup(html, "html.parser")
 j = soup.find_all("div", class_="search-results")
 
-with open('savehtml.txt', 'w') as savefile:
-    for line in j:
-        # print(line)
-        savefile.write(line)
-savefile.close()
+# with open('savehtml.txt', 'w') as savefile:
+for line in j:
+    print(line)
+#         savefile.write(line)
+# savefile.close()
