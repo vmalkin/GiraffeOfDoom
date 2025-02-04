@@ -69,14 +69,15 @@ def plot_detrended(queryresult, decimation, readings_per_tick, halfwindow, textt
             detrended_pressure = pressure - average_pressure
             newdata.append(detrended_pressure)
             subarray.pop(0)
-    print("leng of data: ", len(newdata))
-    print("tick interval: ",readings_per_tick)
+    # print("leng of data: ", len(newdata))
+    # print("tick interval: ",readings_per_tick)
 
     plt.style.use('Solarize_Light2')
     fig, ax = plt.subplots(layout="constrained", figsize=(16, 5), dpi=140)
     ax.plot(newdatetimes, newdata, c="orange")
     tick_spacing = readings_per_tick
     ax.xaxis.set_major_locator(ticker.MultipleLocator(tick_spacing))
+    # ax.set_ylim([-30, 30])
     plt.xticks(rotation=90)
     pt = time.time()
     ut = standard_stuff.posix2utc(pt, '%Y-%m-%d %H:%M:%S')
