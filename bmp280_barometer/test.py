@@ -25,11 +25,6 @@ halfwindow = int(60 / decimation) * 60 * 1.5
 print("*** Detrended half window size: ", halfwindow)
 mgr_matplot.plot_detrended(queryresult, decimation, readings_per_tick, halfwindow, "Detrended Pressure Seven Day", savefile)
 
-with open("detrended.csv", "w") as d:
-    for item in queryresult:
-        dp = standard_stuff.posix2utc(item[0], '%Y-%m-%d %H:%M:%S') + "," + str(item[1]) + "\r\n"
-        d.write(dp)
-d.close()
 # print("Plot standard deviation seven day")
 # savefile = k.dir_images + os.sep + "7days_stats.png"
 # mgr_matplot.plot_stats(queryresult, decimation, readings_per_tick, halfwindow, savefile)

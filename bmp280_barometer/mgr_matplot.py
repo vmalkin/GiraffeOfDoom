@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
 import numpy as np
 import standard_stuff
+# import os
 
 
 def plot_time_data(queryresult, decimation, readings_per_tick, texttitle, savefile):
@@ -69,8 +70,15 @@ def plot_detrended(queryresult, decimation, readings_per_tick, halfwindow, textt
             detrended_pressure = pressure - average_pressure
             newdata.append(detrended_pressure)
             subarray.pop(0)
-    # print("leng of data: ", len(newdata))
-    # print("tick interval: ",readings_per_tick)
+
+    # if os.path.isfile("detrended.csv") is True:
+    #     print("No plotting detrended CSV file")
+    # else:
+    #     with open("detrended.csv", "w") as d:
+    #         for i in range(0, len(newdata)):
+    #             dp = newdatetimes[i] + "," + str(newdata[i]) + "\r\n"
+    #             d.write(dp)
+    #     d.close()
 
     plt.style.use('Solarize_Light2')
     fig, ax = plt.subplots(layout="constrained", figsize=(16, 5), dpi=140)
