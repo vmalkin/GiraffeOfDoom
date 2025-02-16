@@ -4,7 +4,7 @@
 # portName = "/dev/cu.usbmodem1421"
 # portName = '/dev/ttyUSB0'
 # comport = "/dev/ttyACM0"
-comport = "/dev/ttyACM0"
+comport = "/dev/ttyACM1"
 baudrate = 9600
 bytesize = 8
 parity = 'N'

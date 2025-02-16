@@ -6,35 +6,15 @@ import standard_stuff
 # import os
 
 
-def plot_time_data(queryresult, decimation, readings_per_tick, texttitle, savefile):
+def plot_time_data(utcdates, pressuredata, texttitle, savefile):
     # ('constellation', 'satID', posixtime, alt, azi, snr)
-    posixtime = []
-    signal = []
-
-    for i in range(0, len(queryresult), decimation):
-        psx = queryresult[i][0]
-        sgn = queryresult[i][1]
-
-        if psx == '':
-            psx = np.nan
-        else:
-            psx = standard_stuff.posix2utc(psx, '%Y-%m-%d %H:%M')
-            # psx = int(psx)
-
-        if sgn == '':
-            sgn = np.nan
-        else:
-            sgn = float(sgn)
-
-        posixtime.append(psx)
-        signal.append(sgn)
 
     plt.style.use('Solarize_Light2')
     fig, ax = plt.subplots(layout="constrained", figsize=(16, 8), dpi=140)
-    ax.plot(posixtime, signal, c="orange")
+    ax.plot(utcdates, pressuredata, c="orange")
 
-    tick_spacing = readings_per_tick
-    ax.xaxis.set_major_locator(ticker.MultipleLocator(tick_spacing))
+    # tick_spacing = readings_per_tick
+    # ax.xaxis.set_major_locator(ticker.MultipleLocator(tick_spacing))
     plt.xticks(rotation=90)
 
     pt = time.time()
