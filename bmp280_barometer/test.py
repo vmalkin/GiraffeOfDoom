@@ -22,46 +22,46 @@ class DataPoint:
 
 
 def get_index(psx_start, psx_current, step):
-    index = int((psx_start - psx_current) / step)
+    index = int((psx_current - psx_start) / step)
     return index
 
-# time_end = int(time.time())
-# time_start = time_end - (60 * 60 * 24)
-# time_start_7 = time_end - (60 * 60 * 24 * 7)
-# # This will allow us to convert readings pert second to readigs per minute, hour, etc.
-# time_step = 60
-# queryresult = mgr_database.db_get_pressure(time_start)
-#
-# # Set up array of datapoints
-# datapointlist = []
-# for i in range(time_start, time_end + 60, time_step):
-#     d = DataPoint(i, time_step)
-#     datapointlist.append(d)
-#
-# for item in queryresult:
-#     posixtime = item[0]
-#     pressure = item[1]
-#     index = get_index(time_start, posixtime, time_step)
-#     datapointlist[index].dp_data.append(pressure)
-#
-# # Create two lists, time and data to be passed into the graphing methods
-# utc_datelist = []
-# pressure_data = []
-# for item in datapointlist:
-#     data = item.get_avg_data()
-#     utcdate = standard_stuff.posix2utc(item.posixstamp, '%Y-%m-%d %H:%M')
-#     utc_datelist.append(utcdate)
-#     pressure_data.append(data)
-#
-# print("Plot pressure one day")
-# savefile = k.dir_images + os.sep + "1days_pressure.png"
-# mgr_matplot.plot_time_data(utc_datelist, pressure_data, 60,"Pressure One Day", savefile)
-#
-# print("Plot detrended pressure one day")
-# savefile = k.dir_images + os.sep + "1days_dt_pressure.png"
-# readings_per_tick = 60
-# halfwindow = 60 * 1.5
-# mgr_matplot.plot_detrended(utc_datelist, pressure_data, readings_per_tick, halfwindow, "Detrended Pressure One Day", savefile)
+time_end = int(time.time())
+time_start = time_end - (60 * 60 * 24)
+time_start_7 = time_end - (60 * 60 * 24 * 7)
+# This will allow us to convert readings pert second to readigs per minute, hour, etc.
+time_step = 60
+queryresult = mgr_database.db_get_pressure(time_start)
+
+# Set up array of datapoints
+datapointlist = []
+for i in range(time_start, time_end + 60, time_step):
+    d = DataPoint(i, time_step)
+    datapointlist.append(d)
+
+for item in queryresult:
+    posixtime = item[0]
+    pressure = item[1]
+    index = get_index(time_start, posixtime, time_step)
+    datapointlist[index].dp_data.append(pressure)
+
+# Create two lists, time and data to be passed into the graphing methods
+utc_datelist = []
+pressure_data = []
+for item in datapointlist:
+    data = item.get_avg_data()
+    utcdate = standard_stuff.posix2utc(item.posixstamp, '%Y-%m-%d %H:%M')
+    utc_datelist.append(utcdate)
+    pressure_data.append(data)
+
+print("Plot pressure one day")
+savefile = k.dir_images + os.sep + "1days_pressure.png"
+mgr_matplot.plot_time_data(utc_datelist, pressure_data, 60,"Pressure One Day", savefile)
+
+print("Plot detrended pressure one day")
+savefile = k.dir_images + os.sep + "1days_dt_pressure.png"
+readings_per_tick = 60
+halfwindow = 60 * 1.5
+mgr_matplot.plot_detrended(utc_datelist, pressure_data, readings_per_tick, halfwindow, "Detrended Pressure One Day", savefile)
 
 # -------------------- For 7 day readings --------------------------
 time_end = int(time.time())
@@ -69,13 +69,14 @@ time_start = time_end - (60 * 60 * 24 * 7)
 # This will allow us to convert readings pert second to readigs per minute, hour, etc.
 time_step = 60
 queryresult = mgr_database.db_get_pressure(time_start)
+
 # Parse out a CSV list to check in spreadsheet
 csvdata = []
 for item in queryresult:
     csvdata.append(item[1])
 with open("current_csvdata.csv", "w") as c:
     for item in csvdata:
-        line = item + "\r\n"
+        line = str(item) + "\r\n"
         c.write(line)
 c.close()
 
