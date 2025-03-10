@@ -5,8 +5,6 @@ import os
 import constants as k
 import standard_stuff
 import numpy as np
-from numpy.fft import fft, ifft
-import matplotlib.pyplot as plt
 
 
 class DataPoint:
@@ -111,34 +109,3 @@ savefile = k.dir_images + os.sep + "7days_dt_pressure.png"
 halfwindow = 60 * 1.5
 mgr_matplot.plot_detrended(utc_datelist, pressure_data, readings_per_tick, halfwindow, "Detrended Pressure Seven Days", savefile)
 
-# # -------------------- For FFT Plot --------------------------
-# time_end = int(time.time())
-# time_start = time_end - (60 * 60 * 24 * 7)
-# # This will allow us to convert readings pert second to readigs per minute, hour, etc.
-# time_step = 60
-# queryresult = mgr_database.db_get_pressure(time_start)
-#
-# # Set up array of datapoints
-# datapointlist = []
-# for i in range(time_start, time_end + 60, time_step):
-#     d = DataPoint(i, time_step)
-#     datapointlist.append(d)
-#
-# for item in queryresult:
-#     posixtime = item[0]
-#     pressure = item[1]
-#     index = get_index(time_start, posixtime, time_step)
-#     datapointlist[index].dp_data.append(pressure)
-#
-# pressure_data = []
-# for item in datapointlist:
-#     data = item.get_avg_data()
-#     # utcdate = standard_stuff.posix2utc(item.posixstamp, '%Y-%m-%d %H:%M')
-#     # utc_datelist.append(utcdate)
-#     if data == None:
-#         data = 0
-#     pressure_data.append(data)
-#
-# fft_pressure = fft(pressure_data)
-# for item in fft_pressure:
-#     print(item)
