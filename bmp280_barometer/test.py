@@ -71,7 +71,8 @@ queryresult = mgr_database.db_get_pressure(time_start)
 # Parse out a CSV list to check in spreadsheet
 csvdata = []
 for item in queryresult:
-    csvdata.append(item[1])
+    dp = standard_stuff.posix2utc(item[0], '%Y-%m-%d %H:%M:%S') + "," + str(item[1])
+    csvdata.append(dp)
 with open("current_csvdata.csv", "w") as c:
     for item in csvdata:
         line = str(item) + "\r\n"
