@@ -67,6 +67,7 @@ def add_data(collection, current_posixtime, csv_line):
     try:
         temp = csv_line[0]
         pressure = csv_line[1]
+        # Test for temp and pressure as floats.
         dp = [current_posixtime, temp, pressure]
         collection.append(dp)
     except:
