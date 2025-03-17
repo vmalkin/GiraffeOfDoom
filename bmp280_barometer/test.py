@@ -16,7 +16,11 @@ class DataPoint:
     def get_avg_data(self):
         result = None
         if len(self.dp_data) > 0:
-            result = round(np.mean(self.dp_data), 4)
+            try:
+                result = round(np.mean(self.dp_data), 4)
+            except:
+                print("Corrupt data in array")
+                print(self.dp_data)
         return result
 
 
