@@ -1,7 +1,7 @@
 import requests
 
+# NEVER PUT YOUR API KEY IN YOUR SOURCE-CODE AND PUBLISH TO GITHUB!!
 # https://api.thingspeak.com/update?api_key=HSUZINZPK1KCPHU7&field1=2&field2=3
-
 api_key = "api_key=HSUZINZPK1KCPHU7"
 update_url = "https://api.thingspeak.com/update?"
 payload = {'field1': '2', 'field2' : '3'}
