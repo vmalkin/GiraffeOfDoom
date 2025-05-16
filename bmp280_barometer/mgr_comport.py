@@ -1,8 +1,8 @@
 import serial
 import logging
 import sys
-errorloglevel = logging.DEBUG
-logging.basicConfig(filename="comport.log", format='%(asctime)s %(message)s', level=errorloglevel)
+# errorloglevel = logging.DEBUG
+# logging.basicConfig(filename="comport.log", format='%(asctime)s %(message)s', level=errorloglevel)
 
 
 class SerialManager:
@@ -26,7 +26,7 @@ class SerialManager:
                                      self._dsrdtr, self._interCharTimeout)
         except serial.SerialException:
             print("CRITICAL ERROR: Com port not responding. Please check parameters")
-            logging.critical("CRITICAL ERROR: Unable to open com port. Please check com port parameters and/or hardware!!")
+            # logging.critical("CRITICAL ERROR: Unable to open com port. Please check com port parameters and/or hardware!!")
             print("\n\n" + str(sys.exc_info()))
 
     def data_recieve(self):
@@ -36,5 +36,5 @@ class SerialManager:
             logData = str(logData, 'latin1').strip()  # convert the byte array to string. strip off unnecessary whitespace
         except serial.serialutil.SerialException:
             logData = ""
-            logging.error("Serial port error " + str(serial.serialutil.SerialException))
+            # logging.error("Serial port error " + str(serial.serialutil.SerialException))
         return logData

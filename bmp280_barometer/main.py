@@ -11,8 +11,8 @@ import mgr_matplot
 import mgr_database
 
 
-errorloglevel = logging.ERROR
-logging.basicConfig(filename="gnss.log", format='%(asctime)s %(message)s', level=errorloglevel)
+# errorloglevel = logging.DEBUG
+# logging.basicConfig(filename="gnss.log", format='%(asctime)s %(message)s', level=errorloglevel)
 random.seed()
 # readings below this altitude for satellites may be distorted due to multi-modal reflection
 optimum_altitude = 25
@@ -58,7 +58,7 @@ def create_directory(directory):
     except:
         if not os.path.isdir(directory):
             print("Unable to create directory")
-            logging.critical("CRITICAL ERROR: Unable to create directory in MAIN.PY")
+            # logging.critical("CRITICAL ERROR: Unable to create directory in MAIN.PY")
 
 
 def add_data(collection, current_posixtime, csv_line):
