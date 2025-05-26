@@ -42,7 +42,7 @@ def plot_polar_noise(queryresult, savefile):
             print("Error adding item")
     pt = time.time()
     ut = standard_stuff.posix2utc(pt, '%Y-%m-%d %H:%M')
-    plot_title = "6 Hour SNR Tracks - " + ut
+    plot_title = "12 Hour SNR Tracks - " + ut
 
     fig = plt.figure(layout="constrained", figsize=(6, 6), dpi=140)
     ax = fig.add_subplot(projection='polar')
@@ -62,8 +62,8 @@ def plot_time_snr(queryresult, savefile):
 
     for item in queryresult:
         try:
-            psx = item[0]
-            snr = item[1]
+            psx = item[2]
+            snr = item[5]
 
             if psx == '':
                 psx = np.nan
@@ -82,10 +82,10 @@ def plot_time_snr(queryresult, savefile):
             print("Unable to plot item")
 
     fig, ax = plt.subplots(layout="constrained", figsize=(10, 3), dpi=140)
-    ax.plot(posixtime, signalnoise, c="orange")
+    ax.scatter(posixtime, signalnoise, s=5, c=signalnoise, cmap='Blues', alpha=0.5)
     pt = time.time()
     ut = standard_stuff.posix2utc(pt, '%Y-%m-%d %H:%M:%S')
-    plot_title = "6 Hour SNR Tracks - " + ut
+    plot_title = "12 Hour SNR - " + ut
     ax.set_title(plot_title)
     # plt.show()
     plt.savefig(savefile)
