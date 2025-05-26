@@ -53,7 +53,7 @@ class QueryProcessor(Thread):
 
 def get_rounded_posix_():
     t = time.time()
-    t = math.floor(t)
+    # t = math.floor(t)
     return t
 
 
@@ -137,6 +137,7 @@ if __name__ == "__main__":
                 gsv = shorten_gsv(csv_line)
                 # print(line)
                 gsv_collection = add_satellites(gsv_collection, current_posixtime, gsv)
+                # print(gsv)
                 # Once our collection of gsv data is large enough, process.
                 # This delay reduces the risk of the database being locked for charting
                 if len(gsv_collection) >= 3000:

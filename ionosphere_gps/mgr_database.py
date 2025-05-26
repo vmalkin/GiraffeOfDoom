@@ -12,7 +12,7 @@ def db_create():
     db.execute('create table observations ('
                'constellation text,'
                'sat_id text,'
-               'posixtime integer,'
+               'posixtime double,'
                'alt integer,'
                'az integer,'
                'snr integer'

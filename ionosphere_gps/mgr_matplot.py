@@ -10,33 +10,36 @@ def plot_polar_noise(queryresult, savefile):
     azimuth = []
     signalnoise = []
     for item in queryresult:
-        # datetime.append(item[2])
-        alt = item[3]
-        azi = item[4]
-        snr = item[5]
+        try:
+            # datetime.append(item[2])
+            alt = item[3]
+            azi = item[4]
+            snr = item[5]
+            # print(item)
+            if alt == '':
+                alt = np.nan
+            else:
+                alt = int(alt)
+                # print("Null altitude value")
 
-        if alt == '':
-            alt = np.nan
-        else:
-            alt = int(alt)
-            # print("Null altitude value")
+            if azi == '':
+                azi = np.nan
+            else:
+                # azimuths have to be in radians, even tho the graph shows them as degrees
+                azi = azi * (np.pi / 180)
+                # print("Null azimuth value")
 
-        if azi == '':
-            azi = np.nan
-        else:
-            # azimuths have to be in radians, even tho the graph shows them as degrees
-            azi = azi * (np.pi / 180)
-            # print("Null azimuth value")
+            if snr == '':
+                snr = np.nan
+            else:
+                snr = int(snr)
+                # print("Null altitude value")
 
-        if snr == '':
-            snr = np.nan
-        else:
-            snr = int(snr)
-            # print("Null altitude value")
-
-        altitude.append(alt)
-        azimuth.append(azi)
-        signalnoise.append(snr)
+            altitude.append(alt)
+            azimuth.append(azi)
+            signalnoise.append(snr)
+        except:
+            print("Error adding item")
     pt = time.time()
     ut = standard_stuff.posix2utc(pt, '%Y-%m-%d %H:%M')
     plot_title = "6 Hour SNR Tracks - " + ut
@@ -58,22 +61,25 @@ def plot_time_snr(queryresult, savefile):
     signalnoise = []
 
     for item in queryresult:
-        psx = item[0]
-        snr = item[1]
+        try:
+            psx = item[0]
+            snr = item[1]
 
-        if psx == '':
-            psx = np.nan
-        else:
-            psx = standard_stuff.posix2utc(psx, '%H:%M:%S')
-            # psx = int(psx)
+            if psx == '':
+                psx = np.nan
+            else:
+                psx = standard_stuff.posix2utc(psx, '%H:%M:%S')
+                # psx = int(psx)
 
-        if snr == '':
-            snr = np.nan
-        else:
-            snr = int(snr)
+            if snr == '':
+                snr = np.nan
+            else:
+                snr = int(snr)
 
-        posixtime.append(psx)
-        signalnoise.append(snr)
+            posixtime.append(psx)
+            signalnoise.append(snr)
+        except:
+            print("Unable to plot item")
 
     fig, ax = plt.subplots(layout="constrained", figsize=(10, 3), dpi=140)
     ax.plot(posixtime, signalnoise, c="orange")
