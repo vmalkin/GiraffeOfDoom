@@ -1,5 +1,6 @@
 import time
 import matplotlib.pyplot as plt
+import matplotlib.ticker as ticker
 import numpy as np
 import standard_stuff
 
@@ -81,8 +82,12 @@ def plot_time_snr(queryresult, savefile):
         except:
             print("Unable to plot item")
 
-    fig, ax = plt.subplots(layout="constrained", figsize=(10, 3), dpi=140)
-    ax.scatter(posixtime, signalnoise, s=5, c=signalnoise, cmap='Blues', alpha=0.5)
+    fig, ax = plt.subplots(layout="constrained", figsize=(12, 3), dpi=140)
+    ax.scatter(posixtime, signalnoise, s=2, c=signalnoise, cmap='Blues', alpha=0.5)
+    tick_spacing = 60 * 30
+    ax.xaxis.set_major_locator(ticker.MultipleLocator(tick_spacing))
+    plt.xticks(rotation=45)
+
     pt = time.time()
     ut = standard_stuff.posix2utc(pt, '%Y-%m-%d %H:%M:%S')
     plot_title = "12 Hour SNR - " + ut

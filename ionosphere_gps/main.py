@@ -37,11 +37,16 @@ class QueryProcessor(Thread):
             print("***************************** Start Query Processor")
             print('Plot last 24 hour GPS tracks')
             now = int(time.time())
-            timeinterval = now - (60 * 60 * 6)
+            timeinterval = now - (60 * 60 * 24)
             query_result = mgr_database.db_get_gsv(timeinterval, 1)
 
-            savefile = k.dir_images + os.sep + "simple_polar_snr.png"
+            print("Plot polar")
+            savefile = k.dir_images + os.sep + "simple_polar.png"
             mgr_matplot.plot_polar_noise(query_result, savefile)
+
+            print("Plot SNR")
+            savefile = k.dir_images + os.sep + "simple_time_snr.png"
+            mgr_matplot.plot_time_snr(query_result, savefile)
 
             # timeinterval = now - (60 * 60 * 24)
             # queryresult = mgr_database.db_get_grouped_snr(timeinterval)
