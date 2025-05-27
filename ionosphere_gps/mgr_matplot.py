@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
 import numpy as np
 import standard_stuff
+import math
 
 def plot_polar_noise(queryresult, savefile):
     # plt.style.use('_mpl-gallery')
@@ -56,42 +57,20 @@ def plot_polar_noise(queryresult, savefile):
     # plt.show()
     plt.savefig(savefile)
 
-def plot_time_snr(queryresult, savefile):
-    # ('constellation', 'satID', posixtime, alt, azi, snr)
-    posixtime = []
-    signalnoise = []
+def plot_time_snr(data_blob, time_array, savefile):
+    # [1748287326.1275165, snr, alt]
+    fig, ax = plt.subplots(layout="constrained", figsize=(12, 5), dpi=140)
 
-    for item in queryresult:
-        try:
-            psx = item[2]
-            snr = item[5]
+    for data_series in data_blob:
+        ax.plot(time_array, data_series)
 
-            if psx == '':
-                psx = np.nan
-            else:
-                psx = standard_stuff.posix2utc(psx, '%H:%M:%S')
-                # psx = int(psx)
-
-            if snr == '':
-                snr = np.nan
-            else:
-                snr = int(snr)
-
-            posixtime.append(psx)
-            signalnoise.append(snr)
-        except:
-            print("Unable to plot item")
-
-    fig, ax = plt.subplots(layout="constrained", figsize=(12, 3), dpi=140)
-    ax.scatter(posixtime, signalnoise, s=2, c=signalnoise, cmap='Blues', alpha=0.5)
-    tick_spacing = 60 * 30
+    tick_spacing = 60 * 60
     ax.xaxis.set_major_locator(ticker.MultipleLocator(tick_spacing))
-    plt.xticks(rotation=45)
+    plt.xticks(rotation=90)
 
     pt = time.time()
     ut = standard_stuff.posix2utc(pt, '%Y-%m-%d %H:%M:%S')
-    plot_title = "12 Hour SNR - " + ut
+    plot_title = "24 Hour SNR - " + ut
     ax.set_title(plot_title)
-    # plt.show()
     plt.savefig(savefile)
 

@@ -19,46 +19,46 @@ random.seed()
 optimum_altitude = 25
 
 
-# *************************************************
-# Plotter and query processor thread
-# *************************************************
-class QueryProcessor(Thread):
-    def __init__(self):
-        Thread.__init__(self, name="QueryProcessor")
-
-    def run(self):
-        # put query data_s4 processing stuff here.
-        while True:
-            wiggle = random.randint(-180, 180)
-            sleeptime = (60 * 10) + wiggle
-            print('Next plot in ' + str(sleeptime) + ' seconds.')
-            time.sleep((sleeptime))
-
-            print("***************************** Start Query Processor")
-            print('Plot last 24 hour GPS tracks')
-            now = int(time.time())
-            timeinterval = now - (60 * 60 * 24)
-            query_result = mgr_database.db_get_gsv(timeinterval, 1)
-
-            print("Plot polar")
-            savefile = k.dir_images + os.sep + "simple_polar.png"
-            mgr_matplot.plot_polar_noise(query_result, savefile)
-
-            print("Plot SNR")
-            savefile = k.dir_images + os.sep + "simple_time_snr.png"
-            mgr_matplot.plot_time_snr(query_result, savefile)
-
-            # timeinterval = now - (60 * 60 * 24)
-            # queryresult = mgr_database.db_get_grouped_snr(timeinterval)
-            # savefile = k.dir_images + os.sep + "simple_time_snr.png"
-            # mgr_matplot.plot_time_snr(queryresult, savefile)
-
-            print("******************************* End Query Processor")
+# # *************************************************
+# # Plotter and query processor thread
+# # *************************************************
+# class QueryProcessor(Thread):
+#     def __init__(self):
+#         Thread.__init__(self, name="QueryProcessor")
+#
+#     def run(self):
+#         # put query data_s4 processing stuff here.
+#         while True:
+#             wiggle = random.randint(-180, 180)
+#             sleeptime = (60 * 10) + wiggle
+#             print('Next plot in ' + str(sleeptime) + ' seconds.')
+#             time.sleep((sleeptime))
+#
+#             print("***************************** Start Query Processor")
+#             print('Plot last 24 hour GPS tracks')
+#             now = int(time.time())
+#             timeinterval = now - (60 * 60 * 24)
+#             query_result = mgr_database.db_get_gsv(timeinterval, 1)
+#
+#             print("Plot polar")
+#             savefile = k.dir_images + os.sep + "simple_polar.png"
+#             mgr_matplot.plot_polar_noise(query_result, savefile)
+#
+#             print("Plot SNR")
+#             savefile = k.dir_images + os.sep + "simple_time_snr.png"
+#             mgr_matplot.plot_time_snr(query_result, savefile)
+#
+#             # timeinterval = now - (60 * 60 * 24)
+#             # queryresult = mgr_database.db_get_grouped_snr(timeinterval)
+#             # savefile = k.dir_images + os.sep + "simple_time_snr.png"
+#             # mgr_matplot.plot_time_snr(queryresult, savefile)
+#
+#             print("******************************* End Query Processor")
 
 
 def get_rounded_posix_():
     t = time.time()
-    # t = math.floor(t)
+    t = round(t, 3)
     return t
 
 
@@ -117,8 +117,8 @@ if __name__ == "__main__":
         print("Creating image file directory...")
         create_directory(k.dir_images)
 
-    queryprocessor = QueryProcessor()
-    queryprocessor.start()
+    # queryprocessor = QueryProcessor()
+    # queryprocessor.start()
 
     com = mgr_comport.SerialManager(k.comport, k.baudrate, k.bytesize, k.parity, k.stopbits, k.timeout,
                                     k.xonxoff,
