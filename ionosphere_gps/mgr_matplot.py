@@ -57,13 +57,14 @@ def plot_polar_noise(queryresult, savefile):
     # plt.show()
     plt.savefig(savefile)
 
-def plot_time_snr(data_blob, time_array, savefile):
-    # [1748287326.1275165, snr, alt]
+def plot_time_snr(data_blob, x_labels, savefile):
     fig, ax = plt.subplots(layout="constrained", figsize=(12, 5), dpi=140)
 
-    for data_series in data_blob:
-        ax.plot(time_array, data_series)
+    for y_data in data_blob:
+        ax.plot(y_data)
 
+    ax.set_xticks(range(0, len(x_labels)))
+    ax.set_xticklabels(x_labels)
     tick_spacing = 60 * 60
     ax.xaxis.set_major_locator(ticker.MultipleLocator(tick_spacing))
     plt.xticks(rotation=90)

@@ -1,5 +1,5 @@
 import copy
-
+import standard_stuff
 import mgr_database
 import mgr_matplot
 import time
@@ -13,10 +13,10 @@ timenow = int(time.time())
 timestart = timenow - (60 * 60 * 24 * 1)
 query_result = mgr_database.db_get_gsv(timestart, 15)
 
-print("Plot polar")
-timeinterval = timenow - (60 * 60 * 24)
-savefile = k.dir_images + os.sep + "simple_polar.png"
-mgr_matplot.plot_polar_noise(query_result, savefile)
+# print("Plot polar")
+# timeinterval = timenow - (60 * 60 * 24)
+# savefile = k.dir_images + os.sep + "simple_polar.png"
+# mgr_matplot.plot_polar_noise(query_result, savefile)
 
 # when dealing with gps data that might be at 10hz rate, multiply the posix values by
 # 10 to deal with it.
@@ -26,7 +26,9 @@ t_now = int(timenow)
 timebins = []
 blankdata = []
 for i in range(t_start, t_now):
-    timebins.append(t_start + i)
+    psx = t_start + i
+    utc = standard_stuff.posix2utc(psx, '%Y-%m-%d %H:%M:%S')
+    timebins.append(str(utc))
     blankdata.append(nan_value)
 
 # set up the array to be passed in to graphing
@@ -40,17 +42,17 @@ for item in query_result:
     sat_id = int(item[1])
     psx_time = int(item[2])
     snr = item[5]
-    alt = item[3]
-    dp = [snr, alt]
+
+    if snr == '':
+        snr = nan_value
+
     blankdataindex = psx_time - t_start
     datablob[sat_id][blankdataindex] = snr
 
 datablob.pop(0)
-for item in datablob:
-    print(item[:30])
+# for item in datablob:
+#     print(item[:30])
 
-print(len(timebins))
-print(len(datablob[1]))
 savefile = k.dir_images + os.sep + "simple_snr.png"
 mgr_matplot.plot_time_snr(datablob, timebins, savefile)
 
