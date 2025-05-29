@@ -44,7 +44,7 @@ def plot_polar_noise(queryresult, savefile):
             print("Error adding item")
     pt = time.time()
     ut = standard_stuff.posix2utc(pt, '%Y-%m-%d %H:%M')
-    plot_title = "12 Hour SNR Tracks - " + ut
+    plot_title = "24 Hour SNR Tracks - " + ut
 
     fig = plt.figure(layout="constrained", figsize=(6, 6), dpi=140)
     ax = fig.add_subplot(projection='polar')
@@ -58,20 +58,21 @@ def plot_polar_noise(queryresult, savefile):
     plt.savefig(savefile)
 
 def plot_time_snr(data_blob, x_labels, savefile):
-    fig, ax = plt.subplots(layout="constrained", figsize=(12, 5), dpi=140)
+    fig, ax = plt.subplots(layout="constrained", figsize=(12, 5), dpi=200)
 
     for y_data in data_blob:
-        ax.plot(y_data)
+        ax.plot(y_data, linewidth=2, alpha=0.2, color='blue')
 
     ax.set_xticks(range(0, len(x_labels)))
     ax.set_xticklabels(x_labels)
     tick_spacing = 60 * 60
     ax.xaxis.set_major_locator(ticker.MultipleLocator(tick_spacing))
+    ax.set_ylim([-12, 12])
     plt.xticks(rotation=90)
 
     pt = time.time()
     ut = standard_stuff.posix2utc(pt, '%Y-%m-%d %H:%M:%S')
-    plot_title = "24 Hour SNR - " + ut
+    plot_title = "SNR rate of change - " + ut
     ax.set_title(plot_title)
     plt.savefig(savefile)
 

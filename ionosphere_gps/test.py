@@ -10,13 +10,13 @@ import numpy as np
 nan_value = np.nan
 
 timenow = int(time.time())
-timestart = timenow - (60 * 60 * 24 * 1)
+timestart = timenow - (60 * 60 * 24)
 query_result = mgr_database.db_get_gsv(timestart, 15)
 
-# print("Plot polar")
-# timeinterval = timenow - (60 * 60 * 24)
-# savefile = k.dir_images + os.sep + "simple_polar.png"
-# mgr_matplot.plot_polar_noise(query_result, savefile)
+print("Plot polar")
+timeinterval = timenow - (60 * 60 * 24)
+savefile = k.dir_images + os.sep + "simple_polar.png"
+mgr_matplot.plot_polar_noise(query_result, savefile)
 
 # when dealing with gps data that might be at 10hz rate, multiply the posix values by
 # 10 to deal with it.
@@ -26,10 +26,11 @@ t_now = int(timenow)
 timebins = []
 blankdata = []
 for i in range(t_start, t_now):
-    psx = t_start + i
-    utc = standard_stuff.posix2utc(psx, '%Y-%m-%d %H:%M:%S')
+    psx = i
+    utc = standard_stuff.posix2utc(psx, '%m-%d %H:%M:%S')
     timebins.append(str(utc))
-    blankdata.append(nan_value)
+    # blankdata.append(nan_value)
+    blankdata.append(0)
 
 # set up the array to be passed in to graphing
 datablob = []
@@ -49,10 +50,18 @@ for item in query_result:
     blankdataindex = psx_time - t_start
     datablob[sat_id][blankdataindex] = snr
 
+diffsblob = []
 datablob.pop(0)
-# for item in datablob:
-#     print(item[:30])
+for dataseries in datablob:
+    diffsseries = []
+    for i in range(1, len(dataseries)):
+        j = dataseries[i] - dataseries[i - 1]
+        diffsseries.append(j)
+    # diffsseries = standard_stuff.filter_median(diffsseries, 1)
+    diffsblob.append(diffsseries)
+
+
 
 savefile = k.dir_images + os.sep + "simple_snr.png"
-mgr_matplot.plot_time_snr(datablob, timebins, savefile)
+mgr_matplot.plot_time_snr(diffsblob, timebins, savefile)
 
