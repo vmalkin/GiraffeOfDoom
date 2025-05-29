@@ -60,8 +60,6 @@ for dataseries in datablob:
     # diffsseries = standard_stuff.filter_median(diffsseries, 1)
     diffsblob.append(diffsseries)
 
-
-
 savefile = k.dir_images + os.sep + "simple_snr.png"
 mgr_matplot.plot_time_snr(diffsblob, timebins, savefile)
 

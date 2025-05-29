@@ -48,7 +48,7 @@ def plot_polar_noise(queryresult, savefile):
 
     fig = plt.figure(layout="constrained", figsize=(6, 6), dpi=140)
     ax = fig.add_subplot(projection='polar')
-    ax.scatter(azimuth, altitude, s=5, c=signalnoise, cmap='Blues', alpha=0.5)
+    ax.scatter(azimuth, altitude, s=5, c=signalnoise, cmap='Blues', alpha=0.2)
     ax.set_rmax(0)
     ax.set_rmin(90)
     ax.set_theta_zero_location("S")
@@ -61,7 +61,7 @@ def plot_time_snr(data_blob, x_labels, savefile):
     fig, ax = plt.subplots(layout="constrained", figsize=(12, 5), dpi=200)
 
     for y_data in data_blob:
-        ax.plot(y_data, linewidth=2, alpha=0.2, color='blue')
+        ax.plot(y_data, linewidth=2, alpha=0.2, color='#906000')
 
     ax.set_xticks(range(0, len(x_labels)))
     ax.set_xticklabels(x_labels)
