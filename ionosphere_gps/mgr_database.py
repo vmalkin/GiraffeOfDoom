@@ -12,7 +12,7 @@ def db_create():
     db.execute('create table observations ('
                'constellation text,'
                'sat_id text,'
-               'posixtime integer,'
+               'posixtime double,'
                'alt integer,'
                'az integer,'
                'snr integer'
@@ -81,6 +81,18 @@ def db_get_grouped_snr(timestart):
     db = gpsdb.cursor()
     result = db.execute('select posixtime, avg(snr) from observations '
                         'where posixtime > ? group by posixtime', values)
+    for item in result:
+        returnarray.append(item)
+    db.close()
+    return returnarray
+
+def db_get_satids(timestart):
+    returnarray = []
+    values = [timestart]
+    gpsdb = sqlite3.connect(k.sat_database)
+    db = gpsdb.cursor()
+    result = db.execute('select sat_id from observations '
+                        'where posixtime > ? group by sat_id', values)
     for item in result:
         returnarray.append(item)
     db.close()

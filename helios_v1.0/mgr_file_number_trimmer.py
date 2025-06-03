@@ -5,3 +5,4 @@
 # 20250516T214000Z_df.png
 # or_suvi-l2-ci171_g19_s20250516T214800Z_e20250516T215200Z_v1-0-2.png
 
+import os
