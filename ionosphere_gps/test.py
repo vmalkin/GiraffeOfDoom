@@ -21,9 +21,17 @@ savefile = k.dir_images + os.sep + "simple_polar.png"
 mgr_matplot.plot_polar_noise(query_result, savefile)
 
 class Satellite:
-    def __init__(self, id_string):
+    def __init__(self, id_string, time_start, time_end):
         self.id = id_string
+        self.datastore = self.create_storage_array(time_start, time_end)
 
+    def create_storage_array(self, starttime, endtime):
+        nan_value = np.nan
+        # nan_value = 0
+        array = []
+        for i in range(starttime, endtime + 1):
+            array.append(nan_value)
+        return array
 
 
 
