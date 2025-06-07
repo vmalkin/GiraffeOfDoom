@@ -45,6 +45,6 @@ xf = rfftfreq(N, 1 / sample_rate)
 
 fig, ax = plt.subplots(layout="constrained", figsize=(4, 4), dpi=200)
 plt.plot(xf, np.abs(yf))
-ax.set_ylim([0, 5500000])
-ax.set_xlim([0, 0.01])
+# ax.set_ylim([0, 5500000])
+# ax.set_xlim([0, 0.01])
 plt.show()

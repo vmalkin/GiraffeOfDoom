@@ -53,38 +53,38 @@ def db_get_gsv(timestart, altitude):
     db.close()
     return returnarray
 
+#
+# def db_get_snr(timestart, altitude):
+#     returnarray = []
+#     values = [timestart, altitude]
+#     gpsdb = sqlite3.connect(k.sat_database)
+#     db = gpsdb.cursor()
+#     result = db.execute('select posixtime, snr from observations where posixtime > ? '
+#                         'and alt > ?;', values)
+#     for item in result:
+#         returnarray.append(item)
+#     db.close()
+#     return returnarray
 
-def db_get_snr(timestart, altitude):
-    returnarray = []
-    values = [timestart, altitude]
-    gpsdb = sqlite3.connect(k.sat_database)
-    db = gpsdb.cursor()
-    result = db.execute('select posixtime, snr from observations where posixtime > ? '
-                        'and alt > ?;', values)
-    for item in result:
-        returnarray.append(item)
-    db.close()
-    return returnarray
 
+# def convert_sat_id(id_num):
+#     index = str(id_num)
+#     if len(index) == 1:
+#         index = '0' + index
+#     id_num = index
+#     return id_num
 
-def convert_sat_id(id_num):
-    index = str(id_num)
-    if len(index) == 1:
-        index = '0' + index
-    id_num = index
-    return id_num
-
-def db_get_grouped_snr(timestart):
-    returnarray = []
-    values = [timestart]
-    gpsdb = sqlite3.connect(k.sat_database)
-    db = gpsdb.cursor()
-    result = db.execute('select posixtime, avg(snr) from observations '
-                        'where posixtime > ? group by posixtime', values)
-    for item in result:
-        returnarray.append(item)
-    db.close()
-    return returnarray
+# def db_get_grouped_snr(timestart):
+#     returnarray = []
+#     values = [timestart]
+#     gpsdb = sqlite3.connect(k.sat_database)
+#     db = gpsdb.cursor()
+#     result = db.execute('select posixtime, avg(snr) from observations '
+#                         'where posixtime > ? group by posixtime', values)
+#     for item in result:
+#         returnarray.append(item)
+#     db.close()
+#     return returnarray
 
 def db_get_satids(timestart):
     returnarray = []

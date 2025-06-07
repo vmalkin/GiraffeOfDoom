@@ -61,13 +61,15 @@ def plot_time_snr(data_blob, x_labels, savefile):
     fig, ax = plt.subplots(layout="constrained", figsize=(12, 5), dpi=200)
 
     for y_data in data_blob:
-        ax.plot(y_data, linewidth=2, alpha=0.2, color='#906000')
+        print("*** Add satellite trace...")
+        ax.plot(y_data, alpha=0.2, color='#906000')
 
+    print("*** Configuring plot")
     ax.set_xticks(range(0, len(x_labels)))
     ax.set_xticklabels(x_labels)
     tick_spacing = 60 * 60
     ax.xaxis.set_major_locator(ticker.MultipleLocator(tick_spacing))
-    ax.set_ylim([-12, 12])
+    ax.set_ylim([-18, 18])
     plt.xticks(rotation=90)
 
     pt = time.time()

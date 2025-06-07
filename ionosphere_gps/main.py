@@ -140,7 +140,7 @@ if __name__ == "__main__":
             # if msg_id == '$GPGGA':
             if msg_id == '$GPGSV':
                 gsv = shorten_gsv(csv_line)
-                # print(line)
+                print(line)
                 gsv_collection = add_satellites(gsv_collection, current_posixtime, gsv)
                 # print(gsv)
                 # Once our collection of gsv data is large enough, process.
