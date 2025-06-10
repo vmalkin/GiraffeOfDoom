@@ -64,16 +64,17 @@ if len(csv_data) > sample_period:
             # Number of samples in normalized_tone
             N = int(sample_rate * duration)
 
-            # the FFT calculation and visualisation
+            # the FFT calculation
             norms = []
             for item in sample_data:
                 dd = (item / max(sample_data))
                 # print(item, max(csv_data))
                 normalized_tone = np.int16(dd * 32767)
                 norms.append(normalized_tone)
-
             yf = rfft(norms)
             xf = rfftfreq(N, 1 / sample_rate)
+
+            # The visualisation
             # print(yf)
             fig, ax = plt.subplots(layout="constrained", figsize=(4, 4), dpi=200)
             plt.plot(xf, np.abs(yf))
