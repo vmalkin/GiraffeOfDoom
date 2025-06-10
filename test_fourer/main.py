@@ -42,7 +42,7 @@ with open("dr01_24hr.csv", "r") as c:
         csv_data.append(decimal_data)
 
 # The number of samples to do the FFT for. Part of a subset of the full date
-sample_period = 1000
+sample_period = 1800
 
 if len(csv_data) > sample_period:
     sample_data = []
@@ -74,14 +74,14 @@ if len(csv_data) > sample_period:
 
             yf = rfft(norms)
             xf = rfftfreq(N, 1 / sample_rate)
-            print(yf)
-            # fig, ax = plt.subplots(layout="constrained", figsize=(4, 4), dpi=200)
-            # plt.plot(xf, np.abs(yf))
-            # ax.set_ylim([0, 100000])
-            # ax.set_xlim([0, 0.05])
-            # plotfilename = img_dir + os.sep + str(i) + ".jpg"
-            # # print(plotfilename)
-            # plt.savefig(plotfilename)
-            # plt.close("all")
+            # print(yf)
+            fig, ax = plt.subplots(layout="constrained", figsize=(4, 4), dpi=200)
+            plt.plot(xf, np.abs(yf))
+            ax.set_ylim([0, 100000])
+            ax.set_xlim([0, 0.05])
+            plotfilename = img_dir + os.sep + str(i) + ".jpg"
+            # print(plotfilename)
+            plt.savefig(plotfilename)
+            plt.close("all")
 
 
