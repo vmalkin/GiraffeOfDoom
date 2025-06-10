@@ -36,6 +36,8 @@ with open("dr01_24hr.csv", "r") as c:
         l = line.strip()
         l = l.split(",")
         string_data = l[1]
+
+        # this is weird, why do we need to add 100 here?
         decimal_data = make_decimal(string_data) + 100
         csv_data.append(decimal_data)
 
@@ -52,7 +54,7 @@ if len(csv_data) > sample_period:
         # and do FFT analysis
         if len(sample_data) == sample_period:
             sample_data.pop(0)
-            progress = round((i / len(csv_data)), 2)
+            progress = round((i / len(csv_data)), 3)
             print("Progress: ", progress)
             # hertz
             sample_rate = 0.5
@@ -72,14 +74,14 @@ if len(csv_data) > sample_period:
 
             yf = rfft(norms)
             xf = rfftfreq(N, 1 / sample_rate)
-
-            fig, ax = plt.subplots(layout="constrained", figsize=(4, 4), dpi=200)
-            plt.plot(xf, np.abs(yf))
-            ax.set_ylim([0, 100000])
-            ax.set_xlim([0, 0.05])
-            plotfilename = img_dir + os.sep + str(i) + ".jpg"
-            # print(plotfilename)
-            plt.savefig(plotfilename)
-            plt.close("all")
+            print(yf)
+            # fig, ax = plt.subplots(layout="constrained", figsize=(4, 4), dpi=200)
+            # plt.plot(xf, np.abs(yf))
+            # ax.set_ylim([0, 100000])
+            # ax.set_xlim([0, 0.05])
+            # plotfilename = img_dir + os.sep + str(i) + ".jpg"
+            # # print(plotfilename)
+            # plt.savefig(plotfilename)
+            # plt.close("all")
 
 
