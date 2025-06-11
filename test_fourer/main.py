@@ -7,7 +7,7 @@ import os
 import time
 import multiprocessing
 
-number_cores = 4
+number_cores = 10
 sample_period = 1800
 # hertz
 sample_rate = 0.5
@@ -67,10 +67,11 @@ def process_fft_visualisation(data_to_process, process_number):
             xf = rfftfreq(N, 1 / sample_rate)
 
             # The visualisation
-            fig, ax = plt.subplots(layout="constrained", figsize=(4, 4), dpi=200)
+            fig, ax = plt.subplots(layout="constrained", figsize=(8, 4), dpi=200)
             plt.plot(xf, np.abs(yf))
-            ax.set_ylim([0, 100000])
+            ax.set_ylim([100, 10000000])
             ax.set_xlim([0, 0.05])
+            plt.yscale("log")
             plotfilename = img_dir + os.sep + str(process_number) + "_" + str(i) + ".jpg"
             # print(plotfilename)
             plt.savefig(plotfilename)
