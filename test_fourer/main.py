@@ -4,6 +4,17 @@ import numpy as np
 # from decimal import Decimal, getcontext, ROUND_DOWN
 # getcontext().prec = 4
 import os
+import time
+import multiprocessing
+
+process_number = 4
+sample_period = 1800
+# hertz
+sample_rate = 0.5
+img_dir = "images"
+movie_dir = "movies"
+
+t_start = time.time()
 
 def try_create_directory(directory):
     if os.path.isdir(directory) is False:
@@ -24,40 +35,21 @@ def make_decimal(string_value):
         print("ERROR - string is not a number.")
     return result
 
-csv_data = []
-
-img_dir = "images"
-movie_dir = "movies"
-try_create_directory(img_dir)
-try_create_directory(movie_dir)
-
-with open("dr01_24hr.csv", "r") as c:
-    for line in c:
-        l = line.strip()
-        l = l.split(",")
-        string_data = l[1]
-
-        # this is weird, why do we need to add 100 here?
-        decimal_data = make_decimal(string_data) + 100
-        csv_data.append(decimal_data)
-
-# The number of samples to do the FFT for. Part of a subset of the full date
-sample_period = 1800
-
-if len(csv_data) > sample_period:
+def process_fft_visualisation(data_to_process, process_number):
+    print("Multitasking Process started: ", process_number)
+    # The number of samples to do the FFT for. Part of a subset of the full date
     sample_data = []
-    for i in range(0, len(csv_data)):
+    for i in range(0, len(data_to_process)):
         # Build up the sub-sample array from the main data
-        sample_data.append(csv_data[i])
+        sample_data.append(data_to_process[i])
 
         # Once our sub sample has reached the appropriate size, pop the oldest value
         # and do FFT analysis
         if len(sample_data) == sample_period:
             sample_data.pop(0)
-            progress = round((i / len(csv_data)), 3)
-            print("Progress: ", progress)
-            # hertz
-            sample_rate = 0.5
+            progress = round((i / len(data_to_process)), 3)
+            # print("Progress: ", process_number, progress)
+
             # duration in seconds
             duration = len(sample_data) * (1 / sample_rate)
 
@@ -75,14 +67,48 @@ if len(csv_data) > sample_period:
             xf = rfftfreq(N, 1 / sample_rate)
 
             # The visualisation
-            # print(yf)
             fig, ax = plt.subplots(layout="constrained", figsize=(4, 4), dpi=200)
             plt.plot(xf, np.abs(yf))
             ax.set_ylim([0, 100000])
             ax.set_xlim([0, 0.05])
-            plotfilename = img_dir + os.sep + str(i) + ".jpg"
+            plotfilename = img_dir + os.sep + str(process_number) + "_" + str(i) + ".jpg"
             # print(plotfilename)
             plt.savefig(plotfilename)
             plt.close("all")
+    print("Multitasking Process finished: ", process_number)
+
+if __name__ == "__main__":
+    csv_data = []
+    try_create_directory(img_dir)
+    try_create_directory(movie_dir)
+
+    with open("dr01_24hr.csv", "r") as c:
+        for line in c:
+            l = line.strip()
+            l = l.split(",")
+            string_data = l[1]
+
+            # this is weird, why do we need to add 100 here?
+            decimal_data = make_decimal(string_data) + 100
+            csv_data.append(decimal_data)
+
+    # For this to work the length of the raw sample data must be split chunks equal to the number of processes,
+    h = 0
+    pool_data = []
+    for i in range(0, len(csv_data), process_number):
+        if i == 0:
+            pass
+        else:
+            # we set up an array to pass in to the multiprocessor pool, [data, label] matches
+            # method parameters
+            sliced_data = csv_data[h:i]
+            dd = [sliced_data, i]
+            pool_data.append(dd)
+
+    with multiprocessing.Pool(processes=process_number) as pool:
+        results = pool.starmap(process_fft_visualisation, pool_data)
 
 
+    t_end = time.time()
+    t_elapsed = (t_end - t_start) / 60
+    reportstring = "Elapsed time: " + str(t_elapsed) + " minutes."
