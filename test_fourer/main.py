@@ -6,7 +6,7 @@ import time
 import multiprocessing
 import mgr_mp4
 
-number_cores = 12
+number_cores = 4
 sample_period = int(20 * 30)
 # hertz
 sample_rate = 0.5
