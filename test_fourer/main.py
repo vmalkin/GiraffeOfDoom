@@ -4,6 +4,7 @@ import numpy as np
 import os
 import time
 import multiprocessing
+import mgr_mp4
 
 number_cores = 12
 sample_period = 1800
@@ -110,6 +111,8 @@ if __name__ == "__main__":
         results = pool.starmap(process_fft_visualisation, pool_data)
         print(results)
     pool.close()
+
+    mgr_mp4.wrapper()
 
     t_end = time.time()
     t_elapsed = (t_end - t_start) / 60
