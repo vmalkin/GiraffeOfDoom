@@ -5,7 +5,7 @@ import os
 import time
 import multiprocessing
 
-number_cores = 10
+number_cores = 12
 sample_period = 1800
 # hertz
 sample_rate = 0.5
@@ -40,14 +40,12 @@ def process_fft_visualisation(data_to_process, process_number):
     for i in range(0, len(data_to_process)):
         # Build up the sub-sample array from the main data
         sample_data.append(data_to_process[i])
-
+        if i % 100 == 0:
+            print(f"process {process_number}: {i} / {len(data_to_process)}")
         # Once our sub sample has reached the appropriate size, pop the oldest value
         # and do FFT analysis
         if len(sample_data) == sample_period:
             sample_data.pop(0)
-            progress = round((i / len(data_to_process)), 3)
-            print("Progress: ", process_number, progress)
-
             # duration in seconds
             duration = len(sample_data) * (1 / sample_rate)
 
@@ -72,7 +70,7 @@ def process_fft_visualisation(data_to_process, process_number):
             plotfilename = img_dir + os.sep + str(process_number) + "_" + str(i) + ".png"
             plt.savefig(plotfilename)
             plt.close("all")
-    print("Multitasking Process finished: ", process_number)
+    print(f"Multitasking Process finished: {process_number}")
 
 if __name__ == "__main__":
     csv_data = []
@@ -105,7 +103,7 @@ if __name__ == "__main__":
             dd = [sliced_data, h]
             pool_data.append(dd)
         h = i
-    print("Pool data length: ", len(pool_data))
+    print(f"Pool data length: {len(pool_data)}")
 
     # Multi-processing code here
     with multiprocessing.Pool(processes=number_cores) as pool:
@@ -115,4 +113,4 @@ if __name__ == "__main__":
 
     t_end = time.time()
     t_elapsed = (t_end - t_start) / 60
-    reportstring = "Elapsed time: " + str(t_elapsed) + " minutes."
+    print(f"Elapsed time: {t_elapsed} minutes.")
