@@ -7,7 +7,7 @@ import os
 import time
 import multiprocessing
 
-process_number = 4
+number_cores = 4
 sample_period = 1800
 # hertz
 sample_rate = 0.5
@@ -95,18 +95,25 @@ if __name__ == "__main__":
     # For this to work the length of the raw sample data must be split chunks equal to the number of processes,
     h = 0
     pool_data = []
-    for i in range(0, len(csv_data), process_number):
+    slice_length = int(round((len(csv_data) / number_cores), 0))
+    for i in range(0, len(csv_data), slice_length):
         if i == 0:
             pass
         else:
             # we set up an array to pass in to the multiprocessor pool, [data, label] matches
             # method parameters
             sliced_data = csv_data[h:i]
-            dd = [sliced_data, i]
+            print(h, i)
+            dd = [sliced_data, h]
             pool_data.append(dd)
+            h = i
 
-    with multiprocessing.Pool(processes=process_number) as pool:
+    print("Pool data length: ", len(pool_data))
+
+    # Multi-processing code here
+    with multiprocessing.Pool(processes=number_cores) as pool:
         results = pool.starmap(process_fft_visualisation, pool_data)
+        print(results)
 
 
     t_end = time.time()
