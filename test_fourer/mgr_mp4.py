@@ -16,7 +16,7 @@ def local_file_list_build(directory):
 
 def make_animation_tracker(image, list_length, image_number):
     try:
-        width, height, colourdepth = image.shape
+        height, width, colourdepth = image.shape
         tracker_length = int(image_number / list_length * width)
         cv2.line(image, (0, height - 5), (tracker_length, height - 5), (0, 0, 255), 5)
     except:
@@ -28,7 +28,7 @@ def wrapper():
     # Make animations
     folder = "movies"
     img_files = local_file_list_build("images")
-    outputfile = folder + os.sep + 'fourier'
+    outputfile = folder + os.sep + 'fourier.mp4'
 
     # Create mp4 animation
     print("*** Begin movie creation: ", outputfile)
@@ -41,51 +41,26 @@ def wrapper():
             break
         except:
             pass
+    print(j)
+    width = j[1]
+    height = j[0]
 
-    width = j[0]
-    height = j[1]
-
-    filename_mp4 = outputfile + ".mp4"
-    # filename_web = outputfile + ".webm"
-
+    filename_mp4 = outputfile
     # Define codec and create a VideoWriter object
     fourcc_mp4 = cv2.VideoWriter_fourcc(*"mp4v")
-    # fourcc_web = cv2.VideoWriter_fourcc('V', 'P', '8', '0')
-
-
-    video_mp4 = cv2.VideoWriter(
-        # filename=filename, fourcc=fourcc, fps=10.0, frameSize=(width, height)
-        filename=filename_mp4, fourcc=fourcc_mp4, fps=10.0, frameSize=(width, height)
-    )
-
-    # video_web = cv2.VideoWriter(
-    #     # filename=filename, fourcc=fourcc, fps=10.0, frameSize=(width, height)
-    #     filename=filename_web, fourcc=fourcc_web, fps=10.0, frameSize=(640, 640)
-    # )
+    video_mp4 = cv2.VideoWriter(filename=filename_mp4, fourcc=fourcc_mp4, fps=30.0, frameSize=(width, height))
 
     # Read each image and write it to the video
     for i in range(0, len(img_files)):
-        print("building video: ", i)
-        # read the image using OpenCV
         frame_mp4 = cv2.imread(img_files[i])
-        # frame_web = cv2.imread(img_files[i])
-
         frame_mp4 = make_animation_tracker(frame_mp4, len(img_files), i)
-        # frame_web = make_animation_tracker(frame_web, len(img_files), i)
 
-        # Optional step to resize the input image to the dimension stated in the
-        # VideoWriter object above
         try:
-            # frame_web = cv2.resize(frame_web, dsize=(640, 640))
             video_mp4.write(frame_mp4)
-            # video_web.write(frame_web)
         except cv2.error:
-            print('!!! Unable to resize video frame')
+            print('!!! Unable to add video frame')
 
-    # Exit the video writer
-    # video_web.release()
     video_mp4.release()
-
     print('*** End movie creation: ', outputfile)
 
 if __name__ == '__main__':
