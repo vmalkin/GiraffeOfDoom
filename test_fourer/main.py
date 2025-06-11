@@ -115,7 +115,6 @@ if __name__ == "__main__":
         results = pool.starmap(process_fft_visualisation, pool_data)
         print(results)
 
-
     t_end = time.time()
     t_elapsed = (t_end - t_start) / 60
     reportstring = "Elapsed time: " + str(t_elapsed) + " minutes."
