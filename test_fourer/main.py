@@ -5,7 +5,7 @@ import os
 import time
 import multiprocessing
 
-number_cores = 2
+number_cores = 10
 sample_period = 1800
 # hertz
 sample_rate = 0.5
@@ -89,29 +89,29 @@ if __name__ == "__main__":
             decimal_data = make_decimal(string_data) + 100
             csv_data.append(decimal_data)
 
-    process_fft_visualisation(csv_data, 0)
-    # # For this to work the length of the raw sample data must be split chunks equal to the number of processes,
-    # h = 0
-    # pool_data = []
-    # slice_length = int(round((len(csv_data) / number_cores), 0))
-    # for i in range(0, len(csv_data), slice_length):
-    #     if i == 0:
-    #         pass
-    #     else:
-    #         # we set up an array to pass in to the multiprocessor pool, [data, label] matches
-    #         # method parameters
-    #         sliced_data = csv_data[h:i]
-    #         print(h, i)
-    #         dd = [sliced_data, h]
-    #         pool_data.append(dd)
-    #         h = i
-    #
-    # print("Pool data length: ", len(pool_data))
-    #
-    # # Multi-processing code here
-    # with multiprocessing.Pool(processes=number_cores) as pool:
-    #     results = pool.starmap(process_fft_visualisation, pool_data)
-    #     print(results)
+    # process_fft_visualisation(csv_data, 0)
+    # For this to work the length of the raw sample data must be split chunks equal to the number of processes,
+    h = 0
+    pool_data = []
+    slice_length = int(round((len(csv_data) / number_cores), 0))
+    for i in range(0, len(csv_data), slice_length):
+        if i < slice_length * 2:
+            pass
+        else:
+            # we set up an array to pass in to the multiprocessor pool, [data, label] matches
+            # method parameters
+            sliced_data = csv_data[h - sample_period:i]
+            print(slice_length, h, i)
+            dd = [sliced_data, h]
+            pool_data.append(dd)
+        h = i
+    print("Pool data length: ", len(pool_data))
+
+    # Multi-processing code here
+    with multiprocessing.Pool(processes=number_cores) as pool:
+        results = pool.starmap(process_fft_visualisation, pool_data)
+        print(results)
+    pool.close()
 
     t_end = time.time()
     t_elapsed = (t_end - t_start) / 60
