@@ -48,7 +48,7 @@ def process_fft_visualisation(data_to_process, process_number):
         if len(sample_data) == sample_period:
             sample_data.pop(0)
             progress = round((i / len(data_to_process)), 3)
-            # print("Progress: ", process_number, progress)
+            print("Progress: ", process_number, progress)
 
             # duration in seconds
             duration = len(sample_data) * (1 / sample_rate)
