@@ -5,7 +5,7 @@ import os
 import time
 import multiprocessing
 
-number_cores = 12
+number_cores = 5
 sample_period = 1800
 sample_rate = 0.5
 img_dir = "images"

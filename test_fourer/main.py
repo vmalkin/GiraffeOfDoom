@@ -6,7 +6,7 @@ import time
 import multiprocessing
 import mgr_mp4
 
-number_cores = 4
+number_cores = 5
 sample_period = int(20 * 30)
 # hertz
 sample_rate = 0.5
@@ -66,7 +66,7 @@ def process_fft_visualisation(data_to_process, process_number):
             fig, ax = plt.subplots(layout="constrained", figsize=(8, 4), dpi=200)
             plt.plot(xf, np.abs(yf))
             ax.set_ylim([100, 10000000])
-            ax.set_xlim([0, 0.05])
+            ax.set_xlim([0, 0.5])
             plt.yscale("log")
             plotfilename = img_dir + os.sep + str(process_number) + "_" + str(i) + ".png"
             plt.savefig(plotfilename)
@@ -92,18 +92,26 @@ if __name__ == "__main__":
     # For this to work the length of the raw sample data must be split chunks equal to the number of processes,
     h = 0
     pool_data = []
-    slice_length = int(round((len(csv_data) / number_cores), 0))
-    for i in range(0, len(csv_data), slice_length):
-        if i < slice_length * 2:
-            pass
-        else:
-            # we set up an array to pass in to the multiprocessor pool, [data, label] matches
-            # method parameters
-            sliced_data = csv_data[h - sample_period:i]
-            print(slice_length, h, i)
-            dd = [sliced_data, h]
-            pool_data.append(dd)
-        h = i
+    chunk_size = len(csv_data) // number_cores
+    pool_data = []
+    for idx in range(number_cores):
+        start_idx = max(0, idx * chunk_size - sample_period)
+        end_idx = (idx + 1) * chunk_size
+        chunk = csv_data[start_idx:end_idx]
+        if len(chunk) > sample_period:
+            pool_data.append((chunk, idx))
+    # slice_length = int(round((len(csv_data) / number_cores), 0))
+    # for i in range(0, len(csv_data), slice_length):
+    #     if i < slice_length * 2:
+    #         pass
+    #     else:
+    #         # we set up an array to pass in to the multiprocessor pool, [data, label] matches
+    #         # method parameters
+    #         sliced_data = csv_data[h - sample_period:i]
+    #         print(slice_length, h, i)
+    #         dd = [sliced_data, h]
+    #         pool_data.append(dd)
+    #     h = i
     print(f"Pool data length: {len(pool_data)}")
 
     # Multi-processing code here
