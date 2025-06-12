@@ -68,7 +68,6 @@ def process_fft_visualisation(data_to_process, process_number):
         ax.set_ylim([50, 10000000])
         ax.set_xlim([0, 0.25])
         plt.yscale("log")
-        plt.xscale("log")
         plotfilename = img_dir + os.sep + str(process_number) + "_" + str(i) + ".png"
         plt.savefig(plotfilename)
         plt.close("all")
