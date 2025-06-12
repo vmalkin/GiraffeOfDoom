@@ -37,40 +37,39 @@ def make_decimal(string_value):
 def process_fft_visualisation(data_to_process, process_number):
     print("Multitasking Process started: ", process_number)
     # The number of samples to do the FFT for. Part of a subset of the full date
-    sample_data = []
-    for i in range(0, len(data_to_process)):
+    sample_data = data_to_process[:sample_period]
+
+    for i in range(sample_period, len(data_to_process)):
+        sample_data.pop(0)
         # Build up the sub-sample array from the main data
         sample_data.append(data_to_process[i])
         if i % 100 == 0:
             print(f"process {process_number}: {i} / {len(data_to_process)}")
-        # Once our sub sample has reached the appropriate size, pop the oldest value
-        # and do FFT analysis
-        if len(sample_data) == sample_period:
-            sample_data.pop(0)
-            # duration in seconds
-            duration = len(sample_data) * (1 / sample_rate)
 
-            # Number of samples in normalized_tone
-            N = int(sample_rate * duration)
+        # duration in seconds
+        duration = len(sample_data) * (1 / sample_rate)
 
-            # the FFT calculation
-            norms = []
-            for item in sample_data:
-                dd = (item / max(sample_data))
-                normalized_tone = np.int16(dd * 32767)
-                norms.append(normalized_tone)
-            yf = rfft(norms)
-            xf = rfftfreq(N, 1 / sample_rate)
+        # Number of samples in normalized_tone
+        N = int(sample_rate * duration)
 
-            # The visualisation
-            fig, ax = plt.subplots(layout="constrained", figsize=(8, 4), dpi=200)
-            plt.plot(xf, np.abs(yf))
-            ax.set_ylim([100, 10000000])
-            ax.set_xlim([0, 0.5])
-            plt.yscale("log")
-            plotfilename = img_dir + os.sep + str(process_number) + "_" + str(i) + ".png"
-            plt.savefig(plotfilename)
-            plt.close("all")
+        # the FFT calculation
+        norms = []
+        for item in sample_data:
+            dd = (item / max(sample_data))
+            normalized_tone = np.int16(dd * 32767)
+            norms.append(normalized_tone)
+        yf = rfft(norms)
+        xf = rfftfreq(N, 1 / sample_rate)
+
+        # The visualisation
+        fig, ax = plt.subplots(layout="constrained", figsize=(8, 4), dpi=200)
+        plt.plot(xf, np.abs(yf))
+        ax.set_ylim([50, 10000000])
+        ax.set_xlim([0, 0.25])
+        plt.yscale("log")
+        plotfilename = img_dir + os.sep + str(process_number) + "_" + str(i) + ".png"
+        plt.savefig(plotfilename)
+        plt.close("all")
     print(f"Multitasking Process finished: {process_number}")
 
 if __name__ == "__main__":
@@ -86,6 +85,7 @@ if __name__ == "__main__":
 
             # this is weird, why do we need to add 100 here?
             decimal_data = make_decimal(string_data) + 100
+            # np.append(csv_data, decimal_data)
             csv_data.append(decimal_data)
 
     # process_fft_visualisation(csv_data, 0)
