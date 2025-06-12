@@ -1,4 +1,5 @@
 from scipy.fft import rfft, rfftfreq
+import requests
 import matplotlib.pyplot as plt
 import numpy as np
 import os
@@ -73,21 +74,39 @@ def process_fft_visualisation(data_to_process, process_number):
         plt.close("all")
     print(f"Multitasking Process finished: {process_number}")
 
+
+def get_url_data(pageurl):
+    url = pageurl
+    response = requests.get(url)
+    html_lines = response.iter_lines()
+    return html_lines
+
+
+def process_csv_from_web(csvdata):
+    return csvdata
+
+
 if __name__ == "__main__":
     csv_data = []
     try_create_directory(img_dir)
     try_create_directory(movie_dir)
+    csv_from_web = get_url_data("http://www.ruruobservatory.org.nz/dr01_24hr.csv")
+    csv_from_web = process_csv_from_web(csv_from_web)
 
-    with open("dr01_24hr.csv", "r") as c:
-        for line in c:
-            l = line.strip()
-            l = l.split(",")
-            string_data = l[1]
+    # for line in csv_from_web:
+    #     print(line.decode('utf-8'))
 
-            # this is weird, why do we need to add 100 here?
-            decimal_data = make_decimal(string_data) + 100
-            # np.append(csv_data, decimal_data)
-            csv_data.append(decimal_data)
+    # with open("dr01_24hr.csv", "r") as c:
+    for line in csv_from_web:
+        l = line.decode('utf-8')
+        # l = line.strip()
+        l = l.split(",")
+        string_data = l[1]
+
+        # this is weird, why do we need to add 100 here?
+        decimal_data = make_decimal(string_data) + 100
+        # np.append(csv_data, decimal_data)
+        csv_data.append(decimal_data)
 
     # process_fft_visualisation(csv_data, 0)
     # For this to work the length of the raw sample data must be split chunks equal to the number of processes,
@@ -102,18 +121,7 @@ if __name__ == "__main__":
         chunk = csv_data[start_idx:end_idx]
         if len(chunk) > sample_period:
             pool_data.append((chunk, idx))
-    # slice_length = int(round((len(csv_data) / number_cores), 0))
-    # for i in range(0, len(csv_data), slice_length):
-    #     if i < slice_length * 2:
-    #         pass
-    #     else:
-    #         # we set up an array to pass in to the multiprocessor pool, [data, label] matches
-    #         # method parameters
-    #         sliced_data = csv_data[h - sample_period:i]
-    #         print(slice_length, h, i)
-    #         dd = [sliced_data, h]
-    #         pool_data.append(dd)
-    #     h = i
+
     print(f"Pool data length: {len(pool_data)}")
 
     # Multi-processing code here
