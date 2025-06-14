@@ -68,6 +68,7 @@ def process_fft_visualisation(data_to_process, process_number):
         ax.set_ylim([50, 10000000])
         ax.set_xlim([0, 0.25])
         plt.yscale("log")
+        # plt.xscale("log")
         plotfilename = img_dir + os.sep + str(process_number) + "_" + str(i) + ".png"
         plt.savefig(plotfilename)
         plt.close("all")
@@ -87,25 +88,24 @@ def process_csv_from_web(csvdata):
 
 if __name__ == "__main__":
     csv_data = []
+    csv_datetimes = []
     try_create_directory(img_dir)
     try_create_directory(movie_dir)
     csv_from_web = get_url_data("http://www.ruruobservatory.org.nz/dr01_24hr.csv")
     csv_from_web = process_csv_from_web(csv_from_web)
 
-    # for line in csv_from_web:
-    #     print(line.decode('utf-8'))
-
-    # with open("dr01_24hr.csv", "r") as c:
     for line in csv_from_web:
         l = line.decode('utf-8')
         # l = line.strip()
         l = l.split(",")
+        time_data = l[0]
         string_data = l[1]
 
         # this is weird, why do we need to add 100 here?
         decimal_data = make_decimal(string_data) + 100
         # np.append(csv_data, decimal_data)
         csv_data.append(decimal_data)
+        csv_datetimes.append(time_data)
 
     # process_fft_visualisation(csv_data, 0)
     # For this to work the length of the raw sample data must be split chunks equal to the number of processes,
