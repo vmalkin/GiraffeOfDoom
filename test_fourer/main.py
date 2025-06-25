@@ -94,6 +94,9 @@ if __name__ == "__main__":
     csv_from_web = get_url_data("http://www.ruruobservatory.org.nz/dr01_24hr.csv")
     csv_from_web = process_csv_from_web(csv_from_web)
 
+    with open("test.csv", "r") as t:
+
+
     for line in csv_from_web:
         l = line.decode('utf-8')
         # l = line.strip()
