@@ -13,14 +13,15 @@ enum states robot_state;
 // Set up for sensors
 #define sonar_trig_left 3
 #define sonar_echo_left 9
+
 #define sonar_trig_right 11
 #define sonar_echo_right 10
 #define eye_left A0
 #define eye_right A1
 
 #define range 30
-NewPing sonar_left (sonar_trig_left, sonar_echo_left, range);
-NewPing sonar_right (sonar_trig_right, sonar_echo_right, range);
+NewPing sonar_left (sonar_trig_left, sonar_echo_left);
+NewPing sonar_right (sonar_trig_right, sonar_echo_right);
 
 int motorspeed = 220;
 int threshold = 60;
@@ -47,18 +48,19 @@ void setup() {
 
 void loop() {
   // Fall thru the possible tests for robot state.
-  robot_state = doublePhoto(robot_state); // Low priority
+  // robot_state = doublePhoto(robot_state); // Low priority
 //  robot_state = singlePhoto(robot_state); //     |
 //
-  robot_state = doubleEcho(robot_state);  //     |
-//  robot_state = singleEcho(robot_state);  //     V
-//  antiStuck();
+  // robot_state = doubleEcho(robot_state);  //     |
+  // robot_state = singleEcho(robot_state);  //     V
+  // antiStuck();
 //  robot_state = drunkWalk(robot_state);   // High priority
 
   // Perform action for current state.
-  do_action(robot_state);
-//  Serial.print(robot_state);
-  Serial.println();
+  // do_action(robot_state);
+  // Serial.print(robot_state);
+  // Serial.println();
+  Serial.println(sonar_right.ping_cm());
 }
 
 // *****************************************************************
@@ -112,9 +114,9 @@ int doublePhoto(int state_value)
   diff = diff * diff;
   diff = sqrt(diff);
 
-  Serial.print(left_value);
-  Serial.print(" ");
-  Serial.println(right_value);
+  // Serial.print(left_value);
+  // Serial.print(" ");
+  // Serial.println(right_value);
   
   if (right_value > left_value && diff > threshold)
   {
@@ -138,7 +140,7 @@ int singlePhoto(int state_value)
 
 int doubleEcho(int state_value)
 {
-  int echo_threshold = 5;
+  // int echo_threshold = 5;
   int sensor_return = state_value;
 
   int left = sonar_left.ping_cm();
@@ -148,6 +150,9 @@ int doubleEcho(int state_value)
 //  int sensedata = left - right;
 //  diff = sensedata * diffsensedata;
 //  diff = sqrt(diff);
+  Serial.print(left);
+  Serial.print(" ");
+  Serial.println(right);
 
   // Object on Left, turn right
   if (left > right )
@@ -195,7 +200,7 @@ void antiStuck()
   float m = (j - k);
   m = m * m;
   m = sqrt(m);
-  Serial.print(m);
+  // Serial.print(m);
   if (m < 500)
   {
     // Ballistic behaviour

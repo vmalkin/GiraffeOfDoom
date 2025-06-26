@@ -48,8 +48,8 @@ void setup() {
 void loop() {
   // Fall thru the possible tests for robot state.
   robot_state = S_DRIVE;
-  robot_state = doublePhoto(robot_state); 
-  robot_state = singlePhoto(robot_state);
+  // robot_state = doublePhoto(robot_state); 
+  // robot_state = singlePhoto(robot_state);
   robot_state = doubleEcho(robot_state);
   robot_state = stuck(robot_state);
 

@@ -7,12 +7,7 @@ import time
 import multiprocessing
 import mgr_mp4
 
-number_cores = 5
-sample_period = int(60 * 30)
-# hertz
-sample_rate = 0.5
-img_dir = "images"
-movie_dir = "movies"
+
 
 t_start = time.time()
 
@@ -35,7 +30,7 @@ def make_decimal(string_value):
         print("ERROR - string is not a number.")
     return result
 
-def process_fft_visualisation(data_to_process, process_number):
+def process_fft_visualisation(data_to_process, sample_period, process_number):
     print("Multitasking Process started: ", process_number)
     # The number of samples to do the FFT for. Part of a subset of the full date
     sample_data = data_to_process[:sample_period]
@@ -86,6 +81,13 @@ def process_csv_from_web(csvdata):
 
 
 if __name__ == "__main__":
+    number_cores = 5
+    sample_period = int(60 * 30)
+    # hertz
+    sample_rate = 0.5
+    img_dir = "images"
+    movie_dir = "movies"
+
     csv_data = []
     try_create_directory(img_dir)
     try_create_directory(movie_dir)
@@ -93,19 +95,22 @@ if __name__ == "__main__":
     csv_from_web = process_csv_from_web(csv_from_web)
 
     # for line in csv_from_web:
-    #     print(line.decode('utf-8'))
+    #     l = line.decode('utf-8')
+    #     # l = line.strip()
+    #     l = l.split(",")
+    #     string_data = l[1]
+    #
+    #     # this is weird, why do we need to add 100 here?
+    #     decimal_data = make_decimal(string_data) + 100
+    #     # np.append(csv_data, decimal_data)
+    #     csv_data.append(decimal_data)
 
-    # with open("dr01_24hr.csv", "r") as c:
-    for line in csv_from_web:
-        l = line.decode('utf-8')
-        # l = line.strip()
-        l = l.split(",")
-        string_data = l[1]
-
-        # this is weird, why do we need to add 100 here?
-        decimal_data = make_decimal(string_data) + 100
-        # np.append(csv_data, decimal_data)
-        csv_data.append(decimal_data)
+    with open("test.csv", "r") as c:
+        for line in c:
+            l = line.strip()
+            ll = l.split(",")
+            dp = float(ll[1])
+            csv_data.append(dp)
 
     # process_fft_visualisation(csv_data, 0)
     # For this to work the length of the raw sample data must be split chunks equal to the number of processes,

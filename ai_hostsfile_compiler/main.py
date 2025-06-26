@@ -37,3 +37,5 @@ def do_get_data(datasource):
 
 if __name__ == "__main__":
     ai_list = do_get_data(datasource)
+    for line in ai_list:
+        print(line)
