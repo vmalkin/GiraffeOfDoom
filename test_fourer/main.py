@@ -114,7 +114,7 @@ if __name__ == "__main__":
 
     # process_fft_visualisation(csv_data, 0)
     # For this to work the length of the raw sample data must be split chunks equal to the number of processes,
-    h = 0
+    # h = 0
     pool_data = []
     # Stolen from chatgpt - better than my janky solution!
     chunk_size = len(csv_data) // number_cores
