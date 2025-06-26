@@ -81,7 +81,7 @@ def process_csv_from_web(csvdata):
 
 
 if __name__ == "__main__":
-    number_cores = 5
+    number_cores = 10
     sample_period = int(60 * 30)
     # hertz
     sample_rate = 0.5
@@ -94,23 +94,23 @@ if __name__ == "__main__":
     csv_from_web = get_url_data("http://www.ruruobservatory.org.nz/dr01_24hr.csv")
     csv_from_web = process_csv_from_web(csv_from_web)
 
-    # for line in csv_from_web:
-    #     l = line.decode('utf-8')
-    #     # l = line.strip()
-    #     l = l.split(",")
-    #     string_data = l[1]
-    #
-    #     # this is weird, why do we need to add 100 here?
-    #     decimal_data = make_decimal(string_data) + 100
-    #     # np.append(csv_data, decimal_data)
-    #     csv_data.append(decimal_data)
+    for line in csv_from_web:
+        l = line.decode('utf-8')
+        # l = line.strip()
+        l = l.split(",")
+        string_data = l[1]
 
-    with open("test.csv", "r") as c:
-        for line in c:
-            l = line.strip()
-            ll = l.split(",")
-            dp = float(ll[1])
-            csv_data.append(dp)
+        # this is weird, why do we need to add 100 here?
+        decimal_data = make_decimal(string_data) + 100
+        # np.append(csv_data, decimal_data)
+        csv_data.append(decimal_data)
+    #
+    # with open("test.csv", "r") as c:
+    #     for line in c:
+    #         l = line.strip()
+    #         ll = l.split(",")
+    #         dp = float(ll[1])
+    #         csv_data.append(dp)
 
     # process_fft_visualisation(csv_data, 0)
     # For this to work the length of the raw sample data must be split chunks equal to the number of processes,
