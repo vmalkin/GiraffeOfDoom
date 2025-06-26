@@ -101,23 +101,23 @@ if __name__ == "__main__":
         # plt.show()
 
 
-        # For this to work the length of the raw sample data must be split chunks equal to the number of processes,
-        # h = 0
-        pool_data = []
-        # Stolen from chatgpt - better than my janky solution!
-        chunk_size = len(csv_data) // number_cores
-        pool_data = []
-        for idx in range(number_cores):
-            start_idx = max(0, idx * chunk_size - sample_period)
-            end_idx = (idx + 1) * chunk_size
-            chunk = csv_data[start_idx:end_idx]
-            if len(chunk) > sample_period:
-                pool_data.append((chunk, idx))
-
-        print(f"Pool data length: {len(pool_data)}")
-
-        # Multi-processing code here
-        with multiprocessing.Pool(processes=number_cores) as pool:
-            results = pool.starmap(process_fft_visualisation, pool_data)
-            print(results)
-        pool.close()
+        # # For this to work the length of the raw sample data must be split chunks equal to the number of processes,
+        # # h = 0
+        # pool_data = []
+        # # Stolen from chatgpt - better than my janky solution!
+        # chunk_size = len(csv_data) // number_cores
+        # pool_data = []
+        # for idx in range(number_cores):
+        #     start_idx = max(0, idx * chunk_size - sample_period)
+        #     end_idx = (idx + 1) * chunk_size
+        #     chunk = csv_data[start_idx:end_idx]
+        #     if len(chunk) > sample_period:
+        #         pool_data.append((chunk, idx))
+        #
+        # print(f"Pool data length: {len(pool_data)}")
+        #
+        # # Multi-processing code here
+        # with multiprocessing.Pool(processes=number_cores) as pool:
+        #     results = pool.starmap(process_fft_visualisation, pool_data)
+        #     print(results)
+        # pool.close()

@@ -30,7 +30,7 @@ def make_decimal(string_value):
         print("ERROR - string is not a number.")
     return result
 
-def process_fft_visualisation(data_to_process, sample_period, process_number):
+def process_fft_visualisation(data_to_process, process_number):
     print("Multitasking Process started: ", process_number)
     # The number of samples to do the FFT for. Part of a subset of the full date
     sample_data = data_to_process[:sample_period]
@@ -61,8 +61,9 @@ def process_fft_visualisation(data_to_process, sample_period, process_number):
         fig, ax = plt.subplots(layout="constrained", figsize=(8, 4), dpi=200)
         plt.plot(xf, np.abs(yf))
         ax.set_ylim([50, 10000000])
-        ax.set_xlim([0, 0.25])
+        # ax.set_xlim([0, 0.25])
         plt.yscale("log")
+        plt.xscale("log")
         plotfilename = img_dir + os.sep + str(process_number) + "_" + str(i) + ".png"
         plt.savefig(plotfilename)
         plt.close("all")
