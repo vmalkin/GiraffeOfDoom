@@ -1,18 +1,13 @@
+import numpy as np
 from scipy.fft import rfft, rfftfreq
 import requests
 import matplotlib.pyplot as plt
-import numpy as np
 import os
 import time
-import multiprocessing
 import mgr_mp4
+import mgr_multiprocess
+import constants as k
 
-number_cores = 10
-sample_period = int(20 * 30)
-# hertz
-sample_rate = 0.5
-img_dir = "images"
-movie_dir = "movies"
 
 
 def try_create_directory(directory):
@@ -24,56 +19,6 @@ def try_create_directory(directory):
         except:
             if not os.path.isdir(directory):
                 print("Unable to create directory")
-
-def make_decimal(string_value):
-    result = 0
-    try:
-        result = float(string_value)
-        result = round(result, 4)
-    except ValueError:
-        print("ERROR - string is not a number.")
-    return result
-
-def process_fft_visualisation(data_to_process, process_number):
-    print("Multitasking Process started: ", process_number)
-    return_dict = []
-    # The number of samples to do the FFT for. Part of a subset of the full date
-    sample_data = data_to_process[:sample_period]
-
-    for i in range(sample_period, len(data_to_process)):
-        sample_data.pop(0)
-        # Build up the sub-sample array from the main data
-        sample_data.append(data_to_process[i])
-        if i % 100 == 0:
-            print(f"process {process_number}: {i} / {len(data_to_process)}")
-
-        # duration in seconds
-        duration = len(sample_data) * (1 / sample_rate)
-
-        # Number of samples in normalized_tone
-        N = int(sample_rate * duration)
-
-        # the FFT calculation
-        norms = []
-        for item in sample_data:
-            dd = (item / max(sample_data))
-            normalized_tone = np.int16(dd * 32767)
-            norms.append(normalized_tone)
-        yf = rfft(norms)
-        xf = rfftfreq(N, 1 / sample_rate)
-
-        # The visualisation
-        fig, ax = plt.subplots(layout="constrained", figsize=(4, 2), dpi=200)
-        plt.plot(xf, np.abs(yf), linewidth=1)
-        ax.set_ylim([50, 10000000])
-        # ax.set_xlim([0, 0.25])
-        plt.yscale("log")
-        plt.xscale("log")
-        plotfilename = img_dir + os.sep + str(process_number) + "_" + str(i) + ".png"
-        plt.savefig(plotfilename)
-        plt.close("all")
-
-    print(f"Multitasking Process finished: {process_number}")
 
 
 def get_url_data(pageurl):
@@ -87,55 +32,112 @@ def process_csv_from_web(csvdata):
     return csvdata
 
 
+def make_decimal(string_value):
+    result = 0
+    try:
+        result = float(string_value)
+        result = round(result, 4)
+    except ValueError:
+        print("ERROR - string is not a number.")
+    return result
+
+
+def plot(plotting_array):
+    # The visualisation
+    # pc2 = [1 / 5, 1 / 10]
+    # pc3 = [1 / 10, 1 / 45]
+    # pc4 = [1 / 45, 1 / 150]
+
+    for i in range(0, len(plotting_array)):
+        if i % 100 == 0:
+            print(f"Plotting {i} / {len(plotting_array)} plots.")
+        fig, ax = plt.subplots(layout="constrained", figsize=(4, 2), dpi=200)
+        plot_title = plotting_array[i][0]
+        yf = plotting_array[i][1]
+        xf = plotting_array[i][2]
+        # print(f"Min: {min(yf)}. Max: {max(yf)}")
+        plt.plot(xf, yf, linewidth=1)
+        ax.set_ylim([10 ** -2, 10 ** 3])
+        # ax.set_xlim([0, 0.3])
+        plt.yscale("log")
+        plt.xscale("log")
+        plt.grid()
+        ax.set_title(plot_title)
+        plotfilename = img_dir + os.sep + str(i) + ".png"
+        plt.savefig(plotfilename)
+        plt.close("all")
+
+
 if __name__ == "__main__":
-    csv_data = []
+    t_start = time.time()
+    img_dir = k.img_dir
+    movie_dir = k.movie_dir
     try_create_directory(img_dir)
     try_create_directory(movie_dir)
-    t_start = time.time()
+
     csv_from_web = get_url_data("http://www.ruruobservatory.org.nz/dr01_24hr.csv")
     csv_from_web = process_csv_from_web(csv_from_web)
 
+    cleaned_csv = []
     for line in csv_from_web:
         l = line.decode('utf-8')
         # l = line.strip()
         l = l.split(",")
-        utctimes = l[0]
-        string_data = l[1]
+        data_info = l[1]
+        time_info = l[0]
+        decimal_data = make_decimal(data_info)
+        dp = [time_info, decimal_data]
+        cleaned_csv.append(dp)
 
-        # this is weird, why do we need to add 100 here?
-        decimal_data = make_decimal(string_data) + 100
-        # np.append(csv_data, decimal_data)
-        csv_data.append(decimal_data)
-    #
-    # with open("test.csv", "r") as c:
-    #     for line in c:
-    #         l = line.strip()
-    #         ll = l.split(",")
-    #         dp = float(ll[1])
-    #         csv_data.append(dp)
+    # # We need positive values for this. This will shift the data up the y axis
+    # # so the largest negative value is a zero, everything else should be positive
+    # shift_value = math.sqrt(min(csv_data)**2)
+    # csv_data_shifted = []
+    # for value in csv_data:
+    #     d = value + shift_value
+    #     csv_data_shifted.append(d)
 
-    # process_fft_visualisation(csv_data, 0)
-    # For this to work the length of the raw sample data must be split chunks equal to the number of processes,
-    # h = 0
-    pool_data = []
-    # Stolen from chatgpt - better than my janky solution!
-    chunk_size = len(csv_data) // number_cores
-    pool_data = []
-    for idx in range(number_cores):
-        start_idx = max(0, idx * chunk_size - sample_period)
-        end_idx = (idx + 1) * chunk_size
-        chunk = csv_data[start_idx:end_idx]
-        if len(chunk) > sample_period:
-            pool_data.append((chunk, idx))
 
-    print(f"Pool data length: {len(pool_data)}")
+    # entries per second in hertz
+    sample_rate = k.data_sample_rate
+    duration_seconds = len(cleaned_csv) * 1 / sample_rate
 
-    # Multi-processing code here
-    with multiprocessing.Pool(processes=number_cores) as pool:
-        results = pool.starmap(process_fft_visualisation, pool_data)
-        print(results)
-    pool.close()
+    # We will sample a running window of data to process and graph
+    sample_period_duration_in_seconds = k.data_boxcar_window_in_seconds
+    sample_period = int(sample_rate * sample_period_duration_in_seconds)
+    print(f"Beginning FFT.")
+    print(f"Sampling frequency: {sample_rate} Hz, {1 / sample_rate} second period.")
+    print(f"Running window length: {sample_period_duration_in_seconds} seconds.")
+    print(f"Sample duration: {duration_seconds} seconds.")
 
+    # Create a sub-array of data from the main data. This is what will be processed
+    # and creates a "rolling fft". Thus, we will see changing frequencies over time.
+    sample_data = cleaned_csv[:sample_period]
+
+    plotting_array = []
+    for i in range(sample_period, len(cleaned_csv)):
+        sample_data.append(cleaned_csv[i])
+        sample_data.pop(0)
+
+        # Use numpy to extract the 2nd column as a new array of data.
+        temp = np.array(sample_data)
+        data = temp[:, 1]
+        timestamp = sample_data[len(sample_data) - 1][0]
+
+        # the Fast Fourier Transform
+        yf = rfft(data)
+        yf = np.abs(yf)
+        xf = rfftfreq(len(data), 1 / sample_rate)
+
+        # Create a datapoint to be appended to the array for plotting
+        dp = [timestamp, yf, xf]
+        plotting_array.append(dp)
+
+    # Plot the data
+    mgr_multiprocess.make_plot(plotting_array)
+    # plot(plotting_array)
+
+    # create movie
     mgr_mp4.wrapper()
 
     t_end = time.time()

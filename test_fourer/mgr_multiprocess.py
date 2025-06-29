@@ -31,7 +31,7 @@ def plot(plotting_array, processor_id):
 def make_plot(data):
     print("Multi-processing BEGIN")
     # Data in data array has format: [time_data, yf, xf]
-    number_cores = 10
+    number_cores = 12
 
     pool_data = []
     # Create data pool.
@@ -40,20 +40,22 @@ def make_plot(data):
     pool_data = []
     sample_period = int(k.data_sample_rate * k.data_boxcar_window_in_seconds)
 
+    # idx will get added to the pool data so the plotting function can create correctl named plots
     for idx in range(number_cores):
         start_idx = max(0, idx * chunk_size - sample_period)
         end_idx = (idx + 1) * chunk_size
         chunk = data[start_idx:end_idx]
         if len(chunk) > sample_period:
-            pool_data.append((chunk, idx))
-    print(pool_data[0][3])
+            dp = [chunk, idx]
+            pool_data.append(dp)
 
-    # print(f"Pool data length: {len(pool_data)}")
-    # # Multi-processing code here
-    # with multiprocessing.Pool(processes=number_cores) as pool:
-    #     results = pool.starmap(process_fft_visualisation, pool_data)
-    #     print(results)
-    # pool.close()
+    print(f"Pool data length: {len(pool_data)}")
+
+    # Multi-processing code here
+    with multiprocessing.Pool(processes=number_cores) as pool:
+        results = pool.starmap(plot, pool_data)
+        print(results)
+    pool.close()
     #
     print("Multi-processing END")
 

@@ -1,6 +1,7 @@
 import cv2
 import os
 import glob
+import constants as k
 
 def local_file_list_build(directory):
     # Builds and returns a list of files contained in the directory.
@@ -10,7 +11,7 @@ def local_file_list_build(directory):
     for name in glob.glob(path):
         name = os.path.normpath(name)
         dirlisting.append(name)
-    dirlisting.sort()
+    dirlisting.sort(reverse=True)
     return dirlisting
 
 
@@ -26,15 +27,16 @@ def make_animation_tracker(image, list_length, image_number):
 
 def wrapper():
     # Make animations
-    folder = "movies"
-    img_files = local_file_list_build("images")
+    folder = k.movie_dir
+    img_files = local_file_list_build(k.img_dir)
+    print(img_files)
     outputfile = folder + os.sep + 'fourier.mp4'
 
     # Create mp4 animation
     print("*** Begin movie creation: ", outputfile)
 
     # try and get the shape from the first valid image. Skip broken ones
-    for file in img_files:
+    for file in k.img_dir:
         try:
             i = cv2.imread(file)
             j = i.shape
