@@ -9,7 +9,6 @@ import mgr_multiprocess
 import constants as k
 
 
-
 def try_create_directory(directory):
     if os.path.isdir(directory) is False:
         print("Creating image file directory...")

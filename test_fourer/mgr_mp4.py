@@ -11,7 +11,7 @@ def local_file_list_build(directory):
     for name in glob.glob(path):
         name = os.path.normpath(name)
         dirlisting.append(name)
-    dirlisting.sort(reverse=True)
+    dirlisting.sort()
     return dirlisting
 
 
@@ -36,7 +36,7 @@ def wrapper():
     print("*** Begin movie creation: ", outputfile)
 
     # try and get the shape from the first valid image. Skip broken ones
-    for file in k.img_dir:
+    for file in img_files:
         try:
             i = cv2.imread(file)
             j = i.shape
