@@ -7,9 +7,13 @@ import time
 import multiprocessing
 import mgr_mp4
 
+number_cores = 10
+sample_period = int(20 * 30)
+# hertz
+sample_rate = 0.5
+img_dir = "images"
+movie_dir = "movies"
 
-
-t_start = time.time()
 
 def try_create_directory(directory):
     if os.path.isdir(directory) is False:
@@ -32,6 +36,7 @@ def make_decimal(string_value):
 
 def process_fft_visualisation(data_to_process, process_number):
     print("Multitasking Process started: ", process_number)
+    return_dict = []
     # The number of samples to do the FFT for. Part of a subset of the full date
     sample_data = data_to_process[:sample_period]
 
@@ -58,8 +63,8 @@ def process_fft_visualisation(data_to_process, process_number):
         xf = rfftfreq(N, 1 / sample_rate)
 
         # The visualisation
-        fig, ax = plt.subplots(layout="constrained", figsize=(8, 4), dpi=200)
-        plt.plot(xf, np.abs(yf))
+        fig, ax = plt.subplots(layout="constrained", figsize=(4, 2), dpi=200)
+        plt.plot(xf, np.abs(yf), linewidth=1)
         ax.set_ylim([50, 10000000])
         # ax.set_xlim([0, 0.25])
         plt.yscale("log")
@@ -67,6 +72,7 @@ def process_fft_visualisation(data_to_process, process_number):
         plotfilename = img_dir + os.sep + str(process_number) + "_" + str(i) + ".png"
         plt.savefig(plotfilename)
         plt.close("all")
+
     print(f"Multitasking Process finished: {process_number}")
 
 
@@ -82,16 +88,10 @@ def process_csv_from_web(csvdata):
 
 
 if __name__ == "__main__":
-    number_cores = 10
-    sample_period = int(60 * 30)
-    # hertz
-    sample_rate = 0.5
-    img_dir = "images"
-    movie_dir = "movies"
-
     csv_data = []
     try_create_directory(img_dir)
     try_create_directory(movie_dir)
+    t_start = time.time()
     csv_from_web = get_url_data("http://www.ruruobservatory.org.nz/dr01_24hr.csv")
     csv_from_web = process_csv_from_web(csv_from_web)
 
@@ -99,6 +99,7 @@ if __name__ == "__main__":
         l = line.decode('utf-8')
         # l = line.strip()
         l = l.split(",")
+        utctimes = l[0]
         string_data = l[1]
 
         # this is weird, why do we need to add 100 here?
