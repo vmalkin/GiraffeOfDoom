@@ -29,7 +29,7 @@ def wrapper():
     # Make animations
     folder = k.movie_dir
     img_files = local_file_list_build(k.img_dir)
-    print(img_files)
+    # print(img_files)
     outputfile = folder + os.sep + 'fourier.mp4'
 
     # Create mp4 animation

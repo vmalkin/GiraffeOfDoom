@@ -74,7 +74,10 @@ if __name__ == "__main__":
     try_create_directory(img_dir)
     try_create_directory(movie_dir)
 
-    csv_from_web = get_url_data("http://www.ruruobservatory.org.nz/dr01_24hr.csv")
+
+
+    csv_from_web = get_url_data("http://dunedinaurora.nz/dnacore04/Ruru_Obs.csv")
+    # csv_from_web = get_url_data("http://www.ruruobservatory.org.nz/dr01_24hr.csv")
     csv_from_web = process_csv_from_web(csv_from_web)
 
     cleaned_csv = []

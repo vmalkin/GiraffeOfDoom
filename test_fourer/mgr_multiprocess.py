@@ -31,7 +31,7 @@ def plot(plotting_array, processor_id):
 def make_plot(data):
     print("Multi-processing BEGIN")
     # Data in data array has format: [time_data, yf, xf]
-    number_cores = 12
+    number_cores = 6
 
     pool_data = []
     # Create data pool.
