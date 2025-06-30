@@ -91,6 +91,7 @@ if __name__ == "__main__":
         dp = [time_info, decimal_data]
         cleaned_csv.append(dp)
 
+
     # # We need positive values for this. This will shift the data up the y axis
     # # so the largest negative value is a zero, everything else should be positive
     # shift_value = math.sqrt(min(csv_data)**2)
