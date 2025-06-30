@@ -74,11 +74,9 @@ if __name__ == "__main__":
     try_create_directory(img_dir)
     try_create_directory(movie_dir)
 
-
-
-    csv_from_web = get_url_data("http://dunedinaurora.nz/dnacore04/Ruru_Obs.csv")
-    # csv_from_web = get_url_data("http://www.ruruobservatory.org.nz/dr01_24hr.csv")
-    csv_from_web = process_csv_from_web(csv_from_web)
+    # csv_from_web = get_url_data("http://dunedinaurora.nz/dnacore04/Ruru_Obs.csv")
+    csv_from_web = get_url_data("http://www.ruruobservatory.org.nz/dr01_24hr.csv")
+    # csv_from_web = process_csv_from_web(csv_from_web)
 
     cleaned_csv = []
     for line in csv_from_web:
@@ -106,6 +104,7 @@ if __name__ == "__main__":
     duration_seconds = len(cleaned_csv) * 1 / sample_rate
 
     # We will sample a running window of data to process and graph
+    # sample_period_duration_in_seconds = k.data_boxcar_window_in_seconds
     sample_period_duration_in_seconds = k.data_boxcar_window_in_seconds
     sample_period = int(sample_rate * sample_period_duration_in_seconds)
     print(f"Beginning FFT.")
