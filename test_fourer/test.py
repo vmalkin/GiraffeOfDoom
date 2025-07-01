@@ -1,27 +1,89 @@
 import numpy as np
 from scipy.fft import rfft, rfftfreq
+import requests
 import matplotlib.pyplot as plt
+import os
+import time
+import mgr_mp4
+import mgr_multiprocess
 import constants as k
 
-data = k.sunspot
-tempdata = []
-for item in data:
-    d = item[1]
-    tempdata.append(d)
 
 
-# the Fast Fourier Transform
-yf = rfft(tempdata)
-yf = np.abs(yf)
-xf = rfftfreq(len(tempdata), 1 / len(tempdata))
+def try_create_directory(directory):
+    if os.path.isdir(directory) is False:
+        print("Creating image file directory...")
+        try:
+            os.makedirs(directory)
+            print("Directory created.")
+        except:
+            if not os.path.isdir(directory):
+                print("Unable to create directory")
 
-fig, ax = plt.subplots(layout="constrained", figsize=(4, 2), dpi=200)
-# print(f"Min: {min(yf)}. Max: {max(yf)}")
-plt.plot(xf, yf, linewidth=1)
-# # ax.set_ylim([10 ** -2, 10 ** 3])
-ax.set_xlim([0, 20])
-# plt.yscale("log")
-# plt.xscale("log")
-plt.grid()
-plt.show()
 
+def get_url_data(pageurl):
+    url = pageurl
+    response = requests.get(url)
+    html_lines = response.iter_lines()
+    return html_lines
+
+
+def process_csv_from_web(csvdata):
+    return csvdata
+
+
+def make_decimal(string_value):
+    result = 0
+    try:
+        result = float(string_value)
+        result = round(result, 4)
+    except ValueError:
+        print("ERROR - string is not a number.")
+    return result
+
+
+if __name__ == "__main__":
+    t_start = time.time()
+    img_dir = k.img_dir
+    movie_dir = k.movie_dir
+    try_create_directory(img_dir)
+    try_create_directory(movie_dir)
+
+    # csv_from_web = get_url_data("http://dunedinaurora.nz/dnacore04/Ruru_Obs.csv")
+    csv_from_web = get_url_data("http://www.ruruobservatory.org.nz/dr01_24hr.csv")
+    # csv_from_web = process_csv_from_web(csv_from_web)
+
+    datetimes = []
+    data = []
+    for line in csv_from_web:
+        l = line.decode('utf-8')
+        # l = line.strip()
+        l = l.split(",")
+        data_info = l[1]
+        time_info = l[0]
+        decimal_data = make_decimal(data_info)
+        dp = [time_info, decimal_data]
+        datetimes.append(time_info)
+        data.append(decimal_data)
+
+    seconds_per_reading = 2
+    sample_freq = 1 / seconds_per_reading
+    sample_length = len(data)
+    times = np.linspace(0, seconds_per_reading, num=sample_length)
+
+    # plt.figure(figsize=(15, 5))
+    # plt.plot(times, data)
+    # plt.title('Left Channel')
+    # plt.ylabel('Signal Value')
+    # plt.xlabel('Time (s)')
+    # # plt.xlim(0, t_audio)
+    # plt.show()
+
+    plt.figure(figsize=(15, 5))
+    plt.specgram(data, detrend="mean", Fs=sample_freq, vmin=-50, vmax=-10)
+    plt.title('Left Channel')
+    plt.ylabel('Frequency (Hz)')
+    plt.xlabel('Time (s)')
+    # plt.xlim(0, t_audio)
+    plt.colorbar()
+    plt.show()

@@ -130,9 +130,13 @@ if __name__ == "__main__":
         yf = rfft(data)
         yf = np.abs(yf)
         xf = rfftfreq(len(data), 1 / sample_rate)
+        x = []
+        for item in xf:
+            i = item * 2
+            x.append(i)
 
         # Create a datapoint to be appended to the array for plotting
-        dp = [timestamp, yf, xf]
+        dp = [timestamp, yf, x]
         plotting_array.append(dp)
 
     # Plot the data
