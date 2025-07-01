@@ -2,6 +2,7 @@ import numpy as np
 from scipy.fft import rfft, rfftfreq
 import requests
 import matplotlib.pyplot as plt
+from matplotlib import colormaps
 import os
 import time
 import mgr_mp4
@@ -71,19 +72,23 @@ if __name__ == "__main__":
     sample_length = len(data)
     times = np.linspace(0, seconds_per_reading, num=sample_length)
 
+    # diffsdata = []
+    # for i in range(1, len(data)):
+    #     j = data[i] - data[i - 1]
+    #     diffsdata.append(j)
+    #
     # plt.figure(figsize=(15, 5))
-    # plt.plot(times, data)
-    # plt.title('Left Channel')
+    # plt.plot(diffsdata)
+    # plt.title('raw differences')
     # plt.ylabel('Signal Value')
     # plt.xlabel('Time (s)')
-    # # plt.xlim(0, t_audio)
+    # plt.ylim(-0.120, 0.120)
     # plt.show()
 
     plt.figure(figsize=(15, 5))
-    plt.specgram(data, detrend="mean", Fs=sample_freq, vmin=-50, vmax=-10)
-    plt.title('Left Channel')
+    plt.specgram(data, detrend="mean", Fs=sample_freq, vmin=-50, vmax=0, cmap='magma')
+    plt.title('magnetometer spectrum')
     plt.ylabel('Frequency (Hz)')
     plt.xlabel('Time (s)')
-    # plt.xlim(0, t_audio)
     plt.colorbar()
     plt.show()
