@@ -66,7 +66,8 @@ if __name__ == "__main__":
         dp = [time_info, decimal_data]
         datetimes.append(time_info)
         data.append(decimal_data)
-
+    vmin = min(data)
+    vmax = max(data)
     seconds_per_reading = 2
     sample_freq = 1 / seconds_per_reading
     sample_length = len(data)
@@ -86,7 +87,7 @@ if __name__ == "__main__":
     # plt.show()
 
     plt.figure(figsize=(15, 5))
-    plt.specgram(data, detrend="mean", Fs=sample_freq, vmin=-50, vmax=0, cmap='magma')
+    plt.specgram(data, detrend="mean", Fs=sample_freq, vmin=vmin, vmax=vmax, cmap='magma')
     plt.title('magnetometer spectrum')
     plt.ylabel('Frequency (Hz)')
     plt.xlabel('Time (s)')
