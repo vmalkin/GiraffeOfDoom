@@ -73,18 +73,23 @@ if __name__ == "__main__":
     sample_length = len(data)
     times = np.linspace(0, seconds_per_reading, num=sample_length)
 
-    # diffsdata = []
-    # for i in range(1, len(data)):
-    #     j = data[i] - data[i - 1]
-    #     diffsdata.append(j)
-    #
-    # plt.figure(figsize=(15, 5))
-    # plt.plot(diffsdata)
-    # plt.title('raw differences')
-    # plt.ylabel('Signal Value')
-    # plt.xlabel('Time (s)')
-    # plt.ylim(-0.120, 0.120)
-    # plt.show()
+
+    # the Fast Fourier Transform
+    yf = rfft(data)
+    yf = np.abs(yf)
+    xf = rfftfreq(len(data), 1 / sample_freq)
+    x = []
+    for item in xf:
+        i = item * 2
+        x.append(i)
+
+    plt.plot(xf, yf, linewidth=1)
+    # plt.ylim(10 ** 1, 10 ** 3)
+    # ax.set_xlim([0, 0.3])
+    plt.yscale("log")
+    plt.xscale("log")
+    plt.grid()
+    plt.show()
 
     plt.figure(figsize=(15, 5))
     plt.specgram(data, detrend="mean", Fs=sample_freq, vmin=vmin, vmax=vmax, cmap='magma')
