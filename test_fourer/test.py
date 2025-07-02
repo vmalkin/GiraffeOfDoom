@@ -88,12 +88,12 @@ if __name__ == "__main__":
     plt.plot(xf, yf, linewidth=1)
     title = "FFT last 24 hours - " + file_prefix
     plt.title(title)
-    # plt.ylim(10 ** 1, 10 ** 3)
+    plt.ylim(10 ** 1, 10 ** 6)
     # ax.set_xlim([0, 0.3])
     plt.yscale("log")
     plt.xscale("log")
     plt.grid()
-    savefile = file_prefix + "-fft.png"
+    savefile = "fft-" + file_prefix + ".png"
     plt.savefig(savefile)
 
     plt.figure(figsize=(15, 5))
@@ -103,5 +103,5 @@ if __name__ == "__main__":
     plt.ylabel('Frequency (Hz)')
     plt.xlabel('Time (s)')
     plt.colorbar()
-    savefile = file_prefix + "-spec.png"
+    savefile = "spec-" + file_prefix + ".png"
     plt.savefig(savefile)
