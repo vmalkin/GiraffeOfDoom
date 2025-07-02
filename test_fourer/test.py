@@ -8,7 +8,7 @@ import time
 import mgr_mp4
 import mgr_multiprocess
 import constants as k
-
+import standard_stuff
 
 
 def try_create_directory(directory):
@@ -68,7 +68,7 @@ if __name__ == "__main__":
         data.append(decimal_data)
     vmin = min(data)
     vmax = max(data)
-    seconds_per_reading = 2
+    seconds_per_reading = 60
     sample_freq = 1 / seconds_per_reading
     sample_length = len(data)
     times = np.linspace(0, seconds_per_reading, num=sample_length)
@@ -79,22 +79,29 @@ if __name__ == "__main__":
     yf = np.abs(yf)
     xf = rfftfreq(len(data), 1 / sample_freq)
     x = []
-    for item in xf:
-        i = item * 2
-        x.append(i)
+    # for item in xf:
+    #     i = item * 2
+    #     x.append(i)
 
+    plt.figure(figsize=(15, 5))
+    file_prefix = standard_stuff.posix2utc(t_start, '%Y-%m-%d-%H-%M')
     plt.plot(xf, yf, linewidth=1)
+    title = "FFT last 24 hours - " + file_prefix
+    plt.title(title)
     # plt.ylim(10 ** 1, 10 ** 3)
     # ax.set_xlim([0, 0.3])
     plt.yscale("log")
     plt.xscale("log")
     plt.grid()
-    plt.show()
+    savefile = file_prefix + "-fft.png"
+    plt.savefig(savefile)
 
     plt.figure(figsize=(15, 5))
     plt.specgram(data, detrend="mean", Fs=sample_freq, vmin=vmin, vmax=vmax, cmap='magma')
-    plt.title('magnetometer spectrum')
+    title = "Spectrum last 24 hrs - " + file_prefix
+    plt.title(title)
     plt.ylabel('Frequency (Hz)')
     plt.xlabel('Time (s)')
     plt.colorbar()
-    plt.show()
+    savefile = file_prefix + "-spec.png"
+    plt.savefig(savefile)
