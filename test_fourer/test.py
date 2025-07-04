@@ -66,9 +66,9 @@ def split_data(spectrumdata, window_time_in_seconds):
 def perform_fft(item, seconds_per_data):
     sample_freq = 1 / seconds_per_data
     try:
-        yf = rfft(data)
+        yf = rfft(item)
         yf = np.abs(yf)
-        xf = rfftfreq(len(data), 1 / sample_freq)
+        xf = rfftfreq(len(item), 1 / sample_freq)
         dp = [xf, yf]
         return dp
     except:
@@ -81,16 +81,16 @@ def plot_fft(fft_data, file_name):
     yf = fft_data[1]
 
     plt.figure(figsize=(15, 5))
-    file_prefix = standard_stuff.posix2utc(t_start, '%Y-%m-%d-%H-%M')
+
     plt.plot(xf, yf, linewidth=1)
-    title = "FFT last 24 hours - " + file_prefix
+    title = "FFT last 24 hours - " + file_name
     plt.title(title)
-    plt.ylim(10 ** 1, 10 ** 6)
+    # plt.ylim(10 ** 1, 10 ** 6)
     # ax.set_xlim([0, 0.3])
     plt.yscale("log")
     plt.xscale("log")
     plt.grid()
-    savefile = "fft-" + file_prefix + ".png"
+    savefile = "fft-" + file_name + ".png"
     plt.savefig(savefile)
 
 
@@ -129,10 +129,12 @@ if __name__ == "__main__":
 
     reverse_data(data)
     data_segments = split_data(data, split_interval_seconds)
-    for i in range(len(data_segments), 0, -1):
+    for i in range(0, len(data_segments)):
+        file_name = str(len(data_segments) - i)
         reverse_data(data_segments[i])
-        fft_data = perform_fft(item, seconds_per_reading)
-        # plot_fft(fft_data, file_name)
+        print(data_segments[i])
+        # fft_data = perform_fft(data_segments[i], seconds_per_reading)
+        # plot_fft(file_name, fft_data)
 
 
 
