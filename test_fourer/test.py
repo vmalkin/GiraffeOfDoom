@@ -132,7 +132,16 @@ if __name__ == "__main__":
     for i in range(0, len(data_segments)):
         file_name = str(len(data_segments) - i)
         reverse_data(data_segments[i])
-        print(data_segments[i])
+        segment_times = []
+        segment_data = []
+        for j in range(0, len(data_segments[i])):
+            utc_times = data_segments[i][j][0]
+            data = data_segments[i][j][1]
+            segment_times.append(utc_times)
+            segment_data.append(data)
+
+
+
         # fft_data = perform_fft(data_segments[i], seconds_per_reading)
         # plot_fft(file_name, fft_data)
 
