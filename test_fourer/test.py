@@ -85,13 +85,14 @@ def plot_fft(fft_data, file_name):
     plt.plot(xf, yf, linewidth=1)
     title = "FFT last 24 hours - " + file_name
     plt.title(title)
-    # plt.ylim(10 ** 1, 10 ** 6)
+    plt.ylim(10**-2, 10**4)
     # ax.set_xlim([0, 0.3])
     plt.yscale("log")
     plt.xscale("log")
     plt.grid()
     savefile = "fft-" + file_name + ".png"
     plt.savefig(savefile)
+    plt.close()
 
 
 if __name__ == "__main__":
@@ -140,10 +141,8 @@ if __name__ == "__main__":
             segment_times.append(utc_times)
             segment_data.append(data)
 
-
-
-        # fft_data = perform_fft(data_segments[i], seconds_per_reading)
-        # plot_fft(file_name, fft_data)
+        fft_data = perform_fft(segment_data, seconds_per_reading)
+        plot_fft(fft_data, str(i))
 
 
 
