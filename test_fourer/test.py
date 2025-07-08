@@ -89,12 +89,13 @@ def plot_fft(fft_data, times, file_name):
     # x_scale_title = "Period - Seconds"
 
     yf = fft_data[1]
-    plotdatetime = times[len(times) - 1]
+    startplot = times[0]
+    endplot = times[len(times) - 1]
 
     plt.figure(figsize=(15, 5))
 
     plt.plot(xf, yf, linewidth=1)
-    title = "FFT last 24 hours - " + plotdatetime
+    title = "FFT - " + startplot + " to " + endplot
     plt.title(title)
     plt.xlabel = x_scale_title
 
