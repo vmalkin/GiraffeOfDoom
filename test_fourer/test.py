@@ -75,22 +75,50 @@ def perform_fft(item, seconds_per_data):
         return ("error_fft")
 
 
-def plot_fft(fft_data, file_name):
+def plot_fft(fft_data, times, file_name):
     # fft data is [xf, yf]
     xf = fft_data[0]
+    x_scale_title = "Period - Hz"
+    # xxf = []
+    # for item in xf:
+    #     try:
+    #         d = 1 / item
+    #     except:
+    #         d = 0
+    #     xxf.append(d)
+    # x_scale_title = "Period - Seconds"
+
     yf = fft_data[1]
+    plotdatetime = times[len(times) - 1]
 
     plt.figure(figsize=(15, 5))
 
     plt.plot(xf, yf, linewidth=1)
-    title = "FFT last 24 hours - " + file_name
+    title = "FFT last 24 hours - " + plotdatetime
     plt.title(title)
+    plt.xlabel = x_scale_title
+
+    ann_pos = 5**-1
+    plt.annotate("2s", xy=(ann_pos, 10**-1.8),xytext=(ann_pos, 10 ** -1.8), fontsize=8, color='red', bbox=dict(boxstyle="round", fc="1", color='red'))
+
+    ann_pos = 10 ** -1
+    plt.annotate("10s", xy=(ann_pos, 10 ** -1.8), xytext=(ann_pos, 10 ** -1.8), fontsize=8, color='red',
+                 bbox=dict(boxstyle="round", fc="1", color='red'))
+
+    ann_pos = 10 **-2
+    plt.annotate("100s", xy=(ann_pos, 10 ** -1.8), xytext=(ann_pos, 10 ** -1.8), fontsize=8, color='red',
+                 bbox=dict(boxstyle="round", fc="1", color='red'))
+
+    ann_pos = 10 **-3
+    plt.annotate("16m", xy=(ann_pos, 10 ** -1.8), xytext=(ann_pos, 10 ** -1.8), fontsize=8, color='red',
+                 bbox=dict(boxstyle="round", fc="1", color='red'))
+
     plt.ylim(10**-2, 10**4)
     # ax.set_xlim([0, 0.3])
     plt.yscale("log")
     plt.xscale("log")
     plt.grid()
-    savefile = "fft-" + file_name + ".png"
+    savefile = img_dir + os.sep + "fft-" + file_name + ".png"
     plt.savefig(savefile)
     plt.close()
 
@@ -125,14 +153,17 @@ if __name__ == "__main__":
     # Remove the column headers from the datetime information
     # datetimes.pop(0)
     data.pop(0)
-    split_interval_seconds = 60 * 60
+    split_interval_seconds = 60 * 20
 
-
+    # we want the most recent data to be a complete segment, so reverse the data before splitting it
     reverse_data(data)
     data_segments = split_data(data, split_interval_seconds)
+    # revert segments to correct chronological order, but data withing segments will be reversed. FIx in loop
+    reverse_data(data_segments)
     for i in range(0, len(data_segments)):
-        file_name = str(len(data_segments) - i)
+        # sort segment data into correct chronological order
         reverse_data(data_segments[i])
+        file_name = str(len(data_segments) - i)
         segment_times = []
         segment_data = []
         for j in range(0, len(data_segments[i])):
@@ -142,75 +173,37 @@ if __name__ == "__main__":
             segment_data.append(data)
 
         fft_data = perform_fft(segment_data, seconds_per_reading)
-        plot_fft(fft_data, str(i))
+        plot_fft(fft_data, segment_times, str(i))
 
-
-
-
-
-
-
-
-
-
-    # vmin = min(data)
-    # # vmax = max(data)
-    # seconds_per_reading = 2
-    # sample_freq = 1 / seconds_per_reading
-    # sample_length = len(data)
-    # times = np.linspace(0, seconds_per_reading, num=sample_length)
-
-
-
-    # # the Fast Fourier Transform
-    # yf = rfft(data)
-    # yf = np.abs(yf)
-    # xf = rfftfreq(len(data), 1 / sample_freq)
-    # # x = []
-    # # for item in xf:
-    # #     i = item * 2
-    # #     x.append(i)
+    #     vmin = min(data)
+    #     vmax = max(data)
+    # # seconds_per_reading = 2
+    # # sample_freq = 1 / seconds_per_reading
+    #     sample_length = len(data)
+    #     times = np.linspace(0, seconds_per_reading, num=sample_length)
     #
+    #     # # Plot FFT spectrogram
+    #     plt.figure(figsize=(15, 6))
+    #     plt.specgram(data, detrend="mean", Fs=frequency, vmin=vmin, vmax=vmax, cmap='magma')
+    #     title = "Spectrum last 24 hrs - " + 1
+    #     plt.subplots_adjust(bottom=0.25)
+    #     plt.title(title)
     #
-    # plt.figure(figsize=(15, 5))
-    # file_prefix = standard_stuff.posix2utc(t_start, '%Y-%m-%d-%H-%M')
-    # plt.plot(xf, yf, linewidth=1)
-    # title = "FFT last 24 hours - " + file_prefix
-    # plt.title(title)
-    # plt.ylim(10 ** 1, 10 ** 6)
-    # # ax.set_xlim([0, 0.3])
-    # plt.yscale("log")
-    # plt.xscale("log")
-    # plt.grid()
-    # savefile = "fft-" + file_prefix + ".png"
-    # plt.savefig(savefile)
+    #     # arraylength = len(datetimes)
+    #     # newtickarray = []
+    #     # newdatetime = []
+    #     # only have tick labels every few ticks
+    #     # interval  = 60 * 60
+    #     # tick_positions = np.arange(0,arraylength)
+    #     # for i in range(0, arraylength):
+    #     #     if i * frequency % interval == 0:
+    #     #         newtickarray.append(i)
+    #     #         newdatetime.append(datetimes[i])
+    #
+    #     # plt.xticks(newtickarray, newdatetime, rotation=45)
+    #     plt.ylabel('Frequency (Hz)')
+    #     plt.xlabel('Time (s)')
+    #     plt.colorbar()
+    #     savefile = "spec-" + i + ".png"
+    #     plt.savefig(savefile)
 
-
-    # # Plot FFT spectrogram
-    # plt.figure(figsize=(15, 6))
-    # plt.specgram(data, detrend="mean", Fs=sample_freq, vmin=vmin, vmax=vmax, cmap='magma')
-    # title = "Spectrum last 24 hrs - " + file_prefix
-    # plt.subplots_adjust(bottom=0.25)
-    # plt.title(title)
-    #
-    # arraylength = len(datetimes)
-    # newtickarray = []
-    # newdatetime = []
-    # # only have tick labels every few ticks
-    # interval  = 60 * 60
-    # tick_positions = np.arange(0,arraylength)
-    # for i in range(0, arraylength):
-    #     if i * sample_freq % interval == 0:
-    #         newtickarray.append(i)
-    #         newdatetime.append(datetimes[i])
-    #
-    # plt.xticks(newtickarray, newdatetime, rotation=45)
-    # plt.ylabel('Frequency (Hz)')
-    # plt.xlabel('Time (s)')
-    # plt.colorbar()
-    # savefile = "spec-" + file_prefix + ".png"
-    # plt.savefig(savefile)
-    #
-    # print(f"Sample Frequency: {sample_freq}")
-    # print(f"Length of Data: {len(data)}")
-    # print(f"Length of Datetimes: {len(datetimes)}")
