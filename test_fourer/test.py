@@ -154,7 +154,7 @@ if __name__ == "__main__":
     # Remove the column headers from the datetime information
     # datetimes.pop(0)
     data.pop(0)
-    split_interval_seconds = 60 * 20
+    split_interval_seconds = 60 * 60
 
     # we want the most recent data to be a complete segment, so reverse the data before splitting it
     reverse_data(data)
