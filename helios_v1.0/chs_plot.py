@@ -213,7 +213,7 @@ def filter_average(numerical_data, filter_halfwindow):
     return returnarray
 
 
-def wrapper(sat_id):
+def simple_stackplot(sat_id):
     print('*** Begin SW guestimate')
     # start date is three Carington Rotations ago.
     # A day is 86400 seconds long

@@ -112,7 +112,7 @@ if __name__ == "__main__":
     # Solar wind data from Other Satellites goes here
 
     # Simple stackplot of solar wind
-    chs_plot.wrapper("dscovr")
+    chs_plot.simple_stackplot("dscovr")
 
     # process latest solar image
     # sun.get_meridian_coverage()
