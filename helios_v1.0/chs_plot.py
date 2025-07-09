@@ -4,10 +4,11 @@
 import global_config as k
 import sqlite3
 import time
-import datetime
-from plotly import graph_objects as go
+from datetime import datetime, timezone
+# from plotly import graph_objects as go
 import numpy as np
 from statistics import median, mean
+import matplotlib.pyplot as plt
 
 def db_getdata(starttime, satellite_name):
     returnvalues = []
@@ -22,11 +23,11 @@ def db_getdata(starttime, satellite_name):
 
 def posix2utc(posixtime, timeformat):
     # '%Y-%m-%d %H:%M'
-    utctime = datetime.datetime.utcfromtimestamp(int(posixtime)).strftime(timeformat)
+    utctime = datetime.fromtimestamp(int(posixtime), tz=timezone.utc).strftime(timeformat)
     return utctime
 
 
-def plot(splitlist, trend, storm, dates, sat_id):
+def plot(splitlist, trend, storm, futuredates, sat_id):
     # papercolour = "#d0d0d0"
     plotlist_colours = ['#cfb2be', '#d79180', '#b1493e']
     # plotlist_colours = ['#f1e0e6', '#cfbbc1', '#a49196']
@@ -35,43 +36,48 @@ def plot(splitlist, trend, storm, dates, sat_id):
     width = 1500
     height = 550
 
-    plotdata = go.Scatter(mode="lines")
-    fig = go.Figure(plotdata)
 
+    plt.figure(figsize=(12, 6))
+        # plotdata = go.Scatter(mode="lines")
+    # fig = go.Figure(plotdata)
+    #
     # Plot the 3 Carrington rotations
-    for i in range(0, len(splitlist)):
-        tmp = []
-        for d in splitlist[i]:
-            name = posix2utc(d[0], '%Y-%m-%d')
-            data = d[1]
-            tmp.append(data)
-        # fig.add_trace(go.Scatter(x=dates, y=tmp, mode="lines", name=name, line=dict(color=plotlist_colours[i], width=1)))
-        fig.add_trace(go.Scatter(x=dates, y=tmp, mode="lines", name=name, line=dict(width=1)))
+    for item in splitlist:
+        dates = []
+        datas = []
+        for value in item:
+            dts = value[0]
+            dts = posix2utc(dts, '%Y-%m-%d %H:%M')
+            dta = value[1]
+            dates.append(dts)
+            datas.append(dta)
+        plt.plot(dates, datas)
 
-    # plot the averaged forecast
-    fig.add_trace(go.Scatter(x=dates, y=trend, mode="lines", name='Guesstimate', line=dict(color="black", width=4)))
+    #
+    # # plot the averaged forecast
+    # fig.add_trace(go.Scatter(x=dates, y=trend, mode="lines", name='Guesstimate', line=dict(color="black", width=4)))
+    #
+    # # Plot bars showing high solar wind speed over 500km/s
+    # marker_colour = 'rgba(50,150,0, 0.1)'
+    # fig.add_bar(x=dates, y=storm, name='Storm Period', marker_line_color=marker_colour, marker_line_width=3, marker_color=marker_colour)
 
-    # Plot bars showing high solar wind speed over 500km/s
-    marker_colour = 'rgba(50,150,0, 0.1)'
-    fig.add_bar(x=dates, y=storm, name='Storm Period', marker_line_color=marker_colour, marker_line_width=3, marker_color=marker_colour)
 
-
-    title = "Solar Wind Guesstimate - Average of last 3 Carrington Rotations."
-    fig.update_layout(width=width, height=height, title=title,
-                      xaxis_title="Forecast Dates<br><sub>http://DunedinAurora.nz</sub>")
-    fig.update_xaxes(showgrid=True, gridwidth=1, gridcolor=gridcolour, nticks=24, tickangle=50)
-    fig.update_yaxes(showgrid=True, gridwidth=1, gridcolor=gridcolour)
-    fig.update_layout(font=dict(size=16, color="#202020"), title_font_size=18, )
-    fig.update_layout(plot_bgcolor=papercolour,
-                      paper_bgcolor=papercolour)
-    fig.add_hline(y=500, line=dict(width=3, color='rgba(10,180,0, 1)'), layer="below",
-                  annotation_font_color='rgba(20,180,0, 1)', annotation_text='Storm Threshold',
-                  annotation_position="top right")
-
-    fig.update_yaxes(range=[200, 700])
-    savefile = k.folder_output_to_publish + k.filesep + sat_id + "_simple.jpg"
-    fig.write_image(savefile)
-    # fig.show()
+    # title = "Solar Wind Guesstimate - Average of last 3 Carrington Rotations."
+    # fig.update_layout(width=width, height=height, title=title,
+    #                   xaxis_title="Forecast Dates<br><sub>http://DunedinAurora.nz</sub>")
+    # fig.update_xaxes(showgrid=True, gridwidth=1, gridcolor=gridcolour, nticks=24, tickangle=50)
+    # fig.update_yaxes(showgrid=True, gridwidth=1, gridcolor=gridcolour)
+    # fig.update_layout(font=dict(size=16, color="#202020"), title_font_size=18, )
+    # fig.update_layout(plot_bgcolor=papercolour,
+    #                   paper_bgcolor=papercolour)
+    # fig.add_hline(y=500, line=dict(width=3, color='rgba(10,180,0, 1)'), layer="below",
+    #               annotation_font_color='rgba(20,180,0, 1)', annotation_text='Storm Threshold',
+    #               annotation_position="top right")
+    #
+    # # fig.update_yaxes(range=[200, 700])
+    # savefile = k.folder_output_to_publish + k.filesep + sat_id + "_simple.jpg"
+    # fig.write_image(savefile)
+    plt.show()
 
 
 def create_trend(plotlist):
