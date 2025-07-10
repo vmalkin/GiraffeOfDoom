@@ -11,24 +11,25 @@ enum states {S_DRIVE, S_LEFT, S_RIGHT, S_REVERSE, S_STOP};
 enum states robot_state;
 
 // Set up for sensors
-#define sonar_trig_left 3
-#define sonar_echo_left 9
+int sonar_trig_left = 3;
+int sonar_echo_left = 9;
 
-#define sonar_trig_right 11
-#define sonar_echo_right 10
+int sonar_trig_right = 10;
+int sonar_echo_right = 11;
+
 #define eye_left A0
 #define eye_right A1
 
-#define range 30
-NewPing sonar_left (sonar_trig_left, sonar_echo_left);
-NewPing sonar_right (sonar_trig_right, sonar_echo_right);
+int range = 30;
+NewPing sonar_left (sonar_trig_left, sonar_echo_left, range);
+NewPing sonar_right (sonar_trig_right, sonar_echo_right, range);
 
-int motorspeed = 220;
+int motorspeed = 140;
 int threshold = 60;
 
-//// Hardware Room
-//float eye_gain_left = 0;
-//float eye_gain_right= 250;
+// // Hardware Room
+// float eye_gain_left = 0;
+// float eye_gain_right= 250;
 
 // my office
 float eye_gain_left = 0;
@@ -36,7 +37,6 @@ float eye_gain_right= 250;
 
 RedBotMotors motors;
 RedBotAccel accel;
-
 
 
 void setup() {
@@ -47,20 +47,17 @@ void setup() {
 }
 
 void loop() {
-  // Fall thru the possible tests for robot state.
-  // robot_state = doublePhoto(robot_state); // Low priority
-//  robot_state = singlePhoto(robot_state); //     |
-//
-  // robot_state = doubleEcho(robot_state);  //     |
-  // robot_state = singleEcho(robot_state);  //     V
-  // antiStuck();
-//  robot_state = drunkWalk(robot_state);   // High priority
+  // The default state for the robot is always to drive forward. THis is changed depending on circumstances. 
+  robot_state = S_DRIVE;
 
-  // Perform action for current state.
-  // do_action(robot_state);
-  // Serial.print(robot_state);
-  // Serial.println();
-  Serial.println(sonar_right.ping_cm());
+  // // Fall thru the possible tests to change robot state.
+  // robot_state = doublePhoto(robot_state); // Low priority
+  // robot_state = singlePhoto(robot_state); //     |
+  robot_state = doubleEcho(robot_state);  //     |
+  // // robot_state = singleEcho(robot_state);  //     V
+  antiStuck();
+  // robot_state = drunkWalk(robot_state);   // High priority
+  do_action(robot_state);
 }
 
 // *****************************************************************
@@ -95,48 +92,48 @@ void do_action(int state)
 // *****************************************************************
 // Sensor tests to see if we can change state
 // *****************************************************************
-int doublePhoto(int state_value)
-{
-  int state = state_value;
+// int doublePhoto(int state_value)
+// {
+//   int state = state_value;
   
-  int iters = 40;
-  float lefty = 0;
-  float righty = 0;
-  for (int i = 0; i <= iters; i++)
-  {
-    lefty = lefty + analogRead(eye_left);
-    righty = righty + analogRead(eye_right);
-    }
+//   int iters = 40;
+//   float lefty = 0;
+//   float righty = 0;
+//   for (int i = 0; i <= iters; i++)
+//   {
+//     lefty = lefty + analogRead(eye_left);
+//     righty = righty + analogRead(eye_right);
+//     }
     
-  float left_value = (lefty / iters) - eye_gain_left;
-  float right_value = (righty / iters) - eye_gain_right;
-  float diff = (left_value - right_value);
-  diff = diff * diff;
-  diff = sqrt(diff);
+//   float left_value = (lefty / iters) - eye_gain_left;
+//   float right_value = (righty / iters) - eye_gain_right;
+//   float diff = (left_value - right_value);
+//   diff = diff * diff;
+//   diff = sqrt(diff);
 
-  // Serial.print(left_value);
-  // Serial.print(" ");
-  // Serial.println(right_value);
+//   // Serial.print(left_value);
+//   // Serial.print(" ");
+//   // Serial.println(right_value);
   
-  if (right_value > left_value && diff > threshold)
-  {
-    state = S_RIGHT;
-    }
+//   if (right_value > left_value && diff > threshold)
+//   {
+//     state = S_RIGHT;
+//     }
 
-  if (left_value > right_value && diff > threshold)
-  {
-    state = S_LEFT;
-    }
+//   if (left_value > right_value && diff > threshold)
+//   {
+//     state = S_LEFT;
+//     }
   
-  return state;
-  }
+//   return state;
+//   }
 
 // If a photosensor is broken, we have to work differently. Without knowing which one is dead, we have to
 // guide the robot to the light source. 
-int singlePhoto(int state_value)
-{
-  return state_value;
-  }
+// int singlePhoto(int state_value)
+// {
+//   return state_value;
+//   }
 
 int doubleEcho(int state_value)
 {
@@ -147,41 +144,49 @@ int doubleEcho(int state_value)
   delay(50);
   int right = sonar_right.ping_cm();
 
-//  int sensedata = left - right;
-//  diff = sensedata * diffsensedata;
-//  diff = sqrt(diff);
-  Serial.print(left);
-  Serial.print(" ");
-  Serial.println(right);
+  // Serial.print(left);
+  // Serial.print(" ");
+  // Serial.println(right);
 
-  // Object on Left, turn right
-  if (left > right )
+ if (left > right)
+ {
+  if (right ==0)
   {
-    sensor_return = S_LEFT;
+    sensor_return = S_RIGHT;
+  }
+  // else
+  // {
+  //   sensor_return = S_LEFT;
+  // }
+ }
+
+ if (right > left)
+ {
+    if(left == 0)
+    {
+      sensor_return = S_LEFT;
     }
-    
-  // Object on Right, turn left
-  if (right > left)
-  {
-    sensor_return = S_LEFT;
-    }
-    
+    // else
+    // {
+    //   sensor_return = S_RIGHT;
+    // }
+ }
+  // Serial.println(sensor_return);
   return sensor_return;
-  }
+}
+// // If an echosensor is broken, we have to work differently. Without knowing which one is dead, we have to
+// // guide the robot away from obstacles. 
+// int singleEcho(int state_value)
+// {
+//   return state_value;
+//   }
 
-// If an echosensor is broken, we have to work differently. Without knowing which one is dead, we have to
-// guide the robot away from obstacles. 
-int singleEcho(int state_value)
-{
-  return state_value;
-  }
-
-// All sensors are dead, or we can't verify their accuracy. We will implement purely ballistic behaviours
-// that _eventually_ would guide our robot somewhere!
-int drunkWalk(int state_value)
-{
-  return state_value;
-  }
+// // All sensors are dead, or we can't verify their accuracy. We will implement purely ballistic behaviours
+// // that _eventually_ would guide our robot somewhere!
+// int drunkWalk(int state_value)
+// {
+//   return state_value;
+//   }
 
 // Ballistic behaviour to back up the robot if it seems to be stopped against something
 void antiStuck()
@@ -201,9 +206,10 @@ void antiStuck()
   m = m * m;
   m = sqrt(m);
   // Serial.print(m);
-  if (m < 500)
+  if (m < 100)
   {
     // Ballistic behaviour
+    Serial.println("Antistuck Behaviour firing.");
     motors_reverse();
     delay(2000);
     motors_right();
@@ -219,6 +225,7 @@ void motors_drive()
 {
   motors.stop();
   motors.drive(motorspeed);
+  tone(buzzer, 1000); 
   }
 
 void motors_left()
@@ -242,33 +249,4 @@ void motors_reverse()
 void motors_stop()
 {
   motors.stop();
-  }
-
-// **********************************************************************
-// Calibrate the robot eyes
-// **********************************************************************
-void calibrateEyes()
-{
-  Serial.println("Calibrating eyes...");
-  float lefty = 0;
-  float righty = 0;
-  int i;
-  
-  for (i = 0; i < 8000; i++)
-  {
-    lefty = lefty + analogRead(eye_left);
-    righty = righty + analogRead(eye_right);
-    }
-
-  float leftreading = lefty / i;
-  float rightreading = righty / i;
-  float gain_value = (leftreading + rightreading) / 2;
-
-  // Remember to invert the lefts and rights to get the correct gain values for each eye
-  eye_gain_right = leftreading / gain_value;
-  eye_gain_left = rightreading / gain_value;
-  Serial.print(rightreading * eye_gain_right);
-  Serial.print(" - ");
-  Serial.print(leftreading * eye_gain_left);
-  delay(3000);
   }
