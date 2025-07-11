@@ -1,7 +1,7 @@
 import os
 filesep = os.sep
 
-copyright = 'DunedinAurora.NZ, (c) 2024.'
+copyright = 'DunedinAurora.NZ, (c) 2025.'
 folder_source_images = 'source'
 folder_output_to_publish = 'publish'
 solar_wind_database = 'solarwind.db'
