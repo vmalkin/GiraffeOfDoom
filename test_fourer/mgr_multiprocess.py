@@ -23,7 +23,9 @@ def plot(plotting_array, processor_id):
         plt.xscale("log")
         plt.grid()
         ax.set_title(plot_title)
-        plotfilename = k.img_dir + os.sep + str(processor_id) + "_" + str(i) + ".png"
+        # add leading zeros otherwise the images will not be sorted correctly by the moviemaker
+        file_sequence = str(i).rjust(6, '0')
+        plotfilename = k.img_dir + os.sep + str(processor_id) + "_" + file_sequence + ".png"
         plt.savefig(plotfilename)
         plt.close("all")
 
@@ -31,7 +33,7 @@ def plot(plotting_array, processor_id):
 def make_plot(data):
     print("Multi-processing BEGIN")
     # Data in data array has format: [time_data, yf, xf]
-    number_cores = 6
+    number_cores = 12
 
     pool_data = []
     # Create data pool.

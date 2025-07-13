@@ -2,7 +2,7 @@ img_dir = "images"
 movie_dir = "movies"
 
 data_sample_rate = 1/2
-data_boxcar_window_in_seconds = 60 * 60
+data_boxcar_window_in_seconds = 60 * 20
 
 sunspot=[
 [1,18.5],
