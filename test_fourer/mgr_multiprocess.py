@@ -12,7 +12,7 @@ def plot(plotting_array, processor_id):
         if i % 100 == 0:
             print(f"Processor {processor_id}: {i} / {len(plotting_array)} plots.")
         fig, ax = plt.subplots(layout="constrained", figsize=(4, 2), dpi=200)
-        plot_title = plotting_array[i][0]
+        plot_title = title = "FFT - " + plotting_array[i][0]
         yf = plotting_array[i][1]
         xf = plotting_array[i][2]
         # print(f"Min: {min(yf)}. Max: {max(yf)}")
