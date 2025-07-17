@@ -119,7 +119,7 @@ def plot_fft(fft_data, times, file_name):
     plt.yscale("log")
     plt.xscale("log")
     plt.grid()
-    savefile = img_dir + os.sep + "fft-" + file_name + ".png"
+    savefile = discreet_step_dir + os.sep + "fft-" + file_name + ".png"
     plt.savefig(savefile)
     plt.close()
 
@@ -127,10 +127,8 @@ def plot_fft(fft_data, times, file_name):
 if __name__ == "__main__":
     t_start = time.time()
 
-    img_dir = k.img_dir
-    movie_dir = k.movie_dir
-    try_create_directory(img_dir)
-    try_create_directory(movie_dir)
+    discreet_step_dir = "discreet"
+    try_create_directory(discreet_step_dir)
 
     seconds_per_reading = 2
     frequency = 1 / seconds_per_reading
