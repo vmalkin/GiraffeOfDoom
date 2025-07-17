@@ -3,6 +3,7 @@ movie_dir = "movies"
 
 data_sample_rate = 1/2
 data_boxcar_window_in_seconds = 60 * 20
+number_of_cpu_cores = 6
 
 sunspot=[
 [1,18.5],
