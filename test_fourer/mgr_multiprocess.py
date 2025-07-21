@@ -23,9 +23,12 @@ def plot(plotting_array, processor_id):
         plt.xscale("log")
         plt.grid()
         ax.set_title(plot_title)
+
         # add leading zeros otherwise the images will not be sorted correctly by the moviemaker
+        proc_id = str(processor_id).rjust(3, '0')
         file_sequence = str(i).rjust(6, '0')
-        plotfilename = k.img_dir + os.sep + str(processor_id) + "_" + file_sequence + ".png"
+
+        plotfilename = k.img_dir + os.sep + str(proc_id) + "_" + file_sequence + ".png"
         plt.savefig(plotfilename)
         plt.close("all")
 
