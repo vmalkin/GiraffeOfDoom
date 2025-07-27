@@ -9,47 +9,46 @@ import mgr_plot_hits
 import mgr_emd
 from threading import Thread
 
-
-class ThreadPlotter(Thread):
-    def __init__(self):
-        Thread.__init__(self, name="ThreadPlotter")
-
-    def run(self):
-        time.sleep(10)
-        while True:
-            print("*** Beginning plots...")
-            data = database_get_data(24*7)
-            try:
-                mgr_daily_count.wrapper()
-            except:
-                print("Failed to plot cumulative totals")
-
-            try:
-                mgr_plot_hits.wrapper(data)
-            except:
-                print("Failed to plot hits")
-
-            try:
-                emd_data = get_emd_data()
-                datetimes = emd_data[0]
-                datavalues = emd_data[1]
-                mgr_emd.wrapper(datavalues, datetimes, "test_emd.jpg")
-            except:
-                print("Failed to plot Empirical Mode Decomposition")
-
-            print("*** Plots finished")
-            time.sleep(3600)
-
-
 database = "events.db"
-averaging_iterations = 100
+averaging_iterations = 200
 highpass_threshold = 3
-current_camera = 2
+current_camera = 0
 blob_size = 2
 
 # milli sec
 exposure_win = -1
 exposure_lin = int((2 ** exposure_win) * 1000)
+
+
+# class ThreadPlotter(Thread):
+#     def __init__(self):
+#         Thread.__init__(self, name="ThreadPlotter")
+#
+#     def run(self):
+#         time.sleep(10)
+#         while True:
+#             print("*** Beginning plots...")
+#             data = database_get_data(24*7)
+#             try:
+#                 mgr_daily_count.wrapper()
+#             except:
+#                 print("Failed to plot cumulative totals")
+#
+#             try:
+#                 mgr_plot_hits.wrapper(data)
+#             except:
+#                 print("Failed to plot hits")
+#
+#             try:
+#                 emd_data = get_emd_data()
+#                 datetimes = emd_data[0]
+#                 datavalues = emd_data[1]
+#                 mgr_emd.wrapper(datavalues, datetimes, "test_emd.jpg")
+#             except:
+#                 print("Failed to plot Empirical Mode Decomposition")
+#
+#             print("*** Plots finished")
+#             time.sleep(3600)
 
 print("Exposure, Windows: ", exposure_win)
 print("Exposure, Linux mSec: ", exposure_lin)
@@ -231,7 +230,6 @@ def get_emd_data():
     return returnvalue
 
 
-
 if __name__ == '__main__':
     # Check that we have folders and database in place
     if os.path.isfile(database) is False:
@@ -247,24 +245,24 @@ if __name__ == '__main__':
     camera = cv2.VideoCapture(current_camera)
     camera_setup_c270(camera)
 
-    plotter = ThreadPlotter()
-    try:
-        plotter.start()
-        print("\nStarting plotter thread...")
-    except:
-        print("Unable to start plotter thread in MAIN.PY!!")
+    # plotter = ThreadPlotter()
+    # try:
+    #     plotter.start()
+    #     print("\nStarting plotter thread...")
+    # except:
+    #     print("Unable to start plotter thread in MAIN.PY!!")
 
     sh_x = int(camera.get(cv2.CAP_PROP_FRAME_WIDTH))
     sh_y = int(camera.get(cv2.CAP_PROP_FRAME_HEIGHT))
 
-    # Image to show accumulating stikes
+    # Image to show accumulating strikes
     cumulative_image = np.full((sh_y, sh_x), 0)
 
     while True:
         # Reads the latest image from the camera
         ret, image = camera.read()
         img_g = greyscale_img(image)
-
+        # image_save("grey.png", img_g)
         # Create an array of pictures with which to create an average
         averaging_array.append(img_g)
 
@@ -272,6 +270,7 @@ if __name__ == '__main__':
             # ALWAYS POP
             averaging_array.pop(0)
             avg_img = np.mean(averaging_array, axis=0)
+            # image_save("avg.png", avg_img)
             max_avg_pixels = int(np.max(avg_img))
 
             # Some initialisation stuff, including experimental automatic setting of highpass
@@ -284,43 +283,44 @@ if __name__ == '__main__':
                 display_flag = False
 
             # The image to test is made up of the original image, minus the average minus the highpass
-            testing_img = img_g - avg_img - highpassfilter
+            testing_img = img_g - avg_img
 
             # Clip image to with 0 - 255
             testing_img = np.where(testing_img <= 0, 0,testing_img)
             testing_img = np.where(testing_img > 0, 254, testing_img)
+            image_save("testing.png", testing_img)
 
-            # Count any white pixels - potential cosmic ray hits
-            pixel_count = cv2.countNonZero(testing_img)
-
-            tt = int(time.time())
-            t = posix2utc(tt, '%Y-%m-%d %H:%M:%S')
-
-            # Report as noise hits that dont meet the size criteria
-            if pixel_count != 0 and pixel_count < blob_size:
-                print(t + " Noise! " + str(pixel_count) + " pixels. ", report_image_params(testing_img))
-
-            # if a hit is over the size for a blob of pixels, get the coordinates
-            #  of the blobs pixels and check. If it's genuine then treat as a
-            # cosmic ray hit
-            if pixel_count >= blob_size:
-                pixel_coords = np.array(cv2.findNonZero(testing_img))
-                print(t + " Blob! " + str(pixel_count) + " pixels. ", report_image_params(testing_img))
-
-                blobcheck = check_pixel_coords(pixel_coords, pixel_count)
-                if blobcheck == "blob":
-                    # add to database, get data for time period.
-                    database_add_data(tt, pixel_count)
-                    current_data = database_get_data(24)
-
-                    n = posix2utc(tt, '%Y-%m-%d')
-                    if n_old == n:
-                        filename = "CRays_" + n + ".png"
-                        cumulative_image = cumulative_image + testing_img
-                        image_save(filename, cumulative_image)
-                    else:
-                        n_old = n
-                        cumulative_image = np.full((sh_y, sh_x), 0)
-
-    # camera.release()
-    # cv2.destroyAllWindows()
+    #         # Count any white pixels - potential cosmic ray hits
+    #         pixel_count = cv2.countNonZero(testing_img)
+    #
+    #         tt = int(time.time())
+    #         t = posix2utc(tt, '%Y-%m-%d %H:%M:%S')
+    #
+    #         # Report as noise hits that dont meet the size criteria
+    #         if pixel_count != 0 and pixel_count < blob_size:
+    #             print(t + " Noise! " + str(pixel_count) + " pixels. ", report_image_params(testing_img))
+    #
+    #         # if a hit is over the size for a blob of pixels, get the coordinates
+    #         #  of the blobs pixels and check. If it's genuine then treat as a
+    #         # cosmic ray hit
+    #         if pixel_count >= blob_size:
+    #             pixel_coords = np.array(cv2.findNonZero(testing_img))
+    #
+    #             blobcheck = check_pixel_coords(pixel_coords, pixel_count)
+    #             print(f"time: {t} Blob? {blobcheck} {report_image_params(testing_img)}")
+    #             if blobcheck == "blob":
+    #                 # add to database, get data for time period.
+    #                 database_add_data(tt, pixel_count)
+    #                 current_data = database_get_data(24)
+    #
+    #                 n = posix2utc(tt, '%Y-%m-%d')
+    #                 if n_old == n:
+    #                     filename = "CRays_" + n + ".png"
+    #                     cumulative_image = cumulative_image + testing_img
+    #                     image_save(filename, cumulative_image)
+    #                 else:
+    #                     n_old = n
+    #                     cumulative_image = np.full((sh_y, sh_x), 0)
+    #
+    # # camera.release()
+    # # cv2.destroyAllWindows()
