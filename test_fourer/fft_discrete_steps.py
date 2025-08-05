@@ -79,14 +79,23 @@ def perform_fft(item, seconds_per_data):
 
 def plot_spectrum(data):
     d = []
+    t = []
     for item in data:
         d.append(item[1])
+        t.append(item[0])
 
-    plt.specgram(d, Fs=frequency, cmap="rainbow")
+    Pxx, freqs, bins, im = plt.specgram(d, NFFT=128, noverlap=16, detrend='mean', Fs=frequency, cmap='magma')
+    print("Pxx shape:", Pxx.shape)
+    print("Frequency bins:", freqs.shape)
+    print("Time bins:", bins.shape)
+    print("Pxx min/max:", Pxx.min(), "/", Pxx.max())
+    print("Pxx sample (dB):", 10 * np.log10(Pxx[0:3, 0:5]))  # Convert to dB to match what you see in the image
+
     plt.figure(figsize=(15, 5))
+    plt.xlabel("Time (s)")
+    plt.ylabel("Frequency (Hz)")
     plt.title('Spectrogram')
-    plt.xlabel("DATA")
-    plt.ylabel("TIME")
+
     savefile = discreet_step_dir + os.sep + "spectrum.png"
     plt.savefig(savefile)
     plt.close()
@@ -191,35 +200,36 @@ if __name__ == "__main__":
         fft_data = perform_fft(segment_data, seconds_per_reading)
         plot_fft(fft_data, segment_times, str(i))
 
-    #     vmin = min(data)
-    #     vmax = max(data)
-    # # seconds_per_reading = 2
-    # # sample_freq = 1 / seconds_per_reading
+        # vmin = min(data)
+        # vmax = max(data)
+    # seconds_per_reading = 2
+    # sample_freq = 1 / seconds_per_reading
     #     sample_length = len(data)
     #     times = np.linspace(0, seconds_per_reading, num=sample_length)
-    #
-    #     # # Plot FFT spectrogram
-    #     plt.figure(figsize=(15, 6))
-    #     plt.specgram(data, detrend="mean", Fs=frequency, vmin=vmin, vmax=vmax, cmap='magma')
-    #     title = "Spectrum last 24 hrs - " + 1
-    #     plt.subplots_adjust(bottom=0.25)
-    #     plt.title(title)
-    #
-    #     # arraylength = len(datetimes)
-    #     # newtickarray = []
-    #     # newdatetime = []
-    #     # only have tick labels every few ticks
-    #     # interval  = 60 * 60
-    #     # tick_positions = np.arange(0,arraylength)
-    #     # for i in range(0, arraylength):
-    #     #     if i * frequency % interval == 0:
-    #     #         newtickarray.append(i)
-    #     #         newdatetime.append(datetimes[i])
-    #
-    #     # plt.xticks(newtickarray, newdatetime, rotation=45)
-    #     plt.ylabel('Frequency (Hz)')
-    #     plt.xlabel('Time (s)')
-    #     plt.colorbar()
-    #     savefile = "spec-" + i + ".png"
-    #     plt.savefig(savefile)
+
+        # # Plot FFT spectrogram
+        # plt.figure(figsize=(15, 6))
+        # # plt.specgram(data, detrend="mean", Fs=frequency, vmin=vmin, vmax=vmax, cmap='magma')
+        # plt.specgram(data, detrend="mean", Fs=frequency, cmap='magma')
+        # title = "Spectrum last 24 hrs - " + 1
+        # plt.subplots_adjust(bottom=0.25)
+        # plt.title(title)
+
+        # arraylength = len(datetimes)
+        # newtickarray = []
+        # newdatetime = []
+        # only have tick labels every few ticks
+        # interval  = 60 * 60
+        # tick_positions = np.arange(0,arraylength)
+        # for i in range(0, arraylength):
+        #     if i * frequency % interval == 0:
+        #         newtickarray.append(i)
+        #         newdatetime.append(datetimes[i])
+
+        # # plt.xticks(newtickarray, newdatetime, rotation=45)
+        # plt.ylabel('Frequency (Hz)')
+        # plt.xlabel('Time (s)')
+        # plt.colorbar()
+        # savefile = "spec-" + i + ".png"
+        # plt.savefig(savefile)
 
