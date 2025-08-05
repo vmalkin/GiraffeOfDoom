@@ -11,6 +11,9 @@ import mgr_multiprocess
 import constants as k
 import standard_stuff
 
+seconds_per_reading = 2
+frequency = 1 / seconds_per_reading
+
 
 def try_create_directory(directory):
     if os.path.isdir(directory) is False:
@@ -74,6 +77,20 @@ def perform_fft(item, seconds_per_data):
     except:
         return ("error_fft")
 
+def plot_spectrum(data):
+    d = []
+    for item in data:
+        d.append(item[1])
+
+    plt.specgram(d, Fs=frequency, cmap="rainbow")
+    plt.figure(figsize=(15, 5))
+    plt.title('Spectrogram')
+    plt.xlabel("DATA")
+    plt.ylabel("TIME")
+    savefile = discreet_step_dir + os.sep + "spectrum.png"
+    plt.savefig(savefile)
+    plt.close()
+
 
 def plot_fft(fft_data, times, file_name):
     # fft data is [xf, yf]
@@ -130,9 +147,6 @@ if __name__ == "__main__":
     discreet_step_dir = "discreet"
     try_create_directory(discreet_step_dir)
 
-    seconds_per_reading = 2
-    frequency = 1 / seconds_per_reading
-
     # csv_from_web = get_url_data("http://dunedinaurora.nz/dnacore04/Ruru_Obs.csv")
     csv_from_web = get_url_data("http://www.ruruobservatory.org.nz/dr01_24hr.csv")
     # csv_from_web = process_csv_from_web(csv_from_web)
@@ -153,6 +167,9 @@ if __name__ == "__main__":
     # datetimes.pop(0)
     data.pop(0)
     split_interval_seconds = 60 * 60
+
+    # Save a spectrogram. Standard settings
+    plot_spectrum(data)
 
     # we want the most recent data to be a complete segment, so reverse the data before splitting it
     reverse_data(data)
