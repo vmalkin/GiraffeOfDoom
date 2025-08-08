@@ -67,7 +67,9 @@ def wrapper(multifilelist, save_folder):
             r = cv2.imread(files[1], 0)
             g = cv2.imread(files[2], 0)
             try:
-                colour_img = cv2.merge([b, g, r])
+                # colour_img = cv2.merge([g, b, r])
+                # b,r,r emphasises coronal holes.
+                colour_img = cv2.merge([b, r, r])
                 colour_img = create_label(colour_img, timestamp)
                 fc = save_folder + pathsep + str(filename)
                 cv2.imwrite(fc, colour_img)

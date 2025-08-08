@@ -84,14 +84,14 @@ def plot_spectrum(data):
         d.append(item[1])
         t.append(item[0])
 
-    Pxx, freqs, bins, im = plt.specgram(d, NFFT=128, noverlap=16, detrend='mean', Fs=frequency, cmap='magma')
+    plt.figure(figsize=(15, 5))
+    Pxx, freqs, bins, im = plt.specgram(d, NFFT=128, noverlap=32, detrend='mean', Fs=frequency, cmap='magma')
     print("Pxx shape:", Pxx.shape)
     print("Frequency bins:", freqs.shape)
     print("Time bins:", bins.shape)
     print("Pxx min/max:", Pxx.min(), "/", Pxx.max())
     print("Pxx sample (dB):", 10 * np.log10(Pxx[0:3, 0:5]))  # Convert to dB to match what you see in the image
 
-    plt.figure(figsize=(15, 5))
     plt.xlabel("Time (s)")
     plt.ylabel("Frequency (Hz)")
     plt.title('Spectrogram')
