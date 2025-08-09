@@ -5,16 +5,18 @@ import numpy as np
 import standard_stuff
 # import os
 
-
+ink_colour = "#7a3f16"
 def plot_time_data(utcdates, pressuredata, readings_per_tick, texttitle, savefile):
     # ('constellation', 'satID', posixtime, alt, azi, snr)
 
     plt.style.use('Solarize_Light2')
     fig, ax = plt.subplots(layout="constrained", figsize=(16, 8), dpi=140)
-    ax.plot(utcdates, pressuredata, c="orange")
+    ax.plot(utcdates, pressuredata, c=ink_colour, linewidth=1)
 
     tick_spacing = readings_per_tick
     ax.xaxis.set_major_locator(ticker.MultipleLocator(tick_spacing))
+    ax.set_ylim([300, 600])
+    # ax.set_xlim([0, 0.3])
     plt.xticks(rotation=90)
 
     pt = time.time()
@@ -26,56 +28,28 @@ def plot_time_data(utcdates, pressuredata, readings_per_tick, texttitle, savefil
     plt.savefig(savefile)
 
 
-# def plot_detrended(utc_datelist, pressure_data, readings_per_tick, halfwindow, texttitle, savefile):
-#     rawdata = []
-#
-#     newdatetimes = []
-#     newdata = []
-#     subarray = []
-#
-#     # Iterate over data in a single pass to perform rolling average with a window of 2 * halfwindow
-#     for i in range(0, len(pressure_data)):
-#         utc = utc_datelist[i]
-#         pressure = pressure_data[i]
-#         if pressure != None:
-#             subarray.append(pressure)
-#         if len(subarray) >= (2 * halfwindow):
-#             average_pressure = np.mean(subarray)
-#             newdatetimes.append(utc)
-#             # Calculate the detrended data
-#             detrended_pressure = pressure - average_pressure
-#             newdata.append(detrended_pressure)
-#             subarray.pop(0)
-#
-#     # if os.path.isfile("detrended.csv") is True:
-#     #     print("No plotting detrended CSV file")
-#     # else:
-#     #     with open("detrended.csv", "w") as d:
-#     #         for i in range(0, len(newdata)):
-#     #             dp = newdatetimes[i] + "," + str(newdata[i]) + "\r\n"
-#     #             d.write(dp)
-#     #     d.close()
-#
-#     plt.style.use('Solarize_Light2')
-#     fig, ax = plt.subplots(layout="constrained", figsize=(16, 5), dpi=140)
-#     ax.plot(newdatetimes, newdata, c="orange")
-#     tick_spacing = readings_per_tick
-#     ax.xaxis.set_major_locator(ticker.MultipleLocator(tick_spacing))
-#     # ax.set_ylim([-30, 30])
-#     plt.xticks(rotation=90)
-#     pt = time.time()
-#     ut = standard_stuff.posix2utc(pt, '%Y-%m-%d %H:%M')
-#     plot_title = texttitle + " " + ut
-#     ax.set_title(plot_title)
-#     # plt.show()
-#     plt.savefig(savefile)
-#
-#     tick_spacing = readings_per_tick
-#     ax.xaxis.set_major_locator(ticker.MultipleLocator(tick_spacing))
-#     plt.xticks(rotation=90)
-#     pt = time.time()
-#     ut = standard_stuff.posix2utc(pt, '%Y-%m-%d %H:%M')
-#     plot_title = texttitle + ut
-#     ax.set_title(plot_title)
-#     # plt.show()
-#     plt.savefig(savefile)
+def plot_spectrum(data, savefile):
+    frequency = 1 / 5
+    # d = []
+    # t = []
+    # #
+    # # for item in data:
+    # #     d.append(item[1])
+    # #     t.append(item[0])
+
+    plt.figure(figsize=(15, 5))
+    Pxx, freqs, bins, im = plt.specgram(data, NFFT=128, noverlap=32, detrend='mean', Fs=frequency, cmap='inferno', vmin=0, vmax=50)
+
+    # print("Pxx shape:", Pxx.shape)
+    # print("Frequency bins:", freqs.shape)
+    # print("Time bins:", bins.shape)
+    # print("Pxx min/max:", Pxx.min(), "/", Pxx.max())
+    # print("Pxx sample (dB):", 10 * np.log10(Pxx[0:3, 0:5]))  # Convert to dB to match what you see in the image
+
+    plt.xlabel("Time (s)")
+    plt.ylabel("Frequency (Hz)")
+    plt.title('Spectrogram')
+
+    savefile = savefile
+    plt.savefig(savefile)
+    plt.close()

@@ -110,6 +110,7 @@ if __name__ == "__main__":
         # 5 times per second for 60 seconds
         if len(collection) >= 5 * 60:
             mgr_database.db_data_add(collection)
+            # print(collection)
             collection = []
             now = standard_stuff.posix2utc(current_posixtime, '%Y-%m-%d %H:%M')
             print(f"{now}: Seismograph data added.")
