@@ -10,7 +10,7 @@ def db_create():
     db.execute('drop table if exists observations;')
 
     db.execute('create table observations ('
-               'posixtime integer,'
+               'posixtime real,'
                'seismodata real'
                ');')
 
@@ -25,9 +25,8 @@ def db_data_add(gsvdata):
     db = gpsdb.cursor()
     for item in gsvdata:
         posixtime = item[0]
-        temperature = item[1]
-        pressure = item[2]
-        values = [posixtime, temperature, pressure]
+        seismodata = item[1]
+        values = [posixtime, seismodata]
         db.execute('insert into observations(posixtime, seismodata) '
                    'values (?, ?);', values)
     gpsdb.commit()

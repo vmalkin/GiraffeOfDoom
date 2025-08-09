@@ -50,6 +50,9 @@ def get_rounded_posix_():
     t = math.floor(t)
     return t
 
+def get_decimal_posix_():
+    t = time.time()
+    return t
 
 def create_directory(directory):
     try:
@@ -65,10 +68,9 @@ def add_data(collection, current_posixtime, csv_line):
     # Will need to add a try except here. Just return the collection
     # if there's a problem.
     try:
-        temp = csv_line[0]
-        pressure = csv_line[1]
+        seismodata = csv_line[0]
         # Test for temp and pressure as floats.
-        dp = [current_posixtime, temp, pressure]
+        dp = [current_posixtime, seismodata]
         collection.append(dp)
     except:
         print("Unable to parse data to add to collection")
@@ -97,18 +99,18 @@ if __name__ == "__main__":
                                     k.rtscts, k.writeTimeout, k.dsrdtr, k.interCharTimeout)
     collection = []
     while True:
-        current_posixtime = get_rounded_posix_()
+        current_posixtime = get_decimal_posix_()
         line = com.data_recieve()
-        print(line)
+        # print(line)
         csv_line = re.split(r'[,|*]', line)
 
         collection = add_data(collection, current_posixtime, csv_line)
         # Once our collection of data is large enough, process.
         # This delay reduces the risk of the database being locked for charting
-
-        if len(collection) >= 60 * 5:
+        # 5 times per second for 60 seconds
+        if len(collection) >= 5 * 60:
             mgr_database.db_data_add(collection)
             collection = []
             now = standard_stuff.posix2utc(current_posixtime, '%Y-%m-%d %H:%M')
-            print(now, "Barometer data added.")
+            print(f"{now}: Seismograph data added.")
         # # ENTER into database
