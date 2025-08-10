@@ -31,7 +31,7 @@ def plot_time_data(utcdates, pressuredata, readings_per_tick, texttitle, savefil
 
 def plot_hourly_array(utcdates, sensor_data, save_path):
     # Data is about 5 readings per second. Calculate how many readings for an hour
-    window = 5 * 60 * 60
+    window = 5 * 60 * 240
     index_start = 0
     index_end = window
 
@@ -63,7 +63,7 @@ def plot_hourly_array(utcdates, sensor_data, save_path):
             print("Finished")
 
 
-def plot_spectrum(data, savefile):
+def plot_spectrum(data, datetimes, savefile):
     frequency = 1 / 5
 
     plt.figure(figsize=(15, 5))
@@ -78,7 +78,11 @@ def plot_spectrum(data, savefile):
     plt.xlabel("Time (s)")
     plt.ylabel("Frequency (Hz)")
     plt.title('Spectrogram')
-
+    #
+    # ticks = []
+    # for i in range(0, len(datetimes)):
+    #     ticks.append(i)
+    # plt.xticks(ticks, datetimes)
     savefile = savefile
     plt.savefig(savefile)
     plt.close()

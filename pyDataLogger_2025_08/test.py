@@ -7,25 +7,25 @@ import standard_stuff
 import numpy as np
 
 
-class DataPoint:
-    def __init__(self, posixstamp):
-        self.posixstamp = posixstamp
-        self.dp_data = []
-
-    def get_avg_data(self):
-        result = None
-        if len(self.dp_data) > 0:
-            try:
-                result = round(np.mean(self.dp_data), 4)
-            except:
-                print("Corrupt data in array")
-                print(self.dp_data)
-        return result
-
-
-def get_index(psx_start, psx_current, step):
-    index = int((psx_current - psx_start) / step)
-    return index
+# class DataPoint:
+#     def __init__(self, posixstamp):
+#         self.posixstamp = posixstamp
+#         self.dp_data = []
+#
+#     def get_avg_data(self):
+#         result = None
+#         if len(self.dp_data) > 0:
+#             try:
+#                 result = round(np.mean(self.dp_data), 4)
+#             except:
+#                 print("Corrupt data in array")
+#                 print(self.dp_data)
+#         return result
+#
+#
+# def get_index(psx_start, psx_current, step):
+#     index = int((psx_current - psx_start) / step)
+#     return index
 
 # -------------------- For 1 day readings --------------------------
 time_end = time.time()
@@ -64,18 +64,16 @@ filter_window = 5 * 15
 filtered_seismo_data = standard_stuff.filter_median(seismo_data, filter_window)
 filtered_utc_datelist = utc_datelist[filter_window: -1 * filter_window]
 
-print("Tiltmeter - hourly")
-mgr_matplot.plot_hourly_array(filtered_utc_datelist, filtered_seismo_data, k.dir_images)
-
 print("Tiltmeter - Past 24 hours")
 savefile = k.dir_images + os.sep + "1days_tilt.png"
 mgr_matplot.plot_time_data(filtered_utc_datelist, filtered_seismo_data, 30000,"Tiltmeter One Day", savefile)
 
 print("Tiltmeter Spectrogram - Past 24 hours")
 savefile = k.dir_images + os.sep + "spectrum.png"
-mgr_matplot.plot_spectrum(seismo_data, savefile)
+mgr_matplot.plot_spectrum(seismo_data, utc_datelist, savefile)
 
-
+print("Tiltmeter - hourly")
+mgr_matplot.plot_hourly_array(filtered_utc_datelist, filtered_seismo_data, k.dir_images)
 # csvdata = []
 # for item in queryresult:
 #     # dp = str(item[0]) + "," + str(item[1])
