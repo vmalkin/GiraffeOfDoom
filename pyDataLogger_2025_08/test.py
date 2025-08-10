@@ -60,12 +60,12 @@ for item in queryresult:
 #     utc_datelist.append(utcdate)
 #     pressure_data.append(data)
 
-filter_window = 5 * 30
-filtered_seismo_data = standard_stuff.filter_average(seismo_data, filter_window)
+filter_window = 5 * 15
+filtered_seismo_data = standard_stuff.filter_median(seismo_data, filter_window)
 filtered_utc_datelist = utc_datelist[filter_window: -1 * filter_window]
 
 print("Tiltmeter - hourly")
-mgr_matplot.plot_hourly_array(utc_datelist, seismo_data, k.dir_images)
+mgr_matplot.plot_hourly_array(filtered_utc_datelist, filtered_seismo_data, k.dir_images)
 
 print("Tiltmeter - Past 24 hours")
 savefile = k.dir_images + os.sep + "1days_tilt.png"

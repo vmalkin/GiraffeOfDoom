@@ -15,7 +15,7 @@ def plot_time_data(utcdates, pressuredata, readings_per_tick, texttitle, savefil
 
     tick_spacing = readings_per_tick
     ax.xaxis.set_major_locator(ticker.MultipleLocator(tick_spacing))
-    ax.set_ylim([300, 600])
+    ax.set_ylim([350, 550])
     # ax.set_xlim([0, 0.3])
     plt.xticks(rotation=90)
 
@@ -35,29 +35,32 @@ def plot_hourly_array(utcdates, sensor_data, save_path):
     index_start = 0
     index_end = window
 
-    for i in range(0, 25):
+    for i in range(0, 50):
         hour_data = sensor_data[index_start: index_end]
         hour_utc = utcdates[index_start: index_end]
 
-        plt.style.use('Solarize_Light2')
-        fig, ax = plt.subplots(layout="constrained", figsize=(16, 8), dpi=140)
-        ax.plot(hour_utc, hour_data, c=ink_colour, linewidth=1)
-        ax.xaxis.set_major_locator(ticker.MultipleLocator(3000))
-        ax.set_ylim([300, 600])
-        # ax.set_xlim([0, 0.3])
-        plt.xticks(rotation=90)
+        try:
+            plt.style.use('Solarize_Light2')
+            fig, ax = plt.subplots(layout="constrained", figsize=(16, 8), dpi=140)
+            ax.plot(hour_utc, hour_data, c=ink_colour, linewidth=1)
+            ax.xaxis.set_major_locator(ticker.MultipleLocator(3000))
+            ax.set_ylim([350, 550])
+            # ax.set_xlim([0, 0.3])
+            plt.xticks(rotation=90)
 
-        pt = time.time()
-        ut = standard_stuff.posix2utc(pt, '%Y-%m-%d %H:%M.%f')
-        texttitle = hour_data[0]
-        plot_title = str(texttitle) + " (Arbitrary Units) - " + ut
-        savefile = save_path + os.sep + f"{i:03}" + ".png"
-        ax.set_title(plot_title)
-        plt.savefig(savefile)
-        # increment the indices for slicing the array
-        index_start = index_end
-        index_end = index_end + window
-        plt.close()
+            pt = time.time()
+            ut = standard_stuff.posix2utc(pt, '%Y-%m-%d %H:%M.%f')
+            texttitle = hour_data[0]
+            plot_title = str(texttitle) + " (Arbitrary Units) - " + ut
+            savefile = save_path + os.sep + f"{i:03}" + ".png"
+            ax.set_title(plot_title)
+            plt.savefig(savefile)
+            # increment the indices for slicing the array
+            index_start = index_end
+            index_end = index_end + window
+            plt.close()
+        except:
+            print("Finished")
 
 
 def plot_spectrum(data, savefile):
