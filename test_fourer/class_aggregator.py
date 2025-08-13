@@ -1031,8 +1031,9 @@ class Aggregator:
         avg_time = round((self.date_start + self.date_stop) / 2, 4)
         return avg_time
 
-
+# ========================================================================================
 # Aggregate to create a running average
+# ========================================================================================
 
 # ========================================================================================
 # Aggregate to compact data readings from every 0.1 seconds to evey 1 min, or 5 mins, etc.
