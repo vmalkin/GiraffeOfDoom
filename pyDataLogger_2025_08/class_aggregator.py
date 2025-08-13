@@ -1005,10 +1005,10 @@ data = [
 ]
 
 class Aggregator:
-    def __init__(self, start, stop):
+    def __init__(self, posixstart, posixstop):
         self.data_null = None
-        self.date_start = start  # should be POSIX values
-        self.date_stop = stop  # should be POSIX values
+        self.date_start = posixstart  # should be POSIX values
+        self.date_stop = posixstop  # should be POSIX values
         self.data_values = []
 
     def get_data_avg(self):
@@ -1027,7 +1027,7 @@ class Aggregator:
             val_median = self.data_null
         return val_median
 
-    def get_avg_datetime(self):
+    def get_avg_posix(self):
         avg_time = round((self.date_start + self.date_stop) / 2, 4)
         return avg_time
 
@@ -1068,6 +1068,6 @@ for item in data:
 timerend = time.time()
 
 for item in aggregate_array:
-    print(item.get_avg_datetime(), item.get_data_avg())
+    print(item.get_avg_posix(), item.get_data_avg())
 
 print(timerend - timerstart)
