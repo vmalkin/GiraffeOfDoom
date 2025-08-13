@@ -1,3 +1,6 @@
+import time
+from statistics import mean, median
+
 data = [
 [1,50.1999866669333],
 [2,50.3998933418663],
@@ -1002,19 +1005,65 @@ data = [
 ]
 
 class Aggregator:
-    def __init__(self):
+    def __init__(self, start, stop):
         self.data_null = None
+        self.date_start = start # should be POSIX values
+        self.date_stop = stop # should be POSIX values
         self.data_values = []
 
-        def get_data_avg():
-            # return the average value of the data set. If the set is empty, return a null
-            pass
+    def get_data_avg(self):
+        # return the median value of the data set. If the set is empty, return a null
+        if len(self.data_values) > 0:
+            val_avg = mean(self.data_values)
+        else:
+            val_avg = self.data_null
+        return val_avg
 
-        def get_data_median():
-            # return the median value of the data set. If the set is empty, return a null
-            pass
+    def get_data_median(self):
+        # return the median value of the data set. If the set is empty, return a null
+        if len(self.data_values) > 0:
+            val_median = median(self.data_values)
+        else:
+            val_median = self.data_null
+        return val_median
 
-        def get_datetimes():
-            # The date times are the start and end times of the data values we are averaging.
-            # this is returned as a tuple [start, end]
-            pass
+    def get_avg_datetime(self):
+        avg_time = (self.date_start + self.date_stop) / 2
+        return avg_time
+
+
+# Aggregate to create a running average
+
+# ========================================================================================
+# Aggregate to compact data readings from every 0.1 seconds to evey 1 min, or 5 mins, etc.
+# ========================================================================================
+aggregate_array = []
+# the size of the window in seconds. must be more than zero
+window = 10
+
+# PASS 1 - Set up the array
+date_start = 0
+for i in range(0, len(data), window):
+    date_end = data[i][0]
+    d = Aggregator(date_start, date_end)
+    aggregate_array.append(d)
+    date_start = date_end
+
+# PASS 2 - add the data into the correct aggregate object based on datetime
+start = time.time()
+for item in data:
+    datetime = item[0]
+    for agg in aggregate_array:
+        if datetime >= agg.date_start:
+            if datetime < agg.date_stop:
+                print(datetime, agg.date_start, agg.date_stop)
+                data = item[1]
+                agg.data_values.append(data)
+
+end = time.time()
+
+for item in aggregate_array:
+    print(item.get_avg_datetime(), item.get_data_avg())
+
+print(end - start)
+
