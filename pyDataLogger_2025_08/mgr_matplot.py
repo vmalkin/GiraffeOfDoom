@@ -15,7 +15,7 @@ def plot_time_data(utcdates, pressuredata, readings_per_tick, texttitle, savefil
 
     tick_spacing = readings_per_tick
     ax.xaxis.set_major_locator(ticker.MultipleLocator(tick_spacing))
-    ax.set_ylim([400, 500])
+    # ax.set_ylim([400, 500])
     # ax.set_xlim([0, 0.3])
     plt.xticks(rotation=90)
 
