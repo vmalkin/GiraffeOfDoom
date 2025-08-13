@@ -1014,7 +1014,7 @@ class Aggregator:
     def get_data_avg(self):
         # return the median value of the data set. If the set is empty, return a null
         if len(self.data_values) > 0:
-            val_avg = mean(self.data_values)
+            val_avg = round(mean(self.data_values), 4)
         else:
             val_avg = self.data_null
         return val_avg
@@ -1022,13 +1022,13 @@ class Aggregator:
     def get_data_median(self):
         # return the median value of the data set. If the set is empty, return a null
         if len(self.data_values) > 0:
-            val_median = median(self.data_values)
+            val_median = round(median(self.data_values), 4)
         else:
             val_median = self.data_null
         return val_median
 
     def get_avg_datetime(self):
-        avg_time = (self.date_start + self.date_stop) / 2
+        avg_time = round((self.date_start + self.date_stop) / 2, 4)
         return avg_time
 
 
@@ -1050,7 +1050,7 @@ for i in range(0, len(data), window):
     date_start = date_end
 
 # PASS 2 - add the data into the correct aggregate object based on datetime
-start = time.time()
+timerstart = time.time()
 for item in data:
     datetime = item[0]
     for agg in aggregate_array:
@@ -1059,11 +1059,14 @@ for item in data:
                 print(datetime, agg.date_start, agg.date_stop)
                 data = item[1]
                 agg.data_values.append(data)
+        else:
+            # we are testing values outside of the available datetimes so we can break here.
+            break
 
-end = time.time()
+timerend = time.time()
 
 for item in aggregate_array:
     print(item.get_avg_datetime(), item.get_data_avg())
 
-print(end - start)
+print(timerend - timerstart)
 
