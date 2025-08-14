@@ -13,7 +13,6 @@ time_start_7d = time_end - (60 * 60 * 24 * 7)
 result_1d = mgr_database.db_get_pressure(time_start_1d)
 result_7d = mgr_database.db_get_pressure(time_start_7d)
 
-print(f"Number of records: {len(result_7d)}")
 # ========================================================================================
 # We want the following plots.
 # Spectrum of last 24 hours. Full resolution Data.
@@ -57,5 +56,5 @@ for item in plotdata:
     seismo = item[1]
     utc_datelist.append(utc)
     seismo_data.append(seismo)
-savefile = k.dir_images + os.sep + "one_day.png"
+savefile = k.dir_images + os.sep + "seven_day.png"
 mgr_matplot.plot_time_data(utc_datelist, seismo_data, 30000,"Tiltmeter One Week", savefile)
