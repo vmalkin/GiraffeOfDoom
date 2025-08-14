@@ -9,15 +9,16 @@ import class_aggregator
 time_end = time.time()
 time_start_1d = time_end - (60 * 60 * 24)
 time_start_7d = time_end - (60 * 60 * 24 * 7)
+
 result_1d = mgr_database.db_get_pressure(time_start_1d)
 result_7d = mgr_database.db_get_pressure(time_start_7d)
 
 print(f"Number of records: {len(result_7d)}")
 # ========================================================================================
-# Examine the format of the returned data. We might need to split this off into a 24 hour
-# section for passing directly into spectrographic analysis without any aggregating
-# and another section for 24 hour, 7 Day, etc display of smoothed data with less detail
-# so it renders faster in the plotting.
+# We want the following plots.
+# Spectrum of last 24 hours. Full resolution Data.
+# Hourly plots for the past 24 hours. Data aggregated into 1-minute bins
+# Plot of the past 7 days. Data aggregated up to 60-minute bins depending on smoothness of plot.
 # ========================================================================================
 
 # ========================================================================================
