@@ -1031,43 +1031,45 @@ class Aggregator:
         avg_time = round((self.date_start + self.date_stop) / 2, 4)
         return avg_time
 
-#
-# # ========================================================================================
-# # Aggregate to create a running average
-# # ========================================================================================
-#
-# # ========================================================================================
-# # Aggregate to compact data readings from every 0.1 seconds to evey 1 min, or 5 mins, etc.
-# # ========================================================================================
-# aggregate_array = []
-# # the size of the window in seconds. must be more than zero
-# window = 10
-#
-# # PASS 1 - Set up the array
-# date_start = 0
-# for i in range(0, len(data), window):
-#     date_end = data[i][0]
-#     d = Aggregator(date_start, date_end)
-#     aggregate_array.append(d)
-#     date_start = date_end
-#
-# # PASS 2 - add the data into the correct aggregate object based on datetime
-# timerstart = time.time()
-# for item in data:
-#     datetime = item[0]
-#     for agg in aggregate_array:
-#         if datetime >= agg.date_start:
-#             if datetime < agg.date_stop:
-#                 print(datetime, agg.date_start, agg.date_stop)
-#                 data = item[1]
-#                 agg.data_values.append(data)
-#         else:
-#             # we are testing values outside of the available datetimes so we can break here.
-#             break
-#
-# timerend = time.time()
-#
-# for item in aggregate_array:
-#     print(item.get_avg_posix(), item.get_data_avg())
-#
-# print(timerend - timerstart)
+# This function performs aggregation using the Aggregator class
+def aggregate_data(windowsize, querydata):
+    # windowsize needs to be at least 1
+    # PASS 1 - Set up the array
+    print("PASS 1 - Setting up aggregating array")
+    aggregate_array = []
+    date_start = 0
+    for i in range(0, len(querydata), windowsize):
+        date_end = querydata[i][0]
+        d = Aggregator(date_start, date_end)
+        aggregate_array.append(d)
+        date_start = date_end
+
+    # PASS 2 - generate the lookup array to speed up data placement
+    print("PASS 2 - Generating lookup dict")
+    lookup = {}
+    j = 0
+    for i in range(0, len(querydata)):
+        key = (querydata[i][0])
+        value = (j)
+        lookup[key] = value
+        if i % windowsize == 0:
+            j = j + 1
+
+    # PASS 3 - add the data into the correct aggregate object based on datetime
+    print("PASS 3 - Adding data to aggregating array")
+    for i in range(0, len(querydata)):
+        # if i % 1000 == 0:
+        #     print(f"{i} / {len(result_7d)}")
+        datetime = querydata[i][0]
+        data = querydata[i][1]
+        agg_index = lookup[datetime]
+        aggregate_array[agg_index - 1].data_values.append(data)
+
+    # PASS 4 - Use aggregator class functions to create plotting data
+    print("PASS 4 - Create and return plotting array [posixdatetime, averagedata]")
+    plotting_data = []
+    for item in aggregate_array:
+        d = [item.get_avg_posix(), item.get_data_avg()]
+        plotting_data.append(d)
+
+    return plotting_data
