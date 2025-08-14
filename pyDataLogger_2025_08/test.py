@@ -31,7 +31,7 @@ for item in result_7d:
     utc_datelist_7d.append(utc)
     seismo_data_7d.append(seismo)
 
-filter_window = 5 * 15
+filter_window = 5 * 60
 filtered_seismo_data = standard_stuff.filter_median(seismo_data_24hr, filter_window)
 filtered_utc_datelist = utc_datelist_24hr[filter_window: -1 * filter_window]
 
@@ -44,11 +44,18 @@ savefile = k.dir_images + os.sep + "spectrum.png"
 mgr_matplot.plot_spectrum(seismo_data_24hr, utc_datelist_24hr, savefile)
 
 print("Tiltmeter - 7 day")
-filter_window = 5 * 60 * 10
+filter_window = 5 * 60 * 60
 filtered_seismo_data_7d = standard_stuff.filter_median(seismo_data_7d, filter_window)
 filtered_utc_datelist_7d = utc_datelist_7d[filter_window: -1 * filter_window]
+plot_data = []
+plot_utc = []
+step_interval = 5 * 60 * 60
+for i in range(0, len(filtered_seismo_data_7d)):
+    if i % step_interval == 0:
+        plot_data.append(filtered_seismo_data_7d[i])
+        plot_utc.append(filtered_utc_datelist_7d[i])
 savefile = k.dir_images + os.sep + "7d_tilt.png"
-mgr_matplot.plot_time_data(filtered_utc_datelist_7d, filtered_seismo_data_7d, 30000,"Tiltmeter One Day", savefile)
+mgr_matplot.plot_time_data(plot_utc, plot_data, 30000,"Tiltmeter Seven Day", savefile)
 
 print("Tiltmeter - hourly")
 mgr_matplot.plot_hourly_array(filtered_utc_datelist, filtered_seismo_data, k.dir_images)

@@ -1031,43 +1031,43 @@ class Aggregator:
         avg_time = round((self.date_start + self.date_stop) / 2, 4)
         return avg_time
 
-
-# ========================================================================================
-# Aggregate to create a running average
-# ========================================================================================
-
-# ========================================================================================
-# Aggregate to compact data readings from every 0.1 seconds to evey 1 min, or 5 mins, etc.
-# ========================================================================================
-aggregate_array = []
-# the size of the window in seconds. must be more than zero
-window = 10
-
-# PASS 1 - Set up the array
-date_start = 0
-for i in range(0, len(data), window):
-    date_end = data[i][0]
-    d = Aggregator(date_start, date_end)
-    aggregate_array.append(d)
-    date_start = date_end
-
-# PASS 2 - add the data into the correct aggregate object based on datetime
-timerstart = time.time()
-for item in data:
-    datetime = item[0]
-    for agg in aggregate_array:
-        if datetime >= agg.date_start:
-            if datetime < agg.date_stop:
-                print(datetime, agg.date_start, agg.date_stop)
-                data = item[1]
-                agg.data_values.append(data)
-        else:
-            # we are testing values outside of the available datetimes so we can break here.
-            break
-
-timerend = time.time()
-
-for item in aggregate_array:
-    print(item.get_avg_posix(), item.get_data_avg())
-
-print(timerend - timerstart)
+#
+# # ========================================================================================
+# # Aggregate to create a running average
+# # ========================================================================================
+#
+# # ========================================================================================
+# # Aggregate to compact data readings from every 0.1 seconds to evey 1 min, or 5 mins, etc.
+# # ========================================================================================
+# aggregate_array = []
+# # the size of the window in seconds. must be more than zero
+# window = 10
+#
+# # PASS 1 - Set up the array
+# date_start = 0
+# for i in range(0, len(data), window):
+#     date_end = data[i][0]
+#     d = Aggregator(date_start, date_end)
+#     aggregate_array.append(d)
+#     date_start = date_end
+#
+# # PASS 2 - add the data into the correct aggregate object based on datetime
+# timerstart = time.time()
+# for item in data:
+#     datetime = item[0]
+#     for agg in aggregate_array:
+#         if datetime >= agg.date_start:
+#             if datetime < agg.date_stop:
+#                 print(datetime, agg.date_start, agg.date_stop)
+#                 data = item[1]
+#                 agg.data_values.append(data)
+#         else:
+#             # we are testing values outside of the available datetimes so we can break here.
+#             break
+#
+# timerend = time.time()
+#
+# for item in aggregate_array:
+#     print(item.get_avg_posix(), item.get_data_avg())
+#
+# print(timerend - timerstart)

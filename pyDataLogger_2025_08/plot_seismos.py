@@ -10,6 +10,10 @@ time_end = time.time()
 time_start_7d = time_end - (60 * 60 * 24 * 7)
 result_7d = mgr_database.db_get_pressure(time_start_7d)
 
+index = 60 * 60 * 24 * 5
+result_24hr = result_7d[-index:]
+
+print(f"Number of records: {len(result_7d)}")
 # ========================================================================================
 # Examine the format of the returned data. We might need to split this off into a 24 hour
 # section for passing directly into spectrographic analysis without any aggregating
@@ -17,44 +21,120 @@ result_7d = mgr_database.db_get_pressure(time_start_7d)
 # so it renders faster in the plotting.
 # ========================================================================================
 
-# utc_datelist_24hr = []
-# seismo_data_24hr = []
-# for item in result_24h:
-#     utc = standard_stuff.posix2utc(item[0], '%Y-%m-%d %H:%M:%S.%f')
-#     seismo = item[1]
-#     utc_datelist_24hr.append(utc)
-#     seismo_data_24hr.append(seismo)
+# ========================================================================================
+# Aggregate to compact data readings from every 0.1 seconds to every hour.
+# ========================================================================================
+aggregate_array = []
+# the size of the window in seconds. must be more than zero
+window = 60 * 60  # one hour
+
+# PASS 1 - Set up the array
+print("Setting up aggregating array")
+date_start = 0
+for i in range(0, len(result_7d), window):
+    date_end = result_7d[i][0]
+    d = class_aggregator.Aggregator(date_start, date_end)
+    aggregate_array.append(d)
+    date_start = date_end
+
+# PASS 2 - generate the lookup array to speed up data placement
+print("Generating lookup dict")
+lookup = {}
+j = 0
+for i in range(0, len(result_7d)):
+    key = (result_7d[i][0])
+    value = (j)
+    lookup[key] = value
+    if i % window == 0:
+        j = j + 1
+
+# PASS 3 - add the data into the correct aggregate object based on datetime
+print("Adding data to aggregating array")
+for i in range(0, len(result_7d)):
+    # if i % 1000 == 0:
+    #     print(f"{i} / {len(result_7d)}")
+    datetime = result_7d[i][0]
+    data = result_7d[i][1]
+    agg_index = lookup[datetime]
+    aggregate_array[agg_index - 1].data_values.append(data)
+
+plotting_data = []
+for item in aggregate_array:
+    d = [item.get_avg_posix(), item.get_data_avg()]
+    plotting_data.append(d)
 
 utc_datelist_7d = []
 seismo_data_7d = []
-for item in result_7d:
-    utc = item[0]
+for item in plotting_data:
+    utc = standard_stuff.posix2utc(item[0], '%Y-%m-%d %H:%M:%S.%f')
     seismo = item[1]
     utc_datelist_7d.append(utc)
     seismo_data_7d.append(seismo)
 
+print("Tiltmeter - 7 day")
+savefile = k.dir_images + os.sep + "seven_day.png"
+mgr_matplot.plot_time_data(utc_datelist_7d, seismo_data_7d, 64,"Tiltmeter 7 Days", savefile)
+
+
 # ========================================================================================
-# Aggregate to compact data readings from every 0.1 seconds to evey 1 min, or 5 mins, etc.
-# Example in the class_aggregator file.
+# Aggregate to compact data readings to every 2 seconds
 # ========================================================================================
+aggregate_array = []
+# the size of the window in seconds. must be more than zero
+window = 2
+
+# PASS 1 - Set up the array
+print("Setting up aggregating array")
+date_start = 0
+for i in range(0, len(result_24hr), window):
+    date_end = result_7d[i][0]
+    d = class_aggregator.Aggregator(date_start, date_end)
+    aggregate_array.append(d)
+    date_start = date_end
+
+# PASS 2 - generate the lookup array to speed up data placement
+print("Generating lookup dict")
+lookup = {}
+j = 0
+for i in range(0, len(result_24hr)):
+    key = (result_24hr[i][0])
+    value = (j)
+    lookup[key] = value
+    if i % window == 0:
+        j = j + 1
+
+# PASS 3 - add the data into the correct aggregate object based on datetime
+print("Adding data to aggregating array")
+for i in range(0, len(result_24hr)):
+    # if i % 1000 == 0:
+    #     print(f"{i} / {len(result_24hr)}")
+    datetime = result_24hr[i][0]
+    data = result_24hr[i][1]
+    agg_index = lookup[datetime]
+    aggregate_array[agg_index - 1].data_values.append(data)
 
 
+plotting_data = []
+for item in aggregate_array:
+    d = [item.get_avg_posix(), item.get_data_avg()]
+    plotting_data.append(d)
 
-# print("Tiltmeter - Past 24 hours")
-# savefile = k.dir_images + os.sep + "1days_tilt.png"
-# mgr_matplot.plot_time_data(filtered_utc_datelist, filtered_seismo_data, 30000,"Tiltmeter One Day", savefile)
-#
-# print("Tiltmeter Spectrogram - Past 24 hours")
-# savefile = k.dir_images + os.sep + "spectrum.png"
-# mgr_matplot.plot_spectrum(seismo_data_24hr, utc_datelist_24hr, savefile)
-#
-# print("Tiltmeter - 7 day")
-# filter_window = 5 * 60 * 10
-# filtered_seismo_data_7d = standard_stuff.filter_median(seismo_data_7d, filter_window)
-# filtered_utc_datelist_7d = utc_datelist_7d[filter_window: -1 * filter_window]
-# savefile = k.dir_images + os.sep + "7d_tilt.png"
-# mgr_matplot.plot_time_data(filtered_utc_datelist_7d, filtered_seismo_data_7d, 30000,"Tiltmeter One Day", savefile)
-#
-# print("Tiltmeter - hourly")
-# mgr_matplot.plot_hourly_array(filtered_utc_datelist, filtered_seismo_data, k.dir_images)
+utc_datelist_24 = []
+seismo_data_24 = []
+for item in plotting_data:
+    utc = standard_stuff.posix2utc(item[0], '%Y-%m-%d %H:%M:%S.%f')
+    seismo = item[1]
+    utc_datelist_24.append(utc)
+    seismo_data_24.append(seismo)
+
+print("Tiltmeter - Past 24 hours")
+savefile = k.dir_images + os.sep + "one_day.png"
+mgr_matplot.plot_time_data(utc_datelist_24, seismo_data_24, 30000,"Tiltmeter One Day", savefile)
+
+print("Tiltmeter Spectrogram - Past 24 hours")
+savefile = k.dir_images + os.sep + "spectrum.png"
+mgr_matplot.plot_spectrum(seismo_data_24, utc_datelist_24, savefile)
+
+print("Tiltmeter - hourly")
+mgr_matplot.plot_hourly_array(utc_datelist_24, seismo_data_24, k.dir_images)
 
