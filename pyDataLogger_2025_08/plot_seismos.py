@@ -7,11 +7,10 @@ import standard_stuff
 import class_aggregator
 
 time_end = time.time()
+time_start_1d = time_end - (60 * 60 * 24)
 time_start_7d = time_end - (60 * 60 * 24 * 7)
+result_1d = mgr_database.db_get_pressure(time_start_1d)
 result_7d = mgr_database.db_get_pressure(time_start_7d)
-
-index = 60 * 60 * 24 * 5
-result_24hr = result_7d[-index:]
 
 print(f"Number of records: {len(result_7d)}")
 # ========================================================================================
@@ -86,7 +85,7 @@ window = 2
 # PASS 1 - Set up the array
 print("Setting up aggregating array")
 date_start = 0
-for i in range(0, len(result_24hr), window):
+for i in range(0, len(result_1d), window):
     date_end = result_7d[i][0]
     d = class_aggregator.Aggregator(date_start, date_end)
     aggregate_array.append(d)
@@ -96,8 +95,8 @@ for i in range(0, len(result_24hr), window):
 print("Generating lookup dict")
 lookup = {}
 j = 0
-for i in range(0, len(result_24hr)):
-    key = (result_24hr[i][0])
+for i in range(0, len(result_1d)):
+    key = (result_1d[i][0])
     value = (j)
     lookup[key] = value
     if i % window == 0:
@@ -105,11 +104,11 @@ for i in range(0, len(result_24hr)):
 
 # PASS 3 - add the data into the correct aggregate object based on datetime
 print("Adding data to aggregating array")
-for i in range(0, len(result_24hr)):
+for i in range(0, len(result_1d)):
     # if i % 1000 == 0:
     #     print(f"{i} / {len(result_24hr)}")
-    datetime = result_24hr[i][0]
-    data = result_24hr[i][1]
+    datetime = result_1d[i][0]
+    data = result_1d[i][1]
     agg_index = lookup[datetime]
     aggregate_array[agg_index - 1].data_values.append(data)
 
