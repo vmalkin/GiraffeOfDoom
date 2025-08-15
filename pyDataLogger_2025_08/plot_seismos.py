@@ -47,11 +47,23 @@ savefile = k.dir_images + os.sep + "one_day.png"
 mgr_matplot.plot_time_data(utc_datelist, seismo_data, 100,"Tiltmeter One Day", savefile)
 
 print("Tiltmeter - Hourly plot")
+utc_datelist = []
+seismo_data = []
+window = 2  # one minute
+plotdata = class_aggregator.aggregate_data(window, result_1d)
+for item in plotdata:
+    utc = standard_stuff.posix2utc(item[0], '%Y-%m-%d %H:%M:%S.%f')
+    # utc = standard_stuff.posix2utc(item[0], '%Y-%m-%d %H:%M:%S.%f')
+    seismo = item[1]
+    utc_datelist.append(utc)
+    seismo_data.append(seismo)
+savepath = k.dir_images
+mgr_matplot.plot_hourly_array(utc_datelist, seismo_data, savepath)
 
 print("Tiltmeter - 7 Days")
 utc_datelist = []
 seismo_data = []
-window = 60 * 60  # one hour
+window = 60 * 60 # one hour
 plotdata = class_aggregator.aggregate_data(window, result_7d)
 for item in plotdata:
     utc = standard_stuff.posix2utc(item[0], '%Y-%m-%d %H:%M')

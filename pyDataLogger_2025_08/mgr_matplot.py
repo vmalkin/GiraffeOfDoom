@@ -39,7 +39,6 @@ def plot_hourly_array(utcdates, sensor_data, save_path):
     for i in range(0, 50):
         hour_data = sensor_data[index_start: index_end]
         hour_utc = utcdates[index_start: index_end]
-
         try:
             plt.style.use('Solarize_Light2')
             fig, ax = plt.subplots(layout="constrained", figsize=(16, 8), dpi=140)
@@ -47,7 +46,7 @@ def plot_hourly_array(utcdates, sensor_data, save_path):
             ax.xaxis.set_major_locator(ticker.MultipleLocator(3000))
             # ax.set_ylim([400, 500])
             # ax.set_xlim([0, 0.3])
-            plt.xticks(rotation=90)
+            plt.xticks(rotation=45)
 
             pt = time.time()
             ut = standard_stuff.posix2utc(pt, '%Y-%m-%d %H:%M.%f')
