@@ -43,6 +43,9 @@ for item in plotdata:
     seismo = item[1]
     utc_datelist.append(utc)
     seismo_data.append(seismo)
+half_filter = 5 * 30
+seismo_data = standard_stuff.filter_average(seismo_data, half_filter)
+utc_datelist = utc_datelist[half_filter:-half_filter]
 savefile = k.dir_images + os.sep + "one_day.png"
 mgr_matplot.plot_time_data(utc_datelist, seismo_data, 100,"Tiltmeter One Day", savefile)
 
