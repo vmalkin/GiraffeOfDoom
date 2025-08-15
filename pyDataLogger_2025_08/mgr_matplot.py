@@ -63,8 +63,8 @@ def plot_hourly_array(utcdates, sensor_data, save_path):
             print("Finished")
 
 
-def plot_spectrum(data, datetimes, savefile):
-    frequency = 1 / 5
+def plot_spectrum(data, datetimes, plotfrequency, savefile):
+    frequency = plotfrequency
 
     plt.figure(figsize=(15, 5))
     Pxx, freqs, bins, im = plt.specgram(data, NFFT=128, noverlap=32, detrend='mean', Fs=frequency, cmap='inferno', vmin=0, vmax=50)
