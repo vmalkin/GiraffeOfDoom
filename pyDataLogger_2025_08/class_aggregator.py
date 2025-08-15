@@ -1044,6 +1044,7 @@ def aggregate_data(windowsize, querydata):
         aggregate_array.append(d)
         date_start = date_end
 
+
     # PASS 2 - generate the lookup array to speed up data placement
     print("PASS 2 - Generating lookup dict")
     lookup = {}
@@ -1068,8 +1069,8 @@ def aggregate_data(windowsize, querydata):
     # PASS 4 - Use aggregator class functions to create plotting data
     print("PASS 4 - Create and return plotting array [posixdatetime, averagedata]")
     plotting_data = []
-    for item in aggregate_array:
-        d = [item.get_avg_posix(), item.get_data_avg()]
+    for i in range(1, len(aggregate_array)):
+        d = [aggregate_array[i].get_avg_posix(), aggregate_array[i].get_data_avg()]
         plotting_data.append(d)
 
     return plotting_data

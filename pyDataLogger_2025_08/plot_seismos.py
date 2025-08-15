@@ -22,12 +22,13 @@ result_7d = mgr_database.db_get_pressure(time_start_7d)
 print("Tiltmeter Spectrogram - Past 24 hours")
 utc_datelist = []
 seismo_data = []
-window = 0.2  # 0.2 second
+window = 2  # 0.2 second
 plotdata = class_aggregator.aggregate_data(window, result_1d)
 for item in plotdata:
     utc = standard_stuff.posix2utc(item[0], '%Y-%m-%d %H:%M:%S.%f')
     seismo = item[1]
     utc_datelist.append(utc)
+    seismo_data.append(seismo)
 savefile = k.dir_images + os.sep + "spectrum.png"
 mgr_matplot.plot_spectrum(seismo_data, utc_datelist, window, savefile)
 
@@ -37,12 +38,13 @@ seismo_data = []
 window = 60  # one minute
 plotdata = class_aggregator.aggregate_data(window, result_1d)
 for item in plotdata:
-    utc = standard_stuff.posix2utc(item[0], '%Y-%m-%d %H:%M:%S.%f')
+    utc = standard_stuff.posix2utc(item[0], '%Y-%m-%d %H:%M')
+    # utc = standard_stuff.posix2utc(item[0], '%Y-%m-%d %H:%M:%S.%f')
     seismo = item[1]
     utc_datelist.append(utc)
     seismo_data.append(seismo)
 savefile = k.dir_images + os.sep + "one_day.png"
-mgr_matplot.plot_time_data(utc_datelist, seismo_data, 30000,"Tiltmeter One Day", savefile)
+mgr_matplot.plot_time_data(utc_datelist, seismo_data, 100,"Tiltmeter One Day", savefile)
 
 print("Tiltmeter - Hourly plot")
 
@@ -52,9 +54,9 @@ seismo_data = []
 window = 60 * 60  # one hour
 plotdata = class_aggregator.aggregate_data(window, result_7d)
 for item in plotdata:
-    utc = standard_stuff.posix2utc(item[0], '%Y-%m-%d %H:%M:%S.%f')
+    utc = standard_stuff.posix2utc(item[0], '%Y-%m-%d %H:%M')
     seismo = item[1]
     utc_datelist.append(utc)
     seismo_data.append(seismo)
 savefile = k.dir_images + os.sep + "seven_day.png"
-mgr_matplot.plot_time_data(utc_datelist, seismo_data, 30000,"Tiltmeter One Week", savefile)
+mgr_matplot.plot_time_data(utc_datelist, seismo_data, 100,"Tiltmeter One Week", savefile)
