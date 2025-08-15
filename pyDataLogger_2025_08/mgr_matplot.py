@@ -11,7 +11,7 @@ def plot_time_data(utcdates, pressuredata, readings_per_tick, texttitle, savefil
     # ('constellation', 'satID', posixtime, alt, azi, snr)
 
     plt.style.use('Solarize_Light2')
-    fig, ax = plt.subplots(layout="constrained", figsize=(16, 8), dpi=140)
+    fig, ax = plt.subplots(layout="constrained", figsize=(40, 10), dpi=140)
     ax.plot(utcdates, pressuredata, c=ink_colour, linewidth=1)
 
     tick_spacing = readings_per_tick
