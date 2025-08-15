@@ -32,7 +32,7 @@ def plot_time_data(utcdates, pressuredata, readings_per_tick, texttitle, savefil
 
 def plot_hourly_array(utcdates, sensor_data, save_path):
     # Data is about 5 readings per second. Calculate how many readings for an hour
-    window = 5 * 60 * 120
+    window = 5 * 60 * 60
     index_start = 0
     index_end = window
 
@@ -44,7 +44,7 @@ def plot_hourly_array(utcdates, sensor_data, save_path):
             fig, ax = plt.subplots(layout="constrained", figsize=(16, 8), dpi=140)
             ax.plot(hour_utc, hour_data, c=ink_colour, linewidth=1)
             ax.xaxis.set_major_locator(ticker.MultipleLocator(3000))
-            # ax.set_ylim([400, 500])
+            ax.set_ylim([400, 500])
             # ax.set_xlim([0, 0.3])
             plt.xticks(rotation=45)
 

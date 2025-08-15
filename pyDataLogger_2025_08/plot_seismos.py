@@ -57,6 +57,9 @@ for item in plotdata:
     seismo = item[1]
     utc_datelist.append(utc)
     seismo_data.append(seismo)
+half_filter = 5 * 30
+seismo_data = standard_stuff.filter_average(seismo_data, half_filter)
+utc_datelist = utc_datelist[half_filter:-half_filter]
 savepath = k.dir_images
 mgr_matplot.plot_hourly_array(utc_datelist, seismo_data, savepath)
 
