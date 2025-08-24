@@ -53,33 +53,9 @@ for i in range(1, len(aggregate_array)):
     plot_seismo.append(siz)
     plot_temp.append(tmp)
     plot_press.append(prs)
-
-# print(aggregate_array)
-# for item in plotdata:
-#     # utc = standard_stuff.posix2utc(item[0], '%Y-%m-%d %H:%M')
-#     utc = standard_stuff.posix2utc(item[0], '%Y-%m-%d %H:%M:%S.%f')
-#     seismo = item[1]
-#     utc_datelist.append(utc)
-#     seismo_data.append(seismo)
-# roc_utc = copy.deepcopy(utc_datelist)
-# roc_utc.pop(0)
-# rateofchange = []
-# for i in range(1, len(seismo_data)):
-#     ds = seismo_data[i] - seismo_data[i - 1]
-#     rateofchange.append(ds)
-# half_filter = 30
-# seismo_data = standard_stuff.filter_average(seismo_data, half_filter)
-# utc_datelist = utc_datelist[half_filter:-half_filter]
 savefile = k.dir_images + os.sep + "one_day.png"
 mgr_matplot.plot_time_data(plot_utc, plot_seismo, 100,"Tiltmeter One Day", savefile)
-# half_filter = 20
-# rateofchange = standard_stuff.filter_average(rateofchange, half_filter)
-# roc_utc = roc_utc[half_filter:-half_filter]
-# rateofchange = standard_stuff.filter_average(rateofchange, half_filter)
-# roc_utc = roc_utc[half_filter:-half_filter]
-# savefile = k.dir_images + os.sep + "day_delta_s.png"
-# mgr_matplot.plot_time_data(roc_utc, rateofchange, 100,"Tiltmeter Rate of Change", savefile)
-#
+
 # print("Tiltmeter - Hourly plot")
 # utc_datelist = []
 # seismo_data = []
