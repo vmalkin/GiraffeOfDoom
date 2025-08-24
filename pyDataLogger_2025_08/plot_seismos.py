@@ -38,7 +38,7 @@ result_7d = mgr_database.db_data_get(time_start_7d)
 print("Tiltmeter - Past 6 hours")
 utc_datelist = []
 seismo_data = []
-window = 6  # one second
+window = 5  # one second
 aggregate_array = class_aggregator.aggregate_data(window, result_1d)
 plot_utc = []
 plot_seismo = []
