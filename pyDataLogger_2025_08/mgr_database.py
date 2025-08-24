@@ -11,7 +11,7 @@ def db_create():
 
     db.execute('create table observations ('
                'posixtime real,'
-               'seismodata real,'
+               'tiltdata real,'
                'temperature real,'
                'pressure real'
                ');')
@@ -29,13 +29,13 @@ def db_data_add(gsvdata):
         posixtime = item[0]
         seismodata = item[1]
         values = [posixtime, seismodata]
-        db.execute('insert into observations(posixtime, seismodata, temperature, pressure) '
+        db.execute('insert into observations(posixtime, tiltdata, temperature, pressure) '
                    'values (?, ?, ?, ?);', values)
     gpsdb.commit()
     db.close()
 
 
-def db_get_pressure(timestart):
+def db_data_get(timestart):
     returnarray = []
     values = [timestart]
     gpsdb = sqlite3.connect(k.sat_database)
