@@ -64,10 +64,10 @@ def plot_hourly_array(utcdates, sensor_data, save_path):
 
 
 def plot_spectrum(data, datetimes, plotfrequency, savefile):
-    frequency = plotfrequency
+    frequency = 1 / plotfrequency
 
     plt.figure(figsize=(15, 5))
-    Pxx, freqs, bins, im = plt.specgram(data, NFFT=256, noverlap=32, detrend='mean', Fs=frequency, cmap='inferno', vmin=0, vmax=35)
+    Pxx, freqs, bins, im = plt.specgram(data, NFFT=128, noverlap=32, detrend='mean', Fs=frequency, cmap='inferno', vmin=0, vmax=35)
     # plt.specgram(data)
     # print("Pxx shape:", Pxx.shape)
     # print("Frequency bins:", freqs.shape)

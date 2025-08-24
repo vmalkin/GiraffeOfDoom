@@ -9,7 +9,7 @@ import standard_stuff
 import class_aggregator
 
 time_end = time.time()
-time_start_1d = time_end - (60 * 60 * 24)
+time_start_1d = time_end - (60 * 60)
 time_start_7d = time_end - (60 * 60 * 24 * 7)
 
 result_1d = mgr_database.db_get_pressure(time_start_1d)
@@ -24,7 +24,7 @@ result_7d = mgr_database.db_get_pressure(time_start_7d)
 print("Tiltmeter Spectrogram - Past 24 hours")
 utc_datelist = []
 seismo_data = []
-window = 2  # 0.2 second
+window = 1  # 0.2 second
 plotdata = class_aggregator.aggregate_data(window, result_1d)
 for item in plotdata:
     utc = standard_stuff.posix2utc(item[0], '%Y-%m-%d %H:%M:%S.%f')

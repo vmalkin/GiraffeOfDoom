@@ -69,8 +69,10 @@ def add_data(collection, current_posixtime, csv_line):
     # if there's a problem.
     try:
         seismodata = csv_line[0]
+        temperature = csv_line[1]
+        pressure = csv_line[2]
         # Test for temp and pressure as floats.
-        dp = [current_posixtime, seismodata]
+        dp = [current_posixtime, seismodata, temperature, pressure]
         collection.append(dp)
     except:
         print("Unable to parse data to add to collection")
