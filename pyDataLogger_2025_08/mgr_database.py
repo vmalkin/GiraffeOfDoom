@@ -28,7 +28,9 @@ def db_data_add(gsvdata):
     for item in gsvdata:
         posixtime = item[0]
         seismodata = item[1]
-        values = [posixtime, seismodata]
+        temperature = item[2]
+        pressure = item[3]
+        values = [posixtime, seismodata, temperature, pressure]
         db.execute('insert into observations(posixtime, tiltdata, temperature, pressure) '
                    'values (?, ?, ?, ?);', values)
     gpsdb.commit()
