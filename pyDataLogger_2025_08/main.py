@@ -75,7 +75,7 @@ def add_data(collection, current_posixtime, csv_line):
         dp = [current_posixtime, seismodata, temperature, pressure]
         collection.append(dp)
     except:
-        print("Unable to parse data to add to collection")
+        print(f"Unable to parse data to add to collection: {csv_line}")
     return collection
 
 
