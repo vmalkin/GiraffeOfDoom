@@ -38,8 +38,8 @@ result_7d = mgr_database.db_data_get(time_start_7d)
 print("Tiltmeter - Past 6 hours")
 utc_datelist = []
 seismo_data = []
-window = 5  # one second
-aggregate_array = class_aggregator.aggregate_data(window, result_1d)
+window = 30  # one second
+aggregate_array = class_aggregator.aggregate_data(window, result_6hr)
 plot_utc = []
 plot_seismo = []
 plot_temp = []
@@ -54,12 +54,22 @@ for i in range(1, len(aggregate_array)):
     plot_seismo.append(siz)
     plot_temp.append(tmp)
     plot_press.append(prs)
+# window = 20
+# smoothe_seismo = standard_stuff.filter_average(plot_seismo, window)
+# plot_temp = plot_temp[window:-window]
+# plot_press = plot_press[window:-window]
+# plot_utc = plot_utc[window:-window]
+# smoothe_seismo = standard_stuff.filter_average(smoothe_seismo, window)
+# plot_temp = plot_temp[window:-window]
+# plot_press = plot_press[window:-window]
+# plot_utc = plot_utc[window:-window]
+
 savefile = k.dir_images + os.sep + "six_hour.png"
-mgr_matplot.plot_time_data(plot_utc, plot_seismo, 120,"Tiltmeter Six Hours", savefile)
+mgr_matplot.plot_time_data(plot_utc, plot_seismo, 240,"Tiltmeter Six Hours", savefile)
 savefile = k.dir_images + os.sep + "six_pressure.png"
-mgr_matplot.plot_time_data(plot_utc, plot_press, 120,"Pressure Six Hours", savefile)
+mgr_matplot.plot_time_data(plot_utc, plot_press, 240,"Pressure Six Hours", savefile)
 savefile = k.dir_images + os.sep + "six_temp.png"
-mgr_matplot.plot_time_data(plot_utc, plot_temp, 120,"Temperature Six Hours", savefile)
+mgr_matplot.plot_time_data(plot_utc, plot_temp, 240,"Temperature Six Hours", savefile)
 
 print("Tiltmeter - Past 24 hours")
 utc_datelist = []
@@ -122,7 +132,7 @@ for i in range(1, len(aggregate_array)):
     plot_temp.append(tmp)
     plot_press.append(prs)
 savefile = k.dir_images + os.sep + "seven_day.png"
-mgr_matplot.plot_time_data(utc_datelist, seismo_data, 100,"Tiltmeter One Week", savefile)
+mgr_matplot.plot_time_data(plot_utc, plot_seismo, 100,"Tiltmeter One Week", savefile)
 savefile = k.dir_images + os.sep + "seven_press.png"
 mgr_matplot.plot_time_data(plot_utc, plot_press, 120,"Pressure One Week", savefile)
 savefile = k.dir_images + os.sep + "seven_temp.png"
