@@ -64,12 +64,12 @@ for i in range(1, len(aggregate_array)):
     plot_seismo.append(siz)
     plot_temp.append(tmp)
     plot_press.append(prs)
-window = 5
-smoothe_seismo = standard_stuff.filter_average(plot_seismo, window)
-plot_temp = plot_temp[window:-window]
-plot_seismo = plot_seismo[window:-window]
-plot_press = plot_press[window:-window]
-plot_utc = plot_utc[window:-window]
+avgwindow = 5
+smoothe_seismo = standard_stuff.filter_average(plot_seismo, avgwindow)
+plot_temp = plot_temp[avgwindow:-avgwindow]
+plot_seismo = plot_seismo[avgwindow:-avgwindow]
+plot_press = plot_press[avgwindow:-avgwindow]
+plot_utc = plot_utc[avgwindow:-avgwindow]
 
 savefile = k.dir_images + os.sep + "six_hour.png"
 mgr_matplot.plot_time_data(plot_utc, plot_seismo, smoothe_seismo, 30,"Tiltmeter Six Hours", savefile)
@@ -98,12 +98,12 @@ for i in range(1, len(aggregate_array)):
     plot_temp.append(tmp)
     plot_press.append(prs)
 
-window = 5
-smoothe_seismo = standard_stuff.filter_average(plot_seismo, window)
-plot_temp = plot_temp[window:-window]
-plot_seismo = plot_seismo[window:-window]
-plot_press = plot_press[window:-window]
-plot_utc = plot_utc[window:-window]
+avgwindow = 5
+smoothe_seismo = standard_stuff.filter_average(plot_seismo, avgwindow)
+plot_temp = plot_temp[avgwindow:-avgwindow]
+plot_seismo = plot_seismo[avgwindow:-avgwindow]
+plot_press = plot_press[avgwindow:-avgwindow]
+plot_utc = plot_utc[avgwindow:-avgwindow]
 
 savefile = k.dir_images + os.sep + "one_day.png"
 mgr_matplot.plot_time_data(plot_utc, plot_seismo, smoothe_seismo, 100,"Tiltmeter One Day", savefile)
