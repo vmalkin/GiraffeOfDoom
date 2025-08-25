@@ -7,12 +7,16 @@ import numpy as np
 import os
 
 ink_colour = "#7a3f16"
-def plot_time_data(utcdates, pressuredata, readings_per_tick, texttitle, savefile):
+def plot_time_data(utcdates, maindata, avgdata, readings_per_tick, texttitle, savefile):
     # ('constellation', 'satID', posixtime, alt, azi, snr)
 
     plt.style.use('Solarize_Light2')
     fig, ax = plt.subplots(layout="constrained", figsize=(16, 8), dpi=140)
-    ax.plot(utcdates, pressuredata, c=ink_colour, linewidth=1)
+    ax.plot(utcdates, maindata, c=ink_colour, linewidth=1)
+    if avgdata is None:
+        pass
+    else:
+        ax.plot(utcdates, avgdata, c='black', linewidth=2)
 
     tick_spacing = readings_per_tick
     ax.xaxis.set_major_locator(ticker.MultipleLocator(tick_spacing))
@@ -67,7 +71,8 @@ def plot_spectrum(data, datetimes, plotfrequency, savefile):
     frequency = 1 / plotfrequency
 
     plt.figure(figsize=(15, 5))
-    Pxx, freqs, bins, im = plt.specgram(data, NFFT=128, noverlap=32, detrend='mean', Fs=frequency, cmap='inferno', vmin=0, vmax=35)
+    Pxx, freqs, bins, im = plt.specgram(data, NFFT=128, noverlap=32, detrend='mean', Fs=frequency, cmap='inferno', vmin=0, vmax=15)
+    # Pxx, freqs, bins, im = plt.specgram(data, NFFT=128, noverlap=32, detrend='mean', Fs=frequency, cmap='inferno')
     # plt.specgram(data)
     # print("Pxx shape:", Pxx.shape)
     # print("Frequency bins:", freqs.shape)

@@ -1,5 +1,3 @@
-import copy
-import numpy as np
 import mgr_database
 import mgr_matplot
 import time
@@ -9,8 +7,8 @@ import standard_stuff
 import class_aggregator
 
 time_end = time.time()
-time_start_6hr = time_end - (60 * 60 * 6)
-time_start_1d = time_end - (60 * 60 * 24)
+time_start_6hr = time_end - (60 * 60 * 7)
+time_start_1d = time_end - (60 * 60 * 25)
 time_start_7d = time_end - (60 * 60 * 24 * 7)
 
 result_6hr = mgr_database.db_data_get(time_start_6hr)
@@ -23,18 +21,30 @@ result_7d = mgr_database.db_data_get(time_start_7d)
 # Hourly plots for the past 24 hours. Data aggregated into 1-minute bins
 # Plot of the past 7 days. Data aggregated up to 60-minute bins depending on smoothness of plot.
 # ========================================================================================
-# print("Tiltmeter Spectrogram - Past 24 hours")
-# utc_datelist = []
-# seismo_data = []
-# window = 1  # 0.2 second
-# plotdata = class_aggregator.aggregate_data(window, result_1d)
-# for item in plotdata:
-#     utc = standard_stuff.posix2utc(item[0], '%Y-%m-%d %H:%M:%S.%f')
-#     seismo = item[1]
-#     utc_datelist.append(utc)
-#     seismo_data.append(seismo)
-# savefile = k.dir_images + os.sep + "spectrum.png"
-# mgr_matplot.plot_spectrum(seismo_data, utc_datelist, window, savefile)
+print("Tiltmeter Spectrogram - Past 24 hours")
+utc_datelist = []
+seismo_data = []
+window = 1  # 0.2 second
+aggregate_array = class_aggregator.aggregate_data(window, result_1d)
+plot_utc = []
+plot_seismo = []
+plot_temp = []
+plot_press = []
+for i in range(1, len(aggregate_array)):
+    tim = aggregate_array[i].get_avg_posix()
+    tim = standard_stuff.posix2utc(tim, '%Y-%m-%d %H:%M:%S.%f')
+    siz = aggregate_array[i].get_data_avg(aggregate_array[i].data_seismo)
+    tmp = aggregate_array[i].get_data_avg(aggregate_array[i].data_temperature)
+    prs = aggregate_array[i].get_data_avg(aggregate_array[i].data_pressure)
+    plot_utc.append(tim)
+    plot_seismo.append(siz)
+    plot_temp.append(tmp)
+    plot_press.append(prs)
+savefile = k.dir_images + os.sep + "spectrum.png"
+mgr_matplot.plot_spectrum(plot_seismo, plot_utc, window, savefile)
+savefile = k.dir_images + os.sep + "spectrum_press.png"
+mgr_matplot.plot_spectrum(plot_press, plot_utc, window, savefile)
+
 print("Tiltmeter - Past 6 hours")
 utc_datelist = []
 seismo_data = []
@@ -54,22 +64,19 @@ for i in range(1, len(aggregate_array)):
     plot_seismo.append(siz)
     plot_temp.append(tmp)
     plot_press.append(prs)
-# window = 20
-# smoothe_seismo = standard_stuff.filter_average(plot_seismo, window)
-# plot_temp = plot_temp[window:-window]
-# plot_press = plot_press[window:-window]
-# plot_utc = plot_utc[window:-window]
-# smoothe_seismo = standard_stuff.filter_average(smoothe_seismo, window)
-# plot_temp = plot_temp[window:-window]
-# plot_press = plot_press[window:-window]
-# plot_utc = plot_utc[window:-window]
+window = 5
+smoothe_seismo = standard_stuff.filter_average(plot_seismo, window)
+plot_temp = plot_temp[window:-window]
+plot_seismo = plot_seismo[window:-window]
+plot_press = plot_press[window:-window]
+plot_utc = plot_utc[window:-window]
 
 savefile = k.dir_images + os.sep + "six_hour.png"
-mgr_matplot.plot_time_data(plot_utc, plot_seismo, 240,"Tiltmeter Six Hours", savefile)
+mgr_matplot.plot_time_data(plot_utc, plot_seismo, smoothe_seismo, 30,"Tiltmeter Six Hours", savefile)
 savefile = k.dir_images + os.sep + "six_pressure.png"
-mgr_matplot.plot_time_data(plot_utc, plot_press, 240,"Pressure Six Hours", savefile)
+mgr_matplot.plot_time_data(plot_utc, plot_press, None, 30,"Pressure Six Hours", savefile)
 savefile = k.dir_images + os.sep + "six_temp.png"
-mgr_matplot.plot_time_data(plot_utc, plot_temp, 240,"Temperature Six Hours", savefile)
+mgr_matplot.plot_time_data(plot_utc, plot_temp, None, 30,"Temperature Six Hours", savefile)
 
 print("Tiltmeter - Past 24 hours")
 utc_datelist = []
@@ -90,30 +97,22 @@ for i in range(1, len(aggregate_array)):
     plot_seismo.append(siz)
     plot_temp.append(tmp)
     plot_press.append(prs)
-savefile = k.dir_images + os.sep + "one_day.png"
-mgr_matplot.plot_time_data(plot_utc, plot_seismo, 100,"Tiltmeter One Day", savefile)
-savefile = k.dir_images + os.sep + "one_press.png"
-mgr_matplot.plot_time_data(plot_utc, plot_press, 120,"Pressure One Day", savefile)
-savefile = k.dir_images + os.sep + "one_temp.png"
-mgr_matplot.plot_time_data(plot_utc, plot_temp, 120,"Temperature One Day", savefile)
 
-# print("Tiltmeter - Hourly plot")
-# utc_datelist = []
-# seismo_data = []
-# window = 2  # one minute
-# plotdata = class_aggregator.aggregate_data(window, result_1d)
-# for item in plotdata:
-#     utc = standard_stuff.posix2utc(item[0], '%Y-%m-%d %H:%M:%S.%f')
-#     # utc = standard_stuff.posix2utc(item[0], '%Y-%m-%d %H:%M:%S.%f')
-#     seismo = item[1]
-#     utc_datelist.append(utc)
-#     seismo_data.append(seismo)
-# half_filter = 5 * 30
-# seismo_data = standard_stuff.filter_average(seismo_data, half_filter)
-# utc_datelist = utc_datelist[half_filter:-half_filter]
-# savepath = k.dir_images
-# mgr_matplot.plot_hourly_array(utc_datelist, seismo_data, savepath)
-#
+window = 5
+smoothe_seismo = standard_stuff.filter_average(plot_seismo, window)
+plot_temp = plot_temp[window:-window]
+plot_seismo = plot_seismo[window:-window]
+plot_press = plot_press[window:-window]
+plot_utc = plot_utc[window:-window]
+
+savefile = k.dir_images + os.sep + "one_day.png"
+mgr_matplot.plot_time_data(plot_utc, plot_seismo, smoothe_seismo, 100,"Tiltmeter One Day", savefile)
+# mgr_matplot.plot_time_data(plot_utc, plot_seismo, None, 100,"Tiltmeter One Day", savefile)
+savefile = k.dir_images + os.sep + "one_press.png"
+mgr_matplot.plot_time_data(plot_utc, plot_press, None, 120,"Pressure One Day", savefile)
+savefile = k.dir_images + os.sep + "one_temp.png"
+mgr_matplot.plot_time_data(plot_utc, plot_temp, None, 120,"Temperature One Day", savefile)
+
 print("Tiltmeter - 7 Days")
 window = 60 * 60 # one hour
 plotdata = class_aggregator.aggregate_data(window, result_7d)
@@ -132,8 +131,8 @@ for i in range(1, len(aggregate_array)):
     plot_temp.append(tmp)
     plot_press.append(prs)
 savefile = k.dir_images + os.sep + "seven_day.png"
-mgr_matplot.plot_time_data(plot_utc, plot_seismo, 100,"Tiltmeter One Week", savefile)
+mgr_matplot.plot_time_data(plot_utc, plot_seismo, None, 100,"Tiltmeter One Week", savefile)
 savefile = k.dir_images + os.sep + "seven_press.png"
-mgr_matplot.plot_time_data(plot_utc, plot_press, 120,"Pressure One Week", savefile)
+mgr_matplot.plot_time_data(plot_utc, plot_press, None, 120,"Pressure One Week", savefile)
 savefile = k.dir_images + os.sep + "seven_temp.png"
-mgr_matplot.plot_time_data(plot_utc, plot_temp, 120,"Temperature One Week", savefile)
+mgr_matplot.plot_time_data(plot_utc, plot_temp, None, 120,"Temperature One Week", savefile)
