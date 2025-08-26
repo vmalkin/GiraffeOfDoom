@@ -2,6 +2,7 @@ import os
 import time
 import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
+import matplotlib.dates as mdates
 import standard_stuff
 import numpy as np
 import os
@@ -9,7 +10,7 @@ import os
 ink_colour = "#7a3f16"
 def plot_time_data(utcdates, maindata, avgdata, readings_per_tick, texttitle, savefile):
     # ('constellation', 'satID', posixtime, alt, azi, snr)
-
+    print(len(maindata))
     plt.style.use('Solarize_Light2')
     fig, ax = plt.subplots(layout="constrained", figsize=(16, 8), dpi=140)
     ax.plot(utcdates, maindata, c=ink_colour, linewidth=1)

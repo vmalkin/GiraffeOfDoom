@@ -46,6 +46,7 @@ def aggregate_data(windowsize, querydata):
         aggregate_array.append(d)
         date_start = date_end
 
+
     # PASS 2 - generate the lookup array to speed up data placement
     print("PASS 2 - Generating lookup dict")
     lookup = {}
@@ -56,6 +57,7 @@ def aggregate_data(windowsize, querydata):
         lookup[key] = value
         if i % windowsize == 0:
             j = j + 1
+
 
     # PASS 3 - add the data into the correct aggregate object based on datetime
     print("PASS 3 - Adding data to aggregating array")
