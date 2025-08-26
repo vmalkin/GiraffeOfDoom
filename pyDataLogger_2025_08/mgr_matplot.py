@@ -8,16 +8,10 @@ import numpy as np
 import os
 
 ink_colour = "#7a3f16"
-def plot_time_data(utcdates, maindata, avgdata, readings_per_tick, texttitle, savefile):
-    # ('constellation', 'satID', posixtime, alt, azi, snr)
-    print(len(maindata))
+def plot_time_data(utcdates, maindata, readings_per_tick, texttitle, savefile):
     plt.style.use('Solarize_Light2')
     fig, ax = plt.subplots(layout="constrained", figsize=(16, 8), dpi=140)
     ax.plot(utcdates, maindata, c=ink_colour, linewidth=1)
-    if avgdata is None:
-        pass
-    else:
-        ax.plot(utcdates, avgdata, c='black', linewidth=2)
 
     tick_spacing = readings_per_tick
     ax.xaxis.set_major_locator(ticker.MultipleLocator(tick_spacing))
