@@ -1,28 +1,23 @@
-import os
 import time
 import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
-import matplotlib.dates as mdates
 import standard_stuff
-import numpy as np
 import os
 
 ink_colour = "#7a3f16"
-def plot_time_data(utcdates, maindata, readings_per_tick, texttitle, savefile):
+def plot_time_data(utcdates, maindata, readings_per_tick, ymin, ymax, texttitle, savefile):
     plt.style.use('Solarize_Light2')
     fig, ax = plt.subplots(layout="constrained", figsize=(16, 8), dpi=140)
     ax.plot(utcdates, maindata, c=ink_colour, linewidth=1)
 
     tick_spacing = readings_per_tick
     ax.xaxis.set_major_locator(ticker.MultipleLocator(tick_spacing))
-    # ax.set_ylim([400, 500])
-    # ax.set_xlim([0, 0.3])
     plt.xticks(rotation=45)
 
     pt = time.time()
     ut = standard_stuff.posix2utc(pt, '%Y-%m-%d %H:%M.%f')
     plot_title = texttitle + " - " + ut
-
+    ax.set_ylim([ymin, ymax])
     ax.set_title(plot_title)
     # plt.show()
     plt.savefig(savefile)
@@ -66,8 +61,8 @@ def plot_spectrum(data, datetimes, plotfrequency, savefile):
     frequency = 1 / plotfrequency
 
     plt.figure(figsize=(15, 5))
-    Pxx, freqs, bins, im = plt.specgram(data, NFFT=128, noverlap=32, detrend='mean', Fs=frequency, cmap='inferno', vmin=0, vmax=15)
-    # Pxx, freqs, bins, im = plt.specgram(data, NFFT=128, noverlap=32, detrend='mean', Fs=frequency, cmap='inferno')
+    # Pxx, freqs, bins, im = plt.specgram(data, NFFT=128, noverlap=32, detrend='mean', Fs=frequency, cmap='inferno', vmin=0, vmax=20)
+    Pxx, freqs, bins, im = plt.specgram(data, NFFT=128, noverlap=32, detrend='mean', Fs=frequency, cmap='inferno')
     # plt.specgram(data)
     # print("Pxx shape:", Pxx.shape)
     # print("Frequency bins:", freqs.shape)
@@ -78,11 +73,6 @@ def plot_spectrum(data, datetimes, plotfrequency, savefile):
     plt.xlabel("Time (s)")
     plt.ylabel("Frequency (Hz)")
     plt.title('Spectrogram')
-    #
-    # ticks = []
-    # for i in range(0, len(datetimes)):
-    #     ticks.append(i)
-    # plt.xticks(ticks, datetimes)
     savefile = savefile
     plt.savefig(savefile)
     plt.close()
