@@ -61,8 +61,8 @@ def plot_spectrum(data, datetimes, plotfrequency, savefile):
     frequency = 1 / plotfrequency
 
     plt.figure(figsize=(15, 5))
-    # Pxx, freqs, bins, im = plt.specgram(data, NFFT=128, noverlap=32, detrend='mean', Fs=frequency, cmap='inferno', vmin=0, vmax=20)
-    Pxx, freqs, bins, im = plt.specgram(data, NFFT=128, noverlap=32, detrend='mean', Fs=frequency, cmap='inferno')
+    Pxx, freqs, bins, im = plt.specgram(data, NFFT=128, noverlap=32, detrend='mean', Fs=frequency, cmap='inferno', vmin=0, vmax=30)
+    # Pxx, freqs, bins, im = plt.specgram(data, NFFT=128, noverlap=32, detrend='mean', Fs=frequency, cmap='inferno')
     # plt.specgram(data)
     # print("Pxx shape:", Pxx.shape)
     # print("Frequency bins:", freqs.shape)
@@ -76,3 +76,11 @@ def plot_spectrum(data, datetimes, plotfrequency, savefile):
     savefile = savefile
     plt.savefig(savefile)
     plt.close()
+
+
+def plot_scatterplot(data_x, data_y, plot_title, savefile):
+    plt.figure(figsize=(8, 8))
+    plt.scatter(data_x, data_y, marker='o')
+    plt.title = plot_title
+    plt.savefig(savefile)
+
