@@ -38,7 +38,6 @@ mgr_matplot.plot_spectrum(plot_seismo, plot_utc, 1, savefile)
 savefile = k.dir_images + os.sep + "spectrum_press.png"
 mgr_matplot.plot_spectrum(plot_press, plot_utc, 1, savefile)
 
-# A special instance here where we will decimate the volume of data
 print("Tiltmeter - 1 Day")
 aggregate_array = result_1d
 aggregate_array.pop(0)
@@ -104,6 +103,7 @@ for i in range(1, len(aggregate_array)):
     plot_temp.append(tmp)
     plot_press.append(prs)
 
+# Scatterplots are here to use the 7 day data that's already been processed. No need to duplicate things.
 print("Tiltmeter - Scatterplots")
 sct_seis = standard_stuff.filter_median(plot_seismo, 2)
 sct_press = standard_stuff.filter_median(plot_press, 2)
