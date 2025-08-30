@@ -34,9 +34,9 @@ for i in range(1, len(result_1d)):
     plot_temp.append(tmp)
     plot_press.append(prs)
 savefile = k.dir_images + os.sep + "spectrum.png"
-mgr_matplot.plot_spectrum(plot_seismo, plot_utc, 1, savefile)
+mgr_matplot.plot_spectrum(plot_seismo, plot_utc, 1, "Spectrogram of Tilt Readings", savefile)
 savefile = k.dir_images + os.sep + "spectrum_press.png"
-mgr_matplot.plot_spectrum(plot_press, plot_utc, 1, savefile)
+mgr_matplot.plot_spectrum(plot_press, plot_utc, 1, "Spectrogram of Barometric Pressure", savefile)
 
 print("Tiltmeter - 1 Day")
 aggregate_array = result_1d

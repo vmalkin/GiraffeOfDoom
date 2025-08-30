@@ -1,10 +1,13 @@
 import time
 import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
+import matplotlib.dates as mdates
+import numpy as np
 import standard_stuff
 import os
 
 ink_colour = "#7a3f16"
+
 def plot_time_data(utcdates, maindata, readings_per_tick, ymin, ymax, texttitle, savefile):
     plt.style.use('Solarize_Light2')
     fig, ax = plt.subplots(layout="constrained", figsize=(16, 8), dpi=140)
@@ -57,10 +60,10 @@ def plot_time_data(utcdates, maindata, readings_per_tick, ymin, ymax, texttitle,
 #             print("Finished")
 
 
-def plot_spectrum(data, datetimes, plotfrequency, savefile):
+def plot_spectrum(data, datetimes, plotfrequency, plottitle, savefile):
     frequency = 1 / plotfrequency
 
-    plt.figure(figsize=(15, 5))
+    plt.figure(layout="constrained", figsize=(15, 5))
     Pxx, freqs, bins, im = plt.specgram(data, NFFT=128, noverlap=32, detrend='mean', Fs=frequency, cmap='inferno', vmin=0, vmax=30)
     # Pxx, freqs, bins, im = plt.specgram(data, NFFT=128, noverlap=32, detrend='mean', Fs=frequency, cmap='inferno')
     # plt.specgram(data)
@@ -69,10 +72,16 @@ def plot_spectrum(data, datetimes, plotfrequency, savefile):
     # print("Time bins:", bins.shape)
     # print("Pxx min/max:", Pxx.min(), "/", Pxx.max())
     # print("Pxx sample (dB):", 10 * np.log10(Pxx[0:3, 0:5]))  # Convert to dB to match what you see in the image
+    tickplace = []
+    ticklabel = []
+    for i in range(0, len(datetimes), 60*60):
+        tickplace.append(i)
+        ticklabel.append(datetimes[i])
+    plt.xticks(ticks=tickplace, labels=ticklabel, rotation=45)
 
     plt.xlabel("Time (s)")
     plt.ylabel("Frequency (Hz)")
-    plt.title('Spectrogram')
+    plt.title(plottitle)
     savefile = savefile
     plt.savefig(savefile)
     plt.close()
