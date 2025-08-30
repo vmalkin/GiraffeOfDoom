@@ -60,12 +60,15 @@ def plot_time_data(utcdates, maindata, readings_per_tick, ymin, ymax, texttitle,
 #             print("Finished")
 
 
-def plot_spectrum(data, datetimes, plotfrequency, plottitle, savefile):
+def plot_spectrum(data, datetimes, plotfrequency, minv, maxv, plottitle, savefile):
     frequency = 1 / plotfrequency
 
     plt.figure(layout="constrained", figsize=(15, 5))
-    Pxx, freqs, bins, im = plt.specgram(data, NFFT=128, noverlap=32, detrend='mean', Fs=frequency, cmap='inferno', vmin=0, vmax=30)
+    Pxx, freqs, bins, im = plt.specgram(data, NFFT=128, noverlap=32, detrend='mean', Fs=frequency, cmap='inferno', vmin=minv, vmax=maxv)
     # Pxx, freqs, bins, im = plt.specgram(data, NFFT=128, noverlap=32, detrend='mean', Fs=frequency, cmap='inferno')
+    # Add colorbar (this is your "legend" for the colors)
+    cbar = plt.colorbar(im)
+    cbar.set_label('Power / Frequency (dB/Hz)')
     # plt.specgram(data)
     # print("Pxx shape:", Pxx.shape)
     # print("Frequency bins:", freqs.shape)
@@ -92,4 +95,5 @@ def plot_scatterplot(data_x, data_y, plot_title, savefile):
     plt.scatter(data_x, data_y, marker='o')
     plt.title = plot_title
     plt.savefig(savefile)
+    plt.close()
 

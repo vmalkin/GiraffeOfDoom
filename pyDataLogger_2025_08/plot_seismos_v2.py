@@ -33,10 +33,9 @@ for i in range(1, len(result_1d)):
     plot_seismo.append(siz)
     plot_temp.append(tmp)
     plot_press.append(prs)
-savefile = k.dir_images + os.sep + "spectrum.png"
-mgr_matplot.plot_spectrum(plot_seismo, plot_utc, 1, "Spectrogram of Tilt Readings", savefile)
+
 savefile = k.dir_images + os.sep + "spectrum_press.png"
-mgr_matplot.plot_spectrum(plot_press, plot_utc, 1, "Spectrogram of Barometric Pressure", savefile)
+mgr_matplot.plot_spectrum(plot_press, plot_utc, 1, 0, 30, "Spectrogram of Barometric Pressure", savefile)
 
 print("Tiltmeter - 1 Day")
 aggregate_array = result_1d
@@ -66,6 +65,9 @@ smoothe_seismo = standard_stuff.filter_average(smoothe_seismo, avgwindow)
 plot_utc = plot_utc[avgwindow:-avgwindow]
 plot_temp = plot_temp[avgwindow:-avgwindow]
 plot_press = plot_press[avgwindow:-avgwindow]
+
+savefile = k.dir_images + os.sep + "spectrum.png"
+mgr_matplot.plot_spectrum(smoothe_seismo, plot_utc, 1, -140, -20,"Spectrogram of Tilt Readings", savefile)
 
 ticks = 120
 ymin = 451.5
