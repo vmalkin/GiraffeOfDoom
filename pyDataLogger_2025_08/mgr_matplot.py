@@ -13,7 +13,7 @@ def plot_time_data(dateformatstring, utcdates, maindata, readings_per_tick, ymin
     fig, ax = plt.subplots(layout="constrained", figsize=(16, 8), dpi=140)
     ax.plot(utcdates, maindata, c=ink_colour, linewidth=1)
 
-    plt.gca().xaxis.set_major_formatter(mdates.DateFormatter("%d %H:%M"))
+    plt.gca().xaxis.set_major_formatter(mdates.DateFormatter(dateformatstring))
     tick_spacing = readings_per_tick
     ax.xaxis.set_major_locator(ticker.MultipleLocator(tick_spacing))
     plt.xticks(rotation=45)

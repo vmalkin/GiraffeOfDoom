@@ -32,22 +32,14 @@ for i in range(1, len(aggregate_array)):
     tim = aggregate_array[i][0]
     tim = datetime.datetime.fromtimestamp(tim)  # datetime object
     siz = aggregate_array[i][1]
-    tmp = aggregate_array[i][2]
-    prs = aggregate_array[i][3]
     plot_utc.append(tim)
     plot_seismo.append(siz)
-    plot_temp.append(tmp)
-    plot_press.append(prs)
 
 avgwindow = 20
 smoothe_seismo = standard_stuff.filter_average(plot_seismo, avgwindow)
 plot_utc = plot_utc[avgwindow:-avgwindow]
-plot_temp = plot_temp[avgwindow:-avgwindow]
-plot_press = plot_press[avgwindow:-avgwindow]
 smoothe_seismo = standard_stuff.filter_average(smoothe_seismo, avgwindow)
 plot_utc = plot_utc[avgwindow:-avgwindow]
-plot_temp = plot_temp[avgwindow:-avgwindow]
-plot_press = plot_press[avgwindow:-avgwindow]
 ticks = 30
 ymin = 451.5
 ymax = 453
@@ -119,13 +111,13 @@ ymax = None
 df = "%d %H:%M"
 title = "Pressure One Day"
 savefile = k.dir_images + os.sep + "one_press.png"
-mgr_matplot.plot_time_data(df, plot_utc, smoothe_seismo,  ticks,ymin, ymax, title, savefile)
+mgr_matplot.plot_time_data(df, plot_utc, plot_press,  ticks,ymin, ymax, title, savefile)
 ymin = None
 ymax = None
 df = "%d %H:%M"
 title = "Temperature One Day"
 savefile = k.dir_images + os.sep + "one_temp.png"
-mgr_matplot.plot_time_data(df, plot_utc, smoothe_seismo,  ticks,ymin, ymax, title, savefile)
+mgr_matplot.plot_time_data(df, plot_utc, plot_temp,  ticks,ymin, ymax, title, savefile)
 
 # A special instance here where we will decimate the volume of data
 print("Tiltmeter - 7 Days")
@@ -181,13 +173,13 @@ ymax = None
 df = "%d %H:%M"
 title = "Pressure One Week"
 savefile = k.dir_images + os.sep + "seven_press.png"
-mgr_matplot.plot_time_data(df, plot_utc, smoothe_seismo,  ticks,ymin, ymax, title, savefile)
+mgr_matplot.plot_time_data(df, plot_utc, plot_press,  ticks,ymin, ymax, title, savefile)
 ymin = None
 ymax = None
 df = "%d %H:%M"
 title = "Temperature One Week"
 savefile = k.dir_images + os.sep + "seven_temp.png"
-mgr_matplot.plot_time_data(df, plot_utc, smoothe_seismo,  ticks,ymin, ymax, title, savefile)
+mgr_matplot.plot_time_data(df, plot_utc, plot_temp,  ticks,ymin, ymax, title, savefile)
 
 timefinish = time.time()
 print(f"Elapsed seconds to process: {timefinish - time_end}")
