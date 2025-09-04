@@ -35,7 +35,7 @@ for i in range(1, len(aggregate_array)):
     plot_utc.append(tim)
     plot_seismo.append(siz)
 
-avgwindow = 20
+avgwindow = 40
 smoothe_seismo = standard_stuff.filter_average(plot_seismo, avgwindow)
 plot_utc = plot_utc[avgwindow:-avgwindow]
 smoothe_seismo = standard_stuff.filter_average(smoothe_seismo, avgwindow)
@@ -83,7 +83,7 @@ for i in range(1, len(aggregate_array)):
     plot_temp.append(tmp)
     plot_press.append(prs)
 
-avgwindow = 60
+avgwindow = 40
 smoothe_seismo = standard_stuff.filter_average(plot_seismo, avgwindow)
 plot_utc = plot_utc[avgwindow:-avgwindow]
 plot_temp = plot_temp[avgwindow:-avgwindow]
@@ -145,7 +145,7 @@ mgr_matplot.plot_scatterplot(sct_temp, sct_seis, "7 Day Tilt vs Temperature", sa
 savefile = k.dir_images + os.sep + "sctr_tilt_press.png"
 mgr_matplot.plot_scatterplot(sct_press, sct_seis, "7 Day Tilt vs Air Pressure", savefile)
 
-avgwindow = 5
+avgwindow = 40
 smoothe_seismo = standard_stuff.filter_average(plot_seismo, avgwindow)
 plot_utc = plot_utc[avgwindow:-avgwindow]
 plot_temp = plot_temp[avgwindow:-avgwindow]
