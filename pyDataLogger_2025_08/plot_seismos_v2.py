@@ -48,30 +48,21 @@ title = "Tiltmeter 6 Hours"
 savefile = k.dir_images + os.sep + "six_hour.png"
 mgr_matplot.plot_time_data(df, plot_utc, smoothe_seismo, ticks, ymin, ymax, title, savefile)
 
-print("Tiltmeter Spectrogram - Past 24 hours")
+print("Barometric Spectrogram - Past 24 hours")
 plot_utc = []
 plot_seismo = []
 plot_temp = []
 plot_press = []
 for i in range(1, len(result_1d)):
     tt = result_1d[i][0]
-    # tim = aggregate_array[i].get_avg_posix()
     tim = datetime.datetime.fromtimestamp(tt)  # datetime object
-    siz = result_1d[i][1]
-    tmp = result_1d[i][2]
     prs = result_1d[i][3]
     plot_utc.append(tim)
-    plot_seismo.append(siz)
-    plot_temp.append(tmp)
     plot_press.append(prs)
 df = "%d %H:%M"
 title = "Spectrogram of Barometric Pressure"
 savefile = k.dir_images + os.sep + "spectrum_press.png"
 mgr_matplot.plot_spectrum(df, plot_press, plot_utc, 1, 0, 30, title, savefile)
-df = "%d %H:%M"
-title = "Spectrogram of Tilt Readings"
-savefile = k.dir_images + os.sep + "spectrum.png"
-mgr_matplot.plot_spectrum(df, plot_seismo, plot_utc, 1, -140, -20, title, savefile)
 
 print("Tiltmeter - 1 Day")
 aggregate_array = result_1d
@@ -125,7 +116,7 @@ mgr_matplot.plot_time_data(df, plot_utc, plot_temp,  ticks,ymin, ymax, title, sa
 # A special instance here where we will decimate the volume of data
 print("Tiltmeter - 7 Days")
 # decimate data for this.
-window = 60
+window = 10
 aggregate_array = class_aggregator.aggregate_data(window, result_7d)
 aggregate_array.pop(0)
 plot_utc = []
@@ -183,6 +174,11 @@ df = "%d %H:%M"
 title = "Temperature One Week"
 savefile = k.dir_images + os.sep + "seven_temp.png"
 mgr_matplot.plot_time_data(df, plot_utc, plot_temp,  ticks,ymin, ymax, title, savefile)
+
+# df = "%d %H:%M"
+# title = "7 Day Spectrogram of Tilt Readings"
+# savefile = k.dir_images + os.sep + "spectrum_seven.png"
+# mgr_matplot.plot_spectrum(df, plot_seismo, plot_utc, 1, -70, 0, title, savefile)
 
 timefinish = time.time()
 print(f"Elapsed seconds to process: {timefinish - time_end}")

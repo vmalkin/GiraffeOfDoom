@@ -47,7 +47,7 @@ def plot_spectrum(datetimeformat, data, datetimes, plotfrequency, minv, maxv, pl
 
     plt.xlabel("Time (s)")
     plt.ylabel("Frequency (Hz)")
-    plt.title(plottitle)
+    # plt.title(plottitle)
     savefile = savefile
     plt.savefig(savefile)
     plt.close()
