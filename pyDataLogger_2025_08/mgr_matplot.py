@@ -8,17 +8,18 @@ import os
 
 ink_colour = "#7a3f16"
 
-def plot_time_data(utcdates, maindata, readings_per_tick, ymin, ymax, texttitle, savefile):
+def plot_time_data(dateformatstring, utcdates, maindata, readings_per_tick, ymin, ymax, texttitle, savefile):
     plt.style.use('Solarize_Light2')
     fig, ax = plt.subplots(layout="constrained", figsize=(16, 8), dpi=140)
     ax.plot(utcdates, maindata, c=ink_colour, linewidth=1)
 
+    plt.gca().xaxis.set_major_formatter(mdates.DateFormatter("%d %H:%M"))
     tick_spacing = readings_per_tick
     ax.xaxis.set_major_locator(ticker.MultipleLocator(tick_spacing))
     plt.xticks(rotation=45)
 
     pt = time.time()
-    ut = standard_stuff.posix2utc(pt, '%Y-%m-%d %H:%M.%f')
+    ut = standard_stuff.posix2utc(pt, '%Y-%m-%d %H:%M')
     plot_title = texttitle + " - " + ut
     ax.set_ylim([ymin, ymax])
     ax.set_title(plot_title)
@@ -64,8 +65,8 @@ def plot_spectrum(data, datetimes, plotfrequency, minv, maxv, plottitle, savefil
     frequency = 1 / plotfrequency
 
     plt.figure(layout="constrained", figsize=(15, 5))
-    Pxx, freqs, bins, im = plt.specgram(data, NFFT=128, noverlap=32, detrend='mean', Fs=frequency, cmap='inferno', vmin=minv, vmax=maxv)
-    # Pxx, freqs, bins, im = plt.specgram(data, NFFT=128, noverlap=32, detrend='mean', Fs=frequency, cmap='inferno')
+    # Pxx, freqs, bins, im = plt.specgram(data, NFFT=128, noverlap=32, detrend='mean', Fs=frequency, cmap='inferno', vmin=minv, vmax=maxv)
+    Pxx, freqs, bins, im = plt.specgram(data, NFFT=128, noverlap=32, detrend='mean', Fs=frequency, cmap='inferno')
     # Add colorbar (this is your "legend" for the colors)
     cbar = plt.colorbar(im)
     cbar.set_label('Power / Frequency (dB/Hz)')
