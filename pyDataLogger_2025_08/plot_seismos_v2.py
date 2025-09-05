@@ -175,10 +175,6 @@ title = "Temperature One Week"
 savefile = k.dir_images + os.sep + "seven_temp.png"
 mgr_matplot.plot_time_data(df, plot_utc, plot_temp,  ticks,ymin, ymax, title, savefile)
 
-df = "%d  %H:%M"
-title = "7 Day Spectrogram of Tilt Readings"
-savefile = k.dir_images + os.sep + "spectrum_seven.png"
-mgr_matplot.plot_spectrum(df, smoothe_seismo, plot_utc, 1, -140, -15, title, savefile)
 
 print("Tiltmeter - One Day dx/dt")
 aggregate_array = result_1d
@@ -200,6 +196,11 @@ for i in range(1, len(plot_seismo)):
     dx = plot_seismo[i] - plot_seismo[i - 1]
     dxdt.append(dx)
 plot_utc.pop(0)
+
+df = "%d  %H:%M"
+title = "7 Day Spectrogram of Tilt Readings"
+savefile = k.dir_images + os.sep + "spectrum_seven.png"
+mgr_matplot.plot_spectrum(df, plot_seismo, plot_utc, 1, -140, -15, title, savefile)
 
 avgwindow = 120
 smoothe_seismo = standard_stuff.filter_average(dxdt, avgwindow)
