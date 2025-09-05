@@ -207,7 +207,7 @@ plot_utc = plot_utc[avgwindow:-avgwindow]
 smoothe_seismo = standard_stuff.filter_average(smoothe_seismo, avgwindow)
 plot_utc = plot_utc[avgwindow:-avgwindow]
 
-ticks = 30
+ticks = 60
 ymin = -0.005
 ymax = 0.005
 df = "%d  %H:%M"
