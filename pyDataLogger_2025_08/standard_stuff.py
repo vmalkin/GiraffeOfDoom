@@ -51,7 +51,7 @@ def filter_average(numerical_data, filter_halfwindow):
                 # if isinstance(numerical_data[i + j], str) is False:
                 t.append(float(numerical_data[i + j]))
             v = mean(t)
-            v = round(v, 4)
+            v = round(v, 8)
             returnarray.append(v)
     else:
         returnarray = numerical_data
