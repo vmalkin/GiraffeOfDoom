@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 import standard_stuff
 
-ink_colour = ["#7a3f16", "red", "green"]
+ink_colour = ["#7a3f16", "green", "red"]
 
 def plot_multi(dateformatstring, dateobjects, dataarrays, readings_per_tick, texttitle, savefile):
     # utcdates should be datetime objects, not POSIX floats
@@ -21,12 +21,14 @@ def plot_multi(dateformatstring, dateobjects, dataarrays, readings_per_tick, tex
     ax2.tick_params(axis='y', colors=ink_colour[1])
     ax2.set_ylim([96000, 102000])
     ax2.spines['right'].set_position(('outward', 60))
+    ax2.yaxis.grid(False)
 
     ax3 = ax1.twinx()
     ax3.plot(dateobjects, dataarrays[2], c=ink_colour[2], linewidth=1)
     ax3.set_ylabel("Temperature. Deg C.", color=ink_colour[2])
     ax3.tick_params(axis='y', colors=ink_colour[2])
     ax3.set_ylim([8, 20])
+    ax3.yaxis.grid(False)
 
     # Use proper date formatter + locator
     ax1.xaxis.set_major_formatter(mdates.DateFormatter(dateformatstring))
