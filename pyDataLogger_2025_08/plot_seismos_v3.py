@@ -95,7 +95,7 @@ wrapper.append(smoothe_seismo)
 wrapper.append(plot_press)
 wrapper.append(plot_temp)
 
-ticks = 240
+ticks = 60
 df = "%d  %H:%M"
 title = "Tiltmeter One Day"
 savefile = k.dir_images + os.sep + "one_day.png"
