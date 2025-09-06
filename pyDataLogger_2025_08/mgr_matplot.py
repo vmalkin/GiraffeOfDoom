@@ -40,20 +40,20 @@ def plot_multi(dateformatstring, dateobjects, dataarrays, readings_per_tick, tex
     plt.close()
 
 
-# def plot_time_data(dateformatstring, utcdates, maindata, readings_per_tick, ymin, ymax, texttitle, savefile):
-#     plt.style.use('Solarize_Light2')
-#     fig, ax = plt.subplots(layout="constrained", figsize=(16, 8), dpi=140)
-#     # utcdates should be datetime objects, not POSIX floats
-#     ax.plot(utcdates, maindata, c=ink_colour, linewidth=1)
-#     # Use proper date formatter + locator
-#     ax.xaxis.set_major_formatter(mdates.DateFormatter(dateformatstring))
-#     ax.xaxis.set_major_locator(mdates.MinuteLocator(interval=readings_per_tick))
-#     plt.setp(ax.get_xticklabels(), rotation=45)  # safer than plt.xticks
-#     ax.set_ylim([ymin, ymax])
-#     plot_title = texttitle + " - " + standard_stuff.posix2utc(time.time(), '%Y-%m-%d %H:%M')
-#     ax.set_title(plot_title)
-#     plt.savefig(savefile)
-#     plt.close()
+def plot_time_data(dateformatstring, utcdates, maindata, readings_per_tick, ymin, ymax, texttitle, savefile):
+    plt.style.use('Solarize_Light2')
+    fig, ax = plt.subplots(layout="constrained", figsize=(16, 8), dpi=140)
+    # utcdates should be datetime objects, not POSIX floats
+    ax.plot(utcdates, maindata, c=ink_colour[0], linewidth=1)
+    # Use proper date formatter + locator
+    ax.xaxis.set_major_formatter(mdates.DateFormatter(dateformatstring))
+    ax.xaxis.set_major_locator(mdates.MinuteLocator(interval=readings_per_tick))
+    plt.setp(ax.get_xticklabels(), rotation=45)  # safer than plt.xticks
+    ax.set_ylim([ymin, ymax])
+    plot_title = texttitle + " - " + standard_stuff.posix2utc(time.time(), '%Y-%m-%d %H:%M')
+    ax.set_title(plot_title)
+    plt.savefig(savefile)
+    plt.close()
 
 
 def plot_spectrum(datetimeformat, data, datetimes, plotfrequency, minv, maxv, plottitle, savefile):

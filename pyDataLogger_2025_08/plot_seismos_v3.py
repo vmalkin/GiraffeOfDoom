@@ -91,16 +91,6 @@ smoothe_seismo = standard_stuff.filter_average(smoothe_seismo, avgwindow)
 plot_utc = plot_utc[avgwindow:-avgwindow]
 plot_temp = plot_temp[avgwindow:-avgwindow]
 plot_press = plot_press[avgwindow:-avgwindow]
-
-avgwindow = 40
-smoothe_seismo = standard_stuff.filter_average(plot_seismo, avgwindow)
-plot_utc = plot_utc[avgwindow:-avgwindow]
-plot_temp = plot_temp[avgwindow:-avgwindow]
-plot_press = plot_press[avgwindow:-avgwindow]
-smoothe_seismo = standard_stuff.filter_average(smoothe_seismo, avgwindow)
-plot_utc = plot_utc[avgwindow:-avgwindow]
-plot_temp = plot_temp[avgwindow:-avgwindow]
-plot_press = plot_press[avgwindow:-avgwindow]
 wrapper.append(smoothe_seismo)
 wrapper.append(plot_press)
 wrapper.append(plot_temp)
@@ -110,6 +100,7 @@ df = "%d  %H:%M"
 title = "Tiltmeter One Day"
 savefile = k.dir_images + os.sep + "one_day.png"
 mgr_matplot.plot_multi(df, plot_utc, wrapper, ticks, title, savefile)
+
 
 # =============================================================================================================
 # A special instance here where we will decimate the volume of data
