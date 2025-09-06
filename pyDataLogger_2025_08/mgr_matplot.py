@@ -13,13 +13,17 @@ def plot_multi(dateformatstring, dateobjects, dataarrays, readings_per_tick, tex
     ax1.plot(dateobjects, dataarrays[0], c=ink_colour[0], linewidth=1)
     ax1.set_ylabel("Tiltmeter. Arbitrary Units.", color=ink_colour[0])
     ax1.tick_params(axis='y', colors=ink_colour[0])
-    ax1.set_ylim([451.75, 453])
+    maxv = max(dataarrays[0])
+    minv = min(dataarrays[0])
+    ax1.set_ylim([minv, maxv])
 
     ax2 = ax1.twinx()
     ax2.plot(dateobjects, dataarrays[1], c=ink_colour[1], linewidth=1)
     ax2.set_ylabel("Pressure. Pa.", color=ink_colour[1])
     ax2.tick_params(axis='y', colors=ink_colour[1])
-    ax2.set_ylim([96000, 102000])
+    maxv = max(dataarrays[1])
+    minv = min(dataarrays[1])
+    ax2.set_ylim([minv, maxv])
     ax2.spines['right'].set_position(('outward', 60))
     ax2.yaxis.grid(False)
 
@@ -27,7 +31,9 @@ def plot_multi(dateformatstring, dateobjects, dataarrays, readings_per_tick, tex
     ax3.plot(dateobjects, dataarrays[2], c=ink_colour[2], linewidth=1)
     ax3.set_ylabel("Temperature. Deg C.", color=ink_colour[2])
     ax3.tick_params(axis='y', colors=ink_colour[2])
-    ax3.set_ylim([8, 20])
+    maxv = max(dataarrays[2])
+    minv = min(dataarrays[2])
+    ax3.set_ylim([minv, maxv])
     ax3.yaxis.grid(False)
 
     # Use proper date formatter + locator
