@@ -2,6 +2,7 @@ import time
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 import standard_stuff
+import numpy as np
 
 ink_colour = ["#7a3f16", "green", "red"]
 
@@ -13,9 +14,13 @@ def plot_multi(dateformatstring, dateobjects, dataarrays, readings_per_tick, tex
     ax1.plot(dateobjects, dataarrays[0], c=ink_colour[0], linewidth=1)
     ax1.set_ylabel("Tiltmeter. Arbitrary Units.", color=ink_colour[0])
     ax1.tick_params(axis='y', colors=ink_colour[0])
-    maxv = 453
-    minv = 451.6
-    ax1.set_ylim([minv, maxv])
+
+    avgv = np.mean(dataarrays[0])
+    maxv = max(dataarrays[0])
+    minv = min(dataarrays[0])
+    ymax = avgv + 2 * (maxv - avgv)
+    ymin = avgv - 2 * (avgv - minv)
+    ax1.set_ylim([ymin, ymax])
 
     ax2 = ax1.twinx()
     ax2.plot(dateobjects, dataarrays[1], c=ink_colour[1], linewidth=1)
@@ -55,6 +60,11 @@ def plot_time_data(dateformatstring, utcdates, maindata, readings_per_tick, ymin
     ax.xaxis.set_major_formatter(mdates.DateFormatter(dateformatstring))
     ax.xaxis.set_major_locator(mdates.MinuteLocator(interval=readings_per_tick))
     plt.setp(ax.get_xticklabels(), rotation=45)  # safer than plt.xticks
+    avgv = np.mean(maindata)
+    maxv = max(maindata)
+    minv = min(maindata)
+    ymax = avgv + 2 * (maxv - avgv)
+    ymin = avgv - 2 * (avgv - minv)
     ax.set_ylim([ymin, ymax])
     plot_title = texttitle + " - " + standard_stuff.posix2utc(time.time(), '%Y-%m-%d %H:%M')
     ax.set_title(plot_title)
