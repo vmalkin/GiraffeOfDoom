@@ -183,7 +183,7 @@ title = "Spectrogram of Tilt Readings"
 savefile = k.dir_images + os.sep + "spectrum_seismo.png"
 mgr_matplot.plot_spectrum(df, dxdt, plot_utc, 1, -80, 30, title, savefile)
 
-avgwindow = 120
+avgwindow = 400
 smoothe_seismo = standard_stuff.filter_average(dxdt, avgwindow)
 plot_utc = plot_utc[avgwindow:-avgwindow]
 smoothe_seismo = standard_stuff.filter_average(smoothe_seismo, avgwindow)
