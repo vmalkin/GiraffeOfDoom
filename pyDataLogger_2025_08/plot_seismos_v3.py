@@ -178,6 +178,11 @@ for i in range(1, len(plot_seismo)):
     dxdt.append(dx)
 plot_utc.pop(0)
 
+df = "%d %H:%M"
+title = "Spectrogram of Tilt Readings"
+savefile = k.dir_images + os.sep + "spectrum_seismo.png"
+mgr_matplot.plot_spectrum(df, dxdt, plot_utc, 1, -80, 30, title, savefile)
+
 avgwindow = 120
 smoothe_seismo = standard_stuff.filter_average(dxdt, avgwindow)
 plot_utc = plot_utc[avgwindow:-avgwindow]
