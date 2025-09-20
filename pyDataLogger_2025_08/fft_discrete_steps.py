@@ -1,15 +1,10 @@
-import matplotlib.axes
 import numpy as np
 from scipy.fft import rfft, rfftfreq
 import requests
 import matplotlib.pyplot as plt
-from matplotlib import colormaps
 import os
 import time
-# import mgr_mp4
-# import mgr_multiprocess
-import constants as k
-import standard_stuff
+
 
 seconds_per_reading = 1
 frequency = 1 / seconds_per_reading
@@ -26,12 +21,12 @@ def try_create_directory(directory):
             if not os.path.isdir(directory):
                 print("Unable to create directory")
 
-
-def get_url_data(pageurl):
-    url = pageurl
-    response = requests.get(url)
-    html_lines = response.iter_lines()
-    return html_lines
+#
+# def get_url_data(pageurl):
+#     url = pageurl
+#     response = requests.get(url)
+#     html_lines = response.iter_lines()
+#     return html_lines
 
 
 def process_csv_from_web(csvdata):
