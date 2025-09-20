@@ -6,6 +6,7 @@ import datetime
 import constants as k
 import standard_stuff
 import class_aggregator
+import fft_discrete_steps
 
 time_end = time.time()
 time_start_7d = time_end - (60 * 60 * 24 * 7)
@@ -196,6 +197,22 @@ df = "%d  %H:%M"
 title = "Tiltmeter - One Day dx/dt"
 savefile = k.dir_images + os.sep + "dxdt.png"
 mgr_matplot.plot_time_data(df, plot_utc, smoothe_seismo, ticks, ymin, ymax, title, savefile)
+
+# =============================================================================================================
+print("Tiltmeter - One Day FFT")
+aggregate_array = result_1d
+aggregate_array.pop(0)
+plot_utc = []
+plot_seismo = []
+
+for i in range(1, len(aggregate_array)):
+    tim = aggregate_array[i][0]
+    tim = datetime.datetime.fromtimestamp(tim)  # datetime object
+    siz = aggregate_array[i][1]
+    plot_utc.append(tim)
+    plot_seismo.append(siz)
+fft_discrete_steps.wrapper(plot_seismo, plot_utc)
+
 
 timefinish = time.time()
 print(f"Elapsed seconds to process: {timefinish - time_end}")
