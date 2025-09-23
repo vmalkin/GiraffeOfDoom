@@ -2,7 +2,7 @@ import mgr_database
 import mgr_matplot
 import time
 import os
-import datetime
+from datetime import datetime, timezone
 import constants as k
 import standard_stuff
 import class_aggregator
@@ -29,7 +29,7 @@ plot_seismo = []
 
 for i in range(1, len(aggregate_array)):
     tim = aggregate_array[i][0]
-    tim = datetime.datetime.fromtimestamp(tim)  # datetime object
+    tim = datetime.fromtimestamp(tim, tz=timezone.utc)  # datetime object
     siz = aggregate_array[i][1]
     plot_utc.append(tim)
     plot_seismo.append(siz)
@@ -54,7 +54,7 @@ plot_temp = []
 plot_press = []
 for i in range(1, len(result_1d)):
     tt = result_1d[i][0]
-    tim = datetime.datetime.fromtimestamp(tt)  # datetime object
+    tim = datetime.fromtimestamp(tt, tz=timezone.utc)  # datetime object
     prs = result_1d[i][3]
     plot_utc.append(tim)
     plot_press.append(prs)
@@ -75,7 +75,7 @@ wrapper = []
 
 for i in range(1, len(aggregate_array)):
     tim = aggregate_array[i][0]
-    tim = datetime.datetime.fromtimestamp(tim)  # datetime object
+    tim = datetime.fromtimestamp(tim, tz=timezone.utc)  # datetime object
     siz = aggregate_array[i][1]
     tmp = aggregate_array[i][2]
     prs = aggregate_array[i][3]
@@ -119,7 +119,7 @@ plot_press = []
 
 for i in range(1, len(aggregate_array)):
     tim = aggregate_array[i].get_avg_posix()
-    tim = datetime.datetime.fromtimestamp(tim)  # datetime object
+    tim = datetime.fromtimestamp(tim, tz=timezone.utc)  # datetime object
     siz = aggregate_array[i].get_data_avg(aggregate_array[i].data_seismo)
     tmp = aggregate_array[i].get_data_avg(aggregate_array[i].data_temperature)
     prs = aggregate_array[i].get_data_avg(aggregate_array[i].data_pressure)
@@ -166,7 +166,7 @@ plot_seismo = []
 
 for i in range(1, len(aggregate_array)):
     tim = aggregate_array[i][0]
-    tim = datetime.datetime.fromtimestamp(tim)  # datetime object
+    tim = datetime.fromtimestamp(tim, tz=timezone.utc)  # datetime object
     siz = aggregate_array[i][1]
     plot_utc.append(tim)
     plot_seismo.append(siz)
@@ -207,7 +207,7 @@ plot_seismo = []
 
 for i in range(1, len(aggregate_array)):
     tim = aggregate_array[i][0]
-    tim = datetime.datetime.fromtimestamp(tim)  # datetime object
+    tim = datetime.fromtimestamp(tim, tz=timezone.utc)  # datetime object
     siz = aggregate_array[i][1]
     plot_utc.append(tim)
     plot_seismo.append(siz)

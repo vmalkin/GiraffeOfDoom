@@ -86,7 +86,6 @@ def plot_spectrum(datetimeformat, data, datetimes, plotfrequency, minv, maxv, pl
         tickplace.append(i)
         ticklabel.append(datetimes[i])
     plt.xticks(ticks=tickplace, labels=ticklabel, rotation=45)
-
     plt.xlabel("Time (s)")
     plt.ylabel("Frequency (Hz)")
     # plt.title(plottitle)
