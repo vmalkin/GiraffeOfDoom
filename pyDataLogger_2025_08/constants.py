@@ -3,9 +3,9 @@
 # portName = '/dev/tty.usbserial-A702O0K9' #MacOS
 # portName = "/dev/cu.usbmodem1421"
 # comport = '/dev/ttyUSB0'
-comport = "/dev/ttyACM0"
-# comport = "/dev/ttyACM1"
-baudrate = 9600
+# comport = "/dev/ttyACM0"
+comport = "/dev/ttyACM1"
+baudrate = 57600
 bytesize = 8
 parity = 'N'
 stopbits = 1

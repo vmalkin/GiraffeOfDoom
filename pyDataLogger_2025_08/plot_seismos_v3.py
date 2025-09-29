@@ -83,7 +83,7 @@ for i in range(1, len(aggregate_array)):
     plot_seismo.append(siz)
     plot_temp.append(tmp)
     plot_press.append(prs)
-avgwindow = 40
+avgwindow = 20
 smoothe_seismo = standard_stuff.filter_average(plot_seismo, avgwindow)
 plot_utc = plot_utc[avgwindow:-avgwindow]
 plot_temp = plot_temp[avgwindow:-avgwindow]
@@ -101,7 +101,6 @@ df = "%d  %H:%M"
 title = "Tiltmeter One Day"
 savefile = k.dir_images + os.sep + "one_day.png"
 mgr_matplot.plot_multi(df, plot_utc, wrapper, ticks, title, savefile)
-
 
 # =============================================================================================================
 # A special instance here where we will decimate the volume of data
@@ -128,15 +127,15 @@ for i in range(1, len(aggregate_array)):
     plot_temp.append(tmp)
     plot_press.append(prs)
 
-# # Scatterplots are here to use the 7 day data that's already been processed. No need to duplicate things.
-# print("Tiltmeter - Scatterplots")
-# sct_seis = standard_stuff.filter_median(plot_seismo, 2)
-# sct_press = standard_stuff.filter_median(plot_press, 2)
-# sct_temp = standard_stuff.filter_median(plot_temp, 2)
-# savefile = k.dir_images + os.sep + "sctr_tilt_temp.png"
-# mgr_matplot.plot_scatterplot(sct_temp, sct_seis, "7 Day Tilt vs Temperature", savefile)
-# savefile = k.dir_images + os.sep + "sctr_tilt_press.png"
-# mgr_matplot.plot_scatterplot(sct_press, sct_seis, "7 Day Tilt vs Air Pressure", savefile)
+# Scatterplots are here to use the 7 day data that's already been processed. No need to duplicate things.
+print("Tiltmeter - Scatterplots")
+sct_seis = standard_stuff.filter_median(plot_seismo, 2)
+sct_press = standard_stuff.filter_median(plot_press, 2)
+sct_temp = standard_stuff.filter_median(plot_temp, 2)
+savefile = k.dir_images + os.sep + "sctr_tilt_temp.png"
+mgr_matplot.plot_scatterplot(sct_temp, sct_seis, "7 Day Tilt vs Temperature", savefile)
+savefile = k.dir_images + os.sep + "sctr_tilt_press.png"
+mgr_matplot.plot_scatterplot(sct_press, sct_seis, "7 Day Tilt vs Air Pressure", savefile)
 
 avgwindow = 40
 smoothe_seismo = standard_stuff.filter_average(plot_seismo, avgwindow)
@@ -184,7 +183,7 @@ title = "Spectrogram of Tilt Readings"
 savefile = k.dir_images + os.sep + "spectrum_seismo.png"
 mgr_matplot.plot_spectrum(df, dxdt, plot_utc, 1, -80, 30, title, savefile)
 
-avgwindow = 400
+avgwindow = 40
 smoothe_seismo = standard_stuff.filter_average(dxdt, avgwindow)
 plot_utc = plot_utc[avgwindow:-avgwindow]
 smoothe_seismo = standard_stuff.filter_average(smoothe_seismo, avgwindow)
@@ -198,20 +197,20 @@ title = "Tiltmeter - One Day dx/dt"
 savefile = k.dir_images + os.sep + "dxdt.png"
 mgr_matplot.plot_time_data(df, plot_utc, smoothe_seismo, ticks, ymin, ymax, title, savefile)
 
-# =============================================================================================================
-print("Tiltmeter - One Day FFT")
-aggregate_array = result_1d
-aggregate_array.pop(0)
-plot_utc = []
-plot_seismo = []
-
-for i in range(1, len(aggregate_array)):
-    tim = aggregate_array[i][0]
-    tim = datetime.fromtimestamp(tim, tz=timezone.utc)  # datetime object
-    siz = aggregate_array[i][1]
-    plot_utc.append(tim)
-    plot_seismo.append(siz)
-fft_discrete_steps.wrapper(plot_seismo, plot_utc)
+# # =============================================================================================================
+# print("Tiltmeter - One Day FFT")
+# aggregate_array = result_1d
+# aggregate_array.pop(0)
+# plot_utc = []
+# plot_seismo = []
+#
+# for i in range(1, len(aggregate_array)):
+#     tim = aggregate_array[i][0]
+#     tim = datetime.fromtimestamp(tim, tz=timezone.utc)  # datetime object
+#     siz = aggregate_array[i][1]
+#     plot_utc.append(tim)
+#     plot_seismo.append(siz)
+# fft_discrete_steps.wrapper(plot_seismo, plot_utc)
 
 
 timefinish = time.time()
