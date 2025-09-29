@@ -36,8 +36,10 @@ def plot_multi(dateformatstring, dateobjects, dataarrays, readings_per_tick, tex
     ax3.plot(dateobjects, dataarrays[2], c=ink_colour[2], linewidth=1)
     ax3.set_ylabel("Temperature. Deg C.", color=ink_colour[2])
     ax3.tick_params(axis='y', colors=ink_colour[2])
-    maxv = 18
-    minv = 8
+    # maxv = 18
+    # minv = 8
+    maxv = max(dataarrays[2])
+    minv = min(dataarrays[2])
     ax3.set_ylim([minv, maxv])
     ax3.yaxis.grid(False)
 
