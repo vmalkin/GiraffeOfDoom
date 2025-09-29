@@ -227,9 +227,8 @@ try:
         plot_utc.append(tim)
         plot_seismo.append(siz)
     fft_discrete_steps.wrapper(plot_seismo, plot_utc)
-
+except:
+    pass
 
     timefinish = time.time()
     print(f"Elapsed seconds to process: {timefinish - time_end}")
-except:
-    pass

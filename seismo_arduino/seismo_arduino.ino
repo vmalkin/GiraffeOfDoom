@@ -41,9 +41,9 @@ void loop() {
     currentSeismo = readHallSensor();
     Serial.print(currentSeismo);
     Serial.print(",");
-    Serial.print(currentPress);
-    Serial.print(",");
     Serial.print(currentTemp);
+    Serial.print(",");
+    Serial.print(currentPress);
     Serial.println();
     previousReportingMillis = currentMillis;
   }
