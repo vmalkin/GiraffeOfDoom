@@ -183,7 +183,7 @@ title = "Spectrogram of Tilt Readings"
 savefile = k.dir_images + os.sep + "spectrum_seismo.png"
 mgr_matplot.plot_spectrum(df, dxdt, plot_utc, 1, -80, 30, title, savefile)
 
-avgwindow = 40
+avgwindow = 100
 smoothe_seismo = standard_stuff.filter_average(dxdt, avgwindow)
 plot_utc = plot_utc[avgwindow:-avgwindow]
 smoothe_seismo = standard_stuff.filter_average(smoothe_seismo, avgwindow)
@@ -197,20 +197,20 @@ title = "Tiltmeter - One Day dx/dt"
 savefile = k.dir_images + os.sep + "dxdt.png"
 mgr_matplot.plot_time_data(df, plot_utc, smoothe_seismo, ticks, ymin, ymax, title, savefile)
 
-# # =============================================================================================================
-# print("Tiltmeter - One Day FFT")
-# aggregate_array = result_1d
-# aggregate_array.pop(0)
-# plot_utc = []
-# plot_seismo = []
-#
-# for i in range(1, len(aggregate_array)):
-#     tim = aggregate_array[i][0]
-#     tim = datetime.fromtimestamp(tim, tz=timezone.utc)  # datetime object
-#     siz = aggregate_array[i][1]
-#     plot_utc.append(tim)
-#     plot_seismo.append(siz)
-# fft_discrete_steps.wrapper(plot_seismo, plot_utc)
+# =============================================================================================================
+print("Tiltmeter - One Day FFT")
+aggregate_array = result_1d
+aggregate_array.pop(0)
+plot_utc = []
+plot_seismo = []
+
+for i in range(1, len(aggregate_array)):
+    tim = aggregate_array[i][0]
+    tim = datetime.fromtimestamp(tim, tz=timezone.utc)  # datetime object
+    siz = aggregate_array[i][1]
+    plot_utc.append(tim)
+    plot_seismo.append(siz)
+fft_discrete_steps.wrapper(plot_seismo, plot_utc)
 
 
 timefinish = time.time()

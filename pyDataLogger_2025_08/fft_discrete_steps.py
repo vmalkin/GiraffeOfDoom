@@ -96,7 +96,7 @@ def plot_fft(fft_data, times, file_name):
     plt.plot(xf, yf, linewidth=1)
     # title = "FFT - " + startplot + " to " + endplot
     title = "FFT"
-    plt.title(title)
+    # plt.title(title)
     plt.xlabel = x_scale_title
 
     ann_pos = 5**-1
