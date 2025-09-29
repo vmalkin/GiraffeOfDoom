@@ -85,7 +85,7 @@ def plot_spectrum(data):
         t.append(item[0])
 
     plt.figure(figsize=(15, 5))
-    Pxx, freqs, bins, im = plt.specgram(d, NFFT=128, noverlap=32, detrend='mean', Fs=frequency, cmap='magma')
+    Pxx, freqs, bins, im = plt.specgram(d, NFFT=128, noverlap=32, detrend='mean', Fs=frequency, cmap='inferno')
     print("Pxx shape:", Pxx.shape)
     print("Frequency bins:", freqs.shape)
     print("Time bins:", bins.shape)
