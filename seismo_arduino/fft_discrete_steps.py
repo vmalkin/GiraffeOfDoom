@@ -6,7 +6,7 @@ import os
 import time
 
 
-seconds_per_reading = 1
+seconds_per_reading = 0.1
 frequency = 1 / seconds_per_reading
 discreet_step_dir = "discreet"
 
