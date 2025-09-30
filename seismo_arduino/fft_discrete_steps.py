@@ -1,6 +1,6 @@
 import numpy as np
 from scipy.fft import rfft, rfftfreq
-import requests
+# import requests
 import matplotlib.pyplot as plt
 import os
 import time

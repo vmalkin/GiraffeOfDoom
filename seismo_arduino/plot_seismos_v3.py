@@ -10,10 +10,19 @@ import fft_discrete_steps
 
 time_end = time.time()
 time_start_7d = time_end - (60 * 60 * 24 * 7)
-result_7d = mgr_database.db_data_get(time_start_7d)
-result_1d = result_7d[-86400:]
-result_6hr = result_7d[-21600:]
 
+result_7d = mgr_database.db_data_get(time_start_7d)
+start_7d = standard_stuff.posix2utc(result_7d[0][0], '%Y-%m-%d %H:%M')
+print(f"7 Day start time is {start_7d}")
+
+readings_per_second = 10
+result_1d = result_7d[-86400 * readings_per_second:]
+start_1d = standard_stuff.posix2utc(result_1d[0][0], '%Y-%m-%d %H:%M')
+print(f"1 Day start time is {start_1d}")
+
+result_6hr = result_7d[-21600 * readings_per_second:]
+start_6hr = standard_stuff.posix2utc(result_6hr[0][0], '%Y-%m-%d %H:%M')
+print(f"6hr start time is {start_6hr}")
 # ========================================================================================
 # We want the following plots.
 # Spectrum of last 24 hours. Full resolution Data.
@@ -34,12 +43,12 @@ try:
         siz = aggregate_array[i][1]
         plot_utc.append(tim)
         plot_seismo.append(siz)
-    avgwindow = 40
+    avgwindow = 5
     smoothe_seismo = standard_stuff.filter_average(plot_seismo, avgwindow)
     plot_utc = plot_utc[avgwindow:-avgwindow]
     smoothe_seismo = standard_stuff.filter_average(smoothe_seismo, avgwindow)
     plot_utc = plot_utc[avgwindow:-avgwindow]
-    ticks = 30
+    ticks = 20
     ymin = max(smoothe_seismo)
     ymax = min(smoothe_seismo)
     df = "%d %H:%M"
@@ -90,7 +99,7 @@ try:
         plot_seismo.append(siz)
         plot_temp.append(tmp)
         plot_press.append(prs)
-    avgwindow = 20
+    avgwindow = 10
     smoothe_seismo = standard_stuff.filter_average(plot_seismo, avgwindow)
     plot_utc = plot_utc[avgwindow:-avgwindow]
     plot_temp = plot_temp[avgwindow:-avgwindow]
@@ -103,7 +112,7 @@ try:
     wrapper.append(plot_press)
     wrapper.append(plot_temp)
 
-    ticks = 60
+    ticks = 20
     df = "%d  %H:%M"
     title = "Tiltmeter One Day"
     savefile = k.dir_images + os.sep + "one_day.png"
@@ -187,6 +196,7 @@ try:
     # This is similar to traditional seismograph display
     dxdt = []
     for i in range(1, len(plot_seismo)):
+        # dx = plot_seismo[i]
         dx = plot_seismo[i] - plot_seismo[i - 1]
         dxdt.append(dx)
     plot_utc.pop(0)
@@ -196,13 +206,13 @@ try:
     savefile = k.dir_images + os.sep + "spectrum_seismo.png"
     mgr_matplot.plot_spectrum(df, dxdt, plot_utc, 1, -80, 30, title, savefile)
 
-    avgwindow = 100
+    avgwindow = 20
     smoothe_seismo = standard_stuff.filter_average(dxdt, avgwindow)
     plot_utc = plot_utc[avgwindow:-avgwindow]
     smoothe_seismo = standard_stuff.filter_average(smoothe_seismo, avgwindow)
     plot_utc = plot_utc[avgwindow:-avgwindow]
 
-    ticks = 60
+    ticks = 20
     ymin = -0.005
     ymax = 0.005
     df = "%d  %H:%M"
@@ -210,7 +220,7 @@ try:
     savefile = k.dir_images + os.sep + "dxdt.png"
     mgr_matplot.plot_time_data(df, plot_utc, smoothe_seismo, ticks, ymin, ymax, title, savefile)
 except:
-    pass
+    print(f"!!! dxdt failed to plot.")
 
 # =============================================================================================================
 try:
