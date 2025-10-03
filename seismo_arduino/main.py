@@ -17,14 +17,17 @@ random.seed()
 # readings below this altitude for satellites may be distorted due to multi-modal reflection
 optimum_altitude = 25
 
+
 def get_rounded_posix_():
     t = time.time()
     t = math.floor(t)
     return t
 
+
 def get_decimal_posix_():
     t = time.time()
     return t
+
 
 def create_directory(directory):
     try:
@@ -35,9 +38,19 @@ def create_directory(directory):
             print("Unable to create directory")
             # logging.critical("CRITICAL ERROR: Unable to create directory in MAIN.PY")
 
+
 def test_isnumber(numbertotest):
     # Data is ONLY ever a float
-    pass
+    if isinstance(numbertotest, float):
+        return True
+    if isinstance(numbertotest, str):
+        try:
+            float(numbertotest)
+            return True
+        except ValueError:
+            return False
+    return False
+
 
 def add_data(collection, current_posixtime, csv_line):
     # Will need to add a try except here. Just return the collection
@@ -46,9 +59,12 @@ def add_data(collection, current_posixtime, csv_line):
         seismodata = csv_line[0]
         temperature = csv_line[1]
         pressure = csv_line[2]
-        # Test for temp and pressure as floats.
-        dp = [current_posixtime, seismodata, temperature, pressure]
-        collection.append(dp)
+        # Test for seismic data, temp and pressure as floats, Otherwise do not as this data.
+        if test_isnumber(seismodata):
+            if test_isnumber(temperature):
+                if test_isnumber(pressure):
+                    dp = [current_posixtime, seismodata, temperature, pressure]
+                    collection.append(dp)
     except:
         print(f"Unable to parse data to add to collection: {csv_line}")
     return collection
@@ -68,9 +84,6 @@ if __name__ == "__main__":
         print("Creating image file directory...")
         create_directory(k.dir_images)
 
-    # queryprocessor = QueryProcessor()
-    # queryprocessor.start()
-
     com = mgr_comport.SerialManager(k.comport, k.baudrate, k.bytesize, k.parity, k.stopbits, k.timeout,
                                     k.xonxoff,
                                     k.rtscts, k.writeTimeout, k.dsrdtr, k.interCharTimeout)
@@ -81,6 +94,7 @@ if __name__ == "__main__":
         # print(line)
         csv_line = re.split(r'[,|*]', line)
 
+        # Test data integrity when adding data
         collection = add_data(collection, current_posixtime, csv_line)
         # Once our collection of data is large enough, process.
         # This delay reduces the risk of the database being locked for charting
