@@ -35,6 +35,10 @@ def create_directory(directory):
             print("Unable to create directory")
             # logging.critical("CRITICAL ERROR: Unable to create directory in MAIN.PY")
 
+def test_isnumber(numbertotest):
+    # Data is ONLY ever a float
+    pass
+
 def add_data(collection, current_posixtime, csv_line):
     # Will need to add a try except here. Just return the collection
     # if there's a problem.
