@@ -17,34 +17,6 @@ random.seed()
 # readings below this altitude for satellites may be distorted due to multi-modal reflection
 optimum_altitude = 25
 
-
-# *************************************************
-# Plotter and query processor thread
-# *************************************************
-# class QueryProcessor(Thread):
-#     def __init__(self):
-#         Thread.__init__(self, name="QueryProcessor")
-#
-#     def run(self):
-#         # put query data_s4 processing stuff here.
-#         while True:
-#             wiggle = random.randint(-180, 180)
-#             sleeptime = (60 * 15) + wiggle
-#             print('Next plot in ' + str(sleeptime) + ' seconds.')
-#             time.sleep(sleeptime)
-#
-#             print("***************************** Start Query Processor")
-#             now = int(time.time())
-#             timeinterval = now - (60 * 60 * 24)
-#             queryresult = mgr_database.db_get_pressure(timeinterval)
-#             savefile = k.dir_images + os.sep + "pressure.png"
-#             mgr_matplot.plot_time_data(queryresult, savefile)
-#             # savefile = k.dir_images + os.sep + "dxdt.png"
-#             # mgr_matplot.plot_time_dxdt(queryresult, savefile)
-#
-#             print("******************************* End Query Processor")
-
-
 def get_rounded_posix_():
     t = time.time()
     t = math.floor(t)
@@ -62,7 +34,6 @@ def create_directory(directory):
         if not os.path.isdir(directory):
             print("Unable to create directory")
             # logging.critical("CRITICAL ERROR: Unable to create directory in MAIN.PY")
-
 
 def add_data(collection, current_posixtime, csv_line):
     # Will need to add a try except here. Just return the collection
@@ -82,14 +53,14 @@ def add_data(collection, current_posixtime, csv_line):
 if __name__ == "__main__":
     # initial setup including satellite lists
     # if database not exists, create database
-    if os.path.isfile(k.sat_database) is False:
+    if not os.path.isfile(k.sat_database):
         print("No database file, initialising")
         mgr_database.db_create()
 
-    if os.path.isfile(k.sat_database) is True:
+    if os.path.isfile(k.sat_database):
         print("Database file exists")
 
-    if os.path.isdir(k.dir_images) is False:
+    if not os.path.isdir(k.dir_images):
         print("Creating image file directory...")
         create_directory(k.dir_images)
 
