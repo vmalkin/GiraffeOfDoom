@@ -79,7 +79,26 @@ print(f"6hr start time is {start_6hr}")
 #     pass
 
 # =============================================================================================================
+print("Tiltmeter - 24, hourly plots Day")
+aggregate_array = result_1d
+aggregate_array.pop(0)
+plot_utc = []
+plot_seismo = []
 
+for i in range(1, len(aggregate_array)):
+    tim = aggregate_array[i][0]
+    tim = datetime.fromtimestamp(tim, tz=timezone.utc)  # datetime object
+    siz = aggregate_array[i][1]
+    plot_utc.append(tim)
+    plot_seismo.append(siz)
+
+ticks = 20
+df = "%d  %H:%M"
+title = "Tiltmeter One Day"
+savefile = k.dir_images + os.sep + "one_day.png"
+mgr_matplot.plot_hourlyplots(df, plot_utc, plot_seismo, title, savefile)
+
+# =============================================================================================================
 print("Tiltmeter - 1 Day")
 aggregate_array = result_1d
 aggregate_array.pop(0)

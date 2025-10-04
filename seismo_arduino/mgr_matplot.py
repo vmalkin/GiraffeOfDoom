@@ -103,6 +103,6 @@ def plot_scatterplot(data_x, data_y, plot_title, savefile):
     plt.savefig(savefile)
     plt.close()
 
-def plot_full_spectrogram(dateformatstring, dateobjects, dataarrays):
+def plot_hourlyplots(dateformatstring, dateobjects, dataarrays):
     pass
 

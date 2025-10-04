@@ -43,6 +43,7 @@ def test_isnumber(numbertotest):
     # Data is ONLY ever a float
     if isinstance(numbertotest, float):
         return True
+    # If it's a float cast as a string
     if isinstance(numbertotest, str):
         try:
             float(numbertotest)
@@ -59,7 +60,7 @@ def add_data(collection, current_posixtime, csv_line):
         seismodata = csv_line[0]
         temperature = csv_line[1]
         pressure = csv_line[2]
-        # Test for seismic data, temp and pressure as floats, Otherwise do not as this data.
+        # Test for seismic data, temp and pressure as floats, otherwise do not use this data.
         if test_isnumber(seismodata):
             if test_isnumber(temperature):
                 if test_isnumber(pressure):
