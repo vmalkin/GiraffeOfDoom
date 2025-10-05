@@ -1,3 +1,4 @@
+import os
 import time
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
@@ -103,6 +104,36 @@ def plot_scatterplot(data_x, data_y, plot_title, savefile):
     plt.savefig(savefile)
     plt.close()
 
-def plot_hourlyplots(dateformatstring, dateobjects, dataarrays):
-    pass
+def plot_hourlyplots(datetimeformat, plot_utc, plot_seismo, title, savefolder):
+    # the size of an hour is plot frequency multiplied by seconds/min and mins/hr
+    hour_slice = 10 * 60 * 60
+    avgv = np.mean(plot_seismo)
+    maxv = max(plot_seismo)
+    minv = min(plot_seismo)
+    ymax = avgv + 2 * (maxv - avgv)
+    ymin = avgv - 2 * (avgv - minv)
+
+    for i in range(0, len(plot_seismo), hour_slice):
+        array_start = i
+        array_end = i + hour_slice
+        chart_data = plot_seismo[array_start:array_end]
+        chart_times = plot_utc[array_start:array_end]
+
+        plt.style.use('Solarize_Light2')
+        fig, ax = plt.subplots(layout="constrained", figsize=(16, 8), dpi=140)
+        # utcdates should be datetime objects, not POSIX floats
+        ax.plot(chart_times, chart_data, c=ink_colour[0], linewidth=1)
+        # Use proper date formatter + locator
+        # ax.xaxis.set_major_formatter(mdates.DateFormatter(datetimeformat))
+        # ax.xaxis.set_major_locator(mdates.MinuteLocator(interval=readings_per_tick))
+        # plt.setp(ax.get_xticklabels(), rotation=45)  # safer than plt.xticks
+
+        ax.set_ylim([ymin, ymax])
+        plot_title = title + " - " + standard_stuff.posix2utc(time.time(), '%Y-%m-%d %H:%M')
+        ax.set_title(plot_title)
+        savefile = savefolder + os.sep + str(i) + ".png"
+        plt.savefig(savefile)
+        plt.close()
+
+
 
