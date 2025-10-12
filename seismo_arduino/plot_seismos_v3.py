@@ -133,6 +133,10 @@ for i in range(1, len(aggregate_array)):
     plot_seismo.append(siz)
     plot_temp.append(tmp)
     plot_press.append(prs)
+
+spectrum_utc = plot_utc
+spectrum_seismo = plot_seismo
+
 avgwindow = 20
 smoothe_seismo = standard_stuff.filter_average(plot_seismo, avgwindow)
 plot_utc = plot_utc[avgwindow:-avgwindow]
@@ -152,10 +156,14 @@ title = "Tiltmeter One Day"
 savefile = k.dir_images + os.sep + "one_day.png"
 mgr_matplot.plot_multi(df, plot_utc, wrapper, ticks, title, savefile)
 
+df = "%d %H:%M"
+title = "Spectrogram of Tilt Readings"
+savefile = k.dir_images + os.sep + "spectrum_seismo.png"
+mgr_matplot.plot_spectrum(df, spectrum_seismo, spectrum_utc, 1, -80, 30, title, savefile)
+
 
 # =============================================================================================================
 # A special instance here where we will decimate the volume of data
-
 print("Tiltmeter - 7 Days")
 # decimate data for this.
 window = 10
