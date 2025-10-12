@@ -74,7 +74,7 @@ def perform_fft(item, seconds_per_data):
         return ("error_fft")
 
 
-def plot_fft(fft_data, times, file_name):
+def plot_fft(starttime, fft_data, times, file_name):
     # fft data is [xf, yf]
     xf = fft_data[0]
     x_scale_title = "Period - Hz"
@@ -94,9 +94,9 @@ def plot_fft(fft_data, times, file_name):
     plt.figure(figsize=(15, 5))
 
     plt.plot(xf, yf, linewidth=1)
-    # title = "FFT - " + startplot + " to " + endplot
-    title = "FFT"
-    # plt.title(title)
+    title = "FFT - " + str(starttime)
+    # title = "FFT"
+    plt.title(title)
     plt.xlabel = x_scale_title
 
     ann_pos = 5**-1
@@ -124,7 +124,7 @@ def plot_fft(fft_data, times, file_name):
     plt.close()
 
 
-def wrapper(csvdata, csvdatetimes):
+def wrapper(starttime, csvdata, csvdatetimes):
     t_start = time.time()
 
     try_create_directory(discreet_step_dir)
@@ -160,5 +160,5 @@ def wrapper(csvdata, csvdatetimes):
             segment_data.append(data)
 
         fft_data = perform_fft(segment_data, seconds_per_reading)
-        plot_fft(fft_data, segment_times, str(i))
+        plot_fft(starttime, fft_data, segment_times, str(i))
 

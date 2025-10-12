@@ -19,10 +19,10 @@ readings_per_second = 10
 result_1d = result_7d[-86400 * readings_per_second:]
 start_1d = standard_stuff.posix2utc(result_1d[0][0], '%Y-%m-%d %H:%M')
 print(f"1 Day start time is {start_1d}")
-
-result_6hr = result_7d[-21600 * readings_per_second:]
-start_6hr = standard_stuff.posix2utc(result_6hr[0][0], '%Y-%m-%d %H:%M')
-print(f"6hr start time is {start_6hr}")
+#
+# result_6hr = result_7d[-21600 * readings_per_second:]
+# start_6hr = standard_stuff.posix2utc(result_6hr[0][0], '%Y-%m-%d %H:%M')
+# print(f"6hr start time is {start_6hr}")
 # ========================================================================================
 # We want the following plots.
 # Spectrum of last 24 hours. Full resolution Data.
@@ -92,15 +92,24 @@ for i in range(1, len(aggregate_array)):
     plot_utc.append(tim)
     plot_seismo.append(siz)
 
+# Convert distance readings to rate of change.
+# This is similar to traditional seismograph display
+dxdt = []
+for i in range(1, len(plot_seismo)):
+    # dx = plot_seismo[i]
+    dx = plot_seismo[i] - plot_seismo[i - 1]
+    dxdt.append(dx)
+plot_utc.pop(0)
+
 avgwindow = 10 * 5
-smoothe_seismo = standard_stuff.filter_average(plot_seismo, avgwindow)
+smoothe_seismo = standard_stuff.filter_average(dxdt, avgwindow)
 plot_utc = plot_utc[avgwindow:-avgwindow]
 smoothe_seismo = standard_stuff.filter_average(smoothe_seismo, avgwindow)
 plot_utc = plot_utc[avgwindow:-avgwindow]
 
 ticks = 20
 df = "%d  %H:%M"
-title = "Tiltmeter One Day"
+title = "Tiltmeter One Day dx/dt"
 savefolder = k.dir_images
 mgr_matplot.plot_hourlyplots(df, plot_utc, smoothe_seismo, title, savefolder)
 
@@ -199,30 +208,29 @@ title = "Tiltmeter One Week"
 savefile = k.dir_images + os.sep + "seven_day.png"
 mgr_matplot.plot_multi(df, plot_utc, wrapper, ticks, title, savefile)
 
-# =============================================================================================================
-
-print("Tiltmeter - One Day dx/dt")
-aggregate_array = result_1d
-aggregate_array.pop(0)
-plot_utc = []
-plot_seismo = []
-
-for i in range(1, len(aggregate_array)):
-    tim = aggregate_array[i][0]
-    tim = datetime.fromtimestamp(tim, tz=timezone.utc)  # datetime object
-    siz = aggregate_array[i][1]
-    plot_utc.append(tim)
-    plot_seismo.append(siz)
-
-# Convert distance readings to rate of change.
-# This is similar to traditional seismograph display
-dxdt = []
-for i in range(1, len(plot_seismo)):
-    # dx = plot_seismo[i]
-    dx = plot_seismo[i] - plot_seismo[i - 1]
-    dxdt.append(dx)
-plot_utc.pop(0)
-
+# # =============================================================================================================
+# print("Tiltmeter - One Day dx/dt")
+# aggregate_array = result_1d
+# aggregate_array.pop(0)
+# plot_utc = []
+# plot_seismo = []
+#
+# for i in range(1, len(aggregate_array)):
+#     tim = aggregate_array[i][0]
+#     tim = datetime.fromtimestamp(tim, tz=timezone.utc)  # datetime object
+#     siz = aggregate_array[i][1]
+#     plot_utc.append(tim)
+#     plot_seismo.append(siz)
+#
+# # Convert distance readings to rate of change.
+# # This is similar to traditional seismograph display
+# dxdt = []
+# for i in range(1, len(plot_seismo)):
+#     # dx = plot_seismo[i]
+#     dx = plot_seismo[i] - plot_seismo[i - 1]
+#     dxdt.append(dx)
+# plot_utc.pop(0)
+#
 # df = "%d %H:%M"
 # title = "Spectrogram of Tilt Readings"
 # savefile = k.dir_images + os.sep + "spectrum_seismo.png"
@@ -233,33 +241,32 @@ plot_utc.pop(0)
 # plot_utc = plot_utc[avgwindow:-avgwindow]
 # smoothe_seismo = standard_stuff.filter_average(smoothe_seismo, avgwindow)
 # plot_utc = plot_utc[avgwindow:-avgwindow]
-
-ticks = 20
-ymin = -0.005
-ymax = 0.005
-df = "%d  %H:%M"
-title = "Tiltmeter - One Day dx/dt"
-savefile = k.dir_images + os.sep + "dxdt.png"
-mgr_matplot.plot_time_data(df, plot_utc, smoothe_seismo, ticks, ymin, ymax, title, savefile)
-
-
-# # =============================================================================================================
-# try:
-#     print("Tiltmeter - One Day FFT")
-#     aggregate_array = result_1d
-#     aggregate_array.pop(0)
-#     plot_utc = []
-#     plot_seismo = []
 #
-#     for i in range(1, len(aggregate_array)):
-#         tim = aggregate_array[i][0]
-#         tim = datetime.fromtimestamp(tim, tz=timezone.utc)  # datetime object
-#         siz = aggregate_array[i][1]
-#         plot_utc.append(tim)
-#         plot_seismo.append(siz)
-#     fft_discrete_steps.wrapper(plot_seismo, plot_utc)
-# except:
-#     pass
+# ticks = 20
+# ymin = -0.005
+# ymax = 0.005
+# df = "%d  %H:%M"
+# title = "Tiltmeter - One Day dx/dt"
+# savefile = k.dir_images + os.sep + "dxdt.png"
+# mgr_matplot.plot_time_data(df, plot_utc, smoothe_seismo, ticks, ymin, ymax, title, savefile)
+#
+
+# =============================================================================================================
+#
+# print("Tiltmeter - One Day FFT")
+# aggregate_array = result_1d
+# aggregate_array.pop(0)
+# plot_utc = []
+# plot_seismo = []
+#
+# for i in range(1, len(aggregate_array)):
+#     tim = aggregate_array[i][0]
+#     tim = datetime.fromtimestamp(tim, tz=timezone.utc)  # datetime object
+#     siz = aggregate_array[i][1]
+#     plot_utc.append(tim)
+#     plot_seismo.append(siz)
+# fft_discrete_steps.wrapper(start_1d, plot_seismo, plot_utc)
+
 
 timefinish = time.time()
 print(f"Elapsed seconds to process: {timefinish - time_end}")

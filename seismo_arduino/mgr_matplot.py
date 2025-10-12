@@ -78,8 +78,8 @@ def plot_time_data(dateformatstring, utcdates, maindata, readings_per_tick, ymin
 def plot_spectrum(datetimeformat, data, datetimes, plotfrequency, minv, maxv, plottitle, savefile):
     frequency = 1 / plotfrequency
     plt.figure(layout="constrained", figsize=(15, 5))
-    # Pxx, freqs, bins, im = plt.specgram(data, NFFT=128, noverlap=32, detrend='mean', Fs=frequency, cmap='inferno', vmin=minv, vmax=maxv)
-    Pxx, freqs, bins, im = plt.specgram(data, NFFT=128, noverlap=32, detrend='mean', Fs=frequency, cmap='inferno')
+    Pxx, freqs, bins, im = plt.specgram(data, NFFT=128, noverlap=32, detrend='mean', Fs=frequency, cmap='inferno', vmin=minv, vmax=maxv)
+    # Pxx, freqs, bins, im = plt.specgram(data, NFFT=128, noverlap=32, detrend='mean', Fs=frequency, cmap='inferno')
     # Add colorbar (this is your "legend" for the colors)
     cbar = plt.colorbar(im)
     cbar.set_label('Power / Frequency (dB/Hz)')
@@ -106,12 +106,12 @@ def plot_scatterplot(data_x, data_y, plot_title, savefile):
 
 def plot_hourlyplots(datetimeformat, plot_utc, plot_seismo, title, savefolder):
     # the size of an hour is plot frequency multiplied by seconds/min and mins/hr
-    hour_slice = 10 * 60 * 60
+    hour_slice = 10 * 60 * 10
     avgv = np.mean(plot_seismo)
     maxv = max(plot_seismo)
     minv = min(plot_seismo)
-    ymax = avgv + 2 * (maxv - avgv)
-    ymin = avgv - 2 * (avgv - minv)
+    ymax = avgv + 1.1 * (maxv - avgv)
+    ymin = avgv - 1.1 * (avgv - minv)
 
     for i in range(0, len(plot_seismo), hour_slice):
         array_start = i
