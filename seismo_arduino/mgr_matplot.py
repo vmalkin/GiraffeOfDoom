@@ -47,7 +47,7 @@ def plot_multi(dateformatstring, dateobjects, dataarrays, readings_per_tick, tex
     # Use proper date formatter + locator
     ax1.xaxis.set_major_formatter(mdates.DateFormatter(dateformatstring))
     ax1.xaxis.set_major_locator(mdates.MinuteLocator(interval=readings_per_tick))
-    plt.setp(ax1.get_xticklabels(), rotation=45)  # safer than plt.xticks
+    plt.setp(ax1.get_xticklabels(), rotation=90)  # safer than plt.xticks
     plot_title = texttitle + " - " + standard_stuff.posix2utc(time.time(), '%Y-%m-%d %H:%M')
     ax1.set_title(plot_title)
     plt.savefig(savefile)
@@ -62,7 +62,7 @@ def plot_time_data(dateformatstring, utcdates, maindata, readings_per_tick, ymin
     # Use proper date formatter + locator
     ax.xaxis.set_major_formatter(mdates.DateFormatter(dateformatstring))
     ax.xaxis.set_major_locator(mdates.MinuteLocator(interval=readings_per_tick))
-    plt.setp(ax.get_xticklabels(), rotation=45)  # safer than plt.xticks
+    plt.setp(ax.get_xticklabels(), rotation=90)  # safer than plt.xticks
     avgv = np.mean(maindata)
     maxv = max(maindata)
     minv = min(maindata)
@@ -88,7 +88,7 @@ def plot_spectrum(datetimeformat, data, datetimes, plotfrequency, minv, maxv, pl
     for i in range(0, len(datetimes), 60*10*60):
         tickplace.append(i)
         ticklabel.append(datetimes[i])
-    plt.xticks(ticks=tickplace, labels=ticklabel, rotation=45)
+    plt.xticks(ticks=tickplace, labels=ticklabel, rotation=90)
     plt.xlabel("Time (s)")
     plt.ylabel("Frequency (Hz)")
     # plt.title(plottitle)
