@@ -75,11 +75,10 @@ def plot_fft(fft_data):
     plt.annotate("1.2 days", xy=(ann_pos_x, an_pos_y), xytext=(ann_pos_x, an_pos_y), fontsize=8, color='red',
                  bbox=dict(boxstyle="round", fc="1", color='red'))
 
-    plt.ylim(10**1, 10**7)
+    plt.ylim(10**3, 10**7)
     # ax.set_xlim([0, 0.3])
     plt.yscale("log")
     plt.xscale("log")
-    print("DEBUG:", plt.title, type(plt.title))
     plt.title("7 Day FFT")
     plt.grid(color='white', linestyle='-', linewidth='2')
     savefile = fft_output_dir + os.sep + "fft.png"
