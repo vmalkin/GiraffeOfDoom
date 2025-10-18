@@ -6,6 +6,7 @@ from datetime import datetime, timezone
 import constants as k
 import standard_stuff
 import class_aggregator
+import fft_discrete_steps
 
 time_end = time.time()
 time_start_7d = time_end - (60 * 60 * 24 * 7)
@@ -14,8 +15,7 @@ result_7d = mgr_database.db_data_get(time_start_7d)
 start_7d = standard_stuff.posix2utc(result_7d[0][0], '%Y-%m-%d %H:%M')
 print(f"7 Day start time is {start_7d}")
 
-readings_per_second = 10
-result_1d = result_7d[-86400 * readings_per_second:]
+result_1d = result_7d[-86400 * int(1 / k.sensor_reading_frequency):]
 start_1d = standard_stuff.posix2utc(result_1d[0][0], '%Y-%m-%d %H:%M')
 print(f"1 Day start time is {start_1d}")
 #
@@ -184,5 +184,8 @@ title = "Tiltmeter One Week"
 savefile = k.dir_images + os.sep + "seven_day.png"
 mgr_matplot.plot_multi(df, plot_utc, wrapper, ticks, title, savefile)
 
+# =============================================================================================================
+print("FFT - 7 Days")
+fft_discrete_steps.wrapper(result_7d)
 timefinish = time.time()
 print(f"Elapsed seconds to process: {timefinish - time_end}")

@@ -91,7 +91,7 @@ def plot_spectrum(datetimeformat, data, datetimes, plotfrequency, minv, maxv, pl
     plt.xticks(ticks=tickplace, labels=ticklabel, rotation=90)
     plt.xlabel("Time (s)")
     plt.ylabel("Frequency (Hz)")
-    # plt.title(plottitle)
+    plt.title(plottitle)
     savefile = savefile
     plt.savefig(savefile)
     plt.close()
@@ -100,7 +100,7 @@ def plot_spectrum(datetimeformat, data, datetimes, plotfrequency, minv, maxv, pl
 def plot_scatterplot(data_x, data_y, plot_title, savefile):
     plt.figure(figsize=(8, 8))
     plt.scatter(data_x, data_y, marker='o')
-    plt.title = plot_title
+    plt.title(plot_title)
     plt.savefig(savefile)
     plt.close()
 
