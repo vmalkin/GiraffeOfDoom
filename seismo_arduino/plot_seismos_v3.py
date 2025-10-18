@@ -31,18 +31,23 @@ print(f"1 Day start time is {start_1d}")
 # ========================================================================================
 try:
     print("Barometric Spectrogram - Past 24 hours")
+    window = 10
+    aggregate_array = class_aggregator.aggregate_data(window, result_7d)
+    aggregate_array.pop(0)
+
     plot_utc = []
     plot_press = []
-    for i in range(1, len(result_1d)):
-        tt = result_1d[i][0]
-        tim = datetime.fromtimestamp(tt, tz=timezone.utc)  # datetime object
-        prs = result_1d[i][3]
+    for i in range(1, len(aggregate_array)):
+        tim = aggregate_array[i].get_avg_posix()
+        tim = datetime.fromtimestamp(tim, tz=timezone.utc)  # datetime object
+        prs = aggregate_array[i].get_data_avg(aggregate_array[i].data_pressure)
         plot_utc.append(tim)
         plot_press.append(prs)
+
     df = "%d %H:%M"
     title = "Spectrogram of Barometric Pressure"
     savefile = k.dir_images + os.sep + "spectrum_press.png"
-    mgr_matplot.plot_spectrum(df, plot_press, plot_utc, 1, 0, 30, title, savefile)
+    mgr_matplot.plot_spectrum(df, plot_press, plot_utc, 1, 0, 25, title, savefile)
 except:
     pass
 
@@ -127,7 +132,7 @@ mgr_matplot.plot_multi(df, plot_utc, wrapper, ticks, title, savefile)
 df = "%d %H:%M"
 title = "Spectrogram of Tilt Readings"
 savefile = k.dir_images + os.sep + "spectrum_seismo.png"
-mgr_matplot.plot_spectrum(df, spectrum_seismo, spectrum_utc, 1, -80, 30, title, savefile)
+mgr_matplot.plot_spectrum(df, spectrum_seismo, spectrum_utc, 1, -10, 20, title, savefile)
 
 
 # =============================================================================================================

@@ -78,8 +78,8 @@ def plot_time_data(dateformatstring, utcdates, maindata, readings_per_tick, ymin
 def plot_spectrum(datetimeformat, data, datetimes, plotfrequency, minv, maxv, plottitle, savefile):
     frequency = 1 / plotfrequency
     plt.figure(layout="constrained", figsize=(15, 5))
-    # Pxx, freqs, bins, im = plt.specgram(data, NFFT=128, noverlap=32, detrend='mean', Fs=frequency, cmap='inferno', vmin=minv, vmax=maxv)
-    Pxx, freqs, bins, im = plt.specgram(data, NFFT=128, noverlap=32, detrend='mean', Fs=frequency, cmap='inferno')
+    Pxx, freqs, bins, im = plt.specgram(data, NFFT=128, noverlap=32, detrend='mean', Fs=frequency, cmap='inferno', vmin=minv, vmax=maxv)
+    # Pxx, freqs, bins, im = plt.specgram(data, NFFT=128, noverlap=32, detrend='mean', Fs=frequency, cmap='inferno')
     # Add colorbar (this is your "legend" for the colors)
     cbar = plt.colorbar(im)
     cbar.set_label('Power / Frequency (dB/Hz)')
