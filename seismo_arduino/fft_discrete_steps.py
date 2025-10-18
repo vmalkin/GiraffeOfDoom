@@ -51,7 +51,7 @@ def plot_fft(fft_data):
     plt.plot(xf, yf, linewidth=1)
     plt.xlabel(x_scale_title)
 
-    an_pos_y = 10**1.1
+    an_pos_y = 10**3.1
     ann_pos_x = 5**-1
     plt.annotate("2 s", xy=(ann_pos_x, an_pos_y),xytext=(ann_pos_x, an_pos_y), fontsize=8, color='red', bbox=dict(boxstyle="round", fc="1", color='red'))
 
