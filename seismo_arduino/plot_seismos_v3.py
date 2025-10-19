@@ -191,6 +191,28 @@ mgr_matplot.plot_multi(df, plot_utc, wrapper, ticks, title, savefile)
 
 # =============================================================================================================
 print("FFT - 7 Days")
+# Convert distance readings to rate of change.
+# This is similar to traditional seismograph display
+# aggregate_array = result_7d
+# aggregate_array.pop(0)
+# plot_utc = []
+# plot_seismo = []
+#
+# for i in range(1, len(aggregate_array)):
+#     tim = aggregate_array[i][0]
+#     tim = datetime.fromtimestamp(tim, tz=timezone.utc)  # datetime object
+#     siz = aggregate_array[i][1]
+#     plot_utc.append(tim)
+#     plot_seismo.append(siz)
+#
+# dxdt = []
+# for i in range(1, len(plot_seismo)):
+#     # dx = plot_seismo[i]
+#     dx = plot_seismo[i] - plot_seismo[i - 1]
+#     d = ['x', dx]
+#     dxdt.append(d)
+# plot_utc.pop(0)
+
 fft_discrete_steps.wrapper(result_7d)
 timefinish = time.time()
 print(f"Elapsed seconds to process: {timefinish - time_end}")

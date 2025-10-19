@@ -51,35 +51,44 @@ def plot_fft(fft_data):
     plt.plot(xf, yf, linewidth=1)
     plt.xlabel(x_scale_title)
 
-    an_pos_y = 10**3.1
-    ann_pos_x = 5**-1
-    plt.annotate("2 s", xy=(ann_pos_x, an_pos_y),xytext=(ann_pos_x, an_pos_y), fontsize=8, color='red', bbox=dict(boxstyle="round", fc="1", color='red'))
+    an_pos_y = 10 ** 3.1
 
     ann_pos_x = 10 ** -1
     plt.annotate("10 s", xy=(ann_pos_x, an_pos_y), xytext=(ann_pos_x, an_pos_y), fontsize=8, color='red',
                  bbox=dict(boxstyle="round", fc="1", color='red'))
 
-    ann_pos_x = 10 **-2
-    plt.annotate("100 s", xy=(ann_pos_x, an_pos_y), xytext=(ann_pos_x, an_pos_y), fontsize=8, color='red',
+    ann_pos_x = 10 ** -1.7785
+    plt.annotate("60 s", xy=(ann_pos_x, an_pos_y), xytext=(ann_pos_x, an_pos_y), fontsize=8, color='red',
                  bbox=dict(boxstyle="round", fc="1", color='red'))
 
-    ann_pos_x = 10 **-3
-    plt.annotate("16 m", xy=(ann_pos_x, an_pos_y), xytext=(ann_pos_x, an_pos_y), fontsize=8, color='red',
+    ann_pos_x = 10 ** -2.7785
+    plt.annotate("10 m", xy=(ann_pos_x, an_pos_y),xytext=(ann_pos_x, an_pos_y), fontsize=8, color='red', bbox=dict(boxstyle="round", fc="1", color='red'))
+
+    ann_pos_x = 10 ** -3.25528
+    plt.annotate("30 m", xy=(ann_pos_x, an_pos_y), xytext=(ann_pos_x, an_pos_y), fontsize=8, color='red',
                  bbox=dict(boxstyle="round", fc="1", color='red'))
 
-    ann_pos_x = 10 **-4
-    plt.annotate("2.7 hr", xy=(ann_pos_x, an_pos_y), xytext=(ann_pos_x, an_pos_y), fontsize=8, color='red',
+    ann_pos_x = 10 ** -3.5564
+    plt.annotate("1 hr", xy=(ann_pos_x, an_pos_y), xytext=(ann_pos_x, an_pos_y), fontsize=8, color='red',
                  bbox=dict(boxstyle="round", fc="1", color='red'))
 
-    ann_pos_x = 10 **-5
-    plt.annotate("1.2 days", xy=(ann_pos_x, an_pos_y), xytext=(ann_pos_x, an_pos_y), fontsize=8, color='red',
+    ann_pos_x = 10 ** -4.3347
+    plt.annotate("6 hrs", xy=(ann_pos_x, an_pos_y), xytext=(ann_pos_x, an_pos_y), fontsize=8, color='red',
                  bbox=dict(boxstyle="round", fc="1", color='red'))
 
-    ann_pos_x = 10 **-5.6
-    plt.annotate("4.6 days", xy=(ann_pos_x, an_pos_y), xytext=(ann_pos_x, an_pos_y), fontsize=8, color='red',
+    ann_pos_x = 10 ** -4.6355
+    plt.annotate("12 hrs", xy=(ann_pos_x, an_pos_y), xytext=(ann_pos_x, an_pos_y), fontsize=8, color='red',
                  bbox=dict(boxstyle="round", fc="1", color='red'))
 
-    plt.ylim(10**3, 10**7)
+    ann_pos_x = 10 **-4.9366
+    plt.annotate("1 day", xy=(ann_pos_x, an_pos_y), xytext=(ann_pos_x, an_pos_y), fontsize=8, color='red',
+                 bbox=dict(boxstyle="round", fc="1", color='red'))
+
+    ann_pos_x = 10 **-5.2376
+    plt.annotate("2 days", xy=(ann_pos_x, an_pos_y), xytext=(ann_pos_x, an_pos_y), fontsize=8, color='red',
+                 bbox=dict(boxstyle="round", fc="1", color='red'))
+
+    plt.ylim(10**2, 10**7)
     # ax.set_xlim([0, 0.3])
     plt.yscale("log")
     plt.xscale("log")
