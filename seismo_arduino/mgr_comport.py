@@ -1,5 +1,4 @@
 import serial
-import logging
 import sys
 # errorloglevel = logging.DEBUG
 # logging.basicConfig(filename="comport.log", format='%(asctime)s %(message)s', level=errorloglevel)

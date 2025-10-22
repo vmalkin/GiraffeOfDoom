@@ -3,11 +3,9 @@ import constants as k
 import mgr_comport
 import time
 import os
-import logging
 import re
 import standard_stuff
 import random
-import mgr_matplot
 import mgr_database
 
 
