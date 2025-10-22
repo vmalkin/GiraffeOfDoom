@@ -13,10 +13,11 @@ def udp_send(bytedata):
         # Send data
         sent = sock.sendto(bytedata, server_address)
         # # Receive response
-        # data, server = sock.recvfrom(4096)
-        # print('received {!r}'.format(data))
+        data, server = sock.recvfrom(4096)
+        d = data.decode('utf-8')
+        print(f'Server says: {d}')
     finally:
-        print('closing socket')
+        # print('Data sent, closing socket')
         sock.close()
 
 

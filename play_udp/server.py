@@ -10,12 +10,16 @@ print('starting up on {} port {}'.format(*server_address))
 sock.bind(server_address)
 
 while True:
-    print('\nwaiting to receive message')
     data, address = sock.recvfrom(4096)
-    print('received {} bytes from {}'.format(
-        len(data), address))
-    print(data)
-    # if data:
-    #     sent = sock.sendto(data, address)
-    #     print('sent {} bytes back to {}'.format(
-    #         sent, address))
+    print(f'Received {len(data)} bytes from client {address}')
+    # Convert bytearray back to string. this is now something that can be parsed
+
+    d = data.decode("utf-8")
+    # print(d)
+    if data:
+        # On completion send confirmation message back to client
+        msg = 'Server received ' + str(len(data)) + ' bytes'
+        m = msg.encode('utf-8')
+        sent = sock.sendto(m, address)
+        # print('sent {} bytes back to {}'.format(
+        #     sent, address))
