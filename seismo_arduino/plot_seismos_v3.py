@@ -6,7 +6,7 @@ from datetime import datetime, timezone
 import constants as k
 import standard_stuff
 import class_aggregator
-import fft_discrete_steps
+import fft_sevendays
 
 time_end = time.time()
 time_start_7d = time_end - (60 * 60 * 24 * 7)
@@ -213,6 +213,6 @@ print("FFT - 7 Days")
 #     dxdt.append(d)
 # plot_utc.pop(0)
 
-fft_discrete_steps.wrapper(result_7d)
+fft_sevendays.wrapper(result_7d)
 timefinish = time.time()
 print(f"Elapsed seconds to process: {timefinish - time_end}")
