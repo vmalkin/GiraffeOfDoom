@@ -48,3 +48,13 @@ def db_data_get(timestart):
     db.close()
     return returnarray
 
+
+def db_data_get_all():
+    returnarray = []
+    gpsdb = sqlite3.connect(k.sat_database)
+    db = gpsdb.cursor()
+    result = db.execute('select * from observations;')
+    for item in result:
+        returnarray.append(item)
+    db.close()
+    return returnarray
