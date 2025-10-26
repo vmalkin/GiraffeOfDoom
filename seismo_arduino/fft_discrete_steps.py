@@ -41,7 +41,7 @@ def perform_fft(item, seconds_per_data):
         return ("error_fft")
 
 
-def plot_fft(fft_data):
+def plot_sevenday_fft(fft_data):
     # fft data is [xf, yf]
     xf = fft_data[0]
     x_scale_title = "Period - Hz"
@@ -108,5 +108,5 @@ def wrapper(csvdata):
         data.append(decimal_data)
 
     fft_data = perform_fft(data, k.sensor_reading_frequency)
-    plot_fft(fft_data)
+    plot_sevenday_fft(fft_data)
 
