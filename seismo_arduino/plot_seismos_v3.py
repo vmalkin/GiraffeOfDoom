@@ -32,7 +32,7 @@ print(f"1 Day start time is {start_1d}")
 try:
     print("Barometric Spectrogram - Past 24 hours")
     window = 10
-    aggregate_array = class_aggregator.aggregate_data(window, result_7d)
+    aggregate_array = class_aggregator.aggregate_data(window, result_1d)
     aggregate_array.pop(0)
 
     plot_utc = []
@@ -47,7 +47,7 @@ try:
     df = "%d %H:%M"
     title = "Spectrogram of Barometric Pressure"
     savefile = k.dir_images + os.sep + "spectrum_press.png"
-    mgr_matplot.plot_spectrum(df, plot_press, plot_utc, 1, 0, 25, title, savefile)
+    mgr_matplot.plot_spectrum(df, plot_press, plot_utc, 1, -35, 60, title, savefile)
 except:
     pass
 
