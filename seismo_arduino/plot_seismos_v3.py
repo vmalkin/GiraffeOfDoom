@@ -7,10 +7,12 @@ import constants as k
 import standard_stuff
 import class_aggregator
 import fft_sevendays
+import fft_entire_data
 
 time_end = time.time()
 time_start_7d = time_end - (60 * 60 * 24 * 7)
 
+result_total = mgr_database.db_data_get_all()
 result_7d = mgr_database.db_data_get(time_start_7d)
 start_7d = standard_stuff.posix2utc(result_7d[0][0], '%Y-%m-%d %H:%M')
 print(f"7 Day start time is {start_7d}")
@@ -190,7 +192,7 @@ savefile = k.dir_images + os.sep + "seven_day.png"
 mgr_matplot.plot_multi(df, plot_utc, wrapper, ticks, title, savefile)
 
 # =============================================================================================================
-print("FFT - 7 Days")
+
 # Convert distance readings to rate of change.
 # This is similar to traditional seismograph display
 # aggregate_array = result_7d
@@ -212,7 +214,9 @@ print("FFT - 7 Days")
 #     d = ['x', dx]
 #     dxdt.append(d)
 # plot_utc.pop(0)
-
+print("FFT - 7 Days")
 fft_sevendays.wrapper(result_7d)
+print("FFT - ALL DATA!!")
+fft_entire_data.wrapper(result_total)
 timefinish = time.time()
 print(f"Elapsed seconds to process: {timefinish - time_end}")
