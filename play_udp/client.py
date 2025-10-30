@@ -1,8 +1,8 @@
 # https://pymotw.com/3/
 import socket
-import sys
 from time import time, sleep
 from random import random
+
 
 def udp_send(bytedata):
     # Create a UDP socket
@@ -10,12 +10,7 @@ def udp_send(bytedata):
     # IP_address, Port_No
     server_address = ('localhost', 10000)
     try:
-        # Send data
         sent = sock.sendto(bytedata, server_address)
-        # # Receive response
-        data, server = sock.recvfrom(4096)
-        d = data.decode('utf-8')
-        print(f'Server says: {d}')
     finally:
         # print('Data sent, closing socket')
         sock.close()
@@ -29,7 +24,8 @@ def get_decimal_posix():
 
 def get_data():
     returnarray = []
-    for i in range(0, 10):
+    iters = 10 * 10
+    for i in range(0, iters):
         t = get_decimal_posix()
         rn = round(random(), 4)
         d = [t, rn]
@@ -38,10 +34,15 @@ def get_data():
 
 
 if __name__ == "__main__":
+
+    # try:
     while True:
         data_to_send = str(get_data())
         # Convert to bytes
         bytearray = data_to_send.encode('utf-8')
+        print(len(bytearray))
         udp_send(bytearray)
-        sleep(1)
+        sleep(10)
+    # except KeyboardInterrupt:
+    #     print("Exit on keyboard")
 
