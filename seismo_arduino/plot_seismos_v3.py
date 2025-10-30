@@ -162,15 +162,15 @@ for i in range(1, len(aggregate_array)):
     plot_temp.append(tmp)
     plot_press.append(prs)
 
-# Scatterplots are here to use the 7 day data that's already been processed. No need to duplicate things.
-print("Tiltmeter - Scatterplots")
-sct_seis = standard_stuff.filter_median(plot_seismo, 2)
-sct_press = standard_stuff.filter_median(plot_press, 2)
-sct_temp = standard_stuff.filter_median(plot_temp, 2)
-savefile = k.dir_images + os.sep + "sctr_tilt_temp.png"
-mgr_matplot.plot_scatterplot(sct_temp, sct_seis, "7 Day Tilt vs Temperature", savefile)
-savefile = k.dir_images + os.sep + "sctr_tilt_press.png"
-mgr_matplot.plot_scatterplot(sct_press, sct_seis, "7 Day Tilt vs Air Pressure", savefile)
+# # Scatterplots are here to use the 7 day data that's already been processed. No need to duplicate things.
+# print("Tiltmeter - Scatterplots")
+# sct_seis = standard_stuff.filter_median(plot_seismo, 2)
+# sct_press = standard_stuff.filter_median(plot_press, 2)
+# sct_temp = standard_stuff.filter_median(plot_temp, 2)
+# savefile = k.dir_images + os.sep + "sctr_tilt_temp.png"
+# mgr_matplot.plot_scatterplot(sct_temp, sct_seis, "7 Day Tilt vs Temperature", savefile)
+# savefile = k.dir_images + os.sep + "sctr_tilt_press.png"
+# mgr_matplot.plot_scatterplot(sct_press, sct_seis, "7 Day Tilt vs Air Pressure", savefile)
 
 avgwindow = 40
 smoothe_seismo = standard_stuff.filter_average(plot_seismo, avgwindow)
@@ -216,7 +216,9 @@ mgr_matplot.plot_multi(df, plot_utc, wrapper, ticks, title, savefile)
 # plot_utc.pop(0)
 print("FFT - 7 Days")
 fft_sevendays.wrapper(result_7d)
+
 print("FFT - ALL DATA!!")
 fft_entire_data.wrapper(result_total)
+
 timefinish = time.time()
 print(f"Elapsed seconds to process: {timefinish - time_end}")

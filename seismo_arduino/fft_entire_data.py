@@ -41,7 +41,7 @@ def perform_fft(item, seconds_per_data):
         return ("error_fft")
 
 
-def plot_fft(fft_data):
+def plot_fft(fft_data, fft_start, fft_end):
     # fft data is [xf, yf]
     xf = fft_data[0]
     x_scale_title = "Period - Hz"
@@ -92,7 +92,7 @@ def plot_fft(fft_data):
     # ax.set_xlim([0, 0.3])
     plt.yscale("log")
     plt.xscale("log")
-    plt.title("All Data FFT")
+    plt.title("All Data FFT" + str(fft_start) + " to "+ str(fft_end))
     plt.grid(color='white', linestyle='-', linewidth='2')
     savefile = fft_output_dir + os.sep + "all_fft.png"
     plt.savefig(savefile)
@@ -102,11 +102,13 @@ def plot_fft(fft_data):
 def wrapper(csvdata):
     try_create_directory(fft_output_dir)
     data = []
+    fft_start = csvdata[0][0]
+    fft_end = csvdata[len(csvdata) - 1][0]
     for i in range(0, len(csvdata)):
         data_info = csvdata[i][1]
         decimal_data = make_decimal(data_info)
         data.append(decimal_data)
 
     fft_data = perform_fft(data, k.sensor_reading_frequency)
-    plot_fft(fft_data)
+    plot_fft(fft_data, fft_start, fft_end)
 
