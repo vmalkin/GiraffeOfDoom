@@ -76,17 +76,21 @@ for i in range(1, len(plot_seismo)):
     dxdt.append(dx)
 plot_utc.pop(0)
 
-avgwindow = 10 * 5
-smoothe_seismo = standard_stuff.filter_average(dxdt, avgwindow)
+avgwindow = 10 * 3
+smoothe_dx = standard_stuff.filter_average(dxdt, avgwindow)
 plot_utc = plot_utc[avgwindow:-avgwindow]
+smoothe_dx = standard_stuff.filter_average(smoothe_dx, avgwindow)
+plot_utc = plot_utc[avgwindow:-avgwindow]
+
+smoothe_seismo = standard_stuff.filter_average(plot_seismo, avgwindow)
 smoothe_seismo = standard_stuff.filter_average(smoothe_seismo, avgwindow)
-plot_utc = plot_utc[avgwindow:-avgwindow]
+smoothe_seismo.pop(0)
 
 ticks = 20
 df = "%d  %H:%M"
 title = "Tiltmeter One Day dx/dt"
 savefolder = k.dir_images
-mgr_matplot.plot_hourlyplots(df, plot_utc, smoothe_seismo, title, savefolder)
+mgr_matplot.plot_dual_hourly(df, plot_utc, smoothe_seismo, smoothe_dx, title, savefolder)
 
 # =============================================================================================================
 print("Tiltmeter - 1 Day")

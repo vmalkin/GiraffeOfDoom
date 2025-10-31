@@ -88,7 +88,7 @@ def plot_sevenday_fft(fft_data):
     plt.annotate("2 days", xy=(ann_pos_x, an_pos_y), xytext=(ann_pos_x, an_pos_y), fontsize=8, color='red',
                  bbox=dict(boxstyle="round", fc="1", color='red'))
 
-    plt.ylim(10**2, 10**7)
+    # plt.ylim(10**2, 10**7)
     # ax.set_xlim([0, 0.3])
     plt.yscale("log")
     plt.xscale("log")

@@ -5,7 +5,7 @@ import matplotlib.dates as mdates
 import standard_stuff
 import numpy as np
 
-ink_colour = ["#7a3f16", "green", "red"]
+ink_colour = ["#7a3f16", "green", "red", "#ffffff"]
 
 def plot_multi(dateformatstring, dateobjects, dataarrays, readings_per_tick, texttitle, savefile):
     # utcdates should be datetime objects, not POSIX floats
@@ -54,25 +54,25 @@ def plot_multi(dateformatstring, dateobjects, dataarrays, readings_per_tick, tex
     plt.close()
 
 
-def plot_time_data(dateformatstring, utcdates, maindata, readings_per_tick, ymin, ymax, texttitle, savefile):
-    plt.style.use('Solarize_Light2')
-    fig, ax = plt.subplots(layout="constrained", figsize=(16, 8), dpi=140)
-    # utcdates should be datetime objects, not POSIX floats
-    ax.plot(utcdates, maindata, c=ink_colour[0], linewidth=1)
-    # Use proper date formatter + locator
-    ax.xaxis.set_major_formatter(mdates.DateFormatter(dateformatstring))
-    ax.xaxis.set_major_locator(mdates.MinuteLocator(interval=readings_per_tick))
-    plt.setp(ax.get_xticklabels(), rotation=90)  # safer than plt.xticks
-    avgv = np.mean(maindata)
-    maxv = max(maindata)
-    minv = min(maindata)
-    ymax = avgv + 2 * (maxv - avgv)
-    ymin = avgv - 2 * (avgv - minv)
-    ax.set_ylim([ymin, ymax])
-    plot_title = texttitle + " - " + standard_stuff.posix2utc(time.time(), '%Y-%m-%d %H:%M')
-    ax.set_title(plot_title)
-    plt.savefig(savefile)
-    plt.close()
+# def plot_time_data(dateformatstring, utcdates, maindata, readings_per_tick, ymin, ymax, texttitle, savefile):
+#     plt.style.use('Solarize_Light2')
+#     fig, ax = plt.subplots(layout="constrained", figsize=(16, 8), dpi=140)
+#     # utcdates should be datetime objects, not POSIX floats
+#     ax.plot(utcdates, maindata, c=ink_colour[0], linewidth=1)
+#     # Use proper date formatter + locator
+#     ax.xaxis.set_major_formatter(mdates.DateFormatter(dateformatstring))
+#     ax.xaxis.set_major_locator(mdates.MinuteLocator(interval=readings_per_tick))
+#     plt.setp(ax.get_xticklabels(), rotation=90)  # safer than plt.xticks
+#     avgv = np.mean(maindata)
+#     maxv = max(maindata)
+#     minv = min(maindata)
+#     ymax = avgv + 2 * (maxv - avgv)
+#     ymin = avgv - 2 * (avgv - minv)
+#     ax.set_ylim([ymin, ymax])
+#     plot_title = texttitle + " - " + standard_stuff.posix2utc(time.time(), '%Y-%m-%d %H:%M')
+#     ax.set_title(plot_title)
+#     plt.savefig(savefile)
+#     plt.close()
 
 
 def plot_spectrum(datetimeformat, data, datetimes, plotfrequency, minv, maxv, plottitle, savefile):
@@ -104,36 +104,84 @@ def plot_scatterplot(data_x, data_y, plot_title, savefile):
     plt.savefig(savefile)
     plt.close()
 
-def plot_hourlyplots(datetimeformat, plot_utc, plot_seismo, title, savefolder):
+# def plot_hourlyplots(datetimeformat, plot_utc, plot_seismo, title, savefolder):
+#     # the size of an hour is plot frequency multiplied by seconds/min and mins/hr
+#     hour_slice = 10 * 60 * 10
+#     avgv = np.mean(plot_seismo)
+#     maxv = max(plot_seismo)
+#     minv = min(plot_seismo)
+#     ymax = avgv + 1.1 * (maxv - avgv)
+#     ymin = avgv - 1.1 * (avgv - minv)
+#
+#     for i in range(0, len(plot_seismo), hour_slice):
+#         array_start = i
+#         array_end = i + hour_slice
+#         chart_data = plot_seismo[array_start:array_end]
+#         chart_times = plot_utc[array_start:array_end]
+#
+#         plt.style.use('Solarize_Light2')
+#         fig, ax = plt.subplots(layout="constrained", figsize=(16, 8), dpi=140)
+#         # utcdates should be datetime objects, not POSIX floats
+#         ax.plot(chart_times, chart_data, c=ink_colour[0], linewidth=1)
+#         # Use proper date formatter + locator
+#         # ax.xaxis.set_major_formatter(mdates.DateFormatter(datetimeformat))
+#         # ax.xaxis.set_major_locator(mdates.MinuteLocator(interval=readings_per_tick))
+#         # plt.setp(ax.get_xticklabels(), rotation=45)  # safer than plt.xticks
+#
+#         ax.set_ylim([ymin, ymax])
+#         plot_title = title + " - " + standard_stuff.posix2utc(time.time(), '%Y-%m-%d %H:%M')
+#         ax.set_title(plot_title)
+#         savefile = savefolder + os.sep + str(i) + ".png"
+#         plt.savefig(savefile)
+#         plt.close()
+
+
+def plot_dual_hourly(datetimeformat, plot_utc, smoothe_seismo, smoothe_dx, title, savefolder):
     # the size of an hour is plot frequency multiplied by seconds/min and mins/hr
     hour_slice = 10 * 60 * 10
-    avgv = np.mean(plot_seismo)
-    maxv = max(plot_seismo)
-    minv = min(plot_seismo)
-    ymax = avgv + 1.1 * (maxv - avgv)
-    ymin = avgv - 1.1 * (avgv - minv)
+    sz_avg = np.mean(smoothe_seismo)
+    sz_max = max(smoothe_seismo)
+    sz_min = min(smoothe_seismo)
+    sz_ymax = sz_avg + 1.1 * (sz_max - sz_avg)
+    sz_ymin = sz_avg - 1.1 * (sz_avg - sz_min)
 
-    for i in range(0, len(plot_seismo), hour_slice):
+    dx_avg = np.mean(smoothe_dx)
+    dx_max = max(smoothe_dx)
+    dx_min = min(smoothe_dx)
+    dx_ymax = dx_avg + 1.1 * (dx_max - dx_avg)
+    dx_ymin = dx_avg - 1.1 * (dx_avg - dx_min)
+
+    for i in range(0, len(smoothe_seismo), hour_slice):
         array_start = i
         array_end = i + hour_slice
-        chart_data = plot_seismo[array_start:array_end]
+        seismo_data = smoothe_seismo[array_start:array_end]
+        diff_data = smoothe_dx[array_start:array_end]
         chart_times = plot_utc[array_start:array_end]
 
         plt.style.use('Solarize_Light2')
-        fig, ax = plt.subplots(layout="constrained", figsize=(16, 8), dpi=140)
+        fig, ax1 = plt.subplots(layout="constrained", figsize=(16, 8), dpi=140)
         # utcdates should be datetime objects, not POSIX floats
-        ax.plot(chart_times, chart_data, c=ink_colour[0], linewidth=1)
+        ax1.plot(chart_times, seismo_data, c=ink_colour[0], linewidth=1)
+        # Subplots with separate y axes
+        ax1.set_ylabel("Tiltmeter. Arbitrary Units.", color=ink_colour[0])
+        ax1.tick_params(axis='y', colors=ink_colour[0])
+        ax1.set_ylim([sz_ymin, sz_ymax])
+
+        ax2 = ax1.twinx()
+        ax2.plot(chart_times, diff_data, c=ink_colour[1], linewidth=1)
+        ax2.set_ylabel("Tilt, dx/dt", color=ink_colour[1])
+        ax2.tick_params(axis='y', colors=ink_colour[1])
+        ax2.set_ylim([dx_ymin, dx_ymax])
+        ax2.spines['right'].set_position(('outward', 60))
+        ax2.yaxis.grid(False)
         # Use proper date formatter + locator
         # ax.xaxis.set_major_formatter(mdates.DateFormatter(datetimeformat))
         # ax.xaxis.set_major_locator(mdates.MinuteLocator(interval=readings_per_tick))
         # plt.setp(ax.get_xticklabels(), rotation=45)  # safer than plt.xticks
 
-        ax.set_ylim([ymin, ymax])
         plot_title = title + " - " + standard_stuff.posix2utc(time.time(), '%Y-%m-%d %H:%M')
-        ax.set_title(plot_title)
+        ax1.set_title(plot_title)
         savefile = savefolder + os.sep + str(i) + ".png"
         plt.savefig(savefile)
         plt.close()
-
-
 
