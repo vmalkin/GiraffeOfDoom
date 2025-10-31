@@ -20,10 +20,7 @@ print(f"7 Day start time is {start_7d}")
 result_1d = result_7d[-86400 * int(1 / k.sensor_reading_frequency):]
 start_1d = standard_stuff.posix2utc(result_1d[0][0], '%Y-%m-%d %H:%M')
 print(f"1 Day start time is {start_1d}")
-#
-# result_6hr = result_7d[-21600 * readings_per_second:]
-# start_6hr = standard_stuff.posix2utc(result_6hr[0][0], '%Y-%m-%d %H:%M')
-# print(f"6hr start time is {start_6hr}")
+
 # ========================================================================================
 # We want the following plots.
 # Spectrum of last 24 hours. Full resolution Data.
