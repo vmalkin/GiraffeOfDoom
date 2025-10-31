@@ -6,10 +6,11 @@ import standard_stuff
 import numpy as np
 
 ink_colour = ["#7a3f16", "green", "red", "#ffffff"]
+plotstyle = 'bmh'
 
 def plot_multi(dateformatstring, dateobjects, dataarrays, readings_per_tick, texttitle, savefile):
     # utcdates should be datetime objects, not POSIX floats
-    plt.style.use('Solarize_Light2')
+    plt.style.use(plotstyle)
     fig, ax1 = plt.subplots(layout="constrained", figsize=(16, 8), dpi=140)
     # Subplots with separate y axes
     ax1.plot(dateobjects, dataarrays[0], c=ink_colour[0], linewidth=1)
@@ -54,30 +55,10 @@ def plot_multi(dateformatstring, dateobjects, dataarrays, readings_per_tick, tex
     plt.close()
 
 
-# def plot_time_data(dateformatstring, utcdates, maindata, readings_per_tick, ymin, ymax, texttitle, savefile):
-#     plt.style.use('Solarize_Light2')
-#     fig, ax = plt.subplots(layout="constrained", figsize=(16, 8), dpi=140)
-#     # utcdates should be datetime objects, not POSIX floats
-#     ax.plot(utcdates, maindata, c=ink_colour[0], linewidth=1)
-#     # Use proper date formatter + locator
-#     ax.xaxis.set_major_formatter(mdates.DateFormatter(dateformatstring))
-#     ax.xaxis.set_major_locator(mdates.MinuteLocator(interval=readings_per_tick))
-#     plt.setp(ax.get_xticklabels(), rotation=90)  # safer than plt.xticks
-#     avgv = np.mean(maindata)
-#     maxv = max(maindata)
-#     minv = min(maindata)
-#     ymax = avgv + 2 * (maxv - avgv)
-#     ymin = avgv - 2 * (avgv - minv)
-#     ax.set_ylim([ymin, ymax])
-#     plot_title = texttitle + " - " + standard_stuff.posix2utc(time.time(), '%Y-%m-%d %H:%M')
-#     ax.set_title(plot_title)
-#     plt.savefig(savefile)
-#     plt.close()
-
-
-def plot_spectrum(datetimeformat, data, datetimes, plotfrequency, minv, maxv, plottitle, savefile):
+def plot_spectrum(datetimeformat, tickinterval, data, datetimes, plotfrequency, minv, maxv, plottitle, savefile):
     frequency = 1 / plotfrequency
     plt.figure(layout="constrained", figsize=(15, 5))
+    plt.style.use(plotstyle)
     Pxx, freqs, bins, im = plt.specgram(data, NFFT=128, noverlap=32, detrend='mean', Fs=frequency, cmap='inferno', vmin=minv, vmax=maxv)
     # Pxx, freqs, bins, im = plt.specgram(data, NFFT=128, noverlap=32, detrend='mean', Fs=frequency, cmap='inferno')
     # Add colorbar (this is your "legend" for the colors)
@@ -85,7 +66,7 @@ def plot_spectrum(datetimeformat, data, datetimes, plotfrequency, minv, maxv, pl
     cbar.set_label('Power / Frequency (dB/Hz)')
     tickplace = []
     ticklabel = []
-    for i in range(0, len(datetimes), 60*10*60):
+    for i in range(0, len(datetimes), tickinterval):
         tickplace.append(i)
         ticklabel.append(datetimes[i].strftime(datetimeformat))
     plt.xticks(ticks=tickplace, labels=ticklabel, rotation=90)
@@ -101,6 +82,7 @@ def plot_spectrum(datetimeformat, data, datetimes, plotfrequency, minv, maxv, pl
 
 def plot_scatterplot(data_x, data_y, plot_title, savefile):
     plt.figure(figsize=(8, 8))
+    plt.style.use(plotstyle)
     plt.scatter(data_x, data_y, marker='o')
     plt.title(plot_title)
     plt.savefig(savefile)
@@ -160,7 +142,7 @@ def plot_dual_hourly(datetimeformat, plot_utc, smoothe_seismo, smoothe_dx, title
         diff_data = smoothe_dx[array_start:array_end]
         chart_times = plot_utc[array_start:array_end]
 
-        plt.style.use('Solarize_Light2')
+        plt.style.use(plotstyle)
         fig, ax1 = plt.subplots(layout="constrained", figsize=(16, 8), dpi=140)
         # utcdates should be datetime objects, not POSIX floats
         ax1.plot(chart_times, seismo_data, c=ink_colour[0], linewidth=1)

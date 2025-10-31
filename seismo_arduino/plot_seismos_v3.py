@@ -46,7 +46,8 @@ try:
     df = "%d %H:%M"
     title = "Spectrogram of Barometric Pressure"
     savefile = k.dir_images + os.sep + "spectrum_press.png"
-    mgr_matplot.plot_spectrum(df, plot_press, plot_utc, 1, 0, 30, title, savefile)
+    tick = 60 * 60
+    mgr_matplot.plot_spectrum(df, tick, plot_press, plot_utc, 1, 0, 30, title, savefile)
 except:
     pass
 
@@ -135,7 +136,8 @@ mgr_matplot.plot_multi(df, plot_utc, wrapper, ticks, title, savefile)
 df = "%d %H:%M"
 title = "Spectrogram of Tilt Readings"
 savefile = k.dir_images + os.sep + "spectrum_seismo.png"
-mgr_matplot.plot_spectrum(df, spectrum_seismo, spectrum_utc, 1, -10, 20, title, savefile)
+tick = 60 * 10 * 60
+mgr_matplot.plot_spectrum(df, tick, spectrum_seismo, spectrum_utc, 1, -10, 20, title, savefile)
 
 
 # =============================================================================================================
