@@ -87,8 +87,10 @@ def plot_spectrum(datetimeformat, data, datetimes, plotfrequency, minv, maxv, pl
     ticklabel = []
     for i in range(0, len(datetimes), 60*10*60):
         tickplace.append(i)
-        ticklabel.append(datetimes[i])
+        ticklabel.append(datetimes[i].strftime(datetimeformat))
     plt.xticks(ticks=tickplace, labels=ticklabel, rotation=90)
+
+
     plt.xlabel("Time (s)")
     plt.ylabel("Frequency (Hz)")
     plt.title(plottitle)
@@ -172,7 +174,7 @@ def plot_dual_hourly(datetimeformat, plot_utc, smoothe_seismo, smoothe_dx, title
         ax2.set_ylabel("Tilt, dx/dt", color=ink_colour[1])
         ax2.tick_params(axis='y', colors=ink_colour[1])
         ax2.set_ylim([dx_ymin, dx_ymax])
-        ax2.spines['right'].set_position(('outward', 60))
+        ax2.spines['right'].set_position(('outward', 30))
         ax2.yaxis.grid(False)
         # Use proper date formatter + locator
         # ax.xaxis.set_major_formatter(mdates.DateFormatter(datetimeformat))
