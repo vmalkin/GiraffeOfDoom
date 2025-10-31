@@ -198,4 +198,4 @@ print("FFT - ALL DATA!!")
 fft_entire_data.wrapper(result_total)
 
 timefinish = time.time()
-print(f"Elapsed seconds to process: {timefinish - time_end}")
+print(f"Elapsed minutes to process: {(timefinish - time_end) / 60}")
