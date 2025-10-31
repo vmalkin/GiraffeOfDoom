@@ -49,7 +49,7 @@ try:
     df = "%d %H:%M"
     title = "Spectrogram of Barometric Pressure"
     savefile = k.dir_images + os.sep + "spectrum_press.png"
-    mgr_matplot.plot_spectrum(df, plot_press, plot_utc, 1, -35, 60, title, savefile)
+    mgr_matplot.plot_spectrum(df, plot_press, plot_utc, 1, 0, 30, title, savefile)
 except:
     pass
 
@@ -166,15 +166,15 @@ for i in range(1, len(aggregate_array)):
     plot_temp.append(tmp)
     plot_press.append(prs)
 
-# # Scatterplots are here to use the 7 day data that's already been processed. No need to duplicate things.
-# print("Tiltmeter - Scatterplots")
-# sct_seis = standard_stuff.filter_median(plot_seismo, 2)
-# sct_press = standard_stuff.filter_median(plot_press, 2)
-# sct_temp = standard_stuff.filter_median(plot_temp, 2)
-# savefile = k.dir_images + os.sep + "sctr_tilt_temp.png"
-# mgr_matplot.plot_scatterplot(sct_temp, sct_seis, "7 Day Tilt vs Temperature", savefile)
-# savefile = k.dir_images + os.sep + "sctr_tilt_press.png"
-# mgr_matplot.plot_scatterplot(sct_press, sct_seis, "7 Day Tilt vs Air Pressure", savefile)
+# Scatterplots are here to use the 7 day data that's already been processed. No need to duplicate things.
+print("Tiltmeter - Scatterplots")
+sct_seis = standard_stuff.filter_median(plot_seismo, 2)
+sct_press = standard_stuff.filter_median(plot_press, 2)
+sct_temp = standard_stuff.filter_median(plot_temp, 2)
+savefile = k.dir_images + os.sep + "sctr_tilt_temp.png"
+mgr_matplot.plot_scatterplot(sct_temp, sct_seis, "7 Day Tilt vs Temperature", savefile)
+savefile = k.dir_images + os.sep + "sctr_tilt_press.png"
+mgr_matplot.plot_scatterplot(sct_press, sct_seis, "7 Day Tilt vs Air Pressure", savefile)
 
 avgwindow = 40
 smoothe_seismo = standard_stuff.filter_average(plot_seismo, avgwindow)
@@ -195,32 +195,8 @@ title = "Tiltmeter One Week"
 savefile = k.dir_images + os.sep + "seven_day.png"
 mgr_matplot.plot_multi(df, plot_utc, wrapper, ticks, title, savefile)
 
-# =============================================================================================================
-
-# Convert distance readings to rate of change.
-# This is similar to traditional seismograph display
-# aggregate_array = result_7d
-# aggregate_array.pop(0)
-# plot_utc = []
-# plot_seismo = []
-#
-# for i in range(1, len(aggregate_array)):
-#     tim = aggregate_array[i][0]
-#     tim = datetime.fromtimestamp(tim, tz=timezone.utc)  # datetime object
-#     siz = aggregate_array[i][1]
-#     plot_utc.append(tim)
-#     plot_seismo.append(siz)
-#
-# dxdt = []
-# for i in range(1, len(plot_seismo)):
-#     # dx = plot_seismo[i]
-#     dx = plot_seismo[i] - plot_seismo[i - 1]
-#     d = ['x', dx]
-#     dxdt.append(d)
-# plot_utc.pop(0)
 print("FFT - 7 Days")
 fft_sevendays.wrapper(result_7d)
-
 print("FFT - ALL DATA!!")
 fft_entire_data.wrapper(result_total)
 
