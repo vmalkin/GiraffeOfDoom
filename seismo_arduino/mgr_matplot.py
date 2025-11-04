@@ -143,28 +143,28 @@ def plot_dual_hourly(datetimeformat, plot_utc, smoothe_seismo, smoothe_dx, title
         chart_times = plot_utc[array_start:array_end]
 
         plt.style.use(plotstyle)
-        fig, ax1 = plt.subplots(layout="constrained", figsize=(16, 8), dpi=140)
+        fig, ax = plt.subplots(2, layout="constrained", figsize=(16, 8), dpi=140)
         # utcdates should be datetime objects, not POSIX floats
-        ax1.plot(chart_times, seismo_data, c=ink_colour[0], linewidth=1)
+        ax[0].plot(chart_times, seismo_data, c=ink_colour[0], linewidth=1)
         # Subplots with separate y axes
-        ax1.set_ylabel("Tiltmeter. Arbitrary Units.", color=ink_colour[0])
-        ax1.tick_params(axis='y', colors=ink_colour[0])
-        ax1.set_ylim([sz_ymin, sz_ymax])
+        ax[0].set_ylabel("Tiltmeter. Arbitrary Units.", color=ink_colour[0])
+        ax[0].tick_params(axis='y', colors=ink_colour[0])
+        ax[0].set_ylim([sz_ymin, sz_ymax])
 
-        ax2 = ax1.twinx()
-        ax2.plot(chart_times, diff_data, c=ink_colour[1], linewidth=1)
-        ax2.set_ylabel("Tilt, dx/dt", color=ink_colour[1])
-        ax2.tick_params(axis='y', colors=ink_colour[1])
-        ax2.set_ylim([dx_ymin, dx_ymax])
-        ax2.spines['right'].set_position(('outward', 30))
-        ax2.yaxis.grid(False)
+        # ax[1] = ax1.twinx()
+        ax[1].plot(chart_times, diff_data, c=ink_colour[1], linewidth=1)
+        ax[1].set_ylabel("Tilt, dx/dt", color=ink_colour[1])
+        ax[1].tick_params(axis='y', colors=ink_colour[1])
+        ax[1].set_ylim([dx_ymin, dx_ymax])
+        # ax[1].spines['right'].set_position(('outward', 30))
+        ax[1].yaxis.grid(False)
         # Use proper date formatter + locator
         # ax.xaxis.set_major_formatter(mdates.DateFormatter(datetimeformat))
         # ax.xaxis.set_major_locator(mdates.MinuteLocator(interval=readings_per_tick))
         # plt.setp(ax.get_xticklabels(), rotation=45)  # safer than plt.xticks
 
         plot_title = title + " - " + standard_stuff.posix2utc(time.time(), '%Y-%m-%d %H:%M')
-        ax1.set_title(plot_title)
+        fig.suptitle(plot_title)
         savefile = savefolder + os.sep + str(i) + ".png"
         plt.savefig(savefile)
         plt.close()
