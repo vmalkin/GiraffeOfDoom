@@ -46,7 +46,7 @@ def plot_fft(fft_data, fft_start, fft_end):
     xf = fft_data[0]
     x_scale_title = "Period - Hz"
     yf = fft_data[1]
-    plt.figure(layout="constrained", figsize=(28, 7))
+    plt.figure(layout="constrained", figsize=(17, 7))
     plt.style.use('Solarize_Light2')
     plt.plot(xf, yf, linewidth=1)
     plt.xlabel(x_scale_title)
@@ -88,7 +88,7 @@ def plot_fft(fft_data, fft_start, fft_end):
     plt.annotate("2 days", xy=(ann_pos_x, an_pos_y), xytext=(ann_pos_x, an_pos_y), fontsize=8, color='red',
                  bbox=dict(boxstyle="round", fc="1", color='red'))
 
-    # plt.ylim(10**2, 10**7)
+    plt.ylim(10**2, 10**7)
     # ax.set_xlim([0, 0.3])
     plt.yscale("log")
     plt.xscale("log")

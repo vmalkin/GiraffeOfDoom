@@ -174,6 +174,8 @@ savefile = k.dir_images + os.sep + "sctr_tilt_temp.png"
 mgr_matplot.plot_scatterplot(sct_temp, sct_seis, "7 Day Tilt vs Temperature", savefile)
 savefile = k.dir_images + os.sep + "sctr_tilt_press.png"
 mgr_matplot.plot_scatterplot(sct_press, sct_seis, "7 Day Tilt vs Air Pressure", savefile)
+savefile = k.dir_images + os.sep + "sctr_temp_press.png"
+mgr_matplot.plot_scatterplot(sct_press, sct_temp, "7 Day Air Temp vs Air Pressure", savefile)
 
 avgwindow = 40
 smoothe_seismo = standard_stuff.filter_average(plot_seismo, avgwindow)
