@@ -111,9 +111,6 @@ for i in range(1, len(aggregate_array)):
     plot_temp.append(tmp)
     plot_press.append(prs)
 
-spectrum_utc = plot_utc
-spectrum_seismo = plot_seismo
-
 avgwindow = 20
 smoothe_seismo = standard_stuff.filter_average(plot_seismo, avgwindow)
 plot_utc = plot_utc[avgwindow:-avgwindow]
@@ -132,12 +129,6 @@ df = "%d  %H:%M"
 title = "Tiltmeter One Day"
 savefile = k.dir_images + os.sep + "one_day.png"
 mgr_matplot.plot_multi(df, plot_utc, wrapper, ticks, title, savefile)
-
-df = "%d %H:%M"
-title = "Spectrogram of Tilt Readings"
-savefile = k.dir_images + os.sep + "spectrum_seismo.png"
-tick = 60 * 10 * 60
-mgr_matplot.plot_spectrum(df, tick, spectrum_seismo, spectrum_utc, 1, -10, 20, title, savefile)
 
 
 # =============================================================================================================
@@ -165,6 +156,7 @@ for i in range(1, len(aggregate_array)):
     plot_temp.append(tmp)
     plot_press.append(prs)
 
+# =============================================================================================================
 # Scatterplots are here to use the 7 day data that's already been processed. No need to duplicate things.
 print("Tiltmeter - Scatterplots")
 sct_seis = standard_stuff.filter_median(plot_seismo, 2)
@@ -196,6 +188,36 @@ title = "Tiltmeter One Week"
 savefile = k.dir_images + os.sep + "seven_day.png"
 mgr_matplot.plot_multi(df, plot_utc, wrapper, ticks, title, savefile)
 
+# =============================================================================================================
+# Spectrogram of seismic readings
+print("Seismic Spectrogram")
+aggregate_array = result_7d
+aggregate_array.pop(0)
+plot_utc = []
+plot_seismo = []
+plot_temp = []
+plot_press = []
+wrapper = []
+
+for i in range(1, len(aggregate_array)):
+    tim = aggregate_array[i][0]
+    tim = datetime.fromtimestamp(tim, tz=timezone.utc)  # datetime object
+    siz = aggregate_array[i][1]
+    tmp = aggregate_array[i][2]
+    prs = aggregate_array[i][3]
+    plot_utc.append(tim)
+    plot_seismo.append(siz)
+    plot_temp.append(tmp)
+    plot_press.append(prs)
+spectrum_utc = plot_utc
+spectrum_seismo = plot_seismo
+df = "%d %H:%M"
+title = "Spectrogram of Tilt Readings"
+savefile = k.dir_images + os.sep + "spectrum_seismo.png"
+tick = 60 * 10 * 60 * 6
+mgr_matplot.plot_spectrum(df, tick, spectrum_seismo, spectrum_utc, 1, -10, 20, title, savefile)
+
+# =============================================================================================================
 print("FFT - 7 Days")
 fft_sevendays.wrapper(result_7d)
 print("FFT - ALL DATA!!")
