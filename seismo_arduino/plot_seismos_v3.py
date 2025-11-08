@@ -217,6 +217,11 @@ savefile = k.dir_images + os.sep + "spectrum_seismo.png"
 tick = 60 * 10 * 60 * 6
 mgr_matplot.plot_spectrum(df, tick, spectrum_seismo, spectrum_utc, 1, -10, 20, title, savefile)
 
+
+# =============================================================================================================
+# Statistical analysis to identify events that exceed standrd deviation thresholds, and anything that
+# triggers strong oscillations at the pendulums fundamental frequency. Display as a 24 hour graph.
+
 # =============================================================================================================
 print("FFT - 7 Days")
 fft_sevendays.wrapper(result_7d)
