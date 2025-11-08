@@ -191,7 +191,7 @@ mgr_matplot.plot_multi(df, plot_utc, wrapper, ticks, title, savefile)
 # =============================================================================================================
 # Spectrogram of seismic readings
 print("Seismic Spectrogram")
-aggregate_array = result_7d
+aggregate_array = result_1d
 aggregate_array.pop(0)
 plot_utc = []
 plot_seismo = []

@@ -57,7 +57,7 @@ def plot_multi(dateformatstring, dateobjects, dataarrays, readings_per_tick, tex
 
 def plot_spectrum(datetimeformat, tickinterval, data, datetimes, plotfrequency, minv, maxv, plottitle, savefile):
     frequency = 1 / plotfrequency
-    plt.figure(layout="constrained", figsize=(15, 7))
+    plt.figure(layout="constrained", figsize=(15, 5))
     plt.style.use(plotstyle)
     Pxx, freqs, bins, im = plt.specgram(data, NFFT=128, noverlap=32, detrend='mean', Fs=frequency, cmap='inferno', vmin=minv, vmax=maxv)
     # Pxx, freqs, bins, im = plt.specgram(data, NFFT=128, noverlap=32, detrend='mean', Fs=frequency, cmap='inferno')
