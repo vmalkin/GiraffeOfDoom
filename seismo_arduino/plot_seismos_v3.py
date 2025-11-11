@@ -237,7 +237,8 @@ for i in range(1, len(aggregate_array)):
 wrapperdata.append(plot_utc)
 wrapperdata.append(plot_seismo)
 savefile = k.dir_images + os.sep + "imf.png"
-mgr_emd.wrapper(wrapperdata, savefile)
+df = "%d  %H:%M"
+mgr_emd.wrapper(wrapperdata, savefile, df)
 # =============================================================================================================
 # Statistical analysis to identify events that exceed standrd deviation thresholds, and anything that
 # triggers strong oscillations at the pendulums fundamental frequency. Display as a 24 hour graph.

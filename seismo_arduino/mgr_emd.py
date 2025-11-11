@@ -2,12 +2,13 @@ import time
 import numpy as np
 import emd
 import matplotlib.pyplot as plt
+import matplotlib.dates as mdates
 
 ink_colour = ["#7a3f16", "green", "red", "#ffffff"]
 plotstyle = 'bmh'
 
 
-def plot_data(imf, dates, filename):
+def plot_data(imf, dates, filename, dateformatstring):
     plt.style.use(plotstyle)
     rownum = imf.shape[1]
     plot_height = rownum * 300
@@ -19,6 +20,7 @@ def plot_data(imf, dates, filename):
     iters = len(imf[0])
     for i in range(0, iters):
         ax[i].plot(dates, imf[:, i], c=ink_colour[0], linewidth=1)
+        ax[i].xaxis.set_major_formatter(mdates.DateFormatter(dateformatstring))
         # fig.add_trace(go.Scatter(x=dates, y=imf[:, i], mode="lines", line=dict(color=pencolour, width=2)),
         #               row=i+1, col=1)
 
@@ -27,7 +29,7 @@ def plot_data(imf, dates, filename):
     plt.close()
 
 
-def wrapper(wrapped_data, savefile):
+def wrapper(wrapped_data, savefile, dateformatstring):
     dt_dates = wrapped_data[0]
     dt_readings = wrapped_data[1]
     # for item in readings:
@@ -43,7 +45,7 @@ def wrapper(wrapped_data, savefile):
     # imf = emd.sift.complete_ensemble_sift(nn)
     imf = emd.sift.sift(nn)
 
-    plot_data(imf, dt_dates, savefile)
+    plot_data(imf, dt_dates, savefile, dateformatstring)
 
 
 
