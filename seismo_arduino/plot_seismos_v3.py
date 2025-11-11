@@ -1,5 +1,6 @@
 import mgr_database
 import mgr_matplot
+import mgr_emd
 import time
 import os
 from datetime import datetime, timezone
@@ -217,7 +218,26 @@ savefile = k.dir_images + os.sep + "spectrum_seismo.png"
 tick = 60 * 10 * 60 * 6
 mgr_matplot.plot_spectrum(df, tick, spectrum_seismo, spectrum_utc, 1, -10, 20, title, savefile)
 
+# =============================================================================================================
+# Empirical Mode Decomposition
+print("Empirical Mode Decomposition")
+aggregate_array = result_1d
+aggregate_array.pop(0)
+plot_utc = []
+plot_seismo = []
+wrapperdata = []
 
+for i in range(1, len(aggregate_array)):
+    tim = aggregate_array[i][0]
+    tim = datetime.fromtimestamp(tim, tz=timezone.utc)  # datetime object
+    siz = aggregate_array[i][1]
+    plot_utc.append(tim)
+    plot_seismo.append(siz)
+
+wrapperdata.append(plot_utc)
+wrapperdata.append(plot_seismo)
+savefile = k.dir_images + os.sep + "imf.png"
+mgr_emd.wrapper(wrapperdata, savefile)
 # =============================================================================================================
 # Statistical analysis to identify events that exceed standrd deviation thresholds, and anything that
 # triggers strong oscillations at the pendulums fundamental frequency. Display as a 24 hour graph.
