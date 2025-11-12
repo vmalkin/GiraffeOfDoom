@@ -23,18 +23,21 @@ def db_create():
 def db_data_add(gsvdata):
     # this method expects an array with each element in the array being:
     # [1737274820, '21.05', '99740.46'] (posixtime, temperature, pressure)
-    gpsdb = sqlite3.connect(k.sat_database)
-    db = gpsdb.cursor()
-    for item in gsvdata:
-        posixtime = item[0]
-        seismodata = item[1]
-        temperature = item[2]
-        pressure = item[3]
-        values = [posixtime, seismodata, temperature, pressure]
-        db.execute('insert into observations(posixtime, tiltdata, temperature, pressure) '
-                   'values (?, ?, ?, ?);', values)
-    gpsdb.commit()
-    db.close()
+    try:
+        gpsdb = sqlite3.connect(k.sat_database)
+        db = gpsdb.cursor()
+        for item in gsvdata:
+            posixtime = item[0]
+            seismodata = item[1]
+            temperature = item[2]
+            pressure = item[3]
+            values = [posixtime, seismodata, temperature, pressure]
+            db.execute('insert into observations(posixtime, tiltdata, temperature, pressure) '
+                       'values (?, ?, ?, ?);', values)
+        gpsdb.commit()
+        db.close()
+    except sqlite3.OperationalError:
+        print(f'Database save FAILED - database locked')
 
 
 def db_data_get(timestart):

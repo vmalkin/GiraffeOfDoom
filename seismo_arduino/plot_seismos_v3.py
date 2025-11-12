@@ -215,7 +215,7 @@ spectrum_seismo = plot_seismo
 df = "%d %H:%M"
 title = "Spectrogram of Tilt Readings"
 savefile = k.dir_images + os.sep + "spectrum_seismo.png"
-tick = 60 * 10 * 60 * 6
+tick = 60 * 10 * 60
 mgr_matplot.plot_spectrum(df, tick, spectrum_seismo, spectrum_utc, 1, -10, 20, title, savefile)
 
 # =============================================================================================================
@@ -244,8 +244,8 @@ mgr_emd.wrapper(wrapperdata, savefile, df)
 # triggers strong oscillations at the pendulums fundamental frequency. Display as a 24 hour graph.
 
 # =============================================================================================================
-print("FFT - 7 Days")
-fft_sevendays.wrapper(result_7d)
+print("FFT - 1 Days")
+fft_sevendays.wrapper(result_1d)
 print("FFT - ALL DATA!!")
 fft_entire_data.wrapper(result_total)
 

@@ -57,7 +57,7 @@ def plot_multi(dateformatstring, dateobjects, dataarrays, readings_per_tick, tex
 
 def plot_spectrum(datetimeformat, tickinterval, data, datetimes, plotfrequency, minv, maxv, plottitle, savefile):
     frequency = 1 / plotfrequency
-    plt.figure(layout="constrained", figsize=(15, 5))
+    plt.figure(layout="constrained", figsize=(15, 6))
     plt.style.use(plotstyle)
     Pxx, freqs, bins, im = plt.specgram(data, NFFT=128, noverlap=32, detrend='mean', Fs=frequency, cmap='inferno', vmin=minv, vmax=maxv)
     # Pxx, freqs, bins, im = plt.specgram(data, NFFT=128, noverlap=32, detrend='mean', Fs=frequency, cmap='inferno')
@@ -87,6 +87,37 @@ def plot_scatterplot(data_x, data_y, plot_title, savefile):
     plt.title(plot_title)
     plt.savefig(savefile)
     plt.close()
+
+# def plot_hourlyplots(datetimeformat, plot_utc, plot_seismo, title, savefolder):
+#     # the size of an hour is plot frequency multiplied by seconds/min and mins/hr
+#     hour_slice = 10 * 60 * 10
+#     avgv = np.mean(plot_seismo)
+#     maxv = max(plot_seismo)
+#     minv = min(plot_seismo)
+#     ymax = avgv + 1.1 * (maxv - avgv)
+#     ymin = avgv - 1.1 * (avgv - minv)
+#
+#     for i in range(0, len(plot_seismo), hour_slice):
+#         array_start = i
+#         array_end = i + hour_slice
+#         chart_data = plot_seismo[array_start:array_end]
+#         chart_times = plot_utc[array_start:array_end]
+#
+#         plt.style.use('Solarize_Light2')
+#         fig, ax = plt.subplots(layout="constrained", figsize=(16, 8), dpi=140)
+#         # utcdates should be datetime objects, not POSIX floats
+#         ax.plot(chart_times, chart_data, c=ink_colour[0], linewidth=1)
+#         # Use proper date formatter + locator
+#         # ax.xaxis.set_major_formatter(mdates.DateFormatter(datetimeformat))
+#         # ax.xaxis.set_major_locator(mdates.MinuteLocator(interval=readings_per_tick))
+#         # plt.setp(ax.get_xticklabels(), rotation=45)  # safer than plt.xticks
+#
+#         ax.set_ylim([ymin, ymax])
+#         plot_title = title + " - " + standard_stuff.posix2utc(time.time(), '%Y-%m-%d %H:%M')
+#         ax.set_title(plot_title)
+#         savefile = savefolder + os.sep + str(i) + ".png"
+#         plt.savefig(savefile)
+#         plt.close()
 
 
 def plot_dual_hourly(datetimeformat, plot_utc, smoothe_seismo, smoothe_dx, title, savefolder):
