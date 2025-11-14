@@ -174,7 +174,7 @@ def plot_pseudo_phase(datetimeformat, plot_utc, plot_seismo, dxdt, title, savefo
         plt.style.use(plotstyle)
         fig, ax = plt.subplots(layout="constrained", figsize=(8, 8), dpi=140)
         ax.set_ylim([ymin, ymax])
-        ax.set_ylim([xmin, xmax])
+        ax.set_xlim([xmin, xmax])
         # utcdates should be datetime objects, not POSIX floats
         ax.scatter(seismo_data, diff_data, c=ink_colour[0], s=3)
 
