@@ -92,7 +92,7 @@ savefolder = k.dir_images
 mgr_matplot.plot_dual_hourly(df, plot_utc, smoothe_seismo, smoothe_dx, title, savefolder)
 
 title = "Pseudo Phase"
-savefolder = "pseudophase"
+savefolder = "Pseudo-phase plane diagram. "
 mgr_matplot.plot_pseudo_phase(df, plot_utc, smoothe_seismo, smoothe_dx, title, savefolder)
 
 # =============================================================================================================
