@@ -170,6 +170,8 @@ def plot_pseudo_phase(datetimeformat, plot_utc, plot_seismo, dxdt, title, savefo
         seismo_data = plot_seismo[array_start:array_end]
         diff_data = dxdt[array_start:array_end]
         chart_times = plot_utc[array_start:array_end]
+        begintime = chart_times[0].strftime(datetimeformat)
+        endtime = chart_times[len(chart_times) - 1].strftime(datetimeformat)
 
         plt.style.use(plotstyle)
         fig, ax = plt.subplots(layout="constrained", figsize=(8, 8), dpi=140)
@@ -178,7 +180,7 @@ def plot_pseudo_phase(datetimeformat, plot_utc, plot_seismo, dxdt, title, savefo
         # utcdates should be datetime objects, not POSIX floats
         ax.scatter(seismo_data, diff_data, c=ink_colour[0], s=3)
 
-        plot_title = title + " - " + standard_stuff.posix2utc(time.time(), '%Y-%m-%d %H:%M')
+        plot_title = title + " - " + begintime + " - " + endtime
         fig.suptitle(plot_title)
         savefile = savefolder + os.sep + "pp_" + str(i) + ".png"
         plt.savefig(savefile)
