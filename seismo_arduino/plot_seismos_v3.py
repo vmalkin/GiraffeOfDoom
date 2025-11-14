@@ -91,6 +91,10 @@ title = "Tiltmeter One Day dx/dt"
 savefolder = k.dir_images
 mgr_matplot.plot_dual_hourly(df, plot_utc, smoothe_seismo, smoothe_dx, title, savefolder)
 
+title = "Pseudo Phase"
+savefolder = "pseudophase"
+mgr_matplot.plot_pseudo_phase(df, plot_utc, smoothe_seismo, smoothe_dx, title, savefolder)
+
 # =============================================================================================================
 print("Tiltmeter - 1 Day")
 aggregate_array = result_1d
@@ -239,15 +243,15 @@ wrapperdata.append(plot_seismo)
 savefile = k.dir_images + os.sep + "imf.png"
 df = "%d  %H:%M"
 mgr_emd.wrapper(wrapperdata, savefile, df)
-# =============================================================================================================
-# Statistical analysis to identify events that exceed standrd deviation thresholds, and anything that
-# triggers strong oscillations at the pendulums fundamental frequency. Display as a 24 hour graph.
-
-# =============================================================================================================
-print("FFT - 1 Days")
-fft_sevendays.wrapper(result_1d)
-print("FFT - ALL DATA!!")
-fft_entire_data.wrapper(result_total)
+# # =============================================================================================================
+# # Statistical analysis to identify events that exceed standrd deviation thresholds, and anything that
+# # triggers strong oscillations at the pendulums fundamental frequency. Display as a 24 hour graph.
+#
+# # =============================================================================================================
+# print("FFT - 1 Days")
+# fft_sevendays.wrapper(result_1d)
+# print("FFT - ALL DATA!!")
+# fft_entire_data.wrapper(result_total)
 
 timefinish = time.time()
 print(f"Elapsed minutes to process: {(timefinish - time_end) / 60}")
