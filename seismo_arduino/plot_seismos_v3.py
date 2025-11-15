@@ -91,8 +91,8 @@ title = "Tiltmeter One Day dx/dt"
 savefolder = k.dir_images
 mgr_matplot.plot_dual_hourly(df, plot_utc, smoothe_seismo, smoothe_dx, title, savefolder)
 
-title = "Pseudo Phase"
-savefolder = "Pseudo-phase plane diagram. "
+title = "Phase Plot. "
+savefolder = "phaseimages"
 mgr_matplot.plot_pseudo_phase(df, plot_utc, smoothe_seismo, smoothe_dx, title, savefolder)
 
 # =============================================================================================================
