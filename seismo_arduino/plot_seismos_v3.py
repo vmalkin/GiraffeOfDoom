@@ -7,13 +7,13 @@ from datetime import datetime, timezone
 import constants as k
 import standard_stuff
 import class_aggregator
-import fft_sevendays
-import fft_entire_data
+# import fft_sevendays
+# import fft_entire_data
 
 time_end = time.time()
 time_start_7d = time_end - (60 * 60 * 24 * 7)
 
-result_total = mgr_database.db_data_get_all()
+# result_total = mgr_database.db_data_get_all()
 result_7d = mgr_database.db_data_get(time_start_7d)
 start_7d = standard_stuff.posix2utc(result_7d[0][0], '%Y-%m-%d %H:%M')
 print(f"7 Day start time is {start_7d}")
@@ -161,18 +161,18 @@ for i in range(1, len(aggregate_array)):
     plot_temp.append(tmp)
     plot_press.append(prs)
 
-# =============================================================================================================
-# Scatterplots are here to use the 7 day data that's already been processed. No need to duplicate things.
-print("Tiltmeter - Scatterplots")
-sct_seis = standard_stuff.filter_median(plot_seismo, 2)
-sct_press = standard_stuff.filter_median(plot_press, 2)
-sct_temp = standard_stuff.filter_median(plot_temp, 2)
-savefile = k.dir_images + os.sep + "sctr_tilt_temp.png"
-mgr_matplot.plot_scatterplot(sct_temp, sct_seis, "7 Day Tilt vs Temperature", savefile)
-savefile = k.dir_images + os.sep + "sctr_tilt_press.png"
-mgr_matplot.plot_scatterplot(sct_press, sct_seis, "7 Day Tilt vs Air Pressure", savefile)
-savefile = k.dir_images + os.sep + "sctr_temp_press.png"
-mgr_matplot.plot_scatterplot(sct_press, sct_temp, "7 Day Air Temp vs Air Pressure", savefile)
+# # =============================================================================================================
+# # Scatterplots are here to use the 7 day data that's already been processed. No need to duplicate things.
+# print("Tiltmeter - Scatterplots")
+# sct_seis = standard_stuff.filter_median(plot_seismo, 2)
+# sct_press = standard_stuff.filter_median(plot_press, 2)
+# sct_temp = standard_stuff.filter_median(plot_temp, 2)
+# savefile = k.dir_images + os.sep + "sctr_tilt_temp.png"
+# mgr_matplot.plot_scatterplot(sct_temp, sct_seis, "7 Day Tilt vs Temperature", savefile)
+# savefile = k.dir_images + os.sep + "sctr_tilt_press.png"
+# mgr_matplot.plot_scatterplot(sct_press, sct_seis, "7 Day Tilt vs Air Pressure", savefile)
+# savefile = k.dir_images + os.sep + "sctr_temp_press.png"
+# mgr_matplot.plot_scatterplot(sct_press, sct_temp, "7 Day Air Temp vs Air Pressure", savefile)
 
 avgwindow = 40
 smoothe_seismo = standard_stuff.filter_average(plot_seismo, avgwindow)
