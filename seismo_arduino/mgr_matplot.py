@@ -179,7 +179,7 @@ def plot_pseudo_phase(datetimeformat, plot_utc, plot_seismo, dxdt, title, savefo
         ax.set_xlim([xmin, xmax])
         # utcdates should be datetime objects, not POSIX floats
         # ax.scatter(seismo_data, diff_data, c=ink_colour[0], s=3)
-        ax.ploy(seismo_data, diff_data, c=ink_colour[0], linewidth=1)
+        ax.plot(seismo_data, diff_data, c=ink_colour[0], linewidth=1)
 
         plot_title = title + " - " + begintime + " - " + endtime
         fig.suptitle(plot_title)

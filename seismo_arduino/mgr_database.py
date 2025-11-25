@@ -43,21 +43,27 @@ def db_data_add(gsvdata):
 def db_data_get(timestart):
     returnarray = []
     values = [timestart]
-    gpsdb = sqlite3.connect(k.sat_database, timeout=10)
-    db = gpsdb.cursor()
-    result = db.execute('select * from observations where posixtime > ?;', values)
-    for item in result:
-        returnarray.append(item)
-    db.close()
+    try:
+        gpsdb = sqlite3.connect(k.sat_database, timeout=10)
+        db = gpsdb.cursor()
+        result = db.execute('select * from observations where posixtime > ?;', values)
+        for item in result:
+            returnarray.append(item)
+        db.close()
+    except sqlite3.OperationalError:
+        print(f'Database select query FAILED - database locked')
     return returnarray
 
 
 def db_data_get_all():
     returnarray = []
-    gpsdb = sqlite3.connect(k.sat_database, timeout=10)
-    db = gpsdb.cursor()
-    result = db.execute('select * from observations;')
-    for item in result:
-        returnarray.append(item)
-    db.close()
+    try:
+        gpsdb = sqlite3.connect(k.sat_database, timeout=10)
+        db = gpsdb.cursor()
+        result = db.execute('select * from observations;')
+        for item in result:
+            returnarray.append(item)
+        db.close()
+    except sqlite3.OperationalError:
+        print(f'Database get all FAILED - database locked')
     return returnarray
