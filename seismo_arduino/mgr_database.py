@@ -37,7 +37,7 @@ def db_data_add(gsvdata):
         gpsdb.commit()
         db.close()
     except sqlite3.OperationalError:
-        print(f'Database save FAILED - database locked')
+        print(f'Database data insert FAILED - database locked')
 
 
 def db_data_get(timestart):
