@@ -5,6 +5,7 @@ from datetime import datetime, timezone
 import time
 from statistics import mean, median
 from calendar import timegm
+import numpy as np
 
 # Default or global values or constants
 file_list = "files.txt"
@@ -31,10 +32,11 @@ def filter_median(numerical_data, filter_halfwindow):
     returnarray = []
     if len(numerical_data) > 2 * filter_halfwindow + 1:
         for i in range(filter_halfwindow, len(numerical_data) - filter_halfwindow):
-            t = []
-            for j in range(-filter_halfwindow, filter_halfwindow):
-                t.append(numerical_data[i + j])
-            v = median(t)
+            # t = []
+            # for j in range(-filter_halfwindow, filter_halfwindow):
+            #     t.append(numerical_data[i + j])
+            t = numerical_data[i - filter_halfwindow : i + filter_halfwindow]
+            v = np.median(t)
             returnarray.append(v)
     else:
         returnarray = numerical_data
@@ -46,11 +48,12 @@ def filter_average(numerical_data, filter_halfwindow):
     returnarray = []
     if len(numerical_data) > 2 * filter_halfwindow + 1:
         for i in range(filter_halfwindow, len(numerical_data) - filter_halfwindow):
-            t = []
-            for j in range(-filter_halfwindow, filter_halfwindow):
-                # if isinstance(numerical_data[i + j], str) is False:
-                t.append(float(numerical_data[i + j]))
-            v = mean(t)
+            # t = []
+            # for j in range(-filter_halfwindow, filter_halfwindow):
+            #     # if isinstance(numerical_data[i + j], str) is False:
+            #     t.append(float(numerical_data[i + j]))
+            t = numerical_data[i - filter_halfwindow : i + filter_halfwindow]
+            v = np.mean(t)
             v = round(v, 8)
             returnarray.append(v)
     else:
