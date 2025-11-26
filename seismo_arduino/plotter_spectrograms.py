@@ -44,6 +44,7 @@ def plot_spectrum(datetimeformat, tickinterval, data, datetimes, plotfrequency, 
 
 def wrapper(data):
     print("Barometric Spectrogram - Past 24 hours")
+    try_create_directory(k.dir_images)
     window = 10
     aggregate_array = class_aggregator.aggregate_data(window, data)
     aggregate_array.pop(0)
@@ -88,7 +89,6 @@ def wrapper(data):
     df = "%d %H:%M"
     title = "Spectrogram of Tilt Readings"
     savefile = k.dir_images + os.sep + "spectrum_seismo.png"
-    try_create_directory(k.dir_images)
     tick = 60 * 10 * 60
     plot_spectrum(df, tick, spectrum_seismo, spectrum_utc, 1, -10, 20, title, savefile)
 
