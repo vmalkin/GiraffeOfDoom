@@ -19,7 +19,6 @@ def try_create_directory(directory):
                 print("Unable to create directory")
 
 def plot_pseudo_phase(datetimeformat, plot_utc, plot_seismo, dxdt, title, savefolder):
-    try_create_directory(savefolder)
     # the size of an hour is plot frequency multiplied by seconds/min and mins/hr
     hour_slice = 10 * 60 * 10
     sz_avg = np.mean(plot_seismo)
@@ -59,7 +58,7 @@ def plot_pseudo_phase(datetimeformat, plot_utc, plot_seismo, dxdt, title, savefo
 
 
 def wrapper(data):
-    print("Tiltmeter - 24, hourly plots")
+    print("Phase Plots.")
     aggregate_array = data
     aggregate_array.pop(0)
     plot_utc = []
@@ -95,4 +94,5 @@ def wrapper(data):
     df = "%d  %H:%M"
     title = "Phase Plot. "
     savefolder = "phaseimages"
+    try_create_directory(savefolder)
     plot_pseudo_phase(df, plot_utc, smoothe_seismo, smoothe_dx, title, savefolder)
