@@ -6,6 +6,7 @@ import matplotlib.dates as mdates
 import numpy as np
 import os
 import constants as k
+import class_aggregator
 
 ink_colour = ["#7a3f16", "green", "red", "#ffffff"]
 plotstyle = 'bmh'
@@ -70,27 +71,30 @@ def plot_multi(dateformatstring, dateobjects, dataarrays, readings_per_tick, tex
 
 def wrapper(data):
     # =============================================================================================================
-    print("Tilt, Temp, Barometer - 1 Day")
-    aggregate_array = data
+    print("Tilt, Temp, Barometer - 7 Days.")
+    # decimate data for this.
+    window = 10
+    aggregate_array = class_aggregator.aggregate_data(window, data)
     aggregate_array.pop(0)
+
+    wrapper = []
     plot_utc = []
     plot_seismo = []
     plot_temp = []
     plot_press = []
-    wrapper = []
 
     for i in range(1, len(aggregate_array)):
-        tim = aggregate_array[i][0]
+        tim = aggregate_array[i].get_avg_posix()
         tim = datetime.fromtimestamp(tim, tz=timezone.utc)  # datetime object
-        siz = aggregate_array[i][1]
-        tmp = aggregate_array[i][2]
-        prs = aggregate_array[i][3]
+        siz = aggregate_array[i].get_data_avg(aggregate_array[i].data_seismo)
+        tmp = aggregate_array[i].get_data_avg(aggregate_array[i].data_temperature)
+        prs = aggregate_array[i].get_data_avg(aggregate_array[i].data_pressure)
         plot_utc.append(tim)
         plot_seismo.append(siz)
         plot_temp.append(tmp)
         plot_press.append(prs)
 
-    avgwindow = 20
+    avgwindow = 40
     smoothe_seismo = standard_stuff.filter_average(plot_seismo, avgwindow)
     plot_utc = plot_utc[avgwindow:-avgwindow]
     plot_temp = plot_temp[avgwindow:-avgwindow]
@@ -103,9 +107,8 @@ def wrapper(data):
     wrapper.append(plot_press)
     wrapper.append(plot_temp)
 
-    ticks = 20
+    ticks = 240
     df = "%d  %H:%M"
-    title = "Tiltmeter One Day"
-    savefile = k.dir_images + os.sep + "one_day.png"
-    try_create_directory(k.dir_images)
+    title = "Tiltmeter One Week"
+    savefile = k.dir_images + os.sep + "seven_day.png"
     plot_multi(df, plot_utc, wrapper, ticks, title, savefile)

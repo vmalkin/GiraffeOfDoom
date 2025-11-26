@@ -4,6 +4,7 @@ import constants as k
 import plotter_phaseportrait
 import plotter_spectrograms
 import plotter_combo1day
+import plotter_combo7day
 
 print(f'Querying database...')
 time_end = time.time()
@@ -13,9 +14,11 @@ result_7d = mgr_database.db_data_get(time_start_7d)
 result_1d = result_7d[-86400 * int(1 / k.sensor_reading_frequency):]
 print(f'Query Complete.')
 print(f'Begin plotting...')
+
 plotter_phaseportrait.wrapper(result_1d)
 plotter_spectrograms.wrapper((result_1d))
 plotter_combo1day.wrapper(result_1d)
+plotter_combo7day.wrapper(result_7d)
 
 timefinish = time.time()
 print(f"Plotting complete. Elapsed minutes to process: {(timefinish - time_end) / 60}")
