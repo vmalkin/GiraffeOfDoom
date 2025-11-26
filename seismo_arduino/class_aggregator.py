@@ -1,4 +1,4 @@
-from statistics import mean, median
+from numpy import mean, median
 
 
 class Aggregator:

@@ -73,11 +73,11 @@ def wrapper(data):
     # =============================================================================================================
     print("Tilt, Temp, Barometer - 7 Days.")
     # decimate data for this.
-    window = 10
+    window = 10 * 60 * 5
     aggregate_array = class_aggregator.aggregate_data(window, data)
     aggregate_array.pop(0)
 
-    wrapper = []
+    datawrapper = []
     plot_utc = []
     plot_seismo = []
     plot_temp = []
@@ -103,12 +103,12 @@ def wrapper(data):
     plot_utc = plot_utc[avgwindow:-avgwindow]
     plot_temp = plot_temp[avgwindow:-avgwindow]
     plot_press = plot_press[avgwindow:-avgwindow]
-    wrapper.append(smoothe_seismo)
-    wrapper.append(plot_press)
-    wrapper.append(plot_temp)
+    datawrapper.append(smoothe_seismo)
+    datawrapper.append(plot_press)
+    datawrapper.append(plot_temp)
 
     ticks = 240
     df = "%d  %H:%M"
     title = "Tiltmeter One Week"
     savefile = k.dir_images + os.sep + "seven_day.png"
-    plot_multi(df, plot_utc, wrapper, ticks, title, savefile)
+    plot_multi(df, plot_utc, datawrapper, ticks, title, savefile)

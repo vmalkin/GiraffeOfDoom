@@ -6,6 +6,7 @@ import matplotlib.dates as mdates
 import numpy as np
 import os
 import constants as k
+import class_aggregator
 
 ink_colour = ["#7a3f16", "green", "red", "#ffffff"]
 plotstyle = 'bmh'
@@ -71,20 +72,23 @@ def plot_multi(dateformatstring, dateobjects, dataarrays, readings_per_tick, tex
 def wrapper(data):
     # =============================================================================================================
     print("Tilt, Temp, Barometer - 1 Day")
-    aggregate_array = data
+    # decimate data for this.
+    window = 10 * 60
+    aggregate_array = class_aggregator.aggregate_data(window, data)
     aggregate_array.pop(0)
+
+    datawrapper = []
     plot_utc = []
     plot_seismo = []
     plot_temp = []
     plot_press = []
-    wrapper = []
 
     for i in range(1, len(aggregate_array)):
-        tim = aggregate_array[i][0]
+        tim = aggregate_array[i].get_avg_posix()
         tim = datetime.fromtimestamp(tim, tz=timezone.utc)  # datetime object
-        siz = aggregate_array[i][1]
-        tmp = aggregate_array[i][2]
-        prs = aggregate_array[i][3]
+        siz = aggregate_array[i].get_data_avg(aggregate_array[i].data_seismo)
+        tmp = aggregate_array[i].get_data_avg(aggregate_array[i].data_temperature)
+        prs = aggregate_array[i].get_data_avg(aggregate_array[i].data_pressure)
         plot_utc.append(tim)
         plot_seismo.append(siz)
         plot_temp.append(tmp)
@@ -99,13 +103,17 @@ def wrapper(data):
     plot_utc = plot_utc[avgwindow:-avgwindow]
     plot_temp = plot_temp[avgwindow:-avgwindow]
     plot_press = plot_press[avgwindow:-avgwindow]
-    wrapper.append(smoothe_seismo)
-    wrapper.append(plot_press)
-    wrapper.append(plot_temp)
+
+    print(len(smoothe_seismo))
+    print(len(plot_press))
+    print(len(plot_temp))
+    datawrapper.append(smoothe_seismo)
+    datawrapper.append(plot_press)
+    datawrapper.append(plot_temp)
 
     ticks = 20
     df = "%d  %H:%M"
     title = "Tiltmeter One Day"
     savefile = k.dir_images + os.sep + "one_day.png"
     try_create_directory(k.dir_images)
-    plot_multi(df, plot_utc, wrapper, ticks, title, savefile)
+    plot_multi(df, plot_utc, datawrapper, ticks, title, savefile)
