@@ -3,6 +3,7 @@ import time
 import constants as k
 import plotter_phaseportrait
 import plotter_spectrograms
+import plotter_combo1day
 
 time_end = time.time()
 time_start_7d = time_end - (60 * 60 * 24 * 7)
@@ -13,6 +14,7 @@ result_1d = result_7d[-86400 * int(1 / k.sensor_reading_frequency):]
 
 plotter_phaseportrait.wrapper(result_1d)
 plotter_spectrograms.wrapper((result_1d))
+plotter_combo1day.wrapper(result_1d)
 
 timefinish = time.time()
 print(f"Elapsed minutes to process: {(timefinish - time_end) / 60}")
