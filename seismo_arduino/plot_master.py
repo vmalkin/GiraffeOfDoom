@@ -5,19 +5,20 @@ import plotter_phaseportrait
 import plotter_spectrograms
 import plotter_combo1day
 
+print(f'Querying database...')
 time_end = time.time()
 time_start_7d = time_end - (60 * 60 * 24 * 7)
-
 # result_total = mgr_database.db_data_get_all()
 result_7d = mgr_database.db_data_get(time_start_7d)
 result_1d = result_7d[-86400 * int(1 / k.sensor_reading_frequency):]
-
+print(f'Query Complete.')
+print(f'Begin plotting...')
 plotter_phaseportrait.wrapper(result_1d)
 plotter_spectrograms.wrapper((result_1d))
 plotter_combo1day.wrapper(result_1d)
 
 timefinish = time.time()
-print(f"Elapsed minutes to process: {(timefinish - time_end) / 60}")
+print(f"Plotting complete. Elapsed minutes to process: {(timefinish - time_end) / 60}")
 
 # try:
 #     print("Barometric Spectrogram - Past 24 hours")
