@@ -94,16 +94,7 @@ def wrapper(data):
         plot_temp.append(tmp)
         plot_press.append(prs)
 
-    avgwindow = 40
-    smoothe_seismo = standard_stuff.filter_average(plot_seismo, avgwindow)
-    plot_utc = plot_utc[avgwindow:-avgwindow]
-    plot_temp = plot_temp[avgwindow:-avgwindow]
-    plot_press = plot_press[avgwindow:-avgwindow]
-    smoothe_seismo = standard_stuff.filter_average(smoothe_seismo, avgwindow)
-    plot_utc = plot_utc[avgwindow:-avgwindow]
-    plot_temp = plot_temp[avgwindow:-avgwindow]
-    plot_press = plot_press[avgwindow:-avgwindow]
-    datawrapper.append(smoothe_seismo)
+    datawrapper.append(plot_seismo)
     datawrapper.append(plot_press)
     datawrapper.append(plot_temp)
 

@@ -72,7 +72,7 @@ def plot_multi(dateformatstring, dateobjects, dataarrays, readings_per_tick, tex
 def wrapper(data):
     # =============================================================================================================
     print("Tilt, Temp, Barometer - 1 Day")
-    # decimate data for this.
+    # decimate data for this. Window is the counted in samples, not seconds
     window = 10 * 60
     aggregate_array = class_aggregator.aggregate_data(window, data)
     aggregate_array.pop(0)
@@ -94,20 +94,7 @@ def wrapper(data):
         plot_temp.append(tmp)
         plot_press.append(prs)
 
-    avgwindow = 10 * 60
-    smoothe_seismo = standard_stuff.filter_average(plot_seismo, avgwindow)
-    plot_utc = plot_utc[avgwindow:-avgwindow]
-    plot_temp = plot_temp[avgwindow:-avgwindow]
-    plot_press = plot_press[avgwindow:-avgwindow]
-    smoothe_seismo = standard_stuff.filter_average(smoothe_seismo, avgwindow)
-    plot_utc = plot_utc[avgwindow:-avgwindow]
-    plot_temp = plot_temp[avgwindow:-avgwindow]
-    plot_press = plot_press[avgwindow:-avgwindow]
-
-    print(len(smoothe_seismo))
-    print(len(plot_press))
-    print(len(plot_temp))
-    datawrapper.append(smoothe_seismo)
+    datawrapper.append(plot_seismo)
     datawrapper.append(plot_press)
     datawrapper.append(plot_temp)
 
