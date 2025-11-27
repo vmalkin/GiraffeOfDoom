@@ -8,6 +8,7 @@ import plotter_combo1day
 import plotter_combo7day
 import plotter_dual
 import mgr_emd
+import os
 
 print(f'Querying database...')
 time_end = time.time()
