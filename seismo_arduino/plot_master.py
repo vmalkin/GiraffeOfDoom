@@ -7,6 +7,7 @@ import plotter_spectrograms
 import plotter_combo1day
 import plotter_combo7day
 import plotter_dual
+import plotter_helicorder
 import mgr_emd
 import os
 
