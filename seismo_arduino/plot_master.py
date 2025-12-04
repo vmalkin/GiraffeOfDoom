@@ -35,11 +35,11 @@ print(f'Begin plotting...')
 for directory in k.dir_images:
     try_create_directory(directory)
 
-# plotter_phaseportrait.wrapper(result_1d)
-# plotter_spectrograms.wrapper((result_1d))
-# plotter_combo1day.wrapper(result_1d)
-# plotter_combo7day.wrapper(result_7d)
-# plotter_dual.wrapper(result_1d)
+plotter_phaseportrait.wrapper(result_1d)
+plotter_spectrograms.wrapper((result_1d))
+plotter_combo1day.wrapper(result_1d)
+plotter_combo7day.wrapper(result_7d)
+plotter_dual.wrapper(result_1d)
 plotter_helicorder.wrapper(result_1d)
 
 # # =============================================================================================================
