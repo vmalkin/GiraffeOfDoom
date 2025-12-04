@@ -81,7 +81,7 @@ def plot_sevenday_fft(fft_data):
     plt.xscale("log")
     plt.title("7 Day FFT")
     plt.grid(color='white', linestyle='-', linewidth='2')
-    savefile = k.dir_images['spectrograms'] + os.sep + "fft.png"
+    savefile = k.dir_images['images'] + os.sep + "fft.png"
     plt.savefig(savefile)
     plt.close()
 

@@ -10,7 +10,7 @@ plotstyle = 'bmh'
 
 def plot_spectrum(datetimeformat, tickinterval, data, datetimes, plotfrequency, minv, maxv, plottitle, savefile):
     frequency = 1 / plotfrequency
-    plt.figure(layout="constrained", figsize=(17, 8))
+    plt.figure(layout="constrained", figsize=(17, 7))
     plt.style.use(plotstyle)
     Pxx, freqs, bins, im = plt.specgram(data, NFFT=128, noverlap=32, detrend='mean', Fs=frequency, cmap='inferno', vmin=minv, vmax=maxv)
     # Pxx, freqs, bins, im = plt.specgram(data, NFFT=128, noverlap=32, detrend='mean', Fs=frequency, cmap='inferno')
