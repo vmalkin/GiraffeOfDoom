@@ -20,21 +20,18 @@ def plot_multi(dateformatstring, dateobjects, dataarrays, readings_per_tick, tex
     ax1.plot(dateobjects, dataarrays[0], c=ink_colour[0], linewidth=2)
     ax1.set_ylabel("Tiltmeter. Arbitrary Units.", color=ink_colour[0])
     ax1.tick_params(axis='y', colors=ink_colour[0])
-
-    avgv = np.mean(dataarrays[0])
-    maxv = np.nanmax(dataarrays[0])
-    minv = np.nanmin(dataarrays[0])
-    ymax = avgv + 2 * (maxv - avgv)
-    ymin = avgv - 2 * (avgv - minv)
-    ax1.set_ylim([ymin, ymax])
+    ax1.set_ylim([k.tilt_min, k.tilt_max])
 
     ax2 = ax1.twinx()
     ax2.plot(dateobjects, dataarrays[1], c=ink_colour[1], linewidth=2)
     ax2.set_ylabel("Pressure. Pa.", color=ink_colour[1])
     ax2.tick_params(axis='y', colors=ink_colour[1])
     maxv = np.nanmax(dataarrays[1])
-    minv = np.nanmin(dataarrays[1])
-    ax2.set_ylim([minv, maxv])
+    try:
+        minv = np.nanmin(dataarrays[1])
+    except ValueError:
+        minv = 950
+    ax2.set_ylim([k.pressure_min, k.pressure_max])
     ax2.spines['right'].set_position(('outward', 60))
     ax2.yaxis.grid(False)
 
@@ -42,11 +39,7 @@ def plot_multi(dateformatstring, dateobjects, dataarrays, readings_per_tick, tex
     ax3.plot(dateobjects, dataarrays[2], c=ink_colour[2], linewidth=2)
     ax3.set_ylabel("Temperature. Deg C.", color=ink_colour[2])
     ax3.tick_params(axis='y', colors=ink_colour[2])
-    # maxv = 18
-    # minv = 8
-    maxv = np.nanmax(dataarrays[2])
-    minv = np.nanmin(dataarrays[2])
-    ax3.set_ylim([minv, maxv])
+    ax3.set_ylim([k.temp_min, k.temp_max])
     ax3.yaxis.grid(False)
 
     # Use proper date formatter + locator
