@@ -26,11 +26,6 @@ def plot_multi(dateformatstring, dateobjects, dataarrays, readings_per_tick, tex
     ax2.plot(dateobjects, dataarrays[1], c=ink_colour[1], linewidth=2)
     ax2.set_ylabel("Pressure. Pa.", color=ink_colour[1])
     ax2.tick_params(axis='y', colors=ink_colour[1])
-    maxv = np.nanmax(dataarrays[1])
-    try:
-        minv = np.nanmin(dataarrays[1])
-    except ValueError:
-        minv = 950
     ax2.set_ylim([k.pressure_min, k.pressure_max])
     ax2.spines['right'].set_position(('outward', 60))
     ax2.yaxis.grid(False)
