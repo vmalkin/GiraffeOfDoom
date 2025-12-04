@@ -29,7 +29,7 @@ def plot_helicorder(dateformatstring, plotdates, plotdata, readings_per_tick, te
     hour_slice = 60 * 60
     rownum = math.ceil(len(plotdata) / hour_slice)
     plt.style.use(plotstyle)
-    fig, ax = plt.subplots(nrows=rownum, figsize=(10, 1.4 * rownum), dpi=140)
+    fig, ax = plt.subplots(nrows=rownum, figsize=(15, 1.4 * rownum), dpi=140)
     fig.set_constrained_layout(True)
 
     avgv = np.mean(plotdata)
@@ -46,7 +46,7 @@ def plot_helicorder(dateformatstring, plotdates, plotdata, readings_per_tick, te
         array_end = i + hour_slice
         seismo_data = plotdata[array_start:array_end]
         chart_times = plotdates[array_start:array_end]
-        ax[axindex].plot(chart_times, seismo_data, c=ink_colour[0], linewidth=0.5)
+        ax[axindex].plot(chart_times, seismo_data, c=ink_colour[0], linewidth=1)
         ax[axindex].set_ylim([ymin, ymax])
         ax[axindex].xaxis.set_major_formatter(mdates.DateFormatter(dateformatstring))
         ax[axindex].xaxis.set_major_locator(mdates.MinuteLocator(interval=readings_per_tick))
