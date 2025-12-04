@@ -3,7 +3,7 @@ from numpy import mean, median, nan
 
 class Aggregator:
     def __init__(self, posixstart, posixstop):
-        self.data_null = nan
+        self.data_null = None
         self.date_start = posixstart  # should be POSIX values
         self.date_stop = posixstop  # should be POSIX values
         self.data_seismo = []
@@ -69,6 +69,7 @@ def aggregate_data(windowsize, querydata):
         agg_index = lookup[datetime]
         aggregate_array[agg_index - 1].data_seismo.append(seismo)
         aggregate_array[agg_index - 1].data_temperature.append(temp)
+        aggregate_array[agg_index - 1].data_pressure.append(pressure)
 
 
     # # PASS 4 - Use aggregator class functions to create plotting data
