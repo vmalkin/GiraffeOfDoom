@@ -28,8 +28,8 @@ dir_images = {
     'spectrograms': 'spectrograms'
 }
 
-pressure_min = 965000
-pressure_max = 1040000
+pressure_min = 96500
+pressure_max = 104000
 temp_min = 12
 temp_max = 19
 tilt_min = 452
