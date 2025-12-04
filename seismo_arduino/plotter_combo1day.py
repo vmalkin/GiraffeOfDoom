@@ -101,6 +101,6 @@ def wrapper(data):
     ticks = 20
     df = "%d  %H:%M"
     title = "Tiltmeter One Day"
-    savefile = k.dir_images + os.sep + "one_day.png"
+    savefile = k.dir_images['images'] + os.sep + "one_day.png"
     try_create_directory(k.dir_images)
     plot_multi(df, plot_utc, datawrapper, ticks, title, savefile)

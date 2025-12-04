@@ -96,5 +96,5 @@ def wrapper(data):
     ticks = 20
     df = "%d  %H:%M"
     title = "Tiltmeter One Day dx/dt"
-    savefolder = k.dir_images
+    savefolder = k.dir_images['images']
     plot_dual_hourly(df, plot_utc, smoothe_seismo, smoothe_dx, title, savefolder)

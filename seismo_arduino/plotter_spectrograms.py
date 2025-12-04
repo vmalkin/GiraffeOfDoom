@@ -49,7 +49,7 @@ def wrapper(data):
 
     df = "%d %H:%M"
     title = "Spectrogram of Barometric Pressure"
-    savefile = k.dir_images + os.sep + "spectrum_press.png"
+    savefile = k.dir_images['images'] + os.sep + "spectrum_press.png"
     tick = 60 * 60
     plot_spectrum(df, tick, plot_press, plot_utc, 1, 0, 30, title, savefile)
 
@@ -77,7 +77,7 @@ def wrapper(data):
     spectrum_seismo = plot_seismo
     df = "%d %H:%M"
     title = "Spectrogram of Tilt Readings"
-    savefile = k.dir_images + os.sep + "spectrum_seismo.png"
+    savefile = k.dir_images['images'] + os.sep + "spectrum_seismo.png"
     tick = 60 * 10 * 60
     plot_spectrum(df, tick, spectrum_seismo, spectrum_utc, 1, -10, 20, title, savefile)
 

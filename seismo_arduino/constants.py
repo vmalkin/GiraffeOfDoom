@@ -21,5 +21,11 @@ sat_database = "data.db"
 
 sensor = "Tilt Meter Sensor"
 sensor_reading_frequency = 1 / 10
-dir_images = ['images', 'phaseplots', 'spectrograms']
+
+dir_images = {
+    'images': 'images',
+    'phaseplots': 'phaseplots',
+    'spectrograms': 'spectrograms'
+}
+
 dir_logfiles = "logfiles"

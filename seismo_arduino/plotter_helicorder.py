@@ -11,16 +11,16 @@ import math
 ink_colour = ["#7a3f16", "green", "red", "#ffffff"]
 plotstyle = 'bmh'
 
-
-def try_create_directory(directory):
-    if os.path.isdir(directory) is False:
-        print("Creating image file directory...")
-        try:
-            os.makedirs(directory)
-            print("Directory created.")
-        except:
-            if not os.path.isdir(directory):
-                print("Unable to create directory")
+#
+# def try_create_directory(directory):
+#     if os.path.isdir(directory) is False:
+#         print("Creating image file directory...")
+#         try:
+#             os.makedirs(directory)
+#             print("Directory created.")
+#         except:
+#             if not os.path.isdir(directory):
+#                 print("Unable to create directory")
 
 def plot_helicorder(dateformatstring, plotdates, plotdata, readings_per_tick, texttitle, savefile):
     # hour slice depends on plot requency and if any decimation has taken place. IT should be the number of readings
@@ -91,5 +91,5 @@ def wrapper(data):
     ticks = 10
     df = "%d  %H:%M"
     title = "Helicorder One Day"
-    savefile = "images" + os.sep + "helicorder.png"
+    savefile = k.dir_images['images'] + os.sep + "helicorder.png"
     plot_helicorder(df, plot_utc, smoothe_dx, ticks, title, savefile)

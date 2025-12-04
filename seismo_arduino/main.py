@@ -27,16 +27,6 @@ def get_decimal_posix_():
     return t
 
 
-# def create_directory(directory):
-#     try:
-#         os.makedirs(directory)
-#         print("Directory created.")
-#     except:
-#         if not os.path.isdir(directory):
-#             print("Unable to create directory")
-#             # logging.critical("CRITICAL ERROR: Unable to create directory in MAIN.PY")
-
-
 def test_isnumber(numbertotest):
     # Data is ONLY ever a float
     if isinstance(numbertotest, float):

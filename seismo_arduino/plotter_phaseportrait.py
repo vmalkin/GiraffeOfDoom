@@ -3,6 +3,7 @@ import standard_stuff
 import matplotlib.pyplot as plt
 import numpy as np
 import os
+import constants as k
 
 ink_colour = ["#7a3f16", "green", "red", "#ffffff"]
 plotstyle = 'bmh'
@@ -83,6 +84,6 @@ def wrapper(data):
     ticks = 20
     df = "%d  %H:%M"
     title = "Phase Plot. "
-    savefolder = "phaseimages"
-    try_create_directory(savefolder)
+    savefolder = k.dir_images['phaseplots']
+    # try_create_directory(savefolder)
     plot_pseudo_phase(df, plot_utc, smoothe_seismo, smoothe_dx, title, savefolder)

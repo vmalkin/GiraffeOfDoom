@@ -30,8 +30,8 @@ result_1d = result_7d[-86400 * int(1 / k.sensor_reading_frequency):]
 print(f'Query Complete.')
 print(f'Begin plotting...')
 
-for directory in k.dir_images:
-    try_create_directory(directory)
+for key in k.dir_images:
+    try_create_directory(key)
 
 plotter_phaseportrait.wrapper(result_1d)
 plotter_spectrograms.wrapper((result_1d))
