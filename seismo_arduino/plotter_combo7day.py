@@ -12,16 +12,6 @@ ink_colour = ["#7a3f16", "green", "red", "#ffffff"]
 plotstyle = 'bmh'
 
 
-def try_create_directory(directory):
-    if os.path.isdir(directory) is False:
-        print("Creating image file directory...")
-        try:
-            os.makedirs(directory)
-            print("Directory created.")
-        except:
-            if not os.path.isdir(directory):
-                print("Unable to create directory")
-
 def plot_multi(dateformatstring, dateobjects, dataarrays, readings_per_tick, texttitle, savefile):
     # utcdates should be datetime objects, not POSIX floats
     plt.style.use(plotstyle)

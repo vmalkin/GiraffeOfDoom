@@ -8,16 +8,6 @@ ink_colour = ["#7a3f16", "green", "red", "#ffffff"]
 plotstyle = 'bmh'
 
 
-def try_create_directory(directory):
-    if os.path.isdir(directory) is False:
-        print("Creating image file directory...")
-        try:
-            os.makedirs(directory)
-            print("Directory created.")
-        except:
-            if not os.path.isdir(directory):
-                print("Unable to create directory")
-
 def plot_spectrum(datetimeformat, tickinterval, data, datetimes, plotfrequency, minv, maxv, plottitle, savefile):
     frequency = 1 / plotfrequency
     plt.figure(layout="constrained", figsize=(15, 6))
@@ -44,7 +34,6 @@ def plot_spectrum(datetimeformat, tickinterval, data, datetimes, plotfrequency, 
 
 def wrapper(data):
     print("Barometric Spectrogram - Past 24 hours")
-    try_create_directory(k.dir_images)
     window = 10
     aggregate_array = class_aggregator.aggregate_data(window, data)
     aggregate_array.pop(0)

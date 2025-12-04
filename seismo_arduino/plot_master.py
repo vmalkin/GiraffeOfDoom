@@ -11,6 +11,18 @@ import plotter_helicorder
 import mgr_emd
 import os
 
+
+def try_create_directory(directory):
+    if os.path.isdir(directory) is False:
+        print("Creating image file directory...")
+        try:
+            os.makedirs(directory)
+            print("Directory created.")
+        except:
+            if not os.path.isdir(directory):
+                print("Unable to create directory")
+
+
 print(f'Querying database...')
 time_end = time.time()
 time_start_7d = time_end - (60 * 60 * 24 * 7)
@@ -19,6 +31,9 @@ result_7d = mgr_database.db_data_get(time_start_7d)
 result_1d = result_7d[-86400 * int(1 / k.sensor_reading_frequency):]
 print(f'Query Complete.')
 print(f'Begin plotting...')
+
+for directory in k.dir_images:
+    try_create_directory(directory)
 
 plotter_phaseportrait.wrapper(result_1d)
 plotter_spectrograms.wrapper((result_1d))

@@ -22,89 +22,76 @@ def try_create_directory(directory):
             if not os.path.isdir(directory):
                 print("Unable to create directory")
 
-def plot_dual_hourly(datetimeformat, plot_utc, smoothe_seismo, smoothe_dx, title, savefolder):
-    # the size of an hour is plot frequency multiplied by seconds/min and mins/hr
-    hour_slice = 10 * 60 * 10
-    sz_avg = np.mean(smoothe_seismo)
-    sz_max = max(smoothe_seismo)
-    sz_min = min(smoothe_seismo)
-    sz_ymax = sz_avg + 1.1 * (sz_max - sz_avg)
-    sz_ymin = sz_avg - 1.1 * (sz_avg - sz_min)
+def plot_helicorder(dateformatstring, dateobjects, dataarrays, readings_per_tick, texttitle):
+    # utcdates should be datetime objects, not POSIX floats
+    plt.style.use(plotstyle)
+    fig, ax1 = plt.subplots(layout="constrained", figsize=(16, 8), dpi=140)
+    print(len(dateobjects), len(dataarrays))
+    # # Subplots with separate y axes
+    # ax1.plot(dateobjects, dataarrays[0], c=ink_colour[0], linewidth=2)
+    # ax1.set_ylabel("Tiltmeter. Arbitrary Units.", color=ink_colour[0])
+    # ax1.tick_params(axis='y', colors=ink_colour[0])
+    #
+    # avgv = np.mean(dataarrays[0])
+    # maxv = max(dataarrays[0])
+    # minv = min(dataarrays[0])
+    # ymax = avgv + 2 * (maxv - avgv)
+    # ymin = avgv - 2 * (avgv - minv)
+    # ax1.set_ylim([ymin, ymax])
+    #
+    # ax2 = ax1.twinx()
+    # ax2.plot(dateobjects, dataarrays[1], c=ink_colour[1], linewidth=2)
+    # ax2.set_ylabel("Pressure. Pa.", color=ink_colour[1])
+    # ax2.tick_params(axis='y', colors=ink_colour[1])
+    # maxv = max(dataarrays[1])
+    # minv = min(dataarrays[1])
+    # ax2.set_ylim([minv, maxv])
+    # ax2.spines['right'].set_position(('outward', 60))
+    # ax2.yaxis.grid(False)
+    #
+    # ax3 = ax1.twinx()
+    # ax3.plot(dateobjects, dataarrays[2], c=ink_colour[2], linewidth=2)
+    # ax3.set_ylabel("Temperature. Deg C.", color=ink_colour[2])
+    # ax3.tick_params(axis='y', colors=ink_colour[2])
+    # # maxv = 18
+    # # minv = 8
+    # maxv = max(dataarrays[2])
+    # minv = min(dataarrays[2])
+    # ax3.set_ylim([minv, maxv])
+    # ax3.yaxis.grid(False)
+    #
+    # # Use proper date formatter + locator
+    # ax1.xaxis.set_major_formatter(mdates.DateFormatter(dateformatstring))
+    # ax1.xaxis.set_major_locator(mdates.MinuteLocator(interval=readings_per_tick))
+    # plt.setp(ax1.get_xticklabels(), rotation=90)  # safer than plt.xticks
+    # plot_title = texttitle + " - " + standard_stuff.posix2utc(time.time(), '%Y-%m-%d %H:%M')
+    # ax1.set_title(plot_title)
+    # plt.savefig(savefile)
+    # plt.close()
 
-    dx_avg = np.mean(smoothe_dx)
-    dx_max = max(smoothe_dx)
-    dx_min = min(smoothe_dx)
-    dx_ymax = dx_avg + 1.1 * (dx_max - dx_avg)
-    dx_ymin = dx_avg - 1.1 * (dx_avg - dx_min)
-
-    for i in range(0, len(smoothe_seismo), hour_slice):
-        array_start = i
-        array_end = i + hour_slice
-        seismo_data = smoothe_seismo[array_start:array_end]
-        diff_data = smoothe_dx[array_start:array_end]
-        chart_times = plot_utc[array_start:array_end]
-
-        plt.style.use(plotstyle)
-        fig, ax = plt.subplots(2, layout="constrained", figsize=(16, 8), dpi=140)
-        # utcdates should be datetime objects, not POSIX floats
-        ax[0].plot(chart_times, seismo_data, c=ink_colour[0], linewidth=1)
-        # Subplots with separate y axes
-        ax[0].set_ylabel("Tiltmeter. Arbitrary Units.", color=ink_colour[0])
-        ax[0].tick_params(axis='y', colors=ink_colour[0])
-        ax[0].set_ylim([sz_ymin, sz_ymax])
-
-        # ax[1] = ax1.twinx()
-        ax[1].plot(chart_times, diff_data, c=ink_colour[1], linewidth=1)
-        ax[1].set_ylabel("Tilt, dx/dt", color=ink_colour[1])
-        ax[1].tick_params(axis='y', colors=ink_colour[1])
-        ax[1].set_ylim([dx_ymin, dx_ymax])
-        # ax[1].spines['right'].set_position(('outward', 30))
-        ax[1].yaxis.grid(False)
-
-
-        plot_title = title + " - " + standard_stuff.posix2utc(time.time(), '%Y-%m-%d %H:%M')
-        fig.suptitle(plot_title)
-        savefile = savefolder + os.sep + str(i) + ".png"
-        plt.savefig(savefile)
-        plt.close()
 
 
 def wrapper(data):
-    # =============================================================================================================
-    print("Tiltmeter - 24, hourly plots")
-    aggregate_array = data
-    aggregate_array.pop(0)
+    print("Helicorder - 1 Day")
+    # decimate data for this. Window is the counted in samples, not seconds
+    # decimate to one second
+    window = 10
+    aggregate_array = class_aggregator.aggregate_data(window, data)
+
     plot_utc = []
-    plot_seismo = []
+    plot_dxdt = []
 
     for i in range(1, len(aggregate_array)):
-        tim = aggregate_array[i][0]
+        tim = aggregate_array[i].get_avg_posix()
         tim = datetime.fromtimestamp(tim, tz=timezone.utc)  # datetime object
-        siz = aggregate_array[i][1]
+        dt1 = aggregate_array[i - 1].get_data_avg(aggregate_array[i - 1].data_seismo)
+        dt2 = aggregate_array[i].get_data_avg(aggregate_array[i].data_seismo)
+        dt = dt2 - dt1
         plot_utc.append(tim)
-        plot_seismo.append(siz)
-
-    # Convert distance readings to rate of change.
-    # This is similar to traditional seismograph display
-    dxdt = []
-    for i in range(1, len(plot_seismo)):
-        # dx = plot_seismo[i]
-        dx = plot_seismo[i] - plot_seismo[i - 1]
-        dxdt.append(dx)
-    plot_utc.pop(0)
-
-    avgwindow = 10 * 3
-    smoothe_dx = standard_stuff.filter_average(dxdt, avgwindow)
-    plot_utc = plot_utc[avgwindow:-avgwindow]
-    smoothe_dx = standard_stuff.filter_average(smoothe_dx, avgwindow)
-    plot_utc = plot_utc[avgwindow:-avgwindow]
-
-    smoothe_seismo = standard_stuff.filter_average(plot_seismo, avgwindow)
-    smoothe_seismo = standard_stuff.filter_average(smoothe_seismo, avgwindow)
-    smoothe_seismo.pop(0)
+        plot_dxdt.append(dt)
 
     ticks = 20
     df = "%d  %H:%M"
-    title = "Tiltmeter One Day dx/dt"
-    savefolder = k.dir_images
-    plot_dual_hourly(df, plot_utc, smoothe_seismo, smoothe_dx, title, savefolder)
+    title = "Tiltmeter One Day"
+    savefile = "images" + os.sep + "helicorder.png"
+    plot_helicorder(df, plot_utc, plot_dxdt, ticks, title)
