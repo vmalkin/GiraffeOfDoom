@@ -27,49 +27,57 @@ def plot_helicorder(dateformatstring, plotdates, plotdata, readings_per_tick, te
     plt.style.use(plotstyle)
     fig, ax1 = plt.subplots(layout="constrained", figsize=(16, 8), dpi=140)
 
+    # hour slice depends on plot requency and if any decimation has taken place. IT should be the number of readings
+    # that make up an hour
+    hour_slice = 60 * 60
+    for i in range(0, len(plotdata), hour_slice):
+        array_start = i
+        array_end = i + hour_slice
+        seismo_data = plotdata[array_start:array_end]
+        chart_times = plotdates[array_start:array_end]
 
-    # Subplots with separate y axes
-    ax1.plot(plotdates, plotdata, c=ink_colour[0], linewidth=2)
-    ax1.set_ylabel("Tiltmeter. Arbitrary Units.", color=ink_colour[0])
-    ax1.tick_params(axis='y', colors=ink_colour[0])
+        # Subplots with separate y axes
+        ax1.plot(chart_times, seismo_data, c=ink_colour[0], linewidth=1)
+        ax1.set_ylabel("Tiltmeter. Arbitrary Units.", color=ink_colour[0])
+        ax1.tick_params(axis='y', colors=ink_colour[0])
 
-    avgv = np.mean(plotdata)
-    maxv = max(plotdata)
-    minv = min(plotdata)
-    ymax = avgv + 2 * (maxv - avgv)
-    ymin = avgv - 2 * (avgv - minv)
+        avgv = np.mean(plotdata)
+        maxv = max(plotdata)
+        minv = min(plotdata)
+        ymax = avgv + 2 * (maxv - avgv)
+        ymin = avgv - 2 * (avgv - minv)
 
-    ax1.set_ylim([ymin, ymax])
-    #
-    # ax2 = ax1.twinx()
-    # ax2.plot(dateobjects, dataarrays[1], c=ink_colour[1], linewidth=2)
-    # ax2.set_ylabel("Pressure. Pa.", color=ink_colour[1])
-    # ax2.tick_params(axis='y', colors=ink_colour[1])
-    # maxv = max(dataarrays[1])
-    # minv = min(dataarrays[1])
-    # ax2.set_ylim([minv, maxv])
-    # ax2.spines['right'].set_position(('outward', 60))
-    # ax2.yaxis.grid(False)
-    #
-    # ax3 = ax1.twinx()
-    # ax3.plot(dateobjects, dataarrays[2], c=ink_colour[2], linewidth=2)
-    # ax3.set_ylabel("Temperature. Deg C.", color=ink_colour[2])
-    # ax3.tick_params(axis='y', colors=ink_colour[2])
-    # # maxv = 18
-    # # minv = 8
-    # maxv = max(dataarrays[2])
-    # minv = min(dataarrays[2])
-    # ax3.set_ylim([minv, maxv])
-    # ax3.yaxis.grid(False)
-    #
-    # # Use proper date formatter + locator
-    # ax1.xaxis.set_major_formatter(mdates.DateFormatter(dateformatstring))
-    # ax1.xaxis.set_major_locator(mdates.MinuteLocator(interval=readings_per_tick))
-    # plt.setp(ax1.get_xticklabels(), rotation=90)  # safer than plt.xticks
-    # plot_title = texttitle + " - " + standard_stuff.posix2utc(time.time(), '%Y-%m-%d %H:%M')
-    # ax1.set_title(plot_title)
-    # plt.savefig(savefile)
-    # plt.close()
+        ax1.set_ylim([ymin, ymax])
+        #
+        # ax2 = ax1.twinx()
+        # ax2.plot(dateobjects, dataarrays[1], c=ink_colour[1], linewidth=2)
+        # ax2.set_ylabel("Pressure. Pa.", color=ink_colour[1])
+        # ax2.tick_params(axis='y', colors=ink_colour[1])
+        # maxv = max(dataarrays[1])
+        # minv = min(dataarrays[1])
+        # ax2.set_ylim([minv, maxv])
+        # ax2.spines['right'].set_position(('outward', 60))
+        # ax2.yaxis.grid(False)
+        #
+        # ax3 = ax1.twinx()
+        # ax3.plot(dateobjects, dataarrays[2], c=ink_colour[2], linewidth=2)
+        # ax3.set_ylabel("Temperature. Deg C.", color=ink_colour[2])
+        # ax3.tick_params(axis='y', colors=ink_colour[2])
+        # # maxv = 18
+        # # minv = 8
+        # maxv = max(dataarrays[2])
+        # minv = min(dataarrays[2])
+        # ax3.set_ylim([minv, maxv])
+        # ax3.yaxis.grid(False)
+        #
+        # Use proper date formatter + locator
+        ax1.xaxis.set_major_formatter(mdates.DateFormatter(dateformatstring))
+        ax1.xaxis.set_major_locator(mdates.MinuteLocator(interval=readings_per_tick))
+        plt.setp(ax1.get_xticklabels(), rotation=90)  # safer than plt.xticks
+        plot_title = texttitle + " - " + standard_stuff.posix2utc(time.time(), '%Y-%m-%d %H:%M')
+        ax1.set_title(plot_title)
+        # plt.savefig(savefile)
+        # plt.close()
     plt.show()
 
 
