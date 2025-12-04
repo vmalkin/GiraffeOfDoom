@@ -11,23 +11,35 @@ import class_aggregator
 ink_colour = ["#7a3f16", "green", "red", "#ffffff"]
 plotstyle = 'bmh'
 
+def minmaxes(dataarray):
+    data_max = np.nanmax(dataarray)
+    data_min = np.nanmin(dataarray)
+    print(f'Min maxes are: {data_min} and {data_max}')
+    if data_max is np.nan:
+        if data_min is np.nan:
+            return []
+    else:
+        padding = (data_max - data_min) / 10
+        return [data_min - padding, data_max + padding]
 
 def plot_multi(dateformatstring, dateobjects, dataarrays, readings_per_tick, texttitle, savefile):
     # utcdates should be datetime objects, not POSIX floats
     plt.style.use(plotstyle)
     fig, ax1 = plt.subplots(layout="constrained", figsize=(16, 8), dpi=140)
+
     # Subplots with separate y axes
     ax1.plot(dateobjects, dataarrays[0], c=ink_colour[0], linewidth=2)
     ax1.set_ylabel("Tiltmeter. Arbitrary Units.", color=ink_colour[0])
     ax1.tick_params(axis='y', colors=ink_colour[0])
-
-    # ax1.set_ylim([k.tilt_min, k.tilt_max])
+    limits = minmaxes(dataarrays[0])
+    ax1.set_ylim(limits)
 
     ax2 = ax1.twinx()
     ax2.plot(dateobjects, dataarrays[1], c=ink_colour[1], linewidth=2)
     ax2.set_ylabel("Pressure. Pa.", color=ink_colour[1])
     ax2.tick_params(axis='y', colors=ink_colour[1])
-    # ax2.set_ylim([k.pressure_min, k.pressure_max])
+    limits = minmaxes(dataarrays[1])
+    ax2.set_ylim(limits)
     ax2.spines['right'].set_position(('outward', 60))
     ax2.yaxis.grid(False)
 
@@ -35,7 +47,8 @@ def plot_multi(dateformatstring, dateobjects, dataarrays, readings_per_tick, tex
     ax3.plot(dateobjects, dataarrays[2], c=ink_colour[2], linewidth=2)
     ax3.set_ylabel("Temperature. Deg C.", color=ink_colour[2])
     ax3.tick_params(axis='y', colors=ink_colour[2])
-    # ax3.set_ylim([k.temp_min, k.temp_max])
+    limits = minmaxes(dataarrays[2])
+    ax3.set_ylim(limits)
     ax3.yaxis.grid(False)
 
     # Use proper date formatter + locator
