@@ -13,14 +13,14 @@ def plot_pseudo_phase(datetimeformat, plot_utc, plot_seismo, dxdt, title, savefo
     # the size of an hour is plot frequency multiplied by seconds/min and mins/hr
     hour_slice = 10 * 60 * 10
     sz_avg = np.mean(plot_seismo)
-    sz_max = max(plot_seismo)
-    sz_min = min(plot_seismo)
+    sz_max = np.nanmax(plot_seismo)
+    sz_min = np.nanmin(plot_seismo)
     xmax = sz_avg + 1.1 * (sz_max - sz_avg)
     xmin = sz_avg - 1.1 * (sz_avg - sz_min)
 
     dx_avg = np.mean(dxdt)
-    dx_max = max(dxdt)
-    dx_min = min(dxdt)
+    dx_max = np.nanmax(dxdt)
+    dx_min = np.nanmin(dxdt)
     ymax = dx_avg + 1.1 * (dx_max - dx_avg)
     ymin = dx_avg - 1.1 * (dx_avg - dx_min)
 

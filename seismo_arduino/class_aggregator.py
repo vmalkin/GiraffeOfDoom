@@ -1,9 +1,9 @@
-from numpy import mean, median
+from numpy import mean, median, nan
 
 
 class Aggregator:
     def __init__(self, posixstart, posixstop):
-        self.data_null = None
+        self.data_null = nan
         self.date_start = posixstart  # should be POSIX values
         self.date_stop = posixstop  # should be POSIX values
         self.data_seismo = []

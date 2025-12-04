@@ -12,16 +12,6 @@ ink_colour = ["#7a3f16", "green", "red", "#ffffff"]
 plotstyle = 'bmh'
 
 
-def try_create_directory(directory):
-    if os.path.isdir(directory) is False:
-        print("Creating image file directory...")
-        try:
-            os.makedirs(directory)
-            print("Directory created.")
-        except:
-            if not os.path.isdir(directory):
-                print("Unable to create directory")
-
 def plot_multi(dateformatstring, dateobjects, dataarrays, readings_per_tick, texttitle, savefile):
     # utcdates should be datetime objects, not POSIX floats
     plt.style.use(plotstyle)
@@ -32,8 +22,8 @@ def plot_multi(dateformatstring, dateobjects, dataarrays, readings_per_tick, tex
     ax1.tick_params(axis='y', colors=ink_colour[0])
 
     avgv = np.mean(dataarrays[0])
-    maxv = max(dataarrays[0])
-    minv = min(dataarrays[0])
+    maxv = np.nanmax(dataarrays[0])
+    minv = np.nanmin(dataarrays[0])
     ymax = avgv + 2 * (maxv - avgv)
     ymin = avgv - 2 * (avgv - minv)
     ax1.set_ylim([ymin, ymax])
@@ -42,8 +32,8 @@ def plot_multi(dateformatstring, dateobjects, dataarrays, readings_per_tick, tex
     ax2.plot(dateobjects, dataarrays[1], c=ink_colour[1], linewidth=2)
     ax2.set_ylabel("Pressure. Pa.", color=ink_colour[1])
     ax2.tick_params(axis='y', colors=ink_colour[1])
-    maxv = max(dataarrays[1])
-    minv = min(dataarrays[1])
+    maxv = np.nanmax(dataarrays[1])
+    minv = np.nanmin(dataarrays[1])
     ax2.set_ylim([minv, maxv])
     ax2.spines['right'].set_position(('outward', 60))
     ax2.yaxis.grid(False)
@@ -54,8 +44,8 @@ def plot_multi(dateformatstring, dateobjects, dataarrays, readings_per_tick, tex
     ax3.tick_params(axis='y', colors=ink_colour[2])
     # maxv = 18
     # minv = 8
-    maxv = max(dataarrays[2])
-    minv = min(dataarrays[2])
+    maxv = np.nanmax(dataarrays[2])
+    minv = np.nanmin(dataarrays[2])
     ax3.set_ylim([minv, maxv])
     ax3.yaxis.grid(False)
 
@@ -102,5 +92,4 @@ def wrapper(data):
     df = "%d  %H:%M"
     title = "Tiltmeter One Day"
     savefile = k.dir_images['images'] + os.sep + "one_day.png"
-    try_create_directory(k.dir_images)
     plot_multi(df, plot_utc, datawrapper, ticks, title, savefile)

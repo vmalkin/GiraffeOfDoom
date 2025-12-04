@@ -16,14 +16,14 @@ def plot_dual_hourly(datetimeformat, plot_utc, smoothe_seismo, smoothe_dx, title
     # the size of an hour is plot frequency multiplied by seconds/min and mins/hr
     hour_slice = 10 * 60 * 10
     sz_avg = np.mean(smoothe_seismo)
-    sz_max = max(smoothe_seismo)
-    sz_min = min(smoothe_seismo)
+    sz_max = np.nanmax(smoothe_seismo)
+    sz_min = np.nanmin(smoothe_seismo)
     sz_ymax = sz_avg + 1.1 * (sz_max - sz_avg)
     sz_ymin = sz_avg - 1.1 * (sz_avg - sz_min)
 
     dx_avg = np.mean(smoothe_dx)
-    dx_max = max(smoothe_dx)
-    dx_min = min(smoothe_dx)
+    dx_max = np.nanmax(smoothe_dx)
+    dx_min = np.nanmin(smoothe_dx)
     dx_ymax = dx_avg + 1.1 * (dx_max - dx_avg)
     dx_ymin = dx_avg - 1.1 * (dx_avg - dx_min)
 

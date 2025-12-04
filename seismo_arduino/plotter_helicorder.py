@@ -1,4 +1,5 @@
 from datetime import timezone, datetime
+import constants as k
 import time
 import standard_stuff
 import matplotlib.pyplot as plt
@@ -32,8 +33,8 @@ def plot_helicorder(dateformatstring, plotdates, plotdata, readings_per_tick, te
     fig.set_constrained_layout(True)
 
     avgv = np.mean(plotdata)
-    maxv = max(plotdata)
-    minv = min(plotdata)
+    maxv = np.nanmax(plotdata)
+    minv = np.nanmin(plotdata)
     ymax = avgv + (1.1 * (maxv - avgv))
     ymin = avgv - (1.1 * (avgv - minv))
     plot_title = texttitle + " - " + standard_stuff.posix2utc(time.time(), '%Y-%m-%d %H:%M')

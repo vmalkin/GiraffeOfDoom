@@ -22,8 +22,8 @@ def plot_multi(dateformatstring, dateobjects, dataarrays, readings_per_tick, tex
     ax1.tick_params(axis='y', colors=ink_colour[0])
 
     avgv = np.mean(dataarrays[0])
-    maxv = max(dataarrays[0])
-    minv = min(dataarrays[0])
+    maxv = np.nanmax(dataarrays[0])
+    minv = np.nanmin(dataarrays[0])
     ymax = avgv + 2 * (maxv - avgv)
     ymin = avgv - 2 * (avgv - minv)
     ax1.set_ylim([ymin, ymax])
@@ -32,8 +32,8 @@ def plot_multi(dateformatstring, dateobjects, dataarrays, readings_per_tick, tex
     ax2.plot(dateobjects, dataarrays[1], c=ink_colour[1], linewidth=2)
     ax2.set_ylabel("Pressure. Pa.", color=ink_colour[1])
     ax2.tick_params(axis='y', colors=ink_colour[1])
-    maxv = max(dataarrays[1])
-    minv = min(dataarrays[1])
+    maxv = np.nanmax(dataarrays[1])
+    minv = np.nanmin(dataarrays[1])
     ax2.set_ylim([minv, maxv])
     ax2.spines['right'].set_position(('outward', 60))
     ax2.yaxis.grid(False)
@@ -44,8 +44,8 @@ def plot_multi(dateformatstring, dateobjects, dataarrays, readings_per_tick, tex
     ax3.tick_params(axis='y', colors=ink_colour[2])
     # maxv = 18
     # minv = 8
-    maxv = max(dataarrays[2])
-    minv = min(dataarrays[2])
+    maxv = np.nanmax(dataarrays[2])
+    minv = np.nanmin(dataarrays[2])
     ax3.set_ylim([minv, maxv])
     ax3.yaxis.grid(False)
 
