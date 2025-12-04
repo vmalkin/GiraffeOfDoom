@@ -42,6 +42,10 @@ plotter_combo7day.wrapper(result_7d)
 plotter_helicorder.wrapper(result_1d)
 plotter_fft_7d.wrapper(result_7d)
 
+# # Run this only on an offline database!
+# alldata = mgr_database.db_data_get_all()
+# plotter_fft_7d.wrapper(alldata)
+
 # # =============================================================================================================
 # # Empirical Mode Decomposition
 # print("Empirical Mode Decomposition")
