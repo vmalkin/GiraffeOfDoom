@@ -7,6 +7,7 @@ import numpy as np
 import os
 import constants as k
 import class_aggregator
+import math
 
 ink_colour = ["#7a3f16", "green", "red", "#ffffff"]
 plotstyle = 'bmh'
@@ -23,13 +24,15 @@ def try_create_directory(directory):
                 print("Unable to create directory")
 
 def plot_helicorder(dateformatstring, plotdates, plotdata, readings_per_tick, texttitle):
-    # utcdates should be datetime objects, not POSIX floats
-    plt.style.use(plotstyle)
-    fig, ax1 = plt.subplots(layout="constrained", figsize=(16, 8), dpi=140)
-
     # hour slice depends on plot requency and if any decimation has taken place. IT should be the number of readings
     # that make up an hour
     hour_slice = 60 * 60
+    rownum = math.ceil(len(plotdata) / hour_slice)
+    plot_height = rownum * 300
+    plt.style.use(plotstyle)
+    fig, ax = plt.subplots(nrows=rownum,layout="constrained", figsize=(10, 20), dpi=140)
+
+    axindex = 0
     for i in range(0, len(plotdata), hour_slice):
         array_start = i
         array_end = i + hour_slice
@@ -37,9 +40,9 @@ def plot_helicorder(dateformatstring, plotdates, plotdata, readings_per_tick, te
         chart_times = plotdates[array_start:array_end]
 
         # Subplots with separate y axes
-        ax1.plot(chart_times, seismo_data, c=ink_colour[0], linewidth=1)
-        ax1.set_ylabel("Tiltmeter. Arbitrary Units.", color=ink_colour[0])
-        ax1.tick_params(axis='y', colors=ink_colour[0])
+        ax[axindex].plot(chart_times, seismo_data, c=ink_colour[0], linewidth=1)
+        # ax[axindex].set_ylabel("Tiltmeter. Arbitrary Units.", color=ink_colour[0])
+        ax[axindex].tick_params(axis='y', colors=ink_colour[0])
 
         avgv = np.mean(plotdata)
         maxv = max(plotdata)
@@ -47,7 +50,7 @@ def plot_helicorder(dateformatstring, plotdates, plotdata, readings_per_tick, te
         ymax = avgv + 2 * (maxv - avgv)
         ymin = avgv - 2 * (avgv - minv)
 
-        ax1.set_ylim([ymin, ymax])
+        ax[axindex].set_ylim([ymin, ymax])
         #
         # ax2 = ax1.twinx()
         # ax2.plot(dateobjects, dataarrays[1], c=ink_colour[1], linewidth=2)
@@ -57,7 +60,7 @@ def plot_helicorder(dateformatstring, plotdates, plotdata, readings_per_tick, te
         # minv = min(dataarrays[1])
         # ax2.set_ylim([minv, maxv])
         # ax2.spines['right'].set_position(('outward', 60))
-        # ax2.yaxis.grid(False)
+        # ax[axindex].yaxis.grid(False)
         #
         # ax3 = ax1.twinx()
         # ax3.plot(dateobjects, dataarrays[2], c=ink_colour[2], linewidth=2)
@@ -71,13 +74,15 @@ def plot_helicorder(dateformatstring, plotdates, plotdata, readings_per_tick, te
         # ax3.yaxis.grid(False)
         #
         # Use proper date formatter + locator
-        ax1.xaxis.set_major_formatter(mdates.DateFormatter(dateformatstring))
-        ax1.xaxis.set_major_locator(mdates.MinuteLocator(interval=readings_per_tick))
-        plt.setp(ax1.get_xticklabels(), rotation=90)  # safer than plt.xticks
-        plot_title = texttitle + " - " + standard_stuff.posix2utc(time.time(), '%Y-%m-%d %H:%M')
-        ax1.set_title(plot_title)
+
         # plt.savefig(savefile)
         # plt.close()
+        axindex = axindex + 1
+    # ax.xaxis.set_major_formatter(mdates.DateFormatter(dateformatstring))
+    # ax.xaxis.set_major_locator(mdates.MinuteLocator(interval=readings_per_tick))
+    # plt.setp(ax.get_xticklabels(), rotation=90)  # safer than plt.xticks
+    # plot_title = texttitle + " - " + standard_stuff.posix2utc(time.time(), '%Y-%m-%d %H:%M')
+    # ax.set_title(plot_title)
     plt.show()
 
 
