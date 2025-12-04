@@ -28,14 +28,14 @@ def plot_helicorder(dateformatstring, plotdates, plotdata, readings_per_tick, te
     fig, ax1 = plt.subplots(layout="constrained", figsize=(16, 8), dpi=140)
 
 
-    # # Subplots with separate y axes
-    # ax1.plot(dateobjects, dataarrays[0], c=ink_colour[0], linewidth=2)
-    # ax1.set_ylabel("Tiltmeter. Arbitrary Units.", color=ink_colour[0])
-    # ax1.tick_params(axis='y', colors=ink_colour[0])
-    #
-    avgv = np.mean(plotdata[0])
-    maxv = max(plotdata[0])
-    minv = min(plotdata[0])
+    # Subplots with separate y axes
+    ax1.plot(plotdates, plotdata, c=ink_colour[0], linewidth=2)
+    ax1.set_ylabel("Tiltmeter. Arbitrary Units.", color=ink_colour[0])
+    ax1.tick_params(axis='y', colors=ink_colour[0])
+
+    avgv = np.mean(plotdata)
+    maxv = max(plotdata)
+    minv = min(plotdata)
     ymax = avgv + 2 * (maxv - avgv)
     ymin = avgv - 2 * (avgv - minv)
 
@@ -70,6 +70,7 @@ def plot_helicorder(dateformatstring, plotdates, plotdata, readings_per_tick, te
     # ax1.set_title(plot_title)
     # plt.savefig(savefile)
     # plt.close()
+    plt.show()
 
 
 
