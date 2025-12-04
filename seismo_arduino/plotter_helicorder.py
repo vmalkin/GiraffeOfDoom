@@ -23,14 +23,22 @@ def try_create_directory(directory):
             if not os.path.isdir(directory):
                 print("Unable to create directory")
 
-def plot_helicorder(dateformatstring, plotdates, plotdata, readings_per_tick, texttitle):
+def plot_helicorder(dateformatstring, plotdates, plotdata, readings_per_tick, texttitle, savefile):
     # hour slice depends on plot requency and if any decimation has taken place. IT should be the number of readings
     # that make up an hour
     hour_slice = 60 * 60
     rownum = math.ceil(len(plotdata) / hour_slice)
-    plot_height = rownum * 300
     plt.style.use(plotstyle)
-    fig, ax = plt.subplots(nrows=rownum,layout="constrained", figsize=(10, 20), dpi=140)
+    fig, ax = plt.subplots(nrows=rownum, figsize=(10, 1.4 * rownum), dpi=140)
+    fig.set_constrained_layout(True)
+
+    avgv = np.mean(plotdata)
+    maxv = max(plotdata)
+    minv = min(plotdata)
+    ymax = avgv + (1.1 * (maxv - avgv))
+    ymin = avgv - (1.1 * (avgv - minv))
+    plot_title = texttitle + " - " + standard_stuff.posix2utc(time.time(), '%Y-%m-%d %H:%M')
+    fig.suptitle(plot_title)
 
     axindex = 0
     for i in range(0, len(plotdata), hour_slice):
@@ -38,52 +46,17 @@ def plot_helicorder(dateformatstring, plotdates, plotdata, readings_per_tick, te
         array_end = i + hour_slice
         seismo_data = plotdata[array_start:array_end]
         chart_times = plotdates[array_start:array_end]
-
-        # Subplots with separate y axes
-        ax[axindex].plot(chart_times, seismo_data, c=ink_colour[0], linewidth=1)
-        # ax[axindex].set_ylabel("Tiltmeter. Arbitrary Units.", color=ink_colour[0])
-        ax[axindex].tick_params(axis='y', colors=ink_colour[0])
-
-        avgv = np.mean(plotdata)
-        maxv = max(plotdata)
-        minv = min(plotdata)
-        ymax = avgv + 2 * (maxv - avgv)
-        ymin = avgv - 2 * (avgv - minv)
-
+        ax[axindex].plot(chart_times, seismo_data, c=ink_colour[0], linewidth=0.5)
         ax[axindex].set_ylim([ymin, ymax])
-        #
-        # ax2 = ax1.twinx()
-        # ax2.plot(dateobjects, dataarrays[1], c=ink_colour[1], linewidth=2)
-        # ax2.set_ylabel("Pressure. Pa.", color=ink_colour[1])
-        # ax2.tick_params(axis='y', colors=ink_colour[1])
-        # maxv = max(dataarrays[1])
-        # minv = min(dataarrays[1])
-        # ax2.set_ylim([minv, maxv])
-        # ax2.spines['right'].set_position(('outward', 60))
-        # ax[axindex].yaxis.grid(False)
-        #
-        # ax3 = ax1.twinx()
-        # ax3.plot(dateobjects, dataarrays[2], c=ink_colour[2], linewidth=2)
-        # ax3.set_ylabel("Temperature. Deg C.", color=ink_colour[2])
-        # ax3.tick_params(axis='y', colors=ink_colour[2])
-        # # maxv = 18
-        # # minv = 8
-        # maxv = max(dataarrays[2])
-        # minv = min(dataarrays[2])
-        # ax3.set_ylim([minv, maxv])
-        # ax3.yaxis.grid(False)
-        #
-        # Use proper date formatter + locator
-
-        # plt.savefig(savefile)
-        # plt.close()
+        ax[axindex].xaxis.set_major_formatter(mdates.DateFormatter(dateformatstring))
+        ax[axindex].xaxis.set_major_locator(mdates.MinuteLocator(interval=readings_per_tick))
+        ax[axindex].xaxis.set_minor_locator(mdates.MinuteLocator(interval=1))
+        ax[axindex].grid(which='minor', axis='x', linestyle=':', linewidth=0.5)
+        ax[axindex].set_yticklabels([])
         axindex = axindex + 1
-    # ax.xaxis.set_major_formatter(mdates.DateFormatter(dateformatstring))
-    # ax.xaxis.set_major_locator(mdates.MinuteLocator(interval=readings_per_tick))
-    # plt.setp(ax.get_xticklabels(), rotation=90)  # safer than plt.xticks
-    # plot_title = texttitle + " - " + standard_stuff.posix2utc(time.time(), '%Y-%m-%d %H:%M')
-    # ax.set_title(plot_title)
-    plt.show()
+    # finally save and close!
+    plt.savefig(savefile)
+    plt.close()
 
 
 
@@ -109,8 +82,15 @@ def wrapper(data):
                 plot_utc.append(tim)
                 plot_dxdt.append(dt)
 
-    ticks = 20
+    # Some smoothing is required here
+    avgwindow = 10
+    smoothe_dx = standard_stuff.filter_average(plot_dxdt, avgwindow)
+    plot_utc = plot_utc[avgwindow:-avgwindow]
+    smoothe_dx = standard_stuff.filter_average(smoothe_dx, avgwindow)
+    plot_utc = plot_utc[avgwindow:-avgwindow]
+
+    ticks = 10
     df = "%d  %H:%M"
-    title = "Tiltmeter One Day"
+    title = "Helicorder One Day"
     savefile = "images" + os.sep + "helicorder.png"
-    plot_helicorder(df, plot_utc, plot_dxdt, ticks, title)
+    plot_helicorder(df, plot_utc, smoothe_dx, ticks, title, savefile)
