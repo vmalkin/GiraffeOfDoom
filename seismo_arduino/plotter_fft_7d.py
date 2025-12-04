@@ -3,20 +3,7 @@ from scipy.fft import rfft, rfftfreq
 import constants as k
 import matplotlib.pyplot as plt
 import os
-
-
-fft_output_dir = "fft"
-
-
-def try_create_directory(directory):
-    if os.path.isdir(directory) is False:
-        print("Creating image file directory...")
-        try:
-            os.makedirs(directory)
-            print("Directory created.")
-        except:
-            if not os.path.isdir(directory):
-                print("Unable to create directory")
+import constants as k
 
 
 def make_decimal(string_value):
@@ -94,13 +81,12 @@ def plot_sevenday_fft(fft_data):
     plt.xscale("log")
     plt.title("7 Day FFT")
     plt.grid(color='white', linestyle='-', linewidth='2')
-    savefile = fft_output_dir + os.sep + "fft.png"
+    savefile = k.dir_images['spectrograms'] + os.sep + "fft.png"
     plt.savefig(savefile)
     plt.close()
 
 
 def wrapper(csvdata):
-    try_create_directory(fft_output_dir)
     data = []
     for i in range(0, len(csvdata)):
         data_info = csvdata[i][1]

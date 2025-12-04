@@ -7,6 +7,7 @@ import plotter_combo1day
 import plotter_combo7day
 import plotter_dual
 import plotter_helicorder
+import plotter_fft_7d
 import os
 
 
@@ -39,6 +40,7 @@ plotter_combo1day.wrapper(result_1d)
 plotter_combo7day.wrapper(result_7d)
 # plotter_dual.wrapper(result_1d)
 plotter_helicorder.wrapper(result_1d)
+plotter_fft_7d.wrapper(result_1d)
 
 # # =============================================================================================================
 # # Empirical Mode Decomposition
