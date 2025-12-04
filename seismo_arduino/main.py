@@ -27,14 +27,14 @@ def get_decimal_posix_():
     return t
 
 
-def create_directory(directory):
-    try:
-        os.makedirs(directory)
-        print("Directory created.")
-    except:
-        if not os.path.isdir(directory):
-            print("Unable to create directory")
-            # logging.critical("CRITICAL ERROR: Unable to create directory in MAIN.PY")
+# def create_directory(directory):
+#     try:
+#         os.makedirs(directory)
+#         print("Directory created.")
+#     except:
+#         if not os.path.isdir(directory):
+#             print("Unable to create directory")
+#             # logging.critical("CRITICAL ERROR: Unable to create directory in MAIN.PY")
 
 
 def test_isnumber(numbertotest):
@@ -78,10 +78,6 @@ if __name__ == "__main__":
 
     if os.path.isfile(k.sat_database):
         print("Database file exists")
-
-    if not os.path.isdir(k.dir_images):
-        print("Creating image file directory...")
-        create_directory(k.dir_images)
 
     com = mgr_comport.SerialManager(k.comport, k.baudrate, k.bytesize, k.parity, k.stopbits, k.timeout,
                                     k.xonxoff,
