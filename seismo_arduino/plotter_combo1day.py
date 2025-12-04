@@ -26,7 +26,7 @@ def plot_multi(dateformatstring, dateobjects, dataarrays, readings_per_tick, tex
     ax2.plot(dateobjects, dataarrays[1], c=ink_colour[1], linewidth=2)
     ax2.set_ylabel("Pressure. Pa.", color=ink_colour[1])
     ax2.tick_params(axis='y', colors=ink_colour[1])
-    ax2.set_ylim([k.pressure_min, k.pressure_max])
+    # ax2.set_ylim([k.pressure_min, k.pressure_max])
     ax2.spines['right'].set_position(('outward', 60))
     ax2.yaxis.grid(False)
 
@@ -34,7 +34,7 @@ def plot_multi(dateformatstring, dateobjects, dataarrays, readings_per_tick, tex
     ax3.plot(dateobjects, dataarrays[2], c=ink_colour[2], linewidth=2)
     ax3.set_ylabel("Temperature. Deg C.", color=ink_colour[2])
     ax3.tick_params(axis='y', colors=ink_colour[2])
-    ax3.set_ylim([k.temp_min, k.temp_max])
+    # ax3.set_ylim([k.temp_min, k.temp_max])
     ax3.yaxis.grid(False)
 
     # Use proper date formatter + locator
