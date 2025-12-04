@@ -4,18 +4,8 @@ import constants as k
 
 result_1d = []
 
-with open('datagenerator.csv', 'r') as d:
-    for item in d:
-        try:
-            date = float(item[0])
-            data = int(item[1])
-            row = [date, data]
-            result_1d.append(row)
-        except:
-            print(f'Invalid data: {item}')
-
 def try_create_directory(directory):
-    if os.path.isdir(directory) is False:
+    if not os.path.isdir(directory):
         print("Creating image file directory...")
         try:
             os.makedirs(directory)
@@ -28,8 +18,20 @@ def try_create_directory(directory):
 for directory in k.dir_images:
     try_create_directory(directory)
 
+with open('datagenerator.csv', 'r') as d:
+    for item in d:
+        try:
+            ii = item.strip()
+            i = ii.split(',')
+            date = float(i[0])
+            d1 = int(i[1])
+            d2 = int(i[2])
+            d3 = int(i[3])
+            row = [date, d1, d2, d3]
+            result_1d.append(row)
+        except:
+            print(f'Invalid data: {item}')
 
-print(len(result_1d))
 plotter_helicorder.wrapper(result_1d)
 
 

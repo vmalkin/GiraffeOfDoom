@@ -69,7 +69,6 @@ def aggregate_data(windowsize, querydata):
         agg_index = lookup[datetime]
         aggregate_array[agg_index - 1].data_seismo.append(seismo)
         aggregate_array[agg_index - 1].data_temperature.append(temp)
-        aggregate_array[agg_index - 1].data_pressure.append(pressure)
 
 
     # # PASS 4 - Use aggregator class functions to create plotting data

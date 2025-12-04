@@ -22,11 +22,11 @@ def try_create_directory(directory):
             if not os.path.isdir(directory):
                 print("Unable to create directory")
 
-def plot_helicorder(dateformatstring, dateobjects, dataarrays, readings_per_tick, texttitle):
+def plot_helicorder(dateformatstring, plotdates, plotdata, readings_per_tick, texttitle):
     # utcdates should be datetime objects, not POSIX floats
     plt.style.use(plotstyle)
     fig, ax1 = plt.subplots(layout="constrained", figsize=(16, 8), dpi=140)
-    print(len(dateobjects), len(dataarrays))
+    print(len(plotdates), len(plotdata))
     # # Subplots with separate y axes
     # ax1.plot(dateobjects, dataarrays[0], c=ink_colour[0], linewidth=2)
     # ax1.set_ylabel("Tiltmeter. Arbitrary Units.", color=ink_colour[0])
@@ -85,10 +85,13 @@ def wrapper(data):
         tim = aggregate_array[i].get_avg_posix()
         tim = datetime.fromtimestamp(tim, tz=timezone.utc)  # datetime object
         dt1 = aggregate_array[i - 1].get_data_avg(aggregate_array[i - 1].data_seismo)
-        dt2 = aggregate_array[i].get_data_avg(aggregate_array[i].data_seismo)
-        dt = dt2 - dt1
-        plot_utc.append(tim)
-        plot_dxdt.append(dt)
+        # We have to catch any nulls that are in our data - they can happen
+        if dt1 is not None:
+            dt2 = aggregate_array[i].get_data_avg(aggregate_array[i].data_seismo)
+            if dt2 is not None:
+                dt = dt2 - dt1
+                plot_utc.append(tim)
+                plot_dxdt.append(dt)
 
     ticks = 20
     df = "%d  %H:%M"
