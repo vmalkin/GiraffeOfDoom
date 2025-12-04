@@ -26,18 +26,20 @@ def plot_helicorder(dateformatstring, plotdates, plotdata, readings_per_tick, te
     # utcdates should be datetime objects, not POSIX floats
     plt.style.use(plotstyle)
     fig, ax1 = plt.subplots(layout="constrained", figsize=(16, 8), dpi=140)
-    print(len(plotdates), len(plotdata))
+
+
     # # Subplots with separate y axes
     # ax1.plot(dateobjects, dataarrays[0], c=ink_colour[0], linewidth=2)
     # ax1.set_ylabel("Tiltmeter. Arbitrary Units.", color=ink_colour[0])
     # ax1.tick_params(axis='y', colors=ink_colour[0])
     #
-    # avgv = np.mean(dataarrays[0])
-    # maxv = max(dataarrays[0])
-    # minv = min(dataarrays[0])
-    # ymax = avgv + 2 * (maxv - avgv)
-    # ymin = avgv - 2 * (avgv - minv)
-    # ax1.set_ylim([ymin, ymax])
+    avgv = np.mean(plotdata[0])
+    maxv = max(plotdata[0])
+    minv = min(plotdata[0])
+    ymax = avgv + 2 * (maxv - avgv)
+    ymin = avgv - 2 * (avgv - minv)
+
+    ax1.set_ylim([ymin, ymax])
     #
     # ax2 = ax1.twinx()
     # ax2.plot(dateobjects, dataarrays[1], c=ink_colour[1], linewidth=2)
