@@ -1,5 +1,6 @@
 import numpy as np
 from scipy.fft import rfft, rfftfreq
+from datetime import timezone, datetime
 import constants as k
 import matplotlib.pyplot as plt
 import os
@@ -28,7 +29,7 @@ def perform_fft(item, seconds_per_data):
         return ("error_fft")
 
 
-def plot_sevenday_fft(fft_data):
+def plot_sevenday_fft(fft_data, begintime, endtime, filename):
     # fft data is [xf, yf]
     xf = fft_data[0]
     x_scale_title = "Period - Hz"
@@ -75,24 +76,42 @@ def plot_sevenday_fft(fft_data):
     plt.annotate("2 days", xy=(ann_pos_x, an_pos_y), xytext=(ann_pos_x, an_pos_y), fontsize=8, color='red',
                  bbox=dict(boxstyle="round", fc="1", color='red'))
 
-    plt.ylim(10**2, 10**7)
+    plt.ylim(10**1, 10**5)
     # ax.set_xlim([0, 0.3])
     plt.yscale("log")
     plt.xscale("log")
-    plt.title("7 Day FFT")
+    title = "FFT per hour" + " - " + begintime + " - " + endtime
+    plt.title(title)
     plt.grid(color='white', linestyle='-', linewidth='2')
-    savefile = k.dir_images['images'] + os.sep + "fft.png"
+    savefile = k.dir_images['spectrograms'] + os.sep + str(filename) + ".png"
     plt.savefig(savefile)
     plt.close()
 
 
 def wrapper(csvdata):
-    data = []
+    print(f'*** Creating FFT movie frames')
+    # The FFT will be for one hour of data...
+    timeslice = 10 * 60 * 60
+    # IN steps of 10 minutes
+    timestep = 10 * 60 * 10
+    plot_data = []
+    plot_utc = []
+    df = "%d  %H:%M"
     for i in range(0, len(csvdata)):
+        tim = csvdata[i][0]
+        tim = datetime.fromtimestamp(tim, tz=timezone.utc)  # datetime object
         data_info = csvdata[i][1]
         decimal_data = make_decimal(data_info)
-        data.append(decimal_data)
+        plot_data.append(decimal_data)
+        plot_utc.append(tim)
 
-    fft_data = perform_fft(data, k.sensor_reading_frequency)
-    plot_sevenday_fft(fft_data)
+    for i in range(0, len(plot_data), timestep):
+        array_start = i
+        array_end = i + timeslice
+        seismo_data = plot_data[array_start:array_end]
+        chart_times = plot_utc[array_start:array_end]
+        begintime = chart_times[0].strftime(df)
+        endtime = chart_times[len(chart_times) - 1].strftime(df)
+        fft_data = perform_fft(seismo_data, k.sensor_reading_frequency)
+        plot_sevenday_fft(fft_data, begintime, endtime, i)
 
