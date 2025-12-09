@@ -41,47 +41,52 @@ def plot_sevenday_fft(fft_data, begintime, endtime, filename):
 
     an_pos_y = 10 ** 3.1
 
+    seis_pos_x = 10 ** -3.7
+    seis_pos_y = 10 ** 3.9
+    plt.annotate("Earthquake Threshold", xy=(seis_pos_x, seis_pos_y), xytext=(seis_pos_x, seis_pos_y), fontsize=10, color='green',
+                 bbox=dict(boxstyle="round", fc="1", color='green'))
+
     ann_pos_x = 10 ** 0.7
-    plt.annotate("0.4 s", xy=(ann_pos_x, an_pos_y), xytext=(ann_pos_x, an_pos_y), fontsize=8, color='red',
+    plt.annotate("0.4 s", xy=(ann_pos_x, an_pos_y), xytext=(ann_pos_x, an_pos_y), fontsize=10, color='red',
                  bbox=dict(boxstyle="round", fc="1", color='red'))
 
     ann_pos_x = 10 ** 0
-    plt.annotate("1 s", xy=(ann_pos_x, an_pos_y), xytext=(ann_pos_x, an_pos_y), fontsize=8, color='red',
+    plt.annotate("1 s", xy=(ann_pos_x, an_pos_y), xytext=(ann_pos_x, an_pos_y), fontsize=10, color='red',
                  bbox=dict(boxstyle="round", fc="1", color='red'))
 
     ann_pos_x = 10 ** -1
-    plt.annotate("10 s", xy=(ann_pos_x, an_pos_y), xytext=(ann_pos_x, an_pos_y), fontsize=8, color='red',
+    plt.annotate("10 s", xy=(ann_pos_x, an_pos_y), xytext=(ann_pos_x, an_pos_y), fontsize=10, color='red',
                  bbox=dict(boxstyle="round", fc="1", color='red'))
 
     ann_pos_x = 10 ** -1.7785
-    plt.annotate("60 s", xy=(ann_pos_x, an_pos_y), xytext=(ann_pos_x, an_pos_y), fontsize=8, color='red',
+    plt.annotate("60 s", xy=(ann_pos_x, an_pos_y), xytext=(ann_pos_x, an_pos_y), fontsize=10, color='red',
                  bbox=dict(boxstyle="round", fc="1", color='red'))
 
     ann_pos_x = 10 ** -2.7785
-    plt.annotate("10 m", xy=(ann_pos_x, an_pos_y),xytext=(ann_pos_x, an_pos_y), fontsize=8, color='red', bbox=dict(boxstyle="round", fc="1", color='red'))
+    plt.annotate("10 m", xy=(ann_pos_x, an_pos_y),xytext=(ann_pos_x, an_pos_y), fontsize=10, color='red', bbox=dict(boxstyle="round", fc="1", color='red'))
 
     ann_pos_x = 10 ** -3.25528
-    plt.annotate("30 m", xy=(ann_pos_x, an_pos_y), xytext=(ann_pos_x, an_pos_y), fontsize=8, color='red',
+    plt.annotate("30 m", xy=(ann_pos_x, an_pos_y), xytext=(ann_pos_x, an_pos_y), fontsize=10, color='red',
                  bbox=dict(boxstyle="round", fc="1", color='red'))
 
     ann_pos_x = 10 ** -3.5564
-    plt.annotate("1 hr", xy=(ann_pos_x, an_pos_y), xytext=(ann_pos_x, an_pos_y), fontsize=8, color='red',
+    plt.annotate("1 hr", xy=(ann_pos_x, an_pos_y), xytext=(ann_pos_x, an_pos_y), fontsize=10, color='red',
                  bbox=dict(boxstyle="round", fc="1", color='red'))
 
     ann_pos_x = 10 ** -4.3347
-    plt.annotate("6 hrs", xy=(ann_pos_x, an_pos_y), xytext=(ann_pos_x, an_pos_y), fontsize=8, color='red',
+    plt.annotate("6 hrs", xy=(ann_pos_x, an_pos_y), xytext=(ann_pos_x, an_pos_y), fontsize=10, color='red',
                  bbox=dict(boxstyle="round", fc="1", color='red'))
 
     ann_pos_x = 10 ** -4.6355
-    plt.annotate("12 hrs", xy=(ann_pos_x, an_pos_y), xytext=(ann_pos_x, an_pos_y), fontsize=8, color='red',
+    plt.annotate("12 hrs", xy=(ann_pos_x, an_pos_y), xytext=(ann_pos_x, an_pos_y), fontsize=10, color='red',
                  bbox=dict(boxstyle="round", fc="1", color='red'))
 
     ann_pos_x = 10 **-4.9366
-    plt.annotate("1 day", xy=(ann_pos_x, an_pos_y), xytext=(ann_pos_x, an_pos_y), fontsize=8, color='red',
+    plt.annotate("1 day", xy=(ann_pos_x, an_pos_y), xytext=(ann_pos_x, an_pos_y), fontsize=10, color='red',
                  bbox=dict(boxstyle="round", fc="1", color='red'))
 
     ann_pos_x = 10 **-5.2376
-    plt.annotate("2 days", xy=(ann_pos_x, an_pos_y), xytext=(ann_pos_x, an_pos_y), fontsize=8, color='red',
+    plt.annotate("2 days", xy=(ann_pos_x, an_pos_y), xytext=(ann_pos_x, an_pos_y), fontsize=10 , color='red',
                  bbox=dict(boxstyle="round", fc="1", color='red'))
 
     plt.ylim(10**1, 10**5)
@@ -101,7 +106,7 @@ def wrapper(csvdata):
     # The FFT will be for one hour of data...
     timeslice = 10 * 60 * 60
     # IN steps of 10 minutes
-    timestep = 10 * 60 * 10
+    timestep = 10 * 60 * 5
     plot_data = []
     plot_utc = []
     df = "%d  %H:%M"
