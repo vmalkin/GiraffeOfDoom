@@ -15,7 +15,7 @@ class Aggregator:
     def get_data_avg(self, dataset):
         # return the median value of the data set. If the set is empty, return a null
         if len(dataset) > 0:
-            val_avg = round(mean(dataset), 4)
+            val_avg = round(np.nanmean(dataset), 4)
         else:
             val_avg = self.data_null
         return val_avg
@@ -23,10 +23,26 @@ class Aggregator:
     def get_data_median(self, dataset):
         # return the median value of the data set. If the set is empty, return a null
         if len(dataset) > 0:
-            val_median = round(median(dataset), 4)
+            val_median = round(np.nanmedian(dataset), 4)
         else:
             val_median = self.data_null
         return val_median
+
+    def get_data_max(self, dataset):
+        # return the median value of the data set. If the set is empty, return a null
+        if len(dataset) > 0:
+            val_max = round(np.nanmax(dataset), 4)
+        else:
+            val_max = self.data_null
+        return val_max
+
+    def get_data_min(self, dataset):
+        # return the median value of the data set. If the set is empty, return a null
+        if len(dataset) > 0:
+            val_min = round(np.nanmin(dataset), 4)
+        else:
+            val_min = self.data_null
+        return val_min
 
     def get_avg_posix(self):
         avg_time = round((self.date_start + self.date_stop) / 2, 4)
