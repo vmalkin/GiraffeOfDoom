@@ -1,6 +1,7 @@
 import mgr_database
 import time
 import constants as k
+from datetime import datetime, timezone
 import plotter_phaseportrait
 import plotter_spectrograms
 import plotter_combo1day
@@ -9,6 +10,7 @@ import plotter_dual
 import plotter_helicorder
 import plotter_fft_7d
 import plotter_fft_movie
+import mgr_emd
 import os
 
 
@@ -42,11 +44,11 @@ plotter_combo7day.wrapper(result_7d)
 # plotter_dual.wrapper(result_1d)
 plotter_helicorder.wrapper(result_1d)
 # plotter_fft_7d.wrapper(result_7d)
-plotter_fft_movie.wrapper(result_1d)
+# plotter_fft_movie.wrapper(result_1d)
 
 # # Run this only on an offline database!
 # alldata = mgr_database.db_data_get_all()
-# plotter_fft_7d.wrapper(alldata)
+# plotter_combo7day.wrapper(alldata)
 
 # # =============================================================================================================
 # # Empirical Mode Decomposition
@@ -66,9 +68,9 @@ plotter_fft_movie.wrapper(result_1d)
 #
 # wrapperdata.append(plot_utc)
 # wrapperdata.append(plot_seismo)
-# savefile = k.dir_images + os.sep + "imf.png"
+# savefile = k.dir_images['images'] + os.sep + "imf.png"
 # df = "%d  %H:%M"
 # mgr_emd.wrapper(wrapperdata, savefile, df)
-#
+
 timefinish = time.time()
 print(f"Plotting complete. Elapsed minutes to process: {(timefinish - time_end) / 60}")
