@@ -61,7 +61,7 @@ def plot_helicorder(dateformatstring, plotdates, plotdata, readings_per_tick, te
 
 
 def wrapper(data):
-    print("Helicorder - 1 Day")
+    print("*** Helicorder - 1 Day")
     # decimate data for this. Window is the counted in samples, not seconds
     # decimate to one second
     window = 10

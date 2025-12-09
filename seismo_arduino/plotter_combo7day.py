@@ -63,7 +63,7 @@ def plot_multi(dateformatstring, dateobjects, dataarrays, readings_per_tick, tex
 
 def wrapper(data):
     # =============================================================================================================
-    print("Tilt, Temp, Barometer - 7 Days.")
+    print("*** Tilt, Temp, Barometer - 7 Days.")
     # decimate data for this.
     window = 10 * 60 * 5
     aggregate_array = class_aggregator.aggregate_data(window, data)

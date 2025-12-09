@@ -61,7 +61,7 @@ def plot_dual_hourly(datetimeformat, plot_utc, smoothe_seismo, smoothe_dx, title
 
 def wrapper(data):
     # =============================================================================================================
-    print("Tiltmeter - 24, hourly plots")
+    print("*** Tiltmeter - 24, hourly plots")
     aggregate_array = data
     aggregate_array.pop(0)
     plot_utc = []

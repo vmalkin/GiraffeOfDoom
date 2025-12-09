@@ -64,7 +64,7 @@ def plot_multi(dateformatstring, dateobjects, dataarrays, readings_per_tick, tex
 
 def wrapper(data):
     # =============================================================================================================
-    print("Tilt, Temp, Barometer - 1 Day")
+    print("*** Tilt, Temp, Barometer - 1 Day")
     # decimate data for this. Window is the counted in samples, not seconds
     window = 10 * 60
     aggregate_array = class_aggregator.aggregate_data(window, data)

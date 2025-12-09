@@ -48,13 +48,13 @@ def wrapper(data):
         plot_press.append(prs)
 
     df = "%d %H:%M"
-    title = "Spectrogram of Barometric Pressure"
+    title = "*** Spectrogram of Barometric Pressure"
     savefile = k.dir_images['images'] + os.sep + "spectrum_press.png"
     tick = 60 * 60
     plot_spectrum(df, tick, plot_press, plot_utc, 1, 0, 30, title, savefile)
 
     # Spectrogram of seismic readings
-    print("Seismic Spectrogram")
+    print("*** Seismic Spectrogram")
     aggregate_array = data
     aggregate_array.pop(0)
     plot_utc = []

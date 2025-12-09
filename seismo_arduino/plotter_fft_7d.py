@@ -87,6 +87,7 @@ def plot_sevenday_fft(fft_data):
 
 
 def wrapper(csvdata):
+    print(f'*** Creating FFT.')
     data = []
     for i in range(0, len(csvdata)):
         data_info = csvdata[i][1]

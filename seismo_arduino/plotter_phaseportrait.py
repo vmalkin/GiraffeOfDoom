@@ -49,7 +49,7 @@ def plot_pseudo_phase(datetimeformat, plot_utc, plot_seismo, dxdt, title, savefo
 
 
 def wrapper(data):
-    print("Phase Plots.")
+    print("*** Phase Plots.")
     aggregate_array = data
     aggregate_array.pop(0)
     plot_utc = []
