@@ -41,6 +41,10 @@ def plot_sevenday_fft(fft_data, begintime, endtime, filename):
 
     an_pos_y = 10 ** 3.1
 
+    ann_pos_x = 10 ** 0.7
+    plt.annotate("0.4 s", xy=(ann_pos_x, an_pos_y), xytext=(ann_pos_x, an_pos_y), fontsize=8, color='red',
+                 bbox=dict(boxstyle="round", fc="1", color='red'))
+
     ann_pos_x = 10 ** 0
     plt.annotate("1 s", xy=(ann_pos_x, an_pos_y), xytext=(ann_pos_x, an_pos_y), fontsize=8, color='red',
                  bbox=dict(boxstyle="round", fc="1", color='red'))
