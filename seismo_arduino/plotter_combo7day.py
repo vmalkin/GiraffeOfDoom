@@ -55,9 +55,8 @@ def plot_multi(dateformatstring, dateobjects, dataarrays, readings_per_tick, tex
     ax_top3.yaxis.grid(False)
 
     noise_colour = '#505050'
-    ax_bottom.plot(dateobjects, dataarrays[3], c=noise_colour, linewidth=1)
-    # dx = np.min(np.diff(dataarrays[3]))
-    # ax_bottom.bar(dateobjects, dataarrays[3], width=0.01, color=noise_colour)
+    ax_bottom.plot(dateobjects, dataarrays[3], c=noise_colour, linewidth=0.5)
+    # ax_bottom.bar(dateobjects, dataarrays[3], width=0.001, color=noise_colour)
     ax_bottom.set_ylabel("Noise - Arbitrary Units.", color=noise_colour)
     ax_bottom.tick_params(axis='y', colors=noise_colour)
     # limits = minmaxes(dataarrays[3])
