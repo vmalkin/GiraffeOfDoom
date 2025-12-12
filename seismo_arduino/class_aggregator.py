@@ -14,10 +14,12 @@ class Aggregator:
 
     def get_data_avg(self, dataset):
         # return the median value of the data set. If the set is empty, return a null
+        val_avg = self.data_null
         if len(dataset) > 0:
-            val_avg = round(np.nanmean(dataset), 4)
-        else:
-            val_avg = self.data_null
+            try:
+                val_avg = round(np.nanmean(dataset), 4)
+            except RuntimeWarning:
+                pass
         return val_avg
 
     def get_data_median(self, dataset):
@@ -81,9 +83,9 @@ def aggregate_data(windowsize, querydata):
         # if i % 1000 == 0:
         #     print(f"{i} / {len(result_7d)}")
         datetime = querydata[i][0]
-        seismo = querydata[i][1]
-        temp = querydata[i][2]
-        pressure = querydata[i][3]
+        seismo = float(querydata[i][1])
+        temp = float(querydata[i][2])
+        pressure = float(querydata[i][3])
         agg_index = lookup[datetime]
         aggregate_array[agg_index - 1].data_seismo.append(seismo)
         aggregate_array[agg_index - 1].data_temperature.append(temp)
