@@ -29,11 +29,32 @@ def plot_spectrum(datetimeformat, tickinterval, data, datetimes, plotfrequency, 
         ticklabel.append(datetimes[i].strftime(datetimeformat))
     plt.xticks(ticks=tickplace, labels=ticklabel, rotation=90)
 
+    seis_pos_x = 0
+    seis_pos_y = 10 ** -1
+    plt.annotate("~10 sec period", xy=(seis_pos_x, seis_pos_y), xytext=(seis_pos_x, seis_pos_y), fontsize=8, color='black',
+                 bbox=dict(boxstyle="round", fc="1", color='black'))
+
+    seis_pos_x = 0
+    seis_pos_y = 10 ** -3
+    plt.annotate("~15–20 min period\nLocal turbulence. ", xy=(seis_pos_x, seis_pos_y), xytext=(seis_pos_x, seis_pos_y), fontsize=8, color='black',
+                 bbox=dict(boxstyle="round", fc="1", color='black'))
+
+    seis_pos_x = 0
+    seis_pos_y = 10 ** -2.5
+    plt.annotate("~2–15 min period\nPassing gust fronts, convection boundaries.", xy=(seis_pos_x, seis_pos_y), xytext=(seis_pos_x, seis_pos_y), fontsize=8, color='black',
+                 bbox=dict(boxstyle="round", fc="1", color='black'))
+    seis_pos_x = 0
+    seis_pos_y = 10 ** -4
+    plt.annotate("~2–3 hr period\nSlow weather evolution", xy=(seis_pos_x, seis_pos_y), xytext=(seis_pos_x, seis_pos_y), fontsize=8, color='black',
+                 bbox=dict(boxstyle="round", fc="1", color='black'))
+
     plt.xlabel("Time (s)")
     plt.ylabel("Frequency (Hz)")
     plt.yscale('log')
-    plt.ylim(1e-4, 0.5)
+    plt.ylim(10**-4.2, 0.5)
     plt.title(plottitle)
+
+
     savefile = savefile
     plt.savefig(savefile)
     plt.close()
@@ -64,28 +85,3 @@ def wrapper(data):
     tick = 60 * 60 * 1
     plot_spectrum(df, tick, data, plot_utc, 1, 0, 60, title, savefile)
 
-    # # Spectrogram of seismic readings
-    # print("*** Seismic Spectrogram")
-    # aggregate_array = data
-    # aggregate_array.pop(0)
-    # plot_utc = []
-    # plot_seismo = []
-    #
-    # for i in range(1, len(aggregate_array)):
-    #     tim = aggregate_array[i][0]
-    #     tim = datetime.fromtimestamp(tim, tz=timezone.utc)  # datetime object
-    #     siz = aggregate_array[i][1]
-    #     # tmp = aggregate_array[i][2]
-    #     # prs = aggregate_array[i][3]
-    #     plot_utc.append(tim)
-    #     plot_seismo.append(siz)
-    #     # plot_temp.append(tmp)
-    #     # plot_press.append(prs)
-    # spectrum_utc = plot_utc
-    # spectrum_seismo = plot_seismo
-    # df = "%d %H:%M"
-    # title = "Spectrogram of Tilt Readings"
-    # savefile = k.dir_images['images'] + os.sep + "spectrum_seismo.png"
-    # tick = 60 * 10 * 60
-    # plot_spectrum(df, tick, spectrum_seismo, spectrum_utc, 1, -10, 20, title, savefile)
-    #
