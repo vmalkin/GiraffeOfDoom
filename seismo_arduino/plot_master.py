@@ -3,8 +3,8 @@ import time
 import constants as k
 from datetime import datetime, timezone
 import plotter_phaseportrait
-import plotter_spectrograms
-import plotter_baro_spectrm
+import plotter_spectrum_sz
+import plotter_spectrum_baro
 import plotter_combo1day
 import plotter_combo7day
 import plotter_dual
@@ -39,7 +39,8 @@ for key in k.dir_images:
     try_create_directory(key)
 
 # plotter_phaseportrait.wrapper(result_1d)
-plotter_baro_spectrm.wrapper((result_1d))
+plotter_spectrum_baro.wrapper((result_1d))
+plotter_spectrum_sz.wrapper((result_1d))
 # plotter_combo1day.wrapper(result_1d)
 # plotter_combo7day.wrapper(result_7d)
 # plotter_dual.wrapper(result_1d)
