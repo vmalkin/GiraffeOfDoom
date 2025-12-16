@@ -13,20 +13,26 @@ plotstyle = 'bmh'
 def plot_spectrum(datetimeformat, tickinterval, data, datetimes, plotfrequency, minv, maxv, plottitle, savefile):
     nfft = 1024
     noverlap = int(nfft * 0.75)
-    plt.figure(layout="constrained", figsize=(17, 7))
-    plt.style.use(plotstyle)
+
+    fig, ax = plt.subplots(layout="constrained", figsize=(17, 7), dpi=140)
+
     # Pxx, freqs, bins, im = plt.specgram(data, NFFT=nfft, noverlap=noverlap, detrend='mean', Fs=plotfrequency, cmap='inferno')
-    Pxx, freqs, bins, im = plt.specgram(data, NFFT=nfft, noverlap=noverlap, detrend='mean', Fs=plotfrequency,
+    spectrum, freqs, t, im = ax.specgram(data, NFFT=nfft, noverlap=noverlap, detrend='mean', Fs=plotfrequency,
                                         cmap='inferno', vmin=minv, vmax=maxv)
-    cbar = plt.colorbar(im)
+    cbar = fig.colorbar(im)
     cbar.set_label('Power / Frequency (dB/Hz)')
-    print(f'{len(datetimes)}, {len(data)}')
-    tickplace = []
-    ticklabel = []
-    for i in range(0, len(datetimes), tickinterval):
-        tickplace.append(i)
-        ticklabel.append(datetimes[i].strftime(datetimeformat))
-    plt.xticks(ticks=tickplace, labels=ticklabel, rotation=90)
+
+    # tickplace = []
+    # ticklabel = []
+    # for i in range(0, len(datetimes), tickinterval):
+    #     tickplace.append(i)
+    #     ticklabel.append(datetimes[i].strftime(datetimeformat))
+    #     # ticklabel.append(t[i])
+    # ax.set_xticks(tickplace)
+    # ax.set_xticklabels(ticklabel)
+    # # # plt.xticks(ticks=tickplace, labels=ticklabel, rotation=90)
+
+    plt.style.use(plotstyle)
 
     plt.xlabel("Time (s)")
     plt.ylabel("Frequency (Hz)")
@@ -55,6 +61,6 @@ def wrapper(data):
     df = "%d %H:%M"
     title = "Spectrogram of Tilt Readings"
     savefile = k.dir_images['images'] + os.sep + "spectrum_seismo.png"
-    tick = 60 * 10 * 60
+    tick = 10 * 60 * 60
     plot_spectrum(df, tick, spectrum_seismo, spectrum_utc, 10, -20, 20, title, savefile)
 
