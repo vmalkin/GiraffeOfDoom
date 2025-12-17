@@ -27,7 +27,7 @@ def plot_spectrum(datetimeformat, tickinterval, data, datetimes, plotfrequency, 
 
     seis_pos_x = 0
     seis_pos_y = 10 ** -1
-    plt.annotate("~10 sec period", xy=(seis_pos_x, seis_pos_y), xytext=(seis_pos_x, seis_pos_y), fontsize=8, color='black',
+    plt.annotate("~10 sec period\nMostly noise.", xy=(seis_pos_x, seis_pos_y), xytext=(seis_pos_x, seis_pos_y), fontsize=8, color='black',
                  bbox=dict(boxstyle="round", fc="1", color='black'))
 
     seis_pos_x = 0
