@@ -139,12 +139,12 @@ if __name__ == "__main__":
         dp = [timestamp, yf, xf]
         plotting_array.append(dp)
 
-    # Plot the data
-    mgr_multiprocess.make_plot(plotting_array)
-    # plot(plotting_array)
-
-    # create movie
-    mgr_mp4.wrapper()
+    # # Plot the data
+    # mgr_multiprocess.make_plot(plotting_array)
+    # # plot(plotting_array)
+    #
+    # # create movie
+    # mgr_mp4.wrapper()
 
     t_end = time.time()
     t_elapsed = (t_end - t_start) / 60

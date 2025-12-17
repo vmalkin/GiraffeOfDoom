@@ -32,16 +32,16 @@ def plot_spectrum(datetimeformat, tickinterval, data, datetimes, plotfrequency, 
 
     seis_pos_x = 0
     seis_pos_y = 10 ** -3
-    plt.annotate("~15–20 min period\nLocal turbulence. ", xy=(seis_pos_x, seis_pos_y), xytext=(seis_pos_x, seis_pos_y), fontsize=8, color='black',
+    plt.annotate("~15–20 min period\nMesoscale weather. ", xy=(seis_pos_x, seis_pos_y), xytext=(seis_pos_x, seis_pos_y), fontsize=8, color='black',
                  bbox=dict(boxstyle="round", fc="1", color='black'))
 
     seis_pos_x = 0
     seis_pos_y = 10 ** -2.5
-    plt.annotate("~2–15 min period\nPassing gust fronts, convection boundaries.", xy=(seis_pos_x, seis_pos_y), xytext=(seis_pos_x, seis_pos_y), fontsize=8, color='black',
+    plt.annotate("~2–15 min period\nPassing disturbances.", xy=(seis_pos_x, seis_pos_y), xytext=(seis_pos_x, seis_pos_y), fontsize=8, color='black',
                  bbox=dict(boxstyle="round", fc="1", color='black'))
     seis_pos_x = 0
     seis_pos_y = 10 ** -4
-    plt.annotate("~2–3 hr period\nSlow weather evolution", xy=(seis_pos_x, seis_pos_y), xytext=(seis_pos_x, seis_pos_y), fontsize=8, color='black',
+    plt.annotate("~2–3 hr period\nSynoptic-scale weather", xy=(seis_pos_x, seis_pos_y), xytext=(seis_pos_x, seis_pos_y), fontsize=8, color='black',
                  bbox=dict(boxstyle="round", fc="1", color='black'))
 
     plt.xlabel("Time (s)")
