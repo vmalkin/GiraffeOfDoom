@@ -24,23 +24,6 @@ def plot_spectrum(datetimeformat, tickinterval, deltapressure, data, datetimes, 
     # cbar = ax[0].set_colorbars(im)
     # cbar.set_label('Power / Frequency (dB/Hz)')
 
-    # seis_pos_x = 0
-    # seis_pos_y = 10 ** -2
-    # ax_top.annotate("1–15 min\nGravity waves, local turbulence.", xy=(seis_pos_x, seis_pos_y), xytext=(seis_pos_x, seis_pos_y), fontsize=8, color='black',
-    #              bbox=dict(boxstyle="round", fc="1", color='black'))
-    # seis_pos_x = 0
-    # seis_pos_y = 10 ** -3
-    # ax_top.annotate("15 min–3 hr\nMesoscale pressure variability.", xy=(seis_pos_x, seis_pos_y), xytext=(seis_pos_x, seis_pos_y), fontsize=8, color='black',
-    #              bbox=dict(boxstyle="round", fc="1", color='black'))
-    # seis_pos_x = 0
-    # seis_pos_y = 10 ** -4
-    # ax_top.annotate(">3 h\nSynoptic-scale & diurnal variability.", xy=(seis_pos_x, seis_pos_y), xytext=(seis_pos_x, seis_pos_y), fontsize=8, color='black',
-    #              bbox=dict(boxstyle="round", fc="1", color='black'))
-    # liney = 1.16 * 10 ** -5
-    # ax_top.axhline(y=liney, linestyle='dotted', color='cyan')
-    # ax_top.text(0, liney, '24 h (diurnal atmospheric tide)', color='cyan')
-
-    # ax[0].set_xlabel("dd hh:mm - UTC")
     ax_top.set_ylabel("Frequency (Hz) / Period")
     ax_top.set_yscale('log')
     ax_top.set_ylim(10 ** -5.1, 10 ** -1.5)
