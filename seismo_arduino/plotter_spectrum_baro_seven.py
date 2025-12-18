@@ -15,35 +15,42 @@ def plot_spectrum(datetimeformat, tickinterval, deltapressure, data, datetimes, 
     nfft = 16384
     # nfft = 4096
     noverlap = int(nfft * 0.75)
+    plt.style.use(plotstyle)
 
     fig, (ax_top, ax_bottom) = plt.subplots(2, 1, figsize=(16, 8), dpi=140, sharex=True, height_ratios=[2, 1])
-    spectrum, freqs, t, im = ax_top.specgram(data, NFFT=nfft, noverlap=noverlap, detrend='mean', Fs=plotfrequency,
+    # The `specgram` method returns 4 objects. They are:
+    # - Pxx: the periodogram
+    # - freqs: the frequency vector
+    # - bins: the centers of the time bins
+    # - im: the .image.AxesImage instance representing the data in the plot
+    Pxx, freqs, bins, im = ax_top.specgram(data, NFFT=nfft, noverlap=noverlap, detrend='mean', Fs=plotfrequency,
                                          cmap='viridis', vmin=minv, vmax=maxv)
-    plt.style.use(plotstyle)
-    # # Pxx, freqs, bins, im = plt.specgram(data, NFFT=nfft, noverlap=noverlap, detrend='mean', Fs=plotfrequency, cmap='inferno', vmin=minv, vmax=maxv)
-    # cbar = ax[0].set_colorbars(im)
-    # cbar.set_label('Power / Frequency (dB/Hz)')
+    cbar = fig.colorbar(im, ax=ax_top, pad=0.01)
+    cbar.set_label("Power spectral density (dB/Hz)")
 
     ax_top.set_ylabel("Frequency (Hz) / Period")
     ax_top.set_yscale('log')
     ax_top.set_ylim(10 ** -5.1, 10 ** -1.5)
+    # ax_top.set_ylim(freqs[1], freqs[-1])
 
-    subtitle = ' FFT = ' + str(nfft) + '. FFT Overlap = ' +str(noverlap) + '. Freq = ' + str(plotfrequency) + 'Hz.'
-    plottitle = plottitle + subtitle
-    ax_top.set_title(plottitle)
+    subtitle = f" | FFT={nfft}, overlap={noverlap}, Fs={plotfrequency} Hz"
+    ax_top.set_title(f"{plottitle}{subtitle}")
 
     ax_bottom.plot(datetimes, deltapressure, c=ink_colour[1], linewidth=1)
-    # ax_bottom.set_ylabel("Delta Pressure - Pa.", color=ink_colour[1])
-    # ax_bottom.tick_params(axis='y', colors=ink_colour[1])
-    # ax_bottom.yaxis.grid(True)
-    #
-    # ax_top.xaxis.set_major_formatter(mdates.DateFormatter(datetimeformat))
-    # ax_top.xaxis.set_major_locator(mdates.MinuteLocator(interval=tickinterval))
-    # plt.setp(ax_bottom.get_xticklabels(), rotation=90)  # safer than plt.xticks
+    ax_bottom.set_ylabel("Delta Pressure - Pa.", color=ink_colour[1])
+    ax_bottom.tick_params(axis='y', colors=ink_colour[1])
+    ax_bottom.yaxis.grid(True)
 
-    plt.tight_layout()
-    plt.savefig(savefile)
-    plt.close()
+    # tickplace = []
+    # ticklabel = []
+    # for i in range(0, len(datetimes), tickinterval):
+    #     tickplace.append(i)
+    #     ticklabel.append(datetimes[i].strftime(datetimeformat))
+    # plt.xticks(ticks=tickplace, labels=ticklabel, rotation=90)
+
+    fig.tight_layout()
+    fig.savefig(savefile)
+    plt.close(fig)
 
 
 def get_delta_pressure(plot_press, halfwindow):
@@ -89,7 +96,7 @@ def wrapper(data):
     df = "%d  %H:%M"
     title = "Spectrogram of Barometric Pressure."
     savefile = k.dir_images['images'] + os.sep + "spectrum_press.png"
-    tick = 60 * 12
+    tick = 60 * 60 * 12
     # plot_spectrum(df, tick, data, plot_utc, 1, 0, 62, title, savefile)
     plot_spectrum(df, tick, delta_pressure, data, plot_utc, 1, 5, 80, title, savefile)
 
