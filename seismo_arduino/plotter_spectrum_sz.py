@@ -13,9 +13,8 @@ plotstyle = 'bmh'
 def plot_spectrum(datetimeformat, tickinterval, data, datetimes, plotfrequency, minv, maxv, plottitle, savefile):
     nfft = 1024
     noverlap = int(nfft * 0.75)
-
-    fig, ax = plt.subplots(layout="constrained", figsize=(17, 7), dpi=140)
-
+    plt.style.use(plotstyle)
+    fig, ax = plt.subplots(figsize=(17, 7), dpi=140)
     spectrum, freqs, t, im = ax.specgram(data, NFFT=nfft, noverlap=noverlap, detrend='mean', Fs=plotfrequency,
                                         cmap='inferno', vmin=minv, vmax=maxv)
     cbar = fig.colorbar(im)
@@ -27,14 +26,11 @@ def plot_spectrum(datetimeformat, tickinterval, data, datetimes, plotfrequency, 
         tickplace.append(i)
         ticklabel.append(datetimes[i].strftime(datetimeformat))
     plt.xticks(ticks=tickplace, labels=ticklabel, rotation=90)
-
-    plt.style.use(plotstyle)
-
-    plt.xlabel("dd hh:mm - UTC")
-    plt.ylabel("Frequency (Hz)")
-    plt.title(plottitle)
+    fig.set_xlabel("dd hh:mm - UTC")
+    fig.set_ylabel("Frequency (Hz)")
+    fig.set_title(plottitle)
     savefile = savefile
-    plt.savefig(savefile)
+    fig.savefig(savefile)
     plt.close()
 
 
