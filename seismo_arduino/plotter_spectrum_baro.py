@@ -10,6 +10,7 @@ import numpy as np
 
 def plot_spectrum_scipy(
     data,
+    deltap,
     datetimes,
     fs,
     nfft=8192,
@@ -29,6 +30,8 @@ def plot_spectrum_scipy(
     ----------
     data : 1D array
         Time series data (e.g. pressure or delta pressure).
+    datap : 1D array
+        Time series data delta pressure
     datetimes : array-like
         Datetime objects corresponding to `data`.
     fs : float
@@ -71,7 +74,7 @@ def plot_spectrum_scipy(
     t_dt = [t0 + timedelta(seconds=float(tt)) for tt in t]
 
     # --- Plot ---
-    fig, (ax_spec, ax_ts) = plt.subplots(
+    fig, (ax_spec, ax_dp) = plt.subplots(
         2, 1,
         sharex=True,
         figsize=(17, 9),
@@ -93,6 +96,7 @@ def plot_spectrum_scipy(
     ax_spec.set_ylim(fmin, fmax)
     ax_spec.set_ylabel("Frequency (Hz)")
     ax_spec.set_title(title)
+    ax_spec.grid(True, axis='x')
     cbar = fig.colorbar(pcm, ax=ax_spec, pad=0.01)
     cbar.set_label("Power spectral density (dB/Hz)")
 
@@ -112,12 +116,31 @@ def plot_spectrum_scipy(
             bbox=dict(boxstyle="round", fc="1", ec="black"),
         )
 
-    ax_ts.plot(t_dt, data, c='blue', linewidth=2)
+    ax_dp.plot(datetimes, deltap, c='blue', linewidth=1)
+    ax_dp.set_ylabel("Δ Pressure (Pa)")
+    ax_dp.grid(True, axis='both')
 
     if savefile is not None:
         fig.savefig(savefile)
 
     plt.close(fig)
+
+
+def get_delta_p(data, halfwindow):
+    nullvalue = np.nan
+    returnarray = []
+    end_index = len(data) - halfwindow
+    if len(data) > halfwindow:
+        for i in range(0, len(data)):
+            if halfwindow < i < end_index:
+                j = data[i + halfwindow] - data[i - halfwindow]
+                j = round(j, 3)
+                returnarray.append(j)
+            else:
+                returnarray.append(nullvalue)
+    else:
+        returnarray = data
+    return returnarray
 
 
 def wrapper(data):
@@ -140,6 +163,8 @@ def wrapper(data):
     # data = filtfilt(b, a, plot_press)
     data = detrend(plot_press, type='linear')
 
+    halfwindow = 60 * 30
+    deltapressure = get_delta_p(data, halfwindow)
     df = "%d %H:%M"
     title = "Spectrogram of Barometric Pressure"
     savefile = k.dir_images['images'] + os.sep + "spectrum_press.png"
@@ -147,7 +172,8 @@ def wrapper(data):
 
     plot_spectrum_scipy(
         data,
-        plot_utc,
+        deltap=deltapressure,
+        datetimes=plot_utc,
         fs=1,
         nfft=8192,
         overlap_frac=0.75,
