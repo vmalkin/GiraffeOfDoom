@@ -132,14 +132,17 @@ def plot_spectrum_scipy(
         )
     # --- Pressure Delta ---
     ax_dp.plot(datetimes, deltap, c='blue', linewidth=1)
-    ax_dp.set_ylabel("Δ Pressure (Pa)")
+    ax_dp.set_ylabel("Δ Pressure 1hr window (Pa)", color='blue')
+    ax_dp.tick_params(axis='y', colors='blue')
     ax_dp.grid(True, axis='both')
 
-    # --- Diurnal power ---
-    ax_d.plot(t_dt, diurnal_power_db, c='green', linewidth=1)
-    ax_d.set_ylabel("Diurnal power\n(dB)")
-    ax_d.grid(True, axis='x')
-    ax_d.grid(True, axis="y")
+    # --- Pressure Delta 2 ---
+    halfwindow = 60 * 120
+    dp = get_delta_p(data, halfwindow)
+    ax_d.plot(datetimes, dp, c='red', linewidth=1)
+    ax_d.set_ylabel("Δ Pressure 4hr window (Pa)", color='red')
+    ax_d.tick_params(axis='y', colors='red')
+    ax_d.grid(True, axis='both')
 
     # --- Time axis formatting ---
     ax_d.xaxis.set_major_formatter(mdates.DateFormatter(datetimeformat))
@@ -190,10 +193,11 @@ def wrapper(data):
 
     halfwindow = 60 * 30
     deltapressure = get_delta_p(data, halfwindow)
+    print(f'{len(data)} {len(deltapressure)}')
     df = "%d %H:%M"
     title = "Spectrogram of Barometric Pressure"
     savefile = k.dir_images['images'] + os.sep + "spectrum_press.png"
-    # tick = 60 * 60 * 12
+    # nfft=16384
 
     plot_spectrum_scipy(
         data,
