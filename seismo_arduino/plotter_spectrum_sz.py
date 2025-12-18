@@ -16,25 +16,21 @@ def plot_spectrum(datetimeformat, tickinterval, data, datetimes, plotfrequency, 
 
     fig, ax = plt.subplots(layout="constrained", figsize=(17, 7), dpi=140)
 
-    # Pxx, freqs, bins, im = plt.specgram(data, NFFT=nfft, noverlap=noverlap, detrend='mean', Fs=plotfrequency, cmap='inferno')
     spectrum, freqs, t, im = ax.specgram(data, NFFT=nfft, noverlap=noverlap, detrend='mean', Fs=plotfrequency,
                                         cmap='inferno', vmin=minv, vmax=maxv)
     cbar = fig.colorbar(im)
     cbar.set_label('Power / Frequency (dB/Hz)')
 
-    # tickplace = []
-    # ticklabel = []
-    # for i in range(0, len(datetimes), tickinterval):
-    #     tickplace.append(i)
-    #     ticklabel.append(datetimes[i].strftime(datetimeformat))
-    #     # ticklabel.append(t[i])
-    # ax.set_xticks(tickplace)
-    # ax.set_xticklabels(ticklabel)
-    # # # plt.xticks(ticks=tickplace, labels=ticklabel, rotation=90)
+    tickplace = []
+    ticklabel = []
+    for i in range(0, len(datetimes), tickinterval):
+        tickplace.append(i)
+        ticklabel.append(datetimes[i].strftime(datetimeformat))
+    plt.xticks(ticks=tickplace, labels=ticklabel, rotation=90)
 
     plt.style.use(plotstyle)
 
-    plt.xlabel("Time (s)")
+    plt.xlabel("dd hh:mm - UTC")
     plt.ylabel("Frequency (Hz)")
     plt.title(plottitle)
     savefile = savefile
