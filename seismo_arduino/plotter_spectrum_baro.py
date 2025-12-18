@@ -116,10 +116,10 @@ def plot_spectrum_scipy(
     cbar.set_label("Power spectral density (dB/Hz)")
 
     annotations = [
-        (100, "100 sec\nMostly noise"),
-        (16 * 60, "16 min\nMesoscale"),
-        (2.7 * 3600, "2.7 hr\nSynoptic"),
-        (27 * 3600, "27 hr\nSynoptic"),
+        (100, "100 sec\nMostly noise."),
+        (16 * 60, "16 min\nMesoscale variability."),
+        (2.7 * 3600, "2.7 hr\nSynoptic-mesoscale transition."),
+        (27 * 3600, "27 hr\nRegion of diurnal atmospheric tide (S1)."),
     ]
 
     for period_sec, text in annotations:
