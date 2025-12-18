@@ -3,55 +3,121 @@ import constants as k
 import matplotlib.pyplot as plt
 import os
 import class_aggregator
-# from scipy.signal import butter, filtfilt
-from scipy.signal import detrend
-
-ink_colour = ["#7a3f16", "green", "red", "#ffffff"]
-plotstyle = 'bmh'
+from scipy.signal import spectrogram, detrend
+from datetime import timedelta
+import numpy as np
 
 
-def plot_spectrum(datetimeformat, tickinterval, data, datetimes, plotfrequency, minv, maxv, plottitle, savefile):
-    nfft = 8192
-    noverlap = int(nfft * 0.75)
-    plt.figure(layout="constrained", figsize=(17, 7))
-    plt.style.use(plotstyle)
-    Pxx, freqs, bins, im = plt.specgram(data, NFFT=nfft, noverlap=noverlap, detrend='mean', Fs=plotfrequency, cmap='inferno', vmin=minv, vmax=maxv)
-    cbar = plt.colorbar(im)
-    cbar.set_label('Power / Frequency (dB/Hz)')
-    tickplace = []
-    ticklabel = []
-    for i in range(0, len(datetimes), tickinterval):
-        tickplace.append(i)
-        ticklabel.append(datetimes[i].strftime(datetimeformat))
-    plt.xticks(ticks=tickplace, labels=ticklabel, rotation=90)
+def plot_spectrum_scipy(
+    data,
+    datetimes,
+    fs,
+    nfft=8192,
+    overlap_frac=0.75,
+    fmin=1e-5,
+    fmax=1e-1,
+    vmin=None,
+    vmax=None,
+    title="Spectrogram",
+    savefile=None,
+    cmap="inferno",
+):
+    """
+    Compute and plot a spectrogram using SciPy + Matplotlib.
 
-    seis_pos_x = 0
-    seis_pos_y = 5 * 10 ** -2
-    plt.annotate("~20 sec period\nMostly noise.", xy=(seis_pos_x, seis_pos_y), xytext=(seis_pos_x, seis_pos_y), fontsize=8, color='black',
-                 bbox=dict(boxstyle="round", fc="1", color='black'))
+    Parameters
+    ----------
+    data : 1D array
+        Time series data (e.g. pressure or delta pressure).
+    datetimes : array-like
+        Datetime objects corresponding to `data`.
+    fs : float
+        Sampling frequency in Hz.
+    nfft : int
+        FFT length / segment size.
+    overlap_frac : float
+        Fractional overlap between segments (0–1).
+    fmin, fmax : float
+        Frequency limits for plotting (Hz).
+    vmin, vmax : float or None
+        Color scale limits in dB.
+    title : str
+        Plot title.
+    savefile : str or None
+        Output filename. If None, figure is not saved.
+    cmap : str
+        Matplotlib colormap.
+    """
 
-    seis_pos_x = 0
-    seis_pos_y = 10 ** -3
-    plt.annotate("~15–20 min period\nMesoscale weather. ", xy=(seis_pos_x, seis_pos_y), xytext=(seis_pos_x, seis_pos_y), fontsize=8, color='black',
-                 bbox=dict(boxstyle="round", fc="1", color='black'))
+    noverlap = int(nfft * overlap_frac)
 
-    seis_pos_x = 0
-    seis_pos_y = 10 ** -2.5
-    plt.annotate("~2–15 min period\nPassing disturbances.", xy=(seis_pos_x, seis_pos_y), xytext=(seis_pos_x, seis_pos_y), fontsize=8, color='black',
-                 bbox=dict(boxstyle="round", fc="1", color='black'))
-    seis_pos_x = 0
-    seis_pos_y = 10 ** -4
-    plt.annotate("~2–3 hr period\nSynoptic-scale weather", xy=(seis_pos_x, seis_pos_y), xytext=(seis_pos_x, seis_pos_y), fontsize=8, color='black',
-                 bbox=dict(boxstyle="round", fc="1", color='black'))
+    # --- Compute spectrogram (NO plotting here) ---
+    freqs, t, Sxx = spectrogram(
+        data,
+        fs=fs,
+        window="hann",
+        nperseg=nfft,
+        noverlap=noverlap,
+        detrend="constant",
+        scaling="density",
+        mode="psd",
+    )
 
-    plt.xlabel("Time (s)")
-    plt.ylabel("Frequency (Hz)")
-    plt.yscale('log')
-    plt.ylim(10**-5, 10**-1)
-    plt.title(plottitle)
-    savefile = savefile
-    plt.savefig(savefile)
-    plt.close()
+    # Convert power to dB safely
+    Sxx_db = 10 * np.log10(Sxx + np.finfo(float).eps)
+
+    # --- Convert time axis to datetimes ---
+    t0 = datetimes[0]
+    t_dt = [t0 + timedelta(seconds=float(tt)) for tt in t]
+
+    # --- Plot ---
+    fig, (ax_spec, ax_ts) = plt.subplots(
+        2, 1,
+        sharex=True,
+        figsize=(17, 9),
+        layout="constrained",
+        height_ratios=[2, 1],
+    )
+
+    pcm = ax_spec.pcolormesh(
+        t_dt,
+        freqs,
+        Sxx_db,
+        shading="auto",
+        cmap=cmap,
+        vmin=vmin,
+        vmax=vmax,
+    )
+
+    ax_spec.set_yscale("log")
+    ax_spec.set_ylim(fmin, fmax)
+    ax_spec.set_ylabel("Frequency (Hz)")
+    ax_spec.set_title(title)
+    cbar = fig.colorbar(pcm, ax=ax_spec, pad=0.01)
+    cbar.set_label("Power spectral density (dB/Hz)")
+
+    annotations = [
+        (100, "100 sec\nMostly noise"),
+        (16 * 60, "16 min\nMesoscale"),
+        (2.7 * 3600, "2.7 hr\nSynoptic"),
+        (27 * 3600, "27 hr\nSynoptic"),
+    ]
+
+    for period_sec, text in annotations:
+        freq = 1.0 / period_sec
+        ax_spec.annotate(
+            text,
+            xy=(t_dt[0], freq),
+            fontsize=8,
+            bbox=dict(boxstyle="round", fc="1", ec="black"),
+        )
+
+    ax_ts.plot(t_dt, data, c='blue', linewidth=2)
+
+    if savefile is not None:
+        fig.savefig(savefile)
+
+    plt.close(fig)
 
 
 def wrapper(data):
@@ -77,6 +143,20 @@ def wrapper(data):
     df = "%d %H:%M"
     title = "Spectrogram of Barometric Pressure"
     savefile = k.dir_images['images'] + os.sep + "spectrum_press.png"
-    tick = 60 * 60 * 1
-    plot_spectrum(df, tick, data, plot_utc, 1, 0, 60, title, savefile)
+    # tick = 60 * 60 * 12
+
+    plot_spectrum_scipy(
+        data,
+        plot_utc,
+        fs=1,
+        nfft=8192,
+        overlap_frac=0.75,
+        fmin=10**-5,
+        fmax=10**-1.8,
+        vmin=5,
+        vmax=80,
+        title=title,
+        savefile=savefile,
+        cmap="inferno",
+    )
 
