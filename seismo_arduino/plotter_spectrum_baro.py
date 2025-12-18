@@ -15,8 +15,10 @@ def plot_spectrum(datetimeformat, tickinterval, deltapressure, data, datetimes, 
     # nfft = 4096
     noverlap = int(nfft * 0.75)
 
-    fig, ax = plt.subplots(nrows=2, layout="constrained", figsize=(16, 8), dpi=140)
-    spectrum, freqs, t, im = ax[0].specgram(data, NFFT=nfft, noverlap=noverlap, detrend='mean', Fs=plotfrequency,
+    fig, (ax_top, ax_bottom) = plt.subplots(
+        2, 1, figsize=(16, 8), dpi=140, sharex=True, height_ratios=[2, 1]
+    )
+    spectrum, freqs, t, im = ax_top.specgram(data, NFFT=nfft, noverlap=noverlap, detrend='mean', Fs=plotfrequency,
                                          cmap='viridis', vmin=minv, vmax=maxv)
 
     plt.style.use(plotstyle)
@@ -26,44 +28,43 @@ def plot_spectrum(datetimeformat, tickinterval, deltapressure, data, datetimes, 
 
     seis_pos_x = 0
     seis_pos_y = 10 ** -2
-    ax[0].annotate("1–15 min\nGravity waves, local turbulence.", xy=(seis_pos_x, seis_pos_y), xytext=(seis_pos_x, seis_pos_y), fontsize=8, color='black',
+    ax_top.annotate("1–15 min\nGravity waves, local turbulence.", xy=(seis_pos_x, seis_pos_y), xytext=(seis_pos_x, seis_pos_y), fontsize=8, color='black',
                  bbox=dict(boxstyle="round", fc="1", color='black'))
     seis_pos_x = 0
     seis_pos_y = 10 ** -3
-    ax[0].annotate("15 min–3 hr\nMesoscale pressure variability.", xy=(seis_pos_x, seis_pos_y), xytext=(seis_pos_x, seis_pos_y), fontsize=8, color='black',
+    ax_top.annotate("15 min–3 hr\nMesoscale pressure variability.", xy=(seis_pos_x, seis_pos_y), xytext=(seis_pos_x, seis_pos_y), fontsize=8, color='black',
                  bbox=dict(boxstyle="round", fc="1", color='black'))
     seis_pos_x = 0
     seis_pos_y = 10 ** -4
-    ax[0].annotate(">3 h\nSynoptic-scale & diurnal variability.", xy=(seis_pos_x, seis_pos_y), xytext=(seis_pos_x, seis_pos_y), fontsize=8, color='black',
+    ax_top.annotate(">3 h\nSynoptic-scale & diurnal variability.", xy=(seis_pos_x, seis_pos_y), xytext=(seis_pos_x, seis_pos_y), fontsize=8, color='black',
                  bbox=dict(boxstyle="round", fc="1", color='black'))
     liney = 1.16 * 10 ** -5
-    ax[0].axhline(y=liney, linestyle='dotted', color='cyan')
-    ax[0].text(0, liney, '24 h (diurnal atmospheric tide)', color='cyan')
+    ax_top.axhline(y=liney, linestyle='dotted', color='cyan')
+    ax_top.text(0, liney, '24 h (diurnal atmospheric tide)', color='cyan')
 
     # ax[0].set_xlabel("dd hh:mm - UTC")
-    ax[0].set_ylabel("Frequency (Hz) / Period")
-    ax[0].set_yscale('log')
-    ax[0].set_ylim(10 ** -5.1, 10 ** -1.5)
+    ax_top.set_ylabel("Frequency (Hz) / Period")
+    ax_top.set_yscale('log')
+    ax_top.set_ylim(10 ** -5.1, 10 ** -1.5)
 
     subtitle = ' FFT = ' + str(nfft) + '. FFT Overlap = ' +str(noverlap) + '. Freq = ' + str(plotfrequency) + 'Hz.'
     plottitle = plottitle + subtitle
-    ax[0].set_title(plottitle)
+    ax_top.set_title(plottitle)
 
-    ax[1].plot(datetimes, data, c=ink_colour[1], linewidth=1)
-    ax[1].set_ylabel("Pressure", color=ink_colour[1])
-    ax[1].tick_params(axis='y', colors=ink_colour[1])
-    # ax[1].set_ylim([dx_ymin, dx_ymax])
-    # ax[1].spines['right'].set_position(('outward', 30))
-    ax[1].yaxis.grid(False)
+    ax_bottom.plot(datetimes, deltapressure, c=ink_colour[1], linewidth=1)
+    ax_bottom.set_ylabel("Delta Pressure.", color=ink_colour[1])
+    ax_bottom.tick_params(axis='y', colors=ink_colour[1])
+    ax_bottom.yaxis.grid(True)
+
     tickplace = []
     ticklabel = []
     for i in range(0, len(datetimes), tickinterval):
         tickplace.append(i)
         ticklabel.append(datetimes[i].strftime(datetimeformat))
-    ax[0].set_xticks(ticks=tickplace)
-    ax[1].set_xticks(ticks=tickplace, labels=ticklabel, rotation=90)
+    ax_top.set_xticks(ticks=tickplace)
+    ax_bottom.set_xticks(ticks=tickplace, labels=ticklabel, rotation=90)
 
-    savefile = savefile
+    plt.tight_layout()
     plt.savefig(savefile)
     plt.close()
 
@@ -76,13 +77,15 @@ def get_delta_pressure(plot_press, halfwindow):
         for i in range(0, len(plot_press)):
             if i < halfwindow:
                 returnarray.append(None)
-            if i > halfwindow and i < len(plot_press) - endofseries:
+            if halfwindow < i < endofseries:
                 j = plot_press[i + halfwindow] - plot_press[i - halfwindow]
                 returnarray.append(j)
+            if i > len(plot_press) - endofseries:
+                returnarray.append(None)
     else:
-        # Return an empty array the length of plot_press
-        pass
-
+        for item in plot_press:
+            returnarray.append(None)
+    returnarray.append(None)
     return returnarray
 
 
@@ -104,15 +107,15 @@ def wrapper(data):
 
     halfhour = 10 * 60 * 30  # half an hour
     delta_pressure = get_delta_pressure(plot_press, halfhour)
-    plot_utc.append(delta_pressure)
+    print(delta_pressure)
     # b, a = butter(2, 0.001, btype='highpass', fs=1)
     # data = filtfilt(b, a, plot_press)
     data = detrend(plot_press, type='linear')
 
-    df = "%d  %H:%M"
-    title = "Spectrogram of Barometric Pressure."
-    savefile = k.dir_images['images'] + os.sep + "spectrum_press.png"
-    tick = 60 * 60 * 12
-    # plot_spectrum(df, tick, data, plot_utc, 1, 0, 62, title, savefile)
-    plot_spectrum(df, tick, delta_pressure, data, plot_utc, 1, 5, 80, title, savefile)
+    # df = "%d  %H:%M"
+    # title = "Spectrogram of Barometric Pressure."
+    # savefile = k.dir_images['images'] + os.sep + "spectrum_press.png"
+    # tick = 60 * 60 * 12
+    # # plot_spectrum(df, tick, data, plot_utc, 1, 0, 62, title, savefile)
+    # plot_spectrum(df, tick, delta_pressure, data, plot_utc, 1, 5, 80, title, savefile)
 
