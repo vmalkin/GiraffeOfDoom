@@ -1,6 +1,7 @@
 from datetime import timezone, datetime
 import constants as k
 import matplotlib.pyplot as plt
+import matplotlib.dates as mdates
 import os
 import class_aggregator
 from scipy.signal import spectrogram, detrend
@@ -19,6 +20,7 @@ def plot_spectrum_scipy(
     fmax=1e-1,
     vmin=None,
     vmax=None,
+    datetimeformat="%Y-%m-%d\n%H:%M",
     title="Spectrogram",
     savefile=None,
     cmap="inferno",
@@ -73,13 +75,24 @@ def plot_spectrum_scipy(
     t0 = datetimes[0]
     t_dt = [t0 + timedelta(seconds=float(tt)) for tt in t]
 
+    # --- Diurnal band extraction ---
+    f0 = 1.0 / (24 * 3600)
+    band = (freqs >= 0.9 * f0) & (freqs <= 1.1 * f0)
+
+    diurnal_power = np.trapezoid(Sxx[band, :], freqs[band], axis=0)
+    diurnal_power_db = 10 * np.log10(diurnal_power + np.finfo(float).eps)
+
+    # total_power = np.trapezoid(Sxx, freqs, axis=0)
+    # diurnal_fraction = diurnal_power / total_power
+    # diurnal_fraction_db = 10 * np.log10(diurnal_fraction)
+
     # --- Plot ---
-    fig, (ax_spec, ax_dp) = plt.subplots(
-        2, 1,
+    fig, (ax_spec, ax_dp, ax_d) = plt.subplots(
+        3, 1,
         sharex=True,
-        figsize=(17, 9),
+        figsize=(17, 11),
         layout="constrained",
-        height_ratios=[2, 1],
+        height_ratios=[2.2, 1, 1],
     )
 
     pcm = ax_spec.pcolormesh(
@@ -95,8 +108,10 @@ def plot_spectrum_scipy(
     ax_spec.set_yscale("log")
     ax_spec.set_ylim(fmin, fmax)
     ax_spec.set_ylabel("Frequency (Hz)")
-    ax_spec.set_title(title)
+    subtitle = f'FFT = {nfft}. Noverlap = {noverlap}. Data Freq = {fs}Hz.'
+    ax_spec.set_title(f'{title}\n{subtitle}')
     ax_spec.grid(True, axis='x')
+    ax_spec.axhspan(0.7 * f0, 1.3 * f0, color="cyan", alpha=0.15)
     cbar = fig.colorbar(pcm, ax=ax_spec, pad=0.01)
     cbar.set_label("Power spectral density (dB/Hz)")
 
@@ -115,10 +130,20 @@ def plot_spectrum_scipy(
             fontsize=8,
             bbox=dict(boxstyle="round", fc="1", ec="black"),
         )
-
+    # --- Pressure Delta ---
     ax_dp.plot(datetimes, deltap, c='blue', linewidth=1)
     ax_dp.set_ylabel("Δ Pressure (Pa)")
     ax_dp.grid(True, axis='both')
+
+    # --- Diurnal power ---
+    ax_d.plot(t_dt, diurnal_power_db, c='green', linewidth=1)
+    ax_d.set_ylabel("Diurnal power\n(dB)")
+    ax_d.grid(True, axis='x')
+    ax_d.grid(True, axis="y")
+
+    # --- Time axis formatting ---
+    ax_d.xaxis.set_major_formatter(mdates.DateFormatter(datetimeformat))
+    fig.autofmt_xdate()
 
     if savefile is not None:
         fig.savefig(savefile)
@@ -175,12 +200,13 @@ def wrapper(data):
         deltap=deltapressure,
         datetimes=plot_utc,
         fs=1,
-        nfft=8192,
+        nfft=16384,
         overlap_frac=0.75,
-        fmin=10**-5,
+        fmin=10**-5.2,
         fmax=10**-1.8,
         vmin=5,
         vmax=80,
+        datetimeformat="%d\n%H:%M",
         title=title,
         savefile=savefile,
         cmap="inferno",
