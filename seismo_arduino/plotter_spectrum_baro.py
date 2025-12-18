@@ -11,7 +11,7 @@ plotstyle = 'bmh'
 
 
 def plot_spectrum(datetimeformat, tickinterval, data, datetimes, plotfrequency, minv, maxv, plottitle, savefile):
-    nfft = 2048
+    nfft = 16384
     noverlap = int(nfft * 0.75)
     plt.figure(layout="constrained", figsize=(17, 7))
     plt.style.use(plotstyle)
@@ -26,13 +26,13 @@ def plot_spectrum(datetimeformat, tickinterval, data, datetimes, plotfrequency, 
     plt.xticks(ticks=tickplace, labels=ticklabel, rotation=90)
 
     seis_pos_x = 0
-    seis_pos_y = 10 ** -1
-    plt.annotate("~10 sec period\nMostly noise.", xy=(seis_pos_x, seis_pos_y), xytext=(seis_pos_x, seis_pos_y), fontsize=8, color='black',
+    seis_pos_y = 10 ** -1.5
+    plt.annotate("10–100 s\nSensor noise / turbulence", xy=(seis_pos_x, seis_pos_y), xytext=(seis_pos_x, seis_pos_y), fontsize=8, color='black',
                  bbox=dict(boxstyle="round", fc="1", color='black'))
 
     seis_pos_x = 0
-    seis_pos_y = 10 ** -3
-    plt.annotate("~15–20 min period\nMesoscale weather. ", xy=(seis_pos_x, seis_pos_y), xytext=(seis_pos_x, seis_pos_y), fontsize=8, color='black',
+    seis_pos_y = 10 ** -2.5
+    plt.annotate("1–15 min\nGravity waves, local disturbances", xy=(seis_pos_x, seis_pos_y), xytext=(seis_pos_x, seis_pos_y), fontsize=8, color='black',
                  bbox=dict(boxstyle="round", fc="1", color='black'))
 
     seis_pos_x = 0
@@ -40,14 +40,22 @@ def plot_spectrum(datetimeformat, tickinterval, data, datetimes, plotfrequency, 
     plt.annotate("~2–15 min period\nPassing disturbances.", xy=(seis_pos_x, seis_pos_y), xytext=(seis_pos_x, seis_pos_y), fontsize=8, color='black',
                  bbox=dict(boxstyle="round", fc="1", color='black'))
     seis_pos_x = 0
-    seis_pos_y = 10 ** -4
-    plt.annotate("~2–3 hr period\nSynoptic-scale weather", xy=(seis_pos_x, seis_pos_y), xytext=(seis_pos_x, seis_pos_y), fontsize=8, color='black',
+    seis_pos_y = 10 ** -3.5
+    plt.annotate("15 min–3 hr\nMesoscale weather (dominant)", xy=(seis_pos_x, seis_pos_y), xytext=(seis_pos_x, seis_pos_y), fontsize=8, color='black',
                  bbox=dict(boxstyle="round", fc="1", color='black'))
 
+    seis_pos_x = 0
+    seis_pos_y = 10 ** -4.5
+    plt.annotate(">3 h\nSynoptic-scale trend", xy=(seis_pos_x, seis_pos_y), xytext=(seis_pos_x, seis_pos_y), fontsize=8, color='black',
+                 bbox=dict(boxstyle="round", fc="1", color='black'))
+
+    subtitle = '\nFFT = ' + str(nfft) + '. FFT Overlap = ' +str(noverlap) + '. Freq = ' + str(plotfrequency) + 'Hz.'
+
+    plottitle = plottitle + subtitle
     plt.xlabel("Time (s)")
-    plt.ylabel("Frequency (Hz)")
+    plt.ylabel("Frequency (Hz) / Period")
     plt.yscale('log')
-    plt.ylim(10**-4.2, 0.5)
+    plt.ylim(10**-5, 10**-1)
     plt.title(plottitle)
     savefile = savefile
     plt.savefig(savefile)
@@ -77,6 +85,6 @@ def wrapper(data):
     df = "%d %H:%M"
     title = "Spectrogram of Barometric Pressure"
     savefile = k.dir_images['images'] + os.sep + "spectrum_press.png"
-    tick = 60 * 60 * 1
-    plot_spectrum(df, tick, data, plot_utc, 1, 0, 60, title, savefile)
+    tick = 60 * 60 * 3
+    plot_spectrum(df, tick, data, plot_utc, 1, 0, 87, title, savefile)
 
