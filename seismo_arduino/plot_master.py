@@ -39,12 +39,12 @@ for key in k.dir_images:
     try_create_directory(key)
 
 # plotter_phaseportrait.wrapper(result_1d)
-# plotter_spectrum_baro.wrapper((result_7d))
-plotter_spectrum_sz.wrapper((result_7d))
-# plotter_combo1day.wrapper(result_1d)
-# plotter_combo7day.wrapper(result_7d)
+plotter_spectrum_baro.wrapper((result_7d))
+# plotter_spectrum_sz.wrapper((result_1d))
+plotter_combo1day.wrapper(result_1d)
+plotter_combo7day.wrapper(result_7d)
 # plotter_dual.wrapper(result_1d)
-# plotter_helicorder.wrapper(result_1d)
+plotter_helicorder.wrapper(result_1d)
 # plotter_fft_7d.wrapper(result_7d)
 # plotter_fft_movie.wrapper(result_1d)
 

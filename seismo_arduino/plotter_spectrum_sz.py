@@ -115,39 +115,37 @@ def plot_spectrum_scipy(
     cbar = fig.colorbar(pcm, ax=ax_spec, pad=0.01)
     cbar.set_label("Power spectral density (dB/Hz)")
 
-    # annotations = [
-    #     (100, "100 sec\nMostly noise."),
-    #     (16 * 60, "16 min\nMesoscale variability."),
-    #     (2.7 * 3600, "2.7 hr\nSynoptic-mesoscale transition."),
-    #     (27 * 3600, "27 hr\nRegion of diurnal atmospheric tide (S1)."),
-    # ]
-    #
-    # for period_sec, text in annotations:
-    #     freq = 1.0 / period_sec
-    #     ax_spec.annotate(
-    #         text,
-    #         xy=(t_dt[0], freq),
-    #         fontsize=8,
-    #         bbox=dict(boxstyle="round", fc="1", ec="black"),
-    #     )
-    # --- Pressure Delta ---
-    ax_dp.plot(datetimes, deltap, c='blue', linewidth=1)
-    ax_dp.set_ylabel("Δ Pressure (Pa) - 1hr window", color='blue')
-    ax_dp.tick_params(axis='y', colors='blue')
-    title = ""
-    ax_dp.set_title(f'{title}')
-    ax_dp.grid(True, axis='x')
-    ax_dp.grid(True, axis='both')
+    annotations = [
+        (1.1 * 10 ** -5, "Tide."),
+        (2.3 * 10 ** -5, "Tide."),
+    ]
 
-    # --- Pressure Delta 2 ---
-    halfwindow = 10 * 60 * 120
-    dp = get_delta_p(data, halfwindow)
-    ax_d.plot(datetimes, dp, c='red', linewidth=1)
-    ax_d.set_ylabel("Δ Pressure (Pa) - 4hr window", color='red')
-    ax_d.tick_params(axis='y', colors='red')
-    title = ""
-    ax_d.set_title(f'{title}')
-    ax_d.grid(True, axis='both')
+    for period_sec, text in annotations:
+        freq = 1.0 / period_sec
+        ax_spec.annotate(
+            text,
+            xy=(t_dt[0], freq),
+            fontsize=8,
+            bbox=dict(boxstyle="round", fc="1", ec="black"),
+        )
+    # # --- Pressure Delta ---
+    # ax_dp.plot(datetimes, deltap, c='blue', linewidth=1)
+    # ax_dp.set_ylabel("Δ Pressure (Pa) - 1hr window", color='blue')
+    # ax_dp.tick_params(axis='y', colors='blue')
+    # title = ""
+    # ax_dp.set_title(f'{title}')
+    # ax_dp.grid(True, axis='x')
+    # ax_dp.grid(True, axis='both')
+    #
+    # # --- Pressure Delta 2 ---
+    # halfwindow = 10 * 60 * 120
+    # dp = get_delta_p(data, halfwindow)
+    # ax_d.plot(datetimes, dp, c='red', linewidth=1)
+    # ax_d.set_ylabel("Δ Pressure (Pa) - 4hr window", color='red')
+    # ax_d.tick_params(axis='y', colors='red')
+    # title = ""
+    # ax_d.set_title(f'{title}')
+    # ax_d.grid(True, axis='both')
 
     # --- Time axis formatting ---
     ax_d.xaxis.set_major_formatter(mdates.DateFormatter(datetimeformat))
@@ -210,12 +208,12 @@ def wrapper(data):
         deltap=deltasz,
         datetimes=plot_utc,
         fs=10,
-        nfft=16384,
+        nfft=4096,
         overlap_frac=0.75,
-        fmin=10 ** -5,
-        fmax=5,
+        fmin=None,
+        fmax=None,
         vmin=-8,
-        vmax=6,
+        vmax=10,
         datetimeformat="%d\n%H:%M",
         title=title,
         savefile=savefile,
