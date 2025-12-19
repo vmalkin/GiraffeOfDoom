@@ -90,7 +90,7 @@ def plot_spectrum_scipy(
     fig, (ax_spec, ax_dp, ax_d) = plt.subplots(
         3, 1,
         sharex=True,
-        figsize=(17, 11),
+        figsize=(17, 12),
         layout="constrained",
         height_ratios=[2.2, 1, 1],
     )
@@ -132,16 +132,21 @@ def plot_spectrum_scipy(
         )
     # --- Pressure Delta ---
     ax_dp.plot(datetimes, deltap, c='blue', linewidth=1)
-    ax_dp.set_ylabel("Δ Pressure 1hr window (Pa)", color='blue')
+    ax_dp.set_ylabel("Δ Pressure (Pa) - 1hr window", color='blue')
     ax_dp.tick_params(axis='y', colors='blue')
+    title = "Hourly pressure change emphasizes transient synoptic forcing while suppressing slowly varying components such as the diurnal tide."
+    ax_dp.set_title(f'{title}')
+    ax_dp.grid(True, axis='x')
     ax_dp.grid(True, axis='both')
 
     # --- Pressure Delta 2 ---
     halfwindow = 60 * 120
     dp = get_delta_p(data, halfwindow)
     ax_d.plot(datetimes, dp, c='red', linewidth=1)
-    ax_d.set_ylabel("Δ Pressure 4hr window (Pa)", color='red')
+    ax_d.set_ylabel("Δ Pressure (Pa) - 4hr window", color='red')
     ax_d.tick_params(axis='y', colors='red')
+    title = "Synoptic evolution."
+    ax_d.set_title(f'{title}')
     ax_d.grid(True, axis='both')
 
     # --- Time axis formatting ---
@@ -173,7 +178,7 @@ def get_delta_p(data, halfwindow):
 
 def wrapper(data):
     #  spectrographic analysis and filtering improved with ChatGPT
-    print("*** Barometric Spectrogram - Past 24 hours")
+    print("*** Barometric Spectrogram")
     window = 10
     aggregate_array = class_aggregator.aggregate_data(window, data)
     aggregate_array.pop(0)
