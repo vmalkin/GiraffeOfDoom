@@ -41,8 +41,8 @@ for key in k.dir_images:
 # plotter_phaseportrait.wrapper(result_1d)
 plotter_spectrum_baro.wrapper((result_7d))
 # plotter_spectrum_sz.wrapper((result_1d))
-plotter_combo1day.wrapper(result_1d)
-plotter_combo7day.wrapper(result_7d)
+# plotter_combo1day.wrapper(result_1d)
+# plotter_combo7day.wrapper(result_7d)
 # plotter_dual.wrapper(result_1d)
 # plotter_helicorder.wrapper(result_1d)
 # plotter_fft_7d.wrapper(result_7d)
@@ -52,27 +52,27 @@ plotter_combo7day.wrapper(result_7d)
 # alldata = mgr_database.db_data_get_all()
 # plotter_combo7day.wrapper(alldata)
 
-# =============================================================================================================
-# Empirical Mode Decomposition
-print("*** Empirical Mode Decomposition")
-aggregate_array = result_1d
-aggregate_array.pop(0)
-plot_utc = []
-plot_seismo = []
-wrapperdata = []
-
-for i in range(1, len(aggregate_array)):
-    tim = aggregate_array[i][0]
-    tim = datetime.fromtimestamp(tim, tz=timezone.utc)  # datetime object
-    siz = aggregate_array[i][1]
-    plot_utc.append(tim)
-    plot_seismo.append(siz)
-
-wrapperdata.append(plot_utc)
-wrapperdata.append(plot_seismo)
-savefile = k.dir_images['images'] + os.sep + "imf.png"
-df = "%d  %H:%M"
-mgr_emd.wrapper(wrapperdata, savefile, df)
+# # =============================================================================================================
+# # Empirical Mode Decomposition
+# print("*** Empirical Mode Decomposition")
+# aggregate_array = result_1d
+# aggregate_array.pop(0)
+# plot_utc = []
+# plot_seismo = []
+# wrapperdata = []
+#
+# for i in range(1, len(aggregate_array)):
+#     tim = aggregate_array[i][0]
+#     tim = datetime.fromtimestamp(tim, tz=timezone.utc)  # datetime object
+#     siz = aggregate_array[i][1]
+#     plot_utc.append(tim)
+#     plot_seismo.append(siz)
+#
+# wrapperdata.append(plot_utc)
+# wrapperdata.append(plot_seismo)
+# savefile = k.dir_images['images'] + os.sep + "imf.png"
+# df = "%d  %H:%M"
+# mgr_emd.wrapper(wrapperdata, savefile, df)
 
 timefinish = time.time()
 print(f"Plotting complete. Elapsed minutes to process: {(timefinish - time_end) / 60}")

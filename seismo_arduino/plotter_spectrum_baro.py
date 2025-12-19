@@ -7,6 +7,7 @@ import class_aggregator
 from scipy.signal import spectrogram, detrend
 from datetime import timedelta
 import numpy as np
+import standard_stuff
 
 
 def plot_spectrum_scipy(
@@ -163,16 +164,23 @@ def get_delta_p(data, halfwindow):
     nullvalue = np.nan
     returnarray = []
     end_index = len(data) - halfwindow
+    # we want to return an array the same size as the input array. We pad the beginning and end with
+    # null values. The array is split up thus:
+    # [half window at start] <-> [data we work on] <-> [half window at end]
+    # IF we were doing a running avg for instance, this would give us a window centred on our chosen data. THis is
+    # preferred
     if len(data) > halfwindow:
         for i in range(0, len(data)):
             if halfwindow < i < end_index:
-                j = data[i + halfwindow] - data[i - halfwindow]
+                window_data = data[i - halfwindow: i + halfwindow]
+                j = window_data[-1] - window_data[0]
                 j = round(j, 3)
                 returnarray.append(j)
             else:
                 returnarray.append(nullvalue)
     else:
-        returnarray = data
+        for _ in data:
+            returnarray.append(nullvalue)
     return returnarray
 
 
