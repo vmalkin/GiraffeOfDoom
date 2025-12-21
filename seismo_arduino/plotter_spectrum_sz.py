@@ -164,14 +164,7 @@ def plot_spectrum_scipy(
     ax_dp.grid(True, axis='both')
 
     # --- Pressure Delta 2 ---
-    halfwindow = 10 * 60 * 120
-    dp = get_delta_p(data, halfwindow)
-    ax_d.plot(datetimes, dp, c='red', linewidth=1)
-    ax_d.set_ylabel("Δ Pressure (Pa) - 4hr window", color='red')
-    ax_d.tick_params(axis='y', colors='red')
-    title = ""
-    ax_d.set_title(f'{title}')
-    ax_d.grid(True, axis='both')
+
 
     # --- Time axis formatting ---
     ax_d.xaxis.set_major_formatter(mdates.DateFormatter(datetimeformat))
