@@ -244,7 +244,7 @@ def wrapper(data):
         fs=10,
         nfft=16384,
         overlap_frac=0.90,
-        fmin=10 ** -4,
+        fmin=10 ** -4.2,
         fmax=3,
         vmin=-15,
         vmax=10,
