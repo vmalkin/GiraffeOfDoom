@@ -103,9 +103,10 @@ def plot_spectrum_scipy(
         cmap=cmap,
         vmin=vmin,
         vmax=vmax,
+        zorder=1
     )
 
-    # ax_spec.set_yscale("log")
+    ax_spec.set_yscale("log")
     ax_spec.set_ylim(fmin, fmax)
     ax_spec.set_ylabel("Frequency (Hz)")
     subtitle = f'FFT = {nfft}. Noverlap = {noverlap}. Data Freq = {fs}Hz.'
@@ -116,36 +117,61 @@ def plot_spectrum_scipy(
     cbar.set_label("Power spectral density (dB/Hz)")
 
     annotations = [
-        (1.1 * 10 ** -5, "Tide."),
-        (2.3 * 10 ** -5, "Tide."),
+        (10, "P = 10s"),
+        (100, "P = 100s"),
+        (1000, "P = 16.6m"),
+        (10000, "P = 2.7hr")
     ]
 
+    x_label = t_dt[len(t_dt) // 30]  # ~3% into plot
     for period_sec, text in annotations:
         freq = 1.0 / period_sec
-        ax_spec.annotate(
-            text,
-            xy=(t_dt[0], freq),
-            fontsize=8,
-            bbox=dict(boxstyle="round", fc="1", ec="black"),
+        # Horizontal reference line
+        ax_spec.axhline(
+            freq,
+            color="white",
+            linestyle="--",
+            linewidth=1,
+            alpha=0.35,
+            zorder=5,
         )
-    # # --- Pressure Delta ---
-    # ax_dp.plot(datetimes, deltap, c='blue', linewidth=1)
-    # ax_dp.set_ylabel("Δ Pressure (Pa) - 1hr window", color='blue')
-    # ax_dp.tick_params(axis='y', colors='blue')
-    # title = ""
-    # ax_dp.set_title(f'{title}')
-    # ax_dp.grid(True, axis='x')
-    # ax_dp.grid(True, axis='both')
-    #
-    # # --- Pressure Delta 2 ---
-    # halfwindow = 10 * 60 * 120
-    # dp = get_delta_p(data, halfwindow)
-    # ax_d.plot(datetimes, dp, c='red', linewidth=1)
-    # ax_d.set_ylabel("Δ Pressure (Pa) - 4hr window", color='red')
-    # ax_d.tick_params(axis='y', colors='red')
-    # title = ""
-    # ax_d.set_title(f'{title}')
-    # ax_d.grid(True, axis='both')
+
+        # Small label slightly above the line
+        ax_spec.text(
+            x_label,
+            freq * 1.05,  # nudge up on log scale
+            text,
+            color="cyan" if period_sec >= 3600 else "white",
+            fontsize=10,
+            alpha=0.85,
+            va="bottom",
+            zorder=6,
+            bbox=dict(
+                boxstyle="round,pad=0.15",
+                fc="black",
+                ec="none",
+                alpha=0.35,
+            ),
+        )
+
+    # --- Pressure Delta ---
+    ax_dp.plot(datetimes, deltap, c='blue', linewidth=1)
+    ax_dp.set_ylabel("Δ Pressure (Pa) - 1hr window", color='blue')
+    ax_dp.tick_params(axis='y', colors='blue')
+    title = ""
+    ax_dp.set_title(f'{title}')
+    ax_dp.grid(True, axis='x')
+    ax_dp.grid(True, axis='both')
+
+    # --- Pressure Delta 2 ---
+    halfwindow = 10 * 60 * 120
+    dp = get_delta_p(data, halfwindow)
+    ax_d.plot(datetimes, dp, c='red', linewidth=1)
+    ax_d.set_ylabel("Δ Pressure (Pa) - 4hr window", color='red')
+    ax_d.tick_params(axis='y', colors='red')
+    title = ""
+    ax_d.set_title(f'{title}')
+    ax_d.grid(True, axis='both')
 
     # --- Time axis formatting ---
     ax_d.xaxis.set_major_formatter(mdates.DateFormatter(datetimeformat))
@@ -161,16 +187,24 @@ def get_delta_p(data, halfwindow):
     nullvalue = np.nan
     returnarray = []
     end_index = len(data) - halfwindow
+    # we want to return an array the same size as the input array. We pad the beginning and end with
+    # null values. The array is split up thus:
+    # [half window at start] <-> [data we work on] <-> [half window at end]
+    # IF we were doing a running avg for instance, this would give us a window centred on our chosen data. THis is
+    # preferred
     if len(data) > halfwindow:
         for i in range(0, len(data)):
             if halfwindow < i < end_index:
-                j = data[i + halfwindow] - data[i - halfwindow]
+                window_data = data[i - halfwindow: i + halfwindow]
+                # j = window_data[-1] - window_data[0]
+                j = np.nanmax(window_data) - np.nanmin(window_data)
                 j = round(j, 3)
                 returnarray.append(j)
             else:
                 returnarray.append(nullvalue)
     else:
-        returnarray = data
+        for _ in data:
+            returnarray.append(nullvalue)
     return returnarray
 
 
@@ -208,11 +242,11 @@ def wrapper(data):
         deltap=deltasz,
         datetimes=plot_utc,
         fs=10,
-        nfft=4096,
-        overlap_frac=0.75,
-        fmin=None,
-        fmax=None,
-        vmin=-8,
+        nfft=16384,
+        overlap_frac=0.90,
+        fmin=10 ** -4,
+        fmax=3,
+        vmin=-15,
         vmax=10,
         datetimeformat="%d\n%H:%M",
         title=title,
