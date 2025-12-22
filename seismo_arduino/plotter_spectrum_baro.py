@@ -2,6 +2,7 @@ from datetime import timezone, datetime
 import constants as k
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
+from matplotlib.ticker import AutoMinorLocator
 import os
 import class_aggregator
 from scipy.signal import spectrogram, detrend
@@ -111,7 +112,8 @@ def plot_spectrum_scipy(
     ax_spec.set_ylabel("Frequency (Hz)")
     subtitle = f'FFT = {nfft}. Noverlap = {noverlap}. Data Freq = {fs}Hz.'
     ax_spec.set_title(f'{title}\n{subtitle}')
-    ax_spec.grid(True, axis='x')
+    ax_spec.grid(which='major', axis='x', linestyle='solid', c='white', visible='True', zorder=5)
+    ax_spec.grid(which='minor', axis='x', linestyle='dotted', c='white', visible='True', zorder=5)
     ax_spec.axhspan(0.7 * f0, 1.3 * f0, color="cyan", alpha=0.15)
     cbar = fig.colorbar(pcm, ax=ax_spec, pad=0.01)
     cbar.set_label("Power spectral density (dB/Hz)")
@@ -137,8 +139,8 @@ def plot_spectrum_scipy(
     ax_dp.tick_params(axis='y', colors='blue')
     title = "Hourly pressure change emphasizes transient synoptic forcing while suppressing slowly varying components such as the diurnal tide."
     ax_dp.set_title(f'{title}')
-    ax_dp.grid(True, axis='x')
-    ax_dp.grid(True, axis='both')
+    ax_dp.grid(which='major', axis='x', linestyle='solid', visible='True')
+    ax_dp.grid(which='minor', axis='x', linestyle='dotted', visible='True')
 
     # --- Pressure Delta 2 ---
     halfwindow = 60 * 120
@@ -148,11 +150,13 @@ def plot_spectrum_scipy(
     ax_d.tick_params(axis='y', colors='red')
     title = "Synoptic evolution."
     ax_d.set_title(f'{title}')
-    ax_d.grid(True, axis='both')
+    ax_d.grid(which='major', axis='x', linestyle='solid', visible='True')
+    ax_d.grid(which='minor', axis='x', linestyle='dotted', visible='True')
 
     # --- Time axis formatting ---
     ax_d.xaxis.set_major_formatter(mdates.DateFormatter(datetimeformat))
     fig.autofmt_xdate()
+    ax_d.xaxis.set_minor_locator(AutoMinorLocator(4))
 
     if savefile is not None:
         fig.savefig(savefile)
