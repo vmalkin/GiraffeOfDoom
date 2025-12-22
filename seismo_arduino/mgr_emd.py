@@ -3,6 +3,7 @@ import numpy as np
 import emd
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
+from matplotlib.ticker import AutoMinorLocator
 
 ink_colour = ["#7a3f16", "green", "red", "#ffffff"]
 plotstyle = 'bmh'
@@ -21,8 +22,12 @@ def plot_data(imf, dates, filename, dateformatstring):
     for i in range(0, iters):
         ax[i].plot(dates, imf[:, i], c=ink_colour[0], linewidth=1)
         ax[i].xaxis.set_major_formatter(mdates.DateFormatter(dateformatstring))
+        ax[i].grid(which='major', axis='x', linestyle='solid', c='black', visible='True', zorder=5)
+        ax[i].grid(which='minor', axis='x', linestyle='dotted', c='black', visible='True', zorder=5)
         # fig.add_trace(go.Scatter(x=dates, y=imf[:, i], mode="lines", line=dict(color=pencolour, width=2)),
         #               row=i+1, col=1)
+        # --- Time axis formatting ---
+        ax[i].xaxis.set_minor_locator(AutoMinorLocator(3))
 
     savefile = filename
     plt.savefig(savefile)
