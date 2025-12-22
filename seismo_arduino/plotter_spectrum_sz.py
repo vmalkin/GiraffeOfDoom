@@ -2,6 +2,7 @@ from datetime import timezone, datetime
 import constants as k
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
+from matplotlib.ticker import AutoMinorLocator
 import os
 import class_aggregator
 from scipy.signal import spectrogram, detrend
@@ -75,16 +76,6 @@ def plot_spectrum_scipy(
     t0 = datetimes[0]
     t_dt = [t0 + timedelta(seconds=float(tt)) for tt in t]
 
-    # --- Diurnal band extraction ---
-    f0 = 1.0 / (24 * 3600)
-    band = (freqs >= 0.9 * f0) & (freqs <= 1.1 * f0)
-
-    diurnal_power = np.trapezoid(Sxx[band, :], freqs[band], axis=0)
-    diurnal_power_db = 10 * np.log10(diurnal_power + np.finfo(float).eps)
-
-    # total_power = np.trapezoid(Sxx, freqs, axis=0)
-    # diurnal_fraction = diurnal_power / total_power
-    # diurnal_fraction_db = 10 * np.log10(diurnal_fraction)
 
     # --- Plot ---
     fig, (ax_spec, ax_dp, ax_d) = plt.subplots(
@@ -111,7 +102,8 @@ def plot_spectrum_scipy(
     ax_spec.set_ylabel("Frequency (Hz)")
     subtitle = f'FFT = {nfft}. Noverlap = {noverlap}. Data Freq = {fs}Hz.'
     ax_spec.set_title(f'{title}\n{subtitle}')
-    ax_spec.grid(True, axis='x')
+    ax_dp.grid(which='major', axis='x', linestyle='solid', c='white', visible='True', zorder=5)
+    ax_dp.grid(which='minor', axis='x', linestyle='dotted', c='white', visible='True', zorder=5)
     # ax_spec.axhspan(0.7 * f0, 1.3 * f0, color="cyan", alpha=0.15)
     cbar = fig.colorbar(pcm, ax=ax_spec, pad=0.01)
     cbar.set_label("Power spectral density (dB/Hz)")
@@ -160,8 +152,9 @@ def plot_spectrum_scipy(
     ax_dp.tick_params(axis='y', colors='blue')
     title = ""
     ax_dp.set_title(f'{title}')
-    ax_dp.grid(True, axis='x')
-    ax_dp.grid(True, axis='both')
+    ax_dp.grid(which='major', axis='x', linestyle='solid', visible='True')
+    ax_dp.grid(which='minor', axis='x', linestyle='dotted', visible='True')
+    # ax_dp.grid(True, axis='both')
 
     # --- Pressure Delta 2 ---
 
@@ -169,6 +162,7 @@ def plot_spectrum_scipy(
     # --- Time axis formatting ---
     ax_d.xaxis.set_major_formatter(mdates.DateFormatter(datetimeformat))
     fig.autofmt_xdate()
+    ax_d.xaxis.set_minor_locator(AutoMinorLocator(3))
 
     if savefile is not None:
         fig.savefig(savefile)
