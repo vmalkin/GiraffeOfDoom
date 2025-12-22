@@ -156,7 +156,7 @@ def plot_spectrum_scipy(
     # --- Time axis formatting ---
     ax_d.xaxis.set_major_formatter(mdates.DateFormatter(datetimeformat))
     fig.autofmt_xdate()
-    ax_d.xaxis.set_minor_locator(AutoMinorLocator(4))
+    ax_d.xaxis.set_minor_locator(AutoMinorLocator(6))
 
     if savefile is not None:
         fig.savefig(savefile)

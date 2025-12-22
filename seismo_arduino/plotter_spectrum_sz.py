@@ -220,7 +220,7 @@ def wrapper(data):
     deltasz = get_delta_p(data, halfwindow)
     print(f'{len(data)} {len(deltasz)}')
     df = "%d %H:%M"
-    title = "7 Day Spectrogram of Ground Tilt"
+    title = "1 Day Spectrogram of Ground Tilt"
     savefile = k.dir_images['images'] + os.sep + "spectrum_tilt.png"
     # nfft=16384
 
