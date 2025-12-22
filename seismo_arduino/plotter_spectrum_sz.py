@@ -147,14 +147,14 @@ def plot_spectrum_scipy(
         )
 
     # --- Pressure Delta ---
-    ax_dp.plot(datetimes, deltap, c='blue', linewidth=1)
-    ax_dp.set_ylabel("Δ Pressure (Pa) - 1hr window", color='blue')
-    ax_dp.tick_params(axis='y', colors='blue')
-    title = ""
-    ax_dp.set_title(f'{title}')
-    ax_dp.grid(which='major', axis='x', linestyle='solid', visible='True')
-    ax_dp.grid(which='minor', axis='x', linestyle='dotted', visible='True')
-    # ax_dp.grid(True, axis='both')
+    # ax_dp.plot(datetimes, deltap, c='blue', linewidth=1)
+    # ax_dp.set_ylabel("Δ Pressure (Pa) - 1hr window", color='blue')
+    # ax_dp.tick_params(axis='y', colors='blue')
+    # title = ""
+    # ax_dp.set_title(f'{title}')
+    # ax_dp.grid(which='major', axis='x', linestyle='solid', visible='True')
+    # ax_dp.grid(which='minor', axis='x', linestyle='dotted', visible='True')
+    # # ax_dp.grid(True, axis='both')
 
     # --- Pressure Delta 2 ---
 
@@ -229,12 +229,12 @@ def wrapper(data):
         deltap=deltasz,
         datetimes=plot_utc,
         fs=10,
-        nfft=16384,
-        overlap_frac=0.90,
-        fmin=10 ** -4.2,
-        fmax=3,
+        nfft=262144,
+        overlap_frac=0.95,
+        fmin=10 ** -5.2,
+        fmax=10 ** 0,
         vmin=-15,
-        vmax=10,
+        vmax=21,
         datetimeformat="%d\n%H:%M",
         title=title,
         savefile=savefile,

@@ -215,6 +215,7 @@ def wrapper(data):
     title = "Spectrogram of Barometric Pressure"
     savefile = k.dir_images['images'] + os.sep + "spectrum_press.png"
     # nfft=16384
+    # nfft=32768
 
     plot_spectrum_scipy(
         data,
