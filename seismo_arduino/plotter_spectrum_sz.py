@@ -1,4 +1,6 @@
 from datetime import timezone, datetime
+from xml.etree.ElementPath import prepare_self
+
 import constants as k
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
@@ -11,8 +13,9 @@ import numpy as np
 
 
 def plot_spectrum_scipy(
-    data,
-    deltap,
+    data_szm,
+    data_tmp,
+    data_prs,
     datetimes,
     fs,
     nfft=8192,
@@ -59,7 +62,7 @@ def plot_spectrum_scipy(
 
     # --- Compute spectrogram (NO plotting here) ---
     freqs, t, Sxx = spectrogram(
-        data,
+        data_szm,
         fs=fs,
         window="hann",
         nperseg=nfft,
@@ -78,7 +81,7 @@ def plot_spectrum_scipy(
 
 
     # --- Plot ---
-    fig, (ax_spec, ax_dp, ax_d) = plt.subplots(
+    fig, (ax_spec, ax_tmp, ax_prs) = plt.subplots(
         3, 1,
         sharex=True,
         figsize=(17, 12),
@@ -104,7 +107,8 @@ def plot_spectrum_scipy(
     ax_spec.set_title(f'{title}\n{subtitle}')
     ax_spec.grid(which='major', axis='x', linestyle='solid', c='white', visible='True', zorder=5)
     ax_spec.grid(which='minor', axis='x', linestyle='dotted', c='white', visible='True', zorder=5)
-    # ax_spec.axhspan(0.7 * f0, 1.3 * f0, color="cyan", alpha=0.15)
+    f0 = 10 ** -6
+    ax_spec.axhspan(0.7 * f0, 1.3 * f0, color="cyan", alpha=0.15)
     cbar = fig.colorbar(pcm, ax=ax_spec, pad=0.01)
     cbar.set_label("Power spectral density (dB/Hz)")
 
@@ -146,23 +150,30 @@ def plot_spectrum_scipy(
             ),
         )
 
-    # --- Pressure Delta ---
-    # ax_dp.plot(datetimes, deltap, c='blue', linewidth=1)
-    # ax_dp.set_ylabel("Δ Pressure (Pa) - 1hr window", color='blue')
-    # ax_dp.tick_params(axis='y', colors='blue')
-    # title = ""
-    # ax_dp.set_title(f'{title}')
-    # ax_dp.grid(which='major', axis='x', linestyle='solid', visible='True')
-    # ax_dp.grid(which='minor', axis='x', linestyle='dotted', visible='True')
-    # # ax_dp.grid(True, axis='both')
+    # --- plot temperature ---
+    ax_tmp.plot(datetimes, data_tmp, c='red', linewidth=1)
+    ax_tmp.set_ylabel("Temperature - Deg C", color='red')
+    ax_tmp.tick_params(axis='y', colors='red')
+    title = "Temperature"
+    ax_tmp.set_title(f'{title}')
+    ax_tmp.grid(which='major', axis='x', linestyle='solid', visible='True')
+    ax_tmp.grid(which='minor', axis='x', linestyle='dotted', visible='True')
+    # ax_dp.grid(True, axis='both')
 
-    # --- Pressure Delta 2 ---
-
+    # --- plot pressure ---
+    ax_prs.plot(datetimes, data_prs, c='green', linewidth=1)
+    ax_prs.set_ylabel("Pressure - Pa", color='green')
+    ax_prs.tick_params(axis='y', colors='green')
+    title = "Pressure"
+    ax_prs.set_title(f'{title}')
+    ax_prs.grid(which='major', axis='x', linestyle='solid', visible='True')
+    ax_prs.grid(which='minor', axis='x', linestyle='dotted', visible='True')
+    # ax_dp.grid(True, axis='both')
 
     # --- Time axis formatting ---
-    ax_d.xaxis.set_major_formatter(mdates.DateFormatter(datetimeformat))
+    ax_prs.xaxis.set_major_formatter(mdates.DateFormatter(datetimeformat))
     fig.autofmt_xdate()
-    ax_d.xaxis.set_minor_locator(AutoMinorLocator(3))
+    ax_prs.xaxis.set_minor_locator(AutoMinorLocator(3))
 
     if savefile is not None:
         fig.savefig(savefile)
@@ -205,12 +216,18 @@ def wrapper(data):
 
     plot_utc = []
     plot_sz = []
+    plot_temp = []
+    plot_press = []
     for i in range(1, len(aggregate_array)):
         tim = aggregate_array[i][0]
         tim = datetime.fromtimestamp(tim, tz=timezone.utc)  # datetime object
-        prs = aggregate_array[i][1]
+        szm = aggregate_array[i][1]
+        tmp = aggregate_array[i][2]
+        prs = aggregate_array[i][3]
         plot_utc.append(tim)
-        plot_sz.append(prs)
+        plot_sz.append(szm)
+        plot_temp.append(tmp)
+        plot_press.append(prs)
 
     # b, a = butter(2, 0.001, btype='highpass', fs=1)
     # data = filtfilt(b, a, plot_press)
@@ -218,15 +235,16 @@ def wrapper(data):
 
     halfwindow = 10 * 60 * 30
     deltasz = get_delta_p(data, halfwindow)
-    print(f'{len(data)} {len(deltasz)}')
+    # print(f'{len(data)} {len(deltasz)}')
     df = "%d %H:%M"
     title = "1 Day Spectrogram of Ground Tilt"
     savefile = k.dir_images['images'] + os.sep + "spectrum_tilt.png"
     # nfft=16384
 
     plot_spectrum_scipy(
-        data,
-        deltap=deltasz,
+        data_szm=data,
+        data_tmp=plot_temp,
+        data_prs=plot_press,
         datetimes=plot_utc,
         fs=10,
         nfft=262144,
