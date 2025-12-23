@@ -3,14 +3,15 @@ import time
 import constants as k
 from datetime import datetime, timezone
 import plotter_phaseportrait
-import plotter_spectrum_sz
-import plotter_spectrum_baro
-import plotter_combo1day
-import plotter_combo7day
-import plotter_dual
-import plotter_helicorder
-import plotter_fft_7d
-import plotter_fft_movie
+# import plotter_spectrum_sz
+# import plotter_spectrum_baro
+import plotter_temperature_regression
+# import plotter_combo1day
+# import plotter_combo7day
+# import plotter_dual
+# import plotter_helicorder
+# import plotter_fft_7d
+# import plotter_fft_movie
 import mgr_emd
 import os
 
@@ -39,8 +40,9 @@ for key in k.dir_images:
     try_create_directory(key)
 
 # plotter_phaseportrait.wrapper(result_1d)
-plotter_spectrum_baro.wrapper((result_7d))
-plotter_spectrum_sz.wrapper((result_7d))
+plotter_temperature_regression.wrapper(result_7d)
+# plotter_spectrum_baro.wrapper((result_7d))
+# plotter_spectrum_sz.wrapper((result_7d))
 # plotter_combo1day.wrapper(result_1d)
 # plotter_combo7day.wrapper(result_7d)
 # # plotter_dual.wrapper(result_1d)
