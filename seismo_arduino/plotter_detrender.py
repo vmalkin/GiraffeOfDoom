@@ -1,20 +1,13 @@
 from datetime import datetime, timezone
 
-
-class Detrender:
-    def __init__(self, data):
-        self.data = data
+import numpy as np
 
 
 def get_delta_p(data, halfwindow):
     nullvalue = np.nan
     returnarray = []
     end_index = len(data) - halfwindow
-    # we want to return an array the same size as the input array. We pad the beginning and end with
-    # null values. The array is split up thus:
-    # [half window at start] <-> [data we work on] <-> [half window at end]
-    # IF we were doing a running avg for instance, this would give us a window centred on our chosen data. THis is
-    # preferred
+
     if len(data) > halfwindow:
         for i in range(0, len(data)):
             if halfwindow < i < end_index:
@@ -32,14 +25,34 @@ def get_delta_p(data, halfwindow):
 
 
 def wrapper(data):
-    print("*** Phase Plots.")
+    print("*** Detrending.")
     aggregate_array = data
-    plot_utc = []
-    plot_seismo = []
+    data_utc = []
+    data_seismo = []
 
     for i in range(1, len(aggregate_array)):
         tim = aggregate_array[i][0]
         tim = datetime.fromtimestamp(tim, tz=timezone.utc)  # datetime object
         siz = aggregate_array[i][1]
-        plot_utc.append(tim)
-        plot_seismo.append(siz)
+        data_utc.append(tim)
+        data_seismo.append(siz)
+
+    plot_utc = []
+    plot_seismo = []
+    readings_per_sec = 10
+    detrend_half_window = readings_per_sec * 60 * 5
+    end_index = len(data_seismo) - detrend_half_window
+
+    for i in range(0, len(data_seismo)):
+        if detrend_half_window < i < end_index:
+            window_data = data_seismo[i - detrend_half_window: i + detrend_half_window]
+            # dd = data_seismo - np.nanmean(window_data)
+            # dt = data_utc[i]
+            # plot_seismo.append(dd)
+            # plot_utc.append(dt)
+            if i % 100 == 0:
+                print(f'{i} / {len(data_seismo)}')
+
+
+
+
