@@ -1,27 +1,34 @@
 from datetime import datetime, timezone
-
 import numpy as np
+import matplotlib.pyplot as plt
+import matplotlib.dates as mdates
+from matplotlib.ticker import AutoMinorLocator
+import os
+import constants as k
 
 
-def get_delta_p(data, halfwindow):
-    nullvalue = np.nan
-    returnarray = []
-    end_index = len(data) - halfwindow
+def plot_data(data, dates, filename, dateformatstring):
+    ink_colour = ["#7a3f16", "green", "red", "#ffffff"]
+    plotstyle = 'bmh'
 
-    if len(data) > halfwindow:
-        for i in range(0, len(data)):
-            if halfwindow < i < end_index:
-                window_data = data[i - halfwindow: i + halfwindow]
-                # j = window_data[-1] - window_data[0]
-                j = np.nanmax(window_data) - np.nanmin(window_data)
-                j = round(j, 3)
-                returnarray.append(j)
-            else:
-                returnarray.append(nullvalue)
-    else:
-        for _ in data:
-            returnarray.append(nullvalue)
-    return returnarray
+    plt.style.use(plotstyle)
+
+    fig, ax = plt.subplots( layout="constrained", figsize=(14, 7), dpi=140)
+    title = "Empirical Mode Decomposion - Tilt data. "
+
+    ax.plot(dates, data, c=ink_colour[0], linewidth=1)
+    ax.xaxis.set_major_formatter(mdates.DateFormatter(dateformatstring))
+    ax.grid(which='major', axis='x', linestyle='solid', c='black', visible='True', zorder=5)
+    ax.grid(which='minor', axis='x', linestyle='dotted', c='black', visible='True', zorder=5)
+
+    # Use proper date formatter + locator
+    ax.xaxis.set_major_formatter(mdates.DateFormatter(dateformatstring))
+    ax.xaxis.set_major_locator(mdates.MinuteLocator(interval=4))
+    plt.setp(ax.get_xticklabels(), rotation=90)  # safer than plt.xticks
+
+    savefile = filename
+    plt.savefig(savefile)
+    plt.close()
 
 
 def wrapper(data):
@@ -52,7 +59,9 @@ def wrapper(data):
             plot_utc.append(dt)
             if i % 100 == 0:
                 print(f'{i} / {len(data_seismo)}')
-
+    df = "%d  %H:%M"
+    savefile = k.dir_images['images'] + os.sep + "detrended.png"
+    plot_data(plot_seismo, plot_utc, savefile, df)
 
 
 
