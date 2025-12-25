@@ -46,10 +46,10 @@ def wrapper(data):
     for i in range(0, len(data_seismo)):
         if detrend_half_window < i < end_index:
             window_data = data_seismo[i - detrend_half_window: i + detrend_half_window]
-            # dd = data_seismo - np.nanmean(window_data)
-            # dt = data_utc[i]
-            # plot_seismo.append(dd)
-            # plot_utc.append(dt)
+            dd = data_seismo[i] - np.nanmean(window_data)
+            dt = data_utc[i]
+            plot_seismo.append(dd)
+            plot_utc.append(dt)
             if i % 100 == 0:
                 print(f'{i} / {len(data_seismo)}')
 
