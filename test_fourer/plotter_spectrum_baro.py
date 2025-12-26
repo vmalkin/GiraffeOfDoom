@@ -72,9 +72,9 @@ def plot_spectrum_scipy(
     Sxx_db = 10 * np.log10(Sxx + np.finfo(float).eps)
 
     # # --- Convert time axis to datetimes ---
-    # # t0 = datetimes[0]
-    # t0 = 0
+    # t0 = datetimes[0]
     # t_dt = [t0 + timedelta(seconds=float(tt)) for tt in t]
+    t_dt = datetimes
 
     # --- Plot ---
     fig, (ax_spec, ax_dp, ax_d) = plt.subplots(
@@ -84,7 +84,7 @@ def plot_spectrum_scipy(
         layout="constrained",
         height_ratios=[2.2, 1, 1],
     )
-
+    print(f'Diagnostic: {len(t_dt)}, {len(freqs)}, {len(Sxx_db)}')
     pcm = ax_spec.pcolormesh(
         t,
         freqs,
@@ -129,22 +129,22 @@ def plot_spectrum_scipy(
     ax_dp.set_title(f'{title}')
     ax_dp.grid(which='major', axis='x', linestyle='solid', visible='True')
     ax_dp.grid(which='minor', axis='x', linestyle='dotted', visible='True')
+    #
+    # # --- Pressure Delta 2 ---
+    # halfwindow = 60 * 120
+    # dp = get_delta_p(data, halfwindow)
+    # ax_d.plot(datetimes, dp, c='red', linewidth=1)
+    # ax_d.set_ylabel("Δ Pressure (Pa) - 4hr window", color='red')
+    # ax_d.tick_params(axis='y', colors='red')
+    # title = "Synoptic evolution."
+    # ax_d.set_title(f'{title}')
+    # ax_d.grid(which='major', axis='x', linestyle='solid', visible='True')
+    # ax_d.grid(which='minor', axis='x', linestyle='dotted', visible='True')
 
-    # --- Pressure Delta 2 ---
-    halfwindow = 60 * 120
-    dp = get_delta_p(data, halfwindow)
-    ax_d.plot(datetimes, dp, c='red', linewidth=1)
-    ax_d.set_ylabel("Δ Pressure (Pa) - 4hr window", color='red')
-    ax_d.tick_params(axis='y', colors='red')
-    title = "Synoptic evolution."
-    ax_d.set_title(f'{title}')
-    ax_d.grid(which='major', axis='x', linestyle='solid', visible='True')
-    ax_d.grid(which='minor', axis='x', linestyle='dotted', visible='True')
-
-    # --- Time axis formatting ---
-    ax_d.xaxis.set_major_formatter(mdates.DateFormatter(datetimeformat))
-    fig.autofmt_xdate()
-    ax_d.xaxis.set_minor_locator(AutoMinorLocator(6))
+    # # --- Time axis formatting ---
+    # ax_d.xaxis.set_major_formatter(mdates.DateFormatter(datetimeformat))
+    # fig.autofmt_xdate()
+    # ax_d.xaxis.set_minor_locator(AutoMinorLocator(6))
 
     if savefile is not None:
         fig.savefig(savefile)
@@ -182,13 +182,14 @@ def wrapper(data):
     aggregate_array = data
     aggregate_array.pop(0)
 
-    # plot_utc = []
+    plot_utc = []
     plot_press = []
     for i in range(0, len(aggregate_array)):
         # tim = aggregate_array[i].get_avg_posix()
         # tim = datetime.fromtimestamp(tim, tz=timezone.utc)  # datetime object
+        tim = aggregate_array[i][0]
         prs = aggregate_array[i][1]
-        # plot_utc.append(tim)
+        plot_utc.append(tim)
         plot_press.append(prs)
 
     # b, a = butter(2, 0.001, btype='highpass', fs=1)
@@ -207,14 +208,14 @@ def wrapper(data):
     plot_spectrum_scipy(
         data,
         deltap=deltapressure,
-        datetimes=None,
+        datetimes=plot_utc,
         fs=0.5,
         nfft=1024,
         overlap_frac=0.75,
-        fmin=None,
-        fmax=None,
-        vmin=None,
-        vmax=None,
+        fmin=0,
+        fmax=0.25,
+        vmin=-60,
+        vmax=-20,
         datetimeformat=None,
         title=title,
         savefile=savefile,
