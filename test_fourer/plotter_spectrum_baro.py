@@ -71,9 +71,10 @@ def plot_spectrum_scipy(
     # Convert power to dB safely
     Sxx_db = 10 * np.log10(Sxx + np.finfo(float).eps)
 
-    # --- Convert time axis to datetimes ---
-    t0 = datetimes[0]
-    t_dt = [t0 + timedelta(seconds=float(tt)) for tt in t]
+    # # --- Convert time axis to datetimes ---
+    # # t0 = datetimes[0]
+    # t0 = 0
+    # t_dt = [t0 + timedelta(seconds=float(tt)) for tt in t]
 
     # --- Plot ---
     fig, (ax_spec, ax_dp, ax_d) = plt.subplots(
@@ -85,7 +86,7 @@ def plot_spectrum_scipy(
     )
 
     pcm = ax_spec.pcolormesh(
-        t_dt,
+        t,
         freqs,
         Sxx_db,
         shading="auto",
@@ -183,10 +184,10 @@ def wrapper(data):
 
     # plot_utc = []
     plot_press = []
-    for i in range(1, len(aggregate_array)):
+    for i in range(0, len(aggregate_array)):
         # tim = aggregate_array[i].get_avg_posix()
         # tim = datetime.fromtimestamp(tim, tz=timezone.utc)  # datetime object
-        prs = aggregate_array[1]
+        prs = aggregate_array[i][1]
         # plot_utc.append(tim)
         plot_press.append(prs)
 

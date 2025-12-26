@@ -1,7 +1,5 @@
 import requests
-import os
 import time
-import constants as k
 import plotter_spectrum_baro
 
 #
@@ -54,7 +52,7 @@ if __name__ == "__main__":
         dp = [time_info, decimal_data]
         cleaned_csv.append(dp)
 
-    # plotter_spectrum_baro.wrapper(cleaned_csv)
+    plotter_spectrum_baro.wrapper(cleaned_csv)
 
     t_end = time.time()
     t_elapsed = (t_end - t_start) / 60
