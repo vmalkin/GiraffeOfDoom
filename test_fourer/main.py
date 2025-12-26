@@ -1,24 +1,19 @@
-import numpy as np
-from scipy.fft import rfft, rfftfreq
 import requests
-import matplotlib.pyplot as plt
 import os
 import time
-import mgr_mp4
-import mgr_multiprocess
 import constants as k
 import plotter_spectrum_baro
 
-
-def try_create_directory(directory):
-    if os.path.isdir(directory) is False:
-        print("Creating image file directory...")
-        try:
-            os.makedirs(directory)
-            print("Directory created.")
-        except:
-            if not os.path.isdir(directory):
-                print("Unable to create directory")
+#
+# def try_create_directory(directory):
+#     if os.path.isdir(directory) is False:
+#         print("Creating image file directory...")
+#         try:
+#             os.makedirs(directory)
+#             print("Directory created.")
+#         except:
+#             if not os.path.isdir(directory):
+#                 print("Unable to create directory")
 
 
 def get_url_data(pageurl):
@@ -44,11 +39,6 @@ def make_decimal(string_value):
 
 if __name__ == "__main__":
     t_start = time.time()
-    img_dir = k.img_dir
-    movie_dir = k.movie_dir
-    try_create_directory(img_dir)
-    try_create_directory(movie_dir)
-
     # csv_from_web = get_url_data("http://dunedinaurora.nz/dnacore04/Ruru_Obs.csv")
     csv_from_web = get_url_data("http://www.ruruobservatory.org.nz/dr01_24hr.csv")
     # csv_from_web = process_csv_from_web(csv_from_web)
@@ -64,7 +54,7 @@ if __name__ == "__main__":
         dp = [time_info, decimal_data]
         cleaned_csv.append(dp)
 
-
+    # plotter_spectrum_baro.wrapper(cleaned_csv)
 
     t_end = time.time()
     t_elapsed = (t_end - t_start) / 60
