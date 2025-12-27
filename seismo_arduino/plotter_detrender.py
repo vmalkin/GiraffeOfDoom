@@ -6,6 +6,7 @@ from matplotlib.ticker import AutoMinorLocator
 import os
 import constants as k
 import standard_stuff
+import class_aggregator
 
 
 def plot_data(data, dates, filename, dateformatstring):
@@ -31,36 +32,41 @@ def plot_data(data, dates, filename, dateformatstring):
 
 def wrapper(data):
     print("*** Detrending.")
-    aggregate_array = data
-    data_utc = []
-    data_seismo = []
+    # decimate the data
+    window = 10
+    aggregate_array = class_aggregator.aggregate_data(window, data)
+    aggregate_array.pop(0)
+
+    raw_utc = []
+    raw_seismo = []
 
     for i in range(1, len(aggregate_array)):
-        tim = aggregate_array[i][0]
+        tim = aggregate_array[i].get_avg_posix()
         tim = datetime.fromtimestamp(tim, tz=timezone.utc)  # datetime object
-        siz = aggregate_array[i][1]
-        data_utc.append(tim)
-        data_seismo.append(siz)
+        siz = aggregate_array[i].get_data_avg(aggregate_array[i].data_seismo)
+        raw_utc.append(tim)
+        raw_seismo.append(siz)
+
 
     plot_utc = []
     plot_seismo = []
-    readings_per_sec = 10
+    readings_per_sec = 1
     # Current detrending by an hour
-    detrend_half_window = readings_per_sec * 60 * 30
-    end_index = len(data_seismo) - detrend_half_window
+    detrend_half_window = readings_per_sec * 60 * 5
+    end_index = len(raw_seismo) - detrend_half_window
 
-    for i in range(0, len(data_seismo)):
+    for i in range(0, len(raw_seismo)):
         if detrend_half_window < i < end_index:
-            window_data = data_seismo[i - detrend_half_window: i + detrend_half_window]
-            dd = data_seismo[i] - np.nanmean(window_data)
-            dt = data_utc[i]
+            window_data = raw_seismo[i - detrend_half_window: i + detrend_half_window]
+            dd = raw_seismo[i] - np.nanmean(window_data)
+            dt = raw_utc[i]
             plot_seismo.append(dd)
             plot_utc.append(dt)
             if i % 100000 == 0:
-                print(f'Detrend {int(i / len(data_seismo) * 100)}% completed...')
+                print(f'Detrend {int(i / len(raw_seismo) * 100)}% completed...')
 
     # Some smoothing is required here
-    avgwindow = 10 * 3
+    avgwindow = 2
     plot_seismo = standard_stuff.filter_average(plot_seismo, avgwindow)
     plot_utc = plot_utc[avgwindow:-avgwindow]
     plot_seismo = standard_stuff.filter_average(plot_seismo, avgwindow)

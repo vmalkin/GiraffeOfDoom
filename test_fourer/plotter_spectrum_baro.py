@@ -95,7 +95,7 @@ def plot_spectrum_scipy(
         vmax=vmax,
     )
 
-    ax_spec.set_yscale("log")
+    # ax_spec.set_yscale("log")
     ax_spec.set_ylim(fmin, fmax)
     ax_spec.set_ylabel("Frequency (Hz)")
     subtitle = f'FFT = {nfft}. Noverlap = {noverlap}. Data Freq = {fs}Hz.'
@@ -121,14 +121,14 @@ def plot_spectrum_scipy(
     #         fontsize=8,
     #         bbox=dict(boxstyle="round", fc="1", ec="black"),
     #     )
-    # --- Pressure Delta ---
-    ax_dp.plot(datetimes, deltap, c='blue', linewidth=1)
-    ax_dp.set_ylabel("Δ Pressure (Pa) - 1hr window", color='blue')
-    ax_dp.tick_params(axis='y', colors='blue')
-    title = "Hourly pressure change emphasizes transient synoptic forcing while suppressing slowly varying components such as the diurnal tide."
-    ax_dp.set_title(f'{title}')
-    ax_dp.grid(which='major', axis='x', linestyle='solid', visible='True')
-    ax_dp.grid(which='minor', axis='x', linestyle='dotted', visible='True')
+    # # --- Pressure Delta ---
+    # ax_dp.plot(datetimes, deltap, c='blue', linewidth=1)
+    # ax_dp.set_ylabel("Δ Pressure (Pa) - 1hr window", color='blue')
+    # ax_dp.tick_params(axis='y', colors='blue')
+    # title = "Hourly pressure change emphasizes transient synoptic forcing while suppressing slowly varying components such as the diurnal tide."
+    # ax_dp.set_title(f'{title}')
+    # ax_dp.grid(which='major', axis='x', linestyle='solid', visible='True')
+    # ax_dp.grid(which='minor', axis='x', linestyle='dotted', visible='True')
     #
     # # --- Pressure Delta 2 ---
     # halfwindow = 60 * 120
@@ -212,7 +212,7 @@ def wrapper(data):
         fs=0.5,
         nfft=1024,
         overlap_frac=0.75,
-        fmin=0,
+        fmin=0.000001,
         fmax=0.25,
         vmin=-60,
         vmax=-20,
