@@ -9,7 +9,8 @@ from matplotlib.ticker import AutoMinorLocator
 # import class_aggregator
 
 nullvalue = np.nan
-
+ink_colour = ["#7a3f16", "green", "red", "#ffffff"]
+plotstyle = 'bmh'
 
 class DecimatedData:
     def __init__(self):
@@ -19,23 +20,46 @@ class DecimatedData:
         self.pressure = []
 
 
-def plot_data(data, dates, filename, dateformatstring):
-    ink_colour = ["#7a3f16", "green", "red", "#ffffff"]
-    plotstyle = 'bmh'
+def plot_multi(dateformatstring, dateobjects, dataarrays, readings_per_tick, texttitle, savefile):
+    # utcdates should be datetime objects, not POSIX floats
     plt.style.use(plotstyle)
-    fig, ax = plt.subplots( layout="constrained", figsize=(200, 7), dpi=140)
-    title = "Empirical Mode Decomposion - Tilt data. "
+    # fig, ax1 = plt.subplots(nrows=2, layout="constrained", figsize=(16, 8), dpi=140)
+    fig, (ax_top, ax_bottom) = plt.subplots(
+        2, 1, figsize=(16, 8), dpi=140, sharex=True, height_ratios=[2, 1]
+    )
 
-    ax.plot(dates, data, c=ink_colour[0], linewidth=1)
-    ax.set_ylim([-2, 2])
+    # Subplots with separate y axes
+    ax_top.plot(dateobjects, dataarrays[0], c=ink_colour[0], linewidth=2)
+    ax_top.set_ylabel("Tiltmeter. Arbitrary Units.", color=ink_colour[0])
+    ax_top.tick_params(axis='y', colors=ink_colour[0])
+
+    ax_top2 = ax_top.twinx()
+    ax_top2.plot(dateobjects, dataarrays[1], c=ink_colour[1], linewidth=2)
+    ax_top2.set_ylabel("Pressure. Pa.", color=ink_colour[1])
+    ax_top2.tick_params(axis='y', colors=ink_colour[1])
+    ax_top2.spines['right'].set_position(('outward', 60))
+    ax_top2.yaxis.grid(False)
+
+    ax_top3 = ax_top.twinx()
+    ax_top3.plot(dateobjects, dataarrays[2], c=ink_colour[2], linewidth=2)
+    ax_top3.set_ylabel("Temperature. Deg C.", color=ink_colour[2])
+    ax_top3.tick_params(axis='y', colors=ink_colour[2])
+    ax_top3.yaxis.grid(False)
+
+    noise_colour = '#505050'
+    ax_bottom.plot(dateobjects, dataarrays[3], c=noise_colour, linewidth=0.8)
+    ax_bottom.set_ylabel("Noise - Arbitrary Units.", color=noise_colour)
+    ax_bottom.tick_params(axis='y', colors=noise_colour)
+    ax_bottom.set_ylim([3, 20])
+    ax_bottom.yaxis.grid(False)
+
     # Use proper date formatter + locator
-    ax.grid(which='major', axis='x', linestyle='solid', c='black', visible='True', zorder=5)
-    ax.grid(which='minor', axis='x', linestyle='dotted', c='black', visible='True', zorder=5)
-    ax.xaxis.set_major_formatter(mdates.DateFormatter(dateformatstring))
-    ax.xaxis.set_minor_locator(AutoMinorLocator(6))
-    plt.setp(ax.get_xticklabels(), rotation=90)  # safer than plt.xticks
-
-    savefile = filename
+    ax_top.xaxis.set_major_formatter(mdates.DateFormatter(dateformatstring))
+    ax_top.xaxis.set_major_locator(mdates.MinuteLocator(interval=readings_per_tick))
+    plt.setp(ax_bottom.get_xticklabels(), rotation=90)  # safer than plt.xticks
+    plot_title = texttitle + " - " + standard_stuff.posix2utc(time.time(), '%Y-%m-%d %H:%M')
+    ax_top.set_title(plot_title)
+    plt.tight_layout()
     plt.savefig(savefile)
     plt.close()
 
@@ -130,9 +154,9 @@ def wrapper(data):
     # ================================================================================
     # Finally, plot data!
     print(f'Detrend completed!')
-    # df = "%d  %H:%M"
-    # savefile = k.dir_images['images'] + os.sep + "detrended.png"
-    # plot_data(demean_seismo, raw_utc, savefile, df)
+    df = "%d  %H:%M"
+    savefile = k.dir_images['images'] + os.sep + "detrended.png"
+    plot_data(demean_seismo, raw_utc, savefile, df)
 
 
 
