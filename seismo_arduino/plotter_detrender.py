@@ -1,12 +1,12 @@
-from datetime import datetime, timezone
+from datetime import datetime, timezone, time
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 from matplotlib.ticker import AutoMinorLocator
-# import os
-# import constants as k
-# import standard_stuff
-# import class_aggregator
+import os
+import constants as k
+import standard_stuff
+
 
 nullvalue = np.nan
 ink_colour = ["#7a3f16", "green", "red", "#ffffff"]
@@ -153,10 +153,40 @@ def wrapper(data):
 
     # ================================================================================
     # Finally, plot data!
-    print(f'Detrend completed!')
     df = "%d  %H:%M"
-    savefile = k.dir_images['images'] + os.sep + "detrended.png"
-    plot_data(demean_seismo, raw_utc, savefile, df)
+    # tim = datetime.fromtimestamp(tim, tz=timezone.utc)  # datetime object
+    plot_dates = []
+    datawrapper = []
+    plot_seismo = []
+    plot_temperature = []
+    plot_pressure = []
+
+    for item in decimate_array:
+    #     time_object = np.nanmean(item.posixtime)
+    #     time_object = datetime.fromtimestamp(time_object, tz=timezone.utc)
+    #     seismo_current = np.nanmean(item.seismo)
+    #     temperature_current = np.nanmean(item.temperature)
+    #     pressure_current = np.nanmean(item.pressure)
+    #
+    #     plot_dates.append(time_object)
+    #     plot_seismo.append(seismo_current)
+    #     plot_temperature.append(temperature_current)
+    #     plot_pressure.append(pressure_current)
+    #
+    # datawrapper.append(plot_dates)
+    # datawrapper.append(plot_seismo)
+    # datawrapper.append(plot_pressure)
+    # datawrapper.append(plot_temperature)
+    #
+    # savefile = k.dir_images['images'] + os.sep + "detrended.png"
+    # plot_multi(dateformatstring=df,
+    #            dateobjects=plot_dates,
+    #            dataarrays=datawrapper,
+    #            readings_per_tick=10,
+    #            texttitle='Normalised Data',
+    #            savefile=savefile)
+
+    print(f'Detrend completed!')
 
 
 
