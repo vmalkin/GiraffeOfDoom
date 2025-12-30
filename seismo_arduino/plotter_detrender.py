@@ -57,7 +57,8 @@ def wrapper(data):
         raw_temperature.append(tmp)
         raw_pressure.append(prs)
 
-    # de-mean the data
+    # ================================================================================
+    # de-mean the data. Any FFT analysis should be done immediately after this.
     demean_seismo = []
     mean_value = np.nanmean(raw_seismo)
     for item in raw_seismo:
@@ -76,7 +77,7 @@ def wrapper(data):
         dd = item - mean_value
         demean_pressure.append(dd)
 
-
+    # ================================================================================
     # Perform mean / z-score normalisation
     d_mu = np.mean(demean_seismo)
     d_sigma = np.std(demean_seismo)
@@ -99,10 +100,10 @@ def wrapper(data):
         z_score = (item - d_mu) / d_sigma
         z_score_pressure.append(z_score)
 
-    print(f'length utc = {len(raw_utc)}.\nlength z_score = {len(z_score_seismo)}.\nlength z_score_temperature = {len(z_score_temperature)}.')
-
-    # decimate data to plot it.
+    # ================================================================================
+    # Decimate data to plot it.
     decimate_array = []
+    # seismic data is currently sampled at a rate of 10hz
     decimate_half_window = 5
     end_index = len(z_score_seismo) - decimate_half_window
 
@@ -126,7 +127,8 @@ def wrapper(data):
         for _ in data:
             decimate_array.append(nullvalue)
 
-
+    # ================================================================================
+    # Finally, plot data!
     print(f'Detrend completed!')
     # df = "%d  %H:%M"
     # savefile = k.dir_images['images'] + os.sep + "detrended.png"
