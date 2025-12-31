@@ -19,6 +19,13 @@ class DecimatedData:
         self.temperature = []
         self.pressure = []
 
+    def get_noise(self):
+        returnvalue = np.nan
+        if len(self.seismo) > 1:
+            if np.isnan(np.min(self.seismo)) is not True:
+                returnvalue = np.nanmax(self.seismo) - np.min(self.seismo)
+        return returnvalue
+
 
 def plot_multi(dateformatstring, dateobjects, dataarrays, readings_per_tick, texttitle, savefile):
     # utcdates should be datetime objects, not POSIX floats
@@ -57,15 +64,15 @@ def plot_multi(dateformatstring, dateobjects, dataarrays, readings_per_tick, tex
     ax_top.xaxis.set_major_formatter(mdates.DateFormatter(dateformatstring))
     ax_top.xaxis.set_major_locator(mdates.MinuteLocator(interval=readings_per_tick))
     plt.setp(ax_bottom.get_xticklabels(), rotation=90)  # safer than plt.xticks
-    plot_title = texttitle + " - " + standard_stuff.posix2utc(time.time(), '%Y-%m-%d %H:%M')
-    ax_top.set_title(plot_title)
+    # plot_title = texttitle + " - " + standard_stuff.posix2utc(time(), '%Y-%m-%d %H:%M')
+    # ax_top.set_title(plot_title)
     plt.tight_layout()
     plt.savefig(savefile)
     plt.close()
 
 
 def wrapper(data):
-    print("*** Detrending.")
+    print("*** Detrend started.")
     raw_utc = []
     raw_seismo = []
     raw_temperature = []
@@ -83,6 +90,7 @@ def wrapper(data):
 
     # ================================================================================
     # de-mean the data. Any FFT analysis should be done immediately after this.
+    print('--- De-meaning...')
     demean_seismo = []
     mean_value = np.nanmean(raw_seismo)
     for item in raw_seismo:
@@ -103,6 +111,7 @@ def wrapper(data):
 
     # ================================================================================
     # Perform mean / z-score normalisation
+    print('--- Perform mean / z-score normalisation...')
     d_mu = np.mean(demean_seismo)
     d_sigma = np.std(demean_seismo)
     z_score_seismo = []
@@ -126,33 +135,30 @@ def wrapper(data):
 
     # ================================================================================
     # Decimate data to plot it.
+    print('--- Decimate data to plot it...')
     decimate_array = []
     # seismic data is currently sampled at a rate of 10hz
-    decimate_half_window = 5
+    decimate_half_window = 5 * 30
     end_index = len(z_score_seismo) - decimate_half_window
 
-    if len(z_score_seismo) > decimate_half_window:
-        for i in range(0, len(z_score_seismo)):
-            if decimate_half_window < i < end_index:
-                px_data = raw_utc[i - decimate_half_window: i + decimate_half_window]
-                sz_data = z_score_seismo[i - decimate_half_window: i + decimate_half_window]
-                tm_data = z_score_temperature[i - decimate_half_window: i + decimate_half_window]
-                pr_data = z_score_pressure[i - decimate_half_window: i + decimate_half_window]
-                d = DecimatedData()
-                d.posixtime = px_data
-                d.seismo = sz_data
-                d.temperature = tm_data
-                d.pressure = pr_data
-                decimate_array.append(d)
-
-            else:
-                decimate_array.append(nullvalue)
-    else:
-        for _ in data:
-            decimate_array.append(nullvalue)
+    for i in range(0, len(z_score_seismo), decimate_half_window * 2):
+        if decimate_half_window < i < end_index:
+            px_data = raw_utc[i - decimate_half_window: i + decimate_half_window]
+            sz_data = z_score_seismo[i - decimate_half_window: i + decimate_half_window]
+            tm_data = z_score_temperature[i - decimate_half_window: i + decimate_half_window]
+            pr_data = z_score_pressure[i - decimate_half_window: i + decimate_half_window]
+            d = DecimatedData()
+            d.posixtime = px_data
+            d.seismo = sz_data
+            d.temperature = tm_data
+            d.pressure = pr_data
+            decimate_array.append(d)
+            if i % 10000 == 0:
+                print(f'{i} / {len(z_score_seismo)} completed')
 
     # ================================================================================
     # Finally, plot data!
+    print('--- Finally, plot data!...')
     df = "%d  %H:%M"
     # tim = datetime.fromtimestamp(tim, tz=timezone.utc)  # datetime object
     plot_dates = []
@@ -160,33 +166,38 @@ def wrapper(data):
     plot_seismo = []
     plot_temperature = []
     plot_pressure = []
+    plot_noise = []
 
     for item in decimate_array:
-    #     time_object = np.nanmean(item.posixtime)
-    #     time_object = datetime.fromtimestamp(time_object, tz=timezone.utc)
-    #     seismo_current = np.nanmean(item.seismo)
-    #     temperature_current = np.nanmean(item.temperature)
-    #     pressure_current = np.nanmean(item.pressure)
-    #
-    #     plot_dates.append(time_object)
-    #     plot_seismo.append(seismo_current)
-    #     plot_temperature.append(temperature_current)
-    #     plot_pressure.append(pressure_current)
-    #
-    # datawrapper.append(plot_dates)
-    # datawrapper.append(plot_seismo)
-    # datawrapper.append(plot_pressure)
-    # datawrapper.append(plot_temperature)
-    #
-    # savefile = k.dir_images['images'] + os.sep + "detrended.png"
-    # plot_multi(dateformatstring=df,
-    #            dateobjects=plot_dates,
-    #            dataarrays=datawrapper,
-    #            readings_per_tick=10,
-    #            texttitle='Normalised Data',
-    #            savefile=savefile)
+        duration = item.posixtime[-1] - item.posixtime[0]
+        if duration < ((2 * decimate_half_window + 1) * 0.1):
+            time_object = np.nanmean(item.posixtime)
+            time_object = datetime.fromtimestamp(time_object, tz=timezone.utc)
+            seismo_current = np.nanmean(item.seismo)
+            temperature_current = np.nanmean(item.temperature)
+            pressure_current = np.nanmean(item.pressure)
+            noise = item.get_noise()
 
-    print(f'Detrend completed!')
+            plot_dates.append(time_object)
+            plot_seismo.append(seismo_current)
+            plot_temperature.append(temperature_current)
+            plot_pressure.append(pressure_current)
+            plot_noise.append(noise)
+
+    datawrapper.append(plot_seismo)
+    datawrapper.append(plot_pressure)
+    datawrapper.append(plot_temperature)
+    datawrapper.append(plot_noise)
+
+    savefile = k.dir_images['images'] + os.sep + "detrended.png"
+    plot_multi(dateformatstring=df,
+               dateobjects=plot_dates,
+               dataarrays=datawrapper,
+               readings_per_tick=60,
+               texttitle='Normalised Data',
+               savefile=savefile)
+
+    print(f'*** Detrend completed!')
 
 
 
