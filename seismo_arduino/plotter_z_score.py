@@ -13,11 +13,11 @@ nullvalue = np.nan
 
 class DecimatedData:
     def __init__(self):
-        self.posixtime = []
-        self.seismo = []
-        self.demean = []
-        self.rollingmean = []
-        self.zscore = []
+        self.posixtime = None
+        self.seismo = None
+        self.demean = None
+        self.rollingmean = None
+        self.zscore = None
 
     def get_noise(self):
         returnvalue = np.nan
@@ -183,6 +183,11 @@ def wrapper(data):
         raw_seismo.append(siz)
 
     # ================================================================================
+    # de-mean the data. Any FFT analysis should be done immediately after this.
+    print('--- De-meaning...')
+    demean_seismo = demean_data(raw_seismo)
+
+    # ================================================================================
     # Perform a rolling mean on the data.
     # A rolling mean is a low-pass  filter.
     # Window length ≈ cutoff period
@@ -190,17 +195,14 @@ def wrapper(data):
     # Anything faster → suppressed
 
     print('--- Rolling mean of data...')
-    rolling_seismo = rolling_mean(raw_seismo, half_window)
-
-    # ================================================================================
-    # de-mean the data. Any FFT analysis should be done immediately after this.
-    print('--- De-meaning...')
-    demean_seismo = demean_data(raw_seismo)
+    # rolling_seismo = rolling_mean(raw_seismo, half_window)
+    rolling_seismo = []
 
     # ================================================================================
     # Perform mean / z-score normalisation
     print('--- Perform rolling z-score normalisation...')
-    z_score_seismo = z_score_rolling(demean_seismo, half_window)
+    # z_score_seismo = z_score_rolling(demean_seismo, half_window)
+    z_score_seismo = []
 
     # ================================================================================
     # Decimate data to plot it.
@@ -208,15 +210,16 @@ def wrapper(data):
     decimate_array = []
     # seismic data is currently sampled at a rate of 10hz
     decimate_half_window = 10 * 30
-    end_index = len(z_score_seismo) - decimate_half_window
+    end_index = len(raw_utc) - decimate_half_window
 
-    for i in range(0, len(z_score_seismo), decimate_half_window * 2):
+    for i in range(decimate_half_window, len(raw_utc) - decimate_half_window, decimate_half_window):
         if decimate_half_window < i < end_index:
             psxt = raw_utc[i - decimate_half_window: i + decimate_half_window]
             rwsz = raw_seismo[i - decimate_half_window: i + decimate_half_window]
             dmsz = demean_seismo[i - decimate_half_window: i + decimate_half_window]
             rlsz = rolling_seismo[i - decimate_half_window: i + decimate_half_window]
             zssz = z_score_seismo[i - decimate_half_window: i + decimate_half_window]
+
             d = DecimatedData()
             d.posixtime = [psxt]
             d.seismo = [rwsz]
@@ -239,37 +242,41 @@ def wrapper(data):
     plot_rollingmean = []
     plot_zscore = []
 
-
     for item in decimate_array:
-        duration = item.posixtime[-1] - item.posixtime[0]
-        if duration < ((2 * decimate_half_window + 1) * 0.1):
-            time_object = np.nanmean(item.posixtime)
-            time_object = datetime.fromtimestamp(time_object, tz=timezone.utc)
-            seismo_current = np.nanmean(item.seismo)
-            demean_current = np.nanmean(item.demean)
-            rolling_current = np.nanmean(item.rollingmean)
-            zscore_current = np.nanmean(item.zscore)
-
-            plot_dates.append(time_object)
-            plot_seismo.append(seismo_current)
-            plot_demean.append(demean_current)
-            plot_rollingmean.append(rolling_current)
-            plot_zscore.append(zscore_current)
-
-
-    plottitle = f'De-meaned, Z-score Normalised Data. Decimation half window: {decimate_half_window}.'
-    savefile = k.dir_images['images'] + os.sep + "detrended.png"
-
-    plot_multi(dateformatstring=df,
-               dateobjects=plot_dates,
-               data_dm=plot_demean,
-               data_roll=plot_rollingmean,
-               data_zs=plot_zscore,
-               readings_per_tick=60,
-               texttitle=plottitle,
-               savefile=savefile)
-
-    print(f'*** Detrend completed!')
-
-
-
+        print(item.posixtime)
+    #     duration = item.posixtime[-1] - item.posixtime[0]
+    #     if duration < ((2 * decimate_half_window + 1) * 0.1):
+    #         time_object = np.nanmean(item.posixtime)
+    #         time_object = datetime.fromtimestamp(time_object, tz=timezone.utc)
+    #         seismo_current = np.nanmean(item.seismo)
+    #         demean_current = np.nanmean(item.demean)
+    #         rolling_current = np.nanmean(item.rollingmean)
+    #         zscore_current = np.nanmean(item.zscore)
+    #
+    #         plot_dates.append(time_object)
+    #         plot_seismo.append(seismo_current)
+    #         plot_demean.append(demean_current)
+    #         plot_rollingmean.append(rolling_current)
+    #         plot_zscore.append(zscore_current)
+    #
+    # print(f'{len(decimate_array)}')
+    # print(f'{len(data)}')
+    # print(f'{len(plot_dates)}')
+    # print(f'{len(plot_seismo)}')
+    # print(f'{len(plot_demean)}')
+    # print(f'{len(plot_rollingmean)}')
+    # print(f'{len(plot_zscore)}')
+    #
+    # plottitle = f'De-meaned, Z-score Normalised Data. Decimation half window: {decimate_half_window}.'
+    # savefile = k.dir_images['images'] + os.sep + "detrended.png"
+    #
+    # plot_multi(dateformatstring=df,
+    #            dateobjects=plot_dates,
+    #            data_dm=plot_demean,
+    #            data_roll=plot_rollingmean,
+    #            data_zs=plot_zscore,
+    #            readings_per_tick=60,
+    #            texttitle=plottitle,
+    #            savefile=savefile)
+    #
+    # print(f'*** Detrend completed!')
