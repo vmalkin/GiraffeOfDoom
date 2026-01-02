@@ -170,7 +170,7 @@ def wrapper(data):
     # Our window should relate to real phenomena based on detected events. An hour or so is often used
     # for seismic events
     readings_per_second = 10
-    half_window = readings_per_second * 60 * 30  # half an hour
+    half_window = readings_per_second * 60 * 5  # half an hour
     raw_utc = []
     raw_seismo = []
 
@@ -199,9 +199,11 @@ def wrapper(data):
 
     # ================================================================================
     # Perform mean / z-score normalisation
+    # print('--- Perform standard z-score normalisation...')
+    # z_score_seismo = z_score_normalisation(demean_seismo)
     print('--- Perform rolling z-score normalisation...')
-    # z_score_seismo = z_score_rolling(demean_seismo, half_window)
-    z_score_seismo = []
+    z_score_seismo = z_score_rolling(demean_seismo, half_window)
+    # z_score_seismo = []
 
     # ================================================================================
     # Decimate data to plot it.
