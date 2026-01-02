@@ -30,11 +30,10 @@ def plot_multi(dateformatstring, dateobjects, data_dm, data_roll, data_zs, readi
     ink_colour = ["#7a3f16", "green", "red", "#ffffff"]
     plotstyle = 'bmh'
     plt.style.use(plotstyle)
-    # fig, ax1 = plt.subplots(nrows=2, layout="constrained", figsize=(16, 8), dpi=140)
     fig, (ax_demean, ax_rollmean, ax_zscore) = plt.subplots(
         3, 1,
         sharex=True,
-        figsize=(20, 12),
+        figsize=(40, 12),
         layout="constrained",
         height_ratios=[1, 1, 1],
     )
@@ -73,42 +72,13 @@ def plot_multi(dateformatstring, dateobjects, data_dm, data_roll, data_zs, readi
     fig.autofmt_xdate()
     ax_zscore.xaxis.set_minor_locator(AutoMinorLocator(6))
 
-    if savefile is not None:
-        fig.savefig(savefile)
-
-    # Subplots with separate y axes
-    # ax_top.plot(dateobjects, dataarrays[0], c=ink_colour[0], linewidth=1)
-    # ax_top.set_ylabel("Tiltmeter (Arb). StdDev.", color=ink_colour[0])
-    # ax_top.tick_params(axis='y', colors=ink_colour[0])
-    #
-    # ax_top2 = ax_top.twinx()
-    # ax_top2.plot(dateobjects, dataarrays[1], c=ink_colour[1], linewidth=1)
-    # ax_top2.set_ylabel("Pressure (Pa). StdDev.", color=ink_colour[1])
-    # ax_top2.tick_params(axis='y', colors=ink_colour[1])
-    # ax_top2.spines['right'].set_position(('outward', 60))
-    # ax_top2.yaxis.grid(False)
-    #
-    # ax_top3 = ax_top.twinx()
-    # ax_top3.plot(dateobjects, dataarrays[2], c=ink_colour[2], linewidth=1)
-    # ax_top3.set_ylabel("Temperature (°C). StdDev.", color=ink_colour[2])
-    # ax_top3.tick_params(axis='y', colors=ink_colour[2])
-    # ax_top3.yaxis.grid(False)
-    #
-    # noise_colour = '#505050'
-    # ax_bottom.plot(dateobjects, dataarrays[3], c=noise_colour, linewidth=0.8)
-    # ax_bottom.set_ylabel("Tilt Noise. (Arb).", color=noise_colour)
-    # ax_bottom.tick_params(axis='y', colors=noise_colour)
-    # ax_bottom.set_ylim([3, 15])
-    # ax_bottom.yaxis.grid(False)
-
     # Use proper date formatter + locator
     ax_zscore.xaxis.set_major_formatter(mdates.DateFormatter(dateformatstring))
     ax_zscore.xaxis.set_major_locator(mdates.MinuteLocator(interval=readings_per_tick))
     plt.setp(ax_zscore.get_xticklabels(), rotation=90)  # safer than plt.xticks
-    # plot_title = texttitle
-    # ax_top.set_title(plot_title)
-    # plt.tight_layout()
-    plt.savefig(savefile)
+
+    if savefile is not None:
+        fig.savefig(savefile)
     plt.close()
 
 
@@ -156,8 +126,7 @@ def rolling_mean(dataarray, halfwindow):
     for i in range(0, len(dataarray)):
         if halfwindow < i < end_index:
             d_mean = np.mean(dataarray[i - halfwindow: i + halfwindow])
-            d = dataarray[i] - d_mean
-            rolling_array.append(d)
+            rolling_array.append(d_mean)
         else:
             rolling_array.append(np.nan)
         if i % 1000 == 0:
