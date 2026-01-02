@@ -165,8 +165,8 @@ def plot_spectrum_scipy(
     # # ax_dp.grid(True, axis='both')
 
     # # --- plot pressure ---
-    print('--- Auxilliary plots for Pressure...')
-    ax_prs.plot(datetimes, data_prs, c='green', linewidth=1)
+    # print('--- Auxilliary plots for Pressure...')
+    # ax_prs.plot(datetimes, data_prs, c='green', linewidth=1)
     # ax_prs.set_ylabel("Pressure - Pa", color='green')
     # ax_prs.tick_params(axis='y', colors='green')
     # title = "Pressure"
