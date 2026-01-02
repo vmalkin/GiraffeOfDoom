@@ -61,6 +61,7 @@ def plot_spectrum_scipy(
     noverlap = int(nfft * overlap_frac)
 
     # --- Compute spectrogram (NO plotting here) ---
+    print('--- Computing spectrogram...')
     freqs, t, Sxx = spectrogram(
         data_szm,
         fs=fs,
@@ -81,6 +82,7 @@ def plot_spectrum_scipy(
 
 
     # --- Plot ---
+    print('--- Setup for plotting...')
     fig, (ax_spec, ax_tmp, ax_prs) = plt.subplots(
         3, 1,
         sharex=True,
@@ -88,7 +90,7 @@ def plot_spectrum_scipy(
         layout="constrained",
         height_ratios=[2.2, 1, 1],
     )
-
+    print('--- Plot spectrogram as colourmesh...')
     pcm = ax_spec.pcolormesh(
         t_dt,
         freqs,
@@ -99,7 +101,7 @@ def plot_spectrum_scipy(
         vmax=vmax,
         zorder=1
     )
-
+    print('--- Formatting plot...')
     ax_spec.set_yscale("log")
     ax_spec.set_ylim(fmin, fmax)
     ax_spec.set_ylabel("Frequency (Hz)")
@@ -112,6 +114,7 @@ def plot_spectrum_scipy(
     cbar = fig.colorbar(pcm, ax=ax_spec, pad=0.01)
     cbar.set_label("Power spectral density (dB/Hz)")
 
+    print('--- Adding plot annotations...')
     annotations = [
         (10, "P = 10s"),
         (100, "P = 100s"),
@@ -150,6 +153,7 @@ def plot_spectrum_scipy(
             ),
         )
 
+    print('--- Auxilliary plots for Temp and Pressure...')
     # --- plot temperature ---
     ax_tmp.plot(datetimes, data_tmp, c='red', linewidth=1)
     ax_tmp.set_ylabel("Temperature - Deg C", color='red')
@@ -213,7 +217,7 @@ def wrapper(data):
     # window = 10
     # aggregate_array = class_aggregator.aggregate_data(window, data)
     # aggregate_array.pop(0)
-
+    print('--- separating data into, UTC, seismo, etc...')
     plot_utc = []
     plot_sz = []
     plot_temp = []
@@ -229,13 +233,14 @@ def wrapper(data):
         plot_temp.append(tmp)
         plot_press.append(prs)
 
+    print('--- Initial detrend before FFT...')
     # b, a = butter(2, 0.001, btype='highpass', fs=1)
     # data = filtfilt(b, a, plot_press)
     data = detrend(plot_sz, type='linear')
 
-    halfwindow = 10 * 60 * 30
-    deltasz = get_delta_p(data, halfwindow)
-    # print(f'{len(data)} {len(deltasz)}')
+    # halfwindow = 10 * 60 * 30
+    # deltasz = get_delta_p(data, halfwindow)
+    # # print(f'{len(data)} {len(deltasz)}')
     df = "%d %H:%M"
     title = "1 Day Spectrogram of Ground Tilt"
     savefile = k.dir_images['images'] + os.sep + "spectrum_tilt.png"
@@ -247,7 +252,7 @@ def wrapper(data):
         data_prs=plot_press,
         datetimes=plot_utc,
         fs=10,
-        nfft=16384 * 2 * 2,
+        nfft=16384 * 2,
         overlap_frac=0.95,
         fmin=10 ** -5.2,
         fmax=10 ** 0,
