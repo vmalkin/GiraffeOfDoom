@@ -37,27 +37,27 @@ def plot_multi(dateformatstring, dateobjects, dataarrays, readings_per_tick, tex
 
     # Subplots with separate y axes
     ax_top.plot(dateobjects, dataarrays[0], c=ink_colour[0], linewidth=2)
-    ax_top.set_ylabel("Tiltmeter. Arbitrary Units.", color=ink_colour[0])
+    ax_top.set_ylabel("Tiltmeter (Arb). StdDev.", color=ink_colour[0])
     ax_top.tick_params(axis='y', colors=ink_colour[0])
 
     ax_top2 = ax_top.twinx()
     ax_top2.plot(dateobjects, dataarrays[1], c=ink_colour[1], linewidth=2)
-    ax_top2.set_ylabel("Pressure. Pa.", color=ink_colour[1])
+    ax_top2.set_ylabel("Pressure (Pa). StdDev.", color=ink_colour[1])
     ax_top2.tick_params(axis='y', colors=ink_colour[1])
     ax_top2.spines['right'].set_position(('outward', 60))
     ax_top2.yaxis.grid(False)
 
     ax_top3 = ax_top.twinx()
     ax_top3.plot(dateobjects, dataarrays[2], c=ink_colour[2], linewidth=2)
-    ax_top3.set_ylabel("Temperature. Deg C.", color=ink_colour[2])
+    ax_top3.set_ylabel("Temperature (°C). StdDev.", color=ink_colour[2])
     ax_top3.tick_params(axis='y', colors=ink_colour[2])
     ax_top3.yaxis.grid(False)
 
     noise_colour = '#505050'
     ax_bottom.plot(dateobjects, dataarrays[3], c=noise_colour, linewidth=0.8)
-    ax_bottom.set_ylabel("Noise - Arbitrary Units.", color=noise_colour)
+    ax_bottom.set_ylabel("Tilt Noise. (Arb).", color=noise_colour)
     ax_bottom.tick_params(axis='y', colors=noise_colour)
-    ax_bottom.set_ylim([3, 20])
+    ax_bottom.set_ylim([3, 15])
     ax_bottom.yaxis.grid(False)
 
     # Use proper date formatter + locator
