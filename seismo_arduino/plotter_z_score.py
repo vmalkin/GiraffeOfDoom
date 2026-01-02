@@ -134,12 +134,27 @@ def rolling_mean(dataarray, halfwindow):
     return rolling_array
 
 
+def rolling_detrended_mean(dataarray, halfwindow):
+    rolling_array = []
+    end_index = len(dataarray) - halfwindow
+    for i in range(0, len(dataarray)):
+        if halfwindow < i < end_index:
+            d_mean = np.mean(dataarray[i - halfwindow: i + halfwindow])
+            d = dataarray[i] - d_mean
+            rolling_array.append(d)
+        else:
+            rolling_array.append(np.nan)
+        if i % 1000 == 0:
+            print(f'--- Rolling Detrended Mean: {i} / {len(dataarray)} completed')
+    return rolling_array
+
+
 def wrapper(data):
     print("*** Detrend started.")
     # Our window should relate to real phenomena based on detected events. An hour or so is often used
     # for seismic events
     readings_per_second = 10
-    half_window = readings_per_second * 60 * 5  # half an hour
+    half_window = readings_per_second * 60  # half an hour
     raw_utc = []
     raw_seismo = []
 
@@ -161,9 +176,11 @@ def wrapper(data):
     # Window length ≈ cutoff period
     # Anything slower than the window → passes through
     # Anything faster → suppressed
+    print('--- Rolling detrended mean of data...')
+    rolling_seismo = rolling_detrended_mean(raw_seismo, half_window)
 
-    print('--- Rolling mean of data...')
-    rolling_seismo = rolling_mean(raw_seismo, half_window)
+    # print('--- Rolling mean of data...')
+    # rolling_seismo = rolling_mean(raw_seismo, half_window)
     # rolling_seismo = []
 
     # ================================================================================
@@ -227,14 +244,6 @@ def wrapper(data):
             plot_demean.append(demean_current)
             plot_rollingmean.append(rolling_current)
             plot_zscore.append(zscore_current)
-
-    # print(f'{len(decimate_array)}')
-    # print(f'{len(data)}')
-    # print(f'{len(plot_dates)}')
-    # print(f'{len(plot_seismo)}')
-    # print(f'{len(plot_demean)}')
-    # print(f'{len(plot_rollingmean)}')
-    # print(f'{len(plot_zscore)}')
 
     plottitle = f'De-meaned, Z-score Normalised Data. Decimation half window: {decimate_half_window}.'
     savefile = k.dir_images['images'] + os.sep + "detrended.png"
