@@ -9,8 +9,7 @@ import standard_stuff
 
 
 nullvalue = np.nan
-ink_colour = ["#7a3f16", "green", "red", "#ffffff"]
-plotstyle = 'bmh'
+
 
 class DecimatedData:
     def __init__(self):
@@ -29,6 +28,8 @@ class DecimatedData:
 
 def plot_multi(dateformatstring, dateobjects, dataarrays, readings_per_tick, texttitle, savefile):
     # utcdates should be datetime objects, not POSIX floats
+    ink_colour = ["#7a3f16", "green", "red", "#ffffff"]
+    plotstyle = 'bmh'
     plt.style.use(plotstyle)
     # fig, ax1 = plt.subplots(nrows=2, layout="constrained", figsize=(16, 8), dpi=140)
     fig, (ax_top, ax_bottom) = plt.subplots(
@@ -36,19 +37,19 @@ def plot_multi(dateformatstring, dateobjects, dataarrays, readings_per_tick, tex
     )
 
     # Subplots with separate y axes
-    ax_top.plot(dateobjects, dataarrays[0], c=ink_colour[0], linewidth=2)
+    ax_top.plot(dateobjects, dataarrays[0], c=ink_colour[0], linewidth=1)
     ax_top.set_ylabel("Tiltmeter (Arb). StdDev.", color=ink_colour[0])
     ax_top.tick_params(axis='y', colors=ink_colour[0])
 
     ax_top2 = ax_top.twinx()
-    ax_top2.plot(dateobjects, dataarrays[1], c=ink_colour[1], linewidth=2)
+    ax_top2.plot(dateobjects, dataarrays[1], c=ink_colour[1], linewidth=1)
     ax_top2.set_ylabel("Pressure (Pa). StdDev.", color=ink_colour[1])
     ax_top2.tick_params(axis='y', colors=ink_colour[1])
     ax_top2.spines['right'].set_position(('outward', 60))
     ax_top2.yaxis.grid(False)
 
     ax_top3 = ax_top.twinx()
-    ax_top3.plot(dateobjects, dataarrays[2], c=ink_colour[2], linewidth=2)
+    ax_top3.plot(dateobjects, dataarrays[2], c=ink_colour[2], linewidth=1)
     ax_top3.set_ylabel("Temperature (°C). StdDev.", color=ink_colour[2])
     ax_top3.tick_params(axis='y', colors=ink_colour[2])
     ax_top3.yaxis.grid(False)
@@ -64,8 +65,8 @@ def plot_multi(dateformatstring, dateobjects, dataarrays, readings_per_tick, tex
     ax_top.xaxis.set_major_formatter(mdates.DateFormatter(dateformatstring))
     ax_top.xaxis.set_major_locator(mdates.MinuteLocator(interval=readings_per_tick))
     plt.setp(ax_bottom.get_xticklabels(), rotation=90)  # safer than plt.xticks
-    # plot_title = texttitle + " - " + standard_stuff.posix2utc(time(), '%Y-%m-%d %H:%M')
-    # ax_top.set_title(plot_title)
+    plot_title = texttitle
+    ax_top.set_title(plot_title)
     plt.tight_layout()
     plt.savefig(savefile)
     plt.close()
@@ -189,12 +190,13 @@ def wrapper(data):
     datawrapper.append(plot_temperature)
     datawrapper.append(plot_noise)
 
+    plottitle = f'De-meaned, Z-score Normalised Data. Decimation half window: {decimate_half_window}.'
     savefile = k.dir_images['images'] + os.sep + "detrended.png"
     plot_multi(dateformatstring=df,
                dateobjects=plot_dates,
                dataarrays=datawrapper,
-               readings_per_tick=60,
-               texttitle='Normalised Data',
+               readings_per_tick=60 * 6,
+               texttitle=plottitle,
                savefile=savefile)
 
     print(f'*** Detrend completed!')

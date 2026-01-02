@@ -247,7 +247,7 @@ def wrapper(data):
         data_prs=plot_press,
         datetimes=plot_utc,
         fs=10,
-        nfft=262144,
+        nfft=16384 * 2 * 2,
         overlap_frac=0.95,
         fmin=10 ** -5.2,
         fmax=10 ** 0,
