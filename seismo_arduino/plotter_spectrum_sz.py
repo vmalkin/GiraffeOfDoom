@@ -153,26 +153,27 @@ def plot_spectrum_scipy(
             ),
         )
 
-    print('--- Auxilliary plots for Temp and Pressure...')
-    # --- plot temperature ---
-    ax_tmp.plot(datetimes, data_tmp, c='red', linewidth=1)
-    ax_tmp.set_ylabel("Temperature - Deg C", color='red')
-    ax_tmp.tick_params(axis='y', colors='red')
-    title = "Temperature"
-    ax_tmp.set_title(f'{title}')
-    ax_tmp.grid(which='major', axis='x', linestyle='solid', visible='True')
-    ax_tmp.grid(which='minor', axis='x', linestyle='dotted', visible='True')
-    # ax_dp.grid(True, axis='both')
+    # print('--- Auxilliary plots for Temp...')
+    # # --- plot temperature ---
+    # ax_tmp.plot(datetimes, data_tmp, c='red', linewidth=1)
+    # ax_tmp.set_ylabel("Temperature - Deg C", color='red')
+    # ax_tmp.tick_params(axis='y', colors='red')
+    # title = "Temperature"
+    # ax_tmp.set_title(f'{title}')
+    # ax_tmp.grid(which='major', axis='x', linestyle='solid', visible='True')
+    # ax_tmp.grid(which='minor', axis='x', linestyle='dotted', visible='True')
+    # # ax_dp.grid(True, axis='both')
 
-    # --- plot pressure ---
+    # # --- plot pressure ---
+    print('--- Auxilliary plots for Pressure...')
     ax_prs.plot(datetimes, data_prs, c='green', linewidth=1)
-    ax_prs.set_ylabel("Pressure - Pa", color='green')
-    ax_prs.tick_params(axis='y', colors='green')
-    title = "Pressure"
-    ax_prs.set_title(f'{title}')
-    ax_prs.grid(which='major', axis='x', linestyle='solid', visible='True')
-    ax_prs.grid(which='minor', axis='x', linestyle='dotted', visible='True')
-    # ax_dp.grid(True, axis='both')
+    # ax_prs.set_ylabel("Pressure - Pa", color='green')
+    # ax_prs.tick_params(axis='y', colors='green')
+    # title = "Pressure"
+    # ax_prs.set_title(f'{title}')
+    # ax_prs.grid(which='major', axis='x', linestyle='solid', visible='True')
+    # ax_prs.grid(which='minor', axis='x', linestyle='dotted', visible='True')
+    # # ax_dp.grid(True, axis='both')
 
     # --- Time axis formatting ---
     ax_prs.xaxis.set_major_formatter(mdates.DateFormatter(datetimeformat))
