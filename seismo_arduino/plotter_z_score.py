@@ -7,9 +7,7 @@ import os
 import constants as k
 import standard_stuff
 
-
 nullvalue = np.nan
-
 
 class DecimatedData:
     def __init__(self):
@@ -36,7 +34,7 @@ def plot_multi(dateformatstring, dateobjects, data_dm, data_roll, data_zs, readi
     fig, (ax_demean, ax_rollmean, ax_zscore) = plt.subplots(
         3, 1,
         sharex=True,
-        figsize=(17, 12),
+        figsize=(20, 12),
         layout="constrained",
         height_ratios=[1, 1, 1],
     )
@@ -171,7 +169,8 @@ def wrapper(data):
     print("*** Detrend started.")
     # Our window should relate to real phenomena based on detected events. An hour or so is often used
     # for seismic events
-    half_window = 10 * 60 * 30
+    readings_per_second = 10
+    half_window = readings_per_second * 60 * 30  # half an hour
     raw_utc = []
     raw_seismo = []
 
@@ -195,8 +194,8 @@ def wrapper(data):
     # Anything faster → suppressed
 
     print('--- Rolling mean of data...')
-    # rolling_seismo = rolling_mean(raw_seismo, half_window)
-    rolling_seismo = []
+    rolling_seismo = rolling_mean(raw_seismo, half_window)
+    # rolling_seismo = []
 
     # ================================================================================
     # Perform mean / z-score normalisation
@@ -221,11 +220,11 @@ def wrapper(data):
             zssz = z_score_seismo[i - decimate_half_window: i + decimate_half_window]
 
             d = DecimatedData()
-            d.posixtime = [psxt]
-            d.seismo = [rwsz]
-            d.demean = [dmsz]
-            d.rollingmean = [rlsz]
-            d.zscore = [zssz]
+            d.posixtime = psxt
+            d.seismo = rwsz
+            d.demean = dmsz
+            d.rollingmean = rlsz
+            d.zscore = zssz
 
             decimate_array.append(d)
             if i % 10000 == 0:
@@ -243,22 +242,21 @@ def wrapper(data):
     plot_zscore = []
 
     for item in decimate_array:
-        print(item.posixtime)
-    #     duration = item.posixtime[-1] - item.posixtime[0]
-    #     if duration < ((2 * decimate_half_window + 1) * 0.1):
-    #         time_object = np.nanmean(item.posixtime)
-    #         time_object = datetime.fromtimestamp(time_object, tz=timezone.utc)
-    #         seismo_current = np.nanmean(item.seismo)
-    #         demean_current = np.nanmean(item.demean)
-    #         rolling_current = np.nanmean(item.rollingmean)
-    #         zscore_current = np.nanmean(item.zscore)
-    #
-    #         plot_dates.append(time_object)
-    #         plot_seismo.append(seismo_current)
-    #         plot_demean.append(demean_current)
-    #         plot_rollingmean.append(rolling_current)
-    #         plot_zscore.append(zscore_current)
-    #
+        duration = item.posixtime[-1] - item.posixtime[0]
+        if duration < ((2 * decimate_half_window + 1) * 0.1):
+            time_object = np.nanmean(item.posixtime)
+            time_object = datetime.fromtimestamp(time_object, tz=timezone.utc)
+            seismo_current = np.nanmean(item.seismo)
+            demean_current = np.nanmean(item.demean)
+            rolling_current = np.nanmean(item.rollingmean)
+            zscore_current = np.nanmean(item.zscore)
+
+            plot_dates.append(time_object)
+            plot_seismo.append(seismo_current)
+            plot_demean.append(demean_current)
+            plot_rollingmean.append(rolling_current)
+            plot_zscore.append(zscore_current)
+
     # print(f'{len(decimate_array)}')
     # print(f'{len(data)}')
     # print(f'{len(plot_dates)}')
@@ -266,17 +264,17 @@ def wrapper(data):
     # print(f'{len(plot_demean)}')
     # print(f'{len(plot_rollingmean)}')
     # print(f'{len(plot_zscore)}')
-    #
-    # plottitle = f'De-meaned, Z-score Normalised Data. Decimation half window: {decimate_half_window}.'
-    # savefile = k.dir_images['images'] + os.sep + "detrended.png"
-    #
-    # plot_multi(dateformatstring=df,
-    #            dateobjects=plot_dates,
-    #            data_dm=plot_demean,
-    #            data_roll=plot_rollingmean,
-    #            data_zs=plot_zscore,
-    #            readings_per_tick=60,
-    #            texttitle=plottitle,
-    #            savefile=savefile)
-    #
-    # print(f'*** Detrend completed!')
+
+    plottitle = f'De-meaned, Z-score Normalised Data. Decimation half window: {decimate_half_window}.'
+    savefile = k.dir_images['images'] + os.sep + "detrended.png"
+
+    plot_multi(dateformatstring=df,
+               dateobjects=plot_dates,
+               data_dm=plot_demean,
+               data_roll=plot_rollingmean,
+               data_zs=plot_zscore,
+               readings_per_tick=60,
+               texttitle=plottitle,
+               savefile=savefile)
+
+    print(f'*** Detrend completed!')
