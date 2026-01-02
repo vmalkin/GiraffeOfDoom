@@ -141,6 +141,7 @@ def plot_spectrum_scipy(
     ax_dp.set_title(f'{title}')
     ax_dp.grid(which='major', axis='x', linestyle='solid', visible='True')
     ax_dp.grid(which='minor', axis='x', linestyle='dotted', visible='True')
+    ax_dp.grid(which='major', axis='y', linestyle='solid', visible='True')
 
     # --- Pressure Delta 2 ---
     halfwindow = 60 * 120
@@ -152,6 +153,7 @@ def plot_spectrum_scipy(
     ax_d.set_title(f'{title}')
     ax_d.grid(which='major', axis='x', linestyle='solid', visible='True')
     ax_d.grid(which='minor', axis='x', linestyle='dotted', visible='True')
+    ax_d.grid(which='major', axis='y', linestyle='solid', visible='True')
 
     # --- Time axis formatting ---
     ax_d.xaxis.set_major_formatter(mdates.DateFormatter(datetimeformat))
