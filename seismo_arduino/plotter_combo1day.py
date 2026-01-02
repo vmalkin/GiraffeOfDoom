@@ -31,14 +31,14 @@ def plot_multi(dateformatstring, dateobjects, dataarrays, readings_per_tick, tex
     )
 
     # Subplots with separate y axes
-    ax_top.plot(dateobjects, dataarrays[0], c=ink_colour[0], linewidth=2)
+    ax_top.plot(dateobjects, dataarrays[0], c=ink_colour[0], linewidth=1)
     ax_top.set_ylabel("Tiltmeter. Arbitrary Units.", color=ink_colour[0])
     ax_top.tick_params(axis='y', colors=ink_colour[0])
     limits = minmaxes(dataarrays[0])
     ax_top.set_ylim(limits)
 
     ax_top2 = ax_top.twinx()
-    ax_top2.plot(dateobjects, dataarrays[1], c=ink_colour[1], linewidth=2)
+    ax_top2.plot(dateobjects, dataarrays[1], c=ink_colour[1], linewidth=1)
     ax_top2.set_ylabel("Pressure. Pa.", color=ink_colour[1])
     ax_top2.tick_params(axis='y', colors=ink_colour[1])
     limits = minmaxes(dataarrays[1])
@@ -47,7 +47,7 @@ def plot_multi(dateformatstring, dateobjects, dataarrays, readings_per_tick, tex
     ax_top2.yaxis.grid(False)
 
     ax_top3 = ax_top.twinx()
-    ax_top3.plot(dateobjects, dataarrays[2], c=ink_colour[2], linewidth=2)
+    ax_top3.plot(dateobjects, dataarrays[2], c=ink_colour[2], linewidth=1)
     ax_top3.set_ylabel("Temperature. Deg C.", color=ink_colour[2])
     ax_top3.tick_params(axis='y', colors=ink_colour[2])
     limits = minmaxes(dataarrays[2])
@@ -79,7 +79,7 @@ def wrapper(data):
     # =============================================================================================================
     print("*** Tilt, Temp, Barometer - 1 Day")
     # decimate data for this. Window is the counted in samples, not seconds
-    window = 10 * 60
+    window = 5 * 30
     aggregate_array = class_aggregator.aggregate_data(window, data)
     aggregate_array.pop(0)
 

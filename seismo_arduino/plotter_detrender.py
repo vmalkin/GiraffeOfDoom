@@ -72,6 +72,35 @@ def plot_multi(dateformatstring, dateobjects, dataarrays, readings_per_tick, tex
     plt.close()
 
 
+def demean_data(datarray):
+    return_array = []
+    mean_value = np.nanmean(datarray)
+    for item in datarray:
+        dd = item - mean_value
+        return_array.append(dd)
+    return return_array
+
+
+def z_score_normalisation(dataarray):
+    z_score_array = []
+    d_mu = np.mean(dataarray)
+    d_sigma = np.std(dataarray)
+    for item in dataarray:
+        z_score = (item - d_mu) / d_sigma
+        z_score_array.append(z_score)
+    return z_score_array
+
+
+def z_score_rolling(dataarray, halfwindow):
+    z_score_array = []
+    d_mu = np.mean(dataarray)
+    d_sigma = np.std(dataarray)
+    for item in dataarray:
+        z_score = (item - d_mu) / d_sigma
+        z_score_array.append(z_score)
+    return z_score_array
+
+
 def wrapper(data):
     print("*** Detrend started.")
     raw_utc = []
@@ -92,47 +121,20 @@ def wrapper(data):
     # ================================================================================
     # de-mean the data. Any FFT analysis should be done immediately after this.
     print('--- De-meaning...')
-    demean_seismo = []
-    mean_value = np.nanmean(raw_seismo)
-    for item in raw_seismo:
-        dd = item - mean_value
-        demean_seismo.append(dd)
-
-    demean_temperature = []
-    mean_value = np.nanmean(raw_temperature)
-    for item in raw_temperature:
-        dd = item - mean_value
-        demean_temperature.append(dd)
-
-    demean_pressure = []
-    mean_value = np.nanmean(raw_pressure)
-    for item in raw_pressure:
-        dd = item - mean_value
-        demean_pressure.append(dd)
+    demean_seismo = demean_data(raw_seismo)
+    demean_temperature = demean_data(raw_temperature)
+    demean_pressure = demean_data(raw_pressure)
 
     # ================================================================================
     # Perform mean / z-score normalisation
     print('--- Perform mean / z-score normalisation...')
-    d_mu = np.mean(demean_seismo)
-    d_sigma = np.std(demean_seismo)
-    z_score_seismo = []
-    for item in demean_seismo:
-        z_score = (item - d_mu) / d_sigma
-        z_score_seismo.append(z_score)
+    z_score_seismo = z_score_normalisation(demean_seismo)
+    z_score_temperature = z_score_normalisation(demean_temperature)
+    z_score_pressure = z_score_normalisation(demean_pressure)
 
-    d_mu = np.mean(demean_temperature)
-    d_sigma = np.std(demean_temperature)
-    z_score_temperature = []
-    for item in demean_temperature:
-        z_score = (item - d_mu) / d_sigma
-        z_score_temperature.append(z_score)
-
-    d_mu = np.mean(demean_pressure)
-    d_sigma = np.std(demean_pressure)
-    z_score_pressure = []
-    for item in demean_pressure:
-        z_score = (item - d_mu) / d_sigma
-        z_score_pressure.append(z_score)
+    # z_score_seismo = demean_seismo
+    # z_score_temperature = demean_temperature
+    # z_score_pressure = demean_pressure
 
     # ================================================================================
     # Decimate data to plot it.
@@ -195,7 +197,7 @@ def wrapper(data):
     plot_multi(dateformatstring=df,
                dateobjects=plot_dates,
                dataarrays=datawrapper,
-               readings_per_tick=60 * 6,
+               readings_per_tick=60,
                texttitle=plottitle,
                savefile=savefile)
 

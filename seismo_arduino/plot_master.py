@@ -5,7 +5,7 @@ from datetime import datetime, timezone
 import plotter_phaseportrait
 import plotter_spectrum_baro
 import plotter_temperature_regression
-# import plotter_combo1day
+import plotter_combo1day
 # import plotter_combo7day
 # import plotter_dual
 # import plotter_helicorder
@@ -41,14 +41,14 @@ for key in k.dir_images:
 
 # plotter_phaseportrait.wrapper(result_1d)
 # plotter_temperature_regression.wrapper(result_7d)
-plotter_spectrum_baro.wrapper((result_7d))
-# plotter_combo1day.wrapper(result_1d)
+# plotter_spectrum_baro.wrapper((result_7d))
+plotter_combo1day.wrapper(result_1d)
 # plotter_combo7day.wrapper(result_7d)
 # # plotter_dual.wrapper(result_1d)
 # # plotter_helicorder.wrapper(result_1d)
 # # plotter_fft_7d.wrapper(result_7d)
 # # plotter_fft_movie.wrapper(result_1d)
-plotter_detrender.wrapper(result_7d)
+plotter_detrender.wrapper(result_1d)
 #
 # # # Run this only on an offline database!
 # # alldata = mgr_database.db_data_get_all()
