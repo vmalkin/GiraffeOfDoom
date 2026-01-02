@@ -179,7 +179,7 @@ def wrapper(data):
     print('--- Decimate data to plot it...')
     decimate_array = []
     # seismic data is currently sampled at a rate of 10hz
-    decimate_half_window = 10 * 30
+    decimate_half_window = readings_per_second * 30
     end_index = len(raw_utc) - decimate_half_window
 
     for i in range(decimate_half_window, len(raw_utc) - decimate_half_window, decimate_half_window):
