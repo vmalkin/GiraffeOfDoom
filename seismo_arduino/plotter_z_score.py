@@ -33,7 +33,7 @@ def plot_multi(dateformatstring, dateobjects, data_dm, data_roll, data_zs, readi
     fig, (ax_demean, ax_rollmean, ax_zscore) = plt.subplots(
         3, 1,
         sharex=True,
-        figsize=(40, 12),
+        figsize=(50, 12),
         layout="constrained",
         height_ratios=[1, 1, 1],
     )
@@ -52,7 +52,7 @@ def plot_multi(dateformatstring, dateobjects, data_dm, data_roll, data_zs, readi
     ax_rollmean.plot(dateobjects, data_roll, c='blue', linewidth=1)
     ax_rollmean.set_ylabel("(Arb))", color='blue')
     ax_rollmean.tick_params(axis='y', colors='blue')
-    title = "Rolling Mean."
+    title = "Running Average."
     ax_rollmean.set_title(f'{title}')
     ax_rollmean.grid(which='major', axis='x', linestyle='solid', visible='True')
     ax_rollmean.grid(which='minor', axis='x', linestyle='dotted', visible='True')
@@ -62,7 +62,7 @@ def plot_multi(dateformatstring, dateobjects, data_dm, data_roll, data_zs, readi
     ax_zscore.plot(dateobjects, data_zs, c='blue', linewidth=1)
     ax_zscore.set_ylabel("(Arb))", color='blue')
     ax_zscore.tick_params(axis='y', colors='blue')
-    title = "Z-Score."
+    title = "Rolling Z-Score."
     ax_zscore.set_title(f'{title}')
     ax_zscore.grid(which='major', axis='x', linestyle='solid', visible='True')
     ax_zscore.grid(which='minor', axis='x', linestyle='dotted', visible='True')
@@ -76,7 +76,7 @@ def plot_multi(dateformatstring, dateobjects, data_dm, data_roll, data_zs, readi
     ax_zscore.xaxis.set_major_formatter(mdates.DateFormatter(dateformatstring))
     ax_zscore.xaxis.set_major_locator(mdates.MinuteLocator(interval=readings_per_tick))
     plt.setp(ax_zscore.get_xticklabels(), rotation=90)  # safer than plt.xticks
-
+    plt.title(f'{texttitle}')
     if savefile is not None:
         fig.savefig(savefile)
     plt.close()
@@ -102,7 +102,9 @@ def z_score_normalisation(dataarray):
 
 
 def z_score_rolling(dataarray, halfwindow):
+    # we already calculate a running average so create a new array and return that too
     z_score_array = []
+    rolling_avg = []
     end_index = len(dataarray) - halfwindow
     for i in range(0, len(dataarray)):
         if halfwindow < i < end_index:
@@ -110,51 +112,52 @@ def z_score_rolling(dataarray, halfwindow):
             d_sigma = np.std(dataarray[i - halfwindow: i + halfwindow])
             if d_sigma > 0:
                 z_score = (dataarray[i] - d_mu) / d_sigma
+                rolling_avg.append(d_mu)
                 z_score_array.append(z_score)
             else:
                 z_score_array.append(np.nan)
         else:
             z_score_array.append(np.nan)
         if i % 1000 == 0:
-            print(f'Rolling Z-Score: {i} / {len(dataarray)} completed')
-    return z_score_array
+            print(f'Rolling Z-Score & average: {i} / {len(dataarray)} completed')
+    return [z_score_array, rolling_avg]
 
 
-def rolling_mean(dataarray, halfwindow):
-    rolling_array = []
-    end_index = len(dataarray) - halfwindow
-    for i in range(0, len(dataarray)):
-        if halfwindow < i < end_index:
-            d_mean = np.mean(dataarray[i - halfwindow: i + halfwindow])
-            rolling_array.append(d_mean)
-        else:
-            rolling_array.append(np.nan)
-        if i % 1000 == 0:
-            print(f'--- Rolling Mean: {i} / {len(dataarray)} completed')
-    return rolling_array
+# def rolling_mean(dataarray, halfwindow):
+#     rolling_array = []
+#     end_index = len(dataarray) - halfwindow
+#     for i in range(0, len(dataarray)):
+#         if halfwindow < i < end_index:
+#             d_mean = np.mean(dataarray[i - halfwindow: i + halfwindow])
+#             rolling_array.append(d_mean)
+#         else:
+#             rolling_array.append(np.nan)
+#         if i % 1000 == 0:
+#             print(f'--- Rolling Mean: {i} / {len(dataarray)} completed')
+#     return rolling_array
 
 
-def rolling_detrended_mean(dataarray, halfwindow):
-    rolling_array = []
-    end_index = len(dataarray) - halfwindow
-    for i in range(0, len(dataarray)):
-        if halfwindow < i < end_index:
-            d_mean = np.mean(dataarray[i - halfwindow: i + halfwindow])
-            d = dataarray[i] - d_mean
-            rolling_array.append(d)
-        else:
-            rolling_array.append(np.nan)
-        if i % 1000 == 0:
-            print(f'--- Rolling Detrended Mean: {i} / {len(dataarray)} completed')
-    return rolling_array
+# def rolling_detrended_mean(dataarray, halfwindow):
+#     rolling_array = []
+#     end_index = len(dataarray) - halfwindow
+#     for i in range(0, len(dataarray)):
+#         if halfwindow < i < end_index:
+#             d_mean = np.mean(dataarray[i - halfwindow: i + halfwindow])
+#             d = dataarray[i] - d_mean
+#             rolling_array.append(d)
+#         else:
+#             rolling_array.append(np.nan)
+#         if i % 1000 == 0:
+#             print(f'--- Rolling Residual of Detrended Mean: {i} / {len(dataarray)} completed')
+#     return rolling_array
 
-
+# ================================================================================
 def wrapper(data):
     print("*** Detrend started.")
     # Our window should relate to real phenomena based on detected events. An hour or so is often used
     # for seismic events
     readings_per_second = 10
-    half_window = readings_per_second * 60  # half an hour
+    half_window = readings_per_second * 60 * 15  # half an hour
     raw_utc = []
     raw_seismo = []
 
@@ -170,33 +173,37 @@ def wrapper(data):
     print('--- De-meaning...')
     demean_seismo = demean_data(raw_seismo)
 
-    # ================================================================================
-    # Perform a rolling mean on the data.
-    # A rolling mean is a low-pass  filter.
-    # Window length ≈ cutoff period
-    # Anything slower than the window → passes through
-    # Anything faster → suppressed
-    print('--- Rolling detrended mean of data...')
-    rolling_seismo = rolling_detrended_mean(raw_seismo, half_window)
-
-    # print('--- Rolling mean of data...')
+    # # ================================================================================
+    # # Perform a rolling mean on the data.
+    # # A rolling mean is a low-pass  filter.
+    # # Window length ≈ cutoff period
+    # # Anything slower than the window → passes through
+    # # Anything faster → suppressed
+    # print('--- Running Average of data...')
     # rolling_seismo = rolling_mean(raw_seismo, half_window)
+
+    # # Residual of the rolling mean on the data subtracted from the data
+    # # Window length ≈ cutoff period
+    # # Anything faster than the window → passes through
+    # # Anything slower → suppressed
+    # print('--- Rolling residual mean of data...')
+    # rolling_seismo = rolling_detrended_mean(raw_seismo, half_window)
     # rolling_seismo = []
 
     # ================================================================================
-    # Perform mean / z-score normalisation
-    # print('--- Perform standard z-score normalisation...')
-    # z_score_seismo = z_score_normalisation(demean_seismo)
-    print('--- Perform rolling z-score normalisation...')
-    z_score_seismo = z_score_rolling(demean_seismo, half_window)
-    # z_score_seismo = []
+    # Perform mean / z-score normalisation. Running average is a by-product,
+    # so return that too
+    print('--- Perform running average and rolling z-score normalisation...')
+    returnarrays = z_score_rolling(demean_seismo, half_window)
+    z_score_seismo = returnarrays[0]
+    rolling_seismo = returnarrays[1]
 
     # ================================================================================
     # Decimate data to plot it.
     print('--- Decimate data to plot it...')
     decimate_array = []
     # seismic data is currently sampled at a rate of 10hz
-    decimate_half_window = readings_per_second * 30
+    decimate_half_window = readings_per_second * 15
     end_index = len(raw_utc) - decimate_half_window
 
     for i in range(decimate_half_window, len(raw_utc) - decimate_half_window, decimate_half_window):
@@ -245,7 +252,7 @@ def wrapper(data):
             plot_rollingmean.append(rolling_current)
             plot_zscore.append(zscore_current)
 
-    plottitle = f'De-meaned, Z-score Normalised Data. Decimation half window: {decimate_half_window}.'
+    plottitle = f'De-meaned, Running Avg, Z-score Normalised Data. Decimation half window: {decimate_half_window}.'
     savefile = k.dir_images['images'] + os.sep + "detrended.png"
 
     plot_multi(dateformatstring=df,
