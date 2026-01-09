@@ -24,6 +24,41 @@ class DecimatedData:
         return returnvalue
 
 
+def plot_single(dateformatstring, dateobjects, data,  readings_per_tick, texttitle, savefile):
+    # utcdates should be datetime objects, not POSIX floats
+    ink_colour = ["#7a3f16", "green", "red", "#ffffff"]
+    plotstyle = 'bmh'
+    plt.style.use(plotstyle)
+    fig, (ax_data) = plt.subplots(
+        figsize=(50, 12),
+        layout="constrained",
+        height_ratios=[1, 1, 1],
+    )
+
+    # --- De-meaned seismo data ---
+    ax_data.plot(dateobjects, data, c='blue', linewidth=1)
+    ax_data.set_ylabel("(Arb))", color='blue')
+    ax_data.tick_params(axis='y', colors='blue')
+    title = "De-meaned seismic data."
+    ax_data.set_title(f'{title}')
+    ax_data.grid(which='major', axis='x', linestyle='solid', visible='True')
+    ax_data.grid(which='minor', axis='x', linestyle='dotted', visible='True')
+    ax_data.grid(which='major', axis='y', linestyle='solid', visible='True')
+
+    ax_data.xaxis.set_major_formatter(mdates.DateFormatter(dateformatstring))
+    fig.autofmt_xdate()
+    ax_data.xaxis.set_minor_locator(AutoMinorLocator(6))
+
+    # Use proper date formatter + locator
+    ax_data.xaxis.set_major_formatter(mdates.DateFormatter(dateformatstring))
+    ax_data.xaxis.set_major_locator(mdates.MinuteLocator(interval=readings_per_tick))
+    plt.setp(ax_data.get_xticklabels(), rotation=45)  # safer than plt.xticks
+    plt.title(f'{texttitle}')
+    if savefile is not None:
+        fig.savefig(savefile)
+    plt.close()
+
+
 def plot_multi(dateformatstring, dateobjects, data_dm, data_roll, data_zs, readings_per_tick, texttitle, savefile):
     # utcdates should be datetime objects, not POSIX floats
     ink_colour = ["#7a3f16", "green", "red", "#ffffff"]
@@ -243,9 +278,9 @@ def wrapper(data):
     # tim = datetime.fromtimestamp(tim, tz=timezone.utc)  # datetime object
     plot_dates = []
     plot_seismo = []
-    plot_demean = []
-    plot_rollingmean = []
-    plot_zscore = []
+    # plot_demean = []
+    # plot_rollingmean = []
+    # plot_zscore = []
 
     for item in decimate_array:
         duration = item.posixtime[-1] - item.posixtime[0]
@@ -253,26 +288,33 @@ def wrapper(data):
             time_object = np.nanmean(item.posixtime)
             time_object = datetime.fromtimestamp(time_object, tz=timezone.utc)
             seismo_current = np.nanmean(item.seismo)
-            demean_current = np.nanmean(item.demean)
-            rolling_current = np.nanmean(item.rollingmean)
-            zscore_current = np.nanmean(item.zscore)
+            # demean_current = np.nanmean(item.demean)
+            # rolling_current = np.nanmean(item.rollingmean)
+            # zscore_current = np.nanmean(item.zscore)
 
             plot_dates.append(time_object)
             plot_seismo.append(seismo_current)
-            plot_demean.append(demean_current)
-            plot_rollingmean.append(rolling_current)
-            plot_zscore.append(zscore_current)
+            # plot_demean.append(demean_current)
+            # plot_rollingmean.append(rolling_current)
+            # plot_zscore.append(zscore_current)
 
     plottitle = f'De-meaned, Running Avg, Z-score Normalised Data. Decimation half window: {decimate_half_window}.'
     savefile = k.dir_images['images'] + os.sep + "detrended.png"
 
-    plot_multi(dateformatstring=df,
+    plot_single(dateformatstring=df,
                dateobjects=plot_dates,
-               data_dm=plot_demean,
-               data_roll=plot_rollingmean,
-               data_zs=plot_zscore,
+               data=plot_seismo,
                readings_per_tick=60,
                texttitle=plottitle,
                savefile=savefile)
+
+    # plot_multi(dateformatstring=df,
+    #            dateobjects=plot_dates,
+    #            data_dm=plot_demean,
+    #            data_roll=plot_rollingmean,
+    #            data_zs=plot_zscore,
+    #            readings_per_tick=60,
+    #            texttitle=plottitle,
+    #            savefile=savefile)
 
     print(f'*** Detrend completed!')
