@@ -5,7 +5,6 @@ import matplotlib.dates as mdates
 from matplotlib.ticker import AutoMinorLocator
 import os
 import constants as k
-import standard_stuff
 
 nullvalue = np.nan
 
@@ -75,7 +74,7 @@ def plot_multi(dateformatstring, dateobjects, data_dm, data_roll, data_zs, readi
     # Use proper date formatter + locator
     ax_zscore.xaxis.set_major_formatter(mdates.DateFormatter(dateformatstring))
     ax_zscore.xaxis.set_major_locator(mdates.MinuteLocator(interval=readings_per_tick))
-    plt.setp(ax_zscore.get_xticklabels(), rotation=90)  # safer than plt.xticks
+    plt.setp(ax_zscore.get_xticklabels(), rotation=45)  # safer than plt.xticks
     plt.title(f'{texttitle}')
     if savefile is not None:
         fig.savefig(savefile)
@@ -91,50 +90,18 @@ def demean_data(datarray):
     return return_array
 
 
-def z_score_normalisation(dataarray):
-    z_score_array = []
-    d_mu = np.mean(dataarray)
-    d_sigma = np.std(dataarray)
-    for item in dataarray:
-        z_score = (item - d_mu) / d_sigma
-        z_score_array.append(z_score)
-    return z_score_array
-
-
-def z_score_rolling(dataarray, halfwindow):
-    # we already calculate a running average so create a new array and return that too
-    z_score_array = []
-    rolling_avg = []
+def rolling_mean(dataarray, halfwindow):
+    rolling_array = []
     end_index = len(dataarray) - halfwindow
     for i in range(0, len(dataarray)):
         if halfwindow < i < end_index:
-            d_mu = np.mean(dataarray[i - halfwindow: i + halfwindow])
-            d_sigma = np.std(dataarray[i - halfwindow: i + halfwindow])
-            if d_sigma > 0:
-                z_score = (dataarray[i] - d_mu) / d_sigma
-                rolling_avg.append(d_mu)
-                z_score_array.append(z_score)
-            else:
-                z_score_array.append(np.nan)
+            d_mean = np.mean(dataarray[i - halfwindow: i + halfwindow])
+            rolling_array.append(d_mean)
         else:
-            z_score_array.append(np.nan)
+            rolling_array.append(np.nan)
         if i % 1000 == 0:
-            print(f'Rolling Z-Score & average: {i} / {len(dataarray)} completed')
-    return [z_score_array, rolling_avg]
-
-
-# def rolling_mean(dataarray, halfwindow):
-#     rolling_array = []
-#     end_index = len(dataarray) - halfwindow
-#     for i in range(0, len(dataarray)):
-#         if halfwindow < i < end_index:
-#             d_mean = np.mean(dataarray[i - halfwindow: i + halfwindow])
-#             rolling_array.append(d_mean)
-#         else:
-#             rolling_array.append(np.nan)
-#         if i % 1000 == 0:
-#             print(f'--- Rolling Mean: {i} / {len(dataarray)} completed')
-#     return rolling_array
+            print(f'--- Rolling Mean: {i} / {len(dataarray)} completed')
+    return rolling_array
 
 
 def rolling_detrended_mean(dataarray, halfwindow):
@@ -150,6 +117,30 @@ def rolling_detrended_mean(dataarray, halfwindow):
         if i % 1000 == 0:
             print(f'--- Rolling Residual of Detrended Mean: {i} / {len(dataarray)} completed')
     return rolling_array
+
+
+def smoothdata(data, halfwindow):
+    nullvalue = np.nan
+    returnarray = []
+    end_index = len(data) - halfwindow
+    # we want to return an array the same size as the input array. We pad the beginning and end with
+    # null values. The array is split up thus:
+    # [half window at start] <-> [data we work on] <-> [half window at end]
+    # IF we were doing a running avg for instance, this would give us a window centred on our chosen data. THis is
+    # preferred
+    if len(data) > halfwindow:
+        for i in range(0, len(data)):
+            if halfwindow < i < end_index:
+                window_data = data[i - halfwindow: i + halfwindow]
+                j = np.nanmean(window_data)
+                j = round(j, 3)
+                returnarray.append(j)
+            else:
+                returnarray.append(nullvalue)
+    else:
+        for _ in data:
+            returnarray.append(nullvalue)
+    return returnarray
 
 
 def get_delta_p(data, halfwindow):
@@ -182,7 +173,7 @@ def wrapper(data):
     # Our window should relate to real phenomena based on detected events. An hour or so is often used
     # for seismic events
     readings_per_second = 10
-    half_window = readings_per_second * 60 * 30  # half an hour
+    half_window = int(readings_per_second * 60 * 2)
     raw_utc = []
     raw_seismo = []
 
@@ -198,31 +189,25 @@ def wrapper(data):
     print('--- De-meaning...')
     demean_seismo = demean_data(raw_seismo)
 
-    # # ================================================================================
-    # # Perform a rolling mean on the data.
-    # # A rolling mean is a low-pass  filter.
-    # # Window length ≈ cutoff period
-    # # Anything slower than the window → passes through
-    # # Anything faster → suppressed
-    # print('--- Running Average of data...')
-    # rolling_seismo = rolling_mean(raw_seismo, half_window)
 
     # Residual of the rolling mean on the data subtracted from the data
     # Window length ≈ cutoff period
     # Anything faster than the window → passes through
     # Anything slower → suppressed
-    # print('--- Rolling residual mean of data...')
-    # rolling_seismo = rolling_detrended_mean(raw_seismo, half_window)
-    rolling_seismo = get_delta_p(raw_seismo, halfwindow=5)
+    print('--- Rolling residual mean of data...')
+    fast_data = rolling_detrended_mean(raw_seismo, halfwindow=10)
+    rolling_seismo = fast_data
+    # # ================================================================================
+    # # # Perform a rolling mean on the data.
+    # # # A rolling mean is a low-pass  filter.
+    # # # Window length ≈ cutoff period
+    # # # Anything slower than the window → passes through
+    # # # Anything faster → suppressed
+    print('--- Running Average of data...')
+    residual_slow = rolling_mean(fast_data, halfwindow=1)
+    # rm = rolling_mean(raw_seismo, halfwindow=half_window)
+    z_score_seismo = residual_slow
 
-    # # # ================================================================================
-    # # # Perform mean / z-score normalisation. Running average is a by-product,
-    # # # so return that too
-    # # print('--- Perform running average and rolling z-score normalisation...')
-    # returnarrays = z_score_rolling(demean_seismo, half_window)
-    # z_score_seismo = returnarrays[0]
-    # rolling_seismo = returnarrays[1]
-    z_score_seismo = []
 
     # ================================================================================
     # Decimate data to plot it.
