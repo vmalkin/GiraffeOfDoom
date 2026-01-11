@@ -11,7 +11,7 @@ import plotter_dual
 # import plotter_helicorder
 # import plotter_fft_7d
 # import plotter_fft_movie
-import plotter_z_score_2
+import plotter_resonance
 import mgr_emd
 import os
 
@@ -50,7 +50,7 @@ for key in k.dir_images:
 # # plotter_helicorder.wrapper(result_1d)
 # # plotter_fft_7d.wrapper(result_7d)
 # plotter_fft_movie.wrapper(result_1d)
-plotter_z_score_2.wrapper(result_1d)
+plotter_resonance.wrapper(result_1d)
 
 #
 # # # Run this only on an offline database!
