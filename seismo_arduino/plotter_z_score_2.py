@@ -11,65 +11,30 @@ nullvalue = np.nan
 class DecimatedData:
     def __init__(self):
         self.posixtime = None
-        self.seismo = None
         self.demean = None
-        self.rollingmean = None
-        self.zscore = None
+        self.filtered = None
+        # self.rollingmean = None
+        # self.zscore = None
 
-    def get_noise(self):
-        returnvalue = np.nan
-        if len(self.seismo) > 1:
-            if np.isnan(np.min(self.seismo)) is not True:
-                returnvalue = np.nanmax(self.seismo) - np.min(self.seismo)
-        return returnvalue
+    # def get_noise(self):
+    #     returnvalue = np.nan
+    #     if len(self.seismo) > 1:
+    #         if np.isnan(np.min(self.seismo)) is not True:
+    #             returnvalue = np.nanmax(self.seismo) - np.min(self.seismo)
+    #     return returnvalue
 
 
-def plot_single(dateformatstring, dateobjects, data,  readings_per_tick, texttitle, savefile):
+def plot_multi(dateformatstring, dateobjects, data_dm, data_filtered, readings_per_tick, texttitle, savefile):
     # utcdates should be datetime objects, not POSIX floats
     ink_colour = ["#7a3f16", "green", "red", "#ffffff"]
     plotstyle = 'bmh'
     plt.style.use(plotstyle)
-    fig, (ax_data) = plt.subplots(
-        figsize=(50, 12),
-        layout="constrained",
-        height_ratios=[1, 1, 1],
-    )
-
-    # --- De-meaned seismo data ---
-    ax_data.plot(dateobjects, data, c='blue', linewidth=1)
-    ax_data.set_ylabel("(Arb))", color='blue')
-    ax_data.tick_params(axis='y', colors='blue')
-    title = "De-meaned seismic data."
-    ax_data.set_title(f'{title}')
-    ax_data.grid(which='major', axis='x', linestyle='solid', visible='True')
-    ax_data.grid(which='minor', axis='x', linestyle='dotted', visible='True')
-    ax_data.grid(which='major', axis='y', linestyle='solid', visible='True')
-
-    ax_data.xaxis.set_major_formatter(mdates.DateFormatter(dateformatstring))
-    fig.autofmt_xdate()
-    ax_data.xaxis.set_minor_locator(AutoMinorLocator(6))
-
-    # Use proper date formatter + locator
-    ax_data.xaxis.set_major_formatter(mdates.DateFormatter(dateformatstring))
-    ax_data.xaxis.set_major_locator(mdates.MinuteLocator(interval=readings_per_tick))
-    plt.setp(ax_data.get_xticklabels(), rotation=45)  # safer than plt.xticks
-    plt.title(f'{texttitle}')
-    if savefile is not None:
-        fig.savefig(savefile)
-    plt.close()
-
-
-def plot_multi(dateformatstring, dateobjects, data_dm, data_roll, data_zs, readings_per_tick, texttitle, savefile):
-    # utcdates should be datetime objects, not POSIX floats
-    ink_colour = ["#7a3f16", "green", "red", "#ffffff"]
-    plotstyle = 'bmh'
-    plt.style.use(plotstyle)
-    fig, (ax_demean, ax_rollmean, ax_zscore) = plt.subplots(
-        3, 1,
+    fig, (ax_demean, ax_filtered) = plt.subplots(
+        2, 1,
         sharex=True,
-        figsize=(50, 12),
+        figsize=(15, 10),
         layout="constrained",
-        height_ratios=[1, 1, 1],
+        height_ratios=[1, 1],
     )
 
     # --- De-meaned seismo data ---
@@ -83,33 +48,23 @@ def plot_multi(dateformatstring, dateobjects, data_dm, data_roll, data_zs, readi
     ax_demean.grid(which='major', axis='y', linestyle='solid', visible='True')
 
     # --- Rolling mean seismo data ---
-    ax_rollmean.plot(dateobjects, data_roll, c='blue', linewidth=1)
-    ax_rollmean.set_ylabel("(Arb))", color='blue')
-    ax_rollmean.tick_params(axis='y', colors='blue')
-    title = "Running Average."
-    ax_rollmean.set_title(f'{title}')
-    ax_rollmean.grid(which='major', axis='x', linestyle='solid', visible='True')
-    ax_rollmean.grid(which='minor', axis='x', linestyle='dotted', visible='True')
-    ax_rollmean.grid(which='major', axis='y', linestyle='solid', visible='True')
+    ax_filtered.plot(dateobjects, data_filtered, c='blue', linewidth=1)
+    ax_filtered.set_ylabel("(Arb))", color='blue')
+    ax_filtered.tick_params(axis='y', colors='blue')
+    title = "Filtered."
+    ax_filtered.set_title(f'{title}')
+    ax_filtered.grid(which='major', axis='x', linestyle='solid', visible='True')
+    ax_filtered.grid(which='minor', axis='x', linestyle='dotted', visible='True')
+    ax_filtered.grid(which='major', axis='y', linestyle='solid', visible='True')
 
-    # --- Z-Score seismo data ---
-    ax_zscore.plot(dateobjects, data_zs, c='blue', linewidth=1)
-    ax_zscore.set_ylabel("(Arb))", color='blue')
-    ax_zscore.tick_params(axis='y', colors='blue')
-    title = "Rolling Z-Score."
-    ax_zscore.set_title(f'{title}')
-    ax_zscore.grid(which='major', axis='x', linestyle='solid', visible='True')
-    ax_zscore.grid(which='minor', axis='x', linestyle='dotted', visible='True')
-    ax_zscore.grid(which='major', axis='y', linestyle='solid', visible='True')
-
-    ax_zscore.xaxis.set_major_formatter(mdates.DateFormatter(dateformatstring))
+    ax_filtered.xaxis.set_major_formatter(mdates.DateFormatter(dateformatstring))
     fig.autofmt_xdate()
-    ax_zscore.xaxis.set_minor_locator(AutoMinorLocator(6))
+    ax_filtered.xaxis.set_minor_locator(AutoMinorLocator(6))
 
     # Use proper date formatter + locator
-    ax_zscore.xaxis.set_major_formatter(mdates.DateFormatter(dateformatstring))
-    ax_zscore.xaxis.set_major_locator(mdates.MinuteLocator(interval=readings_per_tick))
-    plt.setp(ax_zscore.get_xticklabels(), rotation=45)  # safer than plt.xticks
+    ax_filtered.xaxis.set_major_formatter(mdates.DateFormatter(dateformatstring))
+    ax_filtered.xaxis.set_major_locator(mdates.MinuteLocator(interval=readings_per_tick))
+    plt.setp(ax_filtered.get_xticklabels(), rotation=45)  # safer than plt.xticks
     plt.title(f'{texttitle}')
     if savefile is not None:
         fig.savefig(savefile)
@@ -154,30 +109,6 @@ def rolling_detrended_mean(dataarray, halfwindow):
     return rolling_array
 
 
-def smoothdata(data, halfwindow):
-    nullvalue = np.nan
-    returnarray = []
-    end_index = len(data) - halfwindow
-    # we want to return an array the same size as the input array. We pad the beginning and end with
-    # null values. The array is split up thus:
-    # [half window at start] <-> [data we work on] <-> [half window at end]
-    # IF we were doing a running avg for instance, this would give us a window centred on our chosen data. THis is
-    # preferred
-    if len(data) > halfwindow:
-        for i in range(0, len(data)):
-            if halfwindow < i < end_index:
-                window_data = data[i - halfwindow: i + halfwindow]
-                j = np.nanmean(window_data)
-                j = round(j, 3)
-                returnarray.append(j)
-            else:
-                returnarray.append(nullvalue)
-    else:
-        for _ in data:
-            returnarray.append(nullvalue)
-    return returnarray
-
-
 def get_delta_p(data, halfwindow):
     nullvalue = np.nan
     returnarray = []
@@ -208,7 +139,6 @@ def wrapper(data):
     # Our window should relate to real phenomena based on detected events. An hour or so is often used
     # for seismic events
     readings_per_second = 10
-    half_window = int(readings_per_second * 60 * 2)
     raw_utc = []
     raw_seismo = []
 
@@ -224,52 +154,44 @@ def wrapper(data):
     print('--- De-meaning...')
     demean_seismo = demean_data(raw_seismo)
 
+    # ================================================================================
+    # Process data to display when the pendulum is exited at it's natural frequency
+    detrended_10sec_under = rolling_detrended_mean(demean_seismo, halfwindow=int(readings_per_second * 0.75))
+    detrended_1sec_under = rolling_detrended_mean(demean_seismo, halfwindow=int(readings_per_second * 0.5))
 
-    # Residual of the rolling mean on the data subtracted from the data
-    # Window length ≈ cutoff period
-    # Anything faster than the window → passes through
-    # Anything slower → suppressed
-    print('--- Rolling residual mean of data...')
-    fast_data = rolling_detrended_mean(raw_seismo, halfwindow=10)
-    rolling_seismo = fast_data
-    # # ================================================================================
-    # # # Perform a rolling mean on the data.
-    # # # A rolling mean is a low-pass  filter.
-    # # # Window length ≈ cutoff period
-    # # # Anything slower than the window → passes through
-    # # # Anything faster → suppressed
-    print('--- Running Average of data...')
-    residual_slow = rolling_mean(fast_data, halfwindow=1)
-    # rm = rolling_mean(raw_seismo, halfwindow=half_window)
-    z_score_seismo = residual_slow
-
+    filtered = []
+    for i in range(0, len(detrended_10sec_under)):
+        j = detrended_10sec_under[i] - detrended_1sec_under[i]
+        filtered.append(j)
+    # filtered = rolling_mean(filtered, halfwindow=readings_per_second * 60 * 10)
+    # filtered = rolling_mean(filtered, halfwindow=readings_per_second * 60 * 10)
 
     # ================================================================================
     # Decimate data to plot it.
     print('--- Decimate data to plot it...')
     decimate_array = []
     # seismic data is currently sampled at a rate of 10hz
-    decimate_half_window = readings_per_second * 15
+    decimate_half_window = readings_per_second * 10
     end_index = len(raw_utc) - decimate_half_window
 
     for i in range(decimate_half_window, len(raw_utc) - decimate_half_window, decimate_half_window):
         if decimate_half_window < i < end_index:
             psxt = raw_utc[i - decimate_half_window: i + decimate_half_window]
-            rwsz = raw_seismo[i - decimate_half_window: i + decimate_half_window]
-            dmsz = demean_seismo[i - decimate_half_window: i + decimate_half_window]
-            rlsz = rolling_seismo[i - decimate_half_window: i + decimate_half_window]
-            zssz = z_score_seismo[i - decimate_half_window: i + decimate_half_window]
+            dm = demean_seismo[i - decimate_half_window: i + decimate_half_window]
+            fltr = filtered[i - decimate_half_window: i + decimate_half_window]
+            # rlsz = rolling_seismo[i - decimate_half_window: i + decimate_half_window]
+            # zssz = z_score_seismo[i - decimate_half_window: i + decimate_half_window]
 
             d = DecimatedData()
             d.posixtime = psxt
-            d.seismo = rwsz
-            d.demean = dmsz
-            d.rollingmean = rlsz
-            d.zscore = zssz
+            d.filtered = fltr
+            d.demean = dm
+            # d.rollingmean = rlsz
+            # d.zscore = zssz
 
             decimate_array.append(d)
             if i % 10000 == 0:
-                print(f'Decimation: {i} / {len(z_score_seismo)} completed')
+                print(f'Decimation: {i} / {len(raw_utc)} completed')
 
     # ================================================================================
     # Finally, plot data!
@@ -277,8 +199,8 @@ def wrapper(data):
     df = "%d  %H:%M"
     # tim = datetime.fromtimestamp(tim, tz=timezone.utc)  # datetime object
     plot_dates = []
-    plot_seismo = []
-    # plot_demean = []
+    plot_demean = []
+    plot_filtered = []
     # plot_rollingmean = []
     # plot_zscore = []
 
@@ -287,34 +209,34 @@ def wrapper(data):
         if duration < ((2 * decimate_half_window + 1) * 0.1):
             time_object = np.nanmean(item.posixtime)
             time_object = datetime.fromtimestamp(time_object, tz=timezone.utc)
-            seismo_current = np.nanmean(item.seismo)
-            # demean_current = np.nanmean(item.demean)
+            demean_current = np.nanmean(item.demean)
+            filtered_current = np.nanmean(item.filtered)
             # rolling_current = np.nanmean(item.rollingmean)
             # zscore_current = np.nanmean(item.zscore)
 
             plot_dates.append(time_object)
-            plot_seismo.append(seismo_current)
-            # plot_demean.append(demean_current)
+            plot_demean.append(demean_current)
+            plot_filtered.append(filtered_current)
             # plot_rollingmean.append(rolling_current)
             # plot_zscore.append(zscore_current)
 
-    plottitle = f'De-meaned, Running Avg, Z-score Normalised Data. Decimation half window: {decimate_half_window}.'
-    savefile = k.dir_images['images'] + os.sep + "detrended.png"
+    plottitle = f'Filtered natural resonance. Decimation half window: {decimate_half_window}.'
+    # plottitle = f'De-meaned, Running Avg, Z-score Normalised Data. Decimation half window: {decimate_half_window}.'
+    savefile = k.dir_images['images'] + os.sep + "resonance.png"
 
-    plot_single(dateformatstring=df,
-               dateobjects=plot_dates,
-               data=plot_seismo,
-               readings_per_tick=60,
-               texttitle=plottitle,
-               savefile=savefile)
-
-    # plot_multi(dateformatstring=df,
+    # plot_single(dateformatstring=df,
     #            dateobjects=plot_dates,
-    #            data_dm=plot_demean,
-    #            data_roll=plot_rollingmean,
-    #            data_zs=plot_zscore,
+    #            data=plot_filtered,
     #            readings_per_tick=60,
     #            texttitle=plottitle,
     #            savefile=savefile)
+
+    plot_multi(dateformatstring=df,
+               dateobjects=plot_dates,
+               data_dm=plot_demean,
+               data_filtered=plot_filtered,
+               readings_per_tick=60,
+               texttitle=plottitle,
+               savefile=savefile)
 
     print(f'*** Detrend completed!')
