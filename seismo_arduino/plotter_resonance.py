@@ -59,7 +59,7 @@ def plot_multi(dateformatstring, dateobjects, data_dm, data_filtered, readings_p
 
     ax_filtered.xaxis.set_major_formatter(mdates.DateFormatter(dateformatstring))
     fig.autofmt_xdate()
-    ax_filtered.xaxis.set_minor_locator(AutoMinorLocator(6))
+    ax_filtered.xaxis.set_minor_locator(AutoMinorLocator(4))
 
     # Use proper date formatter + locator
     ax_filtered.xaxis.set_major_formatter(mdates.DateFormatter(dateformatstring))
