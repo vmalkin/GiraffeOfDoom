@@ -222,15 +222,7 @@ def wrapper(data):
             # plot_zscore.append(zscore_current)
 
     plottitle = f'Filtered natural resonance. Decimation half window: {decimate_half_window}.'
-    # plottitle = f'De-meaned, Running Avg, Z-score Normalised Data. Decimation half window: {decimate_half_window}.'
     savefile = k.dir_images['images'] + os.sep + "resonance.png"
-
-    # plot_single(dateformatstring=df,
-    #            dateobjects=plot_dates,
-    #            data=plot_filtered,
-    #            readings_per_tick=60,
-    #            texttitle=plottitle,
-    #            savefile=savefile)
 
     plot_multi(dateformatstring=df,
                dateobjects=plot_dates,
