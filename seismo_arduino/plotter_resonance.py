@@ -53,6 +53,7 @@ def plot_multi(dateformatstring, dateobjects, data_dm, data_filtered, readings_p
     ax_filtered.tick_params(axis='y', colors='blue')
     title = "Filtered."
     ax_filtered.set_title(f'{title}')
+    ax_filtered.set_ylim(-0.022, 0.022)
     ax_filtered.grid(which='major', axis='x', linestyle='solid', visible='True')
     ax_filtered.grid(which='minor', axis='x', linestyle='dotted', visible='True')
     ax_filtered.grid(which='major', axis='y', linestyle='solid', visible='True')
