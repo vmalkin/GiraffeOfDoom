@@ -60,7 +60,7 @@ def plot_multi(dateformatstring, dateobjects, dataarrays, readings_per_tick, tex
     ax_bottom.set_ylabel("Noise - Arbitrary Units.", color=noise_colour)
     ax_bottom.tick_params(axis='y', colors=noise_colour)
     # limits = minmaxes(dataarrays[3])
-    ax_bottom.set_ylim([3, 20])
+    ax_bottom.set_ylim([3, 16])
     # ax_bottom.spines['right'].set_position(('outward', 110))
     ax_bottom.yaxis.grid(False)
 
