@@ -32,7 +32,7 @@ def plot_multi(dateformatstring, dateobjects, data_dm, data_filtered, readings_p
     fig, (ax_demean, ax_filtered) = plt.subplots(
         2, 1,
         sharex=True,
-        figsize=(15, 10),
+        figsize=(18, 10),
         layout="constrained",
         height_ratios=[1, 1],
     )
@@ -53,7 +53,7 @@ def plot_multi(dateformatstring, dateobjects, data_dm, data_filtered, readings_p
     ax_filtered.tick_params(axis='y', colors='blue')
     title = "Filtered."
     ax_filtered.set_title(f'{title}')
-    ax_filtered.set_ylim(-0.022, 0.022)
+    # ax_filtered.set_ylim(-0.02, 0.02)
     ax_filtered.grid(which='major', axis='x', linestyle='solid', visible='True')
     ax_filtered.grid(which='minor', axis='x', linestyle='dotted', visible='True')
     ax_filtered.grid(which='major', axis='y', linestyle='solid', visible='True')
@@ -157,22 +157,23 @@ def wrapper(data):
 
     # ================================================================================
     # Process data to display when the pendulum is exited at it's natural frequency
-    detrended_10sec_under = rolling_detrended_mean(demean_seismo, halfwindow=int(readings_per_second * 0.75))
+    detrended_10sec_under = rolling_detrended_mean(demean_seismo, halfwindow=int(readings_per_second * 1.5))
     detrended_1sec_under = rolling_detrended_mean(demean_seismo, halfwindow=int(readings_per_second * 0.5))
 
     filtered = []
     for i in range(0, len(detrended_10sec_under)):
         j = detrended_10sec_under[i] - detrended_1sec_under[i]
         filtered.append(j)
-    # filtered = rolling_mean(filtered, halfwindow=readings_per_second * 60 * 10)
-    # filtered = rolling_mean(filtered, halfwindow=readings_per_second * 60 * 10)
+    # filtered = rolling_mean(filtered, halfwindow=readings_per_second * 60)
+    # filtered = rolling_mean(filtered, halfwindow=readings_per_second * 60)
 
     # ================================================================================
     # Decimate data to plot it.
     print('--- Decimate data to plot it...')
     decimate_array = []
     # seismic data is currently sampled at a rate of 10hz
-    decimate_half_window = readings_per_second * 10
+    halfwindow_width_seconds = 60
+    decimate_half_window = readings_per_second * halfwindow_width_seconds
     end_index = len(raw_utc) - decimate_half_window
 
     for i in range(decimate_half_window, len(raw_utc) - decimate_half_window, decimate_half_window):
@@ -221,7 +222,7 @@ def wrapper(data):
             # plot_rollingmean.append(rolling_current)
             # plot_zscore.append(zscore_current)
 
-    plottitle = f'Filtered natural resonance. Decimation half window: {decimate_half_window}.'
+    plottitle = f'Filtered natural resonance. Decimation window: {2 * halfwindow_width_seconds} seconds.'
     savefile = k.dir_images['images'] + os.sep + "resonance.png"
 
     plot_multi(dateformatstring=df,
