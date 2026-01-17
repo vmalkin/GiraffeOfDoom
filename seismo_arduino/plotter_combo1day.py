@@ -59,6 +59,8 @@ def plot_multi(dateformatstring, dateobjects, dataarrays, readings_per_tick, tex
     # ax_bottom.bar(dateobjects, dataarrays[3], width=0.001, color=noise_colour)
     ax_bottom.set_ylabel("Noise - Arbitrary Units.", color=noise_colour)
     ax_bottom.tick_params(axis='y', colors=noise_colour)
+    title = "Noise: max(decimated data) - min(decimated data)."
+    ax_bottom.set_title(f'{title}')
     # limits = minmaxes(dataarrays[3])
     ax_bottom.set_ylim([3, 16])
     # ax_bottom.spines['right'].set_position(('outward', 110))
