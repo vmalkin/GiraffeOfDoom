@@ -38,9 +38,9 @@ def plot_multi(dateformatstring, dateobjects, data_dm, data_filtered, readings_p
     )
 
     # --- De-meaned seismo data ---
-    ax_demean.plot(dateobjects, data_dm, c='blue', linewidth=1)
-    ax_demean.set_ylabel("(Arb))", color='blue')
-    ax_demean.tick_params(axis='y', colors='blue')
+    ax_demean.plot(dateobjects, data_dm, c=ink_colour[0], linewidth=1)
+    ax_demean.set_ylabel("Ground Tilt. (Arb)", color=ink_colour[0])
+    ax_demean.tick_params(axis='y', colors=ink_colour[0])
     title = "De-meaned seismic data."
     ax_demean.set_title(f'{title}')
     ax_demean.grid(which='major', axis='x', linestyle='solid', visible='True')
@@ -48,9 +48,9 @@ def plot_multi(dateformatstring, dateobjects, data_dm, data_filtered, readings_p
     ax_demean.grid(which='major', axis='y', linestyle='solid', visible='True')
 
     # --- Rolling mean seismo data ---
-    ax_filtered.plot(dateobjects, data_filtered, c='blue', linewidth=1)
-    ax_filtered.set_ylabel("(Arb))", color='blue')
-    ax_filtered.tick_params(axis='y', colors='blue')
+    ax_filtered.plot(dateobjects, data_filtered, c=ink_colour[1], linewidth=1)
+    ax_filtered.set_ylabel("Amplitude of Natural Resonance. (Arb)", color=ink_colour[1])
+    ax_filtered.tick_params(axis='y', colors=ink_colour[1])
     title = "Filtered."
     ax_filtered.set_title(f'{title}')
     ax_filtered.set_ylim(-0.0075, 0.0075)
