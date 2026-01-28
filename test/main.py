@@ -19,10 +19,11 @@ while True:
     ret, frame2 = cam.read()
     diff = cv2.absdiff(frame1, frame2)
     diff = cv2.cvtColor(diff, cv2.COLOR_BGR2GRAY)
+
     # Adjust the brightness and contrast
     # g(i,j)=α⋅f(i,j)+β
     # control Contrast by 1.5
-    alpha = 1.5
+    alpha = 1.7
     # control brightness by 50
     beta = 20
     diff = cv2.convertScaleAbs(diff, alpha=alpha, beta=beta)
@@ -31,6 +32,9 @@ while True:
     # kernel = np.array([[0, -1, 0], [-1, 2, -1], [0, -1, 0]])
     # # Sharpen the image
     # diff = cv2.filter2D(diff, -1, kernel)
+
+    # gaussian blur
+    diff = cv2.GaussianBlur(diff, (3, 3), 0)
 
     cv2.imshow("Cam", frame2)
     cv2.imshow("Diff Image", diff)
