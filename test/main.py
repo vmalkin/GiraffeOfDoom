@@ -1,5 +1,6 @@
 import cv2
 import numpy as np
+from time import sleep
 from math import tan, radians
 
 # Field of View (FOV) 	60°
@@ -36,6 +37,7 @@ print(f'At 100m = {round(tan_theta * 100000, 0)}mm.')
 # new_image = np.zeros(frame1.shape, frame1.dtype)
 
 while True:
+    # sleep(1)
     ret, frame2 = cam.read()
     diff = cv2.absdiff(frame1, frame2)
     diff = cv2.cvtColor(diff, cv2.COLOR_BGR2GRAY)
