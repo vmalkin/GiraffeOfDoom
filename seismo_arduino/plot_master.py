@@ -26,8 +26,8 @@ def try_create_directory(directory):
 
 
 print(f'Querying database...')
-# time_end = time.time()
-time_end = 1767870000
+time_end = time.time()
+# time_end = 1767870000
 time_start_7d = time_end - (60 * 60 * 24 * 7)
 # result_total = mgr_database.db_data_get_all()
 result_7d = mgr_database.db_data_get(time_start_7d)
@@ -35,9 +35,6 @@ result_1d = result_7d[-86400 * int(1 / k.sensor_reading_frequency):]
 # result_1d = result_7d[-40000 * int(1 / k.sensor_reading_frequency):]
 print(f'Query Complete.')
 print(f'Begin plotting...')
-
-for key in k.dir_images:
-    try_create_directory(key)
 
 # plotter_phaseportrait.wrapper(result_1d)
 # plotter_temperature_regression.wrapper(result_7d)

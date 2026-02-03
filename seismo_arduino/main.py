@@ -95,4 +95,14 @@ if __name__ == "__main__":
             collection = []
             now = standard_stuff.posix2utc(current_posixtime, '%Y-%m-%d %H:%M')
             print(f"{now}: Seismograph data added.")
-        # # ENTER into database
+
+            # create logfile
+            filename = standard_stuff.posix2utc(current_posixtime, '%Y-%m-%d')  + '.csv'
+            savefile = k.dir_saves['logs'] + os.sep + filename
+            time_start_24hr = time.time() - (60 * 60 * 24)
+            result_24hr = mgr_database.db_data_get(time_start_24hr)
+            with open(savefile, 'w') as s:
+                for line in result_24hr:
+                    l = line + '\n'
+                    s.write(l)
+
