@@ -4,9 +4,8 @@ import mgr_comport
 import time
 import os
 import re
-import standard_stuff
-import random
 import mgr_database
+import standard_stuff
 
 
 def try_create_directory(directory):
