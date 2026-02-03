@@ -12,8 +12,12 @@ def savedata():
     savefile = k.dir_saves['logs'] + os.sep + filename
     time_start_24hr = nowtime - (60 * 60 * 24)
     result_24hr = mgr_database.db_data_get(time_start_24hr)
-    with open(savefile, 'w') as s:
-        for line in result_24hr:
-            l = line + '\n'
-            s.write(l)
-    s.close()
+    if len(result_24hr) > 0:
+        try:
+            with open(savefile, 'w') as s:
+                for line in result_24hr:
+                    l = line + '\n'
+                    s.write(l)
+            s.close()
+        except:
+            print(f'Unable to write to logfile {savefile}')
