@@ -6,14 +6,14 @@ import os
 import re
 import mgr_database
 import standard_stuff
+import save_csv
 
 
 def try_create_directory(directory):
     if os.path.isdir(directory) is False:
-        print("Creating image file directory...")
+        print(f"Creating directory: {directory}")
         try:
             os.makedirs(directory)
-            print("Directory created.")
         except:
             if not os.path.isdir(directory):
                 print("Unable to create directory")
@@ -91,18 +91,10 @@ if __name__ == "__main__":
         # 5 times per second every 2 minutes
         if len(collection) >= 10 * 60 * 2:
             mgr_database.db_data_add(collection)
-            # print(collection)
             collection = []
+            save_csv.savedata()
             now = standard_stuff.posix2utc(current_posixtime, '%Y-%m-%d %H:%M')
             print(f"{now}: Seismograph data added.")
 
-            # create logfile
-            filename = standard_stuff.posix2utc(current_posixtime, '%Y-%m-%d')  + '.csv'
-            savefile = k.dir_saves['logs'] + os.sep + filename
-            time_start_24hr = time.time() - (60 * 60 * 24)
-            result_24hr = mgr_database.db_data_get(time_start_24hr)
-            with open(savefile, 'w') as s:
-                for line in result_24hr:
-                    l = line + '\n'
-                    s.write(l)
+
 
