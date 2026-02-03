@@ -9,11 +9,15 @@ import random
 import mgr_database
 
 
-# errorloglevel = logging.DEBUG
-# logging.basicConfig(filename="gnss.log", format='%(asctime)s %(message)s', level=errorloglevel)
-random.seed()
-# readings below this altitude for satellites may be distorted due to multi-modal reflection
-optimum_altitude = 25
+def try_create_directory(directory):
+    if os.path.isdir(directory) is False:
+        print("Creating image file directory...")
+        try:
+            os.makedirs(directory)
+            print("Directory created.")
+        except:
+            if not os.path.isdir(directory):
+                print("Unable to create directory")
 
 
 def get_rounded_posix_():
@@ -60,8 +64,10 @@ def add_data(collection, current_posixtime, csv_line):
 
 
 if __name__ == "__main__":
-    # initial setup including satellite lists
-    # if database not exists, create database
+    # initial setup, create database, save folders.
+    for key, value in k.dir_saves.items():
+        try_create_directory(value)
+
     if not os.path.isfile(k.sat_database):
         print("No database file, initialising")
         mgr_database.db_create()
