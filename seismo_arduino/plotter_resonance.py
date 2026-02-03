@@ -223,7 +223,7 @@ def wrapper(data):
             # plot_zscore.append(zscore_current)
 
     plottitle = f'Filtered natural resonance. Decimation window: {2 * halfwindow_width_seconds} seconds.'
-    savefile = k.dir_images['images'] + os.sep + "resonance.png"
+    savefile = k.dir_saves['images'] + os.sep + "resonance.png"
 
     plot_multi(dateformatstring=df,
                dateobjects=plot_dates,
