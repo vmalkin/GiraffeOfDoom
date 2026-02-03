@@ -16,8 +16,8 @@ def savedata():
         try:
             with open(savefile, 'w') as s:
                 for line in result_24hr:
-                    l = line + '\n'
-                    s.write(l)
+                    d = f'{line[0]}, {line[1]}, {line[2]}, {line[3]}\n'
+                    s.write(d)
             s.close()
         except:
             print(f'Unable to write to logfile {savefile}')
