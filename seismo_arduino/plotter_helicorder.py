@@ -92,5 +92,5 @@ def wrapper(data):
     ticks = 10
     df = "%d  %H:%M"
     title = "Helicorder One Day"
-    savefile = k.dir_images['images'] + os.sep + "helicorder.png"
+    savefile = k.dir_saves['images'] + os.sep + "helicorder.png"
     plot_helicorder(df, plot_utc, smoothe_dx, ticks, title, savefile)

@@ -215,7 +215,7 @@ def wrapper(data):
     print(f'{len(data)} {len(deltapressure)}')
     df = "%d %H:%M"
     title = "Spectrogram of Barometric Pressure"
-    savefile = k.dir_images['images'] + os.sep + "spectrum_press.png"
+    savefile = k.dir_saves['images'] + os.sep + "spectrum_press.png"
     # nfft=16384
     # nfft=32768
 

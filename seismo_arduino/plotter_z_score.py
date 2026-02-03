@@ -279,7 +279,7 @@ def wrapper(data):
             plot_zscore.append(zscore_current)
 
     plottitle = f'De-meaned, Running Avg, Z-score Normalised Data. Decimation half window: {decimate_half_window}.'
-    savefile = k.dir_images['images'] + os.sep + "detrended.png"
+    savefile = k.dir_saves['images'] + os.sep + "detrended.png"
 
     plot_multi(dateformatstring=df,
                dateobjects=plot_dates,

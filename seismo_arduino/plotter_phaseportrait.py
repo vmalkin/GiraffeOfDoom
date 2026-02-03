@@ -84,6 +84,6 @@ def wrapper(data):
     ticks = 20
     df = "%d  %H:%M"
     title = "Phase Plot. "
-    savefolder = k.dir_images['phaseplots']
+    savefolder = k.dir_saves['phaseplots']
     # try_create_directory(savefolder)
     plot_pseudo_phase(df, plot_utc, smoothe_seismo, smoothe_dx, title, savefolder)

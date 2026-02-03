@@ -115,5 +115,5 @@ def wrapper(data):
     ticks = 20
     df = "%d  %H:%M"
     title = "Tiltmeter One Day"
-    savefile = k.dir_images['images'] + os.sep + "one_day.png"
+    savefile = k.dir_saves['images'] + os.sep + "one_day.png"
     plot_multi(df, plot_utc, datawrapper, ticks, title, savefile)
