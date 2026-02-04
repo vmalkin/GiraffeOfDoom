@@ -26,8 +26,8 @@ def try_create_directory(directory):
 
 
 print(f'Querying database...')
-time_end = time.time()
-# time_end = 1767870000
+# time_end = time.time()
+time_end = 1767870000
 time_start_7d = time_end - (60 * 60 * 24 * 7)
 # result_total = mgr_database.db_data_get_all()
 result_7d = mgr_database.db_data_get(time_start_7d)
@@ -45,7 +45,7 @@ plotter_combo7day.wrapper(result_7d)
 plotter_dual.wrapper(result_1d)
 plotter_resonance.wrapper(result_1d)
 
-#
+
 # # # Run this only on an offline database!
 # # alldata = mgr_database.db_data_get_all()
 # # plotter_combo7day.wrapper(alldata)
