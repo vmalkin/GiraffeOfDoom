@@ -205,7 +205,7 @@ def wrapper(data):
     datawrapper.append(plot_noise)
 
     plottitle = f'De-meaned, Z-score Normalised Data. Decimation half window: {decimate_half_window}.'
-    savefile = k.dir_images['images'] + os.sep + "detrended.png"
+    savefile = k.dir_saves['images'] + os.sep + "detrended.png"
     plot_multi(dateformatstring=df,
                dateobjects=plot_dates,
                dataarrays=datawrapper,
