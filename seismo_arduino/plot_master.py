@@ -41,11 +41,11 @@ print(f'Query Complete.')
 print(f'Begin plotting...')
 
 jobs = [
+    (plotter_dual.wrapper, result_1d),
     (plotter_spectrum_baro.wrapper, result_7d),
     (plotter_combo1day.wrapper, result_1d),
     (plotter_combo7day.wrapper, result_7d),
-    (plotter_resonance.wrapper, result_1d),
-    (plotter_dual.wrapper, result_1d),
+    (plotter_resonance.wrapper, result_1d)
 ]
 
 with Pool(4) as pool:
