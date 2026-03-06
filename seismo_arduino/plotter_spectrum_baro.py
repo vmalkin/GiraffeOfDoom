@@ -79,10 +79,10 @@ def plot_spectrum_scipy(
 
     # --- Diurnal band extraction ---
     f0 = 1.0 / (24 * 3600)
-    band = (freqs >= 0.9 * f0) & (freqs <= 1.1 * f0)
+    # band = (freqs >= 0.9 * f0) & (freqs <= 1.1 * f0)
 
-    diurnal_power = np.trapezoid(Sxx[band, :], freqs[band], axis=0)
-    diurnal_power_db = 10 * np.log10(diurnal_power + np.finfo(float).eps)
+    # diurnal_power = np.trapezoid(Sxx[band, :], freqs[band], axis=0)
+    # diurnal_power_db = 10 * np.log10(diurnal_power + np.finfo(float).eps)
 
     # total_power = np.trapezoid(Sxx, freqs, axis=0)
     # diurnal_fraction = diurnal_power / total_power
@@ -218,6 +218,8 @@ def wrapper(data):
     savefile = k.dir_saves['images'] + os.sep + "spectrum_press.png"
     # nfft=16384
     # nfft=32768
+    # fmin = 10 ** -5.2,
+    # fmax = 10 ** -1.8,
 
     plot_spectrum_scipy(
         data,
@@ -226,8 +228,8 @@ def wrapper(data):
         fs=1,
         nfft=32768,
         overlap_frac=0.75,
-        fmin=10**-5.2,
-        fmax=10**-1.8,
+        fmin=10 ** -5.2,
+        fmax=10 ** -1.8,
         vmin=5,
         vmax=90,
         datetimeformat="%d\n%H:%M",

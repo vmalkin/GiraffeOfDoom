@@ -11,8 +11,8 @@ from math import tan, radians
 # Video Capture (4:3 SD) 	320x240, 640x480, 800x600
 # Video Capture (16:9 W) 	360p, 480p, 720p,
 # Frame Rate (max) 	30fps @ 640x480
-height = 480
-width = 640
+height = 600
+width = 800
 resolution= 60 / height
 
 cam  = cv2.VideoCapture(0)
@@ -37,7 +37,6 @@ print(f'At 100m = {round(tan_theta * 100000, 0)}mm.')
 # new_image = np.zeros(frame1.shape, frame1.dtype)
 
 while True:
-    # sleep(1)
     ret, frame2 = cam.read()
     diff = cv2.absdiff(frame1, frame2)
     diff = cv2.cvtColor(diff, cv2.COLOR_BGR2GRAY)
@@ -66,6 +65,7 @@ while True:
     if cv2.waitKey(1) == ord('q'):
         cv2.destroyWindow("Captured")
         break
+    # sleep(5)
 
 cam.release()
 cv2.destroyAllWindows()
