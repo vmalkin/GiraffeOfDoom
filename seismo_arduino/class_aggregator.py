@@ -46,10 +46,9 @@ class Aggregator:
             val_min = self.data_null
         return val_min
 
-    def get_reading_posix(self):
-        # avg_time = round((self.date_start + self.date_stop) / 2, 4)
-        # return avg_time
-        return self.date_stop
+    def get_avg_posix(self):
+        avg_time = round((self.date_start + self.date_stop) / 2, 4)
+        return avg_time
 
 # This function performs aggregation using the Aggregator class
 # querydata has the format [posix, seismo, temp, pressure]
