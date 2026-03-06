@@ -81,7 +81,8 @@ def wrapper(data):
     # =============================================================================================================
     print("*** Tilt, Temp, Barometer - 7 Days.")
     # decimate data for this. 30 minute intervals
-    window = 10 * 60 * 10
+    # window = 10 * 60 * 10
+    window = 5 * 30
     aggregate_array = class_aggregator.aggregate_data(window, data)
     aggregate_array.pop(0)
 
@@ -93,7 +94,7 @@ def wrapper(data):
     sz_noise = []
 
     for i in range(1, len(aggregate_array)):
-        tim = aggregate_array[i].get_reading_posix()
+        tim = aggregate_array[i].get_avg_posix()
         tim = datetime.fromtimestamp(tim, tz=timezone.utc)  # datetime object
         siz = aggregate_array[i].get_data_avg(aggregate_array[i].data_seismo)
         tmp = aggregate_array[i].get_data_avg(aggregate_array[i].data_temperature)
@@ -115,5 +116,5 @@ def wrapper(data):
     ticks = 240
     df = "%d  %H:%M"
     title = "Tiltmeter One Week"
-    savefile = k.dir_saves['images'] + os.sep + "seven_day.png"
+    savefile = k.dir_images['images'] + os.sep + "seven_day.png"
     plot_multi(df, plot_utc, datawrapper, ticks, title, savefile)

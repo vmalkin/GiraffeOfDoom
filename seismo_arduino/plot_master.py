@@ -53,13 +53,8 @@ with Pool(4) as pool:
 print(results)
 
 # # plotter_phaseportrait.wrapper(result_1d)
-# # plotter_temperature_regression.wrapper(result_7d)
 # # plotter_fft_movie.wrapper(result_1d)
-# plotter_spectrum_baro.wrapper((result_7d))
-# plotter_combo1day.wrapper(result_1d)
-# plotter_combo7day.wrapper(result_7d)
-# # plotter_dual.wrapper(result_1d)
-# plotter_resonance.wrapper(result_1d)
+
 
 # # # # Run this only on an offline database!
 # alldata = mgr_database.db_data_get_all()

@@ -93,7 +93,7 @@ def wrapper(data):
     sz_noise = []
 
     for i in range(1, len(aggregate_array)):
-        tim = aggregate_array[i].get_reading_posix()
+        tim = aggregate_array[i].get_avg_posix()
         tim = datetime.fromtimestamp(tim, tz=timezone.utc)  # datetime object
         siz = aggregate_array[i].get_data_avg(aggregate_array[i].data_seismo)
         tmp = aggregate_array[i].get_data_avg(aggregate_array[i].data_temperature)
@@ -115,5 +115,5 @@ def wrapper(data):
     ticks = 20
     df = "%d  %H:%M"
     title = "Tiltmeter One Day"
-    savefile = k.dir_saves['images'] + os.sep + "one_day.png"
+    savefile = k.dir_images['images'] + os.sep + "one_day.png"
     plot_multi(df, plot_utc, datawrapper, ticks, title, savefile)
