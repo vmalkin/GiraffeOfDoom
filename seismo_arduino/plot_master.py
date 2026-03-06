@@ -6,11 +6,12 @@ import plotter_spectrum_baro
 import plotter_combo1day
 import plotter_combo7day
 import plotter_dual
+import save_csv
 # import plotter_fft_movie
 import plotter_resonance
 import mgr_emd
 import os
-import save_csv
+from datetime import datetime, timezone
 
 
 def run_task(job):
@@ -42,6 +43,7 @@ print(f'Begin plotting...')
 
 jobs = [
     (plotter_dual.wrapper, result_1d),
+    (save_csv.savedata, result_1d),
     (plotter_spectrum_baro.wrapper, result_7d),
     (plotter_combo1day.wrapper, result_1d),
     (plotter_combo7day.wrapper, result_7d),
@@ -78,7 +80,7 @@ print(results)
 #
 # wrapperdata.append(plot_utc)
 # wrapperdata.append(plot_seismo)
-# savefile = k.dir_images['images'] + os.sep + "imf.png"
+# savefile = k.dir_saves['images'] + os.sep + "imf.png"
 # df = "%d  %H:%M"
 # mgr_emd.wrapper(wrapperdata, savefile, df)
 

@@ -88,11 +88,10 @@ if __name__ == "__main__":
         collection = add_data(collection, current_posixtime, csv_line)
         # Once our collection of data is large enough, process.
         # This delay reduces the risk of the database being locked for charting
-        # 5 times per second every 2 minutes
+        # 10 times per second every 2 minutes
         if len(collection) >= 10 * 60 * 2:
             mgr_database.db_data_add(collection)
             collection = []
-            save_csv.savedata()
             now = standard_stuff.posix2utc(current_posixtime, '%Y-%m-%d %H:%M')
             print(f"{now}: Seismograph data added.")
 
