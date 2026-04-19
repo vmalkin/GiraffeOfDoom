@@ -35,5 +35,6 @@ if __name__ == "__main__":
     # Read sensor data and add to circular buffer
     while True:
         line = com.data_recieve()
+        # 1776586101.8807535, 19.27,98792.61
         current_posixtime = time.time()
         print(f"{current_posixtime}, {line}")
