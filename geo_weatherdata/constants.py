@@ -18,10 +18,9 @@ dsrdtr = False
 interCharTimeout = None
 
 timeformat = '%Y-%m-%d %H:%M:%S'
-sat_database = "data.db"
 
-sensor = "Tilt Meter Sensor"
-sensor_reading_frequency = 1 / 10
+sensor = "BMP280"
+sensor_reading_frequency = 1 / 1
 
 dir_saves = {
     'logs': 'logfiles'
