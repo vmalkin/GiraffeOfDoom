@@ -4,12 +4,12 @@
 
 Adafruit_BMP280 bmp; // I2C
 
-const long intervalReporting = 100;
-const long intervalBmpReading = 1000;
+const long intervalReporting = 1000;
+// const long intervalBmpReading = 1000;
 
 unsigned long previousReportingMillis = 0;
 unsigned long previousBMPMillis = 0;
-float currentSeismo = 0;
+// float currentSeismo = 0;
 float currentTemp = 0;
 float currentPress = 0;
 
@@ -27,20 +27,22 @@ void setup() {
 void loop() {
   unsigned long currentMillis = millis();
 
-  // Longer interval for reading the pressure sensor
-  if (currentMillis - previousBMPMillis >= intervalBmpReading)
-  {
-    currentPress = readPressure();
-    currentTemp = readTemperature();
-    previousBMPMillis = currentMillis;
-  }
+  // // Longer interval for reading the pressure sensor
+  // if (currentMillis - previousBMPMillis >= intervalBmpReading)
+  // {
+  //   currentPress = readPressure();
+  //   currentTemp = readTemperature();
+  //   previousBMPMillis = currentMillis;
+  // }
   
   // The default reporting interval
   if (currentMillis - previousReportingMillis >= intervalReporting)
   {
-    currentSeismo = readHallSensor();
-    Serial.print(currentSeismo);
-    Serial.print(",");
+    currentPress = readPressure();
+    currentTemp = readTemperature();
+    // currentSeismo = readHallSensor();
+    // Serial.print(currentSeismo);
+    // Serial.print(",");
     Serial.print(currentTemp);
     Serial.print(",");
     Serial.print(currentPress);
@@ -59,8 +61,8 @@ float readPressure()
   return bmp.readPressure();
 }
 
-float readHallSensor()
-{
-  return analogRead(A0);
-}
+// float readHallSensor()
+// {
+//   return analogRead(A0);
+// }
 
