@@ -73,10 +73,10 @@ if __name__ == "__main__":
     # Prepopulate circular buffer with saved data if applicable
 
     # Set up thread to periodically save circular buffer.
-    # Thread should count down until next buffer save. Report any pertinant buffer stats and DB and save errors.
+    # Thread should count down until next buffer save. Report any pertinent buffer stats and DB and save errors.
     # Buffer save should occur every 5 minutes or so.
     # In thread:
-    # When timer has elapsed, save data since last savedate from buffer to DB, then save the current dates data from
+    # When timer has elapsed, save data since last saved from buffer to DB, then save the current dates data from
     # the database to logfile. IF the clock has ticked over to a new day, do one last save of previous days data, as
     # well as a save of new days data to new file.
     # Files can be GZIPPED automatically
