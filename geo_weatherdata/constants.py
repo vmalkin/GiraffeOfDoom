@@ -18,6 +18,7 @@ dsrdtr = False
 interCharTimeout = None
 
 timeformat = '%Y-%m-%d %H:%M:%S'
+database = 'weather_data.db'
 
 sensor = "BMP280"
 sensor_reading_frequency = 1 / 1

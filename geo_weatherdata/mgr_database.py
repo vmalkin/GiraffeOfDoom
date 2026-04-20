@@ -4,7 +4,7 @@ import constants as k
 
 def db_create():
     # create database!
-    gpsdb = sqlite3.connect(k.sat_database)
+    gpsdb = sqlite3.connect(k.database)
     db = gpsdb.cursor()
 
     db.execute('drop table if exists observations;')
@@ -14,7 +14,6 @@ def db_create():
                'temperature real,'
                'pressure real'
                ');')
-
     gpsdb.commit()
     db.close()
 
@@ -23,14 +22,13 @@ def db_data_add(gsvdata):
     # this method expects an array with each element in the array being:
     # [1737274820, '21.05', '99740.46'] (posixtime, temperature, pressure)
     try:
-        gpsdb = sqlite3.connect(k.sat_database, timeout=10)
+        gpsdb = sqlite3.connect(k.database, timeout=10)
         db = gpsdb.cursor()
         for item in gsvdata:
             posixtime = item[0]
-            seismodata = item[1]
-            temperature = item[2]
-            pressure = item[3]
-            values = [posixtime, seismodata, temperature, pressure]
+            temperature = item[1]
+            pressure = item[2]
+            values = [posixtime, temperature, pressure]
             db.execute('insert into observations(posixtime, temperature, pressure) '
                        'values (?, ?, ?);', values)
         gpsdb.commit()
@@ -43,7 +41,7 @@ def db_data_get(timestart):
     returnarray = []
     values = [timestart]
     try:
-        gpsdb = sqlite3.connect(k.sat_database, timeout=10)
+        gpsdb = sqlite3.connect(k.database, timeout=10)
         db = gpsdb.cursor()
         result = db.execute('select * from observations where posixtime > ?;', values)
         for item in result:
@@ -57,7 +55,7 @@ def db_data_get(timestart):
 def db_data_get_all():
     returnarray = []
     try:
-        gpsdb = sqlite3.connect(k.sat_database, timeout=10)
+        gpsdb = sqlite3.connect(k.database, timeout=10)
         db = gpsdb.cursor()
         result = db.execute('select * from observations;')
         for item in result:

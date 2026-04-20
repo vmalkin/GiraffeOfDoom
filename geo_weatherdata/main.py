@@ -1,7 +1,8 @@
 import constants as k
-import time
+from time import time
 import mgr_comport
-import os
+from os import path, makedirs
+import mgr_database
 from collections import deque
 
 buffer_length = (24 * 60 * 60 * k.sensor_reading_frequency) + 100
@@ -38,12 +39,12 @@ def test_isnumber(numbertotest):
 
 
 def try_create_directory(directory):
-    if os.path.isdir(directory) is False:
+    if path.isdir(directory) is False:
         print(f"Creating directory: {directory}")
         try:
-            os.makedirs(directory)
+            makedirs(directory)
         except:
-            if not os.path.isdir(directory):
+            if not path.isdir(directory):
                 print("Unable to create directory")
 
 
@@ -52,7 +53,7 @@ if __name__ == "__main__":
     for key, value in k.dir_saves.items():
         try_create_directory(value)
 
-    if not os.path.isfile(k.sat_database):
+    if not path.isfile(k.database):
         print("No database file, initialising")
         mgr_database.db_create()
 
@@ -70,5 +71,5 @@ if __name__ == "__main__":
     while True:
         line = com.data_recieve()
         # 1776586101.8807535, 19.27,98792.61
-        current_posixtime = time.time()
+        current_posixtime = time()
         print(f"{current_posixtime}, {line}")
