@@ -63,7 +63,10 @@ if __name__ == "__main__":
 
     # Prepopulate circular buffer with saved data if applicable
 
-    # Set up thread to periodically dump circular buffer to logfiles.
+    # Set up thread to periodically save circular buffer.
+    # save data since last savedate from buffer to DB, then save the current dates data from the database to logfile.
+    # IF the clock has ticked over to a new day, do one last save of previous days data, as well as a save of
+    # new days data to new file.
 
     # Set up thread to periodically create plot of the last day.
 
