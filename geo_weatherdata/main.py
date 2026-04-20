@@ -57,16 +57,29 @@ if __name__ == "__main__":
         print("No database file, initialising")
         mgr_database.db_create()
 
-    com = mgr_comport.SerialManager(k.comport, k.baudrate, k.bytesize, k.parity, k.stopbits, k.timeout,
+    # Set up the com port.
+    com = mgr_comport.SerialManager(k.comport,
+                                    k.baudrate,
+                                    k.bytesize,
+                                    k.parity,
+                                    k.stopbits,
+                                    k.timeout,
                                     k.xonxoff,
-                                    k.rtscts, k.writeTimeout, k.dsrdtr, k.interCharTimeout)
+                                    k.rtscts,
+                                    k.writeTimeout,
+                                    k.dsrdtr,
+                                    k.interCharTimeout)
 
     # Prepopulate circular buffer with saved data if applicable
 
     # Set up thread to periodically save circular buffer.
-    # save data since last savedate from buffer to DB, then save the current dates data from the database to logfile.
-    # IF the clock has ticked over to a new day, do one last save of previous days data, as well as a save of
-    # new days data to new file.
+    # Thread should count down until next buffer save. Report any pertinant buffer stats and DB and save errors.
+    # Buffer save should occur every 5 minutes or so.
+    # In thread:
+    # When timer has elapsed, save data since last savedate from buffer to DB, then save the current dates data from
+    # the database to logfile. IF the clock has ticked over to a new day, do one last save of previous days data, as
+    # well as a save of new days data to new file.
+    # Files can be GZIPPED automatically
 
     # Set up thread to periodically create plot of the last day.
 
