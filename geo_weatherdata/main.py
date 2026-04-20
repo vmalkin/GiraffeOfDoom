@@ -4,8 +4,31 @@ import mgr_comport
 from os import path, makedirs
 import mgr_database
 from collections import deque
+from threading import Thread
 
 buffer_length = (24 * 60 * 60 * k.sensor_reading_frequency) + 100
+
+
+# Set up thread to periodically save circular buffer.
+class SavedataThread(Thread):
+    def __init__(self):
+        Thread.__init__(self, name="save_data_thread")
+        print("Starting thread for data storage")
+
+    def run(self):
+        while True:
+            # Thread should count down until next buffer save. Report any pertinent buffer stats and DB and save errors.
+            # Buffer save should occur every 5 minutes or so.
+            time.sleep(300)
+            # When timer has elapsed, save data since last saved from buffer to DB, then save the current dates data from
+            # the database to logfile. IF the clock has ticked over to a new day, do one last save of previous days data, as
+            # well as a save of new days data to new file.
+            # Files can be GZIPPED automatically
+            try:
+                print("Saving data!")
+            except:
+                pass
+
 
 def add_data(collection, current_posixtime, csv_line):
     # Will need to add a try except here. Just return the collection
@@ -82,6 +105,12 @@ if __name__ == "__main__":
     # Files can be GZIPPED automatically
 
     # Set up thread to periodically create plot of the last day.
+    # Thread code to implement charting in a new thread.
+    save_data = SavedataThread()
+    try:
+        save_data.start()
+    except:
+        print("!!! Unable to start Save Data Thread")
 
     # Read sensor data and add to circular buffer
     while True:
