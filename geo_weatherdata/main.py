@@ -117,7 +117,7 @@ if __name__ == "__main__":
     save_data = SavedataThread()
     try:
         save_data.start()
-        print(f"*** Started save data thread.")
+        print("*** Started save data thread.")
     except:
         print("!!! Unable to start save data thread")
 
@@ -131,5 +131,5 @@ if __name__ == "__main__":
         weather_data.put(dp)
         if weather_data.qsize() >= k.buffer_length:
             print(f"!!! Buffer size: {weather_data.qsize()} / {k.buffer_length}.")
-            print(f"!!! Data thread appears to have crashed. Stopping program")
+            print("!!! Data thread appears to have crashed. Stopping program")
             break
