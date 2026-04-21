@@ -122,5 +122,4 @@ if __name__ == "__main__":
         # 1776586101.8807535, 19.27,98792.61
         current_posixtime = time.time()
         dp = f"{current_posixtime},{line}"
-        # print(dp)
         weather_data.put(dp)
