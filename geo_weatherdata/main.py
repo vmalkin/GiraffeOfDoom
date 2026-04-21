@@ -32,11 +32,13 @@ class SavedataThread(Thread):
             # block for first item
             item = weather_data.get()
             batchdata.append(item)
+            weather_data.task_done()
             # consume the rest from queue.
             while True:
                 try:
                     d = weather_data.get_nowait()
                     batchdata.append(d)
+                    weather_data.task_done()
                 except Empty:
                     break
 
@@ -45,11 +47,15 @@ class SavedataThread(Thread):
             parseddata = []
             for item in batchdata:
                 l = item.split(",")
-                d0 = safe_float(l[0])
-                d1 = safe_float(l[1])
-                d2 = safe_float(l[2])
-                d = [d0, d1, d2]
-                parseddata.append(d)
+                if len(l) == 3:
+                    d0 = safe_float(l[0])
+                    d1 = safe_float(l[1])
+                    d2 = safe_float(l[2])
+                    d = [d0, d1, d2]
+                    parseddata.append(d)
+                else:
+                    print(f"!!! Data is malformed: {item}. Didn't parse.")
+
             # Save to database.
             mgr_database.db_data_add(parseddata)
             # Save to gzip CSV file.
