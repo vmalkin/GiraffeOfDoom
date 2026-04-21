@@ -5,6 +5,7 @@ from os import path, makedirs
 import mgr_database
 from collections import deque
 from threading import Thread
+from sys import getsizeof
 
 
 # Set up thread to periodically save circular buffer.
@@ -16,32 +17,20 @@ class SavedataThread(Thread):
         while True:
             # Thread should count down until next buffer save. Report any pertinent buffer stats and DB and save errors.
             # Buffer save should occur every 5 minutes or so.
-            sleep(60)
+            for i in range(300, 0, -1):
+                sleep(1)
+                if i % 60 ==0:
+                    print(f"Buffer size: {getsizeof(weather_data)} bytes. Records: {len(weather_data)} / {k.buffer_length}.")
+                    print(f"{i} seconds remaining")
+
             # When timer has elapsed, save data since last saved from buffer to DB, then save the current dates data from
             # the database to logfile. IF the clock has ticked over to a new day, do one last save of previous days data, as
             # well as a save of new days data to new file.
             # Files can be GZIPPED automatically
             try:
-                print(f"Circular buffer length: {len(weather_data)}")
+                print(f"{weather_data[-1]}")
             except:
                 pass
-
-
-# def data_add(collection, current_posixtime, csv_line):
-#     # Will need to add a try except here. Just return the collection
-#     # if there's a problem.
-#     try:
-#         seismodata = csv_line[0]
-#         temperature = csv_line[1]
-#         pressure = csv_line[2]
-#         # Test for temp and pressure as floats, otherwise do not use this data.
-#         if number_test(temperature):
-#             if number_test(pressure):
-#                 dp = [current_posixtime, seismodata, temperature, pressure]
-#                 collection.append(dp)
-#     except:
-#         print(f"Unable to parse data to add to collection: {csv_line}")
-#     return collection
 
 
 def number_test(numbertotest):
@@ -71,6 +60,7 @@ def directory_try_create(directory):
 def  circular_buffer_create():
     buffer = deque(maxlen=k.buffer_length)
     return buffer
+
 
 if __name__ == "__main__":
     # initial setup, create database, save folders.
@@ -111,5 +101,5 @@ if __name__ == "__main__":
         line = com.data_recieve()
         # 1776586101.8807535, 19.27,98792.61
         current_posixtime = time()
-        dp = f"{current_posixtime},{line}\n"
+        dp = f"{current_posixtime},{line}"
         weather_data.append(dp)
