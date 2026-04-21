@@ -121,7 +121,7 @@ if __name__ == "__main__":
     except:
         print("!!! Unable to start save data thread")
 
-    # Read sensor data and add to circular buffer
+    # Read sensor data and add to buffer
     # We need an exit that GRACEFULLY flushes the contents of the buffer to the DB.
     while True:
         line = com.data_recieve()
