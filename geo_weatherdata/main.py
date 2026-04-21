@@ -3,9 +3,9 @@ from time import time, sleep
 import mgr_comport
 from os import path, makedirs
 import mgr_database
-from collections import deque
+from queue import Queue, Empty
 from threading import Thread
-from sys import getsizeof
+
 
 
 # Set up thread to periodically save circular buffer.
@@ -15,38 +15,49 @@ class SavedataThread(Thread):
 
     def run(self):
         while True:
-
             # Thread should count down until next buffer save. Report any pertinent buffer stats and DB and save errors.
             # Buffer save should occur every 5 minutes or so.
             for i in range(300, 0, -1):
                 sleep(1)
                 if i % 60 ==0:
-                    print(f"Buffer size: {getsizeof(weather_data)} bytes. Records: {len(weather_data)} / {k.buffer_length}.")
+                    print(f"Buffer size: {weather_data.qsize()} / {weather_data.maxsize}.")
                     print(f"{i} seconds remaining")
 
             # When timer has elapsed, save data since last saved from buffer to DB, then save the current dates data from
             # the database to logfile. IF the clock has ticked over to a new day, do one last save of previous days
             # data, as well as a save of new days data to new file.
             # Files can be GZIPPED automatically
-            try:
-                print(f"{weather_data[-1]}")
+            # It might be simpler to work with a deep copy of the buffer, to avoid any issues around buffer updating
+            # interfering with DB writes
 
-            except:
-                pass
+            batchdata = []
 
+            # block for first item
+            item = weather_data.get()
+            batchdata.append(item)
 
-def number_test(numbertotest):
-    # Data is ONLY ever a float
-    if isinstance(numbertotest, float):
-        return True
-    # If it's a float cast as a string
-    if isinstance(numbertotest, str):
-        try:
-            float(numbertotest)
-            return True
-        except ValueError:
-            return False
-    return False
+            # Drain the rest from queue.
+            while True:
+                try:
+                    d = weather_data.get_nowait()
+                    batchdata.append(d)
+                except Empty:
+                    break
+
+            print(batchdata)
+
+# def number_test(numbertotest):
+#     # Data is ONLY ever a float
+#     if isinstance(numbertotest, float):
+#         return True
+#     # If it's a float cast as a string
+#     if isinstance(numbertotest, str):
+#         try:
+#             float(numbertotest)
+#             return True
+#         except ValueError:
+#             return False
+#     return False
 
 
 def directory_try_create(directory):
@@ -60,7 +71,7 @@ def directory_try_create(directory):
 
 
 def  circular_buffer_create():
-    buffer = deque(maxlen=k.buffer_length)
+    buffer = Queue(maxsize=k.buffer_length)
     return buffer
 
 
@@ -104,4 +115,5 @@ if __name__ == "__main__":
         # 1776586101.8807535, 19.27,98792.61
         current_posixtime = time()
         dp = f"{current_posixtime},{line}"
-        weather_data.append(dp)
+        # print(dp)
+        weather_data.put(dp)
