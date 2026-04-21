@@ -15,6 +15,7 @@ class SavedataThread(Thread):
 
     def run(self):
         while True:
+
             # Thread should count down until next buffer save. Report any pertinent buffer stats and DB and save errors.
             # Buffer save should occur every 5 minutes or so.
             for i in range(300, 0, -1):
@@ -24,11 +25,12 @@ class SavedataThread(Thread):
                     print(f"{i} seconds remaining")
 
             # When timer has elapsed, save data since last saved from buffer to DB, then save the current dates data from
-            # the database to logfile. IF the clock has ticked over to a new day, do one last save of previous days data, as
-            # well as a save of new days data to new file.
+            # the database to logfile. IF the clock has ticked over to a new day, do one last save of previous days
+            # data, as well as a save of new days data to new file.
             # Files can be GZIPPED automatically
             try:
                 print(f"{weather_data[-1]}")
+
             except:
                 pass
 

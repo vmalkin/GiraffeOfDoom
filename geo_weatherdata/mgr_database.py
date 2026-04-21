@@ -18,13 +18,13 @@ def db_create():
     db.close()
 
 
-def db_data_add(gsvdata):
+def db_data_add(insertdata):
     # this method expects an array with each element in the array being:
     # [1737274820, '21.05', '99740.46'] (posixtime, temperature, pressure)
     try:
         gpsdb = sqlite3.connect(k.database, timeout=10)
         db = gpsdb.cursor()
-        for item in gsvdata:
+        for item in insertdata:
             posixtime = item[0]
             temperature = item[1]
             pressure = item[2]
