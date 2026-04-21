@@ -8,7 +8,6 @@ class Aggregator:
         self.data_null = np.nan
         self.date_start = posixstart  # should be POSIX values
         self.date_stop = posixstop  # should be POSIX values
-        self.data_seismo = []
         self.data_temperature = []
         self.data_pressure = []
 
@@ -83,11 +82,9 @@ def aggregate_data(windowsize, querydata):
         # if i % 1000 == 0:
         #     print(f"{i} / {len(result_7d)}")
         datetime = querydata[i][0]
-        seismo = float(querydata[i][1])
-        temp = float(querydata[i][2])
-        pressure = float(querydata[i][3])
+        temp = float(querydata[i][1])
+        pressure = float(querydata[i][2])
         agg_index = lookup[datetime]
-        aggregate_array[agg_index - 1].data_seismo.append(seismo)
         aggregate_array[agg_index - 1].data_temperature.append(temp)
         aggregate_array[agg_index - 1].data_pressure.append(pressure)
 
