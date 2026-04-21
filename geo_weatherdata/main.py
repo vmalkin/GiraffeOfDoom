@@ -5,7 +5,7 @@ from os import path, makedirs
 import mgr_database
 from queue import Queue, Empty
 from threading import Thread
-
+import numpy as np
 
 
 # Set up thread to periodically save circular buffer.
@@ -35,8 +35,7 @@ class SavedataThread(Thread):
             # block for first item
             item = weather_data.get()
             batchdata.append(item)
-
-            # Drain the rest from queue.
+            # consume the rest from queue.
             while True:
                 try:
                     d = weather_data.get_nowait()
@@ -44,20 +43,23 @@ class SavedataThread(Thread):
                 except Empty:
                     break
 
-            print(batchdata)
+            # mgr_database.db_data_add expects an array with each element in the array being:
+            # [1737274820, '21.05', '99740.46'] (posixtime, temperature, pressure)
+            parseddata = []
+            for item in batchdata:
+                l = item.split(",")
+                d0 = safe_float(l[0])
+                d1 = safe_float(l[1])
+                d2 = safe_float(l[2])
+                d = [d0, d1, d2]
+                parseddata.append(d)
+            mgr_database.db_data_add(parseddata)
 
-# def number_test(numbertotest):
-#     # Data is ONLY ever a float
-#     if isinstance(numbertotest, float):
-#         return True
-#     # If it's a float cast as a string
-#     if isinstance(numbertotest, str):
-#         try:
-#             float(numbertotest)
-#             return True
-#         except ValueError:
-#             return False
-#     return False
+def safe_float(x):
+    try:
+        return float(x)
+    except (ValueError, TypeError):
+        return np.nan
 
 
 def directory_try_create(directory):
@@ -70,7 +72,7 @@ def directory_try_create(directory):
                 print("Unable to create directory")
 
 
-def  circular_buffer_create():
+def  buffer_create():
     buffer = Queue(maxsize=k.buffer_length)
     return buffer
 
@@ -98,7 +100,7 @@ if __name__ == "__main__":
                                     k.interCharTimeout)
 
     # Prepopulate circular buffer with saved data if applicable
-    weather_data = circular_buffer_create()
+    weather_data = buffer_create()
 
     # Set up thread to periodically save circular buffer.
     save_data = SavedataThread()
