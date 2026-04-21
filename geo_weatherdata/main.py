@@ -6,8 +6,6 @@ import mgr_database
 from collections import deque
 from threading import Thread
 
-buffer_length = (24 * 60 * 60 * k.sensor_reading_frequency) + 100
-
 
 # Set up thread to periodically save circular buffer.
 class SavedataThread(Thread):
@@ -30,16 +28,16 @@ class SavedataThread(Thread):
                 pass
 
 
-def add_data(collection, current_posixtime, csv_line):
+def data_add(collection, current_posixtime, csv_line):
     # Will need to add a try except here. Just return the collection
     # if there's a problem.
     try:
         seismodata = csv_line[0]
         temperature = csv_line[1]
         pressure = csv_line[2]
-        # Test for seismic data, temp and pressure as floats, otherwise do not use this data.
-        if test_isnumber(temperature):
-            if test_isnumber(pressure):
+        # Test for temp and pressure as floats, otherwise do not use this data.
+        if number_test(temperature):
+            if number_test(pressure):
                 dp = [current_posixtime, seismodata, temperature, pressure]
                 collection.append(dp)
     except:
@@ -47,7 +45,7 @@ def add_data(collection, current_posixtime, csv_line):
     return collection
 
 
-def test_isnumber(numbertotest):
+def number_test(numbertotest):
     # Data is ONLY ever a float
     if isinstance(numbertotest, float):
         return True
@@ -61,7 +59,7 @@ def test_isnumber(numbertotest):
     return False
 
 
-def try_create_directory(directory):
+def directory_try_create(directory):
     if path.isdir(directory) is False:
         print(f"Creating directory: {directory}")
         try:
@@ -71,10 +69,13 @@ def try_create_directory(directory):
                 print("Unable to create directory")
 
 
+def  circular_buffer_create()
+    pass
+
 if __name__ == "__main__":
     # initial setup, create database, save folders.
     for key, value in k.dir_saves.items():
-        try_create_directory(value)
+        directory_try_create(value)
 
     if not path.isfile(k.database):
         print("No database file, initialising")
@@ -96,8 +97,6 @@ if __name__ == "__main__":
     # Prepopulate circular buffer with saved data if applicable
 
     # Set up thread to periodically save circular buffer.
-    # Thread should count down until next buffer save. Report any pertinent buffer stats and DB and save errors.
-    # Buffer save should occur every 5 minutes or so.
     save_data = SavedataThread()
     try:
         save_data.start()
@@ -105,6 +104,7 @@ if __name__ == "__main__":
         print("!!! Unable to start Save Data Thread")
 
     # Read sensor data and add to circular buffer
+    # We need an exit that GRACEFULLY flushes the contents of the buffer to the DB.
     while True:
         line = com.data_recieve()
         # 1776586101.8807535, 19.27,98792.61

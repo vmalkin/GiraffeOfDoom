@@ -21,7 +21,10 @@ timeformat = '%Y-%m-%d %H:%M:%S'
 database = 'weather_data.db'
 
 sensor = "BMP280"
-sensor_reading_frequency = 1 / 1
+# How many times a second the sensor reports data to the logger
+sensor_reading_frequency = 1
+# deque buffer length is for 24 hours plus 10%
+buffer_length = int((24 * 60 * 60 * sensor_reading_frequency) * 1.1)
 
 dir_saves = {
     'logs': 'logfiles'
