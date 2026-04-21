@@ -1,5 +1,5 @@
 import constants as k
-from time import time
+from time import time, sleep
 import mgr_comport
 from os import path, makedirs
 import mgr_database
@@ -17,7 +17,7 @@ class SavedataThread(Thread):
         while True:
             # Thread should count down until next buffer save. Report any pertinent buffer stats and DB and save errors.
             # Buffer save should occur every 5 minutes or so.
-            time.sleep(300)
+            sleep(300)
             # When timer has elapsed, save data since last saved from buffer to DB, then save the current dates data from
             # the database to logfile. IF the clock has ticked over to a new day, do one last save of previous days data, as
             # well as a save of new days data to new file.
@@ -69,8 +69,9 @@ def directory_try_create(directory):
                 print("Unable to create directory")
 
 
-def  circular_buffer_create()
-    pass
+def  circular_buffer_create():
+    buffer = deque(maxlen=k.buffer_length)
+    return buffer
 
 if __name__ == "__main__":
     # initial setup, create database, save folders.
@@ -94,14 +95,15 @@ if __name__ == "__main__":
                                     k.dsrdtr,
                                     k.interCharTimeout)
 
-    # Prepopulate circular buffer with saved data if applicable
+    # # Prepopulate circular buffer with saved data if applicable
+    # weather_data = circular_buffer_create()
 
-    # Set up thread to periodically save circular buffer.
-    save_data = SavedataThread()
-    try:
-        save_data.start()
-    except:
-        print("!!! Unable to start Save Data Thread")
+    # # Set up thread to periodically save circular buffer.
+    # save_data = SavedataThread()
+    # try:
+    #     save_data.start()
+    # except:
+    #     print("!!! Unable to start Save Data Thread")
 
     # Read sensor data and add to circular buffer
     # We need an exit that GRACEFULLY flushes the contents of the buffer to the DB.
@@ -109,4 +111,4 @@ if __name__ == "__main__":
         line = com.data_recieve()
         # 1776586101.8807535, 19.27,98792.61
         current_posixtime = time()
-        print(f"{current_posixtime}, {line}")
+        print(line)
