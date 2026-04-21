@@ -11,7 +11,6 @@ from threading import Thread
 class SavedataThread(Thread):
     def __init__(self):
         Thread.__init__(self, name="save_data_thread")
-        print("Starting thread for data storage")
 
     def run(self):
         while True:
