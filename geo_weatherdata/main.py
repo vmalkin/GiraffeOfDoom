@@ -1,8 +1,9 @@
 import constants as k
-from time import time, sleep
+import time
 import mgr_comport
-from os import path, makedirs
+import os
 import mgr_database
+import mgr_csvfile
 from queue import Queue, Empty
 from threading import Thread
 import numpy as np
@@ -18,18 +19,14 @@ class SavedataThread(Thread):
             # Thread should count down until next buffer save. Report any pertinent buffer stats and DB and save errors.
             # Buffer save should occur every 5 minutes or so.
             for i in range(300, 0, -1):
-                sleep(1)
+                time.sleep(1)
                 if i % 60 ==0:
                     print(f"Buffer size: {weather_data.qsize()} / {weather_data.maxsize}.")
                     print(f"{i} seconds remaining")
 
-            # When timer has elapsed, save data since last saved from buffer to DB, then save the current dates data from
-            # the database to logfile. IF the clock has ticked over to a new day, do one last save of previous days
-            # data, as well as a save of new days data to new file.
-            # Files can be GZIPPED automatically
-            # It might be simpler to work with a deep copy of the buffer, to avoid any issues around buffer updating
-            # interfering with DB writes
-
+            # Begin timer for elapsed processing time.
+            timer_start = time.time()
+            # When timer has elapsed, save data since last saved from buffer to DB
             batchdata = []
 
             # block for first item
@@ -53,9 +50,17 @@ class SavedataThread(Thread):
                 d2 = safe_float(l[2])
                 d = [d0, d1, d2]
                 parseddata.append(d)
+            # Save to database.
             mgr_database.db_data_add(parseddata)
+            # Save to gzip CSV file.
+            mgr_csvfile.csv_save(parseddata)
+            # elapsed time for thread processing.
+            timer_stop = time.time()
+            print(f"Thread processing: {timer_stop - timer_start} seconds.")
+
 
 def safe_float(x):
+    # Make sure a value is a float. Return a NaN if not.
     try:
         return float(x)
     except (ValueError, TypeError):
@@ -63,12 +68,12 @@ def safe_float(x):
 
 
 def directory_try_create(directory):
-    if path.isdir(directory) is False:
+    if os.path.isdir(directory) is False:
         print(f"Creating directory: {directory}")
         try:
-            makedirs(directory)
+            os.makedirs(directory)
         except:
-            if not path.isdir(directory):
+            if not os.path.isdir(directory):
                 print("Unable to create directory")
 
 
@@ -82,7 +87,7 @@ if __name__ == "__main__":
     for key, value in k.dir_saves.items():
         directory_try_create(value)
 
-    if not path.isfile(k.database):
+    if not os.path.isfile(k.database):
         print("No database file, initialising")
         mgr_database.db_create()
 
@@ -115,7 +120,7 @@ if __name__ == "__main__":
     while True:
         line = com.data_recieve()
         # 1776586101.8807535, 19.27,98792.61
-        current_posixtime = time()
+        current_posixtime = time.time()
         dp = f"{current_posixtime},{line}"
         # print(dp)
         weather_data.put(dp)
