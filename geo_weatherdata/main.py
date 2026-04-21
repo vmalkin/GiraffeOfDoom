@@ -17,32 +17,32 @@ class SavedataThread(Thread):
         while True:
             # Thread should count down until next buffer save. Report any pertinent buffer stats and DB and save errors.
             # Buffer save should occur every 5 minutes or so.
-            sleep(300)
+            sleep(60)
             # When timer has elapsed, save data since last saved from buffer to DB, then save the current dates data from
             # the database to logfile. IF the clock has ticked over to a new day, do one last save of previous days data, as
             # well as a save of new days data to new file.
             # Files can be GZIPPED automatically
             try:
-                print("Saving data!")
+                print(f"Circular buffer length: {len(weather_data)}")
             except:
                 pass
 
 
-def data_add(collection, current_posixtime, csv_line):
-    # Will need to add a try except here. Just return the collection
-    # if there's a problem.
-    try:
-        seismodata = csv_line[0]
-        temperature = csv_line[1]
-        pressure = csv_line[2]
-        # Test for temp and pressure as floats, otherwise do not use this data.
-        if number_test(temperature):
-            if number_test(pressure):
-                dp = [current_posixtime, seismodata, temperature, pressure]
-                collection.append(dp)
-    except:
-        print(f"Unable to parse data to add to collection: {csv_line}")
-    return collection
+# def data_add(collection, current_posixtime, csv_line):
+#     # Will need to add a try except here. Just return the collection
+#     # if there's a problem.
+#     try:
+#         seismodata = csv_line[0]
+#         temperature = csv_line[1]
+#         pressure = csv_line[2]
+#         # Test for temp and pressure as floats, otherwise do not use this data.
+#         if number_test(temperature):
+#             if number_test(pressure):
+#                 dp = [current_posixtime, seismodata, temperature, pressure]
+#                 collection.append(dp)
+#     except:
+#         print(f"Unable to parse data to add to collection: {csv_line}")
+#     return collection
 
 
 def number_test(numbertotest):
@@ -95,15 +95,16 @@ if __name__ == "__main__":
                                     k.dsrdtr,
                                     k.interCharTimeout)
 
-    # # Prepopulate circular buffer with saved data if applicable
-    # weather_data = circular_buffer_create()
+    # Prepopulate circular buffer with saved data if applicable
+    weather_data = circular_buffer_create()
 
-    # # Set up thread to periodically save circular buffer.
-    # save_data = SavedataThread()
-    # try:
-    #     save_data.start()
-    # except:
-    #     print("!!! Unable to start Save Data Thread")
+    # Set up thread to periodically save circular buffer.
+    save_data = SavedataThread()
+    try:
+        save_data.start()
+        print(f"*** Started save data thread.")
+    except:
+        print("!!! Unable to start save data thread")
 
     # Read sensor data and add to circular buffer
     # We need an exit that GRACEFULLY flushes the contents of the buffer to the DB.
@@ -111,4 +112,5 @@ if __name__ == "__main__":
         line = com.data_recieve()
         # 1776586101.8807535, 19.27,98792.61
         current_posixtime = time()
-        print(line)
+        dp = f"{current_posixtime},{line}\n"
+        weather_data.append(dp)
