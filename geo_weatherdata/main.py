@@ -129,3 +129,7 @@ if __name__ == "__main__":
         current_posixtime = time.time()
         dp = f"{current_posixtime},{line}"
         weather_data.put(dp)
+        if weather_data.qsize() >= k.buffer_length:
+            print(f"!!! Buffer size: {weather_data.qsize()} / {k.buffer_length}.")
+            print(f"!!! Data thread appears to have crashed. Stopping program")
+            break
