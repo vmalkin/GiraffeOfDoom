@@ -37,13 +37,14 @@ def db_data_add(insertdata):
         print(f'Database data insert FAILED - database locked')
 
 
-def db_data_get(timestart):
+def db_data_get(timestart, timeend):
     returnarray = []
-    values = [timestart]
+    values = [timestart, timeend]
     try:
         gpsdb = sqlite3.connect(k.database, timeout=10)
         db = gpsdb.cursor()
-        result = db.execute('select * from observations where posixtime > ?;', values)
+        # result = db.execute('select * from observations where posixtime > ?;', values)
+        result = db.execute('select * from observations where posixtime between ? and ? order by posixtime;', values)
         for item in result:
             returnarray.append(item)
         db.close()
