@@ -59,7 +59,7 @@ class SavedataThread(Thread):
             # Save to database.
             mgr_database.db_data_add(parseddata)
             # Save to gzip CSV file.
-            mgr_csvfile.csv_save(parseddata)
+            mgr_csvfile.csv_save()
             # elapsed time for thread processing.
             timer_stop = time.time()
             print(f"Thread processing: {timer_stop - timer_start} seconds.")
@@ -128,6 +128,7 @@ if __name__ == "__main__":
         # 1776586101.8807535, 19.27,98792.61
         current_posixtime = time.time()
         dp = f"{current_posixtime},{line}"
+        # add to buffer
         weather_data.put(dp)
         if weather_data.qsize() >= k.buffer_length:
             print(f"!!! Buffer size: {weather_data.qsize()} / {k.buffer_length}.")
