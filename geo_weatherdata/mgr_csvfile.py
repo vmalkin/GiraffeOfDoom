@@ -1,7 +1,6 @@
 import os
 import time
 import constants as k
-
 import mgr_database
 import standard_stuff
 
