@@ -110,10 +110,10 @@ if __name__ == "__main__":
                                     k.dsrdtr,
                                     k.interCharTimeout)
 
-    # Prepopulate circular buffer with saved data if applicable
+    # Set up buffer
     weather_data = buffer_create()
 
-    # Set up thread to periodically save circular buffer.
+    # Set up thread to periodically save buffer.
     save_data = SavedataThread()
     try:
         save_data.start()
