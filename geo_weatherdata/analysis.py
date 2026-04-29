@@ -24,7 +24,7 @@ def plot_multi(dateformatstring, dateobjects, dataarrays, readings_per_tick, tex
     plt.style.use(plotstyle)
     # fig, ax1 = plt.subplots(nrows=2, layout="constrained", figsize=(16, 8), dpi=140)
     fig, (ax_top, ax_bottom) = plt.subplots(
-        2, 1, figsize=(16, 8), dpi=140, sharex=True, height_ratios=[2, 1]
+        2, 1, figsize=(16, 8), dpi=140, sharex=True, height_ratios=[1, 1]
     )
 
     # Subplots with separate y axes
@@ -34,22 +34,22 @@ def plot_multi(dateformatstring, dateobjects, dataarrays, readings_per_tick, tex
     limits = minmaxes(dataarrays[0])
     ax_top.set_ylim(limits)
 
-    ax_top2 = ax_top.twinx()
-    ax_top2.plot(dateobjects, dataarrays[1], c=ink_colour[1], linewidth=1)
-    ax_top2.set_ylabel("Pressure. Pa.", color=ink_colour[1])
-    ax_top2.tick_params(axis='y', colors=ink_colour[1])
-    limits = minmaxes(dataarrays[1])
-    ax_top2.set_ylim(limits)
-    ax_top2.spines['right'].set_position(('outward', 60))
-    ax_top2.yaxis.grid(False)
-
-    ax_top3 = ax_top.twinx()
-    ax_top3.plot(dateobjects, dataarrays[2], c=ink_colour[2], linewidth=1)
-    ax_top3.set_ylabel("Temperature. Deg C.", color=ink_colour[2])
-    ax_top3.tick_params(axis='y', colors=ink_colour[2])
-    limits = minmaxes(dataarrays[2])
-    ax_top3.set_ylim(limits)
-    ax_top3.yaxis.grid(False)
+    # ax_top2 = ax_top.twinx()
+    # ax_top2.plot(dateobjects, dataarrays[1], c=ink_colour[1], linewidth=1)
+    # ax_top2.set_ylabel("Pressure. Pa.", color=ink_colour[1])
+    # ax_top2.tick_params(axis='y', colors=ink_colour[1])
+    # limits = minmaxes(dataarrays[1])
+    # ax_top2.set_ylim(limits)
+    # ax_top2.spines['right'].set_position(('outward', 60))
+    # ax_top2.yaxis.grid(False)
+    #
+    # ax_top3 = ax_top.twinx()
+    # ax_top3.plot(dateobjects, dataarrays[2], c=ink_colour[2], linewidth=1)
+    # ax_top3.set_ylabel("Temperature. Deg C.", color=ink_colour[2])
+    # ax_top3.tick_params(axis='y', colors=ink_colour[2])
+    # limits = minmaxes(dataarrays[2])
+    # ax_top3.set_ylim(limits)
+    # ax_top3.yaxis.grid(False)
 
     noise_colour = '#505050'
     ax_bottom.plot(dateobjects, dataarrays[3], c=noise_colour, linewidth=0.8)
