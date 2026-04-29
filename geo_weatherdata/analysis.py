@@ -18,5 +18,5 @@ if __name__ == "__main__":
         # print(f"{psx},{temp},{prs}")
 
 
-def plot_multi(dateformatstring, dateobjects, singledataarray, readingspertick, plottitle, savefile):
+def plot_multi(dateformatstring, dateobjects, singledataarray, tickinterval, plotcolour, plottitle, savefile):
     pass
