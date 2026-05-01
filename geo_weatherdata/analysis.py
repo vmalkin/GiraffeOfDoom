@@ -9,7 +9,7 @@ import numpy as np
 
 def plot_singledata(dateformatstring, dateobjects, singledataarray, tickinterval, plotcolour, plottitle, savefile):
     plt.style.use('bmh')
-    fig, ax = plt.subplots(layout="constrained", figsize=(17, 8), dpi=140)
+    fig, ax = plt.subplots(layout="constrained", figsize=(17, 6), dpi=140)
     ax.plot(dateobjects, singledataarray, c=plotcolour, linewidth=1)
 
     # Use proper date formatter + locator
@@ -44,7 +44,7 @@ if __name__ == "__main__":
                     singledataarray=data_temp,
                     tickinterval=60,
                     plotcolour='red',
-                    plottitle='Temperature',
+                    plottitle='Todays Temperature',
                     savefile='temperature.png')
 
     plot_singledata(dateformatstring='%Y-%m-%d %H:%M',
@@ -52,6 +52,6 @@ if __name__ == "__main__":
                     singledataarray=data_prs,
                     tickinterval=60,
                     plotcolour='green',
-                    plottitle='Pressure',
+                    plottitle='Todays Pressure',
                     savefile='pressure.png')
 
