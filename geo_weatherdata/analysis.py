@@ -7,6 +7,22 @@ import matplotlib.dates as mdates
 import numpy as np
 
 
+def plot_singledata(dateformatstring, dateobjects, singledataarray, tickinterval, plotcolour, plottitle, savefile):
+    plt.style.use('bmh')
+    fig, ax = plt.subplots(layout="constrained", figsize=(17, 8), dpi=140)
+    ax.plot(dateobjects, singledataarray, c=plotcolour, linewidth=1)
+
+    # Use proper date formatter + locator
+    ax.xaxis.set_major_formatter(mdates.DateFormatter(dateformatstring))
+    ax.xaxis.set_major_locator(mdates.MinuteLocator(interval=tickinterval))
+    plt.setp(ax.get_xticklabels(), rotation=90)  # safer than plt.xticks
+    plot_title = plottitle + " - " + standard_stuff.posix2utc(time.time(), '%Y-%m-%d %H:%M')
+    ax.set_title(plot_title)
+    plt.tight_layout()
+    plt.savefig(savefile)
+    plt.close()
+
+
 if __name__ == "__main__":
     end_time = time.time()
     start_time = end_time - 86400
@@ -14,15 +30,28 @@ if __name__ == "__main__":
     print(f"Data length: {len(data)}")
 
     # process data, times for plotting.
-    plot_prs = []
-    plot_temp = []
-    plot_utc = []
+    data_prs = []
+    data_temp = []
+    data_utc = []
     for psx, temp, prs in data:
-        plot_prs.append(prs)
-        plot_temp.append(temp)
+        data_prs.append(prs)
+        data_temp.append(temp)
         tim = datetime.fromtimestamp(psx, tz=timezone.utc)  # datetime object
-        plot_utc.append(tim)
+        data_utc.append(tim)
 
+    plot_singledata(dateformatstring='%Y-%m-%d %H:%M',
+                    dateobjects=data_utc,
+                    singledataarray=data_temp,
+                    tickinterval=60,
+                    plotcolour='red',
+                    plottitle='Temperature',
+                    savefile='temperature.png')
 
-def plot_singledata(dateformatstring, dateobjects, singledataarray, tickinterval, plotcolour, plottitle, savefile):
-    fig, ax = plt.subplots(layout="constrained", figsize=(8, 8), dpi=140)
+    plot_singledata(dateformatstring='%Y-%m-%d %H:%M',
+                    dateobjects=data_utc,
+                    singledataarray=data_prs,
+                    tickinterval=60,
+                    plotcolour='green',
+                    plottitle='Pressure',
+                    savefile='pressure.png')
+

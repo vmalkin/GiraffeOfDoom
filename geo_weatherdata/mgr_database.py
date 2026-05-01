@@ -58,7 +58,7 @@ def db_data_get_all():
     try:
         gpsdb = sqlite3.connect(k.database, timeout=10)
         db = gpsdb.cursor()
-        result = db.execute('select * from observations;')
+        result = db.execute('select posixtime, pressure from observations order by posixtime;')
         for item in result:
             returnarray.append(item)
         db.close()
