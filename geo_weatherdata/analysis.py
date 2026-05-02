@@ -7,8 +7,16 @@ import matplotlib.dates as mdates
 import numpy as np
 
 
-def plot_autocorrelation(autocdata, tickinterval, plotcolour, plottitle, savefile):
-    pass
+def plot_autocorrelation(autocdata, plotcolour, plottitle, savefile):
+    plt.style.use('bmh')
+    fig, ax = plt.subplots(layout="constrained", figsize=(17, 6), dpi=140)
+    ax.plot(autocdata, c=plotcolour, linewidth=1)
+    plt.setp(ax.get_xticklabels(), rotation=90)  # safer than plt.xticks
+    plot_title = plottitle + " - " + standard_stuff.posix2utc(time.time(), '%Y-%m-%d %H:%M')
+    ax.set_title(plot_title)
+    plt.tight_layout()
+    plt.savefig(savefile)
+    plt.close()
 
 
 def plot_singledata(dateformatstring, dateobjects, singledataarray, tickinterval, plotcolour, plottitle, savefile):
@@ -31,7 +39,11 @@ if __name__ == "__main__":
     end_time = time.time()
     start_time = end_time - 86400
     data = mgr_database.db_data_get(start_time, end_time)
-    print(f"Data length: {len(data)}")
+
+    # Set up for auto-correlation. At least 60 days.
+    autocorr_start_time = end_time - (86400 * 60)
+    # end time is already defined
+    autocorr_data = mgr_database.db_data_get(autocorr_start_time, end_time)
 
     # process data, times for plotting.
     data_prs = []
@@ -59,14 +71,10 @@ if __name__ == "__main__":
                     plottitle='Todays Pressure',
                     savefile='pressure.png')
 
-    # Set up for auto-correlation. At least 60 days.
-    start_time = end_time - (86400 * 60)
-    # end time is already defined
-    data = mgr_database.db_data_get(start_time, end_time)
-    print(f"Data length: {len(data)}")
+
 
     data_prs = []
-    for psx, temp, prs in data:
+    for psx, temp, prs in autocorr_data:
         data_prs.append(prs)
 
     # ensure data is numpy array
@@ -83,4 +91,9 @@ if __name__ == "__main__":
 
     acorr = np.correlate(ndata, ndata, 'full')[len(ndata)-1:]
     acorr = acorr / var / len(ndata)
+
+    plot_autocorrelation(autocdata=acorr,
+                         plotcolour='blue',
+                         plottitle='Autocorrelation',
+                         savefile='autocorrelation.png')
 
