@@ -45,6 +45,8 @@ if __name__ == "__main__":
     # end time is already defined
     autocorr_data = mgr_database.db_data_get(autocorr_start_time, end_time)
 
+    print(f"Data downloaded in from DB")
+
     # process data, times for plotting.
     data_prs = []
     data_temp = []
@@ -71,7 +73,7 @@ if __name__ == "__main__":
                     plottitle='Todays Pressure',
                     savefile='pressure.png')
 
-
+    print(f"Temp and pressure plots completed")
 
     data_prs = []
     for psx, temp, prs in autocorr_data:
@@ -91,9 +93,11 @@ if __name__ == "__main__":
 
     acorr = np.correlate(ndata, ndata, 'full')[len(ndata)-1:]
     acorr = acorr / var / len(ndata)
+    print(f"Autocorrelation analysis completed")
 
     plot_autocorrelation(autocdata=acorr,
                          plotcolour='blue',
                          plottitle='Autocorrelation',
                          savefile='autocorrelation.png')
 
+    print(f"All analysis completed")
