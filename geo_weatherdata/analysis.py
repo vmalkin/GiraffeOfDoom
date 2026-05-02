@@ -7,6 +7,10 @@ import matplotlib.dates as mdates
 import numpy as np
 
 
+def plot_autocorrelation(autocdata, tickinterval, plotcolour, plottitle, savefile):
+    pass
+
+
 def plot_singledata(dateformatstring, dateobjects, singledataarray, tickinterval, plotcolour, plottitle, savefile):
     plt.style.use('bmh')
     fig, ax = plt.subplots(layout="constrained", figsize=(17, 6), dpi=140)
@@ -54,4 +58,29 @@ if __name__ == "__main__":
                     plotcolour='green',
                     plottitle='Todays Pressure',
                     savefile='pressure.png')
+
+    # Set up for auto-correlation. At least 60 days.
+    start_time = end_time - (86400 * 60)
+    # end time is already defined
+    data = mgr_database.db_data_get(start_time, end_time)
+    print(f"Data length: {len(data)}")
+
+    data_prs = []
+    for psx, temp, prs in data:
+        data_prs.append(prs)
+
+    # ensure data is numpy array
+    np_data = np.array(data_prs)
+
+    # Mean
+    mean = np.mean(np_data)
+
+    # Variance
+    var = np.var(np_data)
+
+    # Normalized data
+    ndata = np_data - mean
+
+    acorr = np.correlate(ndata, ndata, 'full')[len(ndata)-1:]
+    acorr = acorr / var / len(ndata)
 
