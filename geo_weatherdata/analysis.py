@@ -7,6 +7,7 @@ import matplotlib.dates as mdates
 import numpy as np
 
 
+
 def plot_autocorrelation(autocdata, plotcolour, plottitle, savefile):
     plt.style.use('bmh')
     fig, ax = plt.subplots(layout="constrained", figsize=(17, 6), dpi=140)
@@ -83,18 +84,9 @@ if __name__ == "__main__":
     # ensure data is numpy array
     np_data = np.array(data_prs)
 
-    # Mean
-    mean = np.mean(np_data)
+    # windowed auto-correlation
 
-    # Variance
-    var = np.var(np_data)
 
-    # Normalized data
-    ndata = np_data - mean
-
-    acorr = np.correlate(ndata, ndata, 'full')[len(ndata)-1:]
-    acorr = acorr / var / len(ndata)
-    print(f"*** Autocorrelation analysis completed.")
 
     plot_autocorrelation(autocdata=acorr,
                          plotcolour='blue',
