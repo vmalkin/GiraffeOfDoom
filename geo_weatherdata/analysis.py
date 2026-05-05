@@ -13,7 +13,9 @@ def plot_autocorrelation(autocdata, plotcolour, plottitle, savefile):
     fig, ax = plt.subplots(layout="constrained", figsize=(17, 6), dpi=140)
 
     # autocdata should be an array of arrays. PLot each sub-array with transparent attribute to build up the plot.
-    ax.plot(autocdata, c=plotcolour, linewidth=1)
+    for item in autocdata:
+        ax.plot(item, c=plotcolour, linewidth=1)
+
     plt.setp(ax.get_xticklabels(), rotation=90)  # safer than plt.xticks
     plot_title = plottitle + " - " + standard_stuff.posix2utc(time.time(), '%Y-%m-%d %H:%M')
     ax.set_title(plot_title)
@@ -56,6 +58,7 @@ if __name__ == "__main__":
     data_temp = []
     data_utc = []
     for psx, temp, prs in data:
+    # for psx, temp, prs in autocorr_data:
         data_prs.append(prs)
         data_temp.append(temp)
         tim = datetime.fromtimestamp(psx, tz=timezone.utc)  # datetime object
@@ -79,36 +82,42 @@ if __name__ == "__main__":
 
     print(f"*** Temp and pressure plots completed.")
 
-    data_prs = []
+    autocorr_prs = []
     for psx, temp, prs in autocorr_data:
-        data_prs.append(prs)
+        autocorr_prs.append(prs)
 
     # ensure data is numpy array
-    np_data = np.array(data_prs)
+    np_data = np.array(autocorr_prs)
 
     # windowed auto-correlation
     # decimate 1-second data to 1 hour
     decimated_data = []
-    decimate_value = 60 * 60
-    for i in range(0, len(autocorr_data), decimate_value):
-        mean_value = np.mean(autocorr_data[i:i + decimate_value])
+    decimate_value = 10
+    for i in range(0, len(np_data), decimate_value):
+        d = np_data[i:i + decimate_value]
+        mean_value = np.nanmean(d)
         decimated_data.append(mean_value)
+    print(f"Length of decimated_data: {len(decimated_data)}")
+
     # Lag depends on the size of the decimated value. here its 30 days at 1 hr data
-    lag = 30 * 24
+    lag = 6*24*7
     if len(decimated_data) < lag:
        lag = len(decimated_data)
+    print(f"Length of lag: {lag}")
 
     # perform windowed autocorrelation.
     acorr = []
     for i in range(0, lag):
         wac_values = []
-        for j in range(0, len(autocorr_data) - lag):
-            wac_values.append(autocorr_data[j:j + lag])
-            wac = autocorr_data[j] - autocorr_data[j + i]
+        for j in range(0, len(decimated_data) - lag):
+            wac = decimated_data[i] - decimated_data[i + j]
             wac_values.append(wac)
+        acorr.append(wac_values)
+
 
     # acorr should be an  array of arrays of autocorrelations.
     # Length of each sub array?
+    print(f"Length of acorr: {len(acorr)}")
     for item in acorr:
         print(f"length: {len(item)}")
 
