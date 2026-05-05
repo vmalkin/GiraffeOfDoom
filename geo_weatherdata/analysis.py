@@ -93,7 +93,18 @@ if __name__ == "__main__":
         decimated_data.append(mean_value)
     # Lag depends on the size of the decimated value. here its 30 days at 1 hr data
     lag = 30 * 24
+    if len(decimated_data) < lag:
+       lag = len(decimated_data)
 
+    # perform windowed autocorrelation.
+    acorr = []
+    for i in range(0, lag):
+        wac_values = []
+        for j in range(0, len(autocorr_data)):
+            wac = autocorr_data[j] - autocorr_data[j + i]
+            wac_values.append(wac)
+
+    # acorr should be an  array of arrays of autocorrelations.
 
     plot_autocorrelation(autocdata=acorr,
                          plotcolour='blue',
