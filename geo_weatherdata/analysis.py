@@ -85,7 +85,14 @@ if __name__ == "__main__":
     np_data = np.array(data_prs)
 
     # windowed auto-correlation
-
+    # decimate 1-second data to 1 hour
+    decimated_data = []
+    decimate_value = 60 * 60
+    for i in range(0, len(autocorr_data), decimate_value):
+        mean_value = np.mean(autocorr_data[i:i + decimate_value])
+        decimated_data.append(mean_value)
+    # Lag depends on the size of the decimated value. here its 30 days at 1 hr data
+    lag = 30 * 24
 
 
     plot_autocorrelation(autocdata=acorr,
