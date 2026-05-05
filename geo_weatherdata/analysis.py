@@ -12,7 +12,7 @@ def plot_autocorrelation(autocdata, plotcolour, plottitle, savefile):
     plt.style.use('bmh')
     fig, ax = plt.subplots(layout="constrained", figsize=(17, 6), dpi=140)
 
-    # autocdata should be an arrag of arrays. PLot each sub-array with transparent attribute to build up the plot.
+    # autocdata should be an array of arrays. PLot each sub-array with transparent attribute to build up the plot.
     ax.plot(autocdata, c=plotcolour, linewidth=1)
     plt.setp(ax.get_xticklabels(), rotation=90)  # safer than plt.xticks
     plot_title = plottitle + " - " + standard_stuff.posix2utc(time.time(), '%Y-%m-%d %H:%M')
@@ -102,11 +102,15 @@ if __name__ == "__main__":
     acorr = []
     for i in range(0, lag):
         wac_values = []
-        for j in range(0, len(autocorr_data)):
+        for j in range(0, len(autocorr_data) - lag):
+            wac_values.append(autocorr_data[j:j + lag])
             wac = autocorr_data[j] - autocorr_data[j + i]
             wac_values.append(wac)
 
     # acorr should be an  array of arrays of autocorrelations.
+    # Length of each sub array?
+    for item in acorr:
+        print(f"length: {len(item)}")
 
     plot_autocorrelation(autocdata=acorr,
                          plotcolour='blue',
