@@ -17,6 +17,8 @@ def plot_autocorrelation(autocdata, plotcolour, plottitle, savefile):
         ax.plot(item, c=plotcolour, linewidth=1)
 
     plt.setp(ax.get_xticklabels(), rotation=90)  # safer than plt.xticks
+    # plt.figure(facecolor='black')
+    # plt.ylim([-20, 20])
     plot_title = plottitle + " - " + standard_stuff.posix2utc(time.time(), '%Y-%m-%d %H:%M')
     ax.set_title(plot_title)
     plt.tight_layout()
@@ -92,37 +94,36 @@ if __name__ == "__main__":
     # windowed auto-correlation
     # decimate 1-second data to 1 hour
     decimated_data = []
-    decimate_value = 10
+    decimate_value = 60
     for i in range(0, len(np_data), decimate_value):
         d = np_data[i:i + decimate_value]
         mean_value = np.nanmean(d)
         decimated_data.append(mean_value)
     print(f"Length of decimated_data: {len(decimated_data)}")
 
+    # Normalise data
+
     # Lag depends on the size of the decimated value. here its 30 days at 1 hr data
-    lag = 6*24*7
+    lag = 60*24*7
     if len(decimated_data) < lag:
        lag = len(decimated_data)
     print(f"Length of lag: {lag}")
+    # lag = 10000
 
     # perform windowed autocorrelation.
+    print(f"*** BEGIN windowed autocorrelation.")
     acorr = []
-    for i in range(0, lag):
+    for i in range(1, lag,):
         wac_values = []
         for j in range(0, len(decimated_data) - lag):
-            wac = decimated_data[i] - decimated_data[i + j]
+            # print(i, i+j)
+            wac = decimated_data[j] - decimated_data[j + i]
             wac_values.append(wac)
         acorr.append(wac_values)
-
-
-    # acorr should be an  array of arrays of autocorrelations.
-    # Length of each sub array?
-    print(f"Length of acorr: {len(acorr)}")
-    for item in acorr:
-        print(f"length: {len(item)}")
+    print(f"*** END windowed autocorrelation.")
 
     plot_autocorrelation(autocdata=acorr,
-                         plotcolour='blue',
+                         plotcolour=(0.1, 0.2, 0.5, 0.1),
                          plottitle='Autocorrelation',
                          savefile='autocorrelation.png')
 
