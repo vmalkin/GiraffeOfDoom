@@ -12,10 +12,10 @@ def plot_autocorrelation(autocdata, plotcolour, plottitle, savefile):
     plt.style.use('bmh')
     fig, ax = plt.subplots(layout="constrained", figsize=(17, 6), dpi=140)
 
-    # autocdata should be an array of arrays. PLot each sub-array with transparent attribute to build up the plot.
-    for item in autocdata:
-        ax.plot(item, c=plotcolour, linewidth=1)
-
+    # # autocdata should be an array of arrays. PLot each sub-array with transparent attribute to build up the plot.
+    # for item in autocdata:
+    #     ax.plot(item, c=plotcolour, linewidth=1)
+    ax.plot(autocdata, c=plotcolour, linewidth=1)
     plt.setp(ax.get_xticklabels(), rotation=90)  # safer than plt.xticks
     # plt.figure(facecolor='black')
     # plt.ylim([-20, 20])
@@ -88,42 +88,37 @@ if __name__ == "__main__":
     for psx, temp, prs in autocorr_data:
         autocorr_prs.append(prs)
 
-    # ensure data is numpy array
-    np_data = np.array(autocorr_prs)
+    # # ensure data is numpy array
+    # np_data = np.array(autocorr_prs)
 
     # windowed auto-correlation
     # decimate 1-second data to 1 hour
     decimated_data = []
-    decimate_value = 60
-    for i in range(0, len(np_data), decimate_value):
-        d = np_data[i:i + decimate_value]
-        mean_value = np.nanmean(d)
-        decimated_data.append(mean_value)
+    decimate_value = 60*60
+    for i in range(0, len(autocorr_prs), decimate_value):
+        try:
+            d = autocorr_prs[i:i + decimate_value]
+            mean_value = np.nanmean(d)
+            decimated_data.append(mean_value)
+        except:
+            print(f"Currupted value: {d}")
     print(f"Length of decimated_data: {len(decimated_data)}")
 
-    # Normalise data
+    # Compute autocorrelation
+    # https://www.scicoding.com/4-ways-of-calculating-autocorrelation-in-python/
+    # Mean
+    mean = np.mean(decimated_data)
 
-    # Lag depends on the size of the decimated value. here its 30 days at 1 hr data
-    lag = 60*24*7
-    if len(decimated_data) < lag:
-       lag = len(decimated_data)
-    print(f"Length of lag: {lag}")
-    # lag = 10000
+    # Variance
+    var = np.var(decimated_data)
 
-    # perform windowed autocorrelation.
-    print(f"*** BEGIN windowed autocorrelation.")
-    acorr = []
-    for i in range(1, lag,):
-        wac_values = []
-        for j in range(0, len(decimated_data) - lag):
-            # print(i, i+j)
-            wac = decimated_data[j] - decimated_data[j + i]
-            wac_values.append(wac)
-        acorr.append(wac_values)
-    print(f"*** END windowed autocorrelation.")
+    # Normalized data
+    decimated_data = decimated_data - mean
+    autocorr = np.correlate(decimated_data, decimated_data, mode='full')[len(decimated_data)-1:]
+    autocorr = autocorr / var / len(decimated_data)
 
-    plot_autocorrelation(autocdata=acorr,
-                         plotcolour=(0.1, 0.2, 0.5, 0.1),
+    plot_autocorrelation(autocdata=autocorr,
+                         plotcolour=(0.1, 0.2, 0.5),
                          plottitle='Autocorrelation',
                          savefile='autocorrelation.png')
 
