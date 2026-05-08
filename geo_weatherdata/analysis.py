@@ -12,13 +12,8 @@ def plot_autocorrelation(autocdata, plotcolour, plottitle, savefile):
     plt.style.use('bmh')
     fig, ax = plt.subplots(layout="constrained", figsize=(17, 6), dpi=140)
 
-    # # autocdata should be an array of arrays. PLot each sub-array with transparent attribute to build up the plot.
-    # for item in autocdata:
-    #     ax.plot(item, c=plotcolour, linewidth=1)
     ax.plot(autocdata, c=plotcolour, linewidth=1)
     plt.setp(ax.get_xticklabels(), rotation=90)  # safer than plt.xticks
-    # plt.figure(facecolor='black')
-    # plt.ylim([-20, 20])
     plot_title = plottitle + " - " + standard_stuff.posix2utc(time.time(), '%Y-%m-%d %H:%M')
     ax.set_title(plot_title)
     plt.tight_layout()
