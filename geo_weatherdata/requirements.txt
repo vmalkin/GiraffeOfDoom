@@ -1,0 +1,6 @@
+# python -m pip install -r requirements.txt
+serial
+matplotlib
+numpy
+sqlite3
+scipy
