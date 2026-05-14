@@ -5,14 +5,15 @@ import matplotlib.pyplot as plt
 from datetime import datetime, timezone
 import matplotlib.dates as mdates
 import numpy as np
+from scipy.signal import savgol_filter
 
 
 
-def plot_autocorrelation(autocdata, plotcolour, plottitle, savefile):
+def plot_autocorrelation(autocdata, tickinterval, plotcolour, plottitle, savefile):
     plt.style.use('bmh')
     fig, ax = plt.subplots(layout="constrained", figsize=(17, 6), dpi=140)
-
     ax.plot(autocdata, c=plotcolour, linewidth=1)
+    ax.xaxis.set_major_locator(plt.MultipleLocator(tickinterval))
     plt.setp(ax.get_xticklabels(), rotation=90)  # safer than plt.xticks
     plot_title = plottitle + " - " + standard_stuff.posix2utc(time.time(), '%Y-%m-%d %H:%M')
     ax.set_title(plot_title)
@@ -112,9 +113,29 @@ if __name__ == "__main__":
     autocorr = np.correlate(decimated_data, decimated_data, mode='full')[len(decimated_data)-1:]
     autocorr = autocorr / var / len(decimated_data)
 
+    # Compute residuals using a Savitzky Golay Filter. Window length must be odd number.
+
+    windows = [61, 81, 101]
+    polyo = 3
+
+    for i in range(0, len(windows)):
+        smoothed = savgol_filter(autocorr, window_length=windows[i], polyorder=polyo)
+        residuals = autocorr - smoothed
+
+        title = f"Autocorrelation Residuals - Savitzky-Golay filter. Window Length = {windows[i]}. Polyorder = {polyo}"
+        savefile = f"residuals{i}.png"
+        plot_autocorrelation(autocdata=residuals,
+                             tickinterval=24,
+                             plotcolour=(0.1, 0.2, 0.5),
+                             plottitle=title,
+                             savefile=savefile)
+
     plot_autocorrelation(autocdata=autocorr,
+                         tickinterval=24,
                          plotcolour=(0.1, 0.2, 0.5),
                          plottitle='Autocorrelation',
                          savefile='autocorrelation.png')
+
+
 
     print(f"*** All analysis completed.")
