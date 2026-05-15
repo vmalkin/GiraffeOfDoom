@@ -9,11 +9,15 @@ from scipy.signal import savgol_filter
 
 
 
-def plot_autocorrelation(autocdata, tickinterval, plotcolour, plottitle, savefile):
+def plot_autocorrelation(autocdata, tickinterval, plotcolour, plottitle, legend, savefile):
     plt.style.use('bmh')
     fig, ax = plt.subplots(layout="constrained", figsize=(17, 6), dpi=140)
-    ax.plot(autocdata, c=plotcolour, linewidth=2)
+    plotcolours = ["#003049", "#d62828", "#f77f00"]
+    for i in range(0, len(autocdata)):
+        ax.plot(autocdata[i], c=plotcolours[i], linewidth=2)
+
     ax.xaxis.set_major_locator(plt.MultipleLocator(tickinterval))
+    plt.legend(legend, loc='lower center')
     plt.setp(ax.get_xticklabels(), rotation=90)  # safer than plt.xticks
     plot_title = plottitle + " - " + standard_stuff.posix2utc(time.time(), '%Y-%m-%d %H:%M')
     ax.set_title(plot_title)
@@ -110,31 +114,35 @@ if __name__ == "__main__":
 
     # Normalized data
     decimated_data = decimated_data - mean
-    autocorr = np.correlate(decimated_data, decimated_data, mode='full')[len(decimated_data)-1:]
-    autocorr = autocorr / var / len(decimated_data)
-
+    ac = np.correlate(decimated_data, decimated_data, mode='full')[len(decimated_data)-1:]
+    ac = ac / var / len(decimated_data)
+    autocorr = []
+    autocorr.append(ac)
     # Compute residuals using a Savitzky Golay Filter. Window length must be odd number.
 
     windows = [61, 81, 101]
-    sg_plots = []
     polyo = 3
+    sg_plots = []
 
     for i in range(0, len(windows)):
-        smoothed = savgol_filter(autocorr, window_length=windows[i], polyorder=polyo)
-        residuals = autocorr - smoothed
+        smoothed = savgol_filter(autocorr[0], window_length=windows[i], polyorder=polyo)
+        residuals = autocorr[0] - smoothed
+        sg_plots.append(residuals)
 
-        title = f"Autocorrelation Residuals - Savitzky-Golay filter. Window Length = {windows[i]}. Polyorder = {polyo}"
-        savefile = f"residuals{i}.png"
-        plot_autocorrelation(autocdata=residuals,
-                             tickinterval=24,
-                             plotcolour=(0.5, 0.2, 0.5),
-                             plottitle=title,
-                             savefile=savefile)
+    title = f"Autocorrelation Residuals - Savitzky-Golay filter. Window Lengths = {windows}. Polyorder = {polyo}"
+    savefile = f"residuals.png"
+    plot_autocorrelation(autocdata=sg_plots,
+                         tickinterval=24,
+                         plotcolour=(0.5, 0.2, 0.5),
+                         plottitle=title,
+                         legend=windows,
+                         savefile=savefile)
 
     plot_autocorrelation(autocdata=autocorr,
                          tickinterval=24,
                          plotcolour=(0.1, 0.2, 0.5),
                          plottitle='Autocorrelation',
+                         legend=["Series"],
                          savefile='autocorrelation.png')
 
 
