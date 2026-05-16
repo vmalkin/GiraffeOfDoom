@@ -17,6 +17,7 @@ def plot_autocorrelation(autocdata, tickinterval, plotcolour, plottitle, legend,
         ax.plot(autocdata[i], c=plotcolours[i], linewidth=2)
 
     ax.xaxis.set_major_locator(plt.MultipleLocator(tickinterval))
+    # ax.set_ylim([-0.02, 0.02])
     plt.legend(legend, loc='lower center')
     plt.setp(ax.get_xticklabels(), rotation=90)  # safer than plt.xticks
     plot_title = plottitle + " - " + standard_stuff.posix2utc(time.time(), '%Y-%m-%d %H:%M')
