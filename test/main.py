@@ -11,8 +11,8 @@ from math import tan, radians
 # Video Capture (4:3 SD) 	320x240, 640x480, 800x600
 # Video Capture (16:9 W) 	360p, 480p, 720p,
 # Frame Rate (max) 	30fps @ 640x480
-height = 600
-width = 800
+height = 1280
+width = 960
 resolution= 60 / height
 
 cam  = cv2.VideoCapture(0)
@@ -60,10 +60,10 @@ while True:
     # diff = cv2.GaussianBlur(diff, (3, 3), 0)
 
     # cv2.imshow("Cam", frame2)
-    cv2.imshow("Diff Image", diff)
+    cv2.imshow("Press q to quit.", diff)
     frame1 = frame2.copy()
     if cv2.waitKey(1) == ord('q'):
-        cv2.destroyWindow("Captured")
+        cv2.destroyWindow("Captured. Press q to quit.")
         break
     # sleep(5)
 
