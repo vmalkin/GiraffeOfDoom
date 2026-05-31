@@ -21,7 +21,7 @@ class SavedataThread(Thread):
             for i in range(300, 0, -1):
                 time.sleep(1)
                 if i % 60 ==0:
-                    print(f"Buffer size: {weather_data.qsize()} / {weather_data.maxsize}.")
+                    print(f"Buffer size: {tilt_data.qsize()} / {tilt_data.maxsize}.")
                     print(f"{i} seconds remaining")
 
             # Begin timer for elapsed processing time.
@@ -30,15 +30,15 @@ class SavedataThread(Thread):
             batchdata = []
 
             # block for first item
-            item = weather_data.get()
+            item = tilt_data.get()
             batchdata.append(item)
-            weather_data.task_done()
+            tilt_data.task_done()
             # consume the rest from queue.
             while True:
                 try:
-                    d = weather_data.get_nowait()
+                    d = tilt_data.get_nowait()
                     batchdata.append(d)
-                    weather_data.task_done()
+                    tilt_data.task_done()
                 except Empty:
                     break
 
@@ -97,21 +97,21 @@ if __name__ == "__main__":
         print("No database file, initialising")
         mgr_database.db_create()
 
-    # Set up the com port.
-    com = mgr_comport.SerialManager(k.comport,
-                                    k.baudrate,
-                                    k.bytesize,
-                                    k.parity,
-                                    k.stopbits,
-                                    k.timeout,
-                                    k.xonxoff,
-                                    k.rtscts,
-                                    k.writeTimeout,
-                                    k.dsrdtr,
-                                    k.interCharTimeout)
+    # # Set up the com port.
+    # com = mgr_comport.SerialManager(k.comport,
+    #                                 k.baudrate,
+    #                                 k.bytesize,
+    #                                 k.parity,
+    #                                 k.stopbits,
+    #                                 k.timeout,
+    #                                 k.xonxoff,
+    #                                 k.rtscts,
+    #                                 k.writeTimeout,
+    #                                 k.dsrdtr,
+    #                                 k.interCharTimeout)
 
     # Set up buffer
-    weather_data = buffer_create()
+    tilt_data = buffer_create()
 
     # Set up thread to periodically save buffer.
     save_data = SavedataThread()
@@ -129,8 +129,8 @@ if __name__ == "__main__":
         current_posixtime = time.time()
         dp = f"{current_posixtime},{line}"
         # add to buffer
-        weather_data.put(dp)
-        if weather_data.qsize() >= k.buffer_length:
-            print(f"!!! Buffer size: {weather_data.qsize()} / {k.buffer_length}.")
+        tilt_data.put(dp)
+        if tilt_data.qsize() >= k.buffer_length:
+            print(f"!!! Buffer size: {tilt_data.qsize()} / {k.buffer_length}.")
             print("!!! Data thread appears to have crashed. Stopping program")
             break
