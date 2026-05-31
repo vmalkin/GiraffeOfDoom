@@ -11,8 +11,8 @@ from math import tan, radians
 # Video Capture (4:3 SD) 	320x240, 640x480, 800x600
 # Video Capture (16:9 W) 	360p, 480p, 720p,
 # Frame Rate (max) 	30fps @ 640x480
-height = 1280
-width = 960
+height = 640
+width = 480
 resolution= 60 / height
 
 cam  = cv2.VideoCapture(0)
