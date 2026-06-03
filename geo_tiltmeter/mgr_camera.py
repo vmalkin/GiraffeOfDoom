@@ -13,14 +13,13 @@ from math import tan, radians
 # Frame Rate (max) 	30fps @ 640x480
 height = 640
 width = 480
-resolution= 60 / height
 
 cam  = cv2.VideoCapture(0)
 cam.set(cv2.CAP_PROP_FRAME_WIDTH, width)
 cam.set(cv2.CAP_PROP_FRAME_HEIGHT, height)
 ret, frame1 = cam.read()
 
-print(f'Image dimensions: {frame1.shape}. Resolution is {resolution} degrees per pixel')
+print(f'Image dimensions: {frame1.shape}.')
 # print(f'movement resolution.')
 # theta = radians(resolution)
 # tan_theta = tan(theta)
@@ -33,23 +32,52 @@ print(f'Image dimensions: {frame1.shape}. Resolution is {resolution} degrees per
 # print(f'At 100m = {round(tan_theta * 100000, 0)}mm.')
 
 
+def make_dynamic_mask_segment(image):
+    mask = np.zeros(image.shape[:2], dtype="uint8")
+    dimensions = mask.shape
+    height = image.shape[0]
+    width = dimensions[1]
+    middle = int(height / 2)
 
-# new_image = np.zeros(frame1.shape, frame1.dtype)
+    start_x = 0
+    start_y = int(middle - 120)
+    end_x = width
+    end_y = int(middle + 120)
 
+    # The color is specified in BGR, not RGB (OpenCV default).
+    cv2.rectangle(mask, (start_x, start_y), (end_x, end_y), (255, 255, 255), -1)
+    return mask
+
+
+def mask_img(image_to_process, maskname):
+    outputimg = cv2.bitwise_and(image_to_process, image_to_process, mask=maskname)
+    return outputimg
+
+
+ret, frame2 = cam.read()
+mask = make_dynamic_mask_segment(frame2)
 while True:
     ret, frame2 = cam.read()
-    diff = cv2.absdiff(frame1, frame2)
-    diff = cv2.cvtColor(diff, cv2.COLOR_BGR2GRAY)
+    # diff = cv2.absdiff(frame1, frame2)
+    knife_edge = cv2.cvtColor(frame2, cv2.COLOR_BGR2GRAY)
+    knife_edge = mask_img(knife_edge, mask)
 
+    # # Apply a gaussian blur
+    # kernel_size = 5
+    # knife_edge = cv2.GaussianBlur(knife_edge, (kernel_size, kernel_size), 0)
     # Adjust the brightness and contrast
     # g(i,j)=α⋅f(i,j)+β
     # alpha < 0 reduce. Alpha = 1 is original value.
     # beta ∈ [-255, 255]
     # control Contrast by 1.5
-    alpha = 2
+    alpha = 1
     # control brightness by 50
-    beta = 50
-    diff = cv2.convertScaleAbs(diff, alpha=alpha, beta=beta)
+    beta = 0
+    knife_edge = cv2.convertScaleAbs(knife_edge, alpha=alpha, beta=beta)
+
+    # low_threshold = 50
+    # high_threshold = 150
+    # knife_edge = cv2.Canny(knife_edge, low_threshold, high_threshold)
 
     # # Create the sharpening kernel
     # kernel = np.array([[0, -1, 0], [-1, 5, -1], [0, -1, 0]])
@@ -60,7 +88,7 @@ while True:
     # diff = cv2.GaussianBlur(diff, (3, 3), 0)
 
     # cv2.imshow("Cam", frame2)
-    cv2.imshow("Press q to quit.", diff)
+    cv2.imshow("Press q to quit.", knife_edge)
     frame1 = frame2.copy()
     if cv2.waitKey(1) == ord('q'):
         cv2.destroyWindow("Captured. Press q to quit.")
