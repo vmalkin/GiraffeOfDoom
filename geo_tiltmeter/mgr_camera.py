@@ -62,26 +62,17 @@ while True:
     knife_edge = cv2.cvtColor(frame2, cv2.COLOR_BGR2GRAY)
     knife_edge = mask_img(knife_edge, mask)
 
-    # # Apply a gaussian blur
-    # kernel_size = 5
-    # knife_edge = cv2.GaussianBlur(knife_edge, (kernel_size, kernel_size), 0)
     # Adjust the brightness and contrast
     # g(i,j)=α⋅f(i,j)+β
     # alpha < 0 reduce. Alpha = 1 is original value.
     # beta ∈ [-255, 255]
     # control Contrast by 1.5
     alpha = 1
-    # control brightness by 50
+    # control brightness by 5q0
     beta = 0
     knife_edge = cv2.convertScaleAbs(knife_edge, alpha=alpha, beta=beta)
 
-    # Blur the image for better edge detection
-    img_blur = cv2.GaussianBlur(knife_edge, (5, 5), 0)
-    # Apply Canny edge detection
-    edges = cv2.Canny(img_blur, 10, 200)
-
-    # cv2.imshow("Cam", frame2)
-    cv2.imshow("Press q to quit.", edges)
+    cv2.imshow("Press q to quit.", knife_edge)
     frame1 = frame2.copy()
     if cv2.waitKey(1) == ord('q'):
         cv2.destroyWindow("Captured. Press q to quit.")
