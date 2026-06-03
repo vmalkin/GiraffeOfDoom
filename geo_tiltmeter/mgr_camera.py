@@ -54,8 +54,8 @@ def mask_img(image_to_process, maskname):
     return outputimg
 
 
-ret, frame2 = cam.read()
-mask = make_dynamic_mask_segment(frame2)
+ret, frame1 = cam.read()
+mask = make_dynamic_mask_segment(frame1)
 while True:
     ret, frame2 = cam.read()
     # diff = cv2.absdiff(frame1, frame2)
