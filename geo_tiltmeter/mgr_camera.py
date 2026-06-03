@@ -75,20 +75,15 @@ while True:
     beta = 0
     knife_edge = cv2.convertScaleAbs(knife_edge, alpha=alpha, beta=beta)
 
-    # low_threshold = 50
-    # high_threshold = 150
-    # knife_edge = cv2.Canny(knife_edge, low_threshold, high_threshold)
-
-    # # Create the sharpening kernel
-    # kernel = np.array([[0, -1, 0], [-1, 5, -1], [0, -1, 0]])
-    # # Sharpen the image
-    # diff = cv2.filter2D(diff, -1, kernel)
-
-    # # gaussian blur
-    # diff = cv2.GaussianBlur(diff, (3, 3), 0)
+    edges = cv2.Canny(knife_edge, 50, 150)
+    lines = cv2.HoughLinesP(edges, 1, np.pi / 180, 30, minLineLength=30, maxLineGap=5)
+    result_image = knife_edge.copy()
+    for line in lines:
+        for x1, y1, x2, y2 in line:
+            cv2.line(result_image, (x1, y1), (x2, y2), (255, 0, 0), 1)
 
     # cv2.imshow("Cam", frame2)
-    cv2.imshow("Press q to quit.", knife_edge)
+    cv2.imshow("Press q to quit.", result_image)
     frame1 = frame2.copy()
     if cv2.waitKey(1) == ord('q'):
         cv2.destroyWindow("Captured. Press q to quit.")
