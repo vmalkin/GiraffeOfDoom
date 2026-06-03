@@ -75,15 +75,13 @@ while True:
     beta = 0
     knife_edge = cv2.convertScaleAbs(knife_edge, alpha=alpha, beta=beta)
 
-    edges = cv2.Canny(knife_edge, 50, 150)
-    lines = cv2.HoughLinesP(edges, 1, np.pi / 180, 30, minLineLength=30, maxLineGap=5)
-    result_image = knife_edge.copy()
-    for line in lines:
-        for x1, y1, x2, y2 in line:
-            cv2.line(result_image, (x1, y1), (x2, y2), (255, 0, 0), 1)
+    # Blur the image for better edge detection
+    img_blur = cv2.GaussianBlur(knife_edge, (5, 5), 0)
+    # Apply Canny edge detection
+    edges = cv2.Canny(img_blur, 10, 200)
 
     # cv2.imshow("Cam", frame2)
-    cv2.imshow("Press q to quit.", result_image)
+    cv2.imshow("Press q to quit.", edges)
     frame1 = frame2.copy()
     if cv2.waitKey(1) == ord('q'):
         cv2.destroyWindow("Captured. Press q to quit.")
