@@ -48,10 +48,28 @@ def make_dynamic_mask_segment(image):
     cv2.rectangle(mask, (start_x, start_y), (end_x, end_y), (255, 255, 255), -1)
     return mask
 
+def crop_image(image):
+    # mask = np.zeros(image.shape[:2], dtype="uint8")
+    # dimensions = mask.shape
+    height = image.shape[0]
+    width = image.shape[1]
+    middle = int(height / 2)
+    #
+    start_x = 0
+    start_y = int(middle - 100)
+    end_x = width
+    end_y = int(middle + 100)
+    #
+    # # The color is specified in BGR, not RGB (OpenCV default).
+    # cv2.rectangle(mask, (start_x, start_y), (end_x, end_y), (255, 255, 255), -1)
+    cropped_img = image[start_y:end_y, start_x:end_x]
+    return cropped_img
 
-def mask_img(image_to_process, maskname):
-    outputimg = cv2.bitwise_and(image_to_process, image_to_process, mask=maskname)
-    return outputimg
+
+
+# def mask_img(image_to_process, maskname):
+#     outputimg = cv2.bitwise_and(image_to_process, image_to_process, mask=maskname)
+#     return outputimg
 
 
 ret, frame1 = cam.read()
@@ -60,7 +78,8 @@ while True:
     ret, frame2 = cam.read()
     # diff = cv2.absdiff(frame1, frame2)
     knife_edge = cv2.cvtColor(frame2, cv2.COLOR_BGR2GRAY)
-    knife_edge = mask_img(knife_edge, mask)
+    # knife_edge = mask_img(knife_edge, mask)
+    knife_edge = crop_image(knife_edge)
 
     # Adjust the brightness and contrast
     # g(i,j)=α⋅f(i,j)+β
@@ -72,12 +91,20 @@ while True:
     beta = 0
     knife_edge = cv2.convertScaleAbs(knife_edge, alpha=alpha, beta=beta)
 
-    cv2.imshow("Press q to quit.", knife_edge)
-    frame1 = frame2.copy()
-    if cv2.waitKey(1) == ord('q'):
-        cv2.destroyWindow("Captured. Press q to quit.")
-        break
-    # sleep(5)
+    # We will take average of each column of pixels in the image to create a 1D array and use this simply calculate
+    # the apparent knife-edge position with sub-pixel accuracy
+    one_d_array = []
+    arr = np.array(knife_edge)
+    for i in range(0, arr.shape[1]):
+        t = arr[:, i:i+1]
+        one_d_array.append(int(np.mean(t)))
+    print(one_d_array)
+    # cv2.imshow("Press q to quit.", knife_edge)
+    # frame1 = frame2.copy()
+    # if cv2.waitKey(1) == ord('q'):
+    #     cv2.destroyWindow("Captured. Press q to quit.")
+    #     break
+
 
 cam.release()
 cv2.destroyAllWindows()
