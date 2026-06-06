@@ -32,21 +32,21 @@ print(f'Image dimensions: {frame1.shape}.')
 # print(f'At 100m = {round(tan_theta * 100000, 0)}mm.')
 
 
-def make_dynamic_mask_segment(image):
-    mask = np.zeros(image.shape[:2], dtype="uint8")
-    dimensions = mask.shape
-    height = image.shape[0]
-    width = dimensions[1]
-    middle = int(height / 2)
-
-    start_x = 0
-    start_y = int(middle - 120)
-    end_x = width
-    end_y = int(middle + 120)
-
-    # The color is specified in BGR, not RGB (OpenCV default).
-    cv2.rectangle(mask, (start_x, start_y), (end_x, end_y), (255, 255, 255), -1)
-    return mask
+# def make_dynamic_mask_segment(image):
+#     mask = np.zeros(image.shape[:2], dtype="uint8")
+#     dimensions = mask.shape
+#     height = image.shape[0]
+#     width = dimensions[1]
+#     middle = int(height / 2)
+#
+#     start_x = 0
+#     start_y = int(middle - 120)
+#     end_x = width
+#     end_y = int(middle + 120)
+#
+#     # The color is specified in BGR, not RGB (OpenCV default).
+#     cv2.rectangle(mask, (start_x, start_y), (end_x, end_y), (255, 255, 255), -1)
+#     return mask
 
 def crop_image(image):
     # mask = np.zeros(image.shape[:2], dtype="uint8")
@@ -73,7 +73,7 @@ def crop_image(image):
 
 
 ret, frame1 = cam.read()
-mask = make_dynamic_mask_segment(frame1)
+# mask = make_dynamic_mask_segment(frame1)
 while True:
     ret, frame2 = cam.read()
     # diff = cv2.absdiff(frame1, frame2)
@@ -81,15 +81,15 @@ while True:
     # knife_edge = mask_img(knife_edge, mask)
     knife_edge = crop_image(knife_edge)
 
-    # Adjust the brightness and contrast
-    # g(i,j)=α⋅f(i,j)+β
-    # alpha < 0 reduce. Alpha = 1 is original value.
-    # beta ∈ [-255, 255]
-    # control Contrast by 1.5
-    alpha = 1
-    # control brightness by 5q0
-    beta = 0
-    knife_edge = cv2.convertScaleAbs(knife_edge, alpha=alpha, beta=beta)
+    # # Adjust the brightness and contrast
+    # # g(i,j)=α⋅f(i,j)+β
+    # # alpha < 0 reduce. Alpha = 1 is original value.
+    # # beta ∈ [-255, 255]
+    # # control Contrast by 1.5
+    # alpha = 1
+    # # control brightness by 5q0
+    # beta = 0
+    # knife_edge = cv2.convertScaleAbs(knife_edge, alpha=alpha, beta=beta)
 
     # We will take average of each column of pixels in the image to create a 1D array and use this simply calculate
     # the apparent knife-edge position with sub-pixel accuracy
@@ -98,9 +98,12 @@ while True:
     for i in range(0, arr.shape[1]):
         t = arr[:, i:i+1]
         one_d_array.append(int(np.mean(t)))
-    print(one_d_array)
+
+    
+    #
+    #
     # cv2.imshow("Press q to quit.", knife_edge)
-    # frame1 = frame2.copy()
+    # # frame1 = frame2.copy()
     # if cv2.waitKey(1) == ord('q'):
     #     cv2.destroyWindow("Captured. Press q to quit.")
     #     break
