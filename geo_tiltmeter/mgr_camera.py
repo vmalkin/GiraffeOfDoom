@@ -100,20 +100,20 @@ while True:
         n = round(np.mean(t, dtype=np.float64), 2)
         one_d_array.append(n)
 
-    gradient = np.gradient(one_d_array)
-    for item in one_d_array:
-        print(item)
-    break
-    # i = np.array(one_d_array, dtype=np.uint8).reshape(1, 640)
-    # i = cv2.resize(
-    #     i,
-    #     (640, 200),
-    #     interpolation=cv2.INTER_NEAREST
-    # )
-    # cv2.imshow("Press q to quit.", i)
-    # if cv2.waitKey(1) == ord('q'):
-    #     cv2.destroyWindow("Captured. Press q to quit.")
-    #     break
+    # gradient = np.gradient(one_d_array)
+    # for item in one_d_array:
+    #     print(item)
+    # break
+    i = np.array(one_d_array, dtype=np.uint8).reshape(1, 640)
+    i = cv2.resize(
+        i,
+        (640, 200),
+        interpolation=cv2.INTER_NEAREST
+    )
+    cv2.imshow("Press q to quit.", i)
+    if cv2.waitKey(1) == ord('q'):
+        cv2.destroyWindow("Captured. Press q to quit.")
+        break
 
 
 cam.release()
