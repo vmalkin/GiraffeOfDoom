@@ -91,26 +91,26 @@ while True:
     # beta = 0
     # knife_edge = cv2.convertScaleAbs(knife_edge, alpha=alpha, beta=beta)
 
-    # We will take average of each column of pixels in the image to create a 1D array and use this simply calculate
-    # the apparent knife-edge position with sub-pixel accuracy
-    one_d_array = []
-    arr = np.array(knife_edge)
-    for i in range(0, arr.shape[1]):
-        t = arr[:, i:i+1]
-        n = round(np.mean(t, dtype=np.float64), 2)
-        one_d_array.append(n)
+    # # We will take average of each column of pixels in the image to create a 1D array and use this simply calculate
+    # # the apparent knife-edge position with sub-pixel accuracy
+    # one_d_array = []
+    # arr = np.array(knife_edge)
+    # for i in range(0, arr.shape[1]):
+    #     t = arr[:, i:i+1]
+    #     n = round(np.mean(t, dtype=np.float64), 2)
+    #     one_d_array.append(n)
 
-    # gradient = np.gradient(one_d_array)
-    # for item in one_d_array:
-    #     print(item)
-    # break
-    i = np.array(one_d_array, dtype=np.uint8).reshape(1, 640)
-    i = cv2.resize(
-        i,
-        (640, 200),
-        interpolation=cv2.INTER_NEAREST
-    )
-    cv2.imshow("Press q to quit.", i)
+    # # gradient = np.gradient(one_d_array)
+    # # for item in one_d_array:
+    # #     print(item)
+    # # break
+    # i = np.array(one_d_array, dtype=np.uint8).reshape(1, 640)
+    # i = cv2.resize(
+    #     i,
+    #     (640, 200),
+    #     interpolation=cv2.INTER_NEAREST
+    # )
+    cv2.imshow("Press q to quit.", knife_edge)
     if cv2.waitKey(1) == ord('q'):
         cv2.destroyWindow("Captured. Press q to quit.")
         break
