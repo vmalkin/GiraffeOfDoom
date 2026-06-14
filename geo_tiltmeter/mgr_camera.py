@@ -50,15 +50,15 @@ print(f'Image dimensions: {frame1.shape}.')
 
 def crop_image(image):
     # mask = np.zeros(image.shape[:2], dtype="uint8")
-    # dimensions = mask.shape
+    # dimensions = mask.shapeq
     height = image.shape[0]
     width = image.shape[1]
     middle = int(height / 2)
     #
     start_x = 0
-    start_y = int(middle - 100)
+    start_y = int(middle - 50)
     end_x = width
-    end_y = int(middle + 100)
+    end_y = int(middle + 50)
     #
     # # The color is specified in BGR, not RGB (OpenCV default).
     # cv2.rectangle(mask, (start_x, start_y), (end_x, end_y), (255, 255, 255), -1)
