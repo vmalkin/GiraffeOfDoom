@@ -18,25 +18,29 @@ class Aggregator:
         if len(dataset) > 0:
             try:
                 val_avg = round(np.nanmean(dataset), 4)
-            except RuntimeWarning:
-                pass
-        return val_avg
+                return val_avg
+            except:
+                return val_avg
 
     def get_data_median(self, dataset):
         # return the median value of the data set. If the set is empty, return a null
+        val_median = self.data_null
         if len(dataset) > 0:
-            val_median = round(np.nanmedian(dataset), 4)
-        else:
-            val_median = self.data_null
-        return val_median
+            try:
+                val_median = round(np.nanmedian(dataset), 4)
+                return val_median
+            except:
+                return val_median
 
     def get_data_max(self, dataset):
         # return the median value of the data set. If the set is empty, return a null
+        val_max = self.data_null
         if len(dataset) > 0:
-            val_max = round(np.nanmax(dataset), 4)
-        else:
-            val_max = self.data_null
-        return val_max
+            try:
+                val_max = round(np.nanmax(dataset), 4)
+                return val_max
+            except:
+                return val_max
 
     def get_data_min(self, dataset):
         # return the median value of the data set. If the set is empty, return a null
@@ -84,24 +88,24 @@ def aggregate_data(windowsize, querydata):
         #     print(f"{i} / {len(result_7d)}")
         datetime = querydata[i][0]
         # seismo = float(querydata[i][1])
-        temp = float(querydata[i][1])
-        pressure = float(querydata[i][2])
+        temp = querydata[i][1]
+        pressure = querydata[i][2]
         agg_index = lookup[datetime]
         # aggregate_array[agg_index - 1].data_seismo.append(seismo)
         aggregate_array[agg_index - 1].data_temperature.append(temp)
         aggregate_array[agg_index - 1].data_pressure.append(pressure)
 
 
-    # # PASS 4 - Use aggregator class functions to create plotting data
-    # print("PASS 4 - Create and return plotting array [posixdatetime, avg_seismo, avg_temp, avg_pressr]")
-    # plotting_data = []
-    # for i in range(1, len(aggregate_array)):
-    #     tim = aggregate_array[i].get_avg_posix()
-    #     siz = aggregate_array[i].get_data_avg(aggregate_array[i].data_seismo)
-    #     tmp = aggregate_array[i].get_data_avg(aggregate_array[i].data_temperature)
-    #     prs = aggregate_array[i].get_data_avg(aggregate_array[i].data_pressure)
-    #     d = [tim, siz, tmp, prs]
-    #     plotting_data.append(d)
+    # PASS 4 - Use aggregator class functions to create plotting data
+    print("PASS 4 - Create and return plotting array [posixdatetime, avg_temp, avg_pressr]")
+    plotting_data = []
+    for i in range(1, len(aggregate_array)):
+        tim = aggregate_array[i].get_avg_posix()
+        # siz = aggregate_array[i].get_data_avg(aggregate_array[i].data_seismo)
+        tmp = aggregate_array[i].get_data_avg(aggregate_array[i].data_temperature)
+        prs = aggregate_array[i].get_data_avg(aggregate_array[i].data_pressure)
+        d = [tim, tmp, prs]
+        plotting_data.append(d)
 
     # return plotting_data
-    return aggregate_array
+    return plotting_data

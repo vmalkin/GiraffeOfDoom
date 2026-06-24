@@ -1,5 +1,5 @@
 from datetime import timezone, datetime
-import constants as k
+import class_aggregator as aggregator
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 from matplotlib.ticker import AutoMinorLocator
@@ -190,12 +190,14 @@ def get_delta_p(data, halfwindow):
 def wrapper(data):
     #  spectrographic analysis and filtering improved with ChatGPT
     print("*** Barometric Spectrogram")
-    window = 10
+    windowsize = 3
     aggregate_array = data
+    # aggregate_array = aggregator.aggregate_data(windowsize, data)
     aggregate_array.pop(0)
 
     plot_utc = []
     plot_press = []
+    # print(aggregate_array[0])
     # for psx, temp, prs
     for psx, temp, prs in aggregate_array:
         tim = datetime.fromtimestamp(psx, tz=timezone.utc)  # datetime object
@@ -214,13 +216,14 @@ def wrapper(data):
     savefile = "spectrum_press.png"
     # nfft=16384
     # nfft=32768
+    # nfft = 65536,
 
     plot_spectrum_scipy(
         data,
         deltap=deltapressure,
         datetimes=plot_utc,
         fs=1,
-        nfft=65536,
+        nfft=32768,
         overlap_frac=0.75,
         fmin=10**-5.2,
         fmax=10**-1.8,
