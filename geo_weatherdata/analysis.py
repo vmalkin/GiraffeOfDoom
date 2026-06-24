@@ -2,6 +2,7 @@ import mgr_database
 import standard_stuff
 import time
 import matplotlib.pyplot as plt
+import mgr_spectrum_baro
 from datetime import datetime, timezone
 import matplotlib.dates as mdates
 import numpy as np
@@ -11,7 +12,7 @@ from scipy.signal import savgol_filter
 
 def plot_autocorrelation(autocdata, tickinterval, plotcolour, plottitle, legend, savefile):
     plt.style.use('bmh')
-    fig, ax = plt.subplots(layout="constrained", figsize=(17, 6), dpi=140)
+    fig, ax = plt.subplots(layout="constrained", figsize=(19, 6), dpi=140)
     plotcolours = ["#003049", "#d62828", "#f77f00"]
     for i in range(0, len(autocdata)):
         ax.plot(autocdata[i], c=plotcolours[i], linewidth=2)
@@ -29,7 +30,7 @@ def plot_autocorrelation(autocdata, tickinterval, plotcolour, plottitle, legend,
 
 def plot_singledata(dateformatstring, dateobjects, singledataarray, tickinterval, plotcolour, plottitle, savefile):
     plt.style.use('bmh')
-    fig, ax = plt.subplots(layout="constrained", figsize=(17, 6), dpi=140)
+    fig, ax = plt.subplots(layout="constrained", figsize=(19, 6), dpi=140)
     ax.plot(dateobjects, singledataarray, c=plotcolour, linewidth=1)
 
     # Use proper date formatter + locator
@@ -146,6 +147,6 @@ if __name__ == "__main__":
                          legend=["Series"],
                          savefile='autocorrelation.png')
 
-
+    mgr_spectrum_baro.wrapper(autocorr_data)
 
     print(f"*** All analysis completed.")

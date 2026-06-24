@@ -3,33 +3,8 @@ import numpy as np
 from time import sleep
 from math import tan, radians
 
-# Field of View (FOV) 	60°
-# Focal Length 	4.0 mm
-# Optical Resolution (True) 	1280 x 960 1.2MP
-# Image Capture (4:3 SD) 	320x240, 640x480 1.2 MP, 3.0 MP
-# Image Capture (16:9 W) 	360p, 480p, 720p
-# Video Capture (4:3 SD) 	320x240, 640x480, 800x600
-# Video Capture (16:9 W) 	360p, 480p, 720p,
-# Frame Rate (max) 	30fps @ 640x480
-height = 640
-width = 480
 
-cam  = cv2.VideoCapture(0)
-cam.set(cv2.CAP_PROP_FRAME_WIDTH, width)
-cam.set(cv2.CAP_PROP_FRAME_HEIGHT, height)
-ret, frame1 = cam.read()
 
-print(f'Image dimensions: {frame1.shape}.')
-# print(f'movement resolution.')
-# theta = radians(resolution)
-# tan_theta = tan(theta)
-# print(f'At 1m = {round(tan_theta * 1000, 0)}mm.')
-# print(f'At 2m = {round(tan_theta * 2000, 0)}mm.')
-# print(f'At 5m = {round(tan_theta * 5000, 0)}mm.')
-# print(f'At 10m = {round(tan_theta * 10000, 0)}mm.')
-# print(f'At 20m = {round(tan_theta * 20000, 0)}mm.')
-# print(f'At 50m = {round(tan_theta * 50000, 0)}mm.')
-# print(f'At 100m = {round(tan_theta * 100000, 0)}mm.')
 
 
 # def make_dynamic_mask_segment(image):
@@ -48,6 +23,28 @@ print(f'Image dimensions: {frame1.shape}.')
 #     cv2.rectangle(mask, (start_x, start_y), (end_x, end_y), (255, 255, 255), -1)
 #     return mask
 
+def setup_cam():
+    # Manually set camera parameters to prevent varion due to automatic functions.
+    # Field of View (FOV) 	60°
+    # Focal Length 	4.0 mm
+    # Optical Resolution (True) 	1280 x 960 1.2MP
+    # Image Capture (4:3 SD) 	320x240, 640x480 1.2 MP, 3.0 MP
+    # Image Capture (16:9 W) 	360p, 480p, 720p
+    # Video Capture (4:3 SD) 	320x240, 640x480, 800x600
+    # Video Capture (16:9 W) 	360p, 480p, 720p,
+    # Frame Rate (max) 	30fps @ 640x480
+    # Change the camera setting using the set() function
+    print(cv2.CAP_PROP_XI_DEVICE_SN)
+    cam.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
+    cam.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
+    cam.set(cv2.CAP_PROP_GAIN, 0)
+    cam.set(cv2.CAP_PROP_BRIGHTNESS, 120)
+    cam.set(cv2.CAP_PROP_CONTRAST, 50)
+    # cam.set(cv2.CAP_PROP_HUE, 13)  # 13.0
+    # cam.set(cv2.CAP_PROP_SATURATION, 128)
+    cam.set(cv2.CAP_PROP_EXPOSURE, 0)
+    cam.set(cv2.CAP_PROP_AUTO_EXPOSURE, 0);
+
 def crop_image(image):
     # mask = np.zeros(image.shape[:2], dtype="uint8")
     # dimensions = mask.shapeq
@@ -55,9 +52,9 @@ def crop_image(image):
     width = image.shape[1]
     middle = int(height / 2)
     #
-    start_x = 0
+    start_x = 50
     start_y = int(middle - 50)
-    end_x = width
+    end_x = width - 50
     end_y = int(middle + 50)
     #
     # # The color is specified in BGR, not RGB (OpenCV default).
@@ -70,7 +67,9 @@ def crop_image(image):
 # def mask_img(image_to_process, maskname):
 #     outputimg = cv2.bitwise_and(image_to_process, image_to_process, mask=maskname)
 #     return outputimg
-
+cam  = cv2.VideoCapture(1)
+ret, frame1 = cam.read()
+# setup_cam()
 
 ret, frame1 = cam.read()
 # mask = make_dynamic_mask_segment(frame1)
