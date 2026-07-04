@@ -120,6 +120,7 @@ def plot_spectrum_scipy(
         (16 * 60, "16 min\nMesoscale variability."),
         (2.7 * 3600, "2.7 hr\nSynoptic-mesoscale transition."),
         (27 * 3600, "27 hr\nRegion of diurnal atmospheric tide (S1)."),
+        (29 * 24 * 3600, "29 Days\nLunar Tides"),
     ]
 
     for period_sec, text in annotations:
@@ -223,12 +224,12 @@ def wrapper(data):
         deltap=deltapressure,
         datetimes=plot_utc,
         fs=1,
-        nfft=32768,
+        nfft=262144,
         overlap_frac=0.75,
-        fmin=10**-5.2,
+        fmin=10**-7,
         fmax=10**-1.8,
         vmin=5,
-        vmax=90,
+        vmax=120,
         datetimeformat="%m %d\n%H:%M",
         title=title,
         savefile=savefile,
