@@ -20,7 +20,8 @@ logging.info("Created error log for this session")
 
 dna_core = sqlite3.connect(k.dbfile)
 db = dna_core.cursor()
-datasource = "https://services.swpc.noaa.gov/products/solar-wind/mag-2-hour.json"
+# datasource = "https://services.swpc.noaa.gov/products/solar-wind/mag-2-hour.json"
+datasource = "https://services.swpc.noaa.gov/products/geospace/propagated-solar-wind-1-hour.json"
 station_id = "Geomag_Bz"
 timeformat = '%Y-%m-%d %H:%M:%S.%f'
 
@@ -63,12 +64,13 @@ class State:
             json_data = webdata
             for i in range(1, len(json_data)):
                 time_tag = self.utc2posix(json_data[i][0])
-                bz = json_data[i][3]
+                bz = json_data[i][6]
+                print(f"{time_tag}, {bz}")
 
-                if re.match(r"^[0-9]*[0-9.]*$", bz):
-                    pass
-                else:
-                    speed = ""
+                # if re.match(r"^[0-9]*[0-9.]*$", bz):
+                #     pass
+                # else:
+                #     speed = ""
 
                 dp = str(time_tag) + "," + str(bz)
                 returndata.append(dp)
@@ -139,7 +141,7 @@ class State:
         return utctime
 
     def utc2posix(self, utc_string):
-        dt = datetime.datetime.strptime(utc_string, '%Y-%m-%d %H:%M:%S.%f')
+        dt = datetime.datetime.strptime(utc_string, '%Y-%m-%dT%H:%M:%SZ')
         ts = calendar.timegm(dt.timetuple())
         return ts
 
