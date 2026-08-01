@@ -41,6 +41,7 @@ def setup_cam():
     cam.set(cv2.CAP_PROP_EXPOSURE, 0)
     cam.set(cv2.CAP_PROP_AUTO_EXPOSURE, 0);
 
+def crop_image(image):
     height = image.shape[0]
     width = image.shape[1]
     middle = int(height / 2)
