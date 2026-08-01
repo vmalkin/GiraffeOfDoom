@@ -71,14 +71,18 @@ while True:
         t = arr[:, i:i+1]
         n = round(np.mean(t, dtype=np.float64), 2)
         one_d_array.append(n)
-
+    #
+    # dhdt = []
+    # for i in range(1, len(one_d_array)):
+    #     d = one_d_array[i] - one_d_array[i - 1]
+    #     dhdt.append(d)
+    # print(dhdt)
     # The following is just for displaying the averaged knife edge. Dont need to do this if we're trying to calculate
     # a sub-pixel position
     reformat_one_d_array = np.array(one_d_array, dtype=np.uint8).reshape(1, len(one_d_array))
     reformat_one_d_array = cv2.resize(
         reformat_one_d_array,
-        (len(one_d_array), 100),
-        interpolation=cv2.INTER_NEAREST
+        (len(one_d_array), 100)
     )
     cv2.imshow("Press q to quit.", reformat_one_d_array)
     if cv2.waitKey(1) == ord('q'):
