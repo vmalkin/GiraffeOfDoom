@@ -1,10 +1,5 @@
 import cv2
 import numpy as np
-from time import sleep
-from math import tan, radians
-
-
-
 
 
 # def make_dynamic_mask_segment(image):
@@ -24,6 +19,7 @@ from math import tan, radians
 #     return mask
 
 def setup_cam():
+    # camera is quickcam C270
     # Manually set camera parameters to prevent varion due to automatic functions.
     # Field of View (FOV) 	60°
     # Focal Length 	4.0 mm
@@ -45,34 +41,20 @@ def setup_cam():
     cam.set(cv2.CAP_PROP_EXPOSURE, 0)
     cam.set(cv2.CAP_PROP_AUTO_EXPOSURE, 0);
 
-def crop_image(image):
-    # mask = np.zeros(image.shape[:2], dtype="uint8")
-    # dimensions = mask.shapeq
     height = image.shape[0]
     width = image.shape[1]
     middle = int(height / 2)
-    #
     start_x = 50
     start_y = int(middle - 50)
     end_x = width - 50
     end_y = int(middle + 50)
-    #
-    # # The color is specified in BGR, not RGB (OpenCV default).
-    # cv2.rectangle(mask, (start_x, start_y), (end_x, end_y), (255, 255, 255), -1)
     cropped_img = image[start_y:end_y, start_x:end_x]
     return cropped_img
 
-
-
-# def mask_img(image_to_process, maskname):
-#     outputimg = cv2.bitwise_and(image_to_process, image_to_process, mask=maskname)
-#     return outputimg
 cam  = cv2.VideoCapture(1)
 ret, frame1 = cam.read()
-# setup_cam()
 
-ret, frame1 = cam.read()
-# mask = make_dynamic_mask_segment(frame1)
+
 while True:
     ret, frame2 = cam.read()
     # diff = cv2.absdiff(frame1, frame2)
@@ -113,7 +95,6 @@ while True:
     if cv2.waitKey(1) == ord('q'):
         cv2.destroyWindow("Captured. Press q to quit.")
         break
-
 
 cam.release()
 cv2.destroyAllWindows()
