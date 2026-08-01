@@ -63,16 +63,6 @@ while True:
     # knife_edge = mask_img(knife_edge, mask)
     knife_edge = crop_image(knife_edge)
 
-    # # Adjust the brightness and contrast
-    # # g(i,j)=α⋅f(i,j)+β
-    # # alpha < 0 reduce. Alpha = 1 is original value.
-    # # beta ∈ [-255, 255]
-    # # control Contrast by 1.5
-    # alpha = 1
-    # # control brightness by 5q0
-    # beta = 0
-    # knife_edge = cv2.convertScaleAbs(knife_edge, alpha=alpha, beta=beta)
-
     # # We will take average of each column of pixels in the image to create a 1D array and use this simply calculate
     # # the apparent knife-edge position with sub-pixel accuracy
     # one_d_array = []
