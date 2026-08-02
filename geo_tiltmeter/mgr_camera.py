@@ -1,3 +1,5 @@
+import csv
+
 import cv2
 import numpy as np
 
@@ -18,7 +20,7 @@ import numpy as np
 #     cv2.rectangle(mask, (start_x, start_y), (end_x, end_y), (255, 255, 255), -1)
 #     return mask
 
-def setup_cam():
+def setup_cam(camera):
     # camera is quickcam C270
     # Manually set camera parameters to prevent varion due to automatic functions.
     # Field of View (FOV) 	60°
@@ -31,15 +33,15 @@ def setup_cam():
     # Frame Rate (max) 	30fps @ 640x480
     # Change the camera setting using the set() function
     print(cv2.CAP_PROP_XI_DEVICE_SN)
-    cam.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
-    cam.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
-    cam.set(cv2.CAP_PROP_GAIN, 0)
-    cam.set(cv2.CAP_PROP_BRIGHTNESS, 120)
-    cam.set(cv2.CAP_PROP_CONTRAST, 50)
-    # cam.set(cv2.CAP_PROP_HUE, 13)  # 13.0
-    # cam.set(cv2.CAP_PROP_SATURATION, 128)
-    cam.set(cv2.CAP_PROP_EXPOSURE, 0)
-    cam.set(cv2.CAP_PROP_AUTO_EXPOSURE, 0);
+    camera.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
+    camera.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
+    camera.set(cv2.CAP_PROP_GAIN, 0)
+    camera.set(cv2.CAP_PROP_BRIGHTNESS, 120)
+    camera.set(cv2.CAP_PROP_CONTRAST, 50)
+    # camera.set(cv2.CAP_PROP_HUE, 13)  # 13.0
+    # camera.set(cv2.CAP_PROP_SATURATION, 128)
+    camera.set(cv2.CAP_PROP_EXPOSURE, 0)
+    camera.set(cv2.CAP_PROP_AUTO_EXPOSURE, 0);
 
 def crop_image(image):
     height = image.shape[0]
@@ -52,9 +54,11 @@ def crop_image(image):
     cropped_img = image[start_y:end_y, start_x:end_x]
     return cropped_img
 
-cam  = cv2.VideoCapture(1)
-ret, frame1 = cam.read()
 
+
+cam  = cv2.VideoCapture(0)
+setup_cam(cam)
+ret, frame1 = cam.read()
 
 while True:
     ret, frame2 = cam.read()
@@ -77,19 +81,25 @@ while True:
     #     d = one_d_array[i] - one_d_array[i - 1]
     #     dhdt.append(d)
     # print(dhdt)
-    # The following is just for displaying the averaged knife edge. Dont need to do this if we're trying to calculate
-    # a sub-pixel position
-    reformat_one_d_array = np.array(one_d_array, dtype=np.uint8).reshape(1, len(one_d_array))
-    reformat_one_d_array = cv2.resize(
-        reformat_one_d_array,
-        (len(one_d_array), 100)
-    )
-    cv2.imshow("Press q to quit.", reformat_one_d_array)
-    if cv2.waitKey(1) == ord('q'):
-        cv2.destroyWindow("Captured. Press q to quit.")
-        break
 
-#     Perform sub-pixel estimation of average knife-edge position.
+    # # The following is just for displaying the averaged knife edge. Dont need to do this if we're trying to calculate
+    # # a sub-pixel position
+    # reformat_one_d_array = np.array(one_d_array, dtype=np.uint8).reshape(1, len(one_d_array))
+    # reformat_one_d_array = cv2.resize(
+    #     reformat_one_d_array,
+    #     (len(one_d_array), 100)
+    # )
+    # cv2.imshow("Press q to quit.", reformat_one_d_array)
+    # if cv2.waitKey(1) == ord('q'):
+    #     cv2.destroyWindow("Captured. Press q to quit.")
+    #     break
+
+    # Perform sub-pixel estimation of average knife-edge position.
+    with open('knife_edge.csv', 'w') as k:
+        for line in one_d_array:
+            k.write(str(line) + '\n')
+    k.close()
+    break
 
 cam.release()
 cv2.destroyAllWindows()
