@@ -4,12 +4,8 @@ do
  python3 get_ruru.py
  python3 get_goes_primary.py
  python3 get_goes_secondary.py
-# python3 get_SW_speed.py
-# python3 get_solarwind.py
-# python3 get_bz.py
-# python3 get_VLF.py
- 
-# python3 save_logfiles.py
+ python3 get_solarwind.py
+
 # python3 chart_dxdt.py
 #
 # python3 chart_spark_bz.py
