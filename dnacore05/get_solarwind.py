@@ -18,8 +18,6 @@ errorloglevel = logging.ERROR
 logging.basicConfig(filename=k.error_log, format='%(asctime)s %(message)s', level=errorloglevel)
 logging.info("Created error log for this session")
 
-dna_core = sqlite3.connect(k.dbfile)
-db = dna_core.cursor()
 datasource = "https://services.swpc.noaa.gov/products/geospace/propagated-solar-wind-1-hour.json"
 
 # This must match station entries in constants.py
@@ -47,9 +45,9 @@ class State:
             self.initaldata.append(dp)
 
 
-
     def do_most_recent_date(self):
-        # select max(posix_time) from station_data where station_data.station_id = "Ruru_Obs" order by posix_time asc;
+        dna_core = sqlite3.connect(k.dbfile)
+        db = dna_core.cursor()
         query_result = db.execute("select max(posix_time) from station_data where station_data.station_id = ? order by posix_time asc", [station_bz])
         # query_result = db.execute("select max(posix_time) from station_data order by posix_time asc")
         tempdate = query_result.fetchone()
@@ -60,6 +58,7 @@ class State:
         else:
             pass
         print("Most recent date: " + str(self.nowdate))
+        db.close()
 
 
     def do_parse_data(self):
@@ -72,15 +71,37 @@ class State:
 
 
     def do_data_append(self):
-        """Append the parsed data to the database."""
-        try:
-            for item in self.mag_data:
-                itemsplit = item.split(",")
-                db.execute("insert into station_data(station_id, posix_time, data_value) values (?, ?, ?)", [station_id, itemsplit[0], itemsplit[1]])
-            result = "success"
-        except sqlite3.ProgrammingError:
-            print(station_id + " ERROR: Error with query")
-            logging.error(station_id + " ERROR: Error with query")
+        # Append the parsed data to the database."""
+        # [1785967500, 349.2, 1.36, -1.64], posixtime, speed, density, bz
+        dna_core = sqlite3.connect(k.dbfile)
+        db = dna_core.cursor()
+
+        for item in self.parseddata:
+            current_posixtime = item[0]
+            sw_speed = item[1]
+            sw_density = item[2]
+            sw_bz = item[3]
+            try:
+                db.execute("insert into station_data(station_id, posix_time, data_value) values (?, ?, ?)",
+                           [station_speed, current_posixtime, sw_speed])
+            except sqlite3.ProgrammingError:
+                print(f"Error with station: {station_speed}")
+
+            try:
+                db.execute("insert into station_data(station_id, posix_time, data_value) values (?, ?, ?)",
+                           [station_density, current_posixtime, sw_density])
+            except sqlite3.ProgrammingError:
+                print(f"Error with station: {station_speed}")
+
+            try:
+                db.execute("insert into station_data(station_id, posix_time, data_value) values (?, ?, ?)",
+                           [station_bz, current_posixtime, sw_bz])
+            except sqlite3.ProgrammingError:
+                print(f"Error with station: {station_speed}")
+        # Commit the queries to the DB
+        dna_core.commit()
+        # FINALLY!!
+        db.close()
 
 
     def posix2utc(self, posixtime, timeformat):
@@ -88,10 +109,12 @@ class State:
         utctime = datetime.fromtimestamp(posixtime, tz=timezone.utc).strftime(timeformat)
         return utctime
 
+
     def utc2posix(self, utcstring, timeformat):
         utc_time = time.strptime(utcstring, timeformat)
         epoch_time = timegm(utc_time)
         return epoch_time
+
 
 solarwind = State()
 if __name__ == "__main__":
@@ -99,3 +122,4 @@ if __name__ == "__main__":
     solarwind.do_most_recent_date()
     solarwind.do_parse_data()
     solarwind.do_data_append()
+
