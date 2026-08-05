@@ -2,9 +2,10 @@ import sqlite3
 import constants as k
 import logging
 import requests
-import datetime
+from datetime import datetime, timezone
+import time
+from calendar import timegm
 import re
-import calendar
 
 """
 logging levels in order of least --> most severity:
@@ -71,13 +72,9 @@ class State:
                 hp = str(round(json_data[i]['Hp'], 4))
 
                 if re.match("False", arcjet_flag):
-                    if re.match(r"^[0-9]*[0-9.]*$", hp):
-                        t = time_tag.split("Z")
-                        t = t[0].split("T")
-                        dt = t[0] + " " + t[1]
-                        dt = self.utc2posix(dt)
-                        dp = str(dt) + "," + str(hp)
-                        returndata.append(dp)
+                    dt = self.utc2posix(utcstring=time_tag, timeformat='%Y-%m-%dT%H:%M:%SZ')
+                    dp = str(dt) + "," + str(hp)
+                    returndata.append(dp)
                 else:
                     print("Arcjet Active")
             self.mag_data = returndata
@@ -141,23 +138,15 @@ class State:
             logging.error(station_id + " ERROR: Error with query")
         return result
 
-    # def posix2utc(self, posixvalue):
-    #     # utctime = datetime.datetime.fromtimestamp(int(posixvalue)).strftime('%Y-%m-%d %H:%M:%S')
-    #     utctime = datetime.datetime.utcfromtimestamp(int(posixvalue)).strftime(timeformat)
-    #     return utctime
-    #
-    # def utc2posix(self, utc_string):
-    #     dt = datetime.datetime.strptime(utc_string, '%Y-%m-%d %H:%M:%S').utctimetuple()
-    #     return(int(time.mktime(dt)))
-
-    def posix2utc(self, posixvalue):
-        utctime = datetime.datetime.utcfromtimestamp(int(posixvalue)).strftime('%Y-%m-%d %H:%M:%S')
+    def posix2utc(self, posixtime, timeformat):
+        # '%Y-%m-%d %H:%M'
+        utctime = datetime.fromtimestamp(posixtime, tz=timezone.utc).strftime(timeformat)
         return utctime
 
-    def utc2posix(self, utc_string):
-        dt = datetime.datetime.strptime(utc_string, '%Y-%m-%d %H:%M:%S')
-        ts = calendar.timegm(dt.timetuple())
-        return ts
+    def utc2posix(self, utcstring, timeformat):
+        utc_time = time.strptime(utcstring, timeformat)
+        epoch_time = timegm(utc_time)
+        return epoch_time
 
 
 state = State()

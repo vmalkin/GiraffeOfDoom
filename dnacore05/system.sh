@@ -2,10 +2,10 @@
 while :
 do
  python3 get_ruru.py
- python3 get_goes16.py
- python3 get_goes17.py
+ python3 get_goes_primary.py
+ python3 get_goes_secondary.py
 # python3 get_SW_speed.py
-# python3 get_SW_density.py
+# python3 get_solarwind.py
 # python3 get_bz.py
 # python3 get_VLF.py
  

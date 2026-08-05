@@ -59,6 +59,7 @@ class State:
         result = "fail"
         webdata = requests.get(datasource, timeout=10).json()
         returndata = []
+        print(webdata)
         try:
             json_data = webdata
             for i in range(1, len(json_data)):
