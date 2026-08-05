@@ -43,8 +43,8 @@ class Dxdt_datapoint:
         utctime = datetime.fromtimestamp(posixtime, tz=timezone.utc).strftime(timeformat)
         return utctime
 
-    def printdata(self):
-        returnstring = str(self.posix2utc()) + "," + str(self.value) + "," + str(self.last10min_avg)
+    def printdata(self, posixtime, timeformat):
+        returnstring = str(self.posix2utc(posixtime, timeformat)) + "," + str(self.value) + "," + str(self.last10min_avg)
         return returnstring
 
 class DataPoint:

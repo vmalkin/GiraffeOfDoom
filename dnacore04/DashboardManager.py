@@ -2,7 +2,7 @@ import sqlite3
 import constants as k
 import logging
 import time
-import datetime
+from datetime import datetime, timezone
 import json
 import os
 """
@@ -37,7 +37,7 @@ ascii_spacer = " "
 
 def posix2utc(posixtime, timeformat):
     # timeformat = '%Y-%m-%d %H:%M:%S'
-    utctime = datetime.datetime.utcfromtimestamp(int(posixtime)).strftime(timeformat)
+    utctime = datetime.fromtimestamp(posixtime, tz=timezone.utc).strftime(timeformat)
     return utctime
 
 def get_data():
