@@ -42,7 +42,7 @@ def get_data(station):
 
 def posix2utc(posixtime, timeformat):
     # timeformat = '%Y-%m-%d %H:%M:%S'
-    utctime = datetime.datetime.utcfromtimestamp(int(posixtime)).strftime(timeformat)
+    utctime = datetime.fromtimestamp(posixtime, tz=timezone.utc).strftime(timeformat)
     return utctime
 
 # hours, data, colourlist, min_value, median_sigma

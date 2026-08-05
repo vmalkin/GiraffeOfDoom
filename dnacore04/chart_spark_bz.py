@@ -106,9 +106,9 @@ def get_data(station):
     return query_result
 
 
-def posix2utc(posixtime):
+def posix2utc(posixtime, timeformat):
     # timeformat = '%Y-%m-%d %H:%M:%S'
-    utctime = datetime.utcfromtimestamp(int(posixtime)).strftime(timeformat)
+    utctime = datetime.fromtimestamp(posixtime, tz=timezone.utc).strftime(timeformat)
     return utctime
 
 

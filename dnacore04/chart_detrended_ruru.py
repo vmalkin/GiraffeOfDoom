@@ -2,7 +2,7 @@ import sqlite3
 import constants as k
 import logging
 import time
-import datetime
+from datetime import datetime, timezone
 import os
 from statistics import mean, median, stdev
 """
@@ -38,9 +38,9 @@ class Dxdt_datapoint:
         self.value = value
         self.last10min_avg = 0
 
-    def posix2utc(self):
-        # utctime = datetime.datetime.fromtimestamp(int(posixvalue)).strftime('%Y-%m-%d %H:%M:%S')
-        utctime = datetime.datetime.utcfromtimestamp(int(self.posixtime)).strftime(timeformat)
+    def posix2utc(posixtime, timeformat):
+        # timeformat = '%Y-%m-%d %H:%M:%S'
+        utctime = datetime.fromtimestamp(posixtime, tz=timezone.utc).strftime(timeformat)
         return utctime
 
     def printdata(self):
