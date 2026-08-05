@@ -21,7 +21,7 @@ logging.info("Created error log for this session")
 dna_core = sqlite3.connect(k.dbfile)
 db = dna_core.cursor()
 datasource = "https://services.swpc.noaa.gov/json/goes/primary/magnetometers-6-hour.json"
-station_id = "GOES_16"
+station_id = "GOES_PRIMARY"
 timeformat = '%Y-%m-%dT%H:%M:%SZ'
 
 class State:

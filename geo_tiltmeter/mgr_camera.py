@@ -82,24 +82,24 @@ while True:
     #     dhdt.append(d)
     # print(dhdt)
 
-    # # The following is just for displaying the averaged knife edge. Dont need to do this if we're trying to calculate
-    # # a sub-pixel position
-    # reformat_one_d_array = np.array(one_d_array, dtype=np.uint8).reshape(1, len(one_d_array))
-    # reformat_one_d_array = cv2.resize(
-    #     reformat_one_d_array,
-    #     (len(one_d_array), 100)
-    # )
-    # cv2.imshow("Press q to quit.", reformat_one_d_array)
-    # if cv2.waitKey(1) == ord('q'):
-    #     cv2.destroyWindow("Captured. Press q to quit.")
-    #     break
+    # The following is just for displaying the averaged knife edge. Dont need to do this if we're trying to calculate
+    # a sub-pixel position
+    reformat_one_d_array = np.array(one_d_array, dtype=np.uint8).reshape(1, len(one_d_array))
+    reformat_one_d_array = cv2.resize(
+        reformat_one_d_array,
+        (len(one_d_array), 100)
+    )
+    cv2.imshow("Press q to quit.", reformat_one_d_array)
+    if cv2.waitKey(1) == ord('q'):
+        cv2.destroyWindow("Captured. Press q to quit.")
+        break
 
-    # Perform sub-pixel estimation of average knife-edge position.
-    with open('knife_edge.csv', 'w') as k:
-        for line in one_d_array:
-            k.write(str(line) + '\n')
-    k.close()
-    break
+    # # Perform sub-pixel estimation of average knife-edge position.
+    # with open('knife_edge.csv', 'w') as k:
+    #     for line in one_d_array:
+    #         k.write(str(line) + '\n')
+    # k.close()
+    # break
 
 cam.release()
 cv2.destroyAllWindows()
