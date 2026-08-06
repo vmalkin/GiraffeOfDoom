@@ -1,7 +1,7 @@
 """
 dependencies include Plotly, Kaleido, Pandas
 """
-import plotly.graph_objects as go
+import matplotlib.pyplot as plt
 import sqlite3
 import logging
 import constants as k

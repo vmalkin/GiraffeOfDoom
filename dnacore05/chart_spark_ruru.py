@@ -290,12 +290,10 @@ if __name__ == "__main__":
     data = []
     hours = []
     colourlist = []
-
     processed_query = medianfilter(querydata)
     processed_query = dxdt(processed_query)
     processed_query = average_out(processed_query)
     processed_query = create_hourly_bins(processed_query)
-    print(processed_query)
 
     if len(processed_query) > 2:
         # Calculate the stdev of the data, then determine the median sigma value to use
