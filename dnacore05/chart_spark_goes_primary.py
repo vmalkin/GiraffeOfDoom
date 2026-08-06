@@ -1,7 +1,7 @@
 """
 dependencies include Plotly, Kaleido, Pandas
 """
-import plotly.graph_objects as go
+import matplotlib.pyplot as plt
 import sqlite3
 import logging
 import constants as k
@@ -21,7 +21,7 @@ db = dna_core.cursor()
 #   These details must be cusomised for each station
 sigma_file = "s_goes_w.pkl"
 mean_file = "m_goes_w.pkl"
-station = "GOES_17"
+station = "GOES_Primary"
 plot_title = "Magnetometer dh/dt<br>GOES West"
 median_sigma = 0
 median_mean = 0
@@ -48,27 +48,18 @@ def posix2utc(posixtime, timeformat):
 # hours, data, colourlist, min_value, median_sigma
 def plot(hours, data, colours):
     maxaxis = 8 * median_sigma + median_mean
-    fig = go.Figure(go.Bar(
-        x=data,
-        y=hours,
-        marker=dict(color=colours),
-        orientation='h'
-    ))
-    fig.update_layout(plot_bgcolor="rgba(0,0,0,0)", paper_bgcolor="rgba(0,0,0,0)")
-    fig.update_layout(width=300, height=1200, title=plot_title,
-                      xaxis=dict(tickmode="array",
-                                 tickvals=[median_mean,
-                                           median_mean + 2 * median_sigma,
-                                           median_mean + 4 * median_sigma,
-                                           median_mean + 6 * median_sigma,
-                                           median_mean + 8 * median_sigma],
-                                 ticktext=["x", "2σ", "4σ", "6σ", "8σ"]))
 
-    fig.update_layout(font=dict(size=20, color='#ffffff'), margin=dict(l=10, r=20, b=10), yaxis_title="UTC")
-    fig.update_xaxes(range=[0, maxaxis], gridcolor='#505050', visible=True)
+    fig, ax = plt.subplots(figsize=(3, 7))
+
+    ax.barh(hours, data, align='center', color=colours)
+    ax.yaxis.set_inverted(False)  # arrange data from top to bottom
+    ax.set_xlabel('Sigma')
+    ax.set_ylabel('UTC')
+    ax.set_title('Variometer dH/dt')
+    ax.set_xlim(0, maxaxis)
     savefile = "spk_" + station + ".svg"
-    # savefile = "spk_test.svg"
-    fig.write_image(file=savefile, format='svg')
+    fig.savefig(savefile)
+    plt.close(fig)
 
 
 def dxdt(querydata):

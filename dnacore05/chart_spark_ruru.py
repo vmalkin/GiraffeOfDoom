@@ -47,37 +47,17 @@ def posix2utc(posixtime, timeformat):
 def plot(hours, data, colours):
     maxaxis = 8 * median_sigma + median_mean
 
-    fig, ax = plt.subplots()
+    fig, ax = plt.subplots(figsize=(3, 7))
 
-    ax.barh(data, maxaxis, align='center')
-    ax.yaxis.set_inverted(True)  # arrange data from top to bottom
+    ax.barh(hours, data, align='center', color=colours)
+    ax.yaxis.set_inverted(False)  # arrange data from top to bottom
     ax.set_xlabel('Sigma')
     ax.set_ylabel('UTC')
-    ax.set_title('How fast do you want to go today?')
-
-    plt.show()
-
-    # fig = go.Figure(go.Bar(
-    #     x=data,
-    #     y=hours,
-    #     marker=dict(color=colours),
-    #     orientation='h'
-    # ))
-    # fig.update_layout(plot_bgcolor="rgba(0,0,0,0)", paper_bgcolor="rgba(0,0,0,0)")
-    # fig.update_layout(width=300, height=1200, title=plot_title,
-    #                   xaxis=dict(tickmode="array",
-    #                              tickvals=[median_mean,
-    #                                        median_mean + 2 * median_sigma,
-    #                                        median_mean + 4 * median_sigma,
-    #                                        median_mean + 6 * median_sigma,
-    #                                        median_mean + 8 * median_sigma],
-    #                              ticktext=["x", "2σ", "4σ", "6σ", "8σ"]))
-    #
-    # fig.update_layout(font=dict(size=20, color='#ffffff'), margin=dict(l=10, r=20, b=10), yaxis_title="UTC")
-    # fig.update_xaxes(range=[0, maxaxis], gridcolor='#505050', visible=True)
-    # savefile = "spk_" + station + ".svg"
-    # # savefile = "spk_test.svg"
-    # fig.write_image(file=savefile, format='svg')
+    ax.set_title('Variometer dH/dt')
+    ax.set_xlim(0, maxaxis)
+    savefile = "spk_" + station + ".svg"
+    fig.savefig(savefile)
+    plt.close(fig)
 
 
 def dxdt(querydata):
