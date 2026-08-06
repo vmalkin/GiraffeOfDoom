@@ -71,7 +71,7 @@ d = get_data()
 t = int(time.time())
 utc = posix2utc(t, timeformat)
 for item in d:
-    if item[1] == "GOES_16":
+    if item[1] == "GOES_Primary":
         dataforjson["mag"] = item[2]
 
     if item[1] == "Geomag_Bz":
