@@ -19,7 +19,6 @@ do
  # process data for Hi-res magnetographs for inside pages
  # python3 chart_dxdt.py
 
-
  echo " "
  echo "Processing completed for this cycle. Waiting 300 seconds... "
  echo " "
