@@ -248,8 +248,8 @@ def create_dashboard(dash_msg):
 
 # hours, data, colourlist, min_value, median_sigma
 def plot(hours, data, colours):
+    plt.style.use('dark_background')
     fig, ax = plt.subplots(figsize=(3, 9), layout="constrained")
-
     ax.barh(data, hours, align='center', color=colours)
     ax.xaxis.set_inverted(True)  # arrange data from top to bottom
     # ax.set_xlabel('Sigma')

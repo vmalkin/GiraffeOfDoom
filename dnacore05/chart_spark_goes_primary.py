@@ -48,9 +48,8 @@ def posix2utc(posixtime, timeformat):
 # hours, data, colourlist, min_value, median_sigma
 def plot(hours, data, colours):
     maxaxis = 8 * median_sigma + median_mean
-
+    plt.style.use('dark_background')
     fig, ax = plt.subplots(figsize=(3, 9), layout="constrained")
-
     ax.barh(hours, data, align='center', color=colours)
     ax.yaxis.set_inverted(False)  # arrange data from top to bottom
     ax.set_xlabel('Sigma')
