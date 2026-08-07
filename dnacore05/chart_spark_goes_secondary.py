@@ -55,7 +55,7 @@ def plot(hours, data, colours):
     ax.yaxis.set_inverted(False)  # arrange data from top to bottom
     ax.set_xlabel('Sigma')
     ax.set_ylabel('UTC')
-    ax.set_title('GOES Primary')
+    ax.set_title('GOES Secondary')
     ax.set_xlim(0, maxaxis)
     savefile = "spk_" + station + ".svg"
     fig.savefig(savefile)
