@@ -10,11 +10,11 @@ do
  python3 chart_spark_goes_primary.py
  python3 chart_spark_ruru.py
 
-# python3 chart_spark_swspeed.py
-# python3 chart_spark_swdens.py
+ python3 chart_spark_swspeed.py
+ python3 chart_spark_swdens.py
 # python3 chart_dxdt.py
-# python3 chart_spark_bz.py
-# python3 DashboardManager.py
+ python3 chart_spark_bz.py
+ python3 DashboardManager.py
  
  echo " "
  echo "Processing completed for this cycle. Waiting 300 seconds... "

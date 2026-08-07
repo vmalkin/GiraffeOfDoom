@@ -1,8 +1,9 @@
+import matplotlib.pyplot as plt
 import sqlite3
 import constants as k
 import logging
 import time
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 import os
 from statistics import mean, median
 import plotly.graph_objects as go
@@ -23,7 +24,7 @@ db = dna_core.cursor()
 timeformat = '%Y-%m-%d %H:%M:%S'
 
 # Only specific station data makes sense as detrended readings.
-station = "Geomag_Bz"
+station = "SW_Bz"
 # stations = k.stations
 
 finish_time = int(time.time())
@@ -172,7 +173,7 @@ def calc_dxdt(bindata):
 def convert_time(tempdata):
     td = []
     for item in tempdata:
-        dt = posix2utc(item[0])
+        dt = posix2utc(item[0], '%Y-%m-%d %H:%M:%S')
         da = item[1]
         dp = (dt, da)
         td.append(dp)
@@ -245,20 +246,19 @@ def create_dashboard(dash_msg):
         print("DATABASE ERROR inserting new alert")
     db.close()
 
-def plot(data, hours, colours):
-    fig = go.Figure(go.Bar(
-        x=data,
-        y=hours,
-        marker=dict(color=colours),
-        orientation='h'
-    ))
-    fig.update_layout(plot_bgcolor="rgba(0,0,0,0)", paper_bgcolor="rgba(0,0,0,0)")
-    fig.update_layout(width=300, height=1200, title="IMF - Avg Bz")
-    fig.update_layout(font=dict(size=22, color="#ffffff"), margin=dict(l=10, r=20, b=10), xaxis_title="Bz - nT", yaxis_title="UTC")
-    fig.update_xaxes(range=[-10, 10], gridcolor='#505050', visible=True)
-    savefile = "spk_bz.svg"
-    # savefile = "spk_test.svg"
-    fig.write_image(file=savefile, format='svg')
+# hours, data, colourlist, min_value, median_sigma
+def plot(hours, data, colours):
+    fig, ax = plt.subplots(figsize=(3, 7), layout="constrained")
+
+    ax.barh(data, hours, align='center', color=colours)
+    ax.xaxis.set_inverted(True)  # arrange data from top to bottom
+    # ax.set_xlabel('Sigma')
+    ax.set_ylabel('UTC')
+    ax.set_title('Bz')
+    # ax.set_xlim(0, maxaxis)
+    savefile = "spk_" + station + ".svg"
+    fig.savefig(savefile)
+    plt.close(fig)
 
 
 if __name__ == "__main__":
@@ -266,7 +266,7 @@ if __name__ == "__main__":
     clr_med1 = "#e17100"  # orange
     clr_hi1 = "#900000"  # red
 
-    current_stationdata = get_data("Geomag_Bz")
+    current_stationdata = get_data(station)
 
     tempdata = parse_querydata(current_stationdata)  # a list
     # print(tempdata)
