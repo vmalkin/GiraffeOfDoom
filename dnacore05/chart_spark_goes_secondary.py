@@ -19,10 +19,10 @@ db = dna_core.cursor()
 
 # #######################################################################################
 #   These details must be cusomised for each station
-sigma_file = "s_goes_w.pkl"
-mean_file = "m_goes_w.pkl"
-station = "GOES Primary"
-plot_title = "Magnetometer dh/dt<br>GOES West"
+sigma_file = "s_goes_e.pkl"
+mean_file = "m_goes_e.pkl"
+station = "GOES Secondary"
+plot_title = "Magnetometer dh/dt<br>GOES East"
 median_sigma = 0
 median_mean = 0
 # a 10 min window for averaging readings give the number of readings per minute
@@ -296,7 +296,6 @@ def create_dashboard(dash_msg):
 
 if __name__ == "__main__":
     querydata = get_data(station)
-    print(querydata)
     data = []
     hours = []
     colourlist = []

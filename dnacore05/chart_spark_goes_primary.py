@@ -296,7 +296,6 @@ def create_dashboard(dash_msg):
 
 if __name__ == "__main__":
     querydata = get_data(station)
-    print(querydata)
     data = []
     hours = []
     colourlist = []
