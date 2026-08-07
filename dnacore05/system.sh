@@ -9,7 +9,6 @@ do
  python3 chart_spark_goes_secondary.py
  python3 chart_spark_goes_primary.py
  python3 chart_spark_ruru.py
-
  python3 chart_spark_swspeed.py
  python3 chart_spark_swdens.py
 # python3 chart_dxdt.py
