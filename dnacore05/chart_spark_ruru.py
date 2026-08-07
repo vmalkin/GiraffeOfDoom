@@ -47,7 +47,7 @@ def posix2utc(posixtime, timeformat):
 def plot(hours, data, colours):
     maxaxis = 8 * median_sigma + median_mean
 
-    fig, ax = plt.subplots(figsize=(4, 7), layout="constrained")
+    fig, ax = plt.subplots(figsize=(3,9), layout="constrained")
 
     ax.barh(hours, data, align='center', color=colours)
     ax.yaxis.set_inverted(False)  # arrange data from top to bottom
