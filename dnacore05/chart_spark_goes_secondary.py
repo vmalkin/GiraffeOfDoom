@@ -21,7 +21,7 @@ db = dna_core.cursor()
 #   These details must be cusomised for each station
 sigma_file = "s_goes.pkl"
 mean_file = "m_goes.pkl"
-station = "GOES_16"
+station = "GOES Secondary"
 plot_title = "Magnetometer dh/dt<br>GOES East"
 median_sigma = 0
 median_mean = 0
