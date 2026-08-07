@@ -68,13 +68,14 @@ print("Dunedin Aurora - Space weather status. Generated  " + t)
 print(ascii_spacer)
 
 d = get_data()
+print(d)
 t = int(time.time())
 utc = posix2utc(t, timeformat)
 for item in d:
     if item[1] == "GOES_Primary":
         dataforjson["mag"] = item[2]
 
-    if item[1] == "Geomag_Bz":
+    if item[1] == "SW_Bz":
         dataforjson["bz"] = item[2][:-1]
 
     if item[1] == "Ruru_Obs":
