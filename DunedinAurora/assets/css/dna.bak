@@ -1,0 +1,191 @@
+*
+{
+	margin: 2px;
+	padding: 2px;
+	font-family: sans-serif;
+	/* color: #2f2f2f; */
+	border-radius: 6px;
+}
+
+@font-face
+{
+	font-family: 'Raleway';
+	/* src: url('fonts/Walkway_UltraBold.ttf'); */
+	src: url('fonts/Raleway Thin.ttf');
+	font-display: swap;
+}
+
+html 
+{
+	min-height: 100%;
+}
+
+body
+{
+	background: #c0c0c0; /* For browsers that do not support gradients */
+    background: linear-gradient(135deg, #777777, #3f3f3f); /* Standard syntax */
+}
+
+
+a:hover
+{
+    background: #c4ffc9; /* For browsers that do not support gradients */
+}
+
+img
+{
+	width: 95%;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+dt
+{
+	font-weight: bold;
+	margin-top: 1rem;
+}
+
+dd
+{
+	line-height: 140%;
+	margin-left: 1.5rem;
+}
+
+ul li
+{
+	margin: 1rem;
+	list-style-position: inside;
+}
+
+p
+{
+	margin-top: 1rem;
+	line-height: 140%;
+}
+
+h1, h2, h3, h4, h5, h6
+{
+	margin-top: 1rem;
+}
+
+footer
+{
+	background-color: #dedede;
+	text-align: center;
+	vertical-align: middle;
+	padding-bottom: 0.25em;
+	margin-bottom: 0.5em;
+	border-radius: 4px;
+}
+
+menu
+{
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+	padding-top: 10px;
+	padding-bottom: 10px;
+	border-radius: 4px;
+	/* background-color: #dedede; */
+	line-height: 2em;
+	display: flex;
+}
+
+menu a {text-decoration: none;}
+menu a:hover
+{
+    background: #a4ffac; /* For browsers that do not support gradients */
+    background: -webkit-linear-gradient(350deg, #49a178, #7c407e); /* For Safari 5.1 to 6.0 */
+    background: -o-linear-gradient(350deg,#49a178, #7c407e); /* For Opera 11.1 to 12.0 */
+    background: -moz-linear-gradient(350deg, #49a178, #7c407e); /* For Firefox 3.6 to 15 */
+	background: linear-gradient(350deg,#49a178, #7c407e);
+	color: #ffffff;
+}
+
+.menubutton
+{
+	background-color: #ffffff;
+	color: #2f2f2f;
+	border-color: #505050;
+	border-style: solid;
+	border-width: 1px;
+	border-radius: 18px;
+	padding-left: 12px;
+	padding-right: 12px;
+}
+
+
+
+/* svg{width: 30vw; vertical-align: top} */
+
+.twitter-timeline{
+	background-color: #000;
+	color: #aaaaaa;
+}
+
+#container{
+	vertical-align: top;
+    background-color: #aaaaaa;
+	padding: 1em;
+	margin-top: 1em;
+	margin-left: auto;
+	margin-right: auto;
+	margin-bottom: 1em;
+	width: 90%;
+	box-shadow: 4px 4px 4px #000;
+}
+
+#gBanner{grid-area: bann;}
+#gMenu1{grid-area: men1; display: block;}
+#gMenu2{grid-area: men2; display: none;}
+#gMSD{grid-area: msd; background-color: #000; display: block;}
+#gMag1{grid-area: mag1; background-color: #222; display: block;}
+#gMag2{grid-area: mag2; background-color: #222; display: block;}
+#gMag3{grid-area: mag3; background-color: #222; display: block;}
+#gBz{grid-area: bz; background-color: #222; display: block;}
+#gSkycam{grid-area: skyc; text-align: center; background-color: #000; display: block;}
+#gMoon{grid-area: mon; text-align: center; background-color: #000; color: white; display: block;}
+#gForecast{grid-area: forc; background-color: #000; display: block;}
+#gTwitter{grid-area: twit; display: block;}
+#gCH{grid-area: ch; background-color: #000; display: block;}
+#gCME{grid-area: cme; background-color: #000; display: block;}
+
+#wrapper{
+    display: grid;
+    width: 98%;
+	grid-auto-columns: 1fr; /* Will spread the columns evenly in the grid*/
+	grid-gap: 0.5em;
+  grid-template-areas: 
+	"bann bann bann bann bann bann bann bann bann bann bann bann"
+	"men1 men1 men1 men1 men1 men1 men1 men1 men1 men1 men1 men1"
+	"msd msd msd msd mag1 mag1 mag3 mag3 mag2 mag2 bz bz"
+	"mon mon mon skyc skyc skyc twit twit twit twit twit twit"
+	"forc forc forc forc ch ch ch ch cme cme cme cme";
+}
+
+@media only screen and (max-width: 760px) {
+    /* svg{width: 80vw;} */
+    #wrapper{
+		display: grid;
+		width: 98%;
+        grid-auto-columns: 1fr; /* Will spread the columns evenly in the grid*/
+        grid-template-areas: 
+        "bann bann"
+        "men2 men2"
+        "msd msd"
+		"mag1 mag2";
+    }
+    #gMenu1{grid-area: men1; display: none;}
+    #gMenu2{grid-area: men2; display: block;}
+	#gMag1{grid-area: mag1;display: block;}
+	#gMag2{grid-area: mag2;display: block;}
+	#gMag3{grid-area: mag3;display: none;}
+	#gMSD{grid-area: msd; display: block;}
+    #gBz{grid-area: bz;display: none;}
+    #gSkycam{grid-area: skyc;display: none;}
+    #gMoon{grid-area: mon;display: none;}
+    #gForecast{grid-area: forc;display: none;}
+    #gTwitter{grid-area: twit;display: none;}
+	#gCH{grid-area: ch; display: none;}
+	#gCME{grid-area: cme; display: none;}
+}
