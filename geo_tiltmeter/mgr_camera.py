@@ -35,13 +35,14 @@ def setup_cam(camera):
     print(cv2.CAP_PROP_XI_DEVICE_SN)
     camera.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
     camera.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
-    camera.set(cv2.CAP_PROP_GAIN, 0)
-    camera.set(cv2.CAP_PROP_BRIGHTNESS, 120)
-    camera.set(cv2.CAP_PROP_CONTRAST, 50)
+    # camera.set(cv2.CAP_PROP_BRIGHTNESS, 120)
+    # camera.set(cv2.CAP_PROP_CONTRAST, 50)
     # camera.set(cv2.CAP_PROP_HUE, 13)  # 13.0
     # camera.set(cv2.CAP_PROP_SATURATION, 128)
-    camera.set(cv2.CAP_PROP_EXPOSURE, 0)
-    camera.set(cv2.CAP_PROP_AUTO_EXPOSURE, 0);
+    camera.set(cv2.CAP_PROP_EXPOSURE, -7)
+    # 3 is mode for manual exposure
+    camera.set(cv2.CAP_PROP_AUTO_EXPOSURE, 3);
+    camera.set(cv2.CAP_PROP_GAIN, 0)
 
 def crop_image(image):
     height = image.shape[0]
