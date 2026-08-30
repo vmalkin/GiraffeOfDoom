@@ -20,7 +20,7 @@ class SerialManager:
         self._interCharTimeout = interCharTimeout
 
         try:
-            self.com = serial.Serial(self._portName, self._baudrate, self._bytesize, self._parity, self._stopbits,
+            self.commport = serial.Serial(self._portName, self._baudrate, self._bytesize, self._parity, self._stopbits,
                                      self._timeout, self._xonxoff, self._rtscts, self._writeTimeout,
                                      self._dsrdtr, self._interCharTimeout)
         except serial.SerialException:
@@ -30,7 +30,7 @@ class SerialManager:
 
     def data_recieve(self):
         try:
-            logData = self.com.readline()  # logData is a byte array, not a string at this point
+            logData = self.commport.readline()  # logData is a byte array, not a string at this point
             # logData = str(logData, 'ascii').strip()  # convert the byte array to string. strip off unnecessary whitespace
             logData = str(logData, 'latin1').strip()  # convert the byte array to string. strip off unnecessary whitespace
         except serial.serialutil.SerialException:

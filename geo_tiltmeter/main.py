@@ -47,11 +47,11 @@ class SavedataThread(Thread):
             parseddata = []
             for item in batchdata:
                 l = item.split(",")
-                if len(l) == 3:
+                if len(l) == 2:
                     d0 = safe_float(l[0])
                     d1 = safe_float(l[1])
-                    d2 = safe_float(l[2])
-                    d = [d0, d1, d2]
+                    # d2 = safe_float(l[2])
+                    d = [d0, d1]
                     parseddata.append(d)
                 else:
                     print(f"!!! Data is malformed: {item}. Didn't parse.")
@@ -97,18 +97,18 @@ if __name__ == "__main__":
         print("No database file, initialising")
         mgr_database.db_create()
 
-    # # Set up the com port.
-    # com = mgr_comport.SerialManager(k.comport,
-    #                                 k.baudrate,
-    #                                 k.bytesize,
-    #                                 k.parity,
-    #                                 k.stopbits,
-    #                                 k.timeout,
-    #                                 k.xonxoff,
-    #                                 k.rtscts,
-    #                                 k.writeTimeout,
-    #                                 k.dsrdtr,
-    #                                 k.interCharTimeout)
+    # Set up the com port.
+    com = mgr_comport.SerialManager(k.comport,
+                                    k.baudrate,
+                                    k.bytesize,
+                                    k.parity,
+                                    k.stopbits,
+                                    k.timeout,
+                                    k.xonxoff,
+                                    k.rtscts,
+                                    k.writeTimeout,
+                                    k.dsrdtr,
+                                    k.interCharTimeout)
 
     # Set up buffer
     tilt_data = buffer_create()

@@ -11,8 +11,7 @@ def db_create():
 
     db.execute('create table observations ('
                'posixtime real,'
-               'temperature real,'
-               'pressure real'
+               'tiltdata real'
                ');')
     gpsdb.commit()
     db.close()
@@ -26,11 +25,10 @@ def db_data_add(insertdata):
         db = gpsdb.cursor()
         for item in insertdata:
             posixtime = item[0]
-            temperature = item[1]
-            pressure = item[2]
-            values = [posixtime, temperature, pressure]
-            db.execute('insert into observations(posixtime, temperature, pressure) '
-                       'values (?, ?, ?);', values)
+            tiltdata = item[1]
+            values = [posixtime, tiltdata]
+            db.execute('insert into observations(posixtime, tiltdata) '
+                       'values (?, ?);', values)
         gpsdb.commit()
         db.close()
     except sqlite3.OperationalError:
@@ -58,7 +56,7 @@ def db_data_get_all():
     try:
         gpsdb = sqlite3.connect(k.database, timeout=10)
         db = gpsdb.cursor()
-        result = db.execute('select posixtime, pressure from observations order by posixtime;')
+        result = db.execute('select posixtime, tiltdata from observations order by posixtime;')
         for item in result:
             returnarray.append(item)
         db.close()
