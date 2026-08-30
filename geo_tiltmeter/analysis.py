@@ -1,5 +1,6 @@
 import mgr_database
 import standard_stuff
+import mgr_spectrum_baro
 import time
 import matplotlib.pyplot as plt
 from datetime import datetime, timezone
@@ -147,5 +148,6 @@ if __name__ == "__main__":
     #                      savefile='autocorrelation.png')
     #
     #
+    mgr_spectrum_baro.wrapper(data_utc, data_tilt)
 
     print(f"*** All analysis completed.")
