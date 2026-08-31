@@ -3,7 +3,7 @@ import time
 import mgr_comport
 import os
 import mgr_database
-import mgr_csvfile
+# import mgr_csvfile
 from queue import Queue, Empty
 from threading import Thread
 import numpy as np
@@ -59,7 +59,7 @@ class SavedataThread(Thread):
             # Save to database.
             mgr_database.db_data_add(parseddata)
             # Save to gzip CSV file.
-            mgr_csvfile.csv_save()
+            # mgr_csvfile.csv_save()
             # elapsed time for thread processing.
             timer_stop = time.time()
             print(f"Thread processing: {timer_stop - timer_start} seconds.")

@@ -17,8 +17,8 @@ def csv_save():
     if not os.path.exists(current_csv_backup):
         data = mgr_database.db_data_get(psx_start_time, psx_end_time)
         with open(current_csv_backup, 'w', newline='') as c:
-            for psx, temp, prs in data:
+            for psx, tilt in data:
                 # print(f"{psx},{temp},{prs}\n")
-                c.write(f"{psx},{temp},{prs}\n")
+                c.write(f"{psx},{tilt}\n")
         c.close()
 
