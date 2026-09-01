@@ -7,6 +7,9 @@ def db_create():
     gpsdb = sqlite3.connect(k.database)
     db = gpsdb.cursor()
 
+    gpsdb.execute("PRAGMA journal_mode=WAL;")
+    gpsdb.execute("PRAGMA busy_timeout=10000;")
+
     db.execute('drop table if exists observations;')
 
     db.execute('create table observations ('

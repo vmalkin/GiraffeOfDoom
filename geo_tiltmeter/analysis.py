@@ -30,7 +30,7 @@ def plot_autocorrelation(autocdata, tickinterval, plotcolour, plottitle, legend,
 
 def plot_singledata(dateformatstring, dateobjects, singledataarray, tickinterval, plotcolour, plottitle, savefile):
     plt.style.use('bmh')
-    fig, ax = plt.subplots(layout="constrained", figsize=(17, 6), dpi=140)
+    fig, ax = plt.subplots(layout="constrained", figsize=(48, 6), dpi=140)
     ax.plot(dateobjects, singledataarray, c=plotcolour, linewidth=1)
 
     # Use proper date formatter + locator
