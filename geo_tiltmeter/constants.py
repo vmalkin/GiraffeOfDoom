@@ -2,8 +2,8 @@ from numpy import nan
 # Comm port parameters - uncomment and change one of the portNames depending on your OS
 # comport = 'COM5' # Windows
 # comport = '/dev/ttyUSB0'
-comport = "/dev/ttyACM0"
-# comport = "/dev/ttyACM1"
+# comport = "/dev/ttyACM0"
+comport = "/dev/ttyACM1"
 baudrate = 57600
 bytesize = 8
 parity = 'N'
