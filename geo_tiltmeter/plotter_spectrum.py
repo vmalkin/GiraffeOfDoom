@@ -1,5 +1,7 @@
 # from datetime import timezone, datetime
 # import class_aggregator as aggregator
+from types import NoneType
+
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 from matplotlib.ticker import AutoMinorLocator
@@ -193,8 +195,15 @@ def get_delta_p(data, halfwindow):
 def wrapper(utc, data):
     #  spectrographic analysis and filtering improved with ChatGPT
     print("*** Tilt Spectrogram")
+    d = []
+    for i in range(0, len(data)):
+        try:
+            j = float(data[i])
+            d.append(j)
+        except TypeError:
+            print(data[i])
 
-    data = detrend(data, type='linear')
+    data = detrend(d, type='linear')
 
     halfwindow = 60 * 30
     deltapressure = get_delta_p(data, halfwindow)
