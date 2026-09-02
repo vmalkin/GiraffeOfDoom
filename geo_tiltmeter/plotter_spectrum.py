@@ -215,7 +215,7 @@ def wrapper(utc, data):
         data,
         deltap=deltapressure,
         datetimes=utc,
-        fs=1,
+        fs=5,
         nfft=1024,
         overlap_frac=0.75,
         fmin=10**-7,
