@@ -215,7 +215,7 @@ def wrapper(utc, data):
         data,
         deltap=deltapressure,
         datetimes=utc,
-        fs=5,
+        fs=k.sensor_reading_frequency,
         nfft=1024,
         overlap_frac=0.75,
         fmin=10**-7,

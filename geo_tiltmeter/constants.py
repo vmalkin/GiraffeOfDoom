@@ -18,7 +18,7 @@ interCharTimeout = None
 timeformat = '%Y-%m-%d %H:%M:%S'
 database = 'tiltmeter.db'
 
-sensor = "photo_int"
+sensor = "tilt_meter"
 # How many times a second the sensor reports data to the logger
 sensor_reading_frequency = 5
 # Buffer length is for 30 mins plus 10%
