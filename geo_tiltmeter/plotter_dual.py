@@ -33,9 +33,6 @@ def plot_dual_hourly(datetimeformat, plot_utc, smoothe_seismo, smoothe_dx, title
         seismo_data = smoothe_seismo[array_start:array_end]
         diff_data = smoothe_dx[array_start:array_end]
         chart_times = plot_utc[array_start:array_end]
-        # print(f"{len(chart_times)} {len(seismo_data)} {len(diff_data)}")
-        if len(chart_times) > len(seismo_data):
-            chart_times.pop(0)
 
         plt.style.use(plotstyle)
         fig, ax = plt.subplots(2, layout="constrained", figsize=(16, 8), dpi=250)
@@ -55,7 +52,6 @@ def plot_dual_hourly(datetimeformat, plot_utc, smoothe_seismo, smoothe_dx, title
         # ax[1].spines['right'].set_position(('outward', 30))
         ax[1].yaxis.grid(False)
 
-
         plot_title = title + " - " + standard_stuff.posix2utc(time.time(), '%Y-%m-%d %H:%M')
         fig.suptitle(plot_title)
         savefile = savefolder + os.sep + str(i) + ".png"
@@ -68,16 +64,18 @@ def wrapper(utctimes, data):
     print("*** Tiltmeter - 24, hourly plots")
     aggregate_array = data
     aggregate_array.pop(0)
-    plot_utc = utctimes
-    plot_seismo = data
+    utctimes
 
-    # for i in range(1, utctimes):
-    #     tim = aggregate_array[i][0]
-    #     tim = datetime.fromtimestamp(tim, tz=timezone.utc)  # datetime object
-    #     # siz = aggregate_array[i][1]
-    #     plot_utc.append(tim)
-    #     # plot_seismo.append(siz)
+    d = []
+    for i in range(0, len(data)):
+        try:
+            j = float(data[i])
+            d.append(j)
+        except TypeError:
+            utctimes.pop(i)
+            print(data[i])
 
+    plot_seismo = d
     # Convert distance readings to rate of change.
     # This is similar to traditional seismograph display
     dxdt = []
@@ -85,20 +83,23 @@ def wrapper(utctimes, data):
         # dx = plot_seismo[i]
         dx = plot_seismo[i] - plot_seismo[i - 1]
         dxdt.append(dx)
-    plot_utc.pop(0)
+    utctimes.pop(0)
 
     avgwindow = 10 * 3
     smoothe_dx = standard_stuff.filter_average(dxdt, avgwindow)
-    plot_utc = plot_utc[avgwindow:-avgwindow]
+    utctimes = utctimes[avgwindow:-avgwindow]
     smoothe_dx = standard_stuff.filter_average(smoothe_dx, avgwindow)
-    plot_utc = plot_utc[avgwindow:-avgwindow]
+    utctimes = utctimes[avgwindow:-avgwindow]
 
     smoothe_seismo = standard_stuff.filter_average(plot_seismo, avgwindow)
     smoothe_seismo = standard_stuff.filter_average(smoothe_seismo, avgwindow)
     smoothe_seismo.pop(0)
+    utctimes.pop(0)
+
+    print(f"{len(utctimes)} {len(smoothe_seismo)} {len(smoothe_dx)}")
 
     ticks = 20
     df = "%d  %H:%M"
     title = "Tiltmeter One Day dx/dt"
     savefolder = k.dir_saves['images']
-    plot_dual_hourly(df, plot_utc, smoothe_seismo, smoothe_dx, title, savefolder)
+    plot_dual_hourly(df, utctimes, smoothe_seismo, smoothe_dx, title, savefolder)

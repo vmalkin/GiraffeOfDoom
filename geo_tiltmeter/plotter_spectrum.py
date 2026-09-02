@@ -1,7 +1,5 @@
 # from datetime import timezone, datetime
 # import class_aggregator as aggregator
-from types import NoneType
-
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 from matplotlib.ticker import AutoMinorLocator
