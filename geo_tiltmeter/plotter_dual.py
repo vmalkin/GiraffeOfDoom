@@ -14,7 +14,7 @@ plotstyle = 'bmh'
 
 def plot_dual_hourly(datetimeformat, plot_utc, smoothe_seismo, smoothe_dx, title, savefolder):
     # the size of an hour is plot frequency multiplied by seconds/min and mins/hr
-    hour_slice = k.sensor_reading_frequency * 60 * 10
+    hour_slice = k.sensor_reading_frequency * 60 * 15
     sz_avg = np.mean(smoothe_seismo)
     sz_max = np.nanmax(smoothe_seismo)
     sz_min = np.nanmin(smoothe_seismo)
@@ -33,9 +33,12 @@ def plot_dual_hourly(datetimeformat, plot_utc, smoothe_seismo, smoothe_dx, title
         seismo_data = smoothe_seismo[array_start:array_end]
         diff_data = smoothe_dx[array_start:array_end]
         chart_times = plot_utc[array_start:array_end]
+        # print(f"{len(chart_times)} {len(seismo_data)} {len(diff_data)}")
+        if len(chart_times) > len(seismo_data):
+            chart_times.pop(0)
 
         plt.style.use(plotstyle)
-        fig, ax = plt.subplots(2, layout="constrained", figsize=(16, 8), dpi=140)
+        fig, ax = plt.subplots(2, layout="constrained", figsize=(16, 8), dpi=250)
         # utcdates should be datetime objects, not POSIX floats
 
         ax[0].plot(chart_times, seismo_data, c=ink_colour[0], linewidth=1)

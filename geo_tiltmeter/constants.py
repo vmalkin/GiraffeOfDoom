@@ -26,5 +26,6 @@ buffer_length = int((sensor_reading_frequency * 60 * 30) * 1.1)
 
 dir_saves = {
     'logs': 'logfiles',
-    'images': 'images'
+    'images': 'images',
+    'spectrograms': 'spectrograms'
 }

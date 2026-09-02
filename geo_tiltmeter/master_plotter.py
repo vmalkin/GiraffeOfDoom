@@ -2,6 +2,7 @@ import mgr_database
 import standard_stuff
 import plotter_spectrum
 import plotter_dual
+import plotter_fft_movie
 import time
 import matplotlib.pyplot as plt
 from datetime import datetime, timezone
@@ -52,5 +53,6 @@ if __name__ == "__main__":
 
     plotter_spectrum.wrapper(data_utc, data_tilt)
     plotter_dual.wrapper(data_utc, data_tilt)
+    plotter_fft_movie.wrapper(data_utc, data_tilt)
 
     print(f"*** All plots completed.")
