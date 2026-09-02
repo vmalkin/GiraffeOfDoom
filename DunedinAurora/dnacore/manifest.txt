@@ -1,0 +1,3 @@
+matplotlib
+sqlite3
+requests

@@ -6,6 +6,8 @@ from matplotlib.ticker import AutoMinorLocator
 from scipy.signal import spectrogram, detrend
 from datetime import timedelta
 import numpy as np
+import constants as k
+import os
 
 
 def plot_spectrum_scipy(
@@ -214,7 +216,10 @@ def wrapper(utc, data):
     print(f'{len(data)} {len(deltapressure)}')
     df = "%d %H:%M"
     title = "Spectrogram of tiltmeter"
-    savefile = "spectrum_press.png"
+
+    savefolder = k.dir_saves['images']
+    savefile = savefolder + os.sep + "spectrum_press.png"
+
     # nfft=16384
     # nfft=32768
     # # nfft = 65536,
