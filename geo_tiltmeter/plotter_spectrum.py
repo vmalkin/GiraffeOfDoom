@@ -88,12 +88,13 @@ def plot_spectrum_scipy(
     # diurnal_fraction_db = 10 * np.log10(diurnal_fraction)
 
     # --- Plot ---
-    fig, (ax_spec, ax_dp, ax_d) = plt.subplots(
-        3, 1,
+    # fig, (ax_spec, ax_dp, ax_d) = plt.subplots(
+    fig, (ax_spec) = plt.subplots(
+        1, 1,
         sharex=True,
         figsize=(19, 12),
         layout="constrained",
-        height_ratios=[2.2, 1, 1],
+        height_ratios=[1],
     )
 
     pcm = ax_spec.pcolormesh(
@@ -133,36 +134,35 @@ def plot_spectrum_scipy(
     #         fontsize=8,
     #         bbox=dict(boxstyle="round", fc="1", ec="black"),
     #     )
-    # --- Pressure Delta ---
-    ax_dp.plot(datetimes, deltap, c='blue', linewidth=1)
-    ax_dp.set_ylabel("Δ Pressure (Pa) - 1hr window", color='blue')
-    ax_dp.tick_params(axis='y', colors='blue')
-    title = "Hourly pressure change emphasizes transient synoptic forcing while suppressing slowly varying components such as the diurnal tide."
-    ax_dp.set_title(f'{title}')
-    ax_dp.grid(which='major', axis='x', linestyle='solid', visible='True')
-    ax_dp.grid(which='minor', axis='x', linestyle='dotted', visible='True')
-    ax_dp.grid(which='major', axis='y', linestyle='solid', visible='True')
+    # # --- Pressure Delta ---
+    # ax_dp.plot(datetimes, deltap, c='blue', linewidth=1)
+    # ax_dp.set_ylabel("Δ Pressure (Pa) - 1hr window", color='blue')
+    # ax_dp.tick_params(axis='y', colors='blue')
+    # title = "Hourly pressure change emphasizes transient synoptic forcing while suppressing slowly varying components such as the diurnal tide."
+    # ax_dp.set_title(f'{title}')
+    # ax_dp.grid(which='major', axis='x', linestyle='solid', visible='True')
+    # ax_dp.grid(which='minor', axis='x', linestyle='dotted', visible='True')
+    # ax_dp.grid(which='major', axis='y', linestyle='solid', visible='True')
 
-    # --- Pressure Delta 2 ---
-    halfwindow = 60 * 120
-    dp = get_delta_p(data, halfwindow)
-    ax_d.plot(datetimes, dp, c='red', linewidth=1)
-    ax_d.set_ylabel("Δ Pressure (Pa) - 4hr window", color='red')
-    ax_d.tick_params(axis='y', colors='red')
-    title = "Synoptic evolution."
-    ax_d.set_title(f'{title}')
-    ax_d.grid(which='major', axis='x', linestyle='solid', visible='True')
-    ax_d.grid(which='minor', axis='x', linestyle='dotted', visible='True')
-    ax_d.grid(which='major', axis='y', linestyle='solid', visible='True')
+    # # --- Pressure Delta 2 ---
+    # halfwindow = 60 * 120
+    # dp = get_delta_p(data, halfwindow)
+    # ax_d.plot(datetimes, dp, c='red', linewidth=1)
+    # ax_d.set_ylabel("Δ Pressure (Pa) - 4hr window", color='red')
+    # ax_d.tick_params(axis='y', colors='red')
+    # title = "Synoptic evolution."
+    # ax_d.set_title(f'{title}')
+    # ax_d.grid(which='major', axis='x', linestyle='solid', visible='True')
+    # ax_d.grid(which='minor', axis='x', linestyle='dotted', visible='True')
+    # ax_d.grid(which='major', axis='y', linestyle='solid', visible='True')
 
     # --- Time axis formatting ---
-    ax_d.xaxis.set_major_formatter(mdates.DateFormatter(datetimeformat))
+    ax_spec.xaxis.set_major_formatter(mdates.DateFormatter(datetimeformat))
     fig.autofmt_xdate()
-    ax_d.xaxis.set_minor_locator(AutoMinorLocator(6))
+    ax_spec.xaxis.set_minor_locator(AutoMinorLocator(6))
 
     if savefile is not None:
         fig.savefig(savefile)
-
     plt.close(fig)
 
 
@@ -192,23 +192,8 @@ def get_delta_p(data, halfwindow):
 
 def wrapper(utc, data):
     #  spectrographic analysis and filtering improved with ChatGPT
-    print("*** Barometric Spectrogram")
-    windowsize = 3
-    # aggregate_array = data
-    # # aggregate_array = aggregator.aggregate_data(windowsize, data)
-    # aggregate_array.pop(0)
+    print("*** Tilt Spectrogram")
 
-    # plot_utc = []
-    # plot_data = []
-    # print(aggregate_array[0])
-    # # for psx, temp, prs
-    # for psx, tilt in aggregate_array:
-    #     tim = datetime.fromtimestamp(psx, tz=timezone.utc)  # datetime object
-    #     plot_utc.append(tim)
-    #     plot_data.append(tilt)
-
-    # b, a = butter(2, 0.001, btype='highpass', fs=1)
-    # data = filtfilt(b, a, plot_press)
     data = detrend(data, type='linear')
 
     halfwindow = 60 * 30
@@ -218,7 +203,7 @@ def wrapper(utc, data):
     title = "Spectrogram of tiltmeter"
 
     savefolder = k.dir_saves['images']
-    savefile = savefolder + os.sep + "spectrum_press.png"
+    savefile = savefolder + os.sep + "spectrum_tilt.png"
 
     # nfft=16384
     # nfft=32768
