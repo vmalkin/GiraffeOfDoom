@@ -85,7 +85,7 @@ def wrapper(utctimes, data):
         dxdt.append(dx)
     utctimes.pop(0)
 
-    avgwindow = 10 * 3
+    avgwindow = 5
     smoothe_dx = standard_stuff.filter_average(dxdt, avgwindow)
     utctimes = utctimes[avgwindow:-avgwindow]
     smoothe_dx = standard_stuff.filter_average(smoothe_dx, avgwindow)
