@@ -57,7 +57,7 @@ def plot_dual_hourly(datetimeformat, plot_utc, smoothe_seismo, smoothe_dx, title
         savefile = savefolder + os.sep + str(i) + ".png"
         plt.savefig(savefile)
         plt.close()
-        print(f"{i} / {len(smoothe_seismo)}")
+        print(f"Dualplotter: {i} / {len(smoothe_seismo)}")
 
 
 def wrapper(utctimes, data):

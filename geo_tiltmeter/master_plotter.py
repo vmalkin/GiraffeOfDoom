@@ -28,6 +28,7 @@ def plot_singledata(dateformatstring, dateobjects, singledataarray, tickinterval
 
 
 if __name__ == "__main__":
+    time_start = time.time()
     print(f"*** BEGIN plots.")
     end_time = time.time()
     start_time = end_time - 86400
@@ -51,8 +52,10 @@ if __name__ == "__main__":
                     plottitle='Todays tilt data',
                     savefile=savefile)
 
-    # plotter_spectrum.wrapper(data_utc, data_tilt)
-    # plotter_dual.wrapper(data_utc, data_tilt)
+    plotter_spectrum.wrapper(data_utc, data_tilt)
+    plotter_dual.wrapper(data_utc, data_tilt)
     plotter_fft_movie.wrapper(data_utc, data_tilt)
-
+    time_end = time.time()
+    elapsed_time = time_end - time_start
+    print(f"Elapsed time: {elapsed_time / 60:.2f} minutes")
     print(f"*** All plots completed.")
