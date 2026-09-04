@@ -28,10 +28,11 @@ def plot_singledata(dateformatstring, dateobjects, singledataarray, tickinterval
 
 
 if __name__ == "__main__":
-    time_start = time.time()
+    seconds_per_day = 86400
+    elapsed_start = time.time()
     print(f"*** BEGIN plots.")
     end_time = time.time()
-    start_time = end_time - 86400
+    start_time = end_time - seconds_per_day
     data = mgr_database.db_data_get(start_time, end_time)
     print(f"*** Data downloaded from DB.")
 
@@ -56,7 +57,9 @@ if __name__ == "__main__":
     plotter_dual.wrapper(data_utc, data_tilt)
     # plotter_fft_movie.wrapper(data_utc, data_tilt)
 
-    time_end = time.time()
-    elapsed_time = time_end - time_start
+    elapsed_end = time.time()
+    elapsed_time = elapsed_end - elapsed_start
+    print(f"\n")
+    print(f"Readings per second: {len(data) / seconds_per_day}")
     print(f"Elapsed time: {elapsed_time / 60:.2f} minutes")
     print(f"*** All plots completed.")
