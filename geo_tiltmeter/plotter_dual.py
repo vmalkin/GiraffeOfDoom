@@ -57,6 +57,7 @@ def plot_dual_hourly(datetimeformat, plot_utc, smoothe_seismo, smoothe_dx, title
         savefile = savefolder + os.sep + str(i) + ".png"
         plt.savefig(savefile)
         plt.close()
+        print(f"{i} / {len(smoothe_seismo)}")
 
 
 def wrapper(utctimes, data):
@@ -85,7 +86,7 @@ def wrapper(utctimes, data):
         dxdt.append(dx)
     utctimes.pop(0)
 
-    avgwindow = 5
+    avgwindow = 20
     smoothe_dx = standard_stuff.filter_average(dxdt, avgwindow)
     utctimes = utctimes[avgwindow:-avgwindow]
     smoothe_dx = standard_stuff.filter_average(smoothe_dx, avgwindow)
