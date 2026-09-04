@@ -89,7 +89,8 @@ def plot_sevenday_fft(fft_data, begintime, endtime, filename):
     plt.annotate("2 days", xy=(ann_pos_x, an_pos_y), xytext=(ann_pos_x, an_pos_y), fontsize=10 , color='red',
                  bbox=dict(boxstyle="round", fc="1", color='red'))
 
-    plt.ylim(10**1, 10**5)
+    # plt.ylim(10**1, 10**5)
+    plt.ylim(10 ** 0, 10 ** 5)
     # ax.set_xlim([0, 0.3])
     plt.yscale("log")
     plt.xscale("log")
@@ -104,9 +105,9 @@ def plot_sevenday_fft(fft_data, begintime, endtime, filename):
 def wrapper(utctime, csvdata):
     print(f'*** Creating FFT movie frames')
     # The FFT will be for 15m of data...
-    timeslice = k.sensor_reading_frequency * 60 *15
+    timeslice = k.sensor_reading_frequency * 60 * 5
     # IN steps of 15 minutes
-    timestep = k.sensor_reading_frequency * 60 *1
+    timestep = k.sensor_reading_frequency * 60 * 1
     plot_data = []
     plot_utc = utctime
     df = "%d  %H:%M"

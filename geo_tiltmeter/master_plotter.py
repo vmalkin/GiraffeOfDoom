@@ -54,7 +54,8 @@ if __name__ == "__main__":
 
     plotter_spectrum.wrapper(data_utc, data_tilt)
     plotter_dual.wrapper(data_utc, data_tilt)
-    plotter_fft_movie.wrapper(data_utc, data_tilt)
+    # plotter_fft_movie.wrapper(data_utc, data_tilt)
+
     time_end = time.time()
     elapsed_time = time_end - time_start
     print(f"Elapsed time: {elapsed_time / 60:.2f} minutes")
