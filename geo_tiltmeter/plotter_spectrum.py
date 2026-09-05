@@ -92,7 +92,7 @@ def plot_spectrum_scipy(
     fig, (ax_spec) = plt.subplots(
         1, 1,
         sharex=True,
-        figsize=(19, 12),
+        figsize=(20, 7),
         layout="constrained",
         height_ratios=[1],
     )
