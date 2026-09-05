@@ -54,7 +54,7 @@ if __name__ == "__main__":
                     savefile=savefile)
 
     plotter_spectrum.wrapper(data_utc, data_tilt)
-    plotter_dual.wrapper(data_utc, data_tilt)
+    # plotter_dual.wrapper(data_utc, data_tilt)
     # plotter_fft_movie.wrapper(data_utc, data_tilt)
 
     elapsed_end = time.time()
