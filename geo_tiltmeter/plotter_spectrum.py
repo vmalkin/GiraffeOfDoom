@@ -92,7 +92,7 @@ def plot_spectrum_scipy(
     fig, (ax_spec) = plt.subplots(
         1, 1,
         sharex=True,
-        figsize=(20, 7),
+        figsize=(16, 9),
         layout="constrained",
         height_ratios=[1],
     )
@@ -225,8 +225,8 @@ def wrapper(utc, data):
         fs=k.sensor_reading_frequency,
         nfft=1024,
         overlap_frac=0.75,
-        fmin=10**-7,
-        fmax=10**-1.8,
+        fmin=10 ** 0,
+        fmax=10 **-1.8,
         vmin=-50,
         vmax=40,
         datetimeformat="%m %d\n%H:%M",
