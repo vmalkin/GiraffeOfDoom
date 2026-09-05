@@ -38,15 +38,18 @@ if __name__ == "__main__":
     dd_end = input("Enter DD end: ")
     hh_end = input("Enter HH end: ")
 
-    # '%Y-%m-%d %H:%M'
-    utc_start = f"{yyyy_start}"
-    utc_end = f"{mm_end}"
-    print("\n")
-    print(f"UTC start: {utc_start}")
+    # '%Y-%m-%d %H'
+    utc_start = f"{yyyy_start}-{mm_start}-{dd_start} {hh_start}"
+    utc_end = f"{yyyy_end}-{mm_end}-{dd_end} {hh_end}"
+
+    psx_start = standard_stuff.utc2posix(utc_start, '%Y-%m-%d %H')
+    psx_end = standard_stuff.utc2posix(utc_end, '%Y-%m-%d %H')
+
+    print(f"UTC/PSX start: {utc_start} / {psx_start}")
+    print(f"UTC/PSX end: {utc_end} / {psx_end}")
 
     print(f"*** BEGIN plots.")
-
-    data = mgr_database.db_data_get(start_time, end_time)
+    data = mgr_database.db_data_get(psx_start, psx_end)
     print(f"*** Data downloaded from DB.")
 
     data_tilt = []
@@ -67,7 +70,7 @@ if __name__ == "__main__":
                     savefile=savefile)
 
     plotter_spectrum.wrapper(data_utc, data_tilt)
-    plotter_dual.wrapper(data_utc, data_tilt)
+    # plotter_dual.wrapper(data_utc, data_tilt)
     # plotter_fft_movie.wrapper(data_utc, data_tilt)
 
     print(f"*** All plots completed.")
