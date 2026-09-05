@@ -50,7 +50,7 @@ if __name__ == "__main__":
 
     print(f"*** BEGIN plots.")
     data = mgr_database.db_data_get(psx_start, psx_end)
-    print(f"*** Data downloaded from DB.")
+    print(f"*** Data downloaded from DB. Length: {len(data)}")
 
     data_tilt = []
     data_utc = []
