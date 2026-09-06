@@ -43,8 +43,8 @@ def plot_sevenday_fft(fft_data, begintime, endtime, filename):
 
     seis_pos_x = 10 ** -3.7
     seis_pos_y = 10 ** 3.9
-    plt.annotate("Earthquake Threshold", xy=(seis_pos_x, seis_pos_y), xytext=(seis_pos_x, seis_pos_y), fontsize=10, color='green',
-                 bbox=dict(boxstyle="round", fc="1", color='green'))
+    # plt.annotate("Earthquake Threshold", xy=(seis_pos_x, seis_pos_y), xytext=(seis_pos_x, seis_pos_y), fontsize=10, color='green',
+    #              bbox=dict(boxstyle="round", fc="1", color='green'))
 
     ann_pos_x = 10 ** 0.7
     plt.annotate("0.4 s", xy=(ann_pos_x, an_pos_y), xytext=(ann_pos_x, an_pos_y), fontsize=10, color='red',
@@ -90,7 +90,7 @@ def plot_sevenday_fft(fft_data, begintime, endtime, filename):
                  bbox=dict(boxstyle="round", fc="1", color='red'))
 
     # plt.ylim(10**1, 10**5)
-    plt.ylim(10 ** 0, 10 ** 5)
+    plt.ylim(10 ** 0, 10 ** 6)
     # ax.set_xlim([0, 0.3])
     plt.yscale("log")
     plt.xscale("log")
@@ -105,9 +105,9 @@ def plot_sevenday_fft(fft_data, begintime, endtime, filename):
 def wrapper(utctime, csvdata):
     print(f'*** Creating FFT movie frames')
     # The FFT will be for 15m of data...
-    timeslice = k.sensor_reading_frequency * 60 * 5
+    timeslice = k.sensor_reading_frequency * 60 * 60
     # IN steps of 15 minutes
-    timestep = k.sensor_reading_frequency * 60 * 1
+    timestep = k.sensor_reading_frequency * 60 * 15
     plot_data = []
     plot_utc = utctime
     df = "%d  %H:%M"
