@@ -48,6 +48,9 @@ def plot_dual_hourly(datetimeformat, plot_utc, smoothe_seismo, smoothe_dx, title
         ax[1].plot(chart_times, diff_data, c=ink_colour[1], linewidth=1)
         ax[1].set_ylabel("Tilt, dx/dt", color=ink_colour[1])
         ax[1].tick_params(axis='y', colors=ink_colour[1])
+        ax[1].minorticks_on()
+        ax[1].grid(which='minor', linestyle=':', linewidth=0.5, color='white')
+
         ax[1].set_ylim([dx_ymin, dx_ymax])
         # ax[1].spines['right'].set_position(('outward', 30))
         ax[1].yaxis.grid(False)
@@ -86,7 +89,7 @@ def wrapper(utctimes, data):
         dxdt.append(dx)
     utctimes.pop(0)
 
-    avgwindow = 20
+    avgwindow = 5
     smoothe_dx = standard_stuff.filter_average(dxdt, avgwindow)
     utctimes = utctimes[avgwindow:-avgwindow]
     smoothe_dx = standard_stuff.filter_average(smoothe_dx, avgwindow)

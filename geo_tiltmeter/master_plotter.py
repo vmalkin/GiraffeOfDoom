@@ -1,7 +1,7 @@
 import mgr_database
 import standard_stuff
 import plotter_spectrum
-import plotter_dual
+import plotter_dual_2 as plotter_dual
 import plotter_fft_movie
 import time
 import matplotlib.pyplot as plt
@@ -19,6 +19,7 @@ def plot_singledata(dateformatstring, dateobjects, singledataarray, tickinterval
     # Use proper date formatter + locator
     ax.xaxis.set_major_formatter(mdates.DateFormatter(dateformatstring))
     ax.xaxis.set_major_locator(mdates.MinuteLocator(interval=tickinterval))
+
     plt.setp(ax.get_xticklabels(), rotation=90)  # safer than plt.xticks
     plot_title = plottitle + " - " + standard_stuff.posix2utc(time.time(), '%Y-%m-%d %H:%M')
     ax.set_title(plot_title)
@@ -55,7 +56,7 @@ if __name__ == "__main__":
 
     plotter_spectrum.wrapper(data_utc, data_tilt)
     plotter_dual.wrapper(data_utc, data_tilt)
-    plotter_fft_movie.wrapper(data_utc, data_tilt)
+    # plotter_fft_movie.wrapper(data_utc, data_tilt)
 
     elapsed_end = time.time()
     elapsed_time = elapsed_end - elapsed_start
