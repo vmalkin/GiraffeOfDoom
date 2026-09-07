@@ -1,7 +1,7 @@
 import mgr_database
 import standard_stuff
 import plotter_spectrum
-import plotter_dual_2 as plotter_dual
+import plotter_dual
 import plotter_fft_movie
 import time
 import matplotlib.pyplot as plt

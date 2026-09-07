@@ -2,11 +2,10 @@ from datetime import timezone, datetime
 import time
 import standard_stuff
 import matplotlib.pyplot as plt
-import matplotlib.dates as mdates
+from matplotlib.ticker import AutoMinorLocator
 import numpy as np
 import os
 import constants as k
-import class_aggregator
 
 ink_colour = ["#7a3f16", "green", "red", "#ffffff"]
 plotstyle = 'bmh'
@@ -27,6 +26,9 @@ def plot_dual_hourly(datetimeformat, plot_utc, smoothe_seismo, smoothe_dx, title
     dx_ymax = dx_avg + 1.1 * (dx_max - dx_avg)
     dx_ymin = dx_avg - 1.1 * (dx_avg - dx_min)
 
+    major_tick_interval = k.sensor_reading_frequency * 60 * 5
+    minor_tick_interval = k.sensor_reading_frequency * 60
+
     for i in range(0, len(smoothe_seismo), hour_slice):
         array_start = i
         array_end = i + hour_slice
@@ -39,21 +41,26 @@ def plot_dual_hourly(datetimeformat, plot_utc, smoothe_seismo, smoothe_dx, title
         # utcdates should be datetime objects, not POSIX floats
 
         ax[0].plot(chart_times, seismo_data, c=ink_colour[0], linewidth=1)
-        # Subplots with separate y axes
         ax[0].set_ylabel("Tiltmeter. Arbitrary Units.", color=ink_colour[0])
-        ax[0].tick_params(axis='y', colors=ink_colour[0])
         ax[0].set_ylim([sz_ymin, sz_ymax])
+        # Major grid
+        ax[0].grid(which='major', linestyle=':', color='black', alpha=1)
+        ax[0].grid(which='minor', linestyle=':', color='black',alpha=0.5)
+        # Minor ticks and grid
+        ax[0].xaxis.set_minor_locator(AutoMinorLocator(5))
+        ax[0].yaxis.set_minor_locator(AutoMinorLocator(1))
+
 
         # ax[1] = ax1.twinx()
         ax[1].plot(chart_times, diff_data, c=ink_colour[1], linewidth=1)
         ax[1].set_ylabel("Tilt, dx/dt", color=ink_colour[1])
-        ax[1].tick_params(axis='y', colors=ink_colour[1])
-        ax[1].minorticks_on()
-        ax[1].grid(which='minor', linestyle=':', linewidth=0.5, color='white')
-
         ax[1].set_ylim([dx_ymin, dx_ymax])
-        # ax[1].spines['right'].set_position(('outward', 30))
-        ax[1].yaxis.grid(False)
+        # Major grid
+        ax[1].grid(which='major', linestyle=':', color='black', alpha=1)
+        ax[1].grid(which='minor', linestyle=':', color='black',alpha=0.5)
+        # Minor ticks and grid
+        ax[1].xaxis.set_minor_locator(AutoMinorLocator(5))
+        ax[1].yaxis.set_minor_locator(AutoMinorLocator(1))
 
         plot_title = title + " - " + standard_stuff.posix2utc(time.time(), '%Y-%m-%d %H:%M')
         fig.suptitle(plot_title)
