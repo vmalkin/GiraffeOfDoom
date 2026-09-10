@@ -26,9 +26,6 @@ def plot_dual_hourly(datetimeformat, plot_utc, smoothe_seismo, smoothe_dx, title
     dx_ymax = dx_avg + 1.1 * (dx_max - dx_avg)
     dx_ymin = dx_avg - 1.1 * (dx_avg - dx_min)
 
-    major_tick_interval = k.sensor_reading_frequency * 60 * 5
-    minor_tick_interval = k.sensor_reading_frequency * 60
-
     for i in range(0, len(smoothe_seismo), hour_slice):
         array_start = i
         array_end = i + hour_slice

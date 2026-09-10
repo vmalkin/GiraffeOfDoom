@@ -9,9 +9,7 @@ def db_create():
 
     gpsdb.execute("PRAGMA journal_mode=WAL;")
     gpsdb.execute("PRAGMA busy_timeout=10000;")
-
     db.execute('drop table if exists observations;')
-
     db.execute('create table observations ('
                'posixtime real,'
                'tiltdata real'
@@ -26,6 +24,8 @@ def db_data_add(insertdata):
     try:
         gpsdb = sqlite3.connect(k.database, timeout=10)
         db = gpsdb.cursor()
+        gpsdb.execute("PRAGMA journal_mode=WAL;")
+        gpsdb.execute("PRAGMA busy_timeout=10000;")
         for item in insertdata:
             posixtime = item[0]
             tiltdata = item[1]
@@ -44,6 +44,8 @@ def db_data_get(timestart, timeend):
     try:
         gpsdb = sqlite3.connect(k.database, timeout=10)
         db = gpsdb.cursor()
+        gpsdb.execute("PRAGMA journal_mode=WAL;")
+        gpsdb.execute("PRAGMA busy_timeout=10000;")
         # result = db.execute('select * from observations where posixtime > ?;', values)
         result = db.execute('select * from observations where posixtime between ? and ? order by posixtime;', values)
         for item in result:
@@ -59,6 +61,8 @@ def db_data_get_all():
     try:
         gpsdb = sqlite3.connect(k.database, timeout=10)
         db = gpsdb.cursor()
+        gpsdb.execute("PRAGMA journal_mode=WAL;")
+        gpsdb.execute("PRAGMA busy_timeout=10000;")
         result = db.execute('select posixtime, tiltdata from observations order by posixtime;')
         for item in result:
             returnarray.append(item)
