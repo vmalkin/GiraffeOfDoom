@@ -35,6 +35,7 @@ if __name__ == "__main__":
     end_time = time.time()
     start_time = end_time - seconds_per_day
     data = mgr_database.db_data_get(start_time, end_time)
+    # data = mgr_database.db_data_get_all()
     print(f"*** Data downloaded from DB.")
 
     data_tilt = []
