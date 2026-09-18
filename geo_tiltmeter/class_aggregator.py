@@ -8,9 +8,9 @@ class Aggregator:
         self.data_null = np.nan
         self.date_start = posixstart  # should be POSIX values
         self.date_stop = posixstop  # should be POSIX values
-        # self.data_seismo = []
-        self.data_temperature = []
-        self.data_pressure = []
+        self.data_seismo = []
+        # self.data_temperature = []
+        # self.data_pressure = []
 
     def get_data_avg(self, dataset):
         # return the median value of the data set. If the set is empty, return a null
@@ -55,7 +55,7 @@ class Aggregator:
         return avg_time
 
 # This function performs aggregation using the Aggregator class
-# querydata has the format [posix, seismo, temp, pressure]
+# querydata has the format [posix, seismo]
 def aggregate_data(windowsize, querydata):
     # windowsize needs to be at least 1
     # PASS 1 - Set up the array
@@ -80,31 +80,24 @@ def aggregate_data(windowsize, querydata):
         if i % windowsize == 0:
             j = j + 1
 
-
     # PASS 3 - add the data into the correct aggregate object based on datetime
     print("PASS 3 - Adding data to aggregating array")
     for i in range(0, len(querydata)):
         # if i % 1000 == 0:
         #     print(f"{i} / {len(result_7d)}")
         datetime = querydata[i][0]
-        # seismo = float(querydata[i][1])
-        temp = querydata[i][1]
-        pressure = querydata[i][2]
+        seismo = querydata[i][1]
         agg_index = lookup[datetime]
-        # aggregate_array[agg_index - 1].data_seismo.append(seismo)
-        aggregate_array[agg_index - 1].data_temperature.append(temp)
-        aggregate_array[agg_index - 1].data_pressure.append(pressure)
-
+        aggregate_array[agg_index - 1].data_seismo.append(seismo)
 
     # PASS 4 - Use aggregator class functions to create plotting data
-    print("PASS 4 - Create and return plotting array [posixdatetime, avg_temp, avg_pressr]")
+    print("PASS 4 - Create and return plotting array.")
     plotting_data = []
     for i in range(1, len(aggregate_array)):
         tim = aggregate_array[i].get_avg_posix()
-        # siz = aggregate_array[i].get_data_avg(aggregate_array[i].data_seismo)
-        tmp = aggregate_array[i].get_data_avg(aggregate_array[i].data_temperature)
-        prs = aggregate_array[i].get_data_avg(aggregate_array[i].data_pressure)
-        d = [tim, tmp, prs]
+        siz = aggregate_array[i].get_data_avg(aggregate_array[i].data_seismo)
+        # d = [tim, tmp, prs]
+        d = [tim, siz]
         plotting_data.append(d)
 
     # return plotting_data

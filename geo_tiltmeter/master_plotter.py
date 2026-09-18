@@ -9,9 +9,15 @@ from datetime import datetime, timezone
 import matplotlib.dates as mdates
 import os
 import constants as k
+import numpy as np
 
 
 def plot_singledata(dateformatstring, dateobjects, singledataarray, tickinterval, plotcolour, plottitle, savefile):
+    sz_avg = np.mean(singledataarray)
+    sz_stdev= np.std(singledataarray)
+    sz_ymax = sz_avg + (sz_stdev * 8)
+    sz_ymin = sz_avg - (sz_stdev * 8)
+
     plt.style.use('bmh')
     fig, ax = plt.subplots(layout="constrained", figsize=(16, 8), dpi=140)
     ax.plot(dateobjects, singledataarray, c=plotcolour, linewidth=1)
@@ -22,6 +28,7 @@ def plot_singledata(dateformatstring, dateobjects, singledataarray, tickinterval
 
     plt.setp(ax.get_xticklabels(), rotation=90)  # safer than plt.xticks
     plot_title = plottitle + " - " + standard_stuff.posix2utc(time.time(), '%Y-%m-%d %H:%M')
+    ax.set_ylim([sz_ymin, sz_ymax])
     ax.set_title(plot_title)
     plt.tight_layout()
     plt.savefig(savefile)
@@ -38,12 +45,23 @@ if __name__ == "__main__":
     # data = mgr_database.db_data_get_all()
     print(f"*** Data downloaded from DB.")
 
+    # # generate aggregated data for the line plots.
+    # aggregate_window = 5 * 5
+    # aggregateddata = class_aggregator.aggregate_data(aggregate_window, data)
+    # agg_utc = []
+    # agg_tilt = []
+    # for aggposix, aggdata in aggregateddata:
+    #     agg_tilt.append(aggdata)
+    #     aggtim = datetime.fromtimestamp(aggposix, tz=timezone.utc)  # datetime object
+    #     agg_utc.append(aggtim)
+
     data_tilt = []
     data_utc = []
     for psx, tilt in data:
-        data_tilt.append(tilt)
-        tim = datetime.fromtimestamp(psx, tz=timezone.utc)  # datetime object
-        data_utc.append(tim)
+        if isinstance(tilt, float):
+            data_tilt.append(tilt)
+            tim = datetime.fromtimestamp(psx, tz=timezone.utc)  # datetime object
+            data_utc.append(tim)
 
     savefolder = k.dir_saves['images']
     savefile = savefolder + os.sep + "basic_tilt.png"
@@ -55,11 +73,7 @@ if __name__ == "__main__":
                     plottitle='Todays tilt data',
                     savefile=savefile)
 
-    # plotter_dual.wrapper(data_utc, data_tilt)
-
-    halfwindow = 23
-    data_tilt = standard_stuff.filter_average(data_tilt, halfwindow)
-    data_utc = data_utc[halfwindow:-halfwindow]
+    plotter_dual.wrapper(data_utc, data_tilt)
     plotter_spectrum.wrapper(data_utc, data_tilt)
     # plotter_fft_movie.wrapper(data_utc, data_tilt)
 

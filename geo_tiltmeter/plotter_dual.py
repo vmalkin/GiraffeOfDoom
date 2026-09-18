@@ -15,16 +15,14 @@ def plot_dual_hourly(datetimeformat, plot_utc, smoothe_seismo, smoothe_dx, title
     # the size of an hour is plot frequency multiplied by seconds/min and mins/hr
     hour_slice = k.sensor_reading_frequency * 60 * 15
     sz_avg = np.mean(smoothe_seismo)
-    sz_max = np.nanmax(smoothe_seismo)
-    sz_min = np.nanmin(smoothe_seismo)
-    sz_ymax = sz_avg + 1.1 * (sz_max - sz_avg)
-    sz_ymin = sz_avg - 1.1 * (sz_avg - sz_min)
+    sz_stdev= np.std(smoothe_seismo)
+    sz_ymax = sz_avg + (sz_stdev * 8)
+    sz_ymin = sz_avg - (sz_stdev * 8)
 
     dx_avg = np.mean(smoothe_dx)
-    dx_max = np.nanmax(smoothe_dx)
-    dx_min = np.nanmin(smoothe_dx)
-    dx_ymax = dx_avg + 1.1 * (dx_max - dx_avg)
-    dx_ymin = dx_avg - 1.1 * (dx_avg - dx_min)
+    dx_stddev = np.std(smoothe_dx)
+    dx_ymax = dx_avg + (dx_stddev * 8)
+    dx_ymin = dx_avg - (dx_stddev * 8)
 
     for i in range(0, len(smoothe_seismo), hour_slice):
         array_start = i
@@ -35,6 +33,7 @@ def plot_dual_hourly(datetimeformat, plot_utc, smoothe_seismo, smoothe_dx, title
 
         plt.style.use(plotstyle)
         fig, ax = plt.subplots(2, layout="constrained", figsize=(16, 8), dpi=250)
+
         # utcdates should be datetime objects, not POSIX floats
 
         ax[0].plot(chart_times, seismo_data, c=ink_colour[0], linewidth=1)
