@@ -107,7 +107,7 @@ def wrapper(utctime, csvdata):
     # The FFT will be for 15m of data...
     timeslice = k.sensor_reading_frequency * 60 * 60 * 24
     # IN steps of 15 minutes
-    timestep = k.sensor_reading_frequency * 60 * 60 * 24
+    timestep = k.sensor_reading_frequency * 60 * 60
     plot_data = []
     plot_utc = utctime
     df = "%d  %H:%M"

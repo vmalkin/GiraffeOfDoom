@@ -27,11 +27,12 @@ def db_data_add(insertdata):
             )
             # The with sqlite3.connect(...) context manager automatically commits
             # if the block exits successfully, and rolls back if an exception occurs.
+            # We MUST however close the cursor object
             # database.commit()
             cursor.close()
 
     except sqlite3.OperationalError as e:
-        print(f'Database data insert FAILED: {e}')
+        print(f'Database INSERT FAILED: {e}')
 
 
 def db_data_get(timestart, timeend):
@@ -46,6 +47,6 @@ def db_data_get(timestart, timeend):
         return result
 
     except sqlite3.OperationalError as e:
-        print(f'Database data SELECT FAILED: {e}')
+        print(f'Database SELECT FAILED: {e}')
         return None
 
