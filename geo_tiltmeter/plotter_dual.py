@@ -92,21 +92,21 @@ def wrapper(utctimes, data):
         dxdt.append(dx)
     utctimes.pop(0)
 
-    avgwindow = 5
-    smoothe_dx = standard_stuff.filter_average(dxdt, avgwindow)
-    utctimes = utctimes[avgwindow:-avgwindow]
-    smoothe_dx = standard_stuff.filter_average(smoothe_dx, avgwindow)
-    utctimes = utctimes[avgwindow:-avgwindow]
+    # avgwindow = 5
+    # smoothe_dx = standard_stuff.filter_average(dxdt, avgwindow)
+    # utctimes = utctimes[avgwindow:-avgwindow]
+    # smoothe_dx = standard_stuff.filter_average(smoothe_dx, avgwindow)
+    # utctimes = utctimes[avgwindow:-avgwindow]
+    #
+    # smoothe_seismo = standard_stuff.filter_average(plot_seismo, avgwindow)
+    # smoothe_seismo = standard_stuff.filter_average(smoothe_seismo, avgwindow)
+    # smoothe_seismo.pop(0)
+    # utctimes.pop(0)
 
-    smoothe_seismo = standard_stuff.filter_average(plot_seismo, avgwindow)
-    smoothe_seismo = standard_stuff.filter_average(smoothe_seismo, avgwindow)
-    smoothe_seismo.pop(0)
-    utctimes.pop(0)
-
-    print(f"{len(utctimes)} {len(smoothe_seismo)} {len(smoothe_dx)}")
+    # print(f"{len(utctimes)} {len(smoothe_seismo)} {len(smoothe_dx)}")
 
     ticks = 20
     df = "%d  %H:%M"
-    title = "Tiltmeter One Day dx/dt"
+    title = "Tiltmeter One Day. Data and dx/dt"
     savefolder = k.dir_saves['images']
-    plot_dual_hourly(df, utctimes, smoothe_seismo, smoothe_dx, title, savefolder)
+    plot_dual_hourly(df, utctimes, plot_seismo, dxdt, title, savefolder)
