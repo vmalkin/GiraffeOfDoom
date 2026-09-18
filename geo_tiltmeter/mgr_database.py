@@ -34,30 +34,30 @@ def db_data_add(insertdata):
 
 
 def db_data_get(timestart, timeend):
-    returnarray = []
-    values = [timestart, timeend]
-    gpsdb = sqlite3.connect(k.database, timeout=10)
-    db = gpsdb.cursor()
     try:
-        # result = db.execute('select * from observations where posixtime > ?;', values)
-        result = db.execute('select * from observations where posixtime between ? and ? order by posixtime;', values)
-        for item in result:
-            returnarray.append(item)
-        db.close()
+        with sqlite3.connect(k.database, timeout=10) as database:
+            db = database.cursor()
+            result = db.execute(
+                'select * from observations where posixtime between ? and ? order by posixtime;',
+                (timestart, timeend)
+            ).fetchall()
+        return result
+
     except sqlite3.OperationalError as e:
         print(f'Database data SELECT FAILED: {e}')
-    return returnarray
+        return None
 
 
-def db_data_get_all():
-    returnarray = []
-    gpsdb = sqlite3.connect(k.database, timeout=10)
-    db = gpsdb.cursor()
-    try:
-        result = db.execute('select posixtime, tiltdata from observations order by posixtime;')
-        for item in result:
-            returnarray.append(item)
-        db.close()
-    except sqlite3.OperationalError as e:
-        print(f'Database data SELECT ALL FAILED: {e}')
-    return returnarray
+#
+# def db_data_get_all():
+#     returnarray = []
+#     gpsdb = sqlite3.connect(k.database, timeout=10)
+#     db = gpsdb.cursor()
+#     try:
+#         result = db.execute('select posixtime, tiltdata from observations order by posixtime;')
+#         for item in result:
+#             returnarray.append(item)
+#         db.close()
+#     except sqlite3.OperationalError as e:
+#         print(f'Database data SELECT ALL FAILED: {e}')
+#     return returnarray
