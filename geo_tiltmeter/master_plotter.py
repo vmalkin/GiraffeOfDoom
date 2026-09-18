@@ -55,8 +55,12 @@ if __name__ == "__main__":
                     plottitle='Todays tilt data',
                     savefile=savefile)
 
+    # plotter_dual.wrapper(data_utc, data_tilt)
+
+    halfwindow = 23
+    data_tilt = standard_stuff.filter_average(data_tilt, halfwindow)
+    data_utc = data_utc[halfwindow:-halfwindow]
     plotter_spectrum.wrapper(data_utc, data_tilt)
-    plotter_dual.wrapper(data_utc, data_tilt)
     # plotter_fft_movie.wrapper(data_utc, data_tilt)
 
     elapsed_end = time.time()
