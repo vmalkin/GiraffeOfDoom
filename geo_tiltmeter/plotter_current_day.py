@@ -12,13 +12,13 @@ ink_colour = ["#7a3f16", "green", "red", "#ffffff"]
 plotstyle = 'bmh'
 
 
-def plot_dual_hourly(datetimeformat, plot_utc, smoothe_seismo, smoothe_dx, title, savefolder):
+def plot(datetimeformat, plot_utc, smoothe_seismo, smoothe_dx, title, savefolder):
     # the size of an hour is plot frequency multiplied by seconds/min and mins/hr
-    hour_slice = k.sensor_reading_frequency * 60 * 15
+    hour_slice = k.sensor_reading_frequency * 60 * 60 * 24
     sz_avg = np.mean(smoothe_seismo)
     sz_stdev= np.std(smoothe_seismo)
-    sz_ymax = sz_avg + (sz_stdev * 8)
-    sz_ymin = sz_avg - (sz_stdev * 8)
+    sz_ymax = sz_avg + (sz_stdev * 5)
+    sz_ymin = sz_avg - (sz_stdev * 5)
 
     dx_avg = np.mean(smoothe_dx)
     dx_stddev = np.std(smoothe_dx)
@@ -45,7 +45,7 @@ def plot_dual_hourly(datetimeformat, plot_utc, smoothe_seismo, smoothe_dx, title
         ax[0].grid(which='major', linestyle=':', color='black', alpha=1)
         ax[0].grid(which='minor', linestyle=':', color='black',alpha=0.5)
         # Minor ticks and grid
-        ax[0].xaxis.set_minor_locator(AutoMinorLocator(5))
+        ax[0].xaxis.set_minor_locator(AutoMinorLocator(6))
         ax[0].yaxis.set_minor_locator(AutoMinorLocator(1))
 
 
@@ -59,25 +59,24 @@ def plot_dual_hourly(datetimeformat, plot_utc, smoothe_seismo, smoothe_dx, title
         ax[1].grid(which='major', linestyle=':', color='black', alpha=1)
         ax[1].grid(which='minor', linestyle=':', color='black',alpha=0.5)
         # Minor ticks and grid
-        ax[1].xaxis.set_minor_locator(AutoMinorLocator(5))
+        ax[1].xaxis.set_minor_locator(AutoMinorLocator(6))
         ax[1].yaxis.set_minor_locator(AutoMinorLocator(1))
 
         plot_title = title + " - " + standard_stuff.posix2utc(time.time(), '%Y-%m-%d %H:%M')
         plt.xlabel("UTC Datetime.")
         fig.suptitle(plot_title)
-        savefile = savefolder + os.sep + str(i) + ".png"
+        savefile = savefolder + os.sep + "current_day.png"
         plt.savefig(savefile)
         plt.close()
-        print(f"Dualplotter: {i} / {len(smoothe_seismo)}")
 
 
 def wrapper(utctimes, data):
     # =============================================================================================================
     # Data is UTC time objects and flat data.
     # There may be gaps
-    print("*** Tiltmeter, hourly plots")
+    print("*** Tiltmeter current day.")
 
-    smoothing_half_window = k.sensor_reading_frequency * 5
+    smoothing_half_window = k.sensor_reading_frequency * 60
     smooth_seismo = standard_stuff.filter_average(data, smoothing_half_window)
     smooth_times = utctimes[smoothing_half_window:-smoothing_half_window]
 
@@ -92,13 +91,13 @@ def wrapper(utctimes, data):
     print(f'{len(smooth_times)} {len(smooth_seismo)} {len(smooth_dxdt)}')
 
     ticks = 20
-    df = "%b %d \n%H:%M"
-    title = f'Tiltmeter One Day. Data and dx/dt. RA half-window is {smoothing_half_window} readings @ {k.sensor_reading_frequency} readings/s. '
+    df = "%b %d \n%Hhr"
+    title = f'Tiltmeter Current Day. Data and dx/dt. RA half-window is {smoothing_half_window} readings @ {k.sensor_reading_frequency} readings/s. '
     savefolder = k.dir_saves['images']
 
-    plot_dual_hourly(df,
-                     smooth_times,
-                     smooth_seismo,
-                     smooth_dxdt,
-                     title,
-                     savefolder)
+    plot(df,
+         smooth_times,
+         smooth_seismo,
+         smooth_dxdt,
+         title,
+         savefolder)
