@@ -17,8 +17,8 @@ def plot(datetimeformat, plot_utc, smoothe_seismo, smoothe_dx, title, savefolder
     hour_slice = k.sensor_reading_frequency * 60 * 60 * 24
     sz_avg = np.mean(smoothe_seismo)
     sz_stdev= np.std(smoothe_seismo)
-    sz_ymax = sz_avg + (sz_stdev * 5)
-    sz_ymin = sz_avg - (sz_stdev * 5)
+    sz_ymax = sz_avg + (sz_stdev * 4)
+    sz_ymin = sz_avg - (sz_stdev * 4)
 
     dx_avg = np.mean(smoothe_dx)
     dx_stddev = np.std(smoothe_dx)
