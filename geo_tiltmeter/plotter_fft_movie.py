@@ -131,7 +131,8 @@ def wrapper(utctime, csvdata):
         chart_times = plot_utc[array_start:array_end]
         begintime = chart_times[0].strftime(df)
         endtime = chart_times[len(chart_times) - 1].strftime(df)
+        day_file_name = chart_times[len(chart_times) - 1].strftime('%Y-%m-%d-%H-%M')
         fft_data = perform_fft(seismo_data, k.sensor_reading_frequency)
-        plot_sevenday_fft(fft_data, begintime, endtime, endtime)
+        plot_sevenday_fft(fft_data, begintime, endtime, day_file_name)
         print(f"FFT Plotter: {i} / {len(plot_data)}")
 
