@@ -37,7 +37,7 @@ if __name__ == "__main__":
     plotter_dual.wrapper(data_utc_objects, data_tilt)
     plotter_current_day.wrapper(data_utc_objects, data_tilt)
     plotter_spectrum.wrapper(data_utc_objects, data_tilt)
-    # plotter_fft_movie.wrapper(data_utc, data_tilt)
+    plotter_fft_movie.wrapper(data_utc_objects, data_tilt)
 
     # Some stats on processing time.
     elapsed_end = time.time()

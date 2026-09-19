@@ -107,7 +107,7 @@ def wrapper(utctime, csvdata):
     # The FFT will be for 15m of data...
     timeslice = k.sensor_reading_frequency * 60 * 60 * 24
     # IN steps of 15 minutes
-    timestep = k.sensor_reading_frequency * 60 * 60
+    timestep = k.sensor_reading_frequency * 60 * 60 * 24
     plot_data = []
     plot_utc = utctime
     df = "%d  %H:%M"
@@ -132,6 +132,6 @@ def wrapper(utctime, csvdata):
         begintime = chart_times[0].strftime(df)
         endtime = chart_times[len(chart_times) - 1].strftime(df)
         fft_data = perform_fft(seismo_data, k.sensor_reading_frequency)
-        plot_sevenday_fft(fft_data, begintime, endtime, i)
+        plot_sevenday_fft(fft_data, begintime, endtime, endtime)
         print(f"FFT Plotter: {i} / {len(plot_data)}")
 
