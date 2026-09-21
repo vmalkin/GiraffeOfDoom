@@ -56,7 +56,7 @@ def db_data_all():
         with sqlite3.connect(k.database, timeout=10) as database:
             cursor = database.cursor()
             result = cursor.execute(
-                'select * from observations where order by posixtime;'
+                'select * from observations order by posixtime;'
             ).fetchall()
             cursor.close()
         return result
