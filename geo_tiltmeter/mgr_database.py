@@ -50,3 +50,17 @@ def db_data_get(timestart, timeend):
         print(f'Database SELECT FAILED: {e}')
         return None
 
+
+def db_data_all():
+    try:
+        with sqlite3.connect(k.database, timeout=10) as database:
+            cursor = database.cursor()
+            result = cursor.execute(
+                'select * from observations where order by posixtime;'
+            ).fetchall()
+            cursor.close()
+        return result
+
+    except sqlite3.OperationalError as e:
+        print(f'Database SELECT ALL FAILED: {e}')
+        return None
