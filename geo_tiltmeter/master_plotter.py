@@ -36,10 +36,10 @@ if __name__ == "__main__":
             data_utc_objects.append(tim)
 
     # Send data to the plotters
-    plotter_dual.wrapper(data_utc_objects, data_tilt)
-    plotter_current_day.wrapper(data_utc_objects, data_tilt)
-    plotter_spectrum.wrapper(data_utc_objects, data_tilt)
-    plotter_fft_movie.wrapper(data_utc_objects, data_tilt)
+    # plotter_dual.wrapper(data_utc_objects, data_tilt)
+    # plotter_current_day.wrapper(data_utc_objects, data_tilt)
+    # plotter_spectrum.wrapper(data_utc_objects, data_tilt)
+    # plotter_fft_movie.wrapper(data_utc_objects, data_tilt)
     plotter_phaseportrait.wrapper(data_utc_objects, data_tilt)
 
     # Some stats on processing time.
