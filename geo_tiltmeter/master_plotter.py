@@ -18,8 +18,8 @@ if __name__ == "__main__":
     print(f"*** BEGIN plots.")
     end_time = time.time()
     start_time = end_time - seconds_per_day
-    # data = mgr_database.db_data_get(start_time, end_time)
-    data = mgr_database.db_data_all()
+    data = mgr_database.db_data_get(start_time, end_time)
+    # data = mgr_database.db_data_all()
     print(f"*** Data downloaded from DB.")
 
     # Basic cleanup of data.
@@ -35,9 +35,9 @@ if __name__ == "__main__":
             data_utc_objects.append(tim)
 
     # Send data to the plotters
-    # plotter_dual.wrapper(data_utc_objects, data_tilt)
-    # plotter_current_day.wrapper(data_utc_objects, data_tilt)
-    # plotter_spectrum.wrapper(data_utc_objects, data_tilt)
+    plotter_dual.wrapper(data_utc_objects, data_tilt)
+    plotter_current_day.wrapper(data_utc_objects, data_tilt)
+    plotter_spectrum.wrapper(data_utc_objects, data_tilt)
     plotter_fft_movie.wrapper(data_utc_objects, data_tilt)
 
     # Some stats on processing time.
