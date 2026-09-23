@@ -2,6 +2,7 @@ import numpy as np
 from scipy.fft import rfft, rfftfreq
 from datetime import timezone, datetime
 import constants as k
+import mgr_database
 import matplotlib.pyplot as plt
 import os
 import constants as k
@@ -90,7 +91,7 @@ def plot_sevenday_fft(fft_data, begintime, endtime, filename):
                  bbox=dict(boxstyle="round", fc="1", color='red'))
 
     # plt.ylim(10**1, 10**5)
-    plt.ylim(10 ** 0, 10 ** 6)
+    plt.ylim(10 ** 1, 10 ** 8)
     # ax.set_xlim([0, 0.3])
     plt.yscale("log")
     plt.xscale("log")
@@ -102,40 +103,44 @@ def plot_sevenday_fft(fft_data, begintime, endtime, filename):
     plt.close()
 
 
-def wrapper(utctime, csvdata):
+if __name__ == "__main__":
+    plot_data = mgr_database.db_data_all()
+    data_tilt = []
+    data_utc_objects = []
+    for psx, tilt in plot_data:
+        if isinstance(tilt, float):
+            data_tilt.append(tilt)
+            tim = datetime.fromtimestamp(psx, tz=timezone.utc)  # datetime object
+            data_utc_objects.append(tim)
+
     print(f'*** Creating FFT movie frames')
-    # The FFT will be for data this long...
-    timeslice = k.sensor_reading_frequency * 60 * 60 * 4
-    # IN steps of this
-    timestep = k.sensor_reading_frequency * 60 * 60 * 1
-    plot_data = csvdata
-    plot_utc = utctime
+    # # The FFT will be for 15m of data...
+    # timeslice = k.sensor_reading_frequency * 60 * 60 * 24
+    # # IN steps of 15 minutes
+    # timestep = k.sensor_reading_frequency * 60 * 60 * 24
     df = "%d  %H:%M"
 
-    # if len(csvdata) >= timeslice:
-    #     for i in range(0, len(csvdata)):
-    #         try:
-    #             j = float(csvdata[i])
-    #             plot_data.append(j)
-    #         except TypeError:
-    #             utctime.pop(i)
-    #             print(csvdata[i])
-        #
-        # for i in range(0, len(d)):
-        #     data_info = d[i]
-        #     decimal_data = make_decimal(data_info)
-        #     plot_data.append(decimal_data)
-    for i in range(0, len(plot_data), timestep):
-        array_start = i
-        array_end = i + timeslice
-        seismo_data = plot_data[array_start:array_end]
-        chart_times = plot_utc[array_start:array_end]
-
-        if len(seismo_data) == timeslice:
-            begintime = chart_times[0].strftime(df)
-            endtime = chart_times[len(chart_times) - 1].strftime(df)
-            day_file_name = chart_times[len(chart_times) - 1].strftime('%Y-%m-%d-%H-%M')
-            fft_data = perform_fft(seismo_data, k.sensor_reading_frequency)
-            plot_sevenday_fft(fft_data, begintime, endtime, day_file_name)
-
+    # for i in range(0, len(csvdata)):
+    #     try:
+    #         j = float(csvdata[i])
+    #         plot_data.append(j)
+    #     except TypeError:
+    #         utctime.pop(i)
+    #         print(csvdata[i])
+    # #
+    # # for i in range(0, len(d)):
+    # #     data_info = d[i]
+    # #     decimal_data = make_decimal(data_info)
+    # #     plot_data.append(decimal_data)
+    # for i in range(0, len(plot_data), timestep):
+        # array_start = i
+        # array_end = i + timeslice
+        # seismo_data = data_tilt[array_start:array_end]
+        # chart_times = plot_utc[array_start:array_end]
+    begintime = data_utc_objects[0].strftime(df)
+    endtime = data_utc_objects[len(data_utc_objects) - 1].strftime(df)
+    day_file_name = "total_data"
+    fft_data = perform_fft(data_tilt, k.sensor_reading_frequency)
+    plot_sevenday_fft(fft_data, begintime, endtime, day_file_name)
+    # print(f"FFT Plotter: {i} / {len(plot_data)}")
 
