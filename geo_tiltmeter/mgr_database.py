@@ -15,6 +15,7 @@ def db_create():
                ');')
     database.commit()
     cursor.close()
+    # This might be needed to ensure we have permissions to write to the DB. Linux of course
     os.chmod(k.database, 0o664)
 
 
