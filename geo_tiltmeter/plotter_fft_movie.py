@@ -94,7 +94,7 @@ def plot_sevenday_fft(fft_data, begintime, endtime, filename):
     # ax.set_xlim([0, 0.3])
     plt.yscale("log")
     plt.xscale("log")
-    title = "FFT per hour" + " - " + begintime + " - " + endtime
+    title = "FFT for time" + " - " + begintime + " - " + endtime
     plt.title(title)
     plt.grid(color='white', linestyle='-', linewidth='2')
     savefile = k.dir_saves['spectrograms'] + os.sep + str(filename) + ".png"
