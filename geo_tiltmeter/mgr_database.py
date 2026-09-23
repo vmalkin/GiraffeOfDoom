@@ -1,5 +1,6 @@
 import sqlite3
 import constants as k
+import os
 
 
 def db_create():
@@ -14,6 +15,7 @@ def db_create():
                ');')
     database.commit()
     cursor.close()
+    os.chmod(k.database, 0o664)
 
 
 def db_data_add(insertdata):
