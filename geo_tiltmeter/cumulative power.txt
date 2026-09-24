@@ -1,0 +1,17 @@
+import numpy as np
+from scipy.fft import fft
+
+# Sample time series data
+time_series = np.random.rand(1024)  # Replace with your actual data
+
+# Step 1: Apply FFT
+fft_result = fft(time_series)
+
+# Step 2: Calculate Power Spectrum
+power_spectrum = np.abs(fft_result) ** 2
+
+# Step 3: Compute Cumulative Spectral Power
+cumulative_spectral_power = np.cumsum(power_spectrum)
+
+# Output the cumulative spectral power
+print(cumulative_spectral_power)
