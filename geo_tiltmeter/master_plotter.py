@@ -1,6 +1,7 @@
 import mgr_database
 import standard_stuff
-import plotter_spectrum
+import plotter_spectrum_detailed
+import plotter_spectrum_quick
 import plotter_dual
 import plotter_current_day
 import plotter_fft_movie
@@ -36,9 +37,10 @@ if __name__ == "__main__":
             data_utc_objects.append(tim)
 
     # Send data to the plotters
-    # plotter_dual.wrapper(data_utc_objects, data_tilt)
-    # plotter_current_day.wrapper(data_utc_objects, data_tilt)
-    # plotter_spectrum.wrapper(data_utc_objects, data_tilt)
+    plotter_dual.wrapper(data_utc_objects, data_tilt)
+    plotter_current_day.wrapper(data_utc_objects, data_tilt)
+    plotter_spectrum_detailed.wrapper(data_utc_objects, data_tilt)
+    plotter_spectrum_quick.wrapper(data_utc_objects, data_tilt)
     plotter_fft_movie.wrapper(data_utc_objects, data_tilt)
     # plotter_phaseportrait.wrapper(data_utc_objects, data_tilt)
 

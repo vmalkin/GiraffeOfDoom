@@ -184,7 +184,7 @@ def wrapper(utc, data):
     title = "Spectrogram of tiltmeter"
 
     savefolder = k.dir_saves['images']
-    savefile = savefolder + os.sep + "spectrum_tilt.png"
+    savefile = savefolder + os.sep + "spectrum_quick.png"
 
     # nfft=16384
     # nfft=32768
@@ -197,12 +197,12 @@ def wrapper(utc, data):
         deltap=deltapressure,
         datetimes=utc,
         fs=k.sensor_reading_frequency,
-        nfft=32768,
+        nfft=1024,
         overlap_frac=0.75,
-        fmin=10 ** -4,
-        fmax=10 ** 0,
+        fmin=10 ** -5,
+        fmax=10 ** 0.39,
         vmin=-50,
-        vmax=25,
+        vmax=20,
         datetimeformat="%m %d\n%H:%M",
         title=title,
         savefile=savefile,
