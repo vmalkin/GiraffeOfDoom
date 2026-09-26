@@ -119,6 +119,17 @@ def plot_spectrum_scipy(
     cbar = fig.colorbar(pcm, ax=ax_spec, pad=0.01)
     cbar.set_label("Power spectral density (dB/Hz)")
 
+    annotations = [
+        (0.65, "Tiltmeter resonant frequency"),
+    ]
+    for freq, text in annotations:
+        ax_spec.annotate(
+            text,
+            xy=(t_dt[0], freq),
+            fontsize=8,
+            bbox=dict(boxstyle="RArrow", fc="1", ec="black")
+        )
+
     # --- Time axis formatting ---
     ax_spec.xaxis.set_major_formatter(mdates.DateFormatter(datetimeformat))
     fig.autofmt_xdate()
