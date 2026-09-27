@@ -1,6 +1,6 @@
 import mgr_database
 import standard_stuff
-import plotter_spectrum
+import plotter_spectrum_detailed
 import plotter_dual
 import time
 import matplotlib.pyplot as plt
@@ -69,7 +69,7 @@ if __name__ == "__main__":
                     plottitle='Todays tilt data',
                     savefile=savefile)
 
-    plotter_spectrum.wrapper(data_utc, data_tilt)
+    plotter_spectrum_detailed.wrapper(data_utc, data_tilt)
     plotter_dual.wrapper(data_utc, data_tilt)
     # plotter_fft_movie.wrapper(data_utc, data_tilt)
 

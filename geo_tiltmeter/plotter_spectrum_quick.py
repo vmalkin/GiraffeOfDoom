@@ -120,7 +120,9 @@ def plot_spectrum_scipy(
     cbar.set_label("Power spectral density (dB/Hz)")
 
     annotations = [
-        (0.65, "Tiltmeter resonant frequency"),
+        [0.65, "Tiltmeter resonant frequency"],
+        [10 ** -0.845098040014257, 'Sec uSm'],
+        [10 ** -1.17609125905568, 'Pr uSm'],
     ]
     for freq, text in annotations:
         ax_spec.annotate(
