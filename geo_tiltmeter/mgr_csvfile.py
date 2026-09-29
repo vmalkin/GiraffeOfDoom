@@ -8,7 +8,7 @@ class File_Object:
         self.data = []
         self.savefile = k.dir_saves['logs'] + os.sep + utcday + '.csv'
 
-    def append_data(self):
+    def append_savefile(self):
         with open(self.savefile, 'a') as f:
             for item in self.data:
                 d = f'{item[0]}, {item[1]}'
@@ -38,6 +38,6 @@ def csv_save(parseddata):
 
     print(f'PASS 3: Append data to disc files.')
     for file_object in file_object_list:
-        file_object.append_data()
+        file_object.append_savefile()
     print(f'*** Creating Logfile FINISHED')
 
