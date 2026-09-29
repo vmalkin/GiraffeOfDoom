@@ -1,18 +1,41 @@
 import os
-import time
 import constants as k
-import mgr_database
 import standard_stuff
 
+class File_Object:
+    def __init__(self, utcday):
+        self.utcday = utcday
+        self.data = []
+        self.savefile = k.dir_saves['logs'] + os.sep + utcday + '.csv'
+
+    def append_data(self):
+        with open(self.savefile, 'a') as f:
+            for item in self.data:
+                d = f'{item[0]}, {item[1]}'
+                f.write(d + '\n')
+
+
 def csv_save(parseddata):
-    pass
+    # [1737274820, 21.05]
+    # Create list of CSV filenames based on parsed data.
+    print(f'*** Creating Logfile START')
+    print(f'PASS 1: Create file object list.')
+    file_object_list = []
+    oldname = None
+    for item in parseddata:
+        utc_day = standard_stuff.posix2utc(item[0], '%Y-%m-%d')
+        if oldname != utc_day:
+            file_object_list.append(File_Object(utc_day))
+            oldname = utc_day
 
+    print(f'PASS 2: Add data to file objects.')
+    for file_object in file_object_list:
+        for item in parseddata:
+            if standard_stuff.posix2utc(item[0], '%Y-%m-%d') == file_object.utcday:
+                file_object.data.append(item)
 
-    # Save data from the previous 48 to 24 hours. We will be backing up yesterday's data to CSV file. THis saves
-    # the nuisance of accounting for dual dates and serves the purpose of a backup well enough.
-
-    # for each item in parseddata
-    # if file_name does not match item_date
-    # create new file.
-    # append item to file
+    print(f'PASS 3: Append data to disc files.')
+    for file_object in file_object_list:
+        file_object.append_data()
+    print(f'*** Creating Logfile FINISHED')
 
