@@ -20,22 +20,52 @@ def db_create():
 
 
 def db_data_add(insertdata):
+
+    print("DB: attempting connection")
+    print("DB path:", os.path.abspath(k.database))
+
     try:
-        with sqlite3.connect(k.database, timeout=10) as database:
-            cursor = database.cursor()
-            cursor.executemany(
-                'insert into observations(posixtime, tiltdata) '
-                           'values (?, ?);',
-                insertdata
-            )
-            # The with sqlite3.connect(...) context manager automatically commits
-            # if the block exits successfully, and rolls back if an exception occurs.
-            # We MUST however close the cursor object
-            # database.commit()
-            cursor.close()
+        database = sqlite3.connect(k.database, timeout=10)
+        print("DB: connection opened")
+
+        cursor = database.cursor()
+        print("DB: cursor created")
+
+        cursor.executemany(
+            'insert into observations(posixtime, tiltdata) '
+            'values (?, ?);',
+            insertdata
+        )
+        print("DB: executemany completed")
+
+        database.commit()
+        print("DB: commit completed")
+
+        cursor.close()
+        database.close()
+        print("DB: connection closed")
 
     except sqlite3.OperationalError as e:
-        print(f'Database INSERT FAILED: {e}')
+        print(f'Database INSERT FAILED: {e!r}')
+
+
+# def db_data_add(insertdata):
+#     try:
+#         with sqlite3.connect(k.database, timeout=10) as database:
+#             cursor = database.cursor()
+#             cursor.executemany(
+#                 'insert into observations(posixtime, tiltdata) '
+#                            'values (?, ?);',
+#                 insertdata
+#             )
+#             # The with sqlite3.connect(...) context manager automatically commits
+#             # if the block exits successfully, and rolls back if an exception occurs.
+#             # We MUST however close the cursor object
+#             # database.commit()
+#             cursor.close()
+#
+#     except sqlite3.OperationalError as e:
+#         print(f'Database INSERT FAILED: {e!r}')
 
 
 def db_data_get(timestart, timeend):
