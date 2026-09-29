@@ -13,11 +13,13 @@ class File_Object:
             for item in self.data:
                 d = f'{item[0]}, {item[1]}'
                 f.write(d + '\n')
+            f.close()
 
 
 def csv_save(parseddata):
     # [1737274820, 21.05]
     # Create list of CSV filenames based on parsed data.
+
     print(f'*** Creating Logfile START')
     print(f'PASS 1: Create file object list.')
     file_object_list = []
