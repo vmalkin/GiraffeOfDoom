@@ -59,9 +59,8 @@ if __name__ == "__main__":
     # *** FFT DATA PROCESSING ***
     # fft_data is [utc_object_time_array, seismic_data_array]
     slice_interval = -86400 * k.sensor_reading_frequency
-    raw_fft = masterlist[slice_interval:]
-    fft_data = class_aggregator.aggregate_data(1, raw_fft)
-
+    slice_data = masterlist[slice_interval:]
+    fft_data = class_aggregator.aggregate_data(1, slice_data)
     # plotter_spectrum_quick.wrapper(fft_data[0],fft_data[1])
     plotter_dual.wrapper(fft_data[0],fft_data[1])
     # plotter_current_day.wrapper(fft_data[0],fft_data[1])
