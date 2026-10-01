@@ -61,8 +61,11 @@ if __name__ == "__main__":
     slice_interval = -86400 * k.sensor_reading_frequency
     slice_data = masterlist[slice_interval:]
     fft_data = class_aggregator.aggregate_data(1, slice_data)
+
+    for item in masterlist:
+        print(item)
     # plotter_spectrum_quick.wrapper(fft_data[0],fft_data[1])
-    plotter_dual.wrapper(fft_data[0],fft_data[1])
+    # plotter_dual.wrapper(fft_data[0],fft_data[1])
     # plotter_current_day.wrapper(fft_data[0],fft_data[1])
 
     # Remove None from data and remove corresponding time objects from UTC time.
