@@ -15,13 +15,13 @@ plotstyle = 'bmh'
 def plot_dual_hourly(datetimeformat, plot_utc, smoothe_seismo, smoothe_dx, title, savefolder):
     # the size of an hour is plot frequency multiplied by seconds/min and mins/hr
     hour_slice = k.sensor_reading_frequency * 60 * 15
-    sz_avg = np.mean(smoothe_seismo)
-    sz_stdev= np.std(smoothe_seismo)
+    sz_avg = np.nanmean(smoothe_seismo)
+    sz_stdev= np.nanstd(smoothe_seismo)
     sz_ymax = sz_avg + (sz_stdev * 8)
     sz_ymin = sz_avg - (sz_stdev * 8)
 
-    dx_avg = np.mean(smoothe_dx)
-    dx_stddev = np.std(smoothe_dx)
+    dx_avg = np.nanmean(smoothe_dx)
+    dx_stddev = np.nanstd(smoothe_dx)
     dx_ymax = dx_avg + (dx_stddev * 12)
     dx_ymin = dx_avg - (dx_stddev * 12)
 
@@ -76,29 +76,31 @@ def wrapper(utctimes, data):
     # Data is UTC time objects and flat data.
     # There may be gaps
     print("*** Tiltmeter, hourly plots")
-
-    smoothing_half_window = k.sensor_reading_frequency * 5
-    smooth_seismo = standard_stuff.filter_average(data, smoothing_half_window)
-    smooth_times = utctimes[smoothing_half_window:-smoothing_half_window]
+    #
+    # smoothing_half_window = k.sensor_reading_frequency * 5
+    # smooth_seismo = data
+    # smooth_times = utctimes
 
     # Create the smoothed dxdt. Remember to pop one value from smooth_utc and smooth_data
     smooth_dxdt = []
-    for i in range(1, len(smooth_seismo)):
-        j = smooth_seismo[i] - smooth_seismo[i-1]
-        smooth_dxdt.append(j)
-    smooth_times.pop(0)
-    smooth_seismo.pop(0)
+    for i in range(1, len(data)):
+        if data[i] is not None:
+            if data[i-1] is not None:
+                j = data[i] - data[i-1]
+                smooth_dxdt.append(j)
+    utctimes.pop(0)
+    data.pop(0)
 
-    print(f'{len(smooth_times)} {len(smooth_seismo)} {len(smooth_dxdt)}')
+    print(f'{len(utctimes)} {len(data)} {len(smooth_dxdt)}')
 
     ticks = 20
     df = "%b %d \n%H:%M"
-    title = f'Tiltmeter One Day. Data and dx/dt. RA half-window is {smoothing_half_window} readings @ {k.sensor_reading_frequency} readings/s. '
+    title = f'Tiltmeter One Day. Data and dx/dt.'
     savefolder = k.dir_saves['images']
 
     plot_dual_hourly(df,
-                     smooth_times,
-                     smooth_seismo,
+                     utctimes,
+                     data,
                      smooth_dxdt,
                      title,
                      savefolder)

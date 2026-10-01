@@ -2,8 +2,8 @@
 import standard_stuff
 # import plotter_spectrum_detailed
 import plotter_spectrum_quick
-# import plotter_dual
-# import plotter_current_day
+import plotter_dual
+import plotter_current_day
 # import plotter_fft_movie
 # import plotter_phaseportrait
 import time
@@ -61,9 +61,10 @@ if __name__ == "__main__":
     slice_interval = -86400 * k.sensor_reading_frequency
     raw_fft = masterlist[slice_interval:]
     fft_data = class_aggregator.aggregate_data(1, raw_fft)
-    plotter_spectrum_quick.wrapper(
 
-    )
+    # plotter_spectrum_quick.wrapper(fft_data[0],fft_data[1])
+    plotter_dual.wrapper(fft_data[0],fft_data[1])
+    # plotter_current_day.wrapper(fft_data[0],fft_data[1])
 
     # Remove None from data and remove corresponding time objects from UTC time.
     # data_tilt = []
