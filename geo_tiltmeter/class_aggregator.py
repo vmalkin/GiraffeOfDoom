@@ -63,7 +63,7 @@ def aggregate_data(windowsize, querydata):
     aggregate_array = []
     date_start = 0
     for i in range(0, len(querydata), windowsize):
-        date_end = querydata[i][0]
+        date_end = float(querydata[i][0])
         d = Aggregator(date_start, date_end)
         aggregate_array.append(d)
         date_start = date_end
@@ -94,13 +94,13 @@ def aggregate_data(windowsize, querydata):
 
     # PASS 4 - Use aggregator class functions to create plotting data
     print("PASS 4 - Create and return plotting array.")
-    plotting_data = []
+    posix_time = []
+    seismic_data = []
     for i in range(1, len(aggregate_array)):
         tim = aggregate_array[i].get_avg_posix()
         siz = aggregate_array[i].get_data_avg(aggregate_array[i].data_seismo)
-        # d = [tim, tmp, prs]
-        d = [tim, siz]
-        plotting_data.append(d)
+        posix_time.append(tim)
+        seismic_data.append(siz)
 
     # return plotting_data
-    return plotting_data
+    return [posix_time, seismic_data]

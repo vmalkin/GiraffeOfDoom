@@ -53,10 +53,11 @@ if __name__ == "__main__":
     masterlist.sort(key=lambda item: item[0])
 
     # The next step is to decide what gets plotted as raw data, what gets turned into aggregated data for plotting, etc.
-
-
-
+    # The aggregator effectively smooths data, so this does not need to happen in a plotter.
     # Matplotlib needs UTC time objects.
+    fft_data = class_aggregator.aggregate_data(1, masterlist)
+
+
     # Remove None from data and remove corresponding time objects from UTC time.
     # data_tilt = []
     # data_utc_objects = []
