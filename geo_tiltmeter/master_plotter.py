@@ -14,7 +14,10 @@ import numpy as np
 
 
 # This plotter will load data from CSV logfiles. This is an experiment to see if performance and speed are practically affected
-#  and if this bypasses the weird SQLite file-access errors I've been having.
+# and if this bypasses the weird SQLite file-access errors I've been having.
+
+# We might be able to use a Pipe from the data writer to communicate it's current state, to know when it is safe to parse
+# data files without causing a conflict
 if __name__ == "__main__":
     # Current data format!
     # [posixtime, tiltdata]
@@ -46,7 +49,7 @@ if __name__ == "__main__":
                         line = line.strip()
                         masterlist.append(line)
 
-
+    # We now have a master list of all data!
 
     # data = mgr_database.db_data_get(start_time, end_time)
     # data = mgr_database.db_data_all()
