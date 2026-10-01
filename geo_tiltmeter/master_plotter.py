@@ -14,6 +14,7 @@ import numpy as np
 
 
 class Aggregator:
+    # This object allows us to aggregate data into whatever interval we choose.
     def __init__(self, posixstart, posixstop):
         self.data_null = np.nan
         self.date_start = posixstart  # should be POSIX values
@@ -107,6 +108,12 @@ if __name__ == "__main__":
 
     # We now have a master list of all data! Sort into order by posix time.
     masterlist.sort(key=lambda item: item[0])
+
+
+
+
+
+
 
 
 
