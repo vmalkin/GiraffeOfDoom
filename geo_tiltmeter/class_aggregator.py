@@ -1,6 +1,7 @@
 import numpy as np
 # from numpy import mean, median
 # import constants as k
+from datetime import datetime, timezone
 
 
 class Aggregator:
@@ -54,6 +55,10 @@ class Aggregator:
         avg_time = round((self.date_start + self.date_stop) / 2, 4)
         return avg_time
 
+    def return_utc_timeobject(self, psx):
+        tim = datetime.fromtimestamp(psx, tz=timezone.utc)
+        return tim
+
 # This function performs aggregation using the Aggregator class
 # querydata has the format [posix, seismo]
 def aggregate_data(windowsize, querydata):
@@ -94,13 +99,14 @@ def aggregate_data(windowsize, querydata):
 
     # PASS 4 - Use aggregator class functions to create plotting data
     print("PASS 4 - Create and return plotting array.")
-    posix_time = []
+    utc_object_time = []
     seismic_data = []
     for i in range(1, len(aggregate_array)):
         tim = aggregate_array[i].get_avg_posix()
+        tim = aggregate_array[i].return_utc_timeobject(tim)
         siz = aggregate_array[i].get_data_avg(aggregate_array[i].data_seismo)
-        posix_time.append(tim)
+        utc_object_time.append(tim)
         seismic_data.append(siz)
 
     # return plotting_data
-    return [posix_time, seismic_data]
+    return [utc_object_time, seismic_data]

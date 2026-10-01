@@ -1,7 +1,7 @@
 # import mgr_database
 import standard_stuff
 # import plotter_spectrum_detailed
-# import plotter_spectrum_quick
+import plotter_spectrum_quick
 # import plotter_dual
 # import plotter_current_day
 # import plotter_fft_movie
@@ -55,8 +55,15 @@ if __name__ == "__main__":
     # The next step is to decide what gets plotted as raw data, what gets turned into aggregated data for plotting, etc.
     # The aggregator effectively smooths data, so this does not need to happen in a plotter.
     # Matplotlib needs UTC time objects.
-    fft_data = class_aggregator.aggregate_data(1, masterlist)
 
+    # *** FFT DATA PROCESSING ***
+    # fft_data is [utc_object_time_array, seismic_data_array]
+    slice_interval = -86400 * k.sensor_reading_frequency
+    raw_fft = masterlist[slice_interval:]
+    fft_data = class_aggregator.aggregate_data(1, raw_fft)
+    plotter_spectrum_quick.wrapper(
+
+    )
 
     # Remove None from data and remove corresponding time objects from UTC time.
     # data_tilt = []
