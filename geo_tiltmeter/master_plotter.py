@@ -21,7 +21,7 @@ import constants as k
 if __name__ == "__main__":
     # Current data format!
     # [posixtime, tiltdata]
-
+    print(f'*** BEGIN sorting plot data ***')
     # Decide on time interval we are plotting for. We can split off smaller intervals based on a larger list
     # Parse logfile directory for file names that fit our interval
     duration_seconds = 86400 * 7
@@ -47,26 +47,24 @@ if __name__ == "__main__":
                     for line in f:
                         # remove the carriage return
                         line = line.strip()
-                        masterlist.append(line)
+                        line = line.split(',')
+                        l = [float(line[0]), float(line[1])]
+                        masterlist.append(l)
 
     # We now have a master list of all data! Sort into order by posix time.
     masterlist.sort(key=lambda item: item[0])
-
+    print(f'*** END sorting plot data ***')
     # The next step is to decide what gets plotted as raw data, what gets turned into aggregated data for plotting, etc.
     # The aggregator effectively smooths data, so this does not need to happen in a plotter.
     # Matplotlib needs UTC time objects.
-
+    print(f'*** Plotter Start ***')
     # *** FFT DATA PROCESSING ***
     # fft_data is [utc_object_time_array, seismic_data_array]
     slice_interval = -86400 * k.sensor_reading_frequency
     slice_data = masterlist[slice_interval:]
     fft_data = class_aggregator.aggregate_data(1, slice_data)
-
-    for item in masterlist:
-        print(item)
-    # plotter_spectrum_quick.wrapper(fft_data[0],fft_data[1])
-    # plotter_dual.wrapper(fft_data[0],fft_data[1])
-    # plotter_current_day.wrapper(fft_data[0],fft_data[1])
+    plotter_spectrum_quick.wrapper(fft_data[0],fft_data[1])
+    plotter_current_day.wrapper(fft_data[0],fft_data[1])
 
     # Remove None from data and remove corresponding time objects from UTC time.
     # data_tilt = []
@@ -79,7 +77,7 @@ if __name__ == "__main__":
     #
     # # Send data to the plotters
     # plotter_dual.wrapper(data_utc_objects, data_tilt)
-    # plotter_current_day.wrapper(data_utc_objects, data_tilt)
+
     # plotter_spectrum_detailed.wrapper(data_utc_objects, data_tilt)
     # plotter_spectrum_quick.wrapper(data_utc_objects, data_tilt)
     # plotter_fft_movie.wrapper(data_utc_objects, data_tilt)
@@ -91,4 +89,4 @@ if __name__ == "__main__":
     # print(f"\n")
     # print(f"Readings per second: {len(data) / seconds_per_day}")
     # print(f"Elapsed time: {elapsed_time / 60:.2f} minutes")
-    # print(f"*** All plots completed.")
+    print(f'*** Plotter End ***')

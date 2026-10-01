@@ -66,9 +66,9 @@ def aggregate_data(windowsize, querydata):
     # PASS 1 - Set up the array
     print("PASS 1 - Setting up aggregating array")
     aggregate_array = []
-    date_start = 0
-    for i in range(0, len(querydata), windowsize):
-        date_end = float(querydata[i][0])
+    date_start = querydata[0][0]
+    for i in range(1, len(querydata), windowsize):
+        date_end = querydata[i][0]
         d = Aggregator(date_start, date_end)
         aggregate_array.append(d)
         date_start = date_end

@@ -15,15 +15,15 @@ plotstyle = 'bmh'
 def plot_dual_hourly(datetimeformat, plot_utc, smoothe_seismo, smoothe_dx, title, savefolder):
     # the size of an hour is plot frequency multiplied by seconds/min and mins/hr
     hour_slice = k.sensor_reading_frequency * 60 * 15
-    sz_avg = np.nanmean(smoothe_seismo)
-    sz_stdev= np.nanstd(smoothe_seismo)
-    sz_ymax = sz_avg + (sz_stdev * 8)
-    sz_ymin = sz_avg - (sz_stdev * 8)
-
-    dx_avg = np.nanmean(smoothe_dx)
-    dx_stddev = np.nanstd(smoothe_dx)
-    dx_ymax = dx_avg + (dx_stddev * 12)
-    dx_ymin = dx_avg - (dx_stddev * 12)
+    # sz_avg = np.nanmean(smoothe_seismo)
+    # sz_stdev= np.nanstd(smoothe_seismo)
+    # sz_ymax = sz_avg + (sz_stdev * 8)
+    # sz_ymin = sz_avg - (sz_stdev * 8)
+    #
+    # dx_avg = np.nanmean(smoothe_dx)
+    # dx_stddev = np.nanstd(smoothe_dx)
+    # dx_ymax = dx_avg + (dx_stddev * 12)
+    # dx_ymin = dx_avg - (dx_stddev * 12)
 
     for i in range(0, len(smoothe_seismo), hour_slice):
         array_start = i
@@ -38,7 +38,7 @@ def plot_dual_hourly(datetimeformat, plot_utc, smoothe_seismo, smoothe_dx, title
         # utcdates should be datetime objects, not POSIX floats
         ax[0].plot(chart_times, seismo_data, c=ink_colour[0], linewidth=1)
         ax[0].set_ylabel("Tiltmeter. Arbitrary Units.", color=ink_colour[0])
-        ax[0].set_ylim([sz_ymin, sz_ymax])
+        # ax[0].set_ylim([sz_ymin, sz_ymax])
         my_fmt = mdates.DateFormatter(datetimeformat)
         ax[0].xaxis.set_major_formatter(my_fmt)
         # Major grid
@@ -52,7 +52,7 @@ def plot_dual_hourly(datetimeformat, plot_utc, smoothe_seismo, smoothe_dx, title
         # ax[1] = ax1.twinx()
         ax[1].plot(chart_times, diff_data, c=ink_colour[1], linewidth=1)
         ax[1].set_ylabel("Tilt, dx/dt", color=ink_colour[1])
-        ax[1].set_ylim([dx_ymin, dx_ymax])
+        # ax[1].set_ylim([dx_ymin, dx_ymax])
         my_fmt = mdates.DateFormatter(datetimeformat)
         ax[1].xaxis.set_major_formatter(my_fmt)
         # Major grid

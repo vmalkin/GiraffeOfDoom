@@ -92,7 +92,7 @@ def wrapper(utctimes, data):
 
     ticks = 20
     df = "%b %d \n%Hhr"
-    title = f'Tiltmeter Current Day. Data and dx/dt. RA half-window is {smoothing_half_window} readings @ {k.sensor_reading_frequency} readings/s. '
+    title = f'Tiltmeter Current Day. Data and dx/dt.'
     savefolder = k.dir_saves['images']
 
     plot(df,
