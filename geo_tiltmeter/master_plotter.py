@@ -13,6 +13,8 @@ import constants as k
 import numpy as np
 
 
+# This plotter will load data from CSV logfiles. This is an experiment to see if performance and speed are practically affected
+#  and if this bypasses the weird SQLite file-access errors I've been having.
 if __name__ == "__main__":
     # assume time period is a day
     seconds_per_day = 86400

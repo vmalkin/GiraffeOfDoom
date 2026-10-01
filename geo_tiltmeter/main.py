@@ -57,7 +57,7 @@ class SavedataThread(Thread):
                     print(f"!!! Data is malformed: {item}. Didn't parse.")
 
             # Save to database.
-            mgr_database.db_data_add(parseddata)
+            # mgr_database.db_data_add(parseddata)
             # Save to gzip CSV file.
             mgr_csvfile.csv_save(parseddata)
             # elapsed time for thread processing.
@@ -93,9 +93,10 @@ if __name__ == "__main__":
     for key, value in k.dir_saves.items():
         directory_try_create(value)
 
-    if not os.path.isfile(k.database):
-        print("No database file, initialising")
-        mgr_database.db_create()
+    # We will experiment with simply storing data in CSV logfiles.
+    # if not os.path.isfile(k.database):
+    #     print("No database file, initialising")
+    #     mgr_database.db_create()
 
     # Set up the com port.
     com = mgr_comport.SerialManager(k.comport,
