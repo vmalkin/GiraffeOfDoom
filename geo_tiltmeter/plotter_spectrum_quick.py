@@ -15,10 +15,10 @@ def plot_spectrum_scipy(
     deltap,
     datetimes,
     fs,
-    nfft=8192,
+    nfft=None,
     overlap_frac=0.75,
-    fmin=1e-5,
-    fmax=1e-1,
+    fmin=None,
+    fmax=None,
     vmin=None,
     vmax=None,
     datetimeformat="%Y-%m-%d\n%H:%M",
@@ -108,9 +108,10 @@ def plot_spectrum_scipy(
     )
 
     # ax_spec.set_yscale("log")
-    # ax_spec.set_ylim(fmin, fmax)
+    ax_spec.set_ylim(fmin, fmax)
     ax_spec.set_ylabel("Frequency (Hz)")
-    subtitle = f'FFT = {nfft}. Noverlap = {noverlap}. Data Freq = {fs}Hz.'
+    fft_window_stats = f"FFT window is {round(nfft / k.sensor_reading_frequency / 60, 1)} minutes"
+    subtitle = f'FFT = {nfft}. Noverlap = {noverlap}. Data Freq = {fs}Hz. {fft_window_stats}'
     ax_spec.set_title(f'{title}\n{subtitle}')
     ax_spec.grid(which='major', axis='x', linestyle='solid', c='white', visible='True', zorder=5)
     ax_spec.grid(which='minor', axis='x', linestyle='dotted', c='white', visible='True', zorder=5)
@@ -118,43 +119,18 @@ def plot_spectrum_scipy(
     cbar = fig.colorbar(pcm, ax=ax_spec, pad=0.01)
     cbar.set_label("Power spectral density (dB/Hz)")
 
-    # annotations = [
-    #     (100, "100 sec\nMostly noise."),
-    #     (16 * 60, "16 min\nMesoscale variability."),
-    #     (2.7 * 3600, "2.7 hr\nSynoptic-mesoscale transition."),
-    #     (27 * 3600, "27 hr\nRegion of diurnal atmospheric tide (S1)."),
-    #     (29 * 24 * 3600, "29 Days\nLunar Tides"),
-    # ]
-    #
-    # for period_sec, text in annotations:
-    #     freq = 1.0 / period_sec
-    #     ax_spec.annotate(
-    #         text,
-    #         xy=(t_dt[0], freq),
-    #         fontsize=8,
-    #         bbox=dict(boxstyle="round", fc="1", ec="black"),
-    #     )
-    # # --- Pressure Delta ---
-    # ax_dp.plot(datetimes, deltap, c='blue', linewidth=1)
-    # ax_dp.set_ylabel("Δ Pressure (Pa) - 1hr window", color='blue')
-    # ax_dp.tick_params(axis='y', colors='blue')
-    # title = "Hourly pressure change emphasizes transient synoptic forcing while suppressing slowly varying components such as the diurnal tide."
-    # ax_dp.set_title(f'{title}')
-    # ax_dp.grid(which='major', axis='x', linestyle='solid', visible='True')
-    # ax_dp.grid(which='minor', axis='x', linestyle='dotted', visible='True')
-    # ax_dp.grid(which='major', axis='y', linestyle='solid', visible='True')
-
-    # # --- Pressure Delta 2 ---
-    # halfwindow = 60 * 120
-    # dp = get_delta_p(data, halfwindow)
-    # ax_d.plot(datetimes, dp, c='red', linewidth=1)
-    # ax_d.set_ylabel("Δ Pressure (Pa) - 4hr window", color='red')
-    # ax_d.tick_params(axis='y', colors='red')
-    # title = "Synoptic evolution."
-    # ax_d.set_title(f'{title}')
-    # ax_d.grid(which='major', axis='x', linestyle='solid', visible='True')
-    # ax_d.grid(which='minor', axis='x', linestyle='dotted', visible='True')
-    # ax_d.grid(which='major', axis='y', linestyle='solid', visible='True')
+    annotations = [
+        [0.65, "Tiltmeter resonant frequency"],
+        [10 ** -0.845098040014257, 'Sec uSm'],
+        [10 ** -1.17609125905568, 'Pr uSm'],
+    ]
+    for freq, text in annotations:
+        ax_spec.annotate(
+            text,
+            xy=(t_dt[0], freq),
+            fontsize=8,
+            bbox=dict(boxstyle="RArrow", fc="1", ec="black")
+        )
 
     # --- Time axis formatting ---
     ax_spec.xaxis.set_major_formatter(mdates.DateFormatter(datetimeformat))
@@ -210,7 +186,7 @@ def wrapper(utc, data):
     title = "Spectrogram of tiltmeter"
 
     savefolder = k.dir_saves['images']
-    savefile = savefolder + os.sep + "spectrum_tilt.png"
+    savefile = savefolder + os.sep + "spectrum_quick.png"
 
     # nfft=16384
     # nfft=32768
@@ -225,10 +201,10 @@ def wrapper(utc, data):
         fs=k.sensor_reading_frequency,
         nfft=1024,
         overlap_frac=0.75,
-        fmin=10 ** 0,
-        fmax=10 **-1.8,
+        fmin=10 ** -5,
+        fmax=10 ** 0.39,
         vmin=-50,
-        vmax=40,
+        vmax=20,
         datetimeformat="%m %d\n%H:%M",
         title=title,
         savefile=savefile,
