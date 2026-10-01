@@ -16,6 +16,9 @@ import numpy as np
 # This plotter will load data from CSV logfiles. This is an experiment to see if performance and speed are practically affected
 #  and if this bypasses the weird SQLite file-access errors I've been having.
 if __name__ == "__main__":
+    # Current data format!
+    # [posixtime, tiltdata]
+
     # Decide on time interval we are plotting for. We can split off smaller intervals based on a larger list
     # Parse logfile directory for file names that fit our interval
     durate_seconds = 86400 * 7
@@ -24,15 +27,25 @@ if __name__ == "__main__":
     start_time = int(end_time - durate_seconds)
     startfile = standard_stuff.posix2utc(start_time, '%Y-%m-%d') + '.csv'
 
+    # Get the list of logfiles
     logfile_list = os.listdir(k.dir_saves['logs'])
     logfile_list.sort()
+
     # Item is the filename. We can just use comparisons to identify files that are alphabetically in range
     # Those that are will have their data appended to a master list.
+    masterlist = []
     for item in logfile_list:
         if item >= startfile:
             # "item <=" will include the current UTC day's data.
             if item <= endfile:
-                print(item)
+                # to load the file, dont forget to prepend the path to the file!
+                logfile = k.dir_saves['logs'] + os.sep + item
+                with open(logfile, 'r') as f:
+                    for line in f:
+                        # remove the carriage return
+                        line = line.strip()
+                        masterlist.append(line)
+
 
 
     # data = mgr_database.db_data_get(start_time, end_time)
