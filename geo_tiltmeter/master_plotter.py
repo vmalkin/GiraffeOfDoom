@@ -7,68 +7,11 @@ import standard_stuff
 # import plotter_fft_movie
 # import plotter_phaseportrait
 import time
+import class_aggregator
 from datetime import datetime, timezone
 import os
 import constants as k
-import numpy as np
-
-
-class Aggregator:
-    # This object allows us to aggregate data into whatever interval we choose.
-    def __init__(self, posixstart, posixstop):
-        self.data_null = np.nan
-        self.date_start = posixstart  # should be POSIX values
-        self.date_stop = posixstop  # should be POSIX values
-        self.data_seismo = []
-        # self.data_temperature = []
-        # self.data_pressure = []
-
-    def get_data_avg(self, dataset):
-        # return the median value of the data set. If the set is empty, return a null
-        val_avg = self.data_null
-        if len(dataset) > 0:
-            try:
-                val_avg = round(np.nanmean(dataset), 4)
-                return val_avg
-            except:
-                return val_avg
-
-    def get_data_median(self, dataset):
-        # return the median value of the data set. If the set is empty, return a null
-        val_median = self.data_null
-        if len(dataset) > 0:
-            try:
-                val_median = round(np.nanmedian(dataset), 4)
-                return val_median
-            except:
-                return val_median
-
-    def get_data_max(self, dataset):
-        # return the median value of the data set. If the set is empty, return a null
-        val_max = self.data_null
-        if len(dataset) > 0:
-            try:
-                val_max = round(np.nanmax(dataset), 4)
-                return val_max
-            except:
-                return val_max
-
-    def get_data_min(self, dataset):
-        # return the median value of the data set. If the set is empty, return a null
-        if len(dataset) > 0:
-            val_min = round(np.nanmin(dataset), 4)
-        else:
-            val_min = self.data_null
-        return val_min
-
-    def get_avg_posix(self):
-        avg_time = round((self.date_start + self.date_stop) / 2, 4)
-        return avg_time
-
-    def return_utc_object(self, posixvalue):
-        tim = datetime.fromtimestamp(posixvalue, tz=timezone.utc)  # datetime object
-        return tim
-
+# import numpy as np
 
 # This plotter will load data from CSV logfiles. This is an experiment to see if performance and speed are practically affected
 # and if this bypasses the weird SQLite file-access errors I've been having.
@@ -96,7 +39,7 @@ if __name__ == "__main__":
     masterlist = []
     for item in logfile_list:
         if item >= startfile:
-            # "item <=" will include the current UTC day's data.
+            # "item <= endfile" will include the current UTC day's data.
             if item <= endfile:
                 # to load the file, dont forget to prepend the path to the file!
                 logfile = k.dir_saves['logs'] + os.sep + item
@@ -109,24 +52,12 @@ if __name__ == "__main__":
     # We now have a master list of all data! Sort into order by posix time.
     masterlist.sort(key=lambda item: item[0])
 
+    # The next step is to decide what gets plotted as raw data, what gets turned into aggregated data for plotting, etc.
 
 
 
-
-
-
-
-
-    # data = mgr_database.db_data_get(start_time, end_time)
-    # data = mgr_database.db_data_all()
-    # print(f"*** Data downloaded from DB.")
-
-
-
-    # Basic cleanup of data.
     # Matplotlib needs UTC time objects.
     # Remove None from data and remove corresponding time objects from UTC time.
-
     # data_tilt = []
     # data_utc_objects = []
     # for psx, tilt in data:

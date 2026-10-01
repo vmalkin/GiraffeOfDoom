@@ -68,7 +68,6 @@ def aggregate_data(windowsize, querydata):
         aggregate_array.append(d)
         date_start = date_end
 
-
     # PASS 2 - generate the lookup array to speed up data placement
     print("PASS 2 - Generating lookup dict")
     lookup = {}
@@ -77,6 +76,9 @@ def aggregate_data(windowsize, querydata):
         key = (querydata[i][0])
         value = (j)
         lookup[key] = value
+        # the key value is the position of the aggregate object in the aggregate array.
+        # the windowsize is what clicks-over to indicate when an item from the query data has a date range that
+        # should go into the next aggregate object
         if i % windowsize == 0:
             j = j + 1
 
