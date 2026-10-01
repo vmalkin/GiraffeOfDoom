@@ -13,6 +13,62 @@ import constants as k
 import numpy as np
 
 
+class Aggregator:
+    def __init__(self, posixstart, posixstop):
+        self.data_null = np.nan
+        self.date_start = posixstart  # should be POSIX values
+        self.date_stop = posixstop  # should be POSIX values
+        self.data_seismo = []
+        # self.data_temperature = []
+        # self.data_pressure = []
+
+    def get_data_avg(self, dataset):
+        # return the median value of the data set. If the set is empty, return a null
+        val_avg = self.data_null
+        if len(dataset) > 0:
+            try:
+                val_avg = round(np.nanmean(dataset), 4)
+                return val_avg
+            except:
+                return val_avg
+
+    def get_data_median(self, dataset):
+        # return the median value of the data set. If the set is empty, return a null
+        val_median = self.data_null
+        if len(dataset) > 0:
+            try:
+                val_median = round(np.nanmedian(dataset), 4)
+                return val_median
+            except:
+                return val_median
+
+    def get_data_max(self, dataset):
+        # return the median value of the data set. If the set is empty, return a null
+        val_max = self.data_null
+        if len(dataset) > 0:
+            try:
+                val_max = round(np.nanmax(dataset), 4)
+                return val_max
+            except:
+                return val_max
+
+    def get_data_min(self, dataset):
+        # return the median value of the data set. If the set is empty, return a null
+        if len(dataset) > 0:
+            val_min = round(np.nanmin(dataset), 4)
+        else:
+            val_min = self.data_null
+        return val_min
+
+    def get_avg_posix(self):
+        avg_time = round((self.date_start + self.date_stop) / 2, 4)
+        return avg_time
+
+    def return_utc_object(self, posixvalue):
+        tim = datetime.fromtimestamp(posixvalue, tz=timezone.utc)  # datetime object
+        return tim
+
+
 # This plotter will load data from CSV logfiles. This is an experiment to see if performance and speed are practically affected
 # and if this bypasses the weird SQLite file-access errors I've been having.
 
@@ -24,10 +80,10 @@ if __name__ == "__main__":
 
     # Decide on time interval we are plotting for. We can split off smaller intervals based on a larger list
     # Parse logfile directory for file names that fit our interval
-    durate_seconds = 86400 * 7
+    duration_seconds = 86400 * 7
     end_time = int(time.time())
     endfile = standard_stuff.posix2utc(end_time, '%Y-%m-%d') + '.csv'
-    start_time = int(end_time - durate_seconds)
+    start_time = int(end_time - duration_seconds)
     startfile = standard_stuff.posix2utc(start_time, '%Y-%m-%d') + '.csv'
 
     # Get the list of logfiles
@@ -49,16 +105,21 @@ if __name__ == "__main__":
                         line = line.strip()
                         masterlist.append(line)
 
-    # We now have a master list of all data!
+    # We now have a master list of all data! Sort into order by posix time.
+    masterlist.sort(key=lambda item: item[0])
+
+
 
     # data = mgr_database.db_data_get(start_time, end_time)
     # data = mgr_database.db_data_all()
-    print(f"*** Data downloaded from DB.")
+    # print(f"*** Data downloaded from DB.")
 
-    # # Basic cleanup of data.
-    # # Matplotlib needs UTC time objects.
-    # # Remove None from data and remove corresponding time objects from UTC time.
-    # # We will allow the plotters to deal with gaps in data.
+
+
+    # Basic cleanup of data.
+    # Matplotlib needs UTC time objects.
+    # Remove None from data and remove corresponding time objects from UTC time.
+
     # data_tilt = []
     # data_utc_objects = []
     # for psx, tilt in data:
