@@ -25,49 +25,49 @@ def plot(datetimeformat, plot_utc, smoothe_seismo, smoothe_dx, title, savefolder
     dx_ymax = dx_avg + (dx_stddev * 12)
     dx_ymin = dx_avg - (dx_stddev * 12)
 
-    for i in range(0, len(smoothe_seismo), hour_slice):
-        array_start = i
-        array_end = i + hour_slice
-        seismo_data = smoothe_seismo[array_start:array_end]
-        diff_data = smoothe_dx[array_start:array_end]
-        chart_times = plot_utc[array_start:array_end]
+    # for i in range(0, len(smoothe_seismo), hour_slice):
+    #     array_start = i
+    #     array_end = i + hour_slice
+    #     seismo_data = smoothe_seismo[array_start:array_end]
+    #     diff_data = smoothe_dx[array_start:array_end]
+    #     chart_times = plot_utc[array_start:array_end]
 
-        plt.style.use(plotstyle)
-        fig, ax = plt.subplots(2, layout="constrained", figsize=(16, 8), dpi=250)
+    plt.style.use(plotstyle)
+    fig, ax = plt.subplots(2, layout="constrained", figsize=(16, 8), dpi=250)
 
-        # utcdates should be datetime objects, not POSIX floats
-        ax[0].plot(chart_times, seismo_data, c=ink_colour[0], linewidth=1)
-        ax[0].set_ylabel("Tiltmeter. Arbitrary Units.", color=ink_colour[0])
-        ax[0].set_ylim([sz_ymin, sz_ymax])
-        my_fmt = mdates.DateFormatter(datetimeformat)
-        ax[0].xaxis.set_major_formatter(my_fmt)
-        # Major grid
-        ax[0].grid(which='major', linestyle=':', color='black', alpha=1)
-        ax[0].grid(which='minor', linestyle=':', color='black',alpha=0.5)
-        # Minor ticks and grid
-        ax[0].xaxis.set_minor_locator(AutoMinorLocator(6))
-        ax[0].yaxis.set_minor_locator(AutoMinorLocator(1))
+    # utcdates should be datetime objects, not POSIX floats
+    ax[0].plot(plot_utc, smoothe_seismo, c=ink_colour[0], linewidth=1)
+    ax[0].set_ylabel("Tiltmeter. Arbitrary Units.", color=ink_colour[0])
+    ax[0].set_ylim([sz_ymin, sz_ymax])
+    my_fmt = mdates.DateFormatter(datetimeformat)
+    ax[0].xaxis.set_major_formatter(my_fmt)
+    # Major grid
+    ax[0].grid(which='major', linestyle=':', color='black', alpha=1)
+    ax[0].grid(which='minor', linestyle=':', color='black',alpha=0.5)
+    # Minor ticks and grid
+    ax[0].xaxis.set_minor_locator(AutoMinorLocator(6))
+    ax[0].yaxis.set_minor_locator(AutoMinorLocator(1))
 
 
-        # ax[1] = ax1.twinx()
-        ax[1].plot(chart_times, diff_data, c=ink_colour[1], linewidth=1)
-        ax[1].set_ylabel("Tilt, dx/dt", color=ink_colour[1])
-        ax[1].set_ylim([dx_ymin, dx_ymax])
-        my_fmt = mdates.DateFormatter(datetimeformat)
-        ax[1].xaxis.set_major_formatter(my_fmt)
-        # Major grid
-        ax[1].grid(which='major', linestyle=':', color='black', alpha=1)
-        ax[1].grid(which='minor', linestyle=':', color='black',alpha=0.5)
-        # Minor ticks and grid
-        ax[1].xaxis.set_minor_locator(AutoMinorLocator(6))
-        ax[1].yaxis.set_minor_locator(AutoMinorLocator(1))
+    # ax[1] = ax1.twinx()
+    ax[1].plot(plot_utc, smoothe_dx, c=ink_colour[1], linewidth=1)
+    ax[1].set_ylabel("Tilt, dx/dt", color=ink_colour[1])
+    ax[1].set_ylim([dx_ymin, dx_ymax])
+    my_fmt = mdates.DateFormatter(datetimeformat)
+    ax[1].xaxis.set_major_formatter(my_fmt)
+    # Major grid
+    ax[1].grid(which='major', linestyle=':', color='black', alpha=1)
+    ax[1].grid(which='minor', linestyle=':', color='black',alpha=0.5)
+    # Minor ticks and grid
+    ax[1].xaxis.set_minor_locator(AutoMinorLocator(6))
+    ax[1].yaxis.set_minor_locator(AutoMinorLocator(1))
 
-        plot_title = title + " - " + standard_stuff.posix2utc(time.time(), '%Y-%m-%d %H:%M')
-        plt.xlabel("UTC Datetime.")
-        fig.suptitle(plot_title)
-        savefile = savefolder + os.sep + "current_day.png"
-        plt.savefig(savefile)
-        plt.close()
+    plot_title = title + " - " + standard_stuff.posix2utc(time.time(), '%Y-%m-%d %H:%M')
+    plt.xlabel("UTC Datetime.")
+    fig.suptitle(plot_title)
+    savefile = savefolder + os.sep + "current_day.png"
+    plt.savefig(savefile)
+    plt.close()
 
 
 def wrapper(utctimes, data):

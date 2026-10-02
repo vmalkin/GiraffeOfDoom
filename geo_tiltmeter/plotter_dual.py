@@ -14,10 +14,10 @@ plotstyle = 'bmh'
 
 def plot_dual_hourly(datetimeformat, plot_utc, smoothe_seismo, smoothe_dx, title, savefolder):
     # the size of an hour is plot frequency multiplied by seconds/min and mins/hr
-    hour_slice = 1350
+    hour_slice = 900
     sz_avg = np.nanmean(smoothe_seismo)
     sz_stdev= np.nanstd(smoothe_seismo)
-    margin = sz_stdev * 2.1
+    margin = sz_stdev * 3
     sz_ymax = sz_avg + margin
     sz_ymin = sz_avg - margin
 

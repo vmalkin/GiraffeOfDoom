@@ -4,7 +4,7 @@ import standard_stuff
 import plotter_spectrum_quick
 import plotter_dual
 import plotter_current_day
-# import plotter_fft_movie
+import plotter_fft_movie
 # import plotter_phaseportrait
 import time
 import class_aggregator
@@ -67,10 +67,16 @@ if __name__ == "__main__":
     fft_data = class_aggregator.aggregate_data(1, slice_data)
     plotter_spectrum_quick.wrapper(fft_data[0],fft_data[1])
     plotter_current_day.wrapper(fft_data[0],fft_data[1])
+    plotter_fft_movie.wrapper(fft_data[0],fft_data[1])
 
     # Dual plotter.
     one_second_data = class_aggregator.aggregate_data(k.sensor_reading_frequency, slice_data)
-    plotter_dual.wrapper(one_second_data[0],one_second_data[1])
+    utctimes = one_second_data[0]
+    data = one_second_data[1]
+    smoothinghalfwindow = 10
+    data = standard_stuff.filter_average(data, smoothinghalfwindow)
+    utctimes = utctimes[smoothinghalfwindow:-smoothinghalfwindow]
+    plotter_dual.wrapper(utctimes,data)
 
     # seven_day_data = class_aggregator.aggregate_data(k.sensor_reading_frequency * 60, masterlist)
     # plotter_current_day.wrapper(seven_day_data[0], seven_day_data[1])
