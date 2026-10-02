@@ -66,8 +66,8 @@ if __name__ == "__main__":
     # This data is basically not aggregated
     fft_data = class_aggregator.aggregate_data(1, slice_data)
     plotter_spectrum_quick.wrapper(fft_data[0],fft_data[1])
-    plotter_current_day.wrapper(fft_data[0],fft_data[1])
-    plotter_fft_movie.wrapper(fft_data[0],fft_data[1])
+    plotter_current_day.wrapper(fft_data[0],fft_data[1],'Current Day', 'current_day.png')
+    # plotter_fft_movie.wrapper(fft_data[0],fft_data[1])
 
     # Dual plotter.
     one_second_data = class_aggregator.aggregate_data(k.sensor_reading_frequency, slice_data)
@@ -78,8 +78,8 @@ if __name__ == "__main__":
     utctimes = utctimes[smoothinghalfwindow:-smoothinghalfwindow]
     plotter_dual.wrapper(utctimes,data)
 
-    # seven_day_data = class_aggregator.aggregate_data(k.sensor_reading_frequency * 60, masterlist)
-    # plotter_current_day.wrapper(seven_day_data[0], seven_day_data[1])
+    seven_day_data = class_aggregator.aggregate_data(k.sensor_reading_frequency * 60 * 60, masterlist)
+    plotter_current_day.wrapper(fft_data[0],fft_data[1],'Seven Days', 'seven_day.png')
 
     # # Send data to the plotters
     # plotter_dual.wrapper(data_utc_objects, data_tilt)

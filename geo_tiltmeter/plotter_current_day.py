@@ -65,16 +65,16 @@ def plot(datetimeformat, plot_utc, smoothe_seismo, smoothe_dx, title, savefolder
     plot_title = title + " - " + standard_stuff.posix2utc(time.time(), '%Y-%m-%d %H:%M')
     plt.xlabel("UTC Datetime.")
     fig.suptitle(plot_title)
-    savefile = savefolder + os.sep + "current_day.png"
+    savefile = savefolder
     plt.savefig(savefile)
     plt.close()
 
 
-def wrapper(utctimes, data):
+def wrapper(utctimes, data, title, filename):
     # =============================================================================================================
     # Data is UTC time objects and flat data.
     # There may be gaps
-    print("*** Tiltmeter current day.")
+    print(f"*** Tiltmeter {filename}")
 
     smoothing_half_window = k.sensor_reading_frequency * 60
     smooth_seismo = standard_stuff.filter_average(data, smoothing_half_window)
@@ -92,8 +92,8 @@ def wrapper(utctimes, data):
 
     ticks = 20
     df = "%b %d \n%Hhr"
-    title = f'Tiltmeter Current Day. Data and dx/dt.'
-    savefolder = k.dir_saves['images']
+    # title = f'Tiltmeter Current Day. Data and dx/dt.'
+    savefolder = k.dir_saves['images'] + filename
 
     plot(df,
          smooth_times,
