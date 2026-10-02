@@ -113,8 +113,8 @@ def plot_spectrum_scipy(
     fft_window_stats = f"FFT window is {round(nfft / k.sensor_reading_frequency / 60, 1)} minutes"
     subtitle = f'FFT = {nfft}. Noverlap = {noverlap}. Data Freq = {fs}Hz. {fft_window_stats}'
     ax_spec.set_title(f'{title}\n{subtitle}')
-    ax_spec.grid(which='major', axis='x', linestyle='solid', c='white', visible='True', zorder=5)
-    ax_spec.grid(which='minor', axis='x', linestyle='dotted', c='white', visible='True', zorder=5)
+    ax_spec.grid(which='major', axis='x', linestyle=(0, (5, 10)), c='white', visible='True', zorder=5)
+    ax_spec.grid(which='minor', axis='x', linestyle=(0, (1, 10)), c='white', visible='True', zorder=5)
     ax_spec.axhspan(0.7 * f0, 1.3 * f0, color="cyan", alpha=0.15)
     cbar = fig.colorbar(pcm, ax=ax_spec, pad=0.01)
     cbar.set_label("Power spectral density (dB/Hz)")

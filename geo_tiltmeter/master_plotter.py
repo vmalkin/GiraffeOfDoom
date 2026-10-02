@@ -68,42 +68,42 @@ if __name__ == "__main__":
     plotter_spectrum_quick.wrapper(fft_data[0],fft_data[1])
     # plotter_fft_movie.wrapper(fft_data[0],fft_data[1])
 
-    # Current Day plot
-    c_utctimes = fft_data[0]
-    c_data = fft_data[1]
-    smoothinghalfwindow = 20
-    c_data = standard_stuff.filter_average(c_data, smoothinghalfwindow)
-    c_utctimes = c_utctimes[smoothinghalfwindow:-smoothinghalfwindow]
-    plotter_current_day.wrapper(c_utctimes,c_data,'Current Day', 'current_day.png')
-
-    # Dual plotter.
-    one_second_data = class_aggregator.aggregate_data(k.sensor_reading_frequency, slice_data)
-    utctimes = one_second_data[0]
-    data = one_second_data[1]
-    smoothinghalfwindow = 10
-    data = standard_stuff.filter_average(data, smoothinghalfwindow)
-    utctimes = utctimes[smoothinghalfwindow:-smoothinghalfwindow]
-    plotter_dual.wrapper(utctimes,data)
-
-    # Seven Day Plotter
-    seven_day_data = class_aggregator.aggregate_data(k.sensor_reading_frequency * 60 * 1, masterlist)
-    utctimes = seven_day_data[0]
-    data = seven_day_data[1]
-    # smoothinghalfwindow = 5
+    # # Current Day plot
+    # c_utctimes = fft_data[0]
+    # c_data = fft_data[1]
+    # smoothinghalfwindow = 20
+    # c_data = standard_stuff.filter_average(c_data, smoothinghalfwindow)
+    # c_utctimes = c_utctimes[smoothinghalfwindow:-smoothinghalfwindow]
+    # plotter_current_day.wrapper(c_utctimes,c_data,'Current Day', 'current_day.png')
+    #
+    # # Dual plotter.
+    # one_second_data = class_aggregator.aggregate_data(k.sensor_reading_frequency, slice_data)
+    # utctimes = one_second_data[0]
+    # data = one_second_data[1]
+    # smoothinghalfwindow = 10
     # data = standard_stuff.filter_average(data, smoothinghalfwindow)
     # utctimes = utctimes[smoothinghalfwindow:-smoothinghalfwindow]
-    plotter_current_day.wrapper(utctimes,data,'Seven Days', 'seven_day.png')
-
-    # # plotter_phaseportrait.wrapper(data_utc_objects, data_tilt)
-
-    # Some stats on processing time.
-    data_end = masterlist[0][0]
-    data_start = masterlist[-1][0]
-    data_length = len(masterlist)
-    readingspersecond = data_length / (data_start - data_end)
-    elapsed_end = time.time()
-    elapsed_time = elapsed_end - end_time
-    print(f"\n")
-    print(f'Sensor is running at {readingspersecond}  readings per second.')
-    print(f"Elapsed time: {elapsed_time / 60:.2f} minutes.")
-    print(f'*** END Plotter ***')
+    # plotter_dual.wrapper(utctimes,data)
+    #
+    # # Seven Day Plotter
+    # seven_day_data = class_aggregator.aggregate_data(k.sensor_reading_frequency * 60 * 1, masterlist)
+    # utctimes = seven_day_data[0]
+    # data = seven_day_data[1]
+    # # smoothinghalfwindow = 5
+    # # data = standard_stuff.filter_average(data, smoothinghalfwindow)
+    # # utctimes = utctimes[smoothinghalfwindow:-smoothinghalfwindow]
+    # plotter_current_day.wrapper(utctimes,data,'Seven Days', 'seven_day.png')
+    #
+    # # # plotter_phaseportrait.wrapper(data_utc_objects, data_tilt)
+    #
+    # # Some stats on processing time.
+    # data_end = masterlist[0][0]
+    # data_start = masterlist[-1][0]
+    # data_length = len(masterlist)
+    # readingspersecond = data_length / (data_start - data_end)
+    # elapsed_end = time.time()
+    # elapsed_time = elapsed_end - end_time
+    # print(f"\n")
+    # print(f'Sensor is running at {readingspersecond}  readings per second.')
+    # print(f"Elapsed time: {elapsed_time / 60:.2f} minutes.")
+    # print(f'*** END Plotter ***')
