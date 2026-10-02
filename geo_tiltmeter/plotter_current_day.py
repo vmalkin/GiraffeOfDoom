@@ -93,7 +93,7 @@ def wrapper(utctimes, data, title, filename):
     ticks = 20
     df = "%b %d \n%Hhr"
     # title = f'Tiltmeter Current Day. Data and dx/dt.'
-    savefolder = k.dir_saves['images'] + filename
+    savefolder = k.dir_saves['images'] + os.sep + filename
 
     plot(df,
          smooth_times,

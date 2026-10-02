@@ -79,7 +79,11 @@ if __name__ == "__main__":
     plotter_dual.wrapper(utctimes,data)
 
     seven_day_data = class_aggregator.aggregate_data(k.sensor_reading_frequency * 60 * 60, masterlist)
-    plotter_current_day.wrapper(fft_data[0],fft_data[1],'Seven Days', 'seven_day.png')
+    utctimes = seven_day_data[0]
+    data = seven_day_data[1]
+    # smoothinghalfwindow = 10
+    # data = standard_stuff.filter_average(data, smoothinghalfwindow)
+    plotter_current_day.wrapper(utctimes,data,'Seven Days', 'seven_day.png')
 
     # # Send data to the plotters
     # plotter_dual.wrapper(data_utc_objects, data_tilt)
