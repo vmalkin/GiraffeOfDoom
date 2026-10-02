@@ -21,7 +21,7 @@ import constants as k
 if __name__ == "__main__":
     # Current data format!
     # [posixtime, tiltdata]
-    print(f'*** BEGIN sorting plot data ***')
+    print(f'*** BEGIN load CSV data ***')
     # Decide on time interval we are plotting for. We can split off smaller intervals based on a larger list
     # Parse logfile directory for file names that fit our interval
     duration_seconds = 86400 * 7
@@ -53,7 +53,8 @@ if __name__ == "__main__":
 
     # We now have a master list of all data! Sort into order by posix time.
     masterlist.sort(key=lambda item: item[0])
-    print(f'*** END sorting plot data ***')
+    print(f'*** END load CSV data ***')
+
     # The next step is to decide what gets plotted as raw data, what gets turned into aggregated data for plotting, etc.
     # The aggregator effectively smooths data, so this does not need to happen in a plotter.
     # Matplotlib needs UTC time objects.
@@ -62,20 +63,18 @@ if __name__ == "__main__":
     # fft_data is [utc_object_time_array, seismic_data_array]
     slice_interval = -86400 * k.sensor_reading_frequency
     slice_data = masterlist[slice_interval:]
+    # This data is basically not aggregated
     fft_data = class_aggregator.aggregate_data(1, slice_data)
     plotter_spectrum_quick.wrapper(fft_data[0],fft_data[1])
     plotter_current_day.wrapper(fft_data[0],fft_data[1])
-    plotter_dual.wrapper(fft_data[0],fft_data[1])
 
-    # Remove None from data and remove corresponding time objects from UTC time.
-    # data_tilt = []
-    # data_utc_objects = []
-    # for psx, tilt in data:
-    #     if isinstance(tilt, float):
-    #         data_tilt.append(tilt)
-    #         tim = datetime.fromtimestamp(psx, tz=timezone.utc)  # datetime object
-    #         data_utc_objects.append(tim)
-    #
+    # Dual plotter.
+    one_second_data = class_aggregator.aggregate_data(k.sensor_reading_frequency, slice_data)
+    plotter_dual.wrapper(one_second_data[0],one_second_data[1])
+
+    # seven_day_data = class_aggregator.aggregate_data(k.sensor_reading_frequency * 60, masterlist)
+    # plotter_current_day.wrapper(seven_day_data[0], seven_day_data[1])
+
     # # Send data to the plotters
     # plotter_dual.wrapper(data_utc_objects, data_tilt)
 
