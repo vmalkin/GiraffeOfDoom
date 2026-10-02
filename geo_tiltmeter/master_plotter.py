@@ -63,7 +63,7 @@ if __name__ == "__main__":
     # fft_data is [utc_object_time_array, seismic_data_array]
     slice_interval = -86400 * k.sensor_reading_frequency
     slice_data = masterlist[slice_interval:]
-    # This data is basically not aggregated
+    # This data is basically not aggregated, but using the aggregating class should catch gaps in the time series.
     fft_data = class_aggregator.aggregate_data(1, slice_data)
     plotter_spectrum_quick.wrapper(fft_data[0],fft_data[1])
     # plotter_fft_movie.wrapper(fft_data[0],fft_data[1])
@@ -89,9 +89,9 @@ if __name__ == "__main__":
     seven_day_data = class_aggregator.aggregate_data(k.sensor_reading_frequency * 60 * 1, masterlist)
     utctimes = seven_day_data[0]
     data = seven_day_data[1]
-    smoothinghalfwindow = 5
-    data = standard_stuff.filter_average(data, smoothinghalfwindow)
-    utctimes = utctimes[smoothinghalfwindow:-smoothinghalfwindow]
+    # smoothinghalfwindow = 5
+    # data = standard_stuff.filter_average(data, smoothinghalfwindow)
+    # utctimes = utctimes[smoothinghalfwindow:-smoothinghalfwindow]
     plotter_current_day.wrapper(utctimes,data,'Seven Days', 'seven_day.png')
 
     # # plotter_phaseportrait.wrapper(data_utc_objects, data_tilt)
