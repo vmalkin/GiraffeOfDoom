@@ -14,7 +14,7 @@ plotstyle = 'bmh'
 
 def plot_dual_hourly(datetimeformat, plot_utc, smoothe_seismo, smoothe_dx, title, savefolder):
     # the size of an hour is plot frequency multiplied by seconds/min and mins/hr
-    hour_slice = 900
+    hour_slice = (k.sensor_reading_frequency * 60) * 15
     sz_avg = np.nanmean(smoothe_seismo)
     sz_stdev= np.nanstd(smoothe_seismo)
     margin = sz_stdev * 3
@@ -70,7 +70,7 @@ def plot_dual_hourly(datetimeformat, plot_utc, smoothe_seismo, smoothe_dx, title
         savefile = savefolder + os.sep + str(i) + ".png"
         plt.savefig(savefile)
         plt.close()
-        print(f"Dualplotter: {i} / {len(smoothe_seismo)}")
+        # print(f"Dualplotter: {i} / {len(smoothe_seismo)}")
 
 
 def wrapper(utctimes, data):

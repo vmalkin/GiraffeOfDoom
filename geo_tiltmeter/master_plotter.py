@@ -77,10 +77,9 @@ if __name__ == "__main__":
     plotter_current_day.wrapper(c_utctimes,c_data,'Current Day', 'current_day.png')
 
     # Dual plotter.
-    one_second_data = class_aggregator.aggregate_data(k.sensor_reading_frequency, slice_data)
-    utctimes = one_second_data[0]
-    data = one_second_data[1]
-    smoothinghalfwindow = 10
+    utctimes = fft_data[0]
+    data = fft_data[1]
+    smoothinghalfwindow = 5
     data = standard_stuff.filter_average(data, smoothinghalfwindow)
     utctimes = utctimes[smoothinghalfwindow:-smoothinghalfwindow]
     plotter_dual.wrapper(utctimes,data)
