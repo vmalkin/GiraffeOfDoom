@@ -66,8 +66,15 @@ if __name__ == "__main__":
     # This data is basically not aggregated
     fft_data = class_aggregator.aggregate_data(1, slice_data)
     plotter_spectrum_quick.wrapper(fft_data[0],fft_data[1])
-    plotter_current_day.wrapper(fft_data[0],fft_data[1],'Current Day', 'current_day.png')
     # plotter_fft_movie.wrapper(fft_data[0],fft_data[1])
+
+    # Current Day plot
+    c_utctimes = fft_data[0]
+    c_data = fft_data[1]
+    smoothinghalfwindow = 20
+    c_data = standard_stuff.filter_average(c_data, smoothinghalfwindow)
+    c_utctimes = c_utctimes[smoothinghalfwindow:-smoothinghalfwindow]
+    plotter_current_day.wrapper(c_utctimes,c_data,'Current Day', 'current_day.png')
 
     # Dual plotter.
     one_second_data = class_aggregator.aggregate_data(k.sensor_reading_frequency, slice_data)
@@ -78,11 +85,13 @@ if __name__ == "__main__":
     utctimes = utctimes[smoothinghalfwindow:-smoothinghalfwindow]
     plotter_dual.wrapper(utctimes,data)
 
-    seven_day_data = class_aggregator.aggregate_data(k.sensor_reading_frequency * 60 * 60, masterlist)
+    # Seven Day Plotter
+    seven_day_data = class_aggregator.aggregate_data(k.sensor_reading_frequency * 60 * 5, masterlist)
     utctimes = seven_day_data[0]
     data = seven_day_data[1]
-    # smoothinghalfwindow = 10
-    # data = standard_stuff.filter_average(data, smoothinghalfwindow)
+    smoothinghalfwindow = 10
+    data = standard_stuff.filter_average(data, smoothinghalfwindow)
+    utctimes = utctimes[smoothinghalfwindow:-smoothinghalfwindow]
     plotter_current_day.wrapper(utctimes,data,'Seven Days', 'seven_day.png')
 
     # # Send data to the plotters

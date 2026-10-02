@@ -76,19 +76,19 @@ def wrapper(utctimes, data, title, filename):
     # There may be gaps
     print(f"*** Tiltmeter {filename}")
 
-    smoothing_half_window = k.sensor_reading_frequency * 60
-    smooth_seismo = standard_stuff.filter_average(data, smoothing_half_window)
-    smooth_times = utctimes[smoothing_half_window:-smoothing_half_window]
+    # smoothing_half_window = k.sensor_reading_frequency * 60
+    # smooth_seismo = standard_stuff.filter_average(data, smoothing_half_window)
+    # smooth_times = utctimes[smoothing_half_window:-smoothing_half_window]
 
     # Create the smoothed dxdt. Remember to pop one value from smooth_utc and smooth_data
     smooth_dxdt = []
-    for i in range(1, len(smooth_seismo)):
-        j = smooth_seismo[i] - smooth_seismo[i-1]
+    for i in range(1, len(data)):
+        j = data[i] - data[i-1]
         smooth_dxdt.append(j)
-    smooth_times.pop(0)
-    smooth_seismo.pop(0)
+    utctimes.pop(0)
+    data.pop(0)
 
-    print(f'{len(smooth_times)} {len(smooth_seismo)} {len(smooth_dxdt)}')
+    print(f'{len(utctimes)} {len(data)} {len(smooth_dxdt)}')
 
     ticks = 20
     df = "%b %d \n%Hhr"
@@ -96,8 +96,8 @@ def wrapper(utctimes, data, title, filename):
     savefolder = k.dir_saves['images'] + os.sep + filename
 
     plot(df,
-         smooth_times,
-         smooth_seismo,
+         utctimes,
+         data,
          smooth_dxdt,
          title,
          savefolder)
