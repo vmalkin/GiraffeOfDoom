@@ -100,7 +100,7 @@ if __name__ == "__main__":
     data_end = masterlist[0][0]
     data_start = masterlist[-1][0]
     data_length = len(masterlist)
-    readingspersecond = (data_start - data_end) / data_length
+    readingspersecond = data_length / (data_start - data_end)
     elapsed_end = time.time()
     elapsed_time = elapsed_end - end_time
     print(f"\n")
