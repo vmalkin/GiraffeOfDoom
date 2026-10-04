@@ -195,6 +195,8 @@ def wrapper(utc, data):
     # fmax = 10 ** -1.8,
     # vmin = -50,
     # vmax = 20,
+    # fmin = 10 ** -5,
+    # fmax = 10 ** 0.39,
 
     plot_spectrum_scipy(
         data,
@@ -203,10 +205,10 @@ def wrapper(utc, data):
         fs=k.sensor_reading_frequency,
         nfft=1024,
         overlap_frac=0.75,
-        fmin=10 ** -5,
-        fmax=10 ** 0.39,
-        vmin = None,
-        vmax = None,
+        fmin=None,
+        fmax=None,
+        vmin = -13,
+        vmax = 30,
         datetimeformat="%m %d\n%H:%M",
         title=title,
         savefile=savefile,

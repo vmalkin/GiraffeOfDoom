@@ -58,6 +58,7 @@ if __name__ == "__main__":
     # The next step is to decide what gets plotted as raw data, what gets turned into aggregated data for plotting, etc.
     # The aggregator effectively smooths data, so this does not need to happen in a plotter.
     # Matplotlib needs UTC time objects.
+
     print(f'*** BEGIN Plotter ***')
     # *** FFT DATA PROCESSING ***
     # fft_data is [utc_object_time_array, seismic_data_array]
@@ -72,11 +73,13 @@ if __name__ == "__main__":
             spectrumdata[1].remove(item)
 
     plotter_spectrum_quick.wrapper(spectrumdata[0], spectrumdata[1])
-    # plotter_fft_movie.wrapper(fft_data[0],fft_data[1])
+    plotter_fft_movie.wrapper(spectrumdata[0],spectrumdata[1])
 
     # Current Day plot
-    c_utctimes = spectrumdata[0]
-    c_data = spectrumdata[1]
+    window = k.sensor_reading_frequency * 60
+    currentdaydata = class_aggregator.aggregate_data(window, slice_data)
+    c_utctimes = currentdaydata[0]
+    c_data = currentdaydata[1]
     smoothinghalfwindow = 20
     c_data = standard_stuff.filter_average(c_data, smoothinghalfwindow)
     c_utctimes = c_utctimes[smoothinghalfwindow:-smoothinghalfwindow]
@@ -89,7 +92,7 @@ if __name__ == "__main__":
     data = standard_stuff.filter_average(data, smoothinghalfwindow)
     utctimes = utctimes[smoothinghalfwindow:-smoothinghalfwindow]
     plotter_dual.wrapper(utctimes,data)
-    #
+
     # Seven Day Plotter
     seven_day_data = class_aggregator.aggregate_data(k.sensor_reading_frequency * 60 * 1, masterlist)
     utctimes = seven_day_data[0]
