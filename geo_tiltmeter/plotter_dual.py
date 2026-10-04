@@ -17,7 +17,7 @@ def plot_dual_hourly(datetimeformat, plot_utc, smoothe_seismo, smoothe_dx, title
     hour_slice = (k.sensor_reading_frequency * 60) * 20
     sz_avg = np.nanmean(smoothe_seismo)
     sz_stdev= np.nanstd(smoothe_seismo)
-    margin = sz_stdev * 3
+    margin = sz_stdev * 4
     sz_ymax = sz_avg + margin
     sz_ymin = sz_avg - margin
 
