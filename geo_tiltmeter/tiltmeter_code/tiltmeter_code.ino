@@ -5,7 +5,7 @@ unsigned long previousMillis = 0;        // will store last time LED was updated
 int sensorpin = A5;
 
 // 70 plus delay should give us plebty of read time
-const long interval = 70;           
+const long interval = 100;
 
 void setup() {
   // Fast serial connection.
