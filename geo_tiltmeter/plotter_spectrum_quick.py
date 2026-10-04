@@ -207,7 +207,7 @@ def wrapper(utc, data):
         overlap_frac=0.75,
         fmin=None,
         fmax=None,
-        vmin = -18,
+        vmin = -13,
         vmax = 30,
         datetimeformat="%m %d\n%H:%M",
         title=title,
