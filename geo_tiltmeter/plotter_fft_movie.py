@@ -81,7 +81,7 @@ def plot_sevenday_fft(fft_data, begintime, endtime, filename):
     #              bbox=dict(boxstyle="round", fc="1", color='red'))
 
     # plt.ylim(10**1, 10**5)
-    plt.ylim(10 ** -1, 10 ** 4)
+    plt.ylim(10 ** 0, 10 ** 6)
     # ax.set_xlim([0, 0.3])
     plt.yscale("log")
     plt.xscale("log")
