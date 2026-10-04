@@ -120,7 +120,7 @@ def plot_spectrum_scipy(
     cbar.set_label("Power spectral density (dB/Hz)")
 
     annotations = [
-        [0.65, "Tiltmeter resonant frequency"],
+        [0.55, "Tiltmeter resonant frequency"],
         [10 ** -0.845098040014257, 'Sec uSm'],
         [10 ** -1.17609125905568, 'Pr uSm'],
     ]
@@ -203,11 +203,11 @@ def wrapper(utc, data):
         deltap=deltapressure,
         datetimes=utc,
         fs=k.sensor_reading_frequency,
-        nfft=1024,
+        nfft=2048,
         overlap_frac=0.75,
         fmin=None,
         fmax=None,
-        vmin = -13,
+        vmin = -18,
         vmax = 30,
         datetimeformat="%m %d\n%H:%M",
         title=title,
