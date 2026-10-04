@@ -176,7 +176,7 @@ def wrapper(utc, data):
             d.append(j)
         except TypeError:
             print(data[i])
-
+    print(f'Length of data: {len(d)}')
     data = detrend(d, type='linear')
 
     halfwindow = 60 * 30
@@ -193,6 +193,8 @@ def wrapper(utc, data):
     # # nfft = 65536,
     # fmin = 10 ** -7,
     # fmax = 10 ** -1.8,
+    # vmin = -50,
+    # vmax = 20,
 
     plot_spectrum_scipy(
         data,
@@ -203,8 +205,8 @@ def wrapper(utc, data):
         overlap_frac=0.75,
         fmin=10 ** -5,
         fmax=10 ** 0.39,
-        vmin=-50,
-        vmax=20,
+        vmin = None,
+        vmax = None,
         datetimeformat="%m %d\n%H:%M",
         title=title,
         savefile=savefile,

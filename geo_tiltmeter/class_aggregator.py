@@ -6,50 +6,20 @@ from datetime import datetime, timezone
 
 class Aggregator:
     def __init__(self, posixstart, posixstop):
-        self.data_null = np.nan
+        # self.data_null = np.nan
+        self.data_null = 9999
         self.date_start = posixstart  # should be POSIX values
         self.date_stop = posixstop  # should be POSIX values
         self.data_seismo = []
         # self.data_temperature = []
         # self.data_pressure = []
 
-    def get_data_avg(self, dataset):
-        # return the median value of the data set. If the set is empty, return a null
-        val_avg = self.data_null
+    def get_data_avg(self, dataset):    # return the median value of the data set. If the set is empty, return a null
         if len(dataset) > 0:
-            try:
-                val_avg = round(np.nanmean(dataset), 4)
-                return val_avg
-            except:
-                return val_avg
-
-    def get_data_median(self, dataset):
-        # return the median value of the data set. If the set is empty, return a null
-        val_median = self.data_null
-        if len(dataset) > 0:
-            try:
-                val_median = round(np.nanmedian(dataset), 4)
-                return val_median
-            except:
-                return val_median
-
-    def get_data_max(self, dataset):
-        # return the median value of the data set. If the set is empty, return a null
-        val_max = self.data_null
-        if len(dataset) > 0:
-            try:
-                val_max = round(np.nanmax(dataset), 4)
-                return val_max
-            except:
-                return val_max
-
-    def get_data_min(self, dataset):
-        # return the median value of the data set. If the set is empty, return a null
-        if len(dataset) > 0:
-            val_min = round(np.nanmin(dataset), 4)
+            val_avg = round(np.mean(dataset), 4)
+            return val_avg
         else:
-            val_min = self.data_null
-        return val_min
+            return 9999
 
     def get_avg_posix(self):
         avg_time = round((self.date_start + self.date_stop) / 2, 4)

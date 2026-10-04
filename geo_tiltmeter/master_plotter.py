@@ -11,7 +11,7 @@ import class_aggregator
 from datetime import datetime, timezone
 import os
 import constants as k
-# import numpy as np
+import numpy as np
 
 # This plotter will load data from CSV logfiles. This is an experiment to see if performance and speed are practically affected
 # and if this bypasses the weird SQLite file-access errors I've been having.
@@ -64,34 +64,40 @@ if __name__ == "__main__":
     slice_interval = -86400 * k.sensor_reading_frequency
     slice_data = masterlist[slice_interval:]
     # This data is basically not aggregated, but using the aggregating class should catch gaps in the time series.
-    fft_data = class_aggregator.aggregate_data(1, slice_data)
-    # plotter_spectrum_quick.wrapper(fft_data[0],fft_data[1])
+    spectrumdata = class_aggregator.aggregate_data(1, slice_data)
+
+    print(len(spectrumdata[1]))
+    for item in spectrumdata[1]:
+        if np.isnan(item):
+            spectrumdata[1].remove(item)
+
+    plotter_spectrum_quick.wrapper(spectrumdata[0], spectrumdata[1])
     # plotter_fft_movie.wrapper(fft_data[0],fft_data[1])
 
-    # # Current Day plot
-    # c_utctimes = fft_data[0]
-    # c_data = fft_data[1]
-    # smoothinghalfwindow = 20
-    # c_data = standard_stuff.filter_average(c_data, smoothinghalfwindow)
-    # c_utctimes = c_utctimes[smoothinghalfwindow:-smoothinghalfwindow]
-    # plotter_current_day.wrapper(c_utctimes,c_data,'Current Day', 'current_day.png')
+    # Current Day plot
+    c_utctimes = spectrumdata[0]
+    c_data = spectrumdata[1]
+    smoothinghalfwindow = 20
+    c_data = standard_stuff.filter_average(c_data, smoothinghalfwindow)
+    c_utctimes = c_utctimes[smoothinghalfwindow:-smoothinghalfwindow]
+    plotter_current_day.wrapper(c_utctimes,c_data,'Current Day', 'current_day.png')
 
     # Dual plotter.
-    utctimes = fft_data[0]
-    data = fft_data[1]
+    utctimes = spectrumdata[0]
+    data = spectrumdata[1]
     smoothinghalfwindow = k.sensor_reading_frequency * 5
     data = standard_stuff.filter_average(data, smoothinghalfwindow)
     utctimes = utctimes[smoothinghalfwindow:-smoothinghalfwindow]
     plotter_dual.wrapper(utctimes,data)
     #
-    # # Seven Day Plotter
-    # seven_day_data = class_aggregator.aggregate_data(k.sensor_reading_frequency * 60 * 1, masterlist)
-    # utctimes = seven_day_data[0]
-    # data = seven_day_data[1]
-    # # smoothinghalfwindow = k.sensor_reading_frequency * 5
-    # # data = standard_stuff.filter_average(data, smoothinghalfwindow)
-    # # utctimes = utctimes[smoothinghalfwindow:-smoothinghalfwindow]
-    # plotter_current_day.wrapper(utctimes,data,'Seven Days', 'seven_day.png')
+    # Seven Day Plotter
+    seven_day_data = class_aggregator.aggregate_data(k.sensor_reading_frequency * 60 * 1, masterlist)
+    utctimes = seven_day_data[0]
+    data = seven_day_data[1]
+    # smoothinghalfwindow = k.sensor_reading_frequency * 5
+    # data = standard_stuff.filter_average(data, smoothinghalfwindow)
+    # utctimes = utctimes[smoothinghalfwindow:-smoothinghalfwindow]
+    plotter_current_day.wrapper(utctimes,data,'Seven Days', 'seven_day.png')
     #
     # # # plotter_phaseportrait.wrapper(data_utc_objects, data_tilt)
 
