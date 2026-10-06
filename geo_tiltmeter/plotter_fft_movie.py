@@ -3,6 +3,7 @@ from scipy.fft import rfft, rfftfreq
 from datetime import timezone, datetime
 import constants as k
 import matplotlib.pyplot as plt
+from matplotlib.patches import FancyBboxPatch
 import os
 import constants as k
 
@@ -17,12 +18,12 @@ def make_decimal(string_value):
     return result
 
 
-def perform_fft(item, seconds_per_data):
-    sample_freq = 1 / seconds_per_data
+def perform_fft(item, datapersecond):
+    sample_freq = 1 / datapersecond
     try:
         yf = rfft(item)
         yf = np.abs(yf)
-        xf = rfftfreq(len(item), 1 / sample_freq)
+        xf = rfftfreq(len(item), sample_freq)
         dp = [xf, yf]
         return dp
     except:
@@ -44,27 +45,25 @@ def plot_sevenday_fft(fft_data, begintime, endtime, filename):
     # Find reciprocal.
     # exponent is log(base 10)
     period_labels = [
-        [0, '1 sec', 'red'],
-        [-0.301029995663981, '2 sec', 'red'],
-        [-0.698970004336019, '5 sec', 'red'],
-        [-0.845098040014257, 'Sec uSm', 'green'],
-        [-1, '10 sec', 'red'],
-        [-1.17609125905568, 'Pr uSm', 'green'],
-        [-1.30102999566398, '20 sec', 'red'],
-        [-1.47712125471966, '30 sec', 'red'],
-        [-1.77815125038364, '1 min', 'red'],
-        [-2.47712125471966, '5 min', 'red'],
-        [-2.77815125038364, '10 min', 'red'],
-        [-3.25527250510331, '30 min', 'red'],
-        [-3.55630250076729, '1 hr', 'red'],
-        [-3.85733249643127, '2 hr', 'red'],
-        [-4.33445375115093, '6 hr', 'red'],
-        [-4.63548374681491, '12 hr', 'red']
+        [10 ** 0, '1 sec', 'red'],
+        [10 ** -0.301029995663981, '2 sec', 'red'],
+        [10 ** -0.698970004336019, '5 sec', 'red'],
+        [10 ** -1, '10 sec', 'red'],
+        [10 ** -1.30102999566398, '20 sec', 'red'],
+        [10 ** -1.47712125471966, '30 sec', 'red'],
+        [10 ** -1.77815125038364, '1 min', 'red'],
+        [10 ** -2.07918124604762, '2 min', 'red'],
+        [10 ** -2.47712125471966, '5 min', 'red'],
+        [10 ** -2.77815125038364, '10 min', 'red'],
+        [10 ** -3.25527250510331, '30 min', 'red'],
+        [10 ** -3.55630250076729, '1 hr', 'red'],
+        [10 ** -3.85733249643127, '2 hr', 'red'],
+        [10 ** -4.33445375115093, '6 hr', 'red'],
+        [10 ** -4.63548374681491, '12 hr', 'red']
     ]
-
-    an_pos_y = 10 ** -0.4
+    an_pos_y = 10 ** 1
     for item in period_labels:
-        ann_pos_x = 10 ** (item[0])
+        ann_pos_x = (item[0])
         plt.annotate(item[1],
                      xy=(ann_pos_x, an_pos_y),
                      xytext=(ann_pos_x, an_pos_y),
@@ -96,9 +95,9 @@ def plot_sevenday_fft(fft_data, begintime, endtime, filename):
 def wrapper(utctime, csvdata):
     print(f'*** Creating FFT movie frames')
     # The FFT will be for data this long...
-    timeslice = (k.sensor_reading_frequency * 60) * 60 * 2
+    timeslice = (k.datapersecond * 60) * 60 * 2
     # at intervals of this
-    timestep = (k.sensor_reading_frequency * 60) * 15
+    timestep = (k.datapersecond * 60) * 15
     plot_data = csvdata
     plot_utc = utctime
     df = "%d  %H:%M"
@@ -126,7 +125,5 @@ def wrapper(utctime, csvdata):
             begintime = chart_times[0].strftime(df)
             endtime = chart_times[len(chart_times) - 1].strftime(df)
             day_file_name = chart_times[len(chart_times) - 1].strftime('%Y-%m-%d-%H-%M')
-            fft_data = perform_fft(seismo_data, k.sensor_reading_frequency)
+            fft_data = perform_fft(seismo_data, k.datapersecond)
             plot_sevenday_fft(fft_data, begintime, endtime, day_file_name)
-
-

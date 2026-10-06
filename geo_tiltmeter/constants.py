@@ -20,9 +20,9 @@ database = 'tiltmeter.db'
 
 sensor = "tilt_meter"
 # How many times a second the sensor reports data to the logger
-sensor_reading_frequency = 10
+datapersecond = 10
 # Buffer length is for 30 mins plus 10%
-buffer_length = int((sensor_reading_frequency * 60 * 30) * 1.1)
+buffer_length = int((datapersecond * 60 * 30) * 1.1)
 
 dir_saves = {
     'logs': 'logfiles',

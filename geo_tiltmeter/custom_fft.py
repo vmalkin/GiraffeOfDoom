@@ -140,7 +140,7 @@ if __name__ == "__main__":
     begintime = data_utc_objects[0].strftime(df)
     endtime = data_utc_objects[len(data_utc_objects) - 1].strftime(df)
     day_file_name = "total_data"
-    fft_data = perform_fft(data_tilt, k.sensor_reading_frequency)
+    fft_data = perform_fft(data_tilt, k.datapersecond)
     plot_sevenday_fft(fft_data, begintime, endtime, day_file_name)
     # print(f"FFT Plotter: {i} / {len(plot_data)}")
 

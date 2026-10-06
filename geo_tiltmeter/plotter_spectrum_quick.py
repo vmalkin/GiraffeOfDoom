@@ -110,7 +110,7 @@ def plot_spectrum_scipy(
     # ax_spec.set_yscale("log")
     ax_spec.set_ylim(fmin, fmax)
     ax_spec.set_ylabel("Frequency (Hz)")
-    fft_window_stats = f"FFT window is {round(nfft / k.sensor_reading_frequency / 60, 1)} minutes"
+    fft_window_stats = f"FFT window is {round(nfft / k.datapersecond / 60, 1)} minutes"
     subtitle = f'FFT = {nfft}. Noverlap = {noverlap}. Data Freq = {fs}Hz. {fft_window_stats}'
     ax_spec.set_title(f'{title}\n{subtitle}')
     ax_spec.grid(which='major', axis='x', linestyle=(0, (5, 10)), c='white', visible='True', zorder=5)
@@ -202,7 +202,7 @@ def wrapper(utc, data):
         data,
         deltap=deltapressure,
         datetimes=utc,
-        fs=k.sensor_reading_frequency,
+        fs=k.datapersecond,
         nfft=2048,
         overlap_frac=0.75,
         fmin=None,

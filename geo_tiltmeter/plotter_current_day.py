@@ -14,7 +14,7 @@ plotstyle = 'bmh'
 
 def plot(datetimeformat, plot_utc, smoothe_seismo, smoothe_dx, title, savefolder):
     # the size of an hour is plot frequency multiplied by seconds/min and mins/hr
-    hour_slice = k.sensor_reading_frequency * 60 * 60 * 24
+    hour_slice = k.datapersecond * 60 * 60 * 24
     sz_avg = np.mean(smoothe_seismo)
     sz_stdev= np.std(smoothe_seismo)
     sz_ymax = sz_avg + (sz_stdev * 3)
