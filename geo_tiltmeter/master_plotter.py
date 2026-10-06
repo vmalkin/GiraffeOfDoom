@@ -79,11 +79,11 @@ if __name__ == "__main__":
     #     if np.isnan(item):
     #         print(item)
 
-    # plotter_spectrum_quick.wrapper(spectrumdata[0], spectrumdata[1])
-    # plotter_fft_movie.wrapper(spectrumdata[0],spectrumdata[1])
+    plotter_spectrum_quick.wrapper(spectrumdata[0], spectrumdata[1])
+    plotter_fft_movie.wrapper(spectrumdata[0],spectrumdata[1])
 
     # Current Day plot
-    window = k.datapersecond * 60
+    window = k.datapersecond * 10
     currentdaydata = class_aggregator.aggregate_data(window, slice_data)
     c_utctimes = currentdaydata[0]
     c_data = currentdaydata[1]
@@ -93,12 +93,13 @@ if __name__ == "__main__":
     plotter_current_day.wrapper(c_utctimes,c_data,'Current Day', 'current_day.png')
 
     # Seven Day Plotter
-    seven_day_data = class_aggregator.aggregate_data(k.datapersecond * 60 * 1, masterlist)
+    window = k.datapersecond * 10
+    seven_day_data = class_aggregator.aggregate_data(window, masterlist)
     utctimes = seven_day_data[0]
     data = seven_day_data[1]
-    # smoothinghalfwindow = k.sensor_reading_frequency * 5
-    # data = standard_stuff.filter_average(data, smoothinghalfwindow)
-    # utctimes = utctimes[smoothinghalfwindow:-smoothinghalfwindow]
+    smoothinghalfwindow = k.datapersecond * 5
+    data = standard_stuff.filter_average(data, smoothinghalfwindow)
+    utctimes = utctimes[smoothinghalfwindow:-smoothinghalfwindow]
     plotter_current_day.wrapper(utctimes,data,'Seven Days', 'seven_day.png')
 
     # Dual plotter.
