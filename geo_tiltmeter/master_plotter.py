@@ -62,7 +62,7 @@ if __name__ == "__main__":
     print(f'*** BEGIN Plotter ***')
     # *** FFT DATA PROCESSING ***
     # fft_data is [utc_object_time_array, seismic_data_array]
-    slice_interval = -86400 * k.sensor_reading_frequency
+    slice_interval = -86400 * k.datapersecond
     slice_data = masterlist[slice_interval:]
     # This data is basically not aggregated, but using the aggregating class should catch gaps in the time series.
     spectrumdata = class_aggregator.aggregate_data(1, slice_data)
@@ -76,7 +76,7 @@ if __name__ == "__main__":
     plotter_fft_movie.wrapper(spectrumdata[0],spectrumdata[1])
 
     # Current Day plot
-    window = k.sensor_reading_frequency * 60
+    window = k.datapersecond * 60
     currentdaydata = class_aggregator.aggregate_data(window, slice_data)
     c_utctimes = currentdaydata[0]
     c_data = currentdaydata[1]
@@ -86,15 +86,19 @@ if __name__ == "__main__":
     plotter_current_day.wrapper(c_utctimes,c_data,'Current Day', 'current_day.png')
 
     # Dual plotter.
+    window = k.datapersecond
+    currentdaydata = class_aggregator.aggregate_data(window, slice_data)
+    utctimes = currentdaydata[0]
+    data = currentdaydata[1]
     utctimes = spectrumdata[0]
     data = spectrumdata[1]
-    smoothinghalfwindow = k.sensor_reading_frequency * 5
+    smoothinghalfwindow = k.datapersecond * 15
     data = standard_stuff.filter_average(data, smoothinghalfwindow)
     utctimes = utctimes[smoothinghalfwindow:-smoothinghalfwindow]
     plotter_dual.wrapper(utctimes,data)
 
     # Seven Day Plotter
-    seven_day_data = class_aggregator.aggregate_data(k.sensor_reading_frequency * 60 * 1, masterlist)
+    seven_day_data = class_aggregator.aggregate_data(k.datapersecond * 60 * 1, masterlist)
     utctimes = seven_day_data[0]
     data = seven_day_data[1]
     # smoothinghalfwindow = k.sensor_reading_frequency * 5
