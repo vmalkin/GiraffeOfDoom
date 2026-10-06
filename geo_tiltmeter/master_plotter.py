@@ -53,7 +53,7 @@ if __name__ == "__main__":
 
     # We now have a master list of all data! Sort into order by posix time.
     masterlist.sort(key=lambda item: item[0])
-    print(f'*** END load CSV data ***')
+    print(f'*** END load CSV data ***\n')
 
     # We do need to sanitise the master list. Nans must be deleted from seismic data
     sanitised_list = []
@@ -64,10 +64,11 @@ if __name__ == "__main__":
             sanitised_list.append(item)
 
     # The next step is to decide what gets plotted as raw data, what gets turned into aggregated data for plotting, etc.
-    # The aggregator effectively smooths data, so this does not need to happen in a plotter.
+    # The aggregator effectively smooths data, so this does not need to happen in a plotter. Gaps in data might cause
+    # spikes, so a median filter might be needed
     # Matplotlib needs UTC time objects.
 
-    print(f'*** BEGIN Plotter ***')
+    print(f'*** BEGIN Plotter ***\n')
     # *** FFT DATA PROCESSING ***
     # fft_data is [utc_object_time_array, seismic_data_array]
     slice_interval = -86400 * k.datapersecond
@@ -75,9 +76,6 @@ if __name__ == "__main__":
     # This data is basically not aggregated, but using the aggregating class should catch gaps in the time series.
     spectrumdata = class_aggregator.aggregate_data(1, slice_data)
 
-    # for item in spectrumdata[1]:
-    #     if np.isnan(item):
-    #         print(item)
 
     plotter_spectrum_quick.wrapper(spectrumdata[0], spectrumdata[1])
     plotter_fft_movie.wrapper(spectrumdata[0],spectrumdata[1])
@@ -126,4 +124,4 @@ if __name__ == "__main__":
     print(f"\n")
     print(f'Sensor is running at {readingspersecond}  readings per second.')
     print(f"Elapsed time: {elapsed_time / 60:.2f} minutes.")
-    print(f'*** END Plotter ***')
+    print(f'\n*** END Plotter ***')

@@ -208,7 +208,7 @@ def wrapper(utc, data):
         fmin=None,
         fmax=None,
         vmin = -13,
-        vmax = 30,
+        vmax = 20,
         datetimeformat="%m %d\n%H:%M",
         title=title,
         savefile=savefile,
