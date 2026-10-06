@@ -76,7 +76,6 @@ if __name__ == "__main__":
     # This data is basically not aggregated, but using the aggregating class should catch gaps in the time series.
     spectrumdata = class_aggregator.aggregate_data(1, slice_data)
 
-
     plotter_spectrum_quick.wrapper(spectrumdata[0], spectrumdata[1])
     plotter_fft_movie.wrapper(spectrumdata[0],spectrumdata[1])
 
@@ -85,18 +84,18 @@ if __name__ == "__main__":
     currentdaydata = class_aggregator.aggregate_data(window, slice_data)
     c_utctimes = currentdaydata[0]
     c_data = currentdaydata[1]
-    smoothinghalfwindow = 20
-    c_data = standard_stuff.filter_average(c_data, smoothinghalfwindow)
+    smoothinghalfwindow = 2
+    c_data = standard_stuff.filter_median(c_data, smoothinghalfwindow)
     c_utctimes = c_utctimes[smoothinghalfwindow:-smoothinghalfwindow]
     plotter_current_day.wrapper(c_utctimes,c_data,'Current Day', 'current_day.png')
 
     # Seven Day Plotter
-    window = k.datapersecond * 10
+    window = k.datapersecond * 60
     seven_day_data = class_aggregator.aggregate_data(window, masterlist)
     utctimes = seven_day_data[0]
     data = seven_day_data[1]
-    smoothinghalfwindow = k.datapersecond * 5
-    data = standard_stuff.filter_average(data, smoothinghalfwindow)
+    smoothinghalfwindow = 2
+    data = standard_stuff.filter_median(data, smoothinghalfwindow)
     utctimes = utctimes[smoothinghalfwindow:-smoothinghalfwindow]
     plotter_current_day.wrapper(utctimes,data,'Seven Days', 'seven_day.png')
 
