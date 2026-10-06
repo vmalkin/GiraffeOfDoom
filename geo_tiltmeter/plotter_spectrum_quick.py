@@ -169,15 +169,15 @@ def get_delta_p(data, halfwindow):
 def wrapper(utc, data):
     #  spectrographic analysis and filtering improved with ChatGPT
     print("*** Tilt Spectrogram")
-    d = []
-    for i in range(0, len(data)):
-        try:
-            j = float(data[i])
-            d.append(j)
-        except TypeError:
-            print(data[i])
-    print(f'Length of data: {len(d)}')
-    data = detrend(d, type='linear')
+    # d = []
+    # for i in range(0, len(data)):
+    #     try:
+    #         j = float(data[i])
+    #         d.append(j)
+    #     except TypeError:
+    #         print(data[i])
+    # print(f'Length of data: {len(d)}')
+    data = detrend(data, type='linear')
 
     halfwindow = 60 * 30
     deltapressure = get_delta_p(data, halfwindow)

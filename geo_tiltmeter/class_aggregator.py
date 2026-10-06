@@ -7,19 +7,21 @@ from datetime import datetime, timezone
 class Aggregator:
     def __init__(self, posixstart, posixstop):
         # self.data_null = np.nan
-        self.data_null = 9999
+        self.data_null = 0
         self.date_start = posixstart  # should be POSIX values
         self.date_stop = posixstop  # should be POSIX values
         self.data_seismo = []
         # self.data_temperature = []
         # self.data_pressure = []
 
-    def get_data_avg(self, dataset):    # return the median value of the data set. If the set is empty, return a null
-        if len(dataset) > 0:
+    def get_data_avg(self, dataset):
+        # return the median value of the data set. If the set is empty, return a null
+        val_avg = self.data_null
+        if len(dataset) >= 1:
             val_avg = round(np.mean(dataset), 4)
-            return val_avg
-        else:
-            return 9999
+        if np.isnan(val_avg):
+            val_avg = self.data_null
+        return val_avg
 
     def get_avg_posix(self):
         avg_time = round((self.date_start + self.date_stop) / 2, 4)

@@ -19,6 +19,7 @@ def plot(datetimeformat, plot_utc, smoothe_seismo, smoothe_dx, title, savefolder
     sz_stdev= np.std(smoothe_seismo)
     sz_ymax = sz_avg + (sz_stdev * 3)
     sz_ymin = sz_avg - (sz_stdev * 3)
+    print(sz_ymin, sz_ymax)
 
     dx_avg = np.mean(smoothe_dx)
     dx_stddev = np.std(smoothe_dx)
