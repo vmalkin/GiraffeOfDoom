@@ -117,4 +117,3 @@ def wrapper(utctime, csvdata):
             day_file_name = chart_times[len(chart_times) - 1].strftime('%Y-%m-%d-%H-%M')
             fft_data = perform_fft(seismo_data, k.datapersecond)
             plot_sevenday_fft(fft_data, begintime, endtime, day_file_name)
-            break
