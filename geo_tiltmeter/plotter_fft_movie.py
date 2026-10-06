@@ -3,7 +3,6 @@ from scipy.fft import rfft, rfftfreq
 from datetime import timezone, datetime
 import constants as k
 import matplotlib.pyplot as plt
-from matplotlib.patches import FancyBboxPatch
 import os
 import constants as k
 
@@ -71,17 +70,21 @@ def plot_sevenday_fft(fft_data, begintime, endtime, filename):
                      color=item[2],
                      bbox=dict(boxstyle="square", fc="1", color=item[2]))
 
-    # ann_pos_x = 10 **-4.9366
-    # plt.annotate("1 day", xy=(ann_pos_x, an_pos_y), xytext=(ann_pos_x, an_pos_y), fontsize=10, color='red',
-    #              bbox=dict(boxstyle="round", fc="1", color='red'))
-    #
-    # ann_pos_x = 10 **-5.2376
-    # plt.annotate("2 days", xy=(ann_pos_x, an_pos_y), xytext=(ann_pos_x, an_pos_y), fontsize=10 , color='red',
-    #              bbox=dict(boxstyle="round", fc="1", color='red'))
+    interest_labels = [
+        [10 ** -1.23044892137827, 'Microseisms', 'green'],
+        [10 ** -0.25, 'Pendulum natural period', 'green'],
+    ]
+    an_pos_y = 10 ** 0.7
+    for item in interest_labels:
+        ann_pos_x = (item[0])
+        plt.annotate(item[1],
+                     xy=(ann_pos_x, an_pos_y),
+                     xytext=(ann_pos_x, an_pos_y),
+                     fontsize=7,
+                     color=item[2],
+                     bbox=dict(boxstyle="square", fc="1", color=item[2]))
 
-    # plt.ylim(10**1, 10**5)
     plt.ylim(10 ** 0, 10 ** 6)
-    # ax.set_xlim([0, 0.3])
     plt.yscale("log")
     plt.xscale("log")
     title = "FFT for time" + " - " + begintime + " - " + endtime
@@ -102,19 +105,6 @@ def wrapper(utctime, csvdata):
     plot_utc = utctime
     df = "%d  %H:%M"
 
-    # if len(csvdata) >= timeslice:
-    #     for i in range(0, len(csvdata)):
-    #         try:
-    #             j = float(csvdata[i])
-    #             plot_data.append(j)
-    #         except TypeError:
-    #             utctime.pop(i)
-    #             print(csvdata[i])
-        #
-        # for i in range(0, len(d)):
-        #     data_info = d[i]
-        #     decimal_data = make_decimal(data_info)
-        #     plot_data.append(decimal_data)
     for i in range(0, len(plot_data), timestep):
         array_start = i
         array_end = i + timeslice
@@ -127,3 +117,4 @@ def wrapper(utctime, csvdata):
             day_file_name = chart_times[len(chart_times) - 1].strftime('%Y-%m-%d-%H-%M')
             fft_data = perform_fft(seismo_data, k.datapersecond)
             plot_sevenday_fft(fft_data, begintime, endtime, day_file_name)
+            break
