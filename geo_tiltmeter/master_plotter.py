@@ -5,7 +5,8 @@ import plotter_spectrum_quick
 import plotter_dual
 import plotter_current_day
 import plotter_fft_movie
-# import plotter_phaseportrait
+import plotter_phaseportrait
+import mgr_emd
 import time
 import class_aggregator
 from datetime import datetime, timezone
@@ -75,9 +76,11 @@ if __name__ == "__main__":
     slice_data = sanitised_list[slice_interval:]
     # This data is basically not aggregated, but using the aggregating class should catch gaps in the time series.
     spectrumdata = class_aggregator.aggregate_data(1, slice_data)
-
+    utctimes = spectrumdata[0]
+    data = spectrumdata[1]
     plotter_spectrum_quick.wrapper(spectrumdata[0], spectrumdata[1])
     plotter_fft_movie.wrapper(spectrumdata[0],spectrumdata[1])
+    # mgr_emd.wrapper(data, utctimes, k.dir_saves['images'] + os.sep + 'emd.png', '%m-%d %H')
 
     # Current Day plot
     window = k.datapersecond * 10
@@ -111,7 +114,7 @@ if __name__ == "__main__":
     utctimes = utctimes[smoothinghalfwindow:-smoothinghalfwindow]
     plotter_dual.wrapper(utctimes,data)
 
-    # plotter_phaseportrait.wrapper(data_utc_objects, data_tilt)
+    # plotter_phaseportrait.wrapper(utctimes, data)
 
     # Some stats on processing time.
     data_end = masterlist[0][0]
