@@ -23,8 +23,8 @@ def plot(datetimeformat, plot_utc, smoothe_seismo, smoothe_dx, title, savefolder
 
     dx_avg = np.mean(smoothe_dx)
     dx_stddev = np.std(smoothe_dx)
-    dx_ymax = dx_avg + (dx_stddev * 12)
-    dx_ymin = dx_avg - (dx_stddev * 12)
+    dx_ymax = dx_avg + (dx_stddev * 5)
+    dx_ymin = dx_avg - (dx_stddev * 5)
 
     # for i in range(0, len(smoothe_seismo), hour_slice):
     #     array_start = i
