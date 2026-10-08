@@ -123,16 +123,16 @@ if __name__ == "__main__":
     utctimes = utctimes[smoothinghalfwindow:-smoothinghalfwindow]
     plotter_dual.wrapper(utctimes,data)
 
-    # # plotter_phaseportrait.wrapper(utctimes, data)
-    #
-    # # Some stats on processing time.
-    # data_end = masterlist[0][0]
-    # data_start = masterlist[-1][0]
-    # data_length = len(masterlist)
-    # readingspersecond = data_length / (data_start - data_end)
-    # elapsed_end = time.time()
-    # elapsed_time = elapsed_end - end_time
-    # print(f"\n")
-    # print(f'Sensor is running at {readingspersecond}  readings per second.')
-    # print(f"Elapsed time: {elapsed_time / 60:.2f} minutes.")
-    # print(f'\n*** END Plotter ***')
+    # plotter_phaseportrait.wrapper(utctimes, data)
+
+    # Some stats on processing time.
+    data_end = masterlist[0][0]
+    data_start = masterlist[-1][0]
+    data_length = len(masterlist)
+    readingspersecond = data_length / (data_start - data_end)
+    elapsed_end = time.time()
+    elapsed_time = elapsed_end - end_time
+    print(f"\n")
+    print(f'Sensor is running at {readingspersecond}  readings per second.')
+    print(f"Elapsed time: {elapsed_time / 60:.2f} minutes.")
+    print(f'\n*** END Plotter ***')
