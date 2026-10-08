@@ -1,6 +1,6 @@
+// Arduino code for tiltmeter using a photo-interrupt to measure fine motion of the vertical pendulum.
+// BMP280 or similar is used for pressure and temperature readings.
 
-// Generally, you should use "unsigned long" for variables that hold time
-// The value will quickly become too large for an int to store
 int sensorpin = A5;
 
 // Variables to store current sensor data
@@ -9,6 +9,8 @@ int reading_pressure;
 int reading_temp;
 
 //variables to store current interval times. 
+// Generally, you should use "unsigned long" for variables that hold time
+// The value will quickly become too large for an int to store
 unsigned long printout_millis = 0;
 unsigned long weather_millis = 0;
 
@@ -24,7 +26,7 @@ void setup() {
 
 void loop() {
   unsigned long currentMillis = millis();
-
+  
   if (currentMillis - weather_millis >= WEATHER_INTERVAL) {
     // Update interval timer
     weather_millis = currentMillis;

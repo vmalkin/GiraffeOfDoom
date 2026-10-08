@@ -11,8 +11,8 @@ class Aggregator:
         self.date_start = posixstart  # should be POSIX values
         self.date_stop = posixstop  # should be POSIX values
         self.data_seismo = []
-        # self.data_temperature = []
-        # self.data_pressure = []
+        self.data_temperature = []
+        self.data_pressure = []
 
     def get_data_avg(self, dataset):
         # return the median value of the data set. If the set is empty, return a null
@@ -66,19 +66,31 @@ def aggregate_data(windowsize, querydata):
         #     print(f"{i} / {len(result_7d)}")
         datetime = querydata[i][0]
         seismo = querydata[i][1]
+        temperature = querydata[i][2]
+        pressure = querydata[i][3]
         agg_index = lookup[datetime]
+        # Remember that the index in the lookup starts at 1, not zero
         aggregate_array[agg_index - 1].data_seismo.append(seismo)
+        aggregate_array[agg_index - 1].data_temperature.append(temperature)
+        aggregate_array[agg_index - 1].data_pressure.append(pressure)
 
     # PASS 4 - Use aggregator class functions to create plotting data
     print("PASS 4 - Create and return plotting array.")
     utc_object_time = []
     seismic_data = []
+    temperature_data = []
+    pressure_data = []
     for i in range(1, len(aggregate_array)):
         tim = aggregate_array[i].get_avg_posix()
         tim = aggregate_array[i].return_utc_timeobject(tim)
+
         siz = aggregate_array[i].get_data_avg(aggregate_array[i].data_seismo)
+        tmp = aggregate_array[i].get_data_avg(aggregate_array[i].data_temperature)
+        prs = aggregate_array[i].get_data_avg(aggregate_array[i].data_pressure)
         utc_object_time.append(tim)
         seismic_data.append(siz)
+        temperature_data.append(tmp)
+        pressure_data.append(prs)
 
     # return plotting_data
-    return [utc_object_time, seismic_data]
+    return [utc_object_time, seismic_data, temperature_data, pressure_data]
