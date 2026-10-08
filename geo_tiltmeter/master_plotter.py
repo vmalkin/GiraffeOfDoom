@@ -21,7 +21,7 @@ import numpy as np
 # data files without causing a conflict
 if __name__ == "__main__":
     # Current data format!
-    # [utc_object_time, seismic_data, temperature_data, pressure_data]
+    # [posixt_time, seismic_data, temperature_data, pressure_data]
     print(f'*** BEGIN load CSV data ***')
     # Decide on time interval we are plotting for. We can split off smaller intervals based on a larger list
     # Parse logfile directory for file names that fit our interval
@@ -49,7 +49,7 @@ if __name__ == "__main__":
                         # remove the carriage return
                         line = line.strip()
                         line = line.split(',')
-                        l = [float(line[0]), float(line[1])]
+                        l = [float(line[0]), float(line[1]), float(line[2]), float(line[3])]
                         masterlist.append(l)
 
     # We now have a master list of all data! Sort into order by posix time.
@@ -75,6 +75,7 @@ if __name__ == "__main__":
     slice_interval = -86400 * k.datapersecond
     slice_data = sanitised_list[slice_interval:]
     # This data is basically not aggregated, but using the aggregating class should catch gaps in the time series.
+    # [utc_object_time, seismic_data, temperature_data, pressure_data]
     spectrumdata = class_aggregator.aggregate_data(1, slice_data)
     utctimes = spectrumdata[0]
     data = spectrumdata[1]
@@ -95,10 +96,16 @@ if __name__ == "__main__":
     # Seven Day Plotter
     window = k.datapersecond * 60
     seven_day_data = class_aggregator.aggregate_data(window, masterlist)
+    # Get tilt, temperature and pressure data.
     utctimes = seven_day_data[0]
     data = seven_day_data[1]
+    temperature = seven_day_data[2]
+    pressure = seven_day_data[3]
+    # Smooth the data
     smoothinghalfwindow = 2
     data = standard_stuff.filter_median(data, smoothinghalfwindow)
+    temperature = standard_stuff.filter_median(temperature, smoothinghalfwindow)
+    pressure = standard_stuff.filter_median(pressure, smoothinghalfwindow)
     utctimes = utctimes[smoothinghalfwindow:-smoothinghalfwindow]
     plotter_current_day.wrapper(utctimes,data,'Seven Days', 'seven_day.png')
 
