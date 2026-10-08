@@ -67,15 +67,15 @@ if __name__ == "__main__":
     slice_interval = -86400 * k.datapersecond
     slice_data = sanitised_list[slice_interval:]
 
-    # This data is basically not aggregated, but using the aggregating class should catch gaps in the time series.
-    # [utc_object_time, seismic_data, temperature_data, pressure_data]
-    spectrumdata = class_aggregator.aggregate_data(1, slice_data)
-
-    utctimes = spectrumdata[0]
-    data = spectrumdata[1]
-    plotter_spectrum_quick.wrapper(utctimes, data)
-    plotter_fft_movie.wrapper(utctimes, data)
-    # mgr_emd.wrapper(data, utctimes, k.dir_saves['images'] + os.sep + 'emd.png', '%m-%d %H')
+    # # This data is basically not aggregated, but using the aggregating class should catch gaps in the time series.
+    # # [utc_object_time, seismic_data, temperature_data, pressure_data]
+    # spectrumdata = class_aggregator.aggregate_data(1, slice_data)
+    #
+    # utctimes = spectrumdata[0]
+    # data = spectrumdata[1]
+    # plotter_spectrum_quick.wrapper(utctimes, data)
+    # plotter_fft_movie.wrapper(utctimes, data)
+    # # mgr_emd.wrapper(data, utctimes, k.dir_saves['images'] + os.sep + 'emd.png', '%m-%d %H')
 
     # # Current Day plot
     # window = k.datapersecond * 10
@@ -89,7 +89,7 @@ if __name__ == "__main__":
 
     # Seven Day Plotter
     window = k.datapersecond * 60
-    seven_day_data = class_aggregator.aggregate_data(window, masterlist)
+    seven_day_data = class_aggregator.aggregate_data(window, sanitised_list)
     # Get tilt, temperature and pressure data.
     utctimes = seven_day_data[0]
     data = seven_day_data[1]
