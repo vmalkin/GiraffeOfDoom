@@ -40,7 +40,7 @@ def plot(df,
     #     chart_times = plot_utc[array_start:array_end]
 
     plt.style.use(plotstyle)
-    fig, ax = plt.subplots(3, layout="constrained", figsize=(8, 11), dpi=250)
+    fig, ax = plt.subplots(3, layout="constrained", figsize=(16, 9), dpi=250)
 
     # utcdates should be datetime objects, not POSIX floats
     ax[0].plot(utctimes, data, c=ink_colour[0], linewidth=1)
@@ -58,7 +58,7 @@ def plot(df,
 
     # ax[1] = ax1.twinx()
     ax[1].plot(utctimes, temperature, c=ink_colour[1], linewidth=1)
-    ax[1].set_ylabel("Tilt, dx/dt", color=ink_colour[1])
+    ax[1].set_ylabel("Temperature. Deg C.", color=ink_colour[1])
     # ax[1].set_ylim([dx_ymin, dx_ymax])
     my_fmt = mdates.DateFormatter(df)
     ax[1].xaxis.set_major_formatter(my_fmt)
@@ -71,7 +71,7 @@ def plot(df,
 
     # ax[1] = ax1.twinx()
     ax[2].plot(utctimes, pressure, c=ink_colour[2], linewidth=1)
-    ax[2].set_ylabel("Tilt, dx/dt", color=ink_colour[2])
+    ax[2].set_ylabel("Barometer. HPa.", color=ink_colour[2])
     # ax[2].set_ylim([dx_ymin, dx_ymax])
     my_fmt = mdates.DateFormatter(df)
     ax[2].xaxis.set_major_formatter(my_fmt)
