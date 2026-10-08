@@ -1,15 +1,10 @@
-# import mgr_database
 import standard_stuff
-# import plotter_spectrum_detailed
 import plotter_spectrum_quick
 import plotter_dual
 import plotter_current_day
 import plotter_fft_movie
-import plotter_phaseportrait
-import mgr_emd
 import time
 import class_aggregator
-from datetime import datetime, timezone
 import os
 import constants as k
 import numpy as np
