@@ -47,11 +47,11 @@ class SavedataThread(Thread):
             parseddata = []
             for item in batchdata:
                 l = item.split(",")
-                if len(l) == 2:
+                if len(l) == 3:
                     d0 = safe_float(l[0])
                     d1 = safe_float(l[1])
-                    # d2 = safe_float(l[2])
-                    d = [d0, d1]
+                    d2 = safe_float(l[2])
+                    d = [d0, d1, d2]
                     parseddata.append(d)
                 else:
                     print(f"!!! Data is malformed: {item}. Didn't parse.")
