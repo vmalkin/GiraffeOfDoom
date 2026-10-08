@@ -18,6 +18,7 @@ if __name__ == "__main__":
     print(f'*** BEGIN load CSV data ***')
     # Decide on time interval we are plotting for. We can split off smaller intervals based on a larger list
     # Parse logfile directory for file names that fit our interval
+    # The Master List is no more than the last 7 days of data.
     duration_seconds = 86400 * 7
     end_time = int(time.time())
     endfile = standard_stuff.posix2utc(end_time, '%Y-%m-%d') + '.csv'
@@ -63,17 +64,17 @@ if __name__ == "__main__":
     # Matplotlib needs UTC time objects.
 
     print(f'*** BEGIN Plotter ***\n')
-    # *** FFT DATA PROCESSING ***
-    # fft_data is [utc_object_time_array, seismic_data_array]
     slice_interval = -86400 * k.datapersecond
     slice_data = sanitised_list[slice_interval:]
+
     # This data is basically not aggregated, but using the aggregating class should catch gaps in the time series.
     # [utc_object_time, seismic_data, temperature_data, pressure_data]
     spectrumdata = class_aggregator.aggregate_data(1, slice_data)
+
     utctimes = spectrumdata[0]
     data = spectrumdata[1]
-    plotter_spectrum_quick.wrapper(spectrumdata[0], spectrumdata[1])
-    plotter_fft_movie.wrapper(spectrumdata[0],spectrumdata[1])
+    plotter_spectrum_quick.wrapper(utctimes, data)
+    plotter_fft_movie.wrapper(utctimes, data)
     # mgr_emd.wrapper(data, utctimes, k.dir_saves['images'] + os.sep + 'emd.png', '%m-%d %H')
 
     # Current Day plot
