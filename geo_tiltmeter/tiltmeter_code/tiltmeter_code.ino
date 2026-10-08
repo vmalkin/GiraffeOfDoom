@@ -40,7 +40,9 @@ void loop() {
     // Update sensor values AND output data thru serial port.
     reading_seismo = returnSeismo();
     Serial.print(reading_seismo);
+    Serial.print(',');
     Serial.print(reading_temp);
+    Serial.print(',');
     Serial.println(reading_pressure);
   }
 
