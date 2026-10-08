@@ -97,9 +97,9 @@ if __name__ == "__main__":
     pressure = seven_day_data[3]
     # Smooth the data
     smoothinghalfwindow = 2
-    data = standard_stuff.filter_median(data, smoothinghalfwindow)
-    temperature = standard_stuff.filter_median(temperature, smoothinghalfwindow)
-    pressure = standard_stuff.filter_median(pressure, smoothinghalfwindow)
+    data = standard_stuff.filter_average(data, smoothinghalfwindow)
+    temperature = standard_stuff.filter_average(temperature, smoothinghalfwindow)
+    pressure = standard_stuff.filter_average(pressure, smoothinghalfwindow)
     utctimes = utctimes[smoothinghalfwindow:-smoothinghalfwindow]
     plotter_current_day.wrapper(utctimes,data,'Seven Days', 'seven_day.png')
 
