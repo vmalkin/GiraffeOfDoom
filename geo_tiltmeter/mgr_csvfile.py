@@ -11,15 +11,13 @@ class File_Object:
     def append_savefile(self):
         with open(self.savefile, 'a') as f:
             for item in self.data:
-                d = f'{item[0]}, {item[1]}'
+                d = f'{item[0]}, {item[1]}, {item[2]}, {item[3]}'
                 f.write(d + '\n')
             f.close()
 
 
 def csv_save(parseddata):
-    # [1737274820, 21.05]
     # Create list of CSV filenames based on parsed data.
-
     print(f'*** Creating Logfile START')
     print(f'PASS 1: Create file object list.')
     file_object_list = []

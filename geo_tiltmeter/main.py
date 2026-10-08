@@ -43,15 +43,16 @@ class SavedataThread(Thread):
                     break
 
             # mgr_database.db_data_add expects an array with each element in the array being:
-            # [1737274820, '21.05', '99740.46'] (posixtime, temperature, pressure)
+            # [1737274820, '21.05', '99740.46'] (posixtime, seismo, temperature, pressure)
             parseddata = []
             for item in batchdata:
                 l = item.split(",")
-                if len(l) == 3:
+                if len(l) == 4:
                     d0 = safe_float(l[0])
                     d1 = safe_float(l[1])
                     d2 = safe_float(l[2])
-                    d = [d0, d1, d2]
+                    d3 = safe_float(l[3])
+                    d = [d0, d1, d2, d3]
                     parseddata.append(d)
                 else:
                     print(f"!!! Data is malformed: {item}. Didn't parse.")
