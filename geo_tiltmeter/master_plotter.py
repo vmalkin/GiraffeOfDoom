@@ -67,15 +67,15 @@ if __name__ == "__main__":
     slice_interval = -86400 * k.datapersecond
     slice_data = sanitised_list[slice_interval:]
 
-    # # This data is basically not aggregated, but using the aggregating class should catch gaps in the time series.
-    # # [utc_object_time, seismic_data, temperature_data, pressure_data]
-    # spectrumdata = class_aggregator.aggregate_data(1, slice_data)
-    #
-    # utctimes = spectrumdata[0]
-    # data = spectrumdata[1]
-    # plotter_spectrum_quick.wrapper(utctimes, data)
+    # This data is basically not aggregated, but using the aggregating class should catch gaps in the time series.
+    # [utc_object_time, seismic_data, temperature_data, pressure_data]
+    spectrumdata = class_aggregator.aggregate_data(1, slice_data)
+
+    utctimes = spectrumdata[0]
+    data = spectrumdata[1]
+    plotter_spectrum_quick.wrapper(utctimes, data)
     # plotter_fft_movie.wrapper(utctimes, data)
-    # # mgr_emd.wrapper(data, utctimes, k.dir_saves['images'] + os.sep + 'emd.png', '%m-%d %H')
+    # mgr_emd.wrapper(data, utctimes, k.dir_saves['images'] + os.sep + 'emd.png', '%m-%d %H')
 
     # # Current Day plot
     # window = k.datapersecond * 10
@@ -103,18 +103,18 @@ if __name__ == "__main__":
     utctimes = utctimes[smoothinghalfwindow:-smoothinghalfwindow]
     plotter_current_day.wrapper(utctimes,data,'Seven Days', 'seven_day.png')
 
-    # # Dual plotter.
-    # window = k.datapersecond
-    # currentdaydata = class_aggregator.aggregate_data(window, slice_data)
-    # utctimes = currentdaydata[0]
-    # data = currentdaydata[1]
-    # utctimes = spectrumdata[0]
-    # data = spectrumdata[1]
-    # smoothinghalfwindow = k.datapersecond * 15
-    # data = standard_stuff.filter_average(data, smoothinghalfwindow)
-    # utctimes = utctimes[smoothinghalfwindow:-smoothinghalfwindow]
-    # plotter_dual.wrapper(utctimes,data)
-    #
+    # Dual plotter.
+    window = k.datapersecond
+    currentdaydata = class_aggregator.aggregate_data(window, slice_data)
+    utctimes = currentdaydata[0]
+    data = currentdaydata[1]
+    utctimes = spectrumdata[0]
+    data = spectrumdata[1]
+    smoothinghalfwindow = k.datapersecond * 15
+    data = standard_stuff.filter_average(data, smoothinghalfwindow)
+    utctimes = utctimes[smoothinghalfwindow:-smoothinghalfwindow]
+    plotter_dual.wrapper(utctimes,data)
+
     # # plotter_phaseportrait.wrapper(utctimes, data)
     #
     # # Some stats on processing time.
