@@ -98,7 +98,7 @@ def plot_sevenday_fft(fft_data, begintime, endtime, filename):
 def wrapper(utctime, csvdata):
     print(f'*** Creating FFT movie frames')
     # The FFT will be for data this long...
-    timeslice = (k.datapersecond * 60) * 60 * 2
+    timeslice = (k.datapersecond * 60) * 60 * 1
     # at intervals of this
     timestep = (k.datapersecond * 60) * 15
     plot_data = csvdata
