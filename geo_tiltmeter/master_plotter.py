@@ -15,8 +15,6 @@ import numpy as np
 # We might be able to use a Pipe from the data writer to communicate it's current state, to know when it is safe to parse
 # data files without causing a conflict
 if __name__ == "__main__":
-    # Current data format!
-    # [posixt_time, seismic_data, temperature_data, pressure_data]
     print(f'*** BEGIN load CSV data ***')
     # Decide on time interval we are plotting for. We can split off smaller intervals based on a larger list
     # Parse logfile directory for file names that fit our interval
