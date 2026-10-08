@@ -29,3 +29,15 @@ void loop() {
     delay(30);
   }
 }
+
+int returnPressure()
+{}
+
+int returnTemperature()
+{}
+
+int returnseismo()
+{
+
+}
+
