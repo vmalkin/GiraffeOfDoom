@@ -14,7 +14,7 @@ plotstyle = 'bmh'
 
 def plot_dual_hourly(datetimeformat, plot_utc, smoothe_seismo, smoothe_dx, title, savefolder):
     # the size of an hour is plot frequency multiplied by seconds/min and mins/hr
-    hour_slice = (k.datapersecond * 60) * 20
+    hour_slice = (k.datapersecond * 60) * 30
     sz_avg = np.nanmean(smoothe_seismo)
     sz_stdev= np.nanstd(smoothe_seismo)
     margin = sz_stdev * 4
@@ -23,7 +23,7 @@ def plot_dual_hourly(datetimeformat, plot_utc, smoothe_seismo, smoothe_dx, title
 
     dx_avg = np.nanmean(smoothe_dx)
     dx_stddev = np.nanstd(smoothe_dx)
-    margin = dx_stddev * 10
+    margin = dx_stddev * 4
     dx_ymax = dx_avg + margin
     dx_ymin = dx_avg - margin
 
@@ -74,27 +74,11 @@ def plot_dual_hourly(datetimeformat, plot_utc, smoothe_seismo, smoothe_dx, title
         # print(f"Dualplotter: {i} / {len(smoothe_seismo)}")
 
 
-def wrapper(utctimes, data):
+def wrapper(utctimes, data, data_dx):
     # =============================================================================================================
     # Data is UTC time objects and flat data.
     # There may be gaps
     print("*** Tiltmeter, hourly plots")
-    #
-    # smoothing_half_window = k.sensor_reading_frequency * 5
-    # smooth_seismo = data
-    # smooth_times = utctimes
-
-    # Create the smoothed dxdt. Remember to pop one value from smooth_utc and smooth_data
-    smooth_dxdt = []
-    for i in range(1, len(data)):
-        if data[i] is not None:
-            if data[i-1] is not None:
-                j = data[i] - data[i-1]
-                smooth_dxdt.append(j)
-    utctimes.pop(0)
-    data.pop(0)
-
-    print(f'{len(utctimes)} {len(data)} {len(smooth_dxdt)}')
 
     ticks = 20
     df = "%b %d \n%H:%M"
@@ -104,6 +88,6 @@ def wrapper(utctimes, data):
     plot_dual_hourly(df,
                      utctimes,
                      data,
-                     smooth_dxdt,
+                     data_dx,
                      title,
                      savefolder)
