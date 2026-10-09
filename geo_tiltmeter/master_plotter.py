@@ -64,17 +64,17 @@ if __name__ == "__main__":
     # Matplotlib needs UTC time objects.
 
     print(f'*** BEGIN Plotter ***\n')
-    slice_interval = -86400 * k.datapersecond
+    slice_interval = -1 * 86400 * k.datapersecond
     slice_data = sanitised_list[slice_interval:]
 
     # This data is basically not aggregated, but using the aggregating class should catch gaps in the time series.
     # [utc_object_time, seismic_data, temperature_data, pressure_data]
     spectrumdata = class_aggregator.aggregate_data(1, slice_data)
 
-    utctimes = spectrumdata[0]
-    data = spectrumdata[1]
-    plotter_spectrum_quick.wrapper(utctimes, data)
-    plotter_fft_movie.wrapper(utctimes, data)
+    # utctimes = spectrumdata[0]
+    # data = spectrumdata[1]
+    # plotter_spectrum_quick.wrapper(utctimes, data)
+    # plotter_fft_movie.wrapper(utctimes, data)
     # # mgr_emd.wrapper(data, utctimes, k.dir_saves['images'] + os.sep + 'emd.png', '%m-%d %H')
     #
     # # # Current Day plot
@@ -93,14 +93,16 @@ if __name__ == "__main__":
     # # Get tilt, temperature and pressure data.
     # utctimes = seven_day_data[0]
     # data = seven_day_data[1]
+    # print(f'{len(utctimes)} {len(slice_data[1])}')
     # temperature = seven_day_data[2]
     # pressure = seven_day_data[3]
-    # # # Smooth the data
-    # # smoothinghalfwindow = 2
-    # # data = standard_stuff.filter_average(data, smoothinghalfwindow)
-    # # temperature = standard_stuff.filter_average(temperature, smoothinghalfwindow)
-    # # pressure = standard_stuff.filter_average(pressure, smoothinghalfwindow)
-    # # utctimes = utctimes[smoothinghalfwindow:-smoothinghalfwindow]
+    # # Smooth the data
+    # smoothinghalfwindow = k.datapersecond * 60
+    # data = standard_stuff.filter_average(data, smoothinghalfwindow)
+    # temperature = standard_stuff.filter_average(temperature, smoothinghalfwindow)
+    # pressure = standard_stuff.filter_average(pressure, smoothinghalfwindow)
+    # utctimes = utctimes[smoothinghalfwindow:-smoothinghalfwindow]
+    #
     # print(f'{len(utctimes)} {len(data)} {len(temperature)} {len(pressure)} \n')
     # plotter_current_day.wrapper(
     #     utctimes=utctimes,
@@ -111,28 +113,28 @@ if __name__ == "__main__":
     #     filename='seven_day.png'
     # )
     #
-    # # Dual plotter.
+    # Dual plotter.
+    # We will recycle the spectrum data.
     # window = k.datapersecond
     # currentdaydata = class_aggregator.aggregate_data(window, slice_data)
-    # utctimes = currentdaydata[0]
-    # data = currentdaydata[1]
-    # utctimes = spectrumdata[0]
-    # data = spectrumdata[1]
-    # smoothinghalfwindow = k.datapersecond * 15
-    # data = standard_stuff.filter_average(data, smoothinghalfwindow)
-    # utctimes = utctimes[smoothinghalfwindow:-smoothinghalfwindow]
-    # plotter_dual.wrapper(utctimes,data)
+    utctimes = spectrumdata[0]
+    data = spectrumdata[1]
+    print(f'{len(utctimes)} {len(data)}')
+    halfwindow = k.datapersecond * 60 * 5
+    data = standard_stuff.filter_average(data, halfwindow)
+    utctimes = utctimes[halfwindow:-halfwindow]
+    plotter_dual.wrapper(utctimes, data)
     #
     # # plotter_phaseportrait.wrapper(utctimes, data)
-
-    # Some stats on processing time.
-    data_end = masterlist[0][0]
-    data_start = masterlist[-1][0]
-    data_length = len(masterlist)
-    readingspersecond = data_length / (data_start - data_end)
-    elapsed_end = time.time()
-    elapsed_time = elapsed_end - end_time
-    print(f"\n")
-    print(f'Sensor is running at {readingspersecond}  readings per second.')
-    print(f"Elapsed time: {elapsed_time / 60:.2f} minutes.")
-    print(f'\n*** END Plotter ***')
+    #
+    # # Some stats on processing time.
+    # data_end = masterlist[0][0]
+    # data_start = masterlist[-1][0]
+    # data_length = len(masterlist)
+    # readingspersecond = data_length / (data_start - data_end)
+    # elapsed_end = time.time()
+    # elapsed_time = elapsed_end - end_time
+    # print(f"\n")
+    # print(f'Sensor is running at {readingspersecond}  readings per second.')
+    # print(f"Elapsed time: {elapsed_time / 60:.2f} minutes.")
+    # print(f'\n*** END Plotter ***')
