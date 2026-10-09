@@ -99,14 +99,15 @@ def plot_sevenday_fft(fft_data, begintime, endtime, filename):
 def wrapper(utctime, csvdata):
     print(f'*** Creating FFT movie frames')
     # The FFT will be for data this long...
-    timeslice = (k.datapersecond * 60) * 60 * 2
+    timeslice = (k.datapersecond * 60) * 60 * 1
     # at intervals of this
-    timestep = (k.datapersecond * 60) * 15
+    timestep = (k.datapersecond * 60) * 5
     plot_data = csvdata
     plot_utc = utctime
     df = "%d  %H:%M"
 
     for i in range(0, len(plot_data), timestep):
+        print(f'FFT Frames {i} / {len(plot_data)}')
         array_start = i
         array_end = i + timeslice
         seismo_data = plot_data[array_start:array_end]

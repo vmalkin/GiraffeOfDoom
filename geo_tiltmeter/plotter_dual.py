@@ -28,6 +28,7 @@ def plot_dual_hourly(datetimeformat, plot_utc, smoothe_seismo, smoothe_dx, title
     dx_ymin = dx_avg - margin
 
     for i in range(0, len(smoothe_seismo), hour_slice):
+        print(f'Dual Plots {i} / {len(smoothe_seismo)}')
         array_start = i
         array_end = i + hour_slice
         seismo_data = smoothe_seismo[array_start:array_end]
