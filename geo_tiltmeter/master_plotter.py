@@ -1,3 +1,5 @@
+from fontTools.ttLib.tables.S__i_l_f import Pass
+
 import standard_stuff
 import plotter_spectrum_quick
 import plotter_dual
@@ -8,6 +10,7 @@ import class_aggregator
 import os
 import constants as k
 import numpy as np
+from scipy.signal import butter, sosfiltfilt
 
 # This plotter will load data from CSV logfiles. This is an experiment to see if performance and speed are practically affected
 # and if this bypasses the weird SQLite file-access errors I've been having.
@@ -71,48 +74,39 @@ if __name__ == "__main__":
     # [utc_object_time, seismic_data, temperature_data, pressure_data]
     spectrumdata = class_aggregator.aggregate_data(1, slice_data)
 
-    # utctimes = spectrumdata[0]
-    # data = spectrumdata[1]
-    # plotter_spectrum_quick.wrapper(utctimes, data)
+    utctimes = spectrumdata[0]
+    data = spectrumdata[1]
+    plotter_spectrum_quick.wrapper(utctimes, data)
     # plotter_fft_movie.wrapper(utctimes, data)
-    # # mgr_emd.wrapper(data, utctimes, k.dir_saves['images'] + os.sep + 'emd.png', '%m-%d %H')
-    #
-    # # # Current Day plot
-    # # window = k.datapersecond * 10
-    # # currentdaydata = class_aggregator.aggregate_data(window, slice_data)
-    # # c_utctimes = currentdaydata[0]
-    # # c_data = currentdaydata[1]
-    # # smoothinghalfwindow = 2
-    # # c_data = standard_stuff.filter_median(c_data, smoothinghalfwindow)
-    # # c_utctimes = c_utctimes[smoothinghalfwindow:-smoothinghalfwindow]
-    # # plotter_current_day.wrapper(c_utctimes,c_data,'Current Day', 'current_day.png')
-    #
-    # # Seven Day Plotter
-    # window = k.datapersecond * 60
-    # seven_day_data = class_aggregator.aggregate_data(window, sanitised_list)
-    # # Get tilt, temperature and pressure data.
-    # utctimes = seven_day_data[0]
-    # data = seven_day_data[1]
-    # print(f'{len(utctimes)} {len(slice_data[1])}')
-    # temperature = seven_day_data[2]
-    # pressure = seven_day_data[3]
-    # # Smooth the data
-    # smoothinghalfwindow = k.datapersecond * 60
-    # data = standard_stuff.filter_average(data, smoothinghalfwindow)
-    # temperature = standard_stuff.filter_average(temperature, smoothinghalfwindow)
-    # pressure = standard_stuff.filter_average(pressure, smoothinghalfwindow)
-    # utctimes = utctimes[smoothinghalfwindow:-smoothinghalfwindow]
-    #
-    # print(f'{len(utctimes)} {len(data)} {len(temperature)} {len(pressure)} \n')
-    # plotter_current_day.wrapper(
-    #     utctimes=utctimes,
-    #     data=data,
-    #     temperature=temperature,
-    #     pressure=pressure,
-    #     title='Seven Day Plot',
-    #     filename='seven_day.png'
-    # )
-    #
+    # mgr_emd.wrapper(data, utctimes, k.dir_saves['images'] + os.sep + 'emd.png', '%m-%d %H')
+
+    # Seven Day Plotter
+    window = k.datapersecond * 60
+    seven_day_data = class_aggregator.aggregate_data(window, sanitised_list)
+    # Get tilt, temperature and pressure data.
+    utctimes = seven_day_data[0]
+    data = seven_day_data[1]
+    print(f'{len(utctimes)} {len(slice_data[1])}')
+    temperature = seven_day_data[2]
+    pressure = seven_day_data[3]
+
+    # Smooth the data
+    smoothinghalfwindow = k.datapersecond * 1
+    data = standard_stuff.filter_average(data, smoothinghalfwindow)
+    temperature = standard_stuff.filter_average(temperature, smoothinghalfwindow)
+    pressure = standard_stuff.filter_average(pressure, smoothinghalfwindow)
+    utctimes = utctimes[smoothinghalfwindow:-smoothinghalfwindow]
+
+    print(f'{len(utctimes)} {len(data)} {len(temperature)} {len(pressure)} \n')
+    plotter_current_day.wrapper(
+        utctimes=utctimes,
+        data=data,
+        temperature=temperature,
+        pressure=pressure,
+        title='Seven Day Plot',
+        filename='seven_day.png'
+    )
+
     # Dual plotter.
     # We will recycle the spectrum data.
     # window = k.datapersecond
@@ -120,21 +114,40 @@ if __name__ == "__main__":
     utctimes = spectrumdata[0]
     data = spectrumdata[1]
     print(f'{len(utctimes)} {len(data)}')
-    halfwindow = k.datapersecond * 60 * 5
-    data = standard_stuff.filter_average(data, halfwindow)
-    utctimes = utctimes[halfwindow:-halfwindow]
-    plotter_dual.wrapper(utctimes, data)
-    #
+
+    # remove mean.
+    data = data - np.mean(data)
+    # filtered between 0.01 and 1 hz
+    sos = butter(
+        4,
+        [0.01, 0.1],
+        btype='bandpass',
+        fs=10,
+        output='sos'
+    )
+    filtered_data = sosfiltfilt(sos, data)
+    correcteddata = []
+    correctedutc = []
+    for i in range(0, len(filtered_data)):
+        if np.isnan(filtered_data[i]):
+            Pass
+        elif filtered_data[i] is None:
+            pass
+        else:
+            correcteddata.append(filtered_data[i])
+            correctedutc.append(utctimes[i])
+    plotter_dual.wrapper(correctedutc, correcteddata)
+
     # # plotter_phaseportrait.wrapper(utctimes, data)
-    #
-    # # Some stats on processing time.
-    # data_end = masterlist[0][0]
-    # data_start = masterlist[-1][0]
-    # data_length = len(masterlist)
-    # readingspersecond = data_length / (data_start - data_end)
-    # elapsed_end = time.time()
-    # elapsed_time = elapsed_end - end_time
-    # print(f"\n")
-    # print(f'Sensor is running at {readingspersecond}  readings per second.')
-    # print(f"Elapsed time: {elapsed_time / 60:.2f} minutes.")
-    # print(f'\n*** END Plotter ***')
+
+    # Some stats on processing time.
+    data_end = masterlist[0][0]
+    data_start = masterlist[-1][0]
+    data_length = len(masterlist)
+    readingspersecond = data_length / (data_start - data_end)
+    elapsed_end = time.time()
+    elapsed_time = elapsed_end - end_time
+    print(f"\n")
+    print(f'Sensor is running at {readingspersecond}  readings per second.')
+    print(f"Elapsed time: {elapsed_time / 60:.2f} minutes.")
+    print(f'\n*** END Plotter ***')
