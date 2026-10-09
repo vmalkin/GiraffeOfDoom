@@ -17,7 +17,7 @@ def plot_dual_hourly(datetimeformat, plot_utc, smoothe_seismo, smoothe_dx, title
     hour_slice = (k.datapersecond * 60) * 30
     sz_avg = np.nanmean(smoothe_seismo)
     sz_stdev= np.nanstd(smoothe_seismo)
-    margin = sz_stdev * 4
+    margin = sz_stdev * 8
     sz_ymax = sz_avg + margin
     sz_ymin = sz_avg - margin
 
@@ -32,7 +32,7 @@ def plot_dual_hourly(datetimeformat, plot_utc, smoothe_seismo, smoothe_dx, title
         array_start = i
         array_end = i + hour_slice
         seismo_data = smoothe_seismo[array_start:array_end]
-        diff_data = smoothe_dx[array_start:array_end]
+        # diff_data = smoothe_dx[array_start:array_end]
         chart_times = plot_utc[array_start:array_end]
 
         plt.style.use(plotstyle)
@@ -51,11 +51,10 @@ def plot_dual_hourly(datetimeformat, plot_utc, smoothe_seismo, smoothe_dx, title
         ax[0].xaxis.set_minor_locator(AutoMinorLocator(5))
         ax[0].yaxis.set_minor_locator(AutoMinorLocator(1))
 
-
         # ax[1] = ax1.twinx()
-        ax[1].plot(chart_times, diff_data, c=ink_colour[1], linewidth=1)
+        ax[1].plot(chart_times, smoothe_dx, c=ink_colour[1], linewidth=1)
         ax[1].set_ylabel("Tilt, dx/dt", color=ink_colour[1])
-        ax[1].set_ylim([dx_ymin, dx_ymax])
+        # ax[1].set_ylim([dx_ymin, dx_ymax])
         my_fmt = mdates.DateFormatter(datetimeformat)
         ax[1].xaxis.set_major_formatter(my_fmt)
         # Major grid
@@ -79,12 +78,10 @@ def wrapper(utctimes, data, data_dx):
     # Data is UTC time objects and flat data.
     # There may be gaps
     print("*** Tiltmeter, hourly plots")
-
     ticks = 20
     df = "%b %d \n%H:%M"
     title = f'Tiltmeter One Day. Data and dx/dt.'
     savefolder = k.dir_saves['images']
-
     plot_dual_hourly(df,
                      utctimes,
                      data,
