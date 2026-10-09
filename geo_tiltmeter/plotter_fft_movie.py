@@ -32,12 +32,12 @@ def perform_fft(item, datapersecond):
 def plot_sevenday_fft(fft_data, begintime, endtime, filename):
     # fft data is [xf, yf]
     xf = fft_data[0]
-    x_scale_title = "Period - Hz"
     yf = fft_data[1]
-    plt.figure(layout="constrained", figsize=(17, 7))
     plt.style.use('Solarize_Light2')
-    plt.plot(xf, yf, linewidth=1)
-    plt.xlabel(x_scale_title)
+
+    fig, ax = plt.subplots(1, layout="constrained", figsize=(16, 9), dpi=120)
+    ax.plot(xf, yf, linewidth=1)
+    ax.set_xlabel("Tiltmeter. Arbitrary Units.")
 
     # label calculated as follows:
     # take period in seconds.
@@ -63,7 +63,7 @@ def plot_sevenday_fft(fft_data, begintime, endtime, filename):
     an_pos_y = 10 ** 1
     for item in period_labels:
         ann_pos_x = (item[0])
-        plt.annotate(item[1],
+        ax.annotate(item[1],
                      xy=(ann_pos_x, an_pos_y),
                      xytext=(ann_pos_x, an_pos_y),
                      fontsize=7,
@@ -78,19 +78,21 @@ def plot_sevenday_fft(fft_data, begintime, endtime, filename):
     an_pos_y = 10 ** 0.7
     for item in interest_labels:
         ann_pos_x = (item[0])
-        plt.annotate(item[1],
+        ax.annotate(item[1],
                      xy=(ann_pos_x, an_pos_y),
                      xytext=(ann_pos_x, an_pos_y),
                      fontsize=7,
                      color=item[2],
                      bbox=dict(boxstyle="square", fc="1", color=item[2]))
 
-    plt.ylim(10 ** 0, 10 ** 6)
-    plt.yscale("log")
-    plt.xscale("log")
-    title = "FFT for time" + " - " + begintime + " - " + endtime
-    plt.title(title)
-    plt.grid(color='white', linestyle='-', linewidth='2')
+    ax.set_ylim(10 ** 0, 10 ** 6)
+    ax.set_yscale("log")
+    ax.set_xscale("log")
+    ax.set_title("FFT for time" + " - " + begintime + " - " + endtime)
+    ax.set_xlabel('Frequency (Hz)')
+    ax.set_ylabel('Power (dBm)')
+    ax.grid(which='major', linestyle='-', linewidth=2, color='white', alpha=1)
+    ax.grid(which='minor', linestyle='-', linewidth=0.5, color='white', alpha=1)
     savefile = k.dir_saves['spectrograms'] + os.sep + str(filename) + ".png"
     plt.savefig(savefile)
     plt.close()
