@@ -77,7 +77,7 @@ if __name__ == "__main__":
     utctimes = spectrumdata[0]
     data = spectrumdata[1]
     plotter_spectrum_quick.wrapper(utctimes, data)
-    # plotter_fft_movie.wrapper(utctimes, data)
+    plotter_fft_movie.wrapper(utctimes, data)
     # mgr_emd.wrapper(data, utctimes, k.dir_saves['images'] + os.sep + 'emd.png', '%m-%d %H')
 
     # Seven Day Plotter
