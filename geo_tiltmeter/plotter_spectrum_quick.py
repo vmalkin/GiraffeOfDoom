@@ -120,16 +120,16 @@ def plot_spectrum_scipy(
     cbar.set_label("Power spectral density (dB/Hz)")
 
     annotations = [
-        [0.55, "Tiltmeter resonant frequency"],
-        [10 ** -0.845098040014257, 'Sec uSm'],
-        [10 ** -1.17609125905568, 'Pr uSm'],
+        [10 ** -1.23044892137827, '1pr uSm', 'green'],
+        [10 ** -0.698970004336019, '2nd uSm', 'green'],
+        [10 ** -0.25, 'Pendulum natural period', 'green']
     ]
-    for freq, text in annotations:
+    for freq, text, clr in annotations:
         ax_spec.annotate(
             text,
             xy=(t_dt[0], freq),
             fontsize=8,
-            bbox=dict(boxstyle="RArrow", fc="1", ec="black")
+            bbox=dict(boxstyle="RArrow", fc="1", ec=clr)
         )
 
     # --- Time axis formatting ---

@@ -71,8 +71,9 @@ def plot_sevenday_fft(fft_data, begintime, endtime, filename):
                      bbox=dict(boxstyle="square", fc="1", color=item[2]))
 
     interest_labels = [
-        [10 ** -1.23044892137827, 'Microseisms', 'green'],
-        [10 ** -0.25, 'Pendulum natural period', 'green'],
+        [10 ** -1.23044892137827, '1pr uSm', 'green'],
+        [10 ** -0.698970004336019, '2nd uSm', 'green'],
+        [10 ** -0.25, 'Pendulum natural period', 'green']
     ]
     an_pos_y = 10 ** 0.7
     for item in interest_labels:
