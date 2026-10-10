@@ -203,7 +203,7 @@ def wrapper(utc, data):
         deltap=deltapressure,
         datetimes=utc,
         fs=k.datapersecond,
-        nfft=2048,
+        nfft=4096,
         overlap_frac=0.75,
         fmin=None,
         fmax=None,
