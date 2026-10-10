@@ -80,32 +80,32 @@ if __name__ == "__main__":
     plotter_spectrum_quick.wrapper(utctimes, data)
     # plotter_fft_movie.wrapper(utctimes, data)
 
-    # =========================================================
-    # Seven Day Plotter
-    window = k.datapersecond * 60
-    seven_day_data = class_aggregator.aggregate_data(window, sanitised_list)
-    # Get tilt, temperature and pressure data.
-    utctimes = seven_day_data[0]
-    data = seven_day_data[1]
-    print(f'{len(utctimes)} {len(slice_data[1])}')
-    temperature = seven_day_data[2]
-    pressure = seven_day_data[3]
-    # Smooth the data
-    smoothinghalfwindow = k.datapersecond * 1
-    data = standard_stuff.filter_average(data, smoothinghalfwindow)
-    temperature = standard_stuff.filter_average(temperature, smoothinghalfwindow)
-    pressure = standard_stuff.filter_average(pressure, smoothinghalfwindow)
-    utctimes = utctimes[smoothinghalfwindow:-smoothinghalfwindow]
-    #
-    print(f'{len(utctimes)} {len(data)} {len(temperature)} {len(pressure)} \n')
-    plotter_current_day.wrapper(
-        utctimes=utctimes,
-        data=data,
-        temperature=temperature,
-        pressure=pressure,
-        title='Seven Day Plot',
-        filename='seven_day.png'
-    )
+    # # =========================================================
+    # # Seven Day Plotter
+    # window = k.datapersecond * 60
+    # seven_day_data = class_aggregator.aggregate_data(window, sanitised_list)
+    # # Get tilt, temperature and pressure data.
+    # utctimes = seven_day_data[0]
+    # data = seven_day_data[1]
+    # print(f'{len(utctimes)} {len(slice_data[1])}')
+    # temperature = seven_day_data[2]
+    # pressure = seven_day_data[3]
+    # # Smooth the data
+    # smoothinghalfwindow = k.datapersecond * 1
+    # data = standard_stuff.filter_average(data, smoothinghalfwindow)
+    # temperature = standard_stuff.filter_average(temperature, smoothinghalfwindow)
+    # pressure = standard_stuff.filter_average(pressure, smoothinghalfwindow)
+    # utctimes = utctimes[smoothinghalfwindow:-smoothinghalfwindow]
+    # #
+    # print(f'{len(utctimes)} {len(data)} {len(temperature)} {len(pressure)} \n')
+    # plotter_current_day.wrapper(
+    #     utctimes=utctimes,
+    #     data=data,
+    #     temperature=temperature,
+    #     pressure=pressure,
+    #     title='Seven Day Plot',
+    #     filename='seven_day.png'
+    # )
 
     # =========================================================
     # Dual plotter.
@@ -128,7 +128,7 @@ if __name__ == "__main__":
     data_filtered = sosfiltfilt(sos, data)
     #
     data_dx = []
-    for i in range(1, len(data)):
+    for i in range(1, len(data_filtered)):
         dx = data_filtered[i] - data_filtered[i - 1]
         data_dx.append(dx)
     # dx-ing the data loses a value, so prune data nd time arrays to be the same length otherwise we will have errors
