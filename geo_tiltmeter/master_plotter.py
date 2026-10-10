@@ -75,8 +75,8 @@ if __name__ == "__main__":
     # =========================================================
     # Create Spectrogram and FFT Plots
     spectrumdata = class_aggregator.aggregate_data(1, slice_data)
-    # utctimes = spectrumdata[0]
-    # data = spectrumdata[1]
+    utctimes = spectrumdata[0]
+    data = spectrumdata[1]
     # plotter_spectrum_quick.wrapper(utctimes, data)
     # plotter_fft_movie.wrapper(utctimes, data)
 
@@ -109,7 +109,7 @@ if __name__ == "__main__":
 
     # =========================================================
     # Dual plotter.
-    # We will recycle the spectrum data.
+    # We will recycle the existing spectrumdata.
     utctimes = spectrumdata[0]
     data = spectrumdata[1]
     #
@@ -117,7 +117,7 @@ if __name__ == "__main__":
     data = data - np.mean(data)
     #
     # Apply a butterworth filter to isolate seismic signal. To avoid shifting the data in time (phase) we will use
-    # filtfilt.
+    # sosfiltfilt.
     sos = butter(
         4,
         [0.01, 0.1],
@@ -129,25 +129,23 @@ if __name__ == "__main__":
     #
     data_dx = []
     for i in range(1, len(data)):
-        dx = data[i] - data[i - 1]
+        dx = data_filtered[i] - data_filtered[i - 1]
         data_dx.append(dx)
     # dx-ing the data loses a value, so prune data nd time arrays to be the same length otherwise we will have errors
     # when trying to plot things.
     utctimes = utctimes[1:]
     data_filtered = data_filtered[1:]
-    # # Smooth the data_dx
-    # print('smoothing dx...')
-    # halfwindow = k.datapersecond * 60 * 5
-    # data_dx = standard_stuff.filter_average(data_dx, halfwindow)
-    # utctimes = utctimes[halfwindow:-1 * halfwindow]
-    # data = data[halfwindow:-1 * halfwindow]
-    # #
-    # data_dx = standard_stuff.filter_average(data_dx, halfwindow)
-    # utctimes = utctimes[halfwindow:-1 * halfwindow]
-    # data = data[halfwindow:-1 * halfwindow]
-    # #
-    # important that all data being passed in should be the same length otherwise this plot will crash
-    # data_dx = np.zeros_like(len(data_filtered))
+    #
+    # Smooth the data_dx
+    print('smoothing dx...')
+    halfwindow = k.datapersecond * 1
+    data_dx = standard_stuff.filter_average(data_dx, halfwindow)
+    utctimes = utctimes[halfwindow:-1 * halfwindow]
+    data_filtered = data_filtered[halfwindow:-1 * halfwindow]
+    #
+    data_dx = standard_stuff.filter_average(data_dx, halfwindow)
+    utctimes = utctimes[halfwindow:-1 * halfwindow]
+    data_filtered = data_filtered[halfwindow:-1 * halfwindow]
     plotter_dual.wrapper(utctimes, data_filtered, data_dx)
 
     # =========================================================
