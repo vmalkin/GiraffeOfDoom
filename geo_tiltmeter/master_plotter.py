@@ -82,15 +82,17 @@ if __name__ == "__main__":
     # =========================================================
     # Create FFT Plots
     # This creates FFTS that use a whole 24 hour of data, so we use the 2-day slice for this.
-    fftdata = class_aggregator.aggregate_data(k.datapersecond, two_day_slice)
+    fftdata = class_aggregator.aggregate_data(1, two_day_slice)
     utctimes = fftdata[0]
     data = fftdata[1]
-    print(f'{len(data)}')
+    # If we aggregate the data we will want to say how many readings per second the new fft data is.
+    datapersecond = 10
+    timeslice = datapersecond * 60 * 60 * 12  # 12 hours
     plotter_fft_movie.wrapper(
         utctime=utctimes,
         csvdata=data,
-        timeslice=60 * 60 * 12, # 12 hours
-        datapersecond=1)
+        timeslice=timeslice,
+        datafreq=datapersecond) #How many readings per second the fft data is now.
 
     # # =========================================================
     # # One Day Plotter
