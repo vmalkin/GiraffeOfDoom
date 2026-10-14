@@ -141,7 +141,7 @@ def plot_sevenday_fft(fft_data, begintime, endtime, filename):
                      bbox=dict(boxstyle="square", fc="1", color="red"))
 
     ax.set_ylim(10 ** 0, 10 ** 6)
-    # ax.set_xlim(10 ** -4, 10 ** -2)
+    ax.set_xlim(10 ** -3.5, 10 ** -2.5)
     ax.set_yscale("log")
     ax.set_xscale("log")
     ax.set_title("FFT for time" + " - " + begintime + " - " + endtime)
@@ -157,9 +157,9 @@ def plot_sevenday_fft(fft_data, begintime, endtime, filename):
 def wrapper(utctime, csvdata):
     print(f'*** Creating FFT movie frames')
     # The FFT will be for data this long...
-    timeslice = (k.datapersecond * 60) * 60 * 6
+    timeslice = (k.datapersecond * 60) * 60 * 24
     # at intervals of this
-    timestep = (k.datapersecond * 60) * 10
+    timestep = (k.datapersecond * 60) * 5
     plot_data = csvdata
     plot_utc = utctime
     df = "%d  %H:%M"
