@@ -150,7 +150,7 @@ def plot_sevenday_fft(fft_data, begintime, endtime, filename):
         [10 ** -2.70329137811866, "0T13"],
         [10 ** -2.70156798505593, "0S12"]
     ]
-    an_pos_y = 10 ** 3.8
+    an_pos_y = 10 ** 4
     for item in earth_normal_modes:
         ann_pos_x = (item[0])
         ax[1].annotate(item[1],
