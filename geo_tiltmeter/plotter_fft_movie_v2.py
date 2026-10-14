@@ -195,7 +195,7 @@ def wrapper(utctime, csvdata, timeslice, datafreq):
             plot_sevenday_fft(fft_data, begintime, endtime, day_file_name)
             print(f'FFT for time {i}')
             garbagecounter+=1
-            if garbagecounter == 10:
+            if garbagecounter == 20:
                 print(f'Perform garbage collection')
                 gc.collect()
                 garbagecounter = 0
