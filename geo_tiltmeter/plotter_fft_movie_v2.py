@@ -5,6 +5,7 @@ import constants as k
 import matplotlib.pyplot as plt
 import os
 import constants as k
+import gc
 
 
 def make_decimal(string_value):
@@ -161,6 +162,7 @@ def plot_sevenday_fft(fft_data, begintime, endtime, filename):
                      bbox=dict(boxstyle="square", fc="1", color="red"))
     savefile = k.dir_saves['spectrograms'] + os.sep + str(filename) + ".png"
     plt.savefig(savefile)
+    plt.clf()
     plt.close()
 
 
@@ -178,16 +180,22 @@ def wrapper(utctime, csvdata, timeslice, datafreq):
 
     # We will iterate in chunks from now, back to the start of the array to ensure we always plot a chunk for Now
     timestep = (datafreq * 60) * 10
+    garbagecounter = 0
     for i in range(len(plot_data), 0, -1 * timestep):
         if i - timeslice > 0:
             slicestart = i - timeslice
             sliceend = i
             seismo_data = plot_data[slicestart:sliceend]
             chart_times = plot_utc[slicestart:sliceend]
-
+            #
             begintime = chart_times[0].strftime(df)
             endtime = chart_times[len(chart_times) - 1].strftime(df)
             day_file_name = chart_times[len(chart_times) - 1].strftime('%Y-%m-%d-%H-%M')
             fft_data = perform_fft(seismo_data, datafreq)
             plot_sevenday_fft(fft_data, begintime, endtime, day_file_name)
             print(f'FFT for time {i}')
+            garbagecounter+=1
+            if garbagecounter == 10:
+                print(f'Perform garbage collection')
+                gc.collect()
+                garbagecounter = 0
