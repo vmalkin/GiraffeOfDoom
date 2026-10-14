@@ -52,7 +52,7 @@ def plot_sevenday_fft(fft_data, begintime, endtime, filename):
     ax[0].set_yscale("log")
     ax[0].set_xscale("log")
     # Customisation for Eigenmode frequencies
-    ax[1].set_ylim(10 ** 3.5, 10 ** 5)
+    ax[1].set_ylim(10 ** 3.5, 10 ** 5.1)
     ax[1].set_xlim(10 ** -3.5, 10 ** -2.5)
     ax[1].set_yscale("log")
     ax[1].set_xscale("log")
@@ -150,7 +150,7 @@ def plot_sevenday_fft(fft_data, begintime, endtime, filename):
         [10 ** -2.70329137811866, "0T13"],
         [10 ** -2.70156798505593, "0S12"]
     ]
-    an_pos_y = 10 ** 4
+    an_pos_y = 10 ** 5
     for item in earth_normal_modes:
         ann_pos_x = (item[0])
         ax[1].annotate(item[1],
