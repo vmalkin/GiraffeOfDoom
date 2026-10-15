@@ -30,7 +30,7 @@ def perform_fft(item, datapersecond):
         return ("error_fft")
 
 
-def plot_sevenday_fft(fft_data, begintime, endtime, filename):
+def plot_sevenday_fft(fft_data, begintime, endtime, filename, title):
     # fft data is [xf, yf]
     xf = fft_data[0]
     yf = fft_data[1]
@@ -55,10 +55,11 @@ def plot_sevenday_fft(fft_data, begintime, endtime, filename):
     # Customisation for Eigenmode frequencies
     ax[1].set_ylim(10 ** 3.5, 10 ** 5.1)
     ax[1].set_xlim(10 ** -3.5, 10 ** -2.5)
+    # ax[1].set_xlim(1.5 * (10 ** -3), 2 * (10 ** -3))
     ax[1].set_yscale("log")
     ax[1].set_xscale("log")
 
-    ax[0].set_title("FFT for time" + " - " + begintime + " - " + endtime)
+    ax[0].set_title(title)
 
     # label calculated as follows:
     # take period in seconds.
@@ -166,7 +167,7 @@ def plot_sevenday_fft(fft_data, begintime, endtime, filename):
     plt.close()
 
 
-def wrapper(utctime, csvdata, timeslice, datafreq):
+def wrapper(utctime, csvdata, timeslice, datafreq, samplelength):
     # utctime - utc time object array
     # csvdata - data array. Should be same length as utctime
     # timeslice - how many datapoints will be used for each FFT plot
@@ -192,7 +193,8 @@ def wrapper(utctime, csvdata, timeslice, datafreq):
             endtime = chart_times[len(chart_times) - 1].strftime(df)
             day_file_name = chart_times[len(chart_times) - 1].strftime('%Y-%m-%d-%H-%M')
             fft_data = perform_fft(seismo_data, datafreq)
-            plot_sevenday_fft(fft_data, begintime, endtime, day_file_name)
+            title = f"FFT for time {begintime} to {endtime}. Sample length {samplelength}."
+            plot_sevenday_fft(fft_data, begintime, endtime, day_file_name, title)
             print(f'FFT for time {i}')
             garbagecounter+=1
             if garbagecounter == 20:
