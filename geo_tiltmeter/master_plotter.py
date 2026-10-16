@@ -155,7 +155,7 @@ if __name__ == "__main__":
     # # Apply a butterworth filter to isolate seismic signal. To avoid shifting the data in time (phase) we will use
     # # sosfiltfilt.
     # sos = butter(
-    #     4,
+    #     2,
     #     [0.01, 0.1],
     #     btype='bandpass',
     #     fs=k.datapersecond,
