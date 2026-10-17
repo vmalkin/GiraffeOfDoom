@@ -8,31 +8,33 @@ import matplotlib.pyplot as plt
 from matplotlib.ticker import AutoMinorLocator
 import matplotlib.dates as mdates
 
+plotstyle = 'bmh'
+
+
 # This plotter will load data from CSV logfiles. This is an experiment to see if performance and speed are practically affected
 # and if this bypasses the weird SQLite file-access errors I've been having.
 
 # We might be able to use a Pipe from the data writer to communicate it's current state, to know when it is safe to parse
 # data files without causing a conflict
 def plot(utcobjects, df, data, med, max, min, std):
-    plotstyle = 'bmh'
     plt.style.use(plotstyle)
-    fig, ax = plt.subplots(1, layout="constrained", figsize=(16, 9), dpi=250)
+    fig, ax = plt.subplots(1, layout="constrained", height_ratios=[1], figsize=(16, 9), dpi=250)
     ax.plot(utcobjects, data, c='red', linewidth=1)
     # ax.plot(utcobjects, max, c='grey', linewidth=1)
     # ax.plot(utcobjects, min, c='grey', linewidth=1)
     # ax.plot(utcobjects, std, c='green', linewidth=1)
-    # ax.plot(utcobjects, med, c='blue', linewidth=1)
+    ax.plot(utcobjects, med, c='blue', linewidth=1)
 
-    # ax.set_ylabel("Tiltmeter. Reading stats.")
-    # # ax[0].set_ylim([sz_ymin, sz_ymax])
-    # my_fmt = mdates.DateFormatter(df)
-    # ax.xaxis.set_major_formatter(my_fmt)
-    # # Major grid
-    # ax.grid(which='major', linestyle=':', color='white', alpha=1)
-    # ax.grid(which='minor', linestyle=':', color='white',alpha=0.5)
-    # # Minor ticks and grid
-    # ax.xaxis.set_minor_locator(AutoMinorLocator(6))
-    # ax.yaxis.set_minor_locator(AutoMinorLocator(1))
+    ax.set_ylabel("Tiltmeter. Reading stats.")
+    # ax[0].set_ylim([sz_ymin, sz_ymax])
+    my_fmt = mdates.DateFormatter(df)
+    ax.xaxis.set_major_formatter(my_fmt)
+    # Major grid
+    ax.grid(which='major', linestyle=':', color='white', alpha=1)
+    ax.grid(which='minor', linestyle=':', color='white',alpha=0.5)
+    # Minor ticks and grid
+    ax.xaxis.set_minor_locator(AutoMinorLocator(6))
+    ax.yaxis.set_minor_locator(AutoMinorLocator(1))
     plt.xlabel("UTC Datetime.")
     savefile = k.dir_saves['images'] + os.sep + 'stats.png'
     plt.savefig(savefile)
@@ -95,7 +97,10 @@ if __name__ == "__main__":
     bin_window = 1
     binned_data = class_aggregator.aggregate_data(bin_window, one_day_slice)
 
-    half_window = k.datapersecond * 60 * 2.5
+    unprocessed_utc = binned_data[0]
+    unprocessed_data = binned_data[1]
+
+    half_window = (k.datapersecond * 60) * 2
     utctimestamp = []
     median_reading = []
     mean_reading = []
@@ -104,21 +109,22 @@ if __name__ == "__main__":
     standard_dev = []
     temp_reading = []
 
-    for i in range(0, len(binned_data)):
-        temp_reading.append(binned_data[i][1])
+    for i in range(0, len(unprocessed_utc)):
+        temp_reading.append(unprocessed_data[i])
         if len(temp_reading) >= ((2 * half_window) + 1):
-            utctimestamp.append(binned_data[i - half_window][0])
+            utctimestamp.append(unprocessed_utc[i - half_window])
             median_reading.append(np.median(temp_reading))
             mean_reading.append(np.mean(temp_reading))
             max_reading.append(np.max(temp_reading))
             min_reading.append(np.min(temp_reading))
             standard_dev.append(np.std(temp_reading))
             temp_reading.pop(0)
+
     df = "%b %d \n%Hhr"
     plot(
         utcobjects=utctimestamp,
         df=df,
-        data=median_reading,
+        data=mean_reading,
         med=median_reading,
         max=max_reading,
         min=min_reading,
