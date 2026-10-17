@@ -4,16 +4,39 @@ import class_aggregator
 import os
 import constants as k
 import numpy as np
-
+import matplotlib.pyplot as plt
+from matplotlib.ticker import AutoMinorLocator
+import matplotlib.dates as mdates
 
 # This plotter will load data from CSV logfiles. This is an experiment to see if performance and speed are practically affected
 # and if this bypasses the weird SQLite file-access errors I've been having.
 
 # We might be able to use a Pipe from the data writer to communicate it's current state, to know when it is safe to parse
 # data files without causing a conflict
-def plot(utcobjects, data, med, max, min, std):
-    pass
+def plot(utcobjects, df, data, med, max, min, std):
+    plotstyle = 'bmh'
+    plt.style.use(plotstyle)
+    fig, ax = plt.subplots(1, layout="constrained", figsize=(16, 9), dpi=250)
+    ax.plot(utcobjects, data, c='red', linewidth=1)
+    # ax.plot(utcobjects, max, c='grey', linewidth=1)
+    # ax.plot(utcobjects, min, c='grey', linewidth=1)
+    # ax.plot(utcobjects, std, c='green', linewidth=1)
+    # ax.plot(utcobjects, med, c='blue', linewidth=1)
 
+    # ax.set_ylabel("Tiltmeter. Reading stats.")
+    # # ax[0].set_ylim([sz_ymin, sz_ymax])
+    # my_fmt = mdates.DateFormatter(df)
+    # ax.xaxis.set_major_formatter(my_fmt)
+    # # Major grid
+    # ax.grid(which='major', linestyle=':', color='white', alpha=1)
+    # ax.grid(which='minor', linestyle=':', color='white',alpha=0.5)
+    # # Minor ticks and grid
+    # ax.xaxis.set_minor_locator(AutoMinorLocator(6))
+    # ax.yaxis.set_minor_locator(AutoMinorLocator(1))
+    plt.xlabel("UTC Datetime.")
+    savefile = k.dir_saves['images'] + os.sep + 'stats.png'
+    plt.savefig(savefile)
+    plt.close()
 
 if __name__ == "__main__":
     print(f'*** BEGIN load CSV data ***')
@@ -91,9 +114,10 @@ if __name__ == "__main__":
             min_reading.append(np.min(temp_reading))
             standard_dev.append(np.std(temp_reading))
             temp_reading.pop(0)
-
+    df = "%b %d \n%Hhr"
     plot(
         utcobjects=utctimestamp,
+        df=df,
         data=median_reading,
         med=median_reading,
         max=max_reading,
