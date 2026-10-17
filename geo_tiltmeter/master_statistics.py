@@ -6,20 +6,15 @@ import constants as k
 import numpy as np
 
 
-class StatisticsDataPoint:
-    def __init__(self):
-        self.median_reading = 0
-        self.mean_reading = 0
-        self.max_reading = 0
-        self.min_reading = 0
-        self.standard_dev = 0
-
-
 # This plotter will load data from CSV logfiles. This is an experiment to see if performance and speed are practically affected
 # and if this bypasses the weird SQLite file-access errors I've been having.
 
 # We might be able to use a Pipe from the data writer to communicate it's current state, to know when it is safe to parse
 # data files without causing a conflict
+def plot(utcobjects, data, med, max, min, std):
+    pass
+
+
 if __name__ == "__main__":
     print(f'*** BEGIN load CSV data ***')
     # Decide on time interval we are plotting for. We can split off smaller intervals based on a larger list
@@ -64,25 +59,47 @@ if __name__ == "__main__":
         else:
             sanitised_list.append(item)
 
-    # The next step is to decide what gets plotted as raw data, what gets turned into aggregated data for plotting, etc.
-    # The aggregator effectively smooths data, so this does not need to happen in a plotter. Gaps in data might cause
-    # spikes, so a median filter might be needed
-    # Matplotlib needs UTC time objects.
-
     # CREATE aggregated data
     # [utc_object_time, seismic_data, temperature_data, pressure_data]
     print(f'*** BEGIN Plotter ***\n')
     one_day_slice_interval = -1 * (86400 * k.datapersecond) * 1
-    two_day_slice_interval = -1 * (86400 * k.datapersecond) * 2
+    # two_day_slice_interval = -1 * (86400 * k.datapersecond) * 2
     one_day_slice = sanitised_list[one_day_slice_interval:]
-    two_day_slice = sanitised_list[two_day_slice_interval:]
+    # two_day_slice = sanitised_list[two_day_slice_interval:]
 
-    # =========================================================
-    #
+    # format is
+    #  [utc_object_time, seismic_data, temperature_data, pressure_data]
     bin_window = 1
     binned_data = class_aggregator.aggregate_data(bin_window, one_day_slice)
 
+    half_window = k.datapersecond * 60 * 2.5
+    utctimestamp = []
+    median_reading = []
+    mean_reading = []
+    max_reading = []
+    min_reading = []
+    standard_dev = []
+    temp_reading = []
 
+    for i in range(0, len(binned_data)):
+        temp_reading.append(binned_data[i][1])
+        if len(temp_reading) >= ((2 * half_window) + 1):
+            utctimestamp.append(binned_data[i - half_window][0])
+            median_reading.append(np.median(temp_reading))
+            mean_reading.append(np.mean(temp_reading))
+            max_reading.append(np.max(temp_reading))
+            min_reading.append(np.min(temp_reading))
+            standard_dev.append(np.std(temp_reading))
+            temp_reading.pop(0)
+
+    plot(
+        utcobjects=utctimestamp,
+        data=median_reading,
+        med=median_reading,
+        max=max_reading,
+        min=min_reading,
+        std=standard_dev
+    )
 
     # =========================================================
     # Some stats on processing time.
