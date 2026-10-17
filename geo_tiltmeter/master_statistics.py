@@ -1,14 +1,19 @@
 import standard_stuff
-import plotter_spectrum_quick
-import plotter_dual
-import plotter_current_day
-import plotter_fft_movie_v2 as plotter_fft_movie
 import time
 import class_aggregator
 import os
 import constants as k
 import numpy as np
-from scipy.signal import butter, sosfiltfilt
+
+
+class StatisticsDataPoint:
+    def __init__(self):
+        self.median_reading = 0
+        self.mean_reading = 0
+        self.max_reading = 0
+        self.min_reading = 0
+        self.standard_dev = 0
+
 
 # This plotter will load data from CSV logfiles. This is an experiment to see if performance and speed are practically affected
 # and if this bypasses the weird SQLite file-access errors I've been having.
@@ -73,115 +78,11 @@ if __name__ == "__main__":
     two_day_slice = sanitised_list[two_day_slice_interval:]
 
     # =========================================================
-    # Create Spectrogram
-    spectrumdata = class_aggregator.aggregate_data(1, one_day_slice)
-    utctimes = spectrumdata[0]
-    data = spectrumdata[1]
-    plotter_spectrum_quick.wrapper(utctimes, data)
-
-    # # =========================================================
-    # # Create FFT Plots
-    # # This creates FFTS that use a whole 12 hour of data, so we use the 2-day slice for this.
-    # fftdata = class_aggregator.aggregate_data(1, two_day_slice)
-    # utctimes = fftdata[0]
-    # data = fftdata[1]
-    # # If we aggregate the data we will want to say how many readings per second the new fft data is.
-    # datapersecond = 10
-    # timeslice = datapersecond * 60 * 60 * 12  # 12 hours
-    # plotter_fft_movie.wrapper(
-    #     utctime=utctimes,
-    #     csvdata=data,
-    #     timeslice=timeslice,
-    #     datafreq=datapersecond,  #How many readings per second the fft data is now.
-    #     samplelength=timeslice
-    # )
-
-    # =========================================================
-    # One Day Plotter
-    window = k.datapersecond * 60
-    one_day_data = class_aggregator.aggregate_data(window, one_day_slice)
-    # Get tilt, temperature and pressure data.
-    utctimes = one_day_data[0]
-    data = one_day_data[1]
-    print(f'{len(utctimes)} {len(one_day_slice[1])}')
-    temperature = one_day_data[2]
-    pressure = one_day_data[3]
-    print(f'{len(utctimes)} {len(data)} {len(temperature)} {len(pressure)} \n')
-    plotter_current_day.wrapper(
-        utctimes=utctimes,
-        data=data,
-        temperature=temperature,
-        pressure=pressure,
-        title='One Day Plot',
-        filename='one_day.png'
-    )
-
-    # =========================================================
-    # Seven Day Plotter
-    window = k.datapersecond * 60
-    seven_day_data = class_aggregator.aggregate_data(window, sanitised_list)
-    # Get tilt, temperature and pressure data.
-    utctimes = seven_day_data[0]
-    data = seven_day_data[1]
-    # print(f'{len(utctimes)} {len(slice_data[1])}')
-    temperature = seven_day_data[2]
-    pressure = seven_day_data[3]
-    # Smooth the data
-    smoothinghalfwindow = 2
-    data = standard_stuff.filter_median(data, smoothinghalfwindow)
-    temperature = standard_stuff.filter_median(temperature, smoothinghalfwindow)
-    pressure = standard_stuff.filter_median(pressure, smoothinghalfwindow)
-    utctimes = utctimes[smoothinghalfwindow:-smoothinghalfwindow]
     #
-    print(f'{len(utctimes)} {len(data)} {len(temperature)} {len(pressure)} \n')
-    plotter_current_day.wrapper(
-        utctimes=utctimes,
-        data=data,
-        temperature=temperature,
-        pressure=pressure,
-        title='Seven Day Plot',
-        filename='seven_day.png'
-    )
+    bin_window = 1
+    binned_data = class_aggregator.aggregate_data(bin_window, one_day_slice)
 
-    # =========================================================
-    # Dual plotter.
-    # We will recycle the existing spectrumdata.
-    utctimes = spectrumdata[0]
-    data = spectrumdata[1]
-    #
-    # de-mean the data.
-    data = data - np.mean(data)
-    #
-    # Apply a butterworth filter to isolate seismic signal. To avoid shifting the data in time (phase) we will use
-    # sosfiltfilt.
-    sos = butter(
-        2,
-        [0.01, 0.1],
-        btype='bandpass',
-        fs=k.datapersecond,
-        output='sos'
-    )
-    data_filtered = sosfiltfilt(sos, data)
-    data_dx = []
-    for i in range(1, len(data_filtered)):
-        dx = data_filtered[i] - data_filtered[i - 1]
-        data_dx.append(dx)
-    # dx-ing the data loses a value, so prune data nd time arrays to be the same length otherwise we will have errors
-    # when trying to plot things.
-    utctimes = utctimes[1:]
-    data_filtered = data_filtered[1:]
 
-    # Smooth the data_dx
-    print('smoothing dx...')
-    halfwindow = k.datapersecond * 1
-    data_dx = standard_stuff.filter_average(data_dx, halfwindow)
-    utctimes = utctimes[halfwindow:-1 * halfwindow]
-    data_filtered = data_filtered[halfwindow:-1 * halfwindow]
-    #
-    data_dx = standard_stuff.filter_average(data_dx, halfwindow)
-    utctimes = utctimes[halfwindow:-1 * halfwindow]
-    data_filtered = data_filtered[halfwindow:-1 * halfwindow]
-    plotter_dual.wrapper(utctimes, data_filtered, data_dx)
 
     # =========================================================
     # Some stats on processing time.
