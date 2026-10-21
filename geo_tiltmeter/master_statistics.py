@@ -18,15 +18,15 @@ plotstyle = 'bmh'
 # data files without causing a conflict
 def plot(utcobjects, df, data, med, max, min, std):
     plt.style.use(plotstyle)
-    fig, ax = plt.subplots(3, layout="constrained", height_ratios=[1,1,1], figsize=(30, 24), dpi=250)
+    fig, ax = plt.subplots(3, layout="constrained", height_ratios=[1,1,1], figsize=(16, 22), dpi=250)
     ax[0].plot(utcobjects, data, c='red', linewidth=1)
     ax[0].plot(utcobjects, med, c='blue', linewidth=1)
     ax[1].plot(utcobjects, max, c='grey', linewidth=1)
     ax[1].plot(utcobjects, min, c='grey', linewidth=1)
     ax[2].plot(utcobjects, std, c='green', linewidth=1)
 
-    ax[0].set_ylabel("Mean Reading.")
-    ax[1].set_ylabel("Min Max Value.")
+    ax[0].set_ylabel("Mean, Median.")
+    ax[1].set_ylabel("Min, Max.")
     ax[2].set_ylabel("Standard Deviation.")
     # # ax[0].set_ylim([sz_ymin, sz_ymax])
     my_fmt = mdates.DateFormatter(df)
