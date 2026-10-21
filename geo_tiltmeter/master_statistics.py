@@ -41,9 +41,10 @@ def plot(utcobjects, df, data, med, max, min, std, halfwindow):
     ax[2].set_ylabel("Standard Deviation.")
     # # ax[0].set_ylim([sz_ymin, sz_ymax])
     my_fmt = mdates.DateFormatter(df)
-    ax[3].xaxis.set_major_formatter(my_fmt)
+    ax[2].xaxis.set_major_formatter(my_fmt)
 
-    plot_title=(f'Tilt Data Rolling Stats. Half window: {halfwindow} samples @ {k.datapersecond}/sec. '
+    plot_title=(f'Tilt Data Rolling Stats. '
+                f'Running window: {halfwindow * 2} samples@ {k.datapersecond}/sec. '
                 f'Plotted: {standard_stuff.posix2utc(time.time(), '%Y-%m-%d %H:%M')}')
     ax[0].set_title(plot_title)
     plt.xlabel("UTC Datetime.")
