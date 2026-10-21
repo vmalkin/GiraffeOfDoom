@@ -18,7 +18,7 @@ plotstyle = 'bmh'
 # data files without causing a conflict
 def plot(utcobjects, df, data, med, max, min, std):
     plt.style.use(plotstyle)
-    fig, ax = plt.subplots(3, layout="constrained", height_ratios=[1,1,1], figsize=(16, 22), dpi=250)
+    fig, ax = plt.subplots(3, layout="constrained", height_ratios=[1,1,1], figsize=(16, 9), dpi=250)
     ax[0].plot(utcobjects, data, c='red', linewidth=1)
     ax[0].plot(utcobjects, med, c='blue', linewidth=1)
     ax[1].plot(utcobjects, max, c='grey', linewidth=1)
@@ -111,8 +111,9 @@ if __name__ == "__main__":
     min_reading = []
     standard_dev = []
     temp_reading = []
-
     for i in range(0, len(unprocessed_utc)):
+        if i % 2000 == 0:
+            print(f'{i} / {len(unprocessed_utc)}')
         temp_reading.append(unprocessed_data[i])
         if len(temp_reading) >= ((2 * half_window) + 1):
             utctimestamp.append(unprocessed_utc[i - half_window])
