@@ -8,39 +8,44 @@ import matplotlib.pyplot as plt
 from matplotlib.ticker import AutoMinorLocator
 import matplotlib.dates as mdates
 
-plotstyle = 'bmh'
-
 
 # This plotter will load data from CSV logfiles. This is an experiment to see if performance and speed are practically affected
 # and if this bypasses the weird SQLite file-access errors I've been having.
 
 # We might be able to use a Pipe from the data writer to communicate it's current state, to know when it is safe to parse
 # data files without causing a conflict
-def plot(utcobjects, df, data, med, max, min, std, halfwindow):
+def plot(utcobjects, df, data, med, max, min, std, mad, halfwindow):
+    plotstyle = 'Solarize_Light2'
     plt.style.use(plotstyle)
-    fig, ax = plt.subplots(3, layout="constrained", height_ratios=[1,1,1], figsize=(16, 9), dpi=250)
-    ax[0].plot(utcobjects, data, c='red', linewidth=1)
+    plotrows = 3
+
+    fig, ax = plt.subplots(plotrows, layout="constrained", height_ratios=[1,1,1], figsize=(16, 12), dpi=250)
     ax[0].plot(utcobjects, med, c='blue', linewidth=1)
+    ax[0].plot(utcobjects, data, c='red', linewidth=1)
     ax[1].plot(utcobjects, max, c='grey', linewidth=1)
     ax[1].plot(utcobjects, min, c='grey', linewidth=1)
     ax[2].plot(utcobjects, std, c='green', linewidth=1)
 
-    ax[0].set_ylabel("Mean, Median.")
-    ax[1].set_ylabel("Min, Max.")
-    ax[2].set_ylabel("Standard Deviation.")
-    # # ax[0].set_ylim([sz_ymin, sz_ymax])
-    my_fmt = mdates.DateFormatter(df)
-    ax[2].xaxis.set_major_formatter(my_fmt)
-    # # Major grid
-    for i in range(0, 3):
+    # Grids and labels
+    for i in range(0, plotrows - 1):
+        ax[i].axes.xaxis.set_ticklabels([])
+
+    for i in range(0, plotrows):
         ax[i].grid(which='major', linestyle=':', color='white', alpha=1)
         ax[i].grid(which='minor', linestyle=':', color='white',alpha=0.5)
         # Minor ticks and grid
         ax[i].xaxis.set_minor_locator(AutoMinorLocator(6))
         ax[i].yaxis.set_minor_locator(AutoMinorLocator(1))
+    ax[0].set_ylabel("Mean, Median.")
+    ax[1].set_ylabel("Min, Max.")
+    ax[2].set_ylabel("Standard Deviation.")
+    # # ax[0].set_ylim([sz_ymin, sz_ymax])
+    my_fmt = mdates.DateFormatter(df)
+    ax[3].xaxis.set_major_formatter(my_fmt)
+
     plot_title=(f'Tilt Data Rolling Stats. Half window: {halfwindow} samples @ {k.datapersecond}/sec. '
                 f'Plotted: {standard_stuff.posix2utc(time.time(), '%Y-%m-%d %H:%M')}')
-    plt.title(plot_title)
+    ax[0].set_title(plot_title)
     plt.xlabel("UTC Datetime.")
     savefile = k.dir_saves['images'] + os.sep + 'stats.png'
     plt.savefig(savefile)
