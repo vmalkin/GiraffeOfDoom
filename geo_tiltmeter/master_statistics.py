@@ -16,7 +16,7 @@ plotstyle = 'bmh'
 
 # We might be able to use a Pipe from the data writer to communicate it's current state, to know when it is safe to parse
 # data files without causing a conflict
-def plot(utcobjects, df, data, med, max, min, std):
+def plot(utcobjects, df, data, med, max, min, std, halfwindow):
     plt.style.use(plotstyle)
     fig, ax = plt.subplots(3, layout="constrained", height_ratios=[1,1,1], figsize=(16, 9), dpi=250)
     ax[0].plot(utcobjects, data, c='red', linewidth=1)
@@ -38,12 +38,16 @@ def plot(utcobjects, df, data, med, max, min, std):
         # Minor ticks and grid
         ax[i].xaxis.set_minor_locator(AutoMinorLocator(6))
         ax[i].yaxis.set_minor_locator(AutoMinorLocator(1))
+    plot_title=(f'Tilt Data Rolling Stats. Half window: {halfwindow} samples @ {k.datapersecond}/sec. '
+                f'Plotted: {standard_stuff.posix2utc(time.time(), '%Y-%m-%d %H:%M')}')
+    plt.title(plot_title)
     plt.xlabel("UTC Datetime.")
     savefile = k.dir_saves['images'] + os.sep + 'stats.png'
     plt.savefig(savefile)
     plt.close()
 
 if __name__ == "__main__":
+    print('*** STATS: BEGIN.')
     print(f'*** BEGIN load CSV data ***')
     # Decide on time interval we are plotting for. We can split off smaller intervals based on a larger list
     # Parse logfile directory for file names that fit our interval
@@ -89,7 +93,6 @@ if __name__ == "__main__":
 
     # CREATE aggregated data
     # [utc_object_time, seismic_data, temperature_data, pressure_data]
-    print(f'*** BEGIN Plotter ***\n')
     one_day_slice_interval = -1 * (86400 * k.datapersecond) * 1
     # two_day_slice_interval = -1 * (86400 * k.datapersecond) * 2
     one_day_slice = sanitised_list[one_day_slice_interval:]
@@ -97,12 +100,13 @@ if __name__ == "__main__":
 
     # format is
     #  [utc_object_time, seismic_data, temperature_data, pressure_data]
+    print('*** STATS: bin data.')
     bin_window = 1
     binned_data = class_aggregator.aggregate_data(bin_window, one_day_slice)
 
     unprocessed_utc = binned_data[0]
     unprocessed_data = binned_data[1]
-
+    print('*** STATS: apply analysis.')
     half_window = (k.datapersecond * 60) * 2
     utctimestamp = []
     median_reading = []
@@ -113,7 +117,7 @@ if __name__ == "__main__":
     temp_reading = []
     for i in range(0, len(unprocessed_utc)):
         if i % 2000 == 0:
-            print(f'{i} / {len(unprocessed_utc)}')
+            print(f'Stats: {i} / {len(unprocessed_utc)}')
         temp_reading.append(unprocessed_data[i])
         if len(temp_reading) >= ((2 * half_window) + 1):
             utctimestamp.append(unprocessed_utc[i - half_window])
@@ -123,7 +127,7 @@ if __name__ == "__main__":
             min_reading.append(np.min(temp_reading))
             standard_dev.append(np.std(temp_reading))
             temp_reading.pop(0)
-
+    print('*** STATS: Plot.')
     df = "%b %d \n%Hhr"
     plot(
         utcobjects=utctimestamp,
@@ -132,7 +136,8 @@ if __name__ == "__main__":
         med=median_reading,
         max=max_reading,
         min=min_reading,
-        std=standard_dev
+        std=standard_dev,
+        halfwindow=half_window
     )
 
     # =========================================================
@@ -146,4 +151,4 @@ if __name__ == "__main__":
     print(f"\n")
     print(f'Sensor is running at {readingspersecond}  readings per second.')
     print(f"Elapsed time: {elapsed_time / 60:.2f} minutes.")
-    print(f'\n*** END Plotter ***')
+    print(f'\n*** STATS: END ***')
