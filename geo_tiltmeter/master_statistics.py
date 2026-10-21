@@ -14,7 +14,7 @@ import matplotlib.dates as mdates
 
 # We might be able to use a Pipe from the data writer to communicate it's current state, to know when it is safe to parse
 # data files without causing a conflict
-def plot(utcobjects, df, data, med, max, min, std, mad, halfwindow):
+def plot(utcobjects, df, data, med, max, min, std, halfwindow):
     plotstyle = 'Solarize_Light2'
     plt.style.use(plotstyle)
     plotrows = 3
