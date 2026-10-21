@@ -53,8 +53,8 @@ def plot_sevenday_fft(fft_data, begintime, endtime, filename, title):
     ax[0].set_yscale("log")
     ax[0].set_xscale("log")
     # Customisation for Eigenmode frequencies
-    ax[1].set_ylim(10 ** 3.5, 10 ** 5.1)
-    ax[1].set_xlim(10 ** -3.5, 10 ** -2.5)
+    ax[1].set_ylim(10 ** 3, 10 ** 5.1)
+    ax[1].set_xlim(10 ** -3, 10 ** -2)
     # ax[1].set_xlim(1.5 * (10 ** -3), 2 * (10 ** -3))
     ax[1].set_yscale("log")
     ax[1].set_xscale("log")
@@ -180,7 +180,7 @@ def wrapper(utctime, csvdata, timeslice, datafreq, samplelength):
     df = "%d  %H:%M"
 
     # We will iterate in chunks from now, back to the start of the array to ensure we always plot a chunk for Now
-    timestep = (datafreq * 60) * 10
+    timestep = (datafreq * 60) * 5
     garbagecounter = 0
     for i in range(len(plot_data), 0, -1 * timestep):
         if i - timeslice > 0:

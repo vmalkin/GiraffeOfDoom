@@ -18,12 +18,12 @@ plotstyle = 'bmh'
 # data files without causing a conflict
 def plot(utcobjects, df, data, med, max, min, std):
     plt.style.use(plotstyle)
-    fig, ax = plt.subplots(1, layout="constrained", height_ratios=[1], figsize=(16, 9), dpi=250)
+    fig, ax = plt.subplots(1, layout="constrained", height_ratios=[1], figsize=(30, 6), dpi=250)
     ax.plot(utcobjects, data, c='red', linewidth=1)
     # ax.plot(utcobjects, max, c='grey', linewidth=1)
     # ax.plot(utcobjects, min, c='grey', linewidth=1)
     # ax.plot(utcobjects, std, c='green', linewidth=1)
-    ax.plot(utcobjects, med, c='blue', linewidth=1)
+    # ax.plot(utcobjects, med, c='blue', linewidth=1)
 
     ax.set_ylabel("Tiltmeter. Reading stats.")
     # ax[0].set_ylim([sz_ymin, sz_ymax])
