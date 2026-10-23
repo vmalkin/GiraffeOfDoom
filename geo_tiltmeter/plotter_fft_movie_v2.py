@@ -54,7 +54,7 @@ def plot_sevenday_fft(fft_data, begintime, endtime, filename, title):
     ax[0].set_xscale("log")
     # Customisation for Eigenmode frequencies
     ax[1].set_ylim(10 ** 3, 10 ** 5.1)
-    ax[1].set_xlim(10 ** -3, 10 ** -2)
+    ax[1].set_xlim(10 ** -3, 10 ** -1)
     # ax[1].set_xlim(1.5 * (10 ** -3), 2 * (10 ** -3))
     ax[1].set_yscale("log")
     ax[1].set_xscale("log")
