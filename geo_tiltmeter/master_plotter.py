@@ -106,12 +106,19 @@ if __name__ == "__main__":
     print(f'{len(utctimes)} {len(one_day_slice[1])}')
     temperature = one_day_data[2]
     pressure = one_day_data[3]
+    deltapressure = []
+    for i in range(1, len(pressure)):
+        d = pressure[i] - pressure[i - 1]
+        deltapressure.append(d)
+    deltapressure.insert(0, deltapressure[1])
+
     print(f'{len(utctimes)} {len(data)} {len(temperature)} {len(pressure)} \n')
     plotter_current_day.wrapper(
         utctimes=utctimes,
         data=data,
         temperature=temperature,
         pressure=pressure,
+        deltapressure=deltapressure,
         title='One Day Plot',
         filename='one_day.png'
     )
@@ -126,11 +133,18 @@ if __name__ == "__main__":
     # print(f'{len(utctimes)} {len(slice_data[1])}')
     temperature = seven_day_data[2]
     pressure = seven_day_data[3]
+    deltapressure = []
+    for i in range(1, len(pressure)):
+        d = pressure[i] - pressure[i - 1]
+        deltapressure.append(d)
+    deltapressure.insert(0, deltapressure[1])
+
     # Smooth the data
     smoothinghalfwindow = 2
     data = standard_stuff.filter_median(data, smoothinghalfwindow)
     temperature = standard_stuff.filter_median(temperature, smoothinghalfwindow)
     pressure = standard_stuff.filter_median(pressure, smoothinghalfwindow)
+    deltapressure = standard_stuff.filter_median(deltapressure, smoothinghalfwindow)
     utctimes = utctimes[smoothinghalfwindow:-smoothinghalfwindow]
     #
     print(f'{len(utctimes)} {len(data)} {len(temperature)} {len(pressure)} \n')
@@ -139,6 +153,7 @@ if __name__ == "__main__":
         data=data,
         temperature=temperature,
         pressure=pressure,
+        deltapressure=deltapressure,
         title='Seven Day Plot',
         filename='seven_day.png'
     )
@@ -146,24 +161,25 @@ if __name__ == "__main__":
     # =========================================================
     # Dual plotter.
     # We will recycle the existing spectrumdata.
-    utctimes = one_day_slice[0]
-    data = one_day_slice[1]
+    utctimes = spectrumdata[0]
+    data = spectrumdata[1]
     #
     # de-mean the data.
     data = data - np.mean(data)
 
-    # # Apply a butterworth filter to isolate seismic signal. To avoid shifting the data in time (phase) we will use
-    # # sosfiltfilt.
-    # sos = butter(
-    #     2,
-    #     [0.001, 1],
-    #     btype='bandpass',
-    #     fs=k.datapersecond,
-    #     output='sos'
-    # )
-    # data_filtered = sosfiltfilt(sos, data)
-
-    data_filtered = standard_stuff.filter_mean(data, k.datapersecond * 30)
+    # Apply a butterworth filter to isolate seismic signal. To avoid shifting the data in time (phase) we will use
+    # sosfiltfilt.
+    sos = butter(
+        2,
+        [0.001, 1],
+        btype='bandpass',
+        fs=k.datapersecond,
+        output='sos'
+    )
+    data_filtered = sosfiltfilt(sos, data)
+    # halfwindow = k.datapersecond * 30
+    # data_filtered = standard_stuff.filter_average(data, halfwindow)
+    # utctimes = utctimes[halfwindow:-1 * halfwindow]
 
     data_dx = []
     for i in range(1, len(data_filtered)):

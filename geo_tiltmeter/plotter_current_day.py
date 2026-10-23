@@ -17,6 +17,7 @@ def plot(df,
          data,
          temperature,
          pressure,
+         deltapressure,
          title,
          savefile):
     # the size of an hour is plot frequency multiplied by seconds/min and mins/hr
@@ -71,6 +72,7 @@ def plot(df,
 
     # ax[1] = ax1.twinx()
     ax[2].plot(utctimes, pressure, c=ink_colour[2], linewidth=1)
+    ax[2].plot(utctimes, deltapressure, c=ink_colour['cyan'], linewidth=1)
     ax[2].set_ylabel("Barometer. HPa.", color=ink_colour[2])
     # ax[2].set_ylim([dx_ymin, dx_ymax])
     my_fmt = mdates.DateFormatter(df)
@@ -89,7 +91,7 @@ def plot(df,
     plt.close()
 
 
-def wrapper(utctimes, data, temperature, pressure,title, filename):
+def wrapper(utctimes, data, temperature, pressure, deltapressure, title, filename):
     # plots tilt, temp and pressure in a single graph.
     # Data is UTC time objects and flat data.
     # There may be gaps
@@ -103,5 +105,6 @@ def wrapper(utctimes, data, temperature, pressure,title, filename):
          data,
          temperature,
          pressure,
+         deltapressure,
          title,
          savefolder)
