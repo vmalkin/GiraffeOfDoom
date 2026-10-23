@@ -71,13 +71,13 @@ if __name__ == "__main__":
     two_day_slice_interval = -1 * (86400 * k.datapersecond) * 2
     one_day_slice = sanitised_list[one_day_slice_interval:]
     two_day_slice = sanitised_list[two_day_slice_interval:]
-    #
-    # # =========================================================
-    # # Create Spectrogram
-    # spectrumdata = class_aggregator.aggregate_data(1, one_day_slice)
-    # utctimes = spectrumdata[0]
-    # data = spectrumdata[1]
-    # plotter_spectrum_quick.wrapper(utctimes, data)
+
+    # =========================================================
+    # Create Spectrogram
+    spectrumdata = class_aggregator.aggregate_data(1, one_day_slice)
+    utctimes = spectrumdata[0]
+    data = spectrumdata[1]
+    plotter_spectrum_quick.wrapper(utctimes, data)
 
     # =========================================================
     # Create FFT Plots
@@ -87,7 +87,7 @@ if __name__ == "__main__":
     data = fftdata[1]
     # If we aggregate the data we will want to say how many readings per second the new fft data is.
     datapersecond = 10
-    timeslice = datapersecond * 60 * 60 * 6  # 12 hours
+    timeslice = datapersecond * 60 * 60 * 6  # 6 hours
     plotter_fft_movie.wrapper(
         utctime=utctimes,
         csvdata=data,
@@ -156,7 +156,7 @@ if __name__ == "__main__":
     # sosfiltfilt.
     sos = butter(
         2,
-        [0.01, 0.1],
+        [0.001, 1],
         btype='bandpass',
         fs=k.datapersecond,
         output='sos'
