@@ -72,7 +72,10 @@ def plot(df,
 
     # ax[1] = ax1.twinx()
     ax[2].plot(utctimes, pressure, c=ink_colour[2], linewidth=1)
-    ax[2].plot(utctimes, deltapressure, c=ink_colour['cyan'], linewidth=1)
+    axsec = ax[2].twinx()
+    axsec.plot(utctimes, deltapressure, c='cyan', linewidth=1)
+    axsec.set_ylabel('delta pressure')
+
     ax[2].set_ylabel("Barometer. HPa.", color=ink_colour[2])
     # ax[2].set_ylim([dx_ymin, dx_ymax])
     my_fmt = mdates.DateFormatter(df)

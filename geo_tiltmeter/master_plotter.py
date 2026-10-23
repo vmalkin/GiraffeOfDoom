@@ -171,7 +171,7 @@ if __name__ == "__main__":
     # sosfiltfilt.
     sos = butter(
         2,
-        [0.001, 1],
+        [0.001, 0.1],
         btype='bandpass',
         fs=k.datapersecond,
         output='sos'
