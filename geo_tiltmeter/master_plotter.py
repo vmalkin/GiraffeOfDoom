@@ -141,10 +141,10 @@ if __name__ == "__main__":
 
     # Smooth the data
     smoothinghalfwindow = 2
-    data = standard_stuff.filter_median(data, smoothinghalfwindow)
-    temperature = standard_stuff.filter_median(temperature, smoothinghalfwindow)
-    pressure = standard_stuff.filter_median(pressure, smoothinghalfwindow)
-    deltapressure = standard_stuff.filter_median(deltapressure, smoothinghalfwindow)
+    data = standard_stuff.filter_average(data, smoothinghalfwindow)
+    temperature = standard_stuff.filter_average(temperature, smoothinghalfwindow)
+    pressure = standard_stuff.filter_average(pressure, smoothinghalfwindow)
+    deltapressure = standard_stuff.filter_average(deltapressure, smoothinghalfwindow)
     utctimes = utctimes[smoothinghalfwindow:-smoothinghalfwindow]
     #
     print(f'{len(utctimes)} {len(data)} {len(temperature)} {len(pressure)} \n')
@@ -158,56 +158,28 @@ if __name__ == "__main__":
         filename='seven_day.png'
     )
 
-    # # =========================================================
-    # # Dual plotter.
-    # spectrumdata = class_aggregator.aggregate_data(k.datapersecond, one_day_slice)
-    # utctimes = spectrumdata[0]
-    # data = spectrumdata[1]
-    # #
-    # # de-mean the data.
-    # data = data - np.mean(data)
-    #
-    # # # Apply a butterworth filter to isolate seismic signal. To avoid shifting the data in time (phase) we will use
-    # # # sosfiltfilt.
-    # # sos = butter(
-    # #     2,
-    # #     [0.001, 0.1],
-    # #     btype='bandpass',
-    # #     fs=k.datapersecond,
-    # #     output='sos'
-    # # )
-    # # data_filtered = sosfiltfilt(sos, data)
-    # data_filtered = data
-    # # # Low frequency data
-    # # halfwindow = k.datapersecond * 1
-    # # data_filtered = standard_stuff.filter_average(data, halfwindow)
-    # # data = data[halfwindow:-1 * halfwindow]
-    # # utctimes = utctimes[halfwindow:-1 * halfwindow]
-    # # # High frequency data
-    # # data_hf = data - data_filtered
-    # # print(f'{len(utctimes)} {len(data)} {len(data_filtered)} {len(data_hf)}')
-    #
-    # data_dx = []
-    # for i in range(1, len(data_filtered)):
-    #     dx = data_filtered[i] - data_filtered[i - 1]
-    #     data_dx.append(dx)
-    # # dx-ing the data loses a value, so prune data nd time arrays to be the same length otherwise we will have errors
-    # # when trying to plot things.
-    # utctimes = utctimes[1:]
-    # data_filtered = data_filtered[1:]
-    # #
-    # # # Smooth the data_dx
-    # # print('smoothing dx...')
-    # # halfwindow = k.datapersecond * 1
-    # # data_dx = standard_stuff.filter_average(data_dx, halfwindow)
-    # # utctimes = utctimes[halfwindow:-1 * halfwindow]
-    # # data_filtered = data_filtered[halfwindow:-1 * halfwindow]
-    # # #
-    # # data_dx = standard_stuff.filter_average(data_dx, halfwindow)
-    # # utctimes = utctimes[halfwindow:-1 * halfwindow]
-    # # data_filtered = data_filtered[halfwindow:-1 * halfwindow]
-    # plotter_dual.wrapper(utctimes, data_filtered, data_dx)
-    # # # plotter_dual.wrapper(utctimes, data, data_dx)
+    # =========================================================
+    # Dual plotter.
+    spectrumdata = class_aggregator.aggregate_data(k.datapersecond, one_day_slice)
+    utctimes = spectrumdata[0]
+    data = spectrumdata[1]
+
+    data_dx = []
+    for i in range(1, len(data)):
+        dx = data[i] - data[i - 1]
+        data_dx.append(dx)
+    # dx-ing the data loses a value, so prune time arrays to be the same length otherwise we will have errors
+    # when trying to plot things.
+    utctimes = utctimes[1:]
+    # print(f'{len(utctimes)} {len(data_dx)} \n')
+    smoothinghalfwindow = 120
+    data_dx = standard_stuff.filter_average(data_dx, smoothinghalfwindow)
+    utctimes = utctimes[smoothinghalfwindow:-smoothinghalfwindow]
+    data_dx = standard_stuff.filter_average(data_dx, smoothinghalfwindow)
+    utctimes = utctimes[smoothinghalfwindow:-smoothinghalfwindow]
+
+    plotter_dual.wrapper(utctimes, data_dx, data_dx)
+
 
     # =========================================================
     # Some stats on processing time.
