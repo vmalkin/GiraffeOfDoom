@@ -156,6 +156,83 @@ if __name__ == "__main__":
         deltapressure=deltapressure,
         title='Seven Day Plot',
         filename='seven_day.png'
+    )    # =========================================================
+    # Create FFT Plots
+    # This creates FFTS that use a whole 12 hour of data, so we use the 2-day slice for this.
+    fftdata = class_aggregator.aggregate_data(1, two_day_slice)
+    utctimes = fftdata[0]
+    data = fftdata[1]
+    # If we aggregate the data we will want to say how many readings per second the new fft data is.
+    datapersecond = 10
+    timeslice = datapersecond * 60 * 60 * 6  # 6 hours
+    plotter_fft_movie.wrapper(
+        utctime=utctimes,
+        csvdata=data,
+        timeslice=timeslice,
+        datafreq=datapersecond,  #How many readings per second the fft data is now.
+        samplelength=timeslice
+    )
+
+    # =========================================================
+    # One Day Plotter
+    window = k.datapersecond * 60
+    one_day_data = class_aggregator.aggregate_data(window, one_day_slice)
+    # Get tilt, temperature and pressure data.
+    utctimes = one_day_data[0]
+    data = one_day_data[1]
+    print(f'{len(utctimes)} {len(one_day_slice[1])}')
+    temperature = one_day_data[2]
+    pressure = one_day_data[3]
+    deltapressure = []
+    for i in range(1, len(pressure)):
+        d = pressure[i] - pressure[i - 1]
+        deltapressure.append(d)
+    deltapressure.insert(0, deltapressure[1])
+
+    print(f'{len(utctimes)} {len(data)} {len(temperature)} {len(pressure)} \n')
+    plotter_current_day.wrapper(
+        utctimes=utctimes,
+        data=data,
+        temperature=temperature,
+        pressure=pressure,
+        deltapressure=deltapressure,
+        title='One Day Plot',
+        filename='one_day.png'
+    )
+
+    # =========================================================
+    # Seven Day Plotter
+    window = k.datapersecond * 60
+    seven_day_data = class_aggregator.aggregate_data(window, sanitised_list)
+    # Get tilt, temperature and pressure data.
+    utctimes = seven_day_data[0]
+    data = seven_day_data[1]
+    # print(f'{len(utctimes)} {len(slice_data[1])}')
+    temperature = seven_day_data[2]
+    pressure = seven_day_data[3]
+    deltapressure = []
+    for i in range(1, len(pressure)):
+        d = pressure[i] - pressure[i - 1]
+        deltapressure.append(d)
+    deltapressure.insert(0, deltapressure[1])
+
+    # Smooth the data
+    smoothinghalfwindow = 2
+    data = standard_stuff.filter_average(data, smoothinghalfwindow)
+    temperature = standard_stuff.filter_average(temperature, smoothinghalfwindow)
+    pressure = standard_stuff.filter_average(pressure, smoothinghalfwindow)
+    deltapressure = standard_stuff.filter_average(deltapressure, smoothinghalfwindow)
+    utctimes = utctimes[smoothinghalfwindow:-smoothinghalfwindow]
+    #
+    print(f'{len(utctimes)} {len(data)} {len(temperature)} {len(pressure)} \n')
+    plotter_current_day.wrapper(
+        utctimes=utctimes,
+        data=data,
+        temperature=temperature,
+        pressure=pressure,
+        deltapressure=deltapressure,
+        title='Seven Day Plot',
+        filename='seven_day.png'
     )
 
     # =========================================================
@@ -171,14 +248,19 @@ if __name__ == "__main__":
     # dx-ing the data loses a value, so prune time arrays to be the same length otherwise we will have errors
     # when trying to plot things.
     utctimes = utctimes[1:]
-    # print(f'{len(utctimes)} {len(data_dx)} \n')
-    smoothinghalfwindow = 120
-    data_dx = standard_stuff.filter_average(data_dx, smoothinghalfwindow)
-    utctimes = utctimes[smoothinghalfwindow:-smoothinghalfwindow]
-    data_dx = standard_stuff.filter_average(data_dx, smoothinghalfwindow)
-    utctimes = utctimes[smoothinghalfwindow:-smoothinghalfwindow]
+    data = data[1:]
+    # use a 2-pole butterworth filter to get the seismic signals
+    sos = butter(
+        2,
+        [0.01, 1.0],
+        btype='bandpass',
+        fs=5,
+        output='sos'
+    )
+    filtered = sosfiltfilt(sos, data_dx)
 
-    plotter_dual.wrapper(utctimes, data_dx, data_dx)
+    print(f'{len(utctimes)} {len(data)} {len(filtered)} \n')
+    plotter_dual.wrapper(utctimes, data, filtered)
 
 
     # =========================================================

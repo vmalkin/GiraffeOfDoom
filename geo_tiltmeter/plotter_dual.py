@@ -24,13 +24,13 @@ def plot_dual_hourly(
     hour_slice = 60*60
     sz_avg = np.nanmean(data)
     # Use the RMS for the margin
-    margin = np.sqrt(np.mean(np.square(data))) * 8
+    margin = np.sqrt(np.mean(np.square(data))) * 0.75
     sz_ymax = sz_avg + margin
     sz_ymin = sz_avg - margin
 
     dx_avg = np.nanmean(data_dx)
     # Use the RMS for the margin
-    margin = np.sqrt(np.mean(np.square(data))) * 4
+    margin = np.sqrt(np.mean(np.square(data))) * 0.008
     dx_ymax = dx_avg + margin
     dx_ymin = dx_avg - margin
 
