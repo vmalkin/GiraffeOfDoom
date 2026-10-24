@@ -1,6 +1,7 @@
 # This template uses multiprocessing to iterate over very large arrays of data. We will use the
 # ProcessPoolExecutor as it's considered the more modern method.
 # Yes - AI has helped me with the ideas, but as you can tell by the janky code, that bit is mine.
+import multiprocessing
 from concurrent.futures import ProcessPoolExecutor
 
 
@@ -8,7 +9,7 @@ from concurrent.futures import ProcessPoolExecutor
 
 
 def process_chunk(chunk):
-    # This is a _Worker_ which typically uses the chunk to processing then generating a
+    # This is a _Worker_ which typically uses the chunk to process then generate a
     # single plot from this chunk. Return the filename of the plot.
     return filename
 
@@ -24,7 +25,8 @@ def chunks(data, size):
 
 def wrapper(data):
     chunksize = 10000
-    with ProcessPoolExecutor(max_workers=8) as executor:
+    cores = multiprocessing.cpu_count() - 1
+    with ProcessPoolExecutor(max_workers=cores) as executor:
         results = list(
             executor.map(
                 process_chunk,
