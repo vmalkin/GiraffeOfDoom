@@ -79,10 +79,10 @@ if __name__ == "__main__":
     data = spectrumdata[1]
     plotter_spectrum_quick.wrapper(utctimes, data)
 
-    # # =========================================================
-    # # Create FFT Plots
-    # # This creates FFTS that use a whole 12 hour of data, so we use the 2-day slice for this.
-    # multiprc_fft.main(one_day_slice)
+    # =========================================================
+    # Create FFT Plots
+    # This creates FFTS that use a whole 12 hour of data, so we use the 2-day slice for this.
+    multiprc_fft.main(one_day_slice)
 
     # =========================================================
     # One Day Plotter
