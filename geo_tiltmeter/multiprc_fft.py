@@ -212,6 +212,7 @@ def chunks(data, chunkstep, chunklength):
 def main(data):
     # ***************************************************************
     # Set up for multiprocessing
+    print(f'*** BEGIN multiprocessor plot FFT')
     chunklength = (k.datapersecond * 60) * 60 * 6
     # The next step we're picking the data off from. (Every 5 mins usually)
     chunkstep = (k.datapersecond * 60) * 5
@@ -224,3 +225,4 @@ def main(data):
                 )
             )
         # print(f'{results}')
+    print(f'*** END multiprocessor plot FFT')
