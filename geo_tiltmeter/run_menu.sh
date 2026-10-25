@@ -13,24 +13,37 @@ MAGENTA='\033[35m'
 CYAN='\033[36m'
 WHITE='\033[37m'
 
+#display_menu() {
+#  clear
+#  echo ""
+#  echo -e "${RED}${BOLD}TILT METER VISUALISATION"
+#  echo -e "~~~~~~~~~~~~~~~~~~~~~~~~${RESET}"
+#  echo -e "${GREEN}"
+#  echo "Are we running in VENV? Is the datalogger running?"
+#  echo "Choose from the following menu."
+#  echo "Check the status of the datalogger first."
+#  echo -e "${RESET}"
+#  echo "[b] Basic seismic spectrogram and 24 hour readings."
+#  echo "[f] FFT of last 24 hours."
+#  echo "[s] Statistical analysis."
+#  echo ""
+#  echo "[q] QUIT the program."
+#  echo ""
+#  }
+
 display_menu() {
   clear
+  echo -e "+------------------------------------------------------------------------------+"
+  echo -e "|                          ${RED}${BOLD}TILT METER VISUALISATION${RESET}                            |"
+  echo -e "+------------------------------------------------------------------------------+"
+  echo -e "|            ${RED}Are we running in VENV? Check Datalogger status FIRST!${RESET}            | "
+  echo -e "+--------------------------------------+---------------------------------------+"
+  echo -e "|  [${BOLD}b${RESET}] Basic seismic spectrogram.      |  [${BOLD}q${RESET}] QUIT the program.                |"
+  echo -e "|  [${BOLD}f${RESET}] FFT of last 24 hours.           |                                       |"
+  echo -e "|  [${BOLD}s${RESET}] Statistical analysis.           |                                       |"
+  echo -e "+--------------------------------------+---------------------------------------+"
   echo ""
-  echo -e "${RED}${BOLD}TILT METER VISUALISATION"
-  echo -e "~~~~~~~~~~~~~~~~~~~~~~~~${RESET}"
-  echo -e "${GREEN}"
-  echo "Are we running in VENV? Is the datalogger running?"
-  echo "Choose from the following menu."
-  echo "Check the status of the datalogger first."
-  echo -e "${RESET}"
-  echo "[b] Basic seismic spectrogram and 24 hour readings."
-  echo "[f] FFT of last 24 hours."
-  echo "[s] Statistical analysis."
-  echo ""
-  echo "[q] QUIT the program."
-  echo ""
-  }
-
+}
 
 user_q() {
   echo "QUIT program"
