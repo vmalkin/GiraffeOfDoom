@@ -20,22 +20,41 @@ display_menu() {
 
 user_q() {
   echo "QUIT program"
-  global_run = 0
+  global_run=0
 }
 
 
 user_b() {
   echo "Basic spectrogram."
+  python3 master_plotter.py
+}
+
+
+user_f() {
+  echo "FFT spectrograms via multi-processing."
+  python3 multiprc_fft.py
+}
+
+
+user_s() {
+  echo "Statistical analysis of data for 24 hours."
+  python3 master_statistics.py
 }
 
 
 check_user_input() {
-  case user_input in
+  case $user_input in
   q)
     user_q
     ;;
   b)
     user_b
+    ;;
+  f)
+    user_f
+    ;;
+  s)
+    user_s
     ;;
   *)
     echo "Not valid input!"
@@ -50,7 +69,7 @@ global_run=1
 while [ "$global_run" -eq 1 ];
 do
   display_menu
-  read -p "Choose an option." userinput
+  read -p "Choose an option." user_input
   check_user_input
   read -p "Press ENTER to continue..."
   done
