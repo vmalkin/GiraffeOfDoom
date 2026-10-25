@@ -1,14 +1,28 @@
 #!/bin/bash
+# Text formatting
+RESET='\033[0m'
+BOLD='\033[1m'
+
+# Colours
+RED='\033[31m'
+GREEN='\033[32m'
+YELLOW='\033[33m'
+BLUE='\033[34m'
+MAGENTA='\033[35m'
+CYAN='\033[36m'
+WHITE='\033[37m'
+
+
 display_menu() {
   clear
   echo ""
-  echo "TILT METER VISUALISATION"
-  echo "~~~~~~~~~~~~~~~~~~~~~~~~"
-  echo ""
+  echo -e "${RED}${BOLD}TILT METER VISUALISATION"
+  echo -e "~~~~~~~~~~~~~~~~~~~~~~~~${RESET}"
+  echo -e "${GREEN}"
   echo "Are we running in VENV? Is the datalogger running?"
   echo "Choose from the following menu."
   echo "Check the status of the datalogger first."
-  echo ""
+  echo -e "${RESET}"
   echo "[b] Basic seismic spectrogram and 24 hour readings."
   echo "[f] FFT of last 24 hours."
   echo "[s] Statistical analysis."
@@ -66,6 +80,8 @@ check_user_input() {
 }
 
 
+
+
 # ====== PROGRAM STARTS HERE =====
 clear
 global_run=1
@@ -74,7 +90,9 @@ source venv/bin/activate
 while [ "$global_run" -eq 1 ];
 do
   display_menu
+  echo -e "${GREEN}"
   read -p "Choose an option: " user_input
   check_user_input
   read -p "Press ENTER to continue..."
+  echo -e "${RESET}"
   done
