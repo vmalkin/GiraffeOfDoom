@@ -1,6 +1,6 @@
 import standard_stuff
 import plotter_spectrum_quick
-import plotter_dual
+import multiprc_dual
 import plotter_current_day
 import multiprc_fft
 import time
@@ -82,7 +82,7 @@ if __name__ == "__main__":
     # =========================================================
     # Create FFT Plots
     # This creates FFTS that use a whole 12 hour of data, so we use the 2-day slice for this.
-    multiprc_fft.main(two_day_slice)
+    multiprc_fft.main(one_day_slice)
 
     # =========================================================
     # One Day Plotter
@@ -146,33 +146,32 @@ if __name__ == "__main__":
         filename='seven_day.png'
     )
 
-    # # =========================================================
-    # # Dual plotter.
-    # spectrumdata = class_aggregator.aggregate_data(k.datapersecond, one_day_slice)
-    # utctimes = spectrumdata[0]
-    # data = spectrumdata[1]
-    #
-    # data_dx = []
-    # for i in range(1, len(data)):
-    #     dx = data[i] - data[i - 1]
-    #     data_dx.append(dx)
-    # # dx-ing the data loses a value, so prune time arrays to be the same length otherwise we will have errors
-    # # when trying to plot things.
-    # utctimes = utctimes[1:]
-    # data = data[1:]
-    # # use a 2-pole butterworth filter to get the seismic signals
-    # sos = butter(
-    #     2,
-    #     [0.01, 1.0],
-    #     btype='bandpass',
-    #     fs=5,
-    #     output='sos'
-    # )
-    # filtered = sosfiltfilt(sos, data_dx)
-    #
-    # print(f'{len(utctimes)} {len(data)} {len(filtered)} \n')
-    # plotter_dual.wrapper(utctimes, data, filtered)
+    # =========================================================
+    # Dual plotter.
+    spectrumdata = class_aggregator.aggregate_data(k.datapersecond, one_day_slice)
+    utctimes = spectrumdata[0]
+    data = spectrumdata[1]
 
+    data_dx = []
+    for i in range(1, len(data)):
+        dx = data[i] - data[i - 1]
+        data_dx.append(dx)
+    # dx-ing the data loses a value, so prune time arrays to be the same length otherwise we will have errors
+    # when trying to plot things.
+    utctimes = utctimes[1:]
+    data = data[1:]
+    # use a 2-pole butterworth filter to get the seismic signals
+    sos = butter(
+        2,
+        [0.01, 1.0],
+        btype='bandpass',
+        fs=5,
+        output='sos'
+    )
+    filtered = sosfiltfilt(sos, data_dx)
+
+    print(f'{len(utctimes)} {len(data)} {len(filtered)} \n')
+    multiprc_dual.main(utctimes, data, filtered)
 
     # =========================================================
     # Some stats on processing time.

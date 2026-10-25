@@ -170,7 +170,7 @@ def plot_sevenday_fft(fft_data, begintime, endtime, filename, title):
                      color='blue',
                      bbox=dict(boxstyle="square", fc="1", color="red"))
     savefile = k.dir_saves['spectrograms'] + os.sep + str(filename) + ".png"
-    print(savefile)
+    # print(savefile)
     plt.savefig(savefile)
     plt.clf()
     plt.close()
@@ -191,6 +191,7 @@ def process_chunk(chunk):
         fft_data = perform_fft(data, k.datapersecond)
         title = f"FFT for time {begintime} to {endtime}. Sample length {len(data)}."
         plot_sevenday_fft(fft_data, begintime, endtime, day_file_name, title)
+        print(day_file_name)
         return day_file_name
 
 

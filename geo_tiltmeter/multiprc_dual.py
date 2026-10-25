@@ -9,42 +9,108 @@ from concurrent.futures import ProcessPoolExecutor
 import class_aggregator
 import standard_stuff
 import matplotlib.pyplot as plt
-from scipy.fft import rfft, rfftfreq
+from matplotlib.ticker import AutoMinorLocator
+import matplotlib.dates as mdates
 import time
 import os
 import constants as k
 import numpy as np
 
+
 # There may be other functions here called by process_chunk
+ink_colour = ["#7a3f16", "green", "red", "#ffffff"]
+plotstyle = 'bmh'
 
 
-def plot():
-    filename = 'bob'
-    savefile = k.dir_saves['spectrograms'] + os.sep + str(filename) + ".png"
-    print(savefile)
-    plt.savefig(savefile)
-    plt.clf()
-    plt.close()
+def plot_dual_hourly(
+        df,
+        utctimes,
+        data,
+        data_dx,
+        title,
+        savefolder
+    ):
+    # the size of an hour is plot frequency multiplied by seconds/min and mins/hr
+    hour_slice = 60*60
+    sz_avg = np.nanmean(data)
+    # Use the RMS for the margin
+    margin = np.sqrt(np.mean(np.square(data))) * 0.75
+    sz_ymax = sz_avg + margin
+    sz_ymin = sz_avg - margin
+
+    dx_avg = np.nanmean(data_dx)
+    # Use the RMS for the margin
+    margin = np.sqrt(np.mean(np.square(data))) * 0.008
+    dx_ymax = dx_avg + margin
+    dx_ymin = dx_avg - margin
+
+    for i in range(0, len(data), hour_slice):
+        print(f'Dual Plots {i} / {len(data)}')
+        array_start = i
+        array_end = i + hour_slice
+        seismo = data[array_start:array_end]
+        dx = data_dx[array_start:array_end]
+        chart_times = utctimes[array_start:array_end]
+
+        plt.style.use(plotstyle)
+        fig, ax = plt.subplots(2, layout="constrained", figsize=(16, 8), dpi=250)
+
+        # utcdates should be datetime objects, not POSIX floats
+        ax[0].plot(chart_times, seismo, c=ink_colour[0], linewidth=1)
+        ax[0].set_ylabel("Tiltmeter. Arbitrary Units.", color=ink_colour[0])
+        ax[0].set_ylim([sz_ymin, sz_ymax])
+        my_fmt = mdates.DateFormatter(df)
+        ax[0].xaxis.set_major_formatter(my_fmt)
+        # Major grid
+        ax[0].grid(which='major', linestyle=':', color='black', alpha=1)
+        ax[0].grid(which='minor', linestyle=':', color='black',alpha=0.5)
+        # Minor ticks and grid
+        ax[0].xaxis.set_minor_locator(AutoMinorLocator(5))
+        ax[0].yaxis.set_minor_locator(AutoMinorLocator(1))
+
+        # ax[1] = ax1.twinx()
+        ax[1].plot(chart_times, dx, c=ink_colour[1], linewidth=1)
+        ax[1].set_ylabel("Tilt, dx/dt", color=ink_colour[1])
+        ax[1].set_ylim([dx_ymin, dx_ymax])
+        my_fmt = mdates.DateFormatter(df)
+        ax[1].xaxis.set_major_formatter(my_fmt)
+        # Major grid
+        ax[1].grid(which='major', linestyle=':', color='black', alpha=1)
+        ax[1].grid(which='minor', linestyle=':', color='black',alpha=0.5)
+        # Minor ticks and grid
+        ax[1].xaxis.set_minor_locator(AutoMinorLocator(5))
+        ax[1].yaxis.set_minor_locator(AutoMinorLocator(1))
+
+        plot_title = title + " - " + standard_stuff.posix2utc(time.time(), '%Y-%m-%d %H:%M')
+        plt.xlabel("UTC Datetime.")
+        fig.suptitle(plot_title)
+        savefile = savefolder + os.sep + str(i) + ".png"
+        plt.savefig(savefile)
+        plt.close()
+        # print(f"Dualplotter: {i} / {len(smoothe_seismo)}")
+
 
 
 def process_chunk(chunk):
     # This is a _Worker_ which typically uses the chunk to process then generate a
     # single plot from this chunk. Return the filename of the plot.
-    # Data is in form [posix, data1, data2, etc]. use aggregator to separate out.
+    # Data is in form [utctimes, seismo_data, dx_data].
     if chunk is not None:
-        fftdata = class_aggregator.aggregate_data(windowsize=1, querydata=chunk)
-        utctimes = fftdata[0]
-        data = fftdata[1]
-        df = "%d  %H:%M"
-        begintime = utctimes[0].strftime(df)
-        endtime = utctimes[len(utctimes) - 1].strftime(df)
-        day_file_name = utctimes[len(utctimes) - 1].strftime('%Y-%m-%d-%H-%M')
-        title = f"plot title"
-        plot(data, begintime, endtime, day_file_name, title)
-        return day_file_name
+        df = "%b %d \n%H:%M"
+        title = f'Tiltmeter One Day. Data and dx/dt.'
+        savefolder = k.dir_saves['images']
+        plot_dual_hourly(
+            df=df,
+            utctimes=chunk[0],
+            data=chunk[1],
+            data_dx=chunk[2],
+            title=title,
+            savefolder=savefolder
+        )
+        return chunk[0][0]
 
 
-def chunks(data, chunkstep, chunklength):
+def chunks(utcobj, data, dxdt, chunkstep, chunklength):
     # In Python, yield turns a normal function into a generator so
     # it can produce values one at a time instead of returning everything at once.
     # Each time the generator runs up to a yield, it pauses and gives the value to
@@ -55,23 +121,25 @@ def chunks(data, chunkstep, chunklength):
             slicestart = i - chunklength
             sliceend = i
             seismo_data = data[slicestart:sliceend]
-            yield seismo_data
+            dx_data = dxdt[slicestart:sliceend]
+            utctimes = utcobj[slicestart:sliceend]
+            returnlist = [utctimes, seismo_data, dx_data]
+            yield returnlist
         else:
             yield None
 
 
-def main(data):
-    # ***************************************************************
+def main(utcobj, data, dxdt):
     # Set up for multiprocessing
-    chunklength = (k.datapersecond * 60) * 60 * 6
+    chunklength = (k.datapersecond * 60) * 60 * 1
     # The next step we're picking the data off from. (Every 5 mins usually)
-    chunkstep = (k.datapersecond * 60) * 5
+    chunkstep = (k.datapersecond * 60) * 60 * 1
     cores = cpu_count() - 1
     with ProcessPoolExecutor(max_workers=cores) as executor:
         results = list(
             executor.map(
                 process_chunk,
-                chunks(data, chunkstep, chunklength)
+                chunks(utcobj, data, dxdt, chunkstep, chunklength)
                 )
             )
         # print(f'{results}')

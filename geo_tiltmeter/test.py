@@ -3,11 +3,12 @@ import class_aggregator
 import standard_stuff
 import matplotlib.pyplot as plt
 from scipy.fft import rfft, rfftfreq
+from scipy.signal import butter, sosfiltfilt
 import time
 import os
 import constants as k
 import numpy as np
-import multiprc_fft
+import multiprc_dual
 
 if __name__ == '__main__':
     # each entry in data is [posix, data1, data2, etc].
@@ -57,12 +58,33 @@ if __name__ == '__main__':
     # CREATE aggregated data
     # [utc_object_time, seismic_data, temperature_data, pressure_data]
     print(f'*** BEGIN Plotter ***\n')
-    two_day_slice_interval = -1 * (86400 * k.datapersecond) * 2
-    two_day_slice = sanitised_list[two_day_slice_interval:]
-
+    one_day_slice_interval = -1 * (86400 * k.datapersecond) * 1
+    one_day_slice = sanitised_list[one_day_slice_interval:]
     start = time.time()
 
-    multiprc_fft.main(two_day_slice)
+    spectrumdata = class_aggregator.aggregate_data(k.datapersecond, one_day_slice)
+    utctimes = spectrumdata[0]
+    data = spectrumdata[1]
+    data_dx = []
+    for i in range(1, len(data)):
+        dx = data[i] - data[i - 1]
+        data_dx.append(dx)
+    # dx-ing the data loses a value, so prune time arrays to be the same length otherwise we will have errors
+    # when trying to plot things.
+    utctimes = utctimes[1:]
+    data = data[1:]
+    # use a 2-pole butterworth filter to get the seismic signals
+    sos = butter(
+        2,
+        [0.01, 1.0],
+        btype='bandpass',
+        fs=5,
+        output='sos'
+    )
+    filtered = sosfiltfilt(sos, data_dx)
+
+    print(f'{len(utctimes)} {len(data)} {len(filtered)}')
+    multiprc_dual.main(utctimes, data, filtered)
 
     # =========================================================
     # Some stats on processing time.
