@@ -26,18 +26,21 @@ user_q() {
 
 user_b() {
   echo "Basic spectrogram."
+  echo ""
   python3 master_plotter.py
 }
 
 
 user_f() {
   echo "FFT spectrograms via multi-processing."
+  echo ""
   python3 multiprc_fft.py
 }
 
 
 user_s() {
   echo "Statistical analysis of data for 24 hours."
+  echo ""
   python3 master_statistics.py
 }
 
@@ -71,7 +74,7 @@ source venv/bin/activate
 while [ "$global_run" -eq 1 ];
 do
   display_menu
-  read -p "Choose an option." user_input
+  read -p "Choose an option: " user_input
   check_user_input
   read -p "Press ENTER to continue..."
   done
