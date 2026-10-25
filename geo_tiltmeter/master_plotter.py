@@ -82,8 +82,7 @@ if __name__ == "__main__":
     # =========================================================
     # Create FFT Plots
     # This creates FFTS that use a whole 12 hour of data, so we use the 2-day slice for this.
-    fftdata = class_aggregator.aggregate_data(1, two_day_slice)
-    multiprc_fft.main(fftdata)
+    multiprc_fft.main(two_day_slice)
 
     # =========================================================
     # One Day Plotter
