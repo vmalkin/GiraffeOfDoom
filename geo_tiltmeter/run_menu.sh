@@ -1,5 +1,6 @@
 #!/bin/bash
 # Text formatting
+# Thank you AI. This is the kind of donkey work you are made for!
 RESET='\033[0m'
 BOLD='\033[1m'
 
