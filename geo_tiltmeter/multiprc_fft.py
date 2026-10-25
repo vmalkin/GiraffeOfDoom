@@ -180,8 +180,14 @@ def process_chunk(chunk):
         fftdata = class_aggregator.aggregate_data(windowsize=1, querydata=chunk)
         utctimes = fftdata[0]
         data = fftdata[1]
-
-        return filename
+        df = "%d  %H:%M"
+        begintime = utctimes[0].strftime(df)
+        endtime = utctimes[len(utctimes) - 1].strftime(df)
+        day_file_name = utctimes[len(utctimes) - 1].strftime('%Y-%m-%d-%H-%M')
+        fft_data = perform_fft(data, k.datapersecond)
+        title = f"FFT for time {begintime} to {endtime}. Sample length {len(data)}."
+        plot_sevenday_fft(fft_data, begintime, endtime, day_file_name, title)
+        return day_file_name
 
 
 def chunks(data, chunkstep, chunklength):

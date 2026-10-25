@@ -188,6 +188,7 @@ def wrapper(utctime, csvdata, timeslice, datafreq, samplelength):
             seismo_data = plot_data[slicestart:sliceend]
             chart_times = plot_utc[slicestart:sliceend]
             #
+
             begintime = chart_times[0].strftime(df)
             endtime = chart_times[len(chart_times) - 1].strftime(df)
             day_file_name = chart_times[len(chart_times) - 1].strftime('%Y-%m-%d-%H-%M')
