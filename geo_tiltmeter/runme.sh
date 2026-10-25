@@ -2,14 +2,14 @@
 display_menu() {
   clear
   echo ""
-  echo "PENDULUM VISUALISATION"
-  echo "~~~~~~~~~~~~~~~~~~~~~~"
+  echo "TILT METER VISUALISATION"
+  echo "~~~~~~~~~~~~~~~~~~~~~~~~"
   echo ""
   echo "Are we running in VENV? Is the datalogger running?"
   echo "Choose from the following menu."
   echo "Check the status of the datalogger first."
   echo ""
-  echo "[b] Basic spectrogram and 24 hour readings."
+  echo "[b] Basic seismic spectrogram and 24 hour readings."
   echo "[f] FFT of last 24 hours."
   echo "[s] Statistical analysis."
   echo ""
