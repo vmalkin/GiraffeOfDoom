@@ -13,7 +13,6 @@ MAGENTA='\033[35m'
 CYAN='\033[36m'
 WHITE='\033[37m'
 
-
 display_menu() {
   clear
   echo ""
@@ -79,8 +78,6 @@ check_user_input() {
     ;;
   esac
 }
-
-
 
 
 # ====== PROGRAM STARTS HERE =====
