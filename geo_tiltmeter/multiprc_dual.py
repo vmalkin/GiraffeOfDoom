@@ -28,10 +28,10 @@ def plot_dual_hourly(
         data,
         data_dx,
         title,
-        savefolder
+        filename
     ):
-    # the size of an hour is plot frequency multiplied by seconds/min and mins/hr
-    hour_slice = 60*60
+    # # the size of an hour is plot frequency multiplied by seconds/min and mins/hr
+    # hour_slice = 60*60
     sz_avg = np.nanmean(data)
     # Use the RMS for the margin
     margin = np.sqrt(np.mean(np.square(data))) * 0.75
@@ -44,51 +44,51 @@ def plot_dual_hourly(
     dx_ymax = dx_avg + margin
     dx_ymin = dx_avg - margin
 
-    for i in range(0, len(data), hour_slice):
-        print(f'Dual Plots {i} / {len(data)}')
-        array_start = i
-        array_end = i + hour_slice
-        seismo = data[array_start:array_end]
-        dx = data_dx[array_start:array_end]
-        chart_times = utctimes[array_start:array_end]
+    # # for i in range(0, len(data), hour_slice):
+    # # print(f'Dual Plots {i} / {len(data)}')
+    # array_start = i
+    # array_end = i + hour_slice
+    # seismo = data[array_start:array_end]
+    # dx = data_dx[array_start:array_end]
+    # chart_times = utctimes[array_start:array_end]
 
-        plt.style.use(plotstyle)
-        fig, ax = plt.subplots(2, layout="constrained", figsize=(16, 8), dpi=250)
+    plt.style.use(plotstyle)
+    fig, ax = plt.subplots(2, layout="constrained", figsize=(16, 8), dpi=250)
 
-        # utcdates should be datetime objects, not POSIX floats
-        ax[0].plot(chart_times, seismo, c=ink_colour[0], linewidth=1)
-        ax[0].set_ylabel("Tiltmeter. Arbitrary Units.", color=ink_colour[0])
-        ax[0].set_ylim([sz_ymin, sz_ymax])
-        my_fmt = mdates.DateFormatter(df)
-        ax[0].xaxis.set_major_formatter(my_fmt)
-        # Major grid
-        ax[0].grid(which='major', linestyle=':', color='black', alpha=1)
-        ax[0].grid(which='minor', linestyle=':', color='black',alpha=0.5)
-        # Minor ticks and grid
-        ax[0].xaxis.set_minor_locator(AutoMinorLocator(5))
-        ax[0].yaxis.set_minor_locator(AutoMinorLocator(1))
+    # utcdates should be datetime objects, not POSIX floats
+    ax[0].plot(utctimes, data, c=ink_colour[0], linewidth=1)
+    ax[0].set_ylabel("Tiltmeter. Arbitrary Units.", color=ink_colour[0])
+    ax[0].set_ylim([sz_ymin, sz_ymax])
+    my_fmt = mdates.DateFormatter(df)
+    ax[0].xaxis.set_major_formatter(my_fmt)
+    # Major grid
+    ax[0].grid(which='major', linestyle=':', color='black', alpha=1)
+    ax[0].grid(which='minor', linestyle=':', color='black',alpha=0.5)
+    # Minor ticks and grid
+    ax[0].xaxis.set_minor_locator(AutoMinorLocator(5))
+    ax[0].yaxis.set_minor_locator(AutoMinorLocator(1))
 
-        # ax[1] = ax1.twinx()
-        ax[1].plot(chart_times, dx, c=ink_colour[1], linewidth=1)
-        ax[1].set_ylabel("Tilt, dx/dt", color=ink_colour[1])
-        ax[1].set_ylim([dx_ymin, dx_ymax])
-        my_fmt = mdates.DateFormatter(df)
-        ax[1].xaxis.set_major_formatter(my_fmt)
-        # Major grid
-        ax[1].grid(which='major', linestyle=':', color='black', alpha=1)
-        ax[1].grid(which='minor', linestyle=':', color='black',alpha=0.5)
-        # Minor ticks and grid
-        ax[1].xaxis.set_minor_locator(AutoMinorLocator(5))
-        ax[1].yaxis.set_minor_locator(AutoMinorLocator(1))
+    # ax[1] = ax1.twinx()
+    ax[1].plot(utctimes, data_dx, c=ink_colour[1], linewidth=1)
+    ax[1].set_ylabel("Tilt, dx/dt", color=ink_colour[1])
+    ax[1].set_ylim([dx_ymin, dx_ymax])
+    my_fmt = mdates.DateFormatter(df)
+    ax[1].xaxis.set_major_formatter(my_fmt)
+    # Major grid
+    ax[1].grid(which='major', linestyle=':', color='black', alpha=1)
+    ax[1].grid(which='minor', linestyle=':', color='black',alpha=0.5)
+    # Minor ticks and grid
+    ax[1].xaxis.set_minor_locator(AutoMinorLocator(5))
+    ax[1].yaxis.set_minor_locator(AutoMinorLocator(1))
 
-        plot_title = title + " - " + standard_stuff.posix2utc(time.time(), '%Y-%m-%d %H:%M')
-        plt.xlabel("UTC Datetime.")
-        fig.suptitle(plot_title)
-        savefile = savefolder + os.sep + str(i) + ".png"
-        plt.savefig(savefile)
-        plt.close()
-        # print(f"Dualplotter: {i} / {len(smoothe_seismo)}")
-
+    plot_title = title + " - " + standard_stuff.posix2utc(time.time(), '%Y-%m-%d %H:%M')
+    plt.xlabel("UTC Datetime.")
+    fig.suptitle(plot_title)
+    # filename = utctimes[len(utctimes) - 1].strftime('%Y-%m-%d-%H-%M')
+    savefile = k.dir_saves['images'] + os.sep + str(filename) + ".png"
+    plt.savefig(savefile)
+    plt.close()
+    print(f"Dualplotter: {savefile}")
 
 
 def process_chunk(chunk):
@@ -105,9 +105,9 @@ def process_chunk(chunk):
             data=chunk[1],
             data_dx=chunk[2],
             title=title,
-            savefolder=savefolder
+            filename=chunk[3]
         )
-        return chunk[0][0]
+        return None
 
 
 def chunks(utcobj, data, dxdt, chunkstep, chunklength):
@@ -118,12 +118,12 @@ def chunks(utcobj, data, dxdt, chunkstep, chunklength):
     # Here we are stepping BACKWARDS so most recent data is plotted.
     for i in range(len(data), 0, -1 * chunkstep):
         if i - chunklength > 0:
-            slicestart = i - chunklength
+            slicestart = i - chunkstep
             sliceend = i
             seismo_data = data[slicestart:sliceend]
             dx_data = dxdt[slicestart:sliceend]
             utctimes = utcobj[slicestart:sliceend]
-            returnlist = [utctimes, seismo_data, dx_data]
+            returnlist = [utctimes, seismo_data, dx_data, sliceend]
             yield returnlist
         else:
             yield None
@@ -131,9 +131,9 @@ def chunks(utcobj, data, dxdt, chunkstep, chunklength):
 
 def main(utcobj, data, dxdt):
     # Set up for multiprocessing
-    chunklength = (k.datapersecond * 60) * 60 * 1
+    chunklength = 60 * 60 * 1
     # The next step we're picking the data off from. (Every 5 mins usually)
-    chunkstep = (k.datapersecond * 60) * 60 * 1
+    chunkstep = 60 * 60 * 1
     cores = cpu_count() - 1
     with ProcessPoolExecutor(max_workers=cores) as executor:
         results = list(
