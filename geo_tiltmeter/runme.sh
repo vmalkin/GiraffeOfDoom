@@ -62,9 +62,11 @@ check_user_input() {
   esac
 }
 
+
 # ====== PROGRAM STARTS HERE =====
 clear
 global_run=1
+source venv/bin/activate
 
 while [ "$global_run" -eq 1 ];
 do
