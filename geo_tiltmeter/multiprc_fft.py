@@ -4,7 +4,7 @@
 #
 # For the multiprocessing to work tHis script MUST be called from another script that has
 # it's own if __name__ == '__main__'
-
+from multiprocessing import cpu_count
 from concurrent.futures import ProcessPoolExecutor
 import class_aggregator
 import standard_stuff
@@ -170,6 +170,7 @@ def plot_sevenday_fft(fft_data, begintime, endtime, filename, title):
                      color='blue',
                      bbox=dict(boxstyle="square", fc="1", color="red"))
     savefile = k.dir_saves['spectrograms'] + os.sep + str(filename) + ".png"
+    print(savefile)
     plt.savefig(savefile)
     plt.clf()
     plt.close()
@@ -214,7 +215,7 @@ def main(data):
     chunklength = (k.datapersecond * 60) * 60 * 6
     # The next step we're picking the data off from. (Every 5 mins usually)
     chunkstep = (k.datapersecond * 60) * 5
-    cores = 3
+    cores = cpu_count() - 1
     with ProcessPoolExecutor(max_workers=cores) as executor:
         results = list(
             executor.map(

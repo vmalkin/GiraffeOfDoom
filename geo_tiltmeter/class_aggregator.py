@@ -36,7 +36,7 @@ class Aggregator:
 def aggregate_data(windowsize, querydata):
     # windowsize needs to be at least 1
     # PASS 1 - Set up the array
-    print("PASS 1 - Setting up aggregating array")
+    # print("PASS 1 - Setting up aggregating array")
     aggregate_array = []
     date_start = querydata[0][0]
     for i in range(1, len(querydata), windowsize):
@@ -46,7 +46,7 @@ def aggregate_data(windowsize, querydata):
         date_start = date_end
 
     # PASS 2 - generate the lookup array to speed up data placement
-    print("PASS 2 - Generating lookup dict")
+    # print("PASS 2 - Generating lookup dict")
     lookup = {}
     j = 0
     for i in range(0, len(querydata)):
@@ -60,7 +60,7 @@ def aggregate_data(windowsize, querydata):
             j = j + 1
 
     # PASS 3 - add the data into the correct aggregate object based on datetime
-    print("PASS 3 - Adding data to aggregating array")
+    # print("PASS 3 - Adding data to aggregating array")
     for i in range(0, len(querydata)):
         # if i % 1000 == 0:
         #     print(f"{i} / {len(result_7d)}")
@@ -75,7 +75,7 @@ def aggregate_data(windowsize, querydata):
         aggregate_array[agg_index - 1].data_pressure.append(pressure)
 
     # PASS 4 - Use aggregator class functions to create plotting data
-    print("PASS 4 - Create and return plotting array.")
+    # print("PASS 4 - Create and return plotting array.")
     utc_object_time = []
     seismic_data = []
     temperature_data = []
