@@ -27,19 +27,7 @@ def chunks(data, size):
         yield data[i:i + size]
 
 
-def wrapper(data):
-    chunksize = 10000
-    cores = 3
-    with ProcessPoolExecutor(max_workers=cores) as executor:
-        results = list(
-            executor.map(
-                process_chunk,
-                chunks(data, chunksize)
-        )
-    )
-    return results
-
-if __name__ == '__main__':
+def main():
     print(f'*** BEGIN load CSV data ***')
     # Decide on time interval we are plotting for. We can split off smaller intervals based on a larger list
     # Parse logfile directory for file names that fit our interval
@@ -87,4 +75,16 @@ if __name__ == '__main__':
     print(f'*** BEGIN Plotter ***\n')
     two_day_slice_interval = -1 * (86400 * k.datapersecond) * 2
     two_day_slice = sanitised_list[two_day_slice_interval:]
-    wrapper(two_day_slice)
+    chunksize = 10000
+    cores = 3
+    with ProcessPoolExecutor(max_workers=cores) as executor:
+        results = list(
+            executor.map(
+                process_chunk,
+                chunks(two_day_slice, chunksize)
+        )
+    )
+    return results
+
+if __name__ == '__main__':
+    main()

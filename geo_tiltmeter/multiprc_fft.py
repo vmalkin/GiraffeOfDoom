@@ -177,18 +177,17 @@ def process_chunk(chunk):
     # single plot from this chunk. Return the filename of the plot.
     # Data is in form [posix, data1, data2, etc]. use aggregator to separate out.
     if chunk is not None:
-        for item in chunk:
-            fftdata = class_aggregator.aggregate_data(windowsize=1, querydata=item)
-            utctimes = fftdata[0]
-            data = fftdata[1]
-            df = "%d  %H:%M"
-            begintime = utctimes[0].strftime(df)
-            endtime = utctimes[len(utctimes) - 1].strftime(df)
-            day_file_name = utctimes[len(utctimes) - 1].strftime('%Y-%m-%d-%H-%M')
-            fft_data = perform_fft(data, k.datapersecond)
-            title = f"FFT for time {begintime} to {endtime}. Sample length {len(data)}."
-            plot_sevenday_fft(fft_data, begintime, endtime, day_file_name, title)
-            return day_file_name
+        fftdata = class_aggregator.aggregate_data(windowsize=1, querydata=chunk)
+        utctimes = fftdata[0]
+        data = fftdata[1]
+        df = "%d  %H:%M"
+        begintime = utctimes[0].strftime(df)
+        endtime = utctimes[len(utctimes) - 1].strftime(df)
+        day_file_name = utctimes[len(utctimes) - 1].strftime('%Y-%m-%d-%H-%M')
+        fft_data = perform_fft(data, k.datapersecond)
+        title = f"FFT for time {begintime} to {endtime}. Sample length {len(data)}."
+        plot_sevenday_fft(fft_data, begintime, endtime, day_file_name, title)
+        return day_file_name
 
 
 def chunks(data, chunkstep, chunklength):
@@ -206,29 +205,9 @@ def chunks(data, chunkstep, chunklength):
             yield None
 
 
-def wrapper(data):
+def main():
     # each entry in data is [posix, data1, data2, etc].
     # The size of the FFT data we want to process (6 hours)
-    chunklength = (k.datapersecond * 60) * 60 * 6
-    # The next step we're picking the data off from. (Every 5 mins usually)
-    chunkstep = (k.datapersecond * 60) * 5
-    cores = 3
-
-    # while chunks(data, chunkstep, chunklength) is not None:
-    #     d = chunks(data, chunkstep, chunklength)
-    #     for item in d:
-    #         if item is not None:
-    #             print(len(item))
-    with ProcessPoolExecutor(max_workers=cores) as executor:
-        results = list(
-            executor.map(
-                process_chunk,
-                chunks(data, chunkstep, chunklength)
-                )
-            )
-        return results
-
-if __name__ == '__main__':
     print(f'*** BEGIN load CSV data ***')
     # Decide on time interval we are plotting for. We can split off smaller intervals based on a larger list
     # Parse logfile directory for file names that fit our interval
@@ -276,4 +255,25 @@ if __name__ == '__main__':
     print(f'*** BEGIN Plotter ***\n')
     two_day_slice_interval = -1 * (86400 * k.datapersecond) * 2
     two_day_slice = sanitised_list[two_day_slice_interval:]
-    wrapper(two_day_slice)
+
+    chunklength = (k.datapersecond * 60) * 60 * 6
+    # The next step we're picking the data off from. (Every 5 mins usually)
+    chunkstep = (k.datapersecond * 60) * 5
+    cores = 3
+
+    # while chunks(data, chunkstep, chunklength) is not None:
+    #     d = chunks(data, chunkstep, chunklength)
+    #     for item in d:
+    #         if item is not None:
+    #             print(len(item))
+    with ProcessPoolExecutor(max_workers=cores) as executor:
+        results = list(
+            executor.map(
+                process_chunk,
+                chunks(two_day_slice, chunkstep, chunklength)
+                )
+            )
+        return results
+
+if __name__ == '__main__':
+    main()
