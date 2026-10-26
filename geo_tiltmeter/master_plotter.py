@@ -157,13 +157,14 @@ if __name__ == "__main__":
     data = data[1:]
     # use a 2-pole butterworth filter to get the seismic signals
     sos = butter(
-        2,
-        [0.01, 1.0],
+        4,
+        [0.01, 0.8],
         btype='bandpass',
         fs=5,
         output='sos'
     )
     filtered = sosfiltfilt(sos, data_dx)
+    data = sosfiltfilt(sos, data)
 
     print(f'{len(utctimes)} {len(data)} {len(filtered)} \n')
     multiprc_dual.main(utctimes, data, filtered)
