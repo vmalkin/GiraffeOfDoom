@@ -79,67 +79,67 @@ if __name__ == "__main__":
     data = spectrumdata[1]
     plotter_spectrum_quick.wrapper(utctimes, data)
 
-    # # =========================================================
-    # # One Day Plotter
-    # window = k.datapersecond * 60
-    # one_day_data = class_aggregator.aggregate_data(window, one_day_slice)
-    # # Get tilt, temperature and pressure data.
-    # utctimes = one_day_data[0]
-    # data = one_day_data[1]
-    # print(f'{len(utctimes)} {len(one_day_slice[1])}')
-    # temperature = one_day_data[2]
-    # pressure = one_day_data[3]
-    # deltapressure = []
-    # for i in range(1, len(pressure)):
-    #     d = pressure[i] - pressure[i - 1]
-    #     deltapressure.append(d)
-    # deltapressure.insert(0, deltapressure[1])
-    #
-    # print(f'{len(utctimes)} {len(data)} {len(temperature)} {len(pressure)} \n')
-    # plotter_current_day.wrapper(
-    #     utctimes=utctimes,
-    #     data=data,
-    #     temperature=temperature,
-    #     pressure=pressure,
-    #     deltapressure=deltapressure,
-    #     title='One Day Plot',
-    #     filename='one_day.png'
-    # )
+    # =========================================================
+    # One Day Plotter
+    window = k.datapersecond * 60
+    one_day_data = class_aggregator.aggregate_data(window, one_day_slice)
+    # Get tilt, temperature and pressure data.
+    utctimes = one_day_data[0]
+    data = one_day_data[1]
+    print(f'{len(utctimes)} {len(one_day_slice[1])}')
+    temperature = one_day_data[2]
+    pressure = one_day_data[3]
+    deltapressure = []
+    for i in range(1, len(pressure)):
+        d = pressure[i] - pressure[i - 1]
+        deltapressure.append(d)
+    deltapressure.insert(0, deltapressure[1])
 
-    # # =========================================================
-    # # Seven Day Plotter
-    # window = k.datapersecond * 60
-    # seven_day_data = class_aggregator.aggregate_data(window, sanitised_list)
-    # # Get tilt, temperature and pressure data.
-    # utctimes = seven_day_data[0]
-    # data = seven_day_data[1]
-    # # print(f'{len(utctimes)} {len(slice_data[1])}')
-    # temperature = seven_day_data[2]
-    # pressure = seven_day_data[3]
-    # deltapressure = []
-    # for i in range(1, len(pressure)):
-    #     d = pressure[i] - pressure[i - 1]
-    #     deltapressure.append(d)
-    # deltapressure.insert(0, deltapressure[1])
+    print(f'{len(utctimes)} {len(data)} {len(temperature)} {len(pressure)} \n')
+    plotter_current_day.wrapper(
+        utctimes=utctimes,
+        data=data,
+        temperature=temperature,
+        pressure=pressure,
+        deltapressure=deltapressure,
+        title='One Day Plot',
+        filename='one_day.png'
+    )
+
+    # =========================================================
+    # Seven Day Plotter
+    window = k.datapersecond * 60
+    seven_day_data = class_aggregator.aggregate_data(window, sanitised_list)
+    # Get tilt, temperature and pressure data.
+    utctimes = seven_day_data[0]
+    data = seven_day_data[1]
+    # print(f'{len(utctimes)} {len(slice_data[1])}')
+    temperature = seven_day_data[2]
+    pressure = seven_day_data[3]
+    deltapressure = []
+    for i in range(1, len(pressure)):
+        d = pressure[i] - pressure[i - 1]
+        deltapressure.append(d)
+    deltapressure.insert(0, deltapressure[1])
+
+    # Smooth the data
+    smoothinghalfwindow = 2
+    data = standard_stuff.filter_average(data, smoothinghalfwindow)
+    temperature = standard_stuff.filter_average(temperature, smoothinghalfwindow)
+    pressure = standard_stuff.filter_average(pressure, smoothinghalfwindow)
+    deltapressure = standard_stuff.filter_average(deltapressure, smoothinghalfwindow)
+    utctimes = utctimes[smoothinghalfwindow:-smoothinghalfwindow]
     #
-    # # Smooth the data
-    # smoothinghalfwindow = 2
-    # data = standard_stuff.filter_average(data, smoothinghalfwindow)
-    # temperature = standard_stuff.filter_average(temperature, smoothinghalfwindow)
-    # pressure = standard_stuff.filter_average(pressure, smoothinghalfwindow)
-    # deltapressure = standard_stuff.filter_average(deltapressure, smoothinghalfwindow)
-    # utctimes = utctimes[smoothinghalfwindow:-smoothinghalfwindow]
-    # #
-    # print(f'{len(utctimes)} {len(data)} {len(temperature)} {len(pressure)} \n')
-    # plotter_current_day.wrapper(
-    #     utctimes=utctimes,
-    #     data=data,
-    #     temperature=temperature,
-    #     pressure=pressure,
-    #     deltapressure=deltapressure,
-    #     title='Seven Day Plot',
-    #     filename='seven_day.png'
-    # )
+    print(f'{len(utctimes)} {len(data)} {len(temperature)} {len(pressure)} \n')
+    plotter_current_day.wrapper(
+        utctimes=utctimes,
+        data=data,
+        temperature=temperature,
+        pressure=pressure,
+        deltapressure=deltapressure,
+        title='Seven Day Plot',
+        filename='seven_day.png'
+    )
 
     # =========================================================
     # Dual plotter.
