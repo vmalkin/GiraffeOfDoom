@@ -107,7 +107,7 @@ def plot_spectrum_scipy(
         vmax=vmax,
     )
 
-    # ax_spec.set_yscale("log")
+    ax_spec.set_yscale("log")
     ax_spec.set_ylim(fmin, fmax)
     ax_spec.set_ylabel("Frequency (Hz)")
     fft_window_stats = f"FFT window is {round(nfft / k.datapersecond / 60, 1)} minutes"
@@ -205,8 +205,8 @@ def wrapper(utc, data):
         fs=k.datapersecond,
         nfft=4096,
         overlap_frac=0.75,
-        fmin=None,
-        fmax=None,
+        fmin=10 ** -3,
+        fmax=5 * 10 ** 0,
         vmin = -7,
         vmax = 22,
         datetimeformat="%m %d\n%H:%M",
