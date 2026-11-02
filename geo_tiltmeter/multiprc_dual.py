@@ -59,6 +59,7 @@ def plot_dual_hourly(
     # ax[1] = ax1.twinx()
     ax[1].plot(utctimes, data_dx, c=ink_colour[1], linewidth=1)
     ax[1].set_ylabel("Tilt, dx/dt", color=ink_colour[1])
+    dxminmax = [i * 0.3 for i in dxminmax]
     ax[1].set_ylim(dxminmax)
     my_fmt = mdates.DateFormatter(df)
     ax[1].xaxis.set_major_formatter(my_fmt)
@@ -100,7 +101,7 @@ def process_chunk(chunk):
         return None
 
 
-def chunks(utcobj, data, dxdt, chunkstep, chunklength):
+def chunks(utcobj, data, dxdt, chunkstep, chunklength, ddminmax, dxminmax):
     # In Python, yield turns a normal function into a generator so
     # it can produce values one at a time instead of returning everything at once.
     # Each time the generator runs up to a yield, it pauses and gives the value to
@@ -113,7 +114,7 @@ def chunks(utcobj, data, dxdt, chunkstep, chunklength):
             seismo_data = data[slicestart:sliceend]
             dx_data = dxdt[slicestart:sliceend]
             utctimes = utcobj[slicestart:sliceend]
-            returnlist = [utctimes, seismo_data, dx_data, sliceend]
+            returnlist = [utctimes, seismo_data, dx_data, sliceend, ddminmax, dxminmax]
             yield returnlist
         else:
             yield None
