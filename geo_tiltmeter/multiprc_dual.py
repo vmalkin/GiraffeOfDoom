@@ -127,7 +127,7 @@ def main(utcobj, data, dxdt):
 
     sz_avg = np.nanmean(data)
     # Use the RMS for the margin
-    margin = np.sqrt(np.mean(np.square(data))) * 3
+    margin = np.sqrt(np.mean(np.square(data))) * 4
     ddminmax = [sz_avg - margin, sz_avg + margin]
 
     dx_avg = np.nanmean(dxdt)
