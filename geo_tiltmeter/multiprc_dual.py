@@ -131,9 +131,9 @@ def chunks(utcobj, data, dxdt, chunkstep, chunklength):
 
 def main(utcobj, data, dxdt):
     # Set up for multiprocessing
-    chunklength = 60 * 60 * 1
+    chunklength = 60 * 60 * 10
     # The next step we're picking the data off from. (Every 5 mins usually)
-    chunkstep = 60 * 60 * 1
+    chunkstep = 60 * 60 * 10
     cores = cpu_count() - 1
     with ProcessPoolExecutor(max_workers=cores) as executor:
         results = list(

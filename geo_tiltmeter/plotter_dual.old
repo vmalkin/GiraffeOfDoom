@@ -21,7 +21,7 @@ def plot_dual_hourly(
         savefolder
     ):
     # the size of an hour is plot frequency multiplied by seconds/min and mins/hr
-    hour_slice = 60*60
+    hour_slice = 60 * 60 * 10 * 10
     sz_avg = np.nanmean(data)
     # Use the RMS for the margin
     margin = np.sqrt(np.mean(np.square(data))) * 0.75
