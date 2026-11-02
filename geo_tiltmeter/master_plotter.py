@@ -143,7 +143,7 @@ if __name__ == "__main__":
 
     # =========================================================
     # Dual plotter.
-    spectrumdata = class_aggregator.aggregate_data(k.datapersecond, one_day_slice)
+    spectrumdata = class_aggregator.aggregate_data(1, one_day_slice)
     utctimes = spectrumdata[0]
     data = spectrumdata[1]
 
@@ -158,9 +158,9 @@ if __name__ == "__main__":
     # use a 2-pole butterworth filter to get the seismic signals
     sos = butter(
         4,
-        [0.01, 0.8],
+        [2 * 10 ** -3, 1 * 10 ** -1],
         btype='bandpass',
-        fs=5,
+        fs=10,
         output='sos'
     )
     filtered = sosfiltfilt(sos, data_dx)

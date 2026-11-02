@@ -28,22 +28,10 @@ def plot_dual_hourly(
         data,
         data_dx,
         title,
-        filename
+        filename,
+        ddminmax,
+        dxminmax
     ):
-    # # the size of an hour is plot frequency multiplied by seconds/min and mins/hr
-    # hour_slice = 60*60
-    sz_avg = np.nanmean(data)
-    # Use the RMS for the margin
-    margin = np.sqrt(np.mean(np.square(data))) * 7
-    sz_ymax = sz_avg + margin
-    sz_ymin = sz_avg - margin
-
-    dx_avg = np.nanmean(data_dx)
-    # Use the RMS for the margin
-    margin = np.sqrt(np.mean(np.square(data_dx))) * 6
-    dx_ymax = dx_avg + margin
-    dx_ymin = dx_avg - margin
-
     # # for i in range(0, len(data), hour_slice):
     # # print(f'Dual Plots {i} / {len(data)}')
     # array_start = i
@@ -58,7 +46,7 @@ def plot_dual_hourly(
     # utcdates should be datetime objects, not POSIX floats
     ax[0].plot(utctimes, data, c=ink_colour[0], linewidth=1)
     ax[0].set_ylabel("Tiltmeter. Arbitrary Units.", color=ink_colour[0])
-    ax[0].set_ylim([sz_ymin, sz_ymax])
+    ax[0].set_ylim(ddminmax)
     my_fmt = mdates.DateFormatter(df)
     ax[0].xaxis.set_major_formatter(my_fmt)
     # Major grid
@@ -71,7 +59,7 @@ def plot_dual_hourly(
     # ax[1] = ax1.twinx()
     ax[1].plot(utctimes, data_dx, c=ink_colour[1], linewidth=1)
     ax[1].set_ylabel("Tilt, dx/dt", color=ink_colour[1])
-    ax[1].set_ylim([dx_ymin, dx_ymax])
+    ax[1].set_ylim(dxminmax)
     my_fmt = mdates.DateFormatter(df)
     ax[1].xaxis.set_major_formatter(my_fmt)
     # Major grid
@@ -105,7 +93,9 @@ def process_chunk(chunk):
             data=chunk[1],
             data_dx=chunk[2],
             title=title,
-            filename=chunk[3]
+            filename=chunk[3],
+            ddminmax=chunk[4],
+            dxminmax=chunk[5]
         )
         return None
 
@@ -134,12 +124,23 @@ def main(utcobj, data, dxdt):
     chunklength = 60 * 60 * 10
     # The next step we're picking the data off from. (Every 5 mins usually)
     chunkstep = 60 * 60 * 10
+
+    sz_avg = np.nanmean(data)
+    # Use the RMS for the margin
+    margin = np.sqrt(np.mean(np.square(data))) * 7
+    ddminmax = [sz_avg - margin, sz_avg + margin]
+
+    dx_avg = np.nanmean(dxdt)
+    # Use the RMS for the margin
+    margin = np.sqrt(np.mean(np.square(dxdt))) * 6
+    dxminmax = [dx_avg - margin, dx_avg + margin]
+
     cores = cpu_count() - 1
     with ProcessPoolExecutor(max_workers=cores) as executor:
         results = list(
             executor.map(
                 process_chunk,
-                chunks(utcobj, data, dxdt, chunkstep, chunklength)
+                chunks(utcobj, data, dxdt, chunkstep, chunklength, ddminmax, dxminmax)
                 )
             )
         # print(f'{results}')
