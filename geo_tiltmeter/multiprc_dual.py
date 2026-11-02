@@ -59,7 +59,7 @@ def plot_dual_hourly(
     # ax[1] = ax1.twinx()
     ax[1].plot(utctimes, data_dx, c=ink_colour[1], linewidth=1)
     ax[1].set_ylabel("Tilt, dx/dt", color=ink_colour[1])
-    dxminmax = [i * 0.3 for i in dxminmax]
+    dxminmax = [i * 0.15 for i in dxminmax]
     ax[1].set_ylim(dxminmax)
     my_fmt = mdates.DateFormatter(df)
     ax[1].xaxis.set_major_formatter(my_fmt)
