@@ -59,7 +59,6 @@ def plot_dual_hourly(
     # ax[1] = ax1.twinx()
     ax[1].plot(utctimes, data_dx, c=ink_colour[1], linewidth=1)
     ax[1].set_ylabel("Tilt, dx/dt", color=ink_colour[1])
-    dxminmax = [i * 0.15 for i in dxminmax]
     ax[1].set_ylim(dxminmax)
     my_fmt = mdates.DateFormatter(df)
     ax[1].xaxis.set_major_formatter(my_fmt)
@@ -128,12 +127,12 @@ def main(utcobj, data, dxdt):
 
     sz_avg = np.nanmean(data)
     # Use the RMS for the margin
-    margin = np.sqrt(np.mean(np.square(data))) * 7
+    margin = np.sqrt(np.mean(np.square(data))) * 3
     ddminmax = [sz_avg - margin, sz_avg + margin]
 
     dx_avg = np.nanmean(dxdt)
     # Use the RMS for the margin
-    margin = np.sqrt(np.mean(np.square(dxdt))) * 6
+    margin = np.sqrt(np.mean(np.square(dxdt))) * 0.5
     dxminmax = [dx_avg - margin, dx_avg + margin]
 
     cores = cpu_count() - 1
