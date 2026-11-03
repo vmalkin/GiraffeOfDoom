@@ -43,9 +43,12 @@ class Aggregator:
         mn = np.mean(dataset)
         return mn
 
-    def get_kurtosis(self, dataset):
-        k = kurtosis(dataset)
-        return k
+    def get_skewness(self, dataset):
+        mn = np.mean(dataset)
+        md = np.median(dataset)
+        sd = np.std(dataset)
+        skewness = (mn - md) / sd
+        return skewness
 
 # This function performs aggregation using the Aggregator class
 # querydata has the format [posix, seismo]
