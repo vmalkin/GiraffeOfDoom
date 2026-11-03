@@ -1,5 +1,6 @@
 import numpy as np
 from scipy.stats import kurtosis
+from scipy.signal import periodogram
 # import constants as k
 from datetime import datetime, timezone
 
@@ -49,6 +50,20 @@ class Aggregator:
         sd = np.std(dataset)
         skewness = (mn - md) / sd
         return skewness
+
+    def get_kurtosis(self, dataset):
+        kt = kurtosis(dataset)
+        return kt
+
+    def get_spectral_entropy(self, dataset):
+        frequencies, power_spectrum = periodogram(dataset)
+        ps_sum = np.sum(power_spectrum)
+        if ps_sum == 0:
+            return 0.0
+        p = power_spectrum / ps_sum
+        p = p[p > 0]  # Remove zero entries
+        spent = -np.sum(p * np.log2(p)) / np.log2(len(power_spectrum))
+        return spent
 
 # This function performs aggregation using the Aggregator class
 # querydata has the format [posix, seismo]
