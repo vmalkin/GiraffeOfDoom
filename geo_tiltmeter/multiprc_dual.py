@@ -126,13 +126,15 @@ def main(utcobj, data, dxdt):
     chunkstep = 60 * 60 * 10
 
     sz_avg = np.nanmean(data)
-    # Use the RMS for the margin
-    margin = np.sqrt(np.mean(np.square(data))) * 4
+    # # Use the RMS for the margin
+    # margin = np.sqrt(np.mean(np.square(data))) * 4
+    margin = np.std(data) * 5
     ddminmax = [sz_avg - margin, sz_avg + margin]
 
     dx_avg = np.nanmean(dxdt)
-    # Use the RMS for the margin
-    margin = np.sqrt(np.mean(np.square(dxdt))) * 0.5
+    # # Use the RMS for the margin
+    # margin = np.sqrt(np.mean(np.square(dxdt))) * 0.5
+    margin = np.std(dxdt) * 0.5
     dxminmax = [dx_avg - margin, dx_avg + margin]
 
     cores = cpu_count() - 1

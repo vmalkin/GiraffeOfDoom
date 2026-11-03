@@ -1,5 +1,5 @@
 import numpy as np
-# from numpy import mean, median
+from scipy.stats import kurtosis
 # import constants as k
 from datetime import datetime, timezone
 
@@ -30,6 +30,22 @@ class Aggregator:
     def return_utc_timeobject(self, psx):
         tim = datetime.fromtimestamp(psx, tz=timezone.utc)
         return tim
+
+    def get_rms(self, dataset):
+        rms = np.sqrt(np.mean(np.square(dataset)))
+        return rms
+
+    def get_stddev(self, dataset):
+        sd = np.std(dataset)
+        return sd
+
+    def get_mean(self, dataset):
+        mn = np.mean(dataset)
+        return mn
+
+    def get_kurtosis(self, dataset):
+        k = kurtosis(dataset)
+        return k
 
 # This function performs aggregation using the Aggregator class
 # querydata has the format [posix, seismo]
