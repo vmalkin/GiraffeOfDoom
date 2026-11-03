@@ -62,30 +62,23 @@ if __name__ == '__main__':
     one_day_slice = sanitised_list[one_day_slice_interval:]
     start = time.time()
 
-    spectrumdata = class_aggregator.aggregate_data(k.datapersecond, one_day_slice)
-    utctimes = spectrumdata[0]
-    data = spectrumdata[1]
-    data_dx = []
-    for i in range(1, len(data)):
-        dx = data[i] - data[i - 1]
-        data_dx.append(dx)
-    # dx-ing the data loses a value, so prune time arrays to be the same length otherwise we will have errors
-    # when trying to plot things.
-    utctimes = utctimes[1:]
-    data = data[1:]
-    # use a 2-pole butterworth filter to get the seismic signals
-    sos = butter(
-        2,
-        [0.01, 1.0],
-        btype='bandpass',
-        fs=5,
-        output='sos'
-    )
-    filtered = sosfiltfilt(sos, data_dx)
+    # window of 10 minutes
+    window = 10 * 60 * k.datapersecond
+    spectrumdata = class_aggregator.aggregate_data(window, one_day_slice)
 
-    print(f'{len(utctimes)} {len(data)} {len(filtered)}')
-    multiprc_dual.main(utctimes, data, filtered)
+    utc_object_time = spectrumdata[0]
+    seismic_data = spectrumdata[1]
+    temperature_data = spectrumdata[2]
+    pressure_data = spectrumdata[3]
+    rms_data = spectrumdata[4]
+    stddev_data = spectrumdata[5]
+    mean_data = spectrumdata[6]
+    median_data = spectrumdata[7]
+    skews_data = spectrumdata[8]
+    kurts_data = spectrumdata[9]
+    spectral_entropy_data = spectrumdata[10]
 
+    print(len(spectral_entropy_data))
     # =========================================================
     # Some stats on processing time.
     end = time.time()

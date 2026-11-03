@@ -44,6 +44,10 @@ class Aggregator:
         mn = np.mean(dataset)
         return mn
 
+    def get_median(self, dataset):
+        md = np.median(dataset)
+        return md
+
     def get_skewness(self, dataset):
         mn = np.mean(dataset)
         md = np.median(dataset)
@@ -120,17 +124,52 @@ def aggregate_data(windowsize, querydata):
     seismic_data = []
     temperature_data = []
     pressure_data = []
+    rms_data = []
+    stddev_data = []
+    mean_data = []
+    median_data = []
+    skews_data = []
+    kurts_data = []
+    spectral_entropy_data = []
     for i in range(1, len(aggregate_array)):
         tim = aggregate_array[i].get_avg_posix()
         tim = aggregate_array[i].return_utc_timeobject(tim)
-
+        #
         siz = aggregate_array[i].get_data_avg(aggregate_array[i].data_seismo)
         tmp = aggregate_array[i].get_data_avg(aggregate_array[i].data_temperature)
         prs = aggregate_array[i].get_data_avg(aggregate_array[i].data_pressure)
+        rms = aggregate_array[i].get_rms(aggregate_array[i].data_seismo)
+        sdv = aggregate_array[i].get_stddev(aggregate_array[i].data_seismo)
+        men = aggregate_array[i].get_mean(aggregate_array[i].data_seismo)
+        med = aggregate_array[i].get_median(aggregate_array[i].data_seismo)
+        skw = aggregate_array[i].get_skewness(aggregate_array[i].data_seismo)
+        krt = aggregate_array[i].get_kurtosis(aggregate_array[i].data_seismo)
+        ent = aggregate_array[i].get_spectral_entropy(aggregate_array[i].data_temperature)
+
         utc_object_time.append(tim)
         seismic_data.append(siz)
         temperature_data.append(tmp)
         pressure_data.append(prs)
+        rms_data.append(rms)
+        stddev_data.append(sdv)
+        mean_data.append(men)
+        median_data.append(med)
+        skews_data.append(skw)
+        kurts_data.append(krt)
+        spectral_entropy_data.append(ent)
 
     # return plotting_data
-    return [utc_object_time, seismic_data, temperature_data, pressure_data]
+
+    return [
+        utc_object_time,
+        seismic_data,
+        temperature_data,
+        pressure_data,
+        rms_data,
+        stddev_data,
+        mean_data,
+        median_data,
+        skews_data,
+        kurts_data,
+        spectral_entropy_data
+    ]
