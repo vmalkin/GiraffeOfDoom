@@ -56,13 +56,19 @@ class Aggregator:
         return kt
 
     def get_spectral_entropy(self, dataset):
+        # The spectral entropy captures the "peakiness" of a spectrum, where a flat distribution
+        # has high entropy and sharp peaks have low entropy
+        # Higher entropy indicates more unpredictability and information content,
+        # while lower entropy suggests predictability and less new information
+        # Formula stolen from AI.
         frequencies, power_spectrum = periodogram(dataset)
         ps_sum = np.sum(power_spectrum)
         if ps_sum == 0:
-            return 0.0
-        p = power_spectrum / ps_sum
-        p = p[p > 0]  # Remove zero entries
-        spent = -np.sum(p * np.log2(p)) / np.log2(len(power_spectrum))
+            spent = 0
+        else:
+            p = power_spectrum / ps_sum
+            p = p[p > 0]  # Remove zero entries
+            spent = -np.sum(p * np.log2(p)) / np.log2(len(power_spectrum))
         return spent
 
 # This function performs aggregation using the Aggregator class
