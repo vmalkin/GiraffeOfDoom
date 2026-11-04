@@ -129,7 +129,7 @@ def aggregate_data(halfwindow, step, querydata, mode):
     else:
         for i in range(1, len(aggregate_array)):
             if i % 10000 == 0:
-                print(f'Plotting data {round(i/len(aggregate_array), 2)} completed.')
+                print(f'Full data {round(i/len(aggregate_array), 2)} completed.')
             tim = aggregate_array[i].get_avg_posix()
             tim = aggregate_array[i].return_utc_timeobject(tim)
             #
