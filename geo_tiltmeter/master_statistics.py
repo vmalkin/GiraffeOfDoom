@@ -1,5 +1,4 @@
-from PIL.ImageChops import hard_light
-
+from scipy.stats import pearsonr
 import standard_stuff
 import time
 import class_aggregator
@@ -30,8 +29,20 @@ def marker_list(size):
     return returnlist
 
 
+def plot_7day_spectrum(data):
+    NFFT = 1024  # the length of the windowing segments
+    Fs = 1 / k.datapersecond  # the sampling frequency
+    fig, ax = plt.subplots(figsize=(16, 4))
+    Pxx, freqs, bins, im = ax.specgram(data, NFFT=NFFT, Fs=Fs)
+    savefile = k.dir_saves['images'] + os.sep + '7day_spectrogram.png'
+    plt.savefig(savefile)
+    plt.close()
+
+
 def plot_scatter(x_data, y_data, filename, title):
-    fig, ax = plt.subplots(2, height_ratios=[10, 1], figsize=(10, 11))
+    result = pearsonr(x_data, y_data)
+    pearson_corr = round(result[0], 2)
+    fig, ax = plt.subplots(nrows=2, height_ratios=[10, 1], figsize=(10, 11))
     colours = colour_list(len(x_data))
     markers = marker_list(len(x_data))
     ax[0].scatter(x_data, y_data, c=colours, marker='o', s=20, linewidth=1, alpha=0.7)
@@ -39,7 +50,7 @@ def plot_scatter(x_data, y_data, filename, title):
     # plt.xlabel("UTC Datetime.")
     for i in range(0, len(colours)):
         ax[1].scatter(i, 1, c=colours[i], marker='o', s=20, linewidth=1, alpha=0.7)
-    ax[1].set_xlabel("Older Data --> Newer Data")
+    ax[1].set_xlabel(f"<-- Older Data       pearson_r={pearson_corr}       Newer Data -->")
     ax[1].set_xticks([])
     ax[1].set_yticks([])
     savefile = k.dir_saves['images'] + os.sep + filename + '.png'
@@ -53,7 +64,7 @@ def plot(spectrum_subarrays, dateformat, filename, plottitle):
     plotrows = len(spectrum_subarrays) - 1
 
     # fig, ax = plt.subplots(plotrows, layout="constrained", height_ratios=[1,1,1], figsize=(16, 32), dpi=250)
-    fig, ax = plt.subplots(plotrows, layout="constrained", figsize=(16, 32), dpi=250)
+    fig, ax = plt.subplots(plotrows, layout="constrained", figsize=(16, 32), dpi=250, sharex=True)
 
     my_fmt = mdates.DateFormatter(dateformat)
     for i in range(1, len(spectrum_subarrays)):
@@ -157,9 +168,33 @@ if __name__ == '__main__':
     plot(spectrumdata_7, df, 'stats_seven_day', title)
     plot(spectrumdata_1, df, 'stats_one_day', title)
 
-    scatter_x = spectrumdata_7[6][2]
-    scatter_y = spectrumdata_7[7][2]
-    plot_scatter(scatter_x, scatter_y, filename='scatter_seven_day', title='x: SD, y: Skew')
+    utc_object_time = spectrumdata_7[0][2]
+    seismic_data = spectrumdata_7[1][2]
+    temperature_data = spectrumdata_7[2][2]
+    pressure_data = spectrumdata_7[3][2]
+    mean_data = spectrumdata_7[4][2]
+    median_data = spectrumdata_7[5][2]
+    stddev_data = spectrumdata_7[6][2]
+    skews_data = spectrumdata_7[7][2]
+    kurts_data = spectrumdata_7[8][2]
+    spectral_entropy_data = spectrumdata_7[9][2]
+
+    # 7day Spectrogram
+    plot_7day_spectrum(seismic_data)
+
+    # Scatterplots
+    plot_scatter(stddev_data, skews_data, filename='sctr_7_sd_skw', title='x: SD, y: Skew')
+    plot_scatter(temperature_data, seismic_data, filename='sctr_7_tlt_temp', title='x: Temp, y: Tilt')
+    plot_scatter(temperature_data, pressure_data, filename='sctr_7_tmp_prs', title='x: Temp, y: Pressure')
+    #
+    # dxT = []
+    # dxP = []
+    # for i in range(1, len(seismic_data)):
+    #     dt = seismic_data[i] - seismic_data[i - 1]
+    #     dp = pressure_data[i] - pressure_data[i - 1]
+    #     dxT.append(dt)
+    #     dxP.append(dp)
+    # plot_scatter(dxT, dxP, filename='sctr_7_dt_dp', title='x: dx Tilt, y: dx Pressure')
 
 
     # =========================================================
