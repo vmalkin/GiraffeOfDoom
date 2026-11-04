@@ -112,34 +112,28 @@ def aggregate_data(halfwindow, step, querydata, mode):
     skews_data = []
     kurts_data = []
     spectral_entropy_data = []
-
+    #
     if mode == 'basic':
-        # print(f'{mode} mode')
-        for i in range(1, len(aggregate_array)):
-            # if i % 10000 == 0:
-            #     print(f'Basic data {round(i / len(aggregate_array), 2)} completed.')
-            tim = aggregate_array[i].get_avg_posix()
-            tim = aggregate_array[i].return_utc_timeobject(tim)
-            #
-            siz = aggregate_array[i].get_data_avg(aggregate_array[i].data_seismo)
-            tmp = aggregate_array[i].get_data_avg(aggregate_array[i].data_temperature)
-            prs = aggregate_array[i].get_data_avg(aggregate_array[i].data_pressure)
-            utc_object_time.append(tim)
-            seismic_data.append(siz)
-            temperature_data.append(tmp)
-            pressure_data.append(prs)
+        print(f'{mode} mode')
+    for i in range(1, len(aggregate_array)):
+        # if i % 10000 == 0:
+        #     print(f'Basic data {round(i / len(aggregate_array), 2)} completed.')
+        tim = aggregate_array[i].get_avg_posix()
+        tim = aggregate_array[i].return_utc_timeobject(tim)
+        #
+        siz = aggregate_array[i].get_data_avg(aggregate_array[i].data_seismo)
+        tmp = aggregate_array[i].get_data_avg(aggregate_array[i].data_temperature)
+        prs = aggregate_array[i].get_data_avg(aggregate_array[i].data_pressure)
+        utc_object_time.append(tim)
+        seismic_data.append(siz)
+        temperature_data.append(tmp)
+        pressure_data.append(prs)
 
     if mode == 'stats':
-        # print(f'{mode} mode')
+        print(f'{mode} mode')
         for i in range(1, len(aggregate_array)):
             if i % 10000 == 0:
                 print(f'Full data {round(i/len(aggregate_array), 2)} completed.')
-            tim = aggregate_array[i].get_avg_posix()
-            tim = aggregate_array[i].return_utc_timeobject(tim)
-            #
-            siz = aggregate_array[i].get_data_avg(aggregate_array[i].data_seismo)
-            tmp = aggregate_array[i].get_data_avg(aggregate_array[i].data_temperature)
-            prs = aggregate_array[i].get_data_avg(aggregate_array[i].data_pressure)
             rms = aggregate_array[i].get_rms(aggregate_array[i].data_seismo)
             sdv = aggregate_array[i].get_stddev(aggregate_array[i].data_seismo)
             men = aggregate_array[i].get_mean(aggregate_array[i].data_seismo)
@@ -148,10 +142,6 @@ def aggregate_data(halfwindow, step, querydata, mode):
             krt = aggregate_array[i].get_kurtosis(aggregate_array[i].data_seismo)
             ent = aggregate_array[i].get_spectral_entropy(aggregate_array[i].data_temperature)
 
-            utc_object_time.append(tim)
-            seismic_data.append(siz)
-            temperature_data.append(tmp)
-            pressure_data.append(prs)
             rms_data.append(rms)
             stddev_data.append(sdv)
             mean_data.append(men)
