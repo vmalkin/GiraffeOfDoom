@@ -19,9 +19,10 @@ def plot(spectrum_subarrays, dateformat, filename):
 
     my_fmt = mdates.DateFormatter(dateformat)
     for i in range(1, len(spectrum_subarrays)):
-        utcdateobjects = spectrum_subarrays[0][1]
-        data = spectrum_subarrays[i][1]
-        label = spectrum_subarrays[i][0]
+        utcdateobjects = spectrum_subarrays[0][2]
+        data = spectrum_subarrays[i][2]
+        ylabel = spectrum_subarrays[i][0]
+        xlabel = spectrum_subarrays[i][1]
         ax[i - 1].plot(utcdateobjects, data, c='black', linewidth=1)
         ax[i - 1].grid(which='major', linestyle=':', color='white', alpha=1)
         ax[i - 1].grid(which='minor', linestyle=':', color='white',alpha=0.5)
@@ -29,7 +30,8 @@ def plot(spectrum_subarrays, dateformat, filename):
         ax[i - 1].xaxis.set_minor_locator(AutoMinorLocator(6))
         ax[i - 1].yaxis.set_minor_locator(AutoMinorLocator(1))
         ax[i - 1].xaxis.set_major_formatter(my_fmt)
-        ax[i - 1].set_ylabel(label)
+        ax[i - 1].set_ylabel(ylabel)
+        ax[i - 1].set_xlabel(xlabel)
 
     # # Grids and labels
     # for i in range(0, plotrows - 1):

@@ -1,5 +1,5 @@
 import numpy as np
-from scipy.stats import kurtosis
+from scipy.stats import kurtosis, skew
 from scipy.signal import periodogram
 # import constants as k
 from datetime import datetime, timezone
@@ -48,14 +48,20 @@ class Aggregator:
         md = np.median(dataset)
         return md
 
+    # def get_skewness(self, dataset):
+    #     # Pearson's second coefficient of skewness
+    #     mn = np.mean(dataset)
+    #     md = np.median(dataset)
+    #     sd = np.std(dataset)
+    #     if sd != 0:
+    #         skewness = (mn - md) / sd
+    #     else:
+    #         skewness = 0
+    #     return skewness
+
     def get_skewness(self, dataset):
-        mn = np.mean(dataset)
-        md = np.median(dataset)
-        sd = np.std(dataset)
-        if sd != 0:
-            skewness = (mn - md) / sd
-        else:
-            skewness = 0
+        # Skew using 3rd central moment
+        skewness = skew(dataset, bias=False)
         return skewness
 
     def get_kurtosis(self, dataset):
@@ -152,15 +158,15 @@ def aggregate_data(halfwindow, step, querydata, mode):
 
     # return plotting_data
     return [
-        ["UTC", utc_object_time],
-        ["Tilt", seismic_data],
-        ["Device Temp", temperature_data],
-        ["Pressure", pressure_data],
-        # ["Root Mean Square", rms_data],
-        ["Standard Deviation", stddev_data],
-        ["Mean", mean_data],
-        ["Median", median_data],
-        ["Skew", skews_data],
-        ["Kurtosis", kurts_data],
-        ["Spectral Entropy", spectral_entropy_data]
+        ["UTC", "x-axis title/description.", utc_object_time],
+        ["Tilt", "Unprocessed tilt data.", seismic_data],
+        ["Device Temp", "Tiltmeter temperature.", temperature_data],
+        ["Pressure", "Ambient pressure not corrected for height.", pressure_data],
+        ["Mean", "", mean_data],
+        ["Median", "", median_data],
+        # ["Root Mean Square", "", rms_data],
+        ["Standard Deviation", "SD of the data.", stddev_data],
+        ["Skew", "Skew using 3rd central moment.", skews_data],
+        ["Kurtosis", "", kurts_data],
+        ["Spectral Entropy", "Spectral peakiness. High is more unpredicatable, more info. Low is less new info.", spectral_entropy_data]
     ]
