@@ -112,7 +112,9 @@ def aggregate_data(halfwindow, step, querydata, mode):
     skews_data = []
     kurts_data = []
     spectral_entropy_data = []
+
     if mode == 'basic':
+        print(f'{mode} mode')
         for i in range(1, len(aggregate_array)):
             # if i % 10000 == 0:
             #     print(f'Basic data {round(i / len(aggregate_array), 2)} completed.')
@@ -126,7 +128,9 @@ def aggregate_data(halfwindow, step, querydata, mode):
             seismic_data.append(siz)
             temperature_data.append(tmp)
             pressure_data.append(prs)
-    else:
+
+    if mode == 'stats':
+        print(f'{mode} mode')
         for i in range(1, len(aggregate_array)):
             if i % 10000 == 0:
                 print(f'Full data {round(i/len(aggregate_array), 2)} completed.')

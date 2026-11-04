@@ -105,8 +105,8 @@ if __name__ == '__main__':
     start = time.time()
 
     # window of 10 minutes
-    window = 10 * 60 * k.datapersecond
-    spectrumdata = class_aggregator.aggregate_data(window, one_day_slice)
+    hlfwindow = 5 * 60 * k.datapersecond
+    spectrumdata = class_aggregator.aggregate_data(hlfwindow,hlfwindow, one_day_slice, mode='stats')
 
     df = "%b %d \n%Hhr"
     plot(spectrumdata, df)
