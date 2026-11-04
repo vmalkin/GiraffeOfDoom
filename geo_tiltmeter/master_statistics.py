@@ -8,17 +8,44 @@ import constants as k
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.ticker import AutoMinorLocator
+from matplotlib import colors as mcolors
 import matplotlib.dates as mdates
+
+def colour_list(size):
+    returnlist = []
+    # c = ['#c7a5aa', '#b19297', '#9c8185', '#877074', '#735e62', '#5e4d50', '#4a3c3f', '#352b2d', '#21191c', '#0c080a']
+    c = ['#00202e', '#2c4875', '#8a508f', '#bc5090', '#ff6361', '#ff8531', '#ffa600', '#80d353', '#609f3f', '#406a2a']
+    for i in range(0, size):
+        j = int((i / size) * 10)
+        returnlist.append(c[j])
+    return returnlist
+
+
+def marker_list(size):
+    returnlist = []
+    m = ["$0$","$1$","$2$","$3$","$4$","$5$","$6$","$7$", "$8$","$9$"]
+    for i in range(0, size):
+        j = int((i / size) * 10)
+        returnlist.append(m[j])
+    return returnlist
 
 
 def plot_scatter(x_data, y_data, filename, title):
-    fig, ax = plt.subplots(figsize=(8, 8))
-    ax.scatter(x_data, y_data, c='black', marker='o', s=10, linewidth=1, alpha=0.7)
-    ax.set_title(title)
+    fig, ax = plt.subplots(2, height_ratios=[10, 1], figsize=(10, 11))
+    colours = colour_list(len(x_data))
+    markers = marker_list(len(x_data))
+    ax[0].scatter(x_data, y_data, c=colours, marker='o', s=20, linewidth=1, alpha=0.7)
+    ax[0].set_title(title)
     # plt.xlabel("UTC Datetime.")
+    for i in range(0, len(colours)):
+        ax[1].scatter(i, 1, c=colours[i], marker='o', s=20, linewidth=1, alpha=0.7)
+    ax[1].set_xlabel("Older Data --> Newer Data")
+    ax[1].set_xticks([])
+    ax[1].set_yticks([])
     savefile = k.dir_saves['images'] + os.sep + filename + '.png'
     plt.savefig(savefile)
     plt.close()
+
 
 def plot(spectrum_subarrays, dateformat, filename, plottitle):
     plotstyle = 'Solarize_Light2'
@@ -132,7 +159,7 @@ if __name__ == '__main__':
 
     scatter_x = spectrumdata_7[6][2]
     scatter_y = spectrumdata_7[7][2]
-    plot_scatter(scatter_x, scatter_y, filename='scatter_seven_day', title='scatter_seven_day')
+    plot_scatter(scatter_x, scatter_y, filename='scatter_seven_day', title='x: SD, y: Skew')
 
 
     # =========================================================
