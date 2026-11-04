@@ -83,11 +83,10 @@ if __name__ == "__main__":
     # =========================================================
     # One Day Plotter
     hlfwindow = k.datapersecond * 30
-    one_day_data = class_aggregator.aggregate_data(hlfwindow,1, one_day_slice, mode='basic')
+    one_day_data = class_aggregator.aggregate_data(hlfwindow,hlfwindow, one_day_slice, mode='basic')
     # Get tilt, temperature and pressure data.
     utctimes = one_day_data[0][1]
     data = one_day_data[1][1]
-    print(f'{len(utctimes)} {len(one_day_slice[1])}')
     temperature = one_day_data[2][1]
     pressure = one_day_data[3][1]
 
@@ -115,7 +114,6 @@ if __name__ == "__main__":
     # Get tilt, temperature and pressure data.
     utctimes = seven_day_data[0][1]
     data = seven_day_data[1][1]
-    # print(f'{len(utctimes)} {len(slice_data[1])}')
     temperature = seven_day_data[2][1]
     pressure = seven_day_data[3][1]
 
@@ -144,33 +142,35 @@ if __name__ == "__main__":
         filename='seven_day.png'
     )
 
-    # # =========================================================
-    # # Dual plotter.
-    # spectrumdata = class_aggregator.aggregate_data(1, one_day_slice)
-    # utctimes = spectrumdata[0]
-    # data = spectrumdata[1]
-    #
-    # data_dx = []
-    # for i in range(1, len(data)):
-    #     dx = data[i] - data[i - 1]
-    #     data_dx.append(dx)
-    # # dx-ing the data loses a value, so prune time arrays to be the same length otherwise we will have errors
-    # # when trying to plot things.
-    # utctimes = utctimes[1:]
-    # data = data[1:]
-    # # use a 2-pole butterworth filter to get the seismic signals
-    # sos = butter(
-    #     4,
-    #     [2 * 10 ** -3, 1 * 10 ** -1],
-    #     btype='bandpass',
-    #     fs=10,
-    #     output='sos'
-    # )
-    # filtered = sosfiltfilt(sos, data_dx)
-    # data = sosfiltfilt(sos, data)
-    #
-    # print(f'{len(utctimes)} {len(data)} {len(filtered)} \n')
-    # multiprc_dual.main(utctimes, data, filtered)
+    # =========================================================
+    # Dual plotter.
+    hlfwindow = k.datapersecond * 30
+    one_day_data = class_aggregator.aggregate_data(hlfwindow,hlfwindow, one_day_slice, mode='basic')
+    # Get tilt, temperature and pressure data.
+    utctimes = one_day_data[0][1]
+    data = one_day_data[1][1]
+
+    data_dx = []
+    for i in range(1, len(data)):
+        dx = data[i] - data[i - 1]
+        data_dx.append(dx)
+    # dx-ing the data loses a value, so prune time arrays to be the same length otherwise we will have errors
+    # when trying to plot things.
+    utctimes = utctimes[1:]
+    data = data[1:]
+    # use a 2-pole butterworth filter to get the seismic signals
+    sos = butter(
+        4,
+        [2 * 10 ** -3, 1 * 10 ** -1],
+        btype='bandpass',
+        fs=10,
+        output='sos'
+    )
+    filtered = sosfiltfilt(sos, data_dx)
+    data = sosfiltfilt(sos, data)
+
+    print(f'{len(utctimes)} {len(data)} {len(filtered)} \n')
+    multiprc_dual.main(utctimes, data, filtered)
 
     # =========================================================
     # Some stats on processing time.
