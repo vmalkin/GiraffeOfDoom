@@ -35,6 +35,9 @@ class Aggregator:
     # def get_rms(self, dataset):
     #     rms = np.sqrt(np.mean(np.square(dataset))) - np.mean(dataset)
     #     return rms
+    def third_central_moment(self, dataset):
+        m3 = np.mean((dataset - np.mean(dataset)) ** 3)
+        return m3
 
     def get_stddev(self, dataset):
         sd = np.std(dataset)
@@ -65,7 +68,10 @@ class Aggregator:
         return skewness
 
     def get_kurtosis(self, dataset):
-        kt = kurtosis(dataset)
+        # 0: Equivalent kurtosis to a Gaussian distribution
+        # Positive: Heavier tails than a Gaussian distribution
+        # Negative: Lighter tails than a Gaussian distribution
+        kt = kurtosis(dataset, fisher=True, bias=False)
         return kt
 
     def get_spectral_entropy(self, dataset):

@@ -1,3 +1,5 @@
+from PIL.ImageChops import hard_light
+
 import standard_stuff
 import time
 import class_aggregator
@@ -9,7 +11,16 @@ from matplotlib.ticker import AutoMinorLocator
 import matplotlib.dates as mdates
 
 
-def plot(spectrum_subarrays, dateformat, filename):
+def plot_scatter(x_data, y_data, filename, title):
+    fig, ax = plt.subplots(figsize=(8, 8))
+    ax.scatter(x_data, y_data, c='black', marker='o', s=10, linewidth=1, alpha=0.7)
+    ax.set_title(title)
+    # plt.xlabel("UTC Datetime.")
+    savefile = k.dir_saves['images'] + os.sep + filename + '.png'
+    plt.savefig(savefile)
+    plt.close()
+
+def plot(spectrum_subarrays, dateformat, filename, plottitle):
     plotstyle = 'Solarize_Light2'
     plt.style.use(plotstyle)
     plotrows = len(spectrum_subarrays) - 1
@@ -46,7 +57,7 @@ def plot(spectrum_subarrays, dateformat, filename):
     # plot_title=(f'Tilt Data Rolling Stats. '
     #             f'Running window: {halfwindow * 2} samples@ {k.datapersecond}/sec. '
     #             f'Plotted: {standard_stuff.posix2utc(time.time(), '%Y-%m-%d %H:%M')}')
-    # ax[0].set_title(plot_title)
+    ax[0].set_title(title)
     # plt.xlabel("UTC Datetime.")
     savefile = k.dir_saves['images'] + os.sep + filename + '.png'
     plt.savefig(savefile)
@@ -110,12 +121,19 @@ if __name__ == '__main__':
 
     # window of 10 minutes
     hlfwindow = 5 * 60 * k.datapersecond
-    spectrumdata_7 = class_aggregator.aggregate_data(hlfwindow,hlfwindow, seven_day_slice, mode='stats')
-    spectrumdata_1 = class_aggregator.aggregate_data(hlfwindow, hlfwindow, one_day_slice, mode='stats')
+    step = hlfwindow
+    spectrumdata_7 = class_aggregator.aggregate_data(hlfwindow,step, seven_day_slice, mode='stats')
+    spectrumdata_1 = class_aggregator.aggregate_data(hlfwindow, step, one_day_slice, mode='stats')
 
     df = "%b %d \n%Hhr"
-    plot(spectrumdata_7, df, 'stats_seven_day')
-    plot(spectrumdata_1, df, 'stats_one_day')
+    title = f'Stats. Halfwindow of {hlfwindow} samples every {step} samples.'
+    plot(spectrumdata_7, df, 'stats_seven_day', title)
+    plot(spectrumdata_1, df, 'stats_one_day', title)
+
+    scatter_x = spectrumdata_7[6][2]
+    scatter_y = spectrumdata_7[7][2]
+    plot_scatter(scatter_x, scatter_y, filename='scatter_seven_day', title='scatter_seven_day')
+
 
     # =========================================================
     # Some stats on processing time.
