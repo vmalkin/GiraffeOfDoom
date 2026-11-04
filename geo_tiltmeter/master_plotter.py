@@ -144,8 +144,8 @@ if __name__ == "__main__":
 
     # =========================================================
     # Dual plotter.
-    hlfwindow = k.datapersecond * 30
-    one_day_data = class_aggregator.aggregate_data(hlfwindow,hlfwindow, one_day_slice, mode='basic')
+    hlfwindow = 0
+    one_day_data = class_aggregator.aggregate_data(hlfwindow,1, one_day_slice, mode='basic')
     # Get tilt, temperature and pressure data.
     utctimes = one_day_data[0][1]
     data = one_day_data[1][1]
@@ -168,7 +168,6 @@ if __name__ == "__main__":
     )
     filtered = sosfiltfilt(sos, data_dx)
     data = sosfiltfilt(sos, data)
-
     print(f'{len(utctimes)} {len(data)} {len(filtered)} \n')
     multiprc_dual.main(utctimes, data, filtered)
 
