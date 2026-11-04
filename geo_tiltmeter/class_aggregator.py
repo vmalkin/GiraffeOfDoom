@@ -33,7 +33,7 @@ class Aggregator:
         return tim
 
     def get_rms(self, dataset):
-        rms = np.sqrt(np.mean(np.square(dataset)))
+        rms = np.sqrt(np.mean(np.square(dataset))) - np.mean(dataset)
         return rms
 
     def get_stddev(self, dataset):
@@ -52,7 +52,10 @@ class Aggregator:
         mn = np.mean(dataset)
         md = np.median(dataset)
         sd = np.std(dataset)
-        skewness = (mn - md) / sd
+        if sd != 0:
+            skewness = (mn - md) / sd
+        else:
+            skewness = 0
         return skewness
 
     def get_kurtosis(self, dataset):
@@ -76,21 +79,28 @@ class Aggregator:
         return spent
 
 # This function performs aggregation using the Aggregator class
-# querydata has the format [posix, seismo]
-def aggregate_data(windowsize, querydata):
+# querydata has the format [utc_object_time, seismic_data, temperature_data, pressure_data]
+def aggregate_data(halfwindow, step, querydata):
     # windowsize needs to be at least 1
     # PASS 1 - Set up the array
-    # print("PASS 1 - Setting up aggregating array")
+    print("PASS 1 - Setting up aggregating array")
+    tiltdata = np.array(querydata)
+    utc_object_time = tiltdata[:,0]
+    seismic_data = tiltdata[:,1]
+    temperature_data = tiltdata[:,2]
+    pressure_data = tiltdata[:,3]
     aggregate_array = []
-    date_start = querydata[0][0]
-    for i in range(1, len(querydata), windowsize):
-        date_end = querydata[i][0]
+    for i in range(halfwindow, len(querydata) - halfwindow, step):
+        date_start = querydata[i - halfwindow][0]
+        date_end = querydata[i + halfwindow][0]
         d = Aggregator(date_start, date_end)
+        d.data_seismo = []
+
         aggregate_array.append(d)
         date_start = date_end
 
     # PASS 2 - generate the lookup array to speed up data placement
-    # print("PASS 2 - Generating lookup dict")
+    print("PASS 2 - Generating lookup dict")
     lookup = {}
     j = 0
     for i in range(0, len(querydata)):
@@ -104,7 +114,7 @@ def aggregate_data(windowsize, querydata):
             j = j + 1
 
     # PASS 3 - add the data into the correct aggregate object based on datetime
-    # print("PASS 3 - Adding data to aggregating array")
+    print("PASS 3 - Adding data to aggregating array")
     for i in range(0, len(querydata)):
         # if i % 1000 == 0:
         #     print(f"{i} / {len(result_7d)}")
@@ -119,7 +129,7 @@ def aggregate_data(windowsize, querydata):
         aggregate_array[agg_index - 1].data_pressure.append(pressure)
 
     # PASS 4 - Use aggregator class functions to create plotting data
-    # print("PASS 4 - Create and return plotting array.")
+    print("PASS 4 - Create and return plotting array.")
     utc_object_time = []
     seismic_data = []
     temperature_data = []
@@ -159,17 +169,16 @@ def aggregate_data(windowsize, querydata):
         spectral_entropy_data.append(ent)
 
     # return plotting_data
-
     return [
-        utc_object_time,
-        seismic_data,
-        temperature_data,
-        pressure_data,
-        rms_data,
-        stddev_data,
-        mean_data,
-        median_data,
-        skews_data,
-        kurts_data,
-        spectral_entropy_data
+        ["UTC", utc_object_time],
+        ["Tilt", seismic_data],
+        ["Device Temp", temperature_data],
+        ["Pressure", pressure_data],
+        ["Root Mean Square", rms_data],
+        ["Standard Deviation", stddev_data],
+        ["Mean", mean_data],
+        ["Median", median_data],
+        ["Skew", skews_data],
+        ["Kurtosis", kurts_data],
+        ["Spectral Entropy", spectral_entropy_data]
     ]

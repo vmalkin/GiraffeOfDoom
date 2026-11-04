@@ -1,14 +1,55 @@
-from concurrent.futures import ProcessPoolExecutor
-import class_aggregator
 import standard_stuff
-import matplotlib.pyplot as plt
-from scipy.fft import rfft, rfftfreq
-from scipy.signal import butter, sosfiltfilt
 import time
+import class_aggregator
 import os
 import constants as k
 import numpy as np
-import multiprc_dual
+import matplotlib.pyplot as plt
+from matplotlib.ticker import AutoMinorLocator
+import matplotlib.dates as mdates
+
+
+def plot(spectrum_subarrays, dateformat):
+    plotstyle = 'Solarize_Light2'
+    plt.style.use(plotstyle)
+    plotrows = len(spectrum_subarrays) - 1
+
+    # fig, ax = plt.subplots(plotrows, layout="constrained", height_ratios=[1,1,1], figsize=(16, 32), dpi=250)
+    fig, ax = plt.subplots(plotrows, layout="constrained", figsize=(16, 32), dpi=250)
+
+    my_fmt = mdates.DateFormatter(dateformat)
+    for i in range(1, len(spectrum_subarrays)):
+        utcdateobjects = spectrum_subarrays[0][1]
+        data = spectrum_subarrays[i][1]
+        label = spectrum_subarrays[i][0]
+        ax[i - 1].plot(utcdateobjects, data, c='black', linewidth=1)
+        ax[i - 1].grid(which='major', linestyle=':', color='white', alpha=1)
+        ax[i - 1].grid(which='minor', linestyle=':', color='white',alpha=0.5)
+        # Minor ticks and grid
+        ax[i - 1].xaxis.set_minor_locator(AutoMinorLocator(6))
+        ax[i - 1].yaxis.set_minor_locator(AutoMinorLocator(1))
+        ax[i - 1].xaxis.set_major_formatter(my_fmt)
+        ax[i - 1].set_ylabel(label)
+
+    # # Grids and labels
+    # for i in range(0, plotrows - 1):
+    #     ax[i].axes.xaxis.set_ticklabels([])
+    #
+    # for i in range(0, plotrows):
+    #
+    #
+    # ax[1].set_ylabel("Min, Max.")
+    # ax[2].set_ylabel("Standard Deviation.")
+    # # # ax[0].set_ylim([sz_ymin, sz_ymax])
+    # plot_title=(f'Tilt Data Rolling Stats. '
+    #             f'Running window: {halfwindow * 2} samples@ {k.datapersecond}/sec. '
+    #             f'Plotted: {standard_stuff.posix2utc(time.time(), '%Y-%m-%d %H:%M')}')
+    # ax[0].set_title(plot_title)
+    # plt.xlabel("UTC Datetime.")
+    savefile = k.dir_saves['images'] + os.sep + 'stats.png'
+    plt.savefig(savefile)
+    plt.close()
+
 
 if __name__ == '__main__':
     # each entry in data is [posix, data1, data2, etc].
@@ -55,10 +96,11 @@ if __name__ == '__main__':
             print(f'{item} is purged.')
         else:
             sanitised_list.append(item)
+
     # CREATE aggregated data
     # [utc_object_time, seismic_data, temperature_data, pressure_data]
     print(f'*** BEGIN Plotter ***\n')
-    one_day_slice_interval = -1 * (86400 * k.datapersecond) * 1
+    one_day_slice_interval = -1 * (86400 * k.datapersecond) * 7
     one_day_slice = sanitised_list[one_day_slice_interval:]
     start = time.time()
 
@@ -66,19 +108,9 @@ if __name__ == '__main__':
     window = 10 * 60 * k.datapersecond
     spectrumdata = class_aggregator.aggregate_data(window, one_day_slice)
 
-    utc_object_time = spectrumdata[0]
-    seismic_data = spectrumdata[1]
-    temperature_data = spectrumdata[2]
-    pressure_data = spectrumdata[3]
-    rms_data = spectrumdata[4]
-    stddev_data = spectrumdata[5]
-    mean_data = spectrumdata[6]
-    median_data = spectrumdata[7]
-    skews_data = spectrumdata[8]
-    kurts_data = spectrumdata[9]
-    spectral_entropy_data = spectrumdata[10]
+    df = "%b %d \n%Hhr"
+    plot(spectrumdata, df)
 
-    print(len(spectral_entropy_data))
     # =========================================================
     # Some stats on processing time.
     end = time.time()
