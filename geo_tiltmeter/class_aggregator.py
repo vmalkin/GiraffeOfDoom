@@ -130,7 +130,7 @@ def aggregate_data(halfwindow, step, querydata, mode):
             pressure_data.append(prs)
 
     if mode == 'stats':
-        print(f'{mode} mode')
+        # print(f'{mode} mode')
         for i in range(1, len(aggregate_array)):
             if i % 10000 == 0:
                 print(f'Full data {round(i/len(aggregate_array), 2)} completed.')
