@@ -9,7 +9,7 @@ from matplotlib.ticker import AutoMinorLocator
 import matplotlib.dates as mdates
 
 
-def plot(spectrum_subarrays, dateformat):
+def plot(spectrum_subarrays, dateformat, filename):
     plotstyle = 'Solarize_Light2'
     plt.style.use(plotstyle)
     plotrows = len(spectrum_subarrays) - 1
@@ -46,7 +46,7 @@ def plot(spectrum_subarrays, dateformat):
     #             f'Plotted: {standard_stuff.posix2utc(time.time(), '%Y-%m-%d %H:%M')}')
     # ax[0].set_title(plot_title)
     # plt.xlabel("UTC Datetime.")
-    savefile = k.dir_saves['images'] + os.sep + 'stats.png'
+    savefile = k.dir_saves['images'] + os.sep + filename + '.png'
     plt.savefig(savefile)
     plt.close()
 
@@ -100,16 +100,20 @@ if __name__ == '__main__':
     # CREATE aggregated data
     # [utc_object_time, seismic_data, temperature_data, pressure_data]
     print(f'*** BEGIN Plotter ***\n')
-    one_day_slice_interval = -1 * (86400 * k.datapersecond) * 7
+    seven_day_slice_interval = -1 * (86400 * k.datapersecond) * 7
+    one_day_slice_interval = -1 * (86400 * k.datapersecond) * 1
+    seven_day_slice = sanitised_list[seven_day_slice_interval:]
     one_day_slice = sanitised_list[one_day_slice_interval:]
     start = time.time()
 
     # window of 10 minutes
     hlfwindow = 5 * 60 * k.datapersecond
-    spectrumdata = class_aggregator.aggregate_data(hlfwindow,hlfwindow, one_day_slice, mode='stats')
+    spectrumdata_7 = class_aggregator.aggregate_data(hlfwindow,hlfwindow, seven_day_slice, mode='stats')
+    spectrumdata_1 = class_aggregator.aggregate_data(hlfwindow, hlfwindow, one_day_slice, mode='stats')
 
     df = "%b %d \n%Hhr"
-    plot(spectrumdata, df)
+    plot(spectrumdata_7, df, 'stats_seven_day')
+    plot(spectrumdata_1, df, 'stats_one_day')
 
     # =========================================================
     # Some stats on processing time.

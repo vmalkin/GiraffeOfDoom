@@ -181,9 +181,9 @@ def process_chunk(chunk):
     # single plot from this chunk. Return the filename of the plot.
     # Data is in form [posix, data1, data2, etc]. use aggregator to separate out.
     if chunk is not None:
-        fftdata = class_aggregator.aggregate_data(windowsize=1, querydata=chunk)
-        utctimes = fftdata[0]
-        data = fftdata[1]
+        fftdata = class_aggregator.aggregate_data(0, 1, chunk, mode='basic')
+        utctimes = fftdata[0][1]
+        data = fftdata[1][1]
         df = "%d  %H:%M"
         begintime = utctimes[0].strftime(df)
         endtime = utctimes[len(utctimes) - 1].strftime(df)

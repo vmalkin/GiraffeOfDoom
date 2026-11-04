@@ -83,7 +83,7 @@ class Aggregator:
 def aggregate_data(halfwindow, step, querydata, mode):
     # windowsize needs to be at least 1
     # PASS 1 - Set up the array
-    print("PASS 1 - Setting up aggregating array")
+    # print("PASS 1 - Setting up aggregating array")
     tiltdata = np.array(querydata)
     utc_object_time = tiltdata[:,0]
     seismic_data = tiltdata[:,1]
@@ -100,7 +100,7 @@ def aggregate_data(halfwindow, step, querydata, mode):
         aggregate_array.append(d)
 
     # PASS 2 - Use aggregator class functions to create plotting data
-    print("PASS 2 - Create and return plotting array.")
+    # print("PASS 2 - Create and return plotting array.")
     utc_object_time = []
     seismic_data = []
     temperature_data = []
