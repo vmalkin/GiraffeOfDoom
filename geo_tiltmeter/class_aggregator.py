@@ -32,9 +32,9 @@ class Aggregator:
         tim = datetime.fromtimestamp(psx, tz=timezone.utc)
         return tim
 
-    def get_rms(self, dataset):
-        rms = np.sqrt(np.mean(np.square(dataset))) - np.mean(dataset)
-        return rms
+    # def get_rms(self, dataset):
+    #     rms = np.sqrt(np.mean(np.square(dataset))) - np.mean(dataset)
+    #     return rms
 
     def get_stddev(self, dataset):
         sd = np.std(dataset)
@@ -134,7 +134,7 @@ def aggregate_data(halfwindow, step, querydata, mode):
         for i in range(1, len(aggregate_array)):
             if i % 10000 == 0:
                 print(f'Full data {round(i/len(aggregate_array), 2)} completed.')
-            rms = aggregate_array[i].get_rms(aggregate_array[i].data_seismo)
+            # rms = aggregate_array[i].get_rms(aggregate_array[i].data_seismo)
             sdv = aggregate_array[i].get_stddev(aggregate_array[i].data_seismo)
             men = aggregate_array[i].get_mean(aggregate_array[i].data_seismo)
             med = aggregate_array[i].get_median(aggregate_array[i].data_seismo)
@@ -142,7 +142,7 @@ def aggregate_data(halfwindow, step, querydata, mode):
             krt = aggregate_array[i].get_kurtosis(aggregate_array[i].data_seismo)
             ent = aggregate_array[i].get_spectral_entropy(aggregate_array[i].data_temperature)
 
-            rms_data.append(rms)
+            # rms_data.append(rms)
             stddev_data.append(sdv)
             mean_data.append(men)
             median_data.append(med)
@@ -156,7 +156,7 @@ def aggregate_data(halfwindow, step, querydata, mode):
         ["Tilt", seismic_data],
         ["Device Temp", temperature_data],
         ["Pressure", pressure_data],
-        ["Root Mean Square", rms_data],
+        # ["Root Mean Square", rms_data],
         ["Standard Deviation", stddev_data],
         ["Mean", mean_data],
         ["Median", median_data],
