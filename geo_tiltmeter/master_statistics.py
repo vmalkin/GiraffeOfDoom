@@ -34,6 +34,7 @@ def plot_7day_spectrum(data):
     Fs = 1 / k.datapersecond  # the sampling frequency
     fig, ax = plt.subplots(figsize=(16, 4))
     Pxx, freqs, bins, im = ax.specgram(data, NFFT=NFFT, Fs=Fs)
+    ax.set_yscale("log")
     savefile = k.dir_saves['images'] + os.sep + '7day_spectrogram.png'
     plt.savefig(savefile)
     plt.close()
@@ -186,6 +187,7 @@ if __name__ == '__main__':
     plot_scatter(stddev_data, skews_data, filename='sctr_7_sd_skw', title='x: SD, y: Skew')
     plot_scatter(temperature_data, seismic_data, filename='sctr_7_tlt_temp', title='x: Temp, y: Tilt')
     plot_scatter(temperature_data, pressure_data, filename='sctr_7_tmp_prs', title='x: Temp, y: Pressure')
+    plot_scatter(spectral_entropy_data, stddev_data, filename='sctr_7_ent_std', title='x: Spectral Entropy, y: StdDev')
     #
     # dxT = []
     # dxP = []
