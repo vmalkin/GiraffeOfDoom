@@ -9,51 +9,51 @@ from matplotlib.ticker import AutoMinorLocator
 import matplotlib.dates as mdates
 
 
-# This plotter will load data from CSV logfiles. This is an experiment to see if performance and speed are practically affected
-# and if this bypasses the weird SQLite file-access errors I've been having.
-
-# We might be able to use a Pipe from the data writer to communicate it's current state, to know when it is safe to parse
-# data files without causing a conflict
-def plot(utcobjects, df, data, med, max, min, std, halfwindow):
+def plot(spectrum_subarrays, dateformat):
     plotstyle = 'Solarize_Light2'
     plt.style.use(plotstyle)
-    plotrows = 3
+    plotrows = len(spectrum_subarrays) - 1
 
-    fig, ax = plt.subplots(plotrows, layout="constrained", height_ratios=[1,1,1], figsize=(16, 12), dpi=250)
-    ax[0].plot(utcobjects, med, c='blue', linewidth=1)
-    ax[0].plot(utcobjects, data, c='red', linewidth=1)
-    ax[1].plot(utcobjects, max, c='grey', linewidth=1)
-    ax[1].plot(utcobjects, min, c='grey', linewidth=1)
-    ax[2].plot(utcobjects, std, c='green', linewidth=1)
+    # fig, ax = plt.subplots(plotrows, layout="constrained", height_ratios=[1,1,1], figsize=(16, 32), dpi=250)
+    fig, ax = plt.subplots(plotrows, layout="constrained", figsize=(16, 32), dpi=250)
 
-    # Grids and labels
-    for i in range(0, plotrows - 1):
-        ax[i].axes.xaxis.set_ticklabels([])
-
-    for i in range(0, plotrows):
-        ax[i].grid(which='major', linestyle=':', color='white', alpha=1)
-        ax[i].grid(which='minor', linestyle=':', color='white',alpha=0.5)
+    my_fmt = mdates.DateFormatter(dateformat)
+    for i in range(1, len(spectrum_subarrays)):
+        utcdateobjects = spectrum_subarrays[0][1]
+        data = spectrum_subarrays[i][1]
+        label = spectrum_subarrays[i][0]
+        ax[i - 1].plot(utcdateobjects, data, c='black', linewidth=1)
+        ax[i - 1].grid(which='major', linestyle=':', color='white', alpha=1)
+        ax[i - 1].grid(which='minor', linestyle=':', color='white',alpha=0.5)
         # Minor ticks and grid
-        ax[i].xaxis.set_minor_locator(AutoMinorLocator(6))
-        ax[i].yaxis.set_minor_locator(AutoMinorLocator(1))
-    ax[0].set_ylabel("Mean, Median.")
-    ax[1].set_ylabel("Min, Max.")
-    ax[2].set_ylabel("Standard Deviation.")
-    # # ax[0].set_ylim([sz_ymin, sz_ymax])
-    my_fmt = mdates.DateFormatter(df)
-    ax[2].xaxis.set_major_formatter(my_fmt)
+        ax[i - 1].xaxis.set_minor_locator(AutoMinorLocator(6))
+        ax[i - 1].yaxis.set_minor_locator(AutoMinorLocator(1))
+        ax[i - 1].xaxis.set_major_formatter(my_fmt)
+        ax[i - 1].set_ylabel(label)
 
-    plot_title=(f'Tilt Data Rolling Stats. '
-                f'Running window: {halfwindow * 2} samples@ {k.datapersecond}/sec. '
-                f'Plotted: {standard_stuff.posix2utc(time.time(), '%Y-%m-%d %H:%M')}')
-    ax[0].set_title(plot_title)
-    plt.xlabel("UTC Datetime.")
+    # # Grids and labels
+    # for i in range(0, plotrows - 1):
+    #     ax[i].axes.xaxis.set_ticklabels([])
+    #
+    # for i in range(0, plotrows):
+    #
+    #
+    # ax[1].set_ylabel("Min, Max.")
+    # ax[2].set_ylabel("Standard Deviation.")
+    # # # ax[0].set_ylim([sz_ymin, sz_ymax])
+    # plot_title=(f'Tilt Data Rolling Stats. '
+    #             f'Running window: {halfwindow * 2} samples@ {k.datapersecond}/sec. '
+    #             f'Plotted: {standard_stuff.posix2utc(time.time(), '%Y-%m-%d %H:%M')}')
+    # ax[0].set_title(plot_title)
+    # plt.xlabel("UTC Datetime.")
     savefile = k.dir_saves['images'] + os.sep + 'stats.png'
     plt.savefig(savefile)
     plt.close()
 
-if __name__ == "__main__":
-    print('*** STATS: BEGIN.')
+
+if __name__ == '__main__':
+    # each entry in data is [posix, data1, data2, etc].
+    # The size of the FFT data we want to process (6 hours)
     print(f'*** BEGIN load CSV data ***')
     # Decide on time interval we are plotting for. We can split off smaller intervals based on a larger list
     # Parse logfile directory for file names that fit our interval
@@ -99,62 +99,22 @@ if __name__ == "__main__":
 
     # CREATE aggregated data
     # [utc_object_time, seismic_data, temperature_data, pressure_data]
-    one_day_slice_interval = -1 * (86400 * k.datapersecond) * 1
-    # two_day_slice_interval = -1 * (86400 * k.datapersecond) * 2
+    print(f'*** BEGIN Plotter ***\n')
+    one_day_slice_interval = -1 * (86400 * k.datapersecond) * 7
     one_day_slice = sanitised_list[one_day_slice_interval:]
-    # two_day_slice = sanitised_list[two_day_slice_interval:]
+    start = time.time()
 
-    # format is
-    #  [utc_object_time, seismic_data, temperature_data, pressure_data]
-    print('*** STATS: bin data.')
-    bin_window = 1
-    binned_data = class_aggregator.aggregate_data(bin_window, one_day_slice)
+    # window of 10 minutes
+    hlfwindow = 5 * 60 * k.datapersecond
+    spectrumdata = class_aggregator.aggregate_data(hlfwindow,hlfwindow, one_day_slice, mode='stats')
 
-    unprocessed_utc = binned_data[0]
-    unprocessed_data = binned_data[1]
-    print('*** STATS: apply analysis.')
-    half_window = (k.datapersecond * 60) * 2
-    utctimestamp = []
-    median_reading = []
-    mean_reading = []
-    max_reading = []
-    min_reading = []
-    standard_dev = []
-    temp_reading = []
-    for i in range(0, len(unprocessed_utc)):
-        if i % 2000 == 0:
-            print(f'Stats: {i} / {len(unprocessed_utc)}')
-        temp_reading.append(unprocessed_data[i])
-        if len(temp_reading) >= ((2 * half_window) + 1):
-            utctimestamp.append(unprocessed_utc[i - half_window])
-            median_reading.append(np.median(temp_reading))
-            mean_reading.append(np.mean(temp_reading))
-            max_reading.append(np.max(temp_reading))
-            min_reading.append(np.min(temp_reading))
-            standard_dev.append(np.std(temp_reading))
-            temp_reading.pop(0)
-    print('*** STATS: Plot.')
     df = "%b %d \n%Hhr"
-    plot(
-        utcobjects=utctimestamp,
-        df=df,
-        data=mean_reading,
-        med=median_reading,
-        max=max_reading,
-        min=min_reading,
-        std=standard_dev,
-        halfwindow=half_window
-    )
+    plot(spectrumdata, df)
 
     # =========================================================
     # Some stats on processing time.
-    data_end = masterlist[0][0]
-    data_start = masterlist[-1][0]
-    data_length = len(masterlist)
-    readingspersecond = data_length / (data_start - data_end)
-    elapsed_end = time.time()
-    elapsed_time = elapsed_end - end_time
+    end = time.time()
+    elapsed_time = end - start
     print(f"\n")
-    print(f'Sensor is running at {readingspersecond}  readings per second.')
     print(f"Elapsed time: {elapsed_time / 60:.2f} minutes.")
-    print(f'\n*** STATS: END ***')
+    print(f'\n*** END Plotter ***')
