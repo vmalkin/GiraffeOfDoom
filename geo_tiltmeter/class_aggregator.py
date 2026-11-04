@@ -80,7 +80,7 @@ class Aggregator:
 
 # This function performs aggregation using the Aggregator class
 # querydata has the format [utc_object_time, seismic_data, temperature_data, pressure_data]
-def aggregate_data(halfwindow, step, querydata):
+def aggregate_data(halfwindow, step, querydata, mode):
     # windowsize needs to be at least 1
     # PASS 1 - Set up the array
     print("PASS 1 - Setting up aggregating array")
@@ -91,45 +91,16 @@ def aggregate_data(halfwindow, step, querydata):
     pressure_data = tiltdata[:,3]
     aggregate_array = []
     for i in range(halfwindow, len(querydata) - halfwindow, step):
-        date_start = querydata[i - halfwindow][0]
-        date_end = querydata[i + halfwindow][0]
+        date_start = utc_object_time[i - halfwindow]
+        date_end = utc_object_time[i + halfwindow]
         d = Aggregator(date_start, date_end)
-        d.data_seismo = []
-
+        d.data_seismo = seismic_data[i - halfwindow: i + halfwindow + 1]
+        d.data_pressure = pressure_data[i - halfwindow: i + halfwindow + 1]
+        d.data_temperature = temperature_data[i - halfwindow: i + halfwindow + 1]
         aggregate_array.append(d)
-        date_start = date_end
 
-    # PASS 2 - generate the lookup array to speed up data placement
-    print("PASS 2 - Generating lookup dict")
-    lookup = {}
-    j = 0
-    for i in range(0, len(querydata)):
-        key = (querydata[i][0])
-        value = (j)
-        lookup[key] = value
-        # the key value is the position of the aggregate object in the aggregate array.
-        # the windowsize is what clicks-over to indicate when an item from the query data has a date range that
-        # should go into the next aggregate object
-        if i % windowsize == 0:
-            j = j + 1
-
-    # PASS 3 - add the data into the correct aggregate object based on datetime
-    print("PASS 3 - Adding data to aggregating array")
-    for i in range(0, len(querydata)):
-        # if i % 1000 == 0:
-        #     print(f"{i} / {len(result_7d)}")
-        datetime = querydata[i][0]
-        seismo = querydata[i][1]
-        temperature = querydata[i][2]
-        pressure = querydata[i][3]
-        agg_index = lookup[datetime]
-        # Remember that the index in the lookup starts at 1, not zero
-        aggregate_array[agg_index - 1].data_seismo.append(seismo)
-        aggregate_array[agg_index - 1].data_temperature.append(temperature)
-        aggregate_array[agg_index - 1].data_pressure.append(pressure)
-
-    # PASS 4 - Use aggregator class functions to create plotting data
-    print("PASS 4 - Create and return plotting array.")
+    # PASS 2 - Use aggregator class functions to create plotting data
+    print("PASS 2 - Create and return plotting array.")
     utc_object_time = []
     seismic_data = []
     temperature_data = []
@@ -141,32 +112,49 @@ def aggregate_data(halfwindow, step, querydata):
     skews_data = []
     kurts_data = []
     spectral_entropy_data = []
-    for i in range(1, len(aggregate_array)):
-        tim = aggregate_array[i].get_avg_posix()
-        tim = aggregate_array[i].return_utc_timeobject(tim)
-        #
-        siz = aggregate_array[i].get_data_avg(aggregate_array[i].data_seismo)
-        tmp = aggregate_array[i].get_data_avg(aggregate_array[i].data_temperature)
-        prs = aggregate_array[i].get_data_avg(aggregate_array[i].data_pressure)
-        rms = aggregate_array[i].get_rms(aggregate_array[i].data_seismo)
-        sdv = aggregate_array[i].get_stddev(aggregate_array[i].data_seismo)
-        men = aggregate_array[i].get_mean(aggregate_array[i].data_seismo)
-        med = aggregate_array[i].get_median(aggregate_array[i].data_seismo)
-        skw = aggregate_array[i].get_skewness(aggregate_array[i].data_seismo)
-        krt = aggregate_array[i].get_kurtosis(aggregate_array[i].data_seismo)
-        ent = aggregate_array[i].get_spectral_entropy(aggregate_array[i].data_temperature)
+    if mode == 'basic':
+        for i in range(1, len(aggregate_array)):
+            if i % 10000 == 0:
+                print(f'Basic data {round(i / len(aggregate_array), 2)} completed.')
+            tim = aggregate_array[i].get_avg_posix()
+            tim = aggregate_array[i].return_utc_timeobject(tim)
+            #
+            siz = aggregate_array[i].get_data_avg(aggregate_array[i].data_seismo)
+            tmp = aggregate_array[i].get_data_avg(aggregate_array[i].data_temperature)
+            prs = aggregate_array[i].get_data_avg(aggregate_array[i].data_pressure)
+            utc_object_time.append(tim)
+            seismic_data.append(siz)
+            temperature_data.append(tmp)
+            pressure_data.append(prs)
+    else:
+        for i in range(1, len(aggregate_array)):
+            if i % 10000 == 0:
+                print(f'Plotting data {round(i/len(aggregate_array), 2)} completed.')
+            tim = aggregate_array[i].get_avg_posix()
+            tim = aggregate_array[i].return_utc_timeobject(tim)
+            #
+            siz = aggregate_array[i].get_data_avg(aggregate_array[i].data_seismo)
+            tmp = aggregate_array[i].get_data_avg(aggregate_array[i].data_temperature)
+            prs = aggregate_array[i].get_data_avg(aggregate_array[i].data_pressure)
+            rms = aggregate_array[i].get_rms(aggregate_array[i].data_seismo)
+            sdv = aggregate_array[i].get_stddev(aggregate_array[i].data_seismo)
+            men = aggregate_array[i].get_mean(aggregate_array[i].data_seismo)
+            med = aggregate_array[i].get_median(aggregate_array[i].data_seismo)
+            skw = aggregate_array[i].get_skewness(aggregate_array[i].data_seismo)
+            krt = aggregate_array[i].get_kurtosis(aggregate_array[i].data_seismo)
+            ent = aggregate_array[i].get_spectral_entropy(aggregate_array[i].data_temperature)
 
-        utc_object_time.append(tim)
-        seismic_data.append(siz)
-        temperature_data.append(tmp)
-        pressure_data.append(prs)
-        rms_data.append(rms)
-        stddev_data.append(sdv)
-        mean_data.append(men)
-        median_data.append(med)
-        skews_data.append(skw)
-        kurts_data.append(krt)
-        spectral_entropy_data.append(ent)
+            utc_object_time.append(tim)
+            seismic_data.append(siz)
+            temperature_data.append(tmp)
+            pressure_data.append(prs)
+            rms_data.append(rms)
+            stddev_data.append(sdv)
+            mean_data.append(men)
+            median_data.append(med)
+            skews_data.append(skw)
+            kurts_data.append(krt)
+            spectral_entropy_data.append(ent)
 
     # return plotting_data
     return [
