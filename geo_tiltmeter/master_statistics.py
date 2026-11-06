@@ -159,8 +159,8 @@ if __name__ == '__main__':
     start = time.time()
 
     # window of 10 minutes
-    hlfwindow = 0
-    step = 5
+    hlfwindow = 5 * 60 * k.datapersecond
+    step = 5 * 60 * k.datapersecond
     spectrumdata_7 = class_aggregator.aggregate_data(hlfwindow,step, seven_day_slice, mode='stats')
     spectrumdata_1 = class_aggregator.aggregate_data(hlfwindow, step, one_day_slice, mode='stats')
 

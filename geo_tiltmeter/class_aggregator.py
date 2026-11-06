@@ -51,21 +51,21 @@ class Aggregator:
         md = np.median(dataset)
         return md
 
-    # def get_skewness(self, dataset):
-    #     # Pearson's second coefficient of skewness
-    #     mn = np.mean(dataset)
-    #     md = np.median(dataset)
-    #     sd = np.std(dataset)
-    #     if sd != 0:
-    #         skewness = (mn - md) / sd
-    #     else:
-    #         skewness = 0
-    #     return skewness
-
     def get_skewness(self, dataset):
-        # Skew using 3rd central moment
-        skewness = skew(dataset, bias=False)
+        # Pearson's second coefficient of skewness
+        mn = np.mean(dataset)
+        md = np.median(dataset)
+        sd = np.std(dataset)
+        if sd != 0:
+            skewness = (mn - md) / sd
+        else:
+            skewness = 0
         return skewness
+
+    # def get_skewness(self, dataset):
+    #     # Skew using 3rd central moment
+    #     skewness = skew(dataset, bias=False)
+    #     return skewness
 
     def get_kurtosis(self, dataset):
         # 0: Equivalent kurtosis to a Gaussian distribution
