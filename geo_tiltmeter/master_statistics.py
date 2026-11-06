@@ -29,15 +29,15 @@ def marker_list(size):
     return returnlist
 
 
-def plot_7day_spectrum(data):
-    NFFT = 1024  # the length of the windowing segments
-    Fs = 1 / k.datapersecond  # the sampling frequency
-    fig, ax = plt.subplots(figsize=(16, 4))
-    Pxx, freqs, bins, im = ax.specgram(data, NFFT=NFFT, Fs=Fs)
-    ax.set_yscale("log")
-    savefile = k.dir_saves['images'] + os.sep + '7day_spectrogram.png'
-    plt.savefig(savefile)
-    plt.close()
+# def plot_7day_spectrum(data):
+#     NFFT = 1024  # the length of the windowing segments
+#     Fs = 1 / 5 * 60 * k.datapersecond  # the sampling frequency
+#     fig, ax = plt.subplots(figsize=(16, 4))
+#     Pxx, freqs, bins, im = ax.specgram(data, NFFT=NFFT, Fs=Fs)
+#     ax.set_yscale("log")
+#     savefile = k.dir_saves['images'] + os.sep + '7day_spectrogram.png'
+#     plt.savefig(savefile)
+#     plt.close()
 
 
 def plot_scatter(x_data, y_data, filename, title):
@@ -159,8 +159,8 @@ if __name__ == '__main__':
     start = time.time()
 
     # window of 10 minutes
-    hlfwindow = 5 * 60 * k.datapersecond
-    step = hlfwindow
+    hlfwindow = 0
+    step = 5
     spectrumdata_7 = class_aggregator.aggregate_data(hlfwindow,step, seven_day_slice, mode='stats')
     spectrumdata_1 = class_aggregator.aggregate_data(hlfwindow, step, one_day_slice, mode='stats')
 
@@ -180,14 +180,15 @@ if __name__ == '__main__':
     kurts_data = spectrumdata_7[8][2]
     spectral_entropy_data = spectrumdata_7[9][2]
 
-    # 7day Spectrogram
-    plot_7day_spectrum(seismic_data)
+    # # 7day Spectrogram
+    # plot_7day_spectrum(seismic_data)
 
     # Scatterplots
     plot_scatter(stddev_data, skews_data, filename='sctr_7_sd_skw', title='x: SD, y: Skew')
     plot_scatter(temperature_data, seismic_data, filename='sctr_7_tlt_temp', title='x: Temp, y: Tilt')
     plot_scatter(temperature_data, pressure_data, filename='sctr_7_tmp_prs', title='x: Temp, y: Pressure')
     plot_scatter(spectral_entropy_data, stddev_data, filename='sctr_7_ent_std', title='x: Spectral Entropy, y: StdDev')
+    plot_scatter(spectral_entropy_data, skews_data, filename='sctr_7_ent_skw', title='x: Spectral Entropy, y: Skew')
     #
     # dxT = []
     # dxP = []

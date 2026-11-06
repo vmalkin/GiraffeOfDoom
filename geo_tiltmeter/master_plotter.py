@@ -95,7 +95,15 @@ if __name__ == "__main__":
         d = pressure[i] - pressure[i - 1]
         deltapressure.append(d)
     deltapressure.append(d)
-
+    # # use a 4-pole butterworth filter to get the seismic signals
+    # sos = butter(
+    #     4,
+    #     [0.0001, 0.3],
+    #     btype='bandpass',
+    #     fs=10,
+    #     output='sos'
+    # )
+    # filtered = sosfiltfilt(sos, data)
     print(f'{len(utctimes)} {len(data)} {len(temperature)} {len(pressure)} \n')
     plotter_current_day.wrapper(
         utctimes=utctimes,
@@ -142,34 +150,21 @@ if __name__ == "__main__":
         filename='seven_day.png'
     )
 
-    # # =========================================================
-    # # Dual plotter.
-    # hlfwindow = 0
-    # one_day_data = class_aggregator.aggregate_data(hlfwindow,1, one_day_slice, mode='basic')
-    # # Get tilt, temperature and pressure data.
-    # utctimes = one_day_data[0][1]
-    # data = one_day_data[1][1]
-    #
-    # data_dx = []
-    # for i in range(1, len(data)):
-    #     dx = data[i] - data[i - 1]
-    #     data_dx.append(dx)
-    # # dx-ing the data loses a value, so prune time arrays to be the same length otherwise we will have errors
-    # # when trying to plot things.
-    # utctimes = utctimes[1:]
-    # data = data[1:]
-    # # use a 2-pole butterworth filter to get the seismic signals
-    # sos = butter(
-    #     4,
-    #     [2 * 10 ** -3, 1 * 10 ** -1],
-    #     btype='bandpass',
-    #     fs=10,
-    #     output='sos'
-    # )
-    # filtered = sosfiltfilt(sos, data_dx)
-    # data = sosfiltfilt(sos, data)
-    # print(f'{len(utctimes)} {len(data)} {len(filtered)} \n')
-    # multiprc_dual.main(utctimes, data, filtered)
+    # =========================================================
+    # Basic seismic curve.
+    one_day_data = class_aggregator.aggregate_data(0,1, one_day_slice, mode='basic')
+    utctimes = one_day_data[0][2]
+    data = one_day_data[1][2]
+    # use a 4-pole butterworth filter to get the seismic signals
+    sos = butter(
+        4,
+        [0.0001, 0.3],
+        btype='bandpass',
+        fs=k.datapersecond,
+        output='sos'
+    )
+    filtered = sosfiltfilt(sos, data)
+    multiprc_dual.main(utctimes, filtered)
 
     # =========================================================
     # Some stats on processing time.

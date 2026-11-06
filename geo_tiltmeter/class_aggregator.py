@@ -1,7 +1,7 @@
 import numpy as np
 from scipy.stats import kurtosis, skew
-from scipy.signal import periodogram
-# import constants as k
+from scipy.signal import welch, butter, sosfiltfilt
+import constants as k
 from datetime import datetime, timezone
 
 
@@ -79,16 +79,32 @@ class Aggregator:
         # has high entropy and sharp peaks have low entropy
         # Higher entropy indicates more unpredictability and information content,
         # while lower entropy suggests predictability and less new information
-        # Formula stolen from AI.
-        frequencies, power_spectrum = periodogram(dataset)
-        ps_sum = np.sum(power_spectrum)
-        if ps_sum == 0:
-            spent = 0
-        else:
-            p = power_spectrum / ps_sum
-            p = p[p > 0]  # Remove zero entries
-            spent = -np.sum(p * np.log2(p)) / np.log2(len(power_spectrum))
-        return spent
+        # # 1. Pre-filter the raw data to isolate 0.03 Hz to 0.3 Hz (3s to 33s periods)
+        # # This strips out 0Hz DC drift and high-frequency cultural noise
+        # # use a 4-pole butterworth filter to get the seismic signals
+        # sos = butter(
+        #     4,
+        #     [0.0001, 0.3],
+        #     btype='bandpass',
+        #     fs=k.datapersecond,
+        #     output='sos'
+        # )
+        # filtered = sosfiltfilt(sos, data)
+
+        # 2. Compute PSD with high frequency resolution
+        nperseg = 4096
+        frequencies, psd = welch(dataset, fs=k.datapersecond, nperseg=nperseg)
+
+        # 3. Create probability distribution
+        psd_norm = psd / np.sum(psd)
+
+        # 4. Filter zeros and compute Shannon Entropy
+        psd_norm = psd_norm[psd_norm > 0]
+        shannon_entropy = -np.sum(psd_norm * np.log2(psd_norm))
+
+        # 5. Normalize
+        max_entropy = np.log2(len(psd_norm))
+        return shannon_entropy / max_entropy
 
 # This function performs aggregation using the Aggregator class
 # querydata has the format [utc_object_time, seismic_data, temperature_data, pressure_data]
