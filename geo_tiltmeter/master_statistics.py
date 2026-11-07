@@ -1,4 +1,5 @@
 from scipy.stats import pearsonr
+from scipy.signal import welch, butter, sosfiltfilt
 import standard_stuff
 import time
 import class_aggregator
@@ -27,17 +28,6 @@ def marker_list(size):
         j = int((i / size) * 10)
         returnlist.append(m[j])
     return returnlist
-
-
-# def plot_7day_spectrum(data):
-#     NFFT = 1024  # the length of the windowing segments
-#     Fs = 1 / 5 * 60 * k.datapersecond  # the sampling frequency
-#     fig, ax = plt.subplots(figsize=(16, 4))
-#     Pxx, freqs, bins, im = ax.specgram(data, NFFT=NFFT, Fs=Fs)
-#     ax.set_yscale("log")
-#     savefile = k.dir_saves['images'] + os.sep + '7day_spectrogram.png'
-#     plt.savefig(savefile)
-#     plt.close()
 
 
 def plot_scatter(x_data, y_data, filename, title):
@@ -96,7 +86,7 @@ def plot(spectrum_subarrays, dateformat, filename, plottitle):
     # plot_title=(f'Tilt Data Rolling Stats. '
     #             f'Running window: {halfwindow * 2} samples@ {k.datapersecond}/sec. '
     #             f'Plotted: {standard_stuff.posix2utc(time.time(), '%Y-%m-%d %H:%M')}')
-    ax[0].set_title(title)
+    ax[0].set_title(plottitle)
     # plt.xlabel("UTC Datetime.")
     savefile = k.dir_saves['images'] + os.sep + filename + '.png'
     plt.savefig(savefile)
@@ -149,61 +139,67 @@ if __name__ == '__main__':
         else:
             sanitised_list.append(item)
 
+    # We want to use low-frequency data under the assumption that above about 1hz, most of the noise is manmade.
+    sanitised_list = np.array(sanitised_list)
+    posix_data = sanitised_list[:, 0]
+    seis_data = sanitised_list[:, 1]
+    temp_data = sanitised_list[:, 2]
+    pressure_data = sanitised_list[:, 3]
+
+    # use a 4-pole butterworth filter to get low frequency seismic signals
+    lowvalue = 0.0001
+    highvalue = 0.3
+    sos = butter(
+        4,
+        [lowvalue, highvalue],
+        btype='bandpass',
+        fs=k.datapersecond,
+        output='sos'
+    )
+    filtered_data = sosfiltfilt(sos, seis_data)
+
     # CREATE aggregated data
     # [utc_object_time, seismic_data, temperature_data, pressure_data]
     print(f'*** BEGIN Plotter ***\n')
-    seven_day_slice_interval = -1 * (86400 * k.datapersecond) * 7
-    one_day_slice_interval = -1 * (86400 * k.datapersecond) * 1
-    seven_day_slice = sanitised_list[seven_day_slice_interval:]
-    one_day_slice = sanitised_list[one_day_slice_interval:]
+
     start = time.time()
 
     # window of 10 minutes
-    hlfwindow = 5 * 60 * k.datapersecond
+    halfwindow = 5 * 60 * k.datapersecond
+    # in 5 minutes steps
     step = 5 * 60 * k.datapersecond
-    spectrumdata_7 = class_aggregator.aggregate_data(hlfwindow,step, seven_day_slice, mode='stats')
-    spectrumdata_1 = class_aggregator.aggregate_data(hlfwindow, step, one_day_slice, mode='stats')
+
+    aggregate_array = []
+    for i in range(halfwindow, len(filtered_data) - halfwindow, step):
+        date_start = posix_data[i - halfwindow]
+        date_end = posix_data[i + halfwindow]
+        d = class_aggregator.Aggregator(date_start, date_end)
+        d.data_seismo = filtered_data[i - halfwindow: i + halfwindow + 1]
+        d.data_pressure = pressure_data[i - halfwindow: i + halfwindow + 1]
+        d.data_temperature = temp_data[i - halfwindow: i + halfwindow + 1]
+        aggregate_array.append(d)
+
+    # We now have an array of data objects with our total data windowed at set intervals.
 
     df = "%b %d \n%Hhr"
-    title = f'Stats. Halfwindow of {hlfwindow} samples every {step} samples.'
+    title = f'Stats. Halfwindow of {halfwindow} samples every {step} samples.'
     plot(spectrumdata_7, df, 'stats_seven_day', title)
     plot(spectrumdata_1, df, 'stats_one_day', title)
 
-    utc_object_time = spectrumdata_7[0][2]
-    seismic_data = spectrumdata_7[1][2]
-    temperature_data = spectrumdata_7[2][2]
-    pressure_data = spectrumdata_7[3][2]
-    mean_data = spectrumdata_7[4][2]
-    median_data = spectrumdata_7[5][2]
-    stddev_data = spectrumdata_7[6][2]
-    skews_data = spectrumdata_7[7][2]
-    kurts_data = spectrumdata_7[8][2]
-    spectral_entropy_data = spectrumdata_7[9][2]
-
-    # # 7day Spectrogram
-    # plot_7day_spectrum(seismic_data)
-
-    # Scatterplots
-    plot_scatter(stddev_data, skews_data, filename='sctr_7_sd_skw', title='x: SD, y: Skew')
-    plot_scatter(temperature_data, seismic_data, filename='sctr_7_tlt_temp', title='x: Temp, y: Tilt')
-    plot_scatter(temperature_data, pressure_data, filename='sctr_7_tmp_prs', title='x: Temp, y: Pressure')
-    plot_scatter(spectral_entropy_data, stddev_data, filename='sctr_7_ent_std', title='x: Spectral Entropy, y: StdDev')
-    plot_scatter(spectral_entropy_data, skews_data, filename='sctr_7_ent_skw', title='x: Spectral Entropy, y: Skew')
     #
-    # dxT = []
-    # dxP = []
-    # for i in range(1, len(seismic_data)):
-    #     dt = seismic_data[i] - seismic_data[i - 1]
-    #     dp = pressure_data[i] - pressure_data[i - 1]
-    #     dxT.append(dt)
-    #     dxP.append(dp)
-    # plot_scatter(dxT, dxP, filename='sctr_7_dt_dp', title='x: dx Tilt, y: dx Pressure')
+    # # Scatterplots
+    # plot_scatter(stddev_data, skews_data, filename='sctr_7_sd_skw', title='x: SD, y: Skew')
+    # plot_scatter(temperature_data, seismic_data, filename='sctr_7_tlt_temp', title='x: Temp, y: Tilt')
+    # plot_scatter(temperature_data, pressure_data, filename='sctr_7_tmp_prs', title='x: Temp, y: Pressure')
+    # plot_scatter(spectral_entropy_data, stddev_data, filename='sctr_7_ent_std', title='x: Spectral Entropy, y: StdDev')
+    # plot_scatter(spectral_entropy_data, skews_data, filename='sctr_7_ent_skw', title='x: Spectral Entropy, y: Skew')
+    #
+    #
 
-
-    # =========================================================
-    # Some stats on processing time.
-    end = time.time()
-    elapsed_time = end - start
-    print(f"\n")
-    print(f"Elapsed time: {elapsed_time / 60:.2f} minutes.")
-    print(f'\n*** END Plotter ***')
+    # # =========================================================
+    # # Some stats on processing time.
+    # end = time.time()
+    # elapsed_time = end - start
+    # print(f"\n")
+    # print(f"Elapsed time: {elapsed_time / 60:.2f} minutes.")
+    # print(f'\n*** END Plotter ***')
