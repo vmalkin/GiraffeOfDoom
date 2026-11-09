@@ -12,6 +12,7 @@ from matplotlib import colors as mcolors
 import matplotlib.dates as mdates
 
 plotstyle = 'Solarize_Light2'
+df = "%b %d \n%Hhr"
 
 def colour_list(size):
     returnlist = []
@@ -48,6 +49,22 @@ def plot_scatter(x_data, y_data, filename, title):
     ax[1].set_xticks([])
     ax[1].set_yticks([])
     savefile = k.dir_saves['images'] + os.sep + filename + '.png'
+    plt.savefig(savefile)
+    plt.close()
+
+
+def plot_sta(stadata, staposix, dateformat):
+    plt.style.use(plotstyle)
+    fig, ax = plt.subplots(layout="constrained", figsize=(16, 4), dpi=250)
+    my_fmt = mdates.DateFormatter(dateformat)
+    ax.plot(staposix, stadata, c='black', linewidth=1)
+    ax.grid(which='major', linestyle=':', color='white', alpha=1)
+    ax.grid(which='minor', linestyle=':', color='white', alpha=0.5)
+    # Minor ticks and grid
+    ax.xaxis.set_minor_locator(AutoMinorLocator(6))
+    ax.yaxis.set_minor_locator(AutoMinorLocator(1))
+    ax.xaxis.set_major_formatter(my_fmt)
+    savefile = k.dir_saves['images'] + os.sep + 'stalta.png'
     plt.savefig(savefile)
     plt.close()
 
@@ -162,12 +179,28 @@ if __name__ == '__main__':
     filtered_data = sosfiltfilt(sos, seis_data)
     # The butterworth filter DOES have an end-effect. We are going to trim this and shorted all other data
     # so it's the same length
-    trimvalue = 60 * 60 * k.datapersecond
+    trimvalue = 4 * 60 * 60 * k.datapersecond
     filtered_data = filtered_data[trimvalue:-trimvalue]
     posix_data = posix_data[trimvalue:-trimvalue]
     temp_data = temp_data[trimvalue:-trimvalue]
     pressure_data = pressure_data[trimvalue:-trimvalue]
     print(f'{len(filtered_data)}')
+
+    # # Create the sta/lta plot at this point
+    # stalta = []
+    # halfw_sta = 30 * k.datapersecond
+    # halfw_lta = 3 * 60 * k.datapersecond
+    # for i in range(halfw_lta, len(filtered_data) - halfw_lta):
+    #     sta = filtered_data[i-halfw_sta:-i+halfw_sta]
+    #     lta = filtered_data[i-halfw_lta:-i+halfw_lta]
+    #     d = np.mean(sta) / np.mean(lta)
+    #     stalta.append(d)
+    # psxtemp = posix_data[halfw_lta:-halfw_lta]
+    # stapsx = []
+    # for item in psxtemp:
+    #     utcobj = item.return_utc_timeobject(item)
+    #     stapsx.append(utcobj)
+    # plot_sta(stalta, stapsx, df)
 
     # CREATE aggregated data
     # [utc_object_time, seismic_data, temperature_data, pressure_data]
@@ -253,7 +286,6 @@ if __name__ == '__main__':
         'Spectral Entropy'
     ]
 
-    df = "%b %d \n%Hhr"
     title = f'Stats. Window of {2 * halfwindow} samples every {step} samples. {lowvalue}hz to {highvalue}hz.'
     plot(spectrumdata, ylabels, df, 'stats_seven_day', title)
     # # plot(spectrumdata_1, df, 'stats_one_day', title)
