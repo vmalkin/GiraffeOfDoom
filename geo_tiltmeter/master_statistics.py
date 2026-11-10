@@ -10,6 +10,7 @@ import matplotlib.pyplot as plt
 from matplotlib.ticker import AutoMinorLocator
 from matplotlib import colors as mcolors
 import matplotlib.dates as mdates
+from datetime import datetime, timezone
 
 plotstyle = 'Solarize_Light2'
 df = "%b %d \n%Hhr"
@@ -64,6 +65,7 @@ def plot_sta(stadata, staposix, dateformat):
     ax.xaxis.set_minor_locator(AutoMinorLocator(6))
     ax.yaxis.set_minor_locator(AutoMinorLocator(1))
     ax.xaxis.set_major_formatter(my_fmt)
+    ax.set_ylim([0, 100000])
     savefile = k.dir_saves['images'] + os.sep + 'stalta.png'
     plt.savefig(savefile)
     plt.close()
@@ -184,23 +186,22 @@ if __name__ == '__main__':
     posix_data = posix_data[trimvalue:-trimvalue]
     temp_data = temp_data[trimvalue:-trimvalue]
     pressure_data = pressure_data[trimvalue:-trimvalue]
-    print(f'{len(filtered_data)}')
 
-    # # Create the sta/lta plot at this point
-    # stalta = []
-    # halfw_sta = 30 * k.datapersecond
-    # halfw_lta = 3 * 60 * k.datapersecond
-    # for i in range(halfw_lta, len(filtered_data) - halfw_lta):
-    #     sta = filtered_data[i-halfw_sta:-i+halfw_sta]
-    #     lta = filtered_data[i-halfw_lta:-i+halfw_lta]
-    #     d = np.mean(sta) / np.mean(lta)
-    #     stalta.append(d)
-    # psxtemp = posix_data[halfw_lta:-halfw_lta]
-    # stapsx = []
-    # for item in psxtemp:
-    #     utcobj = item.return_utc_timeobject(item)
-    #     stapsx.append(utcobj)
-    # plot_sta(stalta, stapsx, df)
+    # Create the sta/lta plot at this point. Use squared amplitude
+    stalta = []
+    stapsx = []
+    halfw_sta = 300 * k.datapersecond
+    halfw_lta = 3000 * k.datapersecond
+    for i in range(halfw_lta, len(filtered_data) - halfw_lta):
+        sta = filtered_data[i-halfw_sta:i+halfw_sta]
+        lta = filtered_data[i-halfw_lta:i+halfw_lta]
+        s = np.mean(sta)
+        l = np.mean(lta)
+        d =  s / l
+        stalta.append(d)
+        tim = datetime.fromtimestamp(posix_data[i], tz=timezone.utc)
+        stapsx.append(tim)
+    plot_sta(stalta, stapsx, df)
 
     # CREATE aggregated data
     # [utc_object_time, seismic_data, temperature_data, pressure_data]
