@@ -32,9 +32,9 @@ class Aggregator:
         tim = datetime.fromtimestamp(psx, tz=timezone.utc)
         return tim
 
-    def third_central_moment(self, dataset):
-        m3 = np.mean((dataset - np.mean(dataset)) ** 3)
-        return m3
+    # def third_central_moment(self, dataset):
+    #     m3 = np.mean((dataset - np.mean(dataset)) ** 3)
+    #     return m3
 
     def get_stddev(self, dataset):
         sd = np.std(dataset)
@@ -48,21 +48,25 @@ class Aggregator:
         md = np.median(dataset)
         return md
 
-    def get_skew_parsons(self, dataset):
-        # Pearson's second coefficient of skewness
-        mn = np.mean(dataset)
-        md = np.median(dataset)
-        sd = np.std(dataset)
-        if sd != 0:
-            skewness = (mn - md) / sd
-        else:
-            skewness = 0
-        return skewness
+    def get_rms(self, dataset):
+        rms = np.sqrt(np.mean(np.square(dataset)))
+        return rms
 
-    def get_skew_3rdCM(self, dataset):
-        # Skew using 3rd central moment
-        skewness = skew(dataset, bias=False)
-        return skewness
+    # def get_skew_parsons(self, dataset):
+    #     # Pearson's second coefficient of skewness
+    #     mn = np.mean(dataset)
+    #     md = np.median(dataset)
+    #     sd = np.std(dataset)
+    #     if sd != 0:
+    #         skewness = (mn - md) / sd
+    #     else:
+    #         skewness = 0
+    #     return skewness
+
+    # def get_skew_3rdCM(self, dataset):
+    #     # Skew using 3rd central moment
+    #     skewness = skew(dataset, bias=False)
+    #     return skewness
 
     def get_kurtosis(self, dataset):
         # 0: Equivalent kurtosis to a Gaussian distribution
@@ -71,21 +75,21 @@ class Aggregator:
         kt = kurtosis(dataset, fisher=True, bias=False)
         return kt
 
-    def get_spectral_entropy(self, dataset):
-        # 2. Compute PSD with high frequency resolution
-        nperseg = 512*1
-        frequencies, psd = welch(dataset, fs=k.datapersecond, nperseg=nperseg)
-
-        # 3. Create probability distribution
-        psd_norm = psd / np.sum(psd)
-
-        # 4. Filter zeros and compute Shannon Entropy
-        psd_norm = psd_norm[psd_norm > 0]
-        shannon_entropy = -np.sum(psd_norm * np.log2(psd_norm))
-
-        # 5. Normalize
-        max_entropy = np.log2(len(psd_norm))
-        return shannon_entropy / max_entropy
+    # def get_spectral_entropy(self, dataset):
+    #     # 2. Compute PSD with high frequency resolution
+    #     nperseg = 512*1
+    #     frequencies, psd = welch(dataset, fs=k.datapersecond, nperseg=nperseg)
+    #
+    #     # 3. Create probability distribution
+    #     psd_norm = psd / np.sum(psd)
+    #
+    #     # 4. Filter zeros and compute Shannon Entropy
+    #     psd_norm = psd_norm[psd_norm > 0]
+    #     shannon_entropy = -np.sum(psd_norm * np.log2(psd_norm))
+    #
+    #     # 5. Normalize
+    #     max_entropy = np.log2(len(psd_norm))
+    #     return shannon_entropy / max_entropy
 
 
 # a wee helper function to use the above class to decimate data and return it
