@@ -71,18 +71,16 @@ def plot_sta(stadata, staposix, dateformat):
     plt.close()
 
 
-def plot(spectrum_subarrays, ylabels, dateformat, filename, plottitle):
+def plot(spectrum_subarrays, plotlabels, dateformat, filename):
     plt.style.use(plotstyle)
     plotrows = len(spectrum_subarrays) - 1
-    # fig, ax = plt.subplots(plotrows, layout="constrained", height_ratios=[1,1,1], figsize=(16, 32), dpi=250)
     fig, ax = plt.subplots(plotrows, layout="constrained", figsize=(16, 32), dpi=250, sharex=False)
 
     my_fmt = mdates.DateFormatter(dateformat)
     for i in range(1, len(spectrum_subarrays)):
         utcdateobjects = spectrum_subarrays[0]
         data = spectrum_subarrays[i]
-        y_label = ylabels[i]
-        # xlabel = spectrum_subarrays[i][1]
+        plottitle = plotlabels[i]
         ax[i - 1].plot(utcdateobjects, data, c='black', linewidth=1)
         ax[i - 1].grid(which='major', linestyle=':', color='white', alpha=1)
         ax[i - 1].grid(which='minor', linestyle=':', color='white',alpha=0.5)
@@ -90,24 +88,7 @@ def plot(spectrum_subarrays, ylabels, dateformat, filename, plottitle):
         ax[i - 1].xaxis.set_minor_locator(AutoMinorLocator(6))
         ax[i - 1].yaxis.set_minor_locator(AutoMinorLocator(1))
         ax[i - 1].xaxis.set_major_formatter(my_fmt)
-        ax[i - 1].set_ylabel(y_label)
-        # ax[i - 1].set_xlabel(xlabel)
-
-    # # Grids and labels
-    # for i in range(0, plotrows - 1):
-    #     ax[i].axes.xaxis.set_ticklabels([])
-    #
-    # for i in range(0, plotrows):
-    #
-    #
-    # ax[1].set_ylabel("Min, Max.")
-    # ax[2].set_ylabel("Standard Deviation.")
-    # # # ax[0].set_ylim([sz_ymin, sz_ymax])
-    # plot_title=(f'Tilt Data Rolling Stats. '
-    #             f'Running window: {halfwindow * 2} samples@ {k.datapersecond}/sec. '
-    #             f'Plotted: {standard_stuff.posix2utc(time.time(), '%Y-%m-%d %H:%M')}')
-    ax[0].set_title(plottitle)
-    # plt.xlabel("UTC Datetime.")
+        ax[i - 1].set_title(plottitle)
     savefile = k.dir_saves['images'] + os.sep + filename + '.png'
     plt.savefig(savefile)
     plt.close()
@@ -168,18 +149,18 @@ if __name__ == '__main__':
     # detrend the seismic data
     seis_data = detrend(seis_data, type='linear')
 
-    # # use a 4-pole butterworth filter to get low frequency seismic signals
-    lowvalue = 0.0001
-    highvalue = 0.3
-    sos = butter(
-        4,
-        [lowvalue, highvalue],
-        btype='bandpass',
-        fs=k.datapersecond,
-        output='sos'
-    )
-    filtered_data = sosfiltfilt(sos, seis_data)
-    # filtered_data = seis_data
+    # # # use a 4-pole butterworth filter to get low frequency seismic signals
+    # lowvalue = 0.0001
+    # highvalue = 0.3
+    # sos = butter(
+    #     4,
+    #     [lowvalue, highvalue],
+    #     btype='bandpass',
+    #     fs=k.datapersecond,
+    #     output='sos'
+    # )
+    # filtered_data = sosfiltfilt(sos, seis_data)
+    filtered_data = seis_data
     # The butterworth filter DOES have an end-effect. We are going to trim this and shorted all other data
     # so it's the same length
     trimvalue = 4 * 60 * 60 * k.datapersecond
@@ -188,21 +169,21 @@ if __name__ == '__main__':
     temp_data = temp_data[trimvalue:-trimvalue]
     pressure_data = pressure_data[trimvalue:-trimvalue]
 
-    # # Create the sta/lta plot at this point. Use squared amplitude
-    # stalta = []
-    # stapsx = []
-    # halfw_sta = 300 * k.datapersecond
-    # halfw_lta = 3000 * k.datapersecond
-    # for i in range(halfw_lta, len(filtered_data) - halfw_lta):
-    #     sta = filtered_data[i-halfw_sta:i+halfw_sta]
-    #     lta = filtered_data[i-halfw_lta:i+halfw_lta]
-    #     s = np.mean(sta)
-    #     l = np.mean(lta)
-    #     d =  s / l
-    #     stalta.append(d)
-    #     tim = datetime.fromtimestamp(posix_data[i], tz=timezone.utc)
-    #     stapsx.append(tim)
-    # plot_sta(stalta, stapsx, df)
+    # Create the sta/lta plot at this point. Use squared amplitude
+    stalta = []
+    stapsx = []
+    halfw_sta = 1 * k.datapersecond
+    halfw_lta = 15 * k.datapersecond
+    for i in range(halfw_lta, len(filtered_data) - halfw_lta):
+        sta = filtered_data[i-halfw_sta:i+halfw_sta]
+        lta = filtered_data[i-halfw_lta:i+halfw_lta]
+        s = np.mean(sta)
+        l = np.mean(lta)
+        d =  s / l
+        stalta.append(d)
+        tim = datetime.fromtimestamp(posix_data[i], tz=timezone.utc)
+        stapsx.append(tim)
+    plot_sta(stalta, stapsx, df)
 
     # CREATE aggregated data
     # [utc_object_time, seismic_data, temperature_data, pressure_data]
@@ -238,25 +219,35 @@ if __name__ == '__main__':
         dmn = item.get_data_avg(item.data_seismo)
         data_mean.append(dmn)
 
-    data_skw_p = []
+    data_rms = []
     for item in aggregate_array:
-        d = item.get_skew_parsons(item.data_seismo)
-        data_skw_p.append(d)
+        dmn = item.get_rms(item.data_seismo)
+        data_rms.append(dmn)
 
-    data_skw_3rd = []
-    for item in aggregate_array:
-        d = item.get_skew_3rdCM(item.data_seismo)
-        data_skw_3rd.append(d)
+    # data_skw_p = []
+    # for item in aggregate_array:
+    #     d = item.get_skew_parsons(item.data_seismo)
+    #     data_skw_p.append(d)
+
+    # data_skw_3rd = []
+    # for item in aggregate_array:
+    #     d = item.get_skew_3rdCM(item.data_seismo)
+    #     data_skw_3rd.append(d)
 
     data_stdev = []
     for item in aggregate_array:
         d = item.get_stddev(item.data_seismo)
         data_stdev.append(d)
 
-    spectral_entropy = []
+    data_kurtosis = []
     for item in aggregate_array:
-        d = item.get_spectral_entropy(item.data_seismo)
-        spectral_entropy.append(d)
+        d = item.get_kurtosis(item.data_seismo)
+        data_kurtosis.append(d)
+
+    # spectral_entropy = []
+    # for item in aggregate_array:
+    #     d = item.get_spectral_entropy(item.data_seismo)
+    #     spectral_entropy.append(d)
 
     temp = []
     for item in aggregate_array:
@@ -273,31 +264,32 @@ if __name__ == '__main__':
         data_mean,
         temp,
         press,
-        data_skw_p,
+        data_rms,
         data_stdev,
-        spectral_entropy
+        data_kurtosis
     ]
 
-    ylabels = [
+    plotlabels = [
         '',
         'Mean of tilt data.',
-        'Room temperature',
+        'Room temperature.',
         'Room pressure.',
-        'Pearsons Skew',
-        'Standard Deviation',
-        'Spectral Entropy'
+        'RMS - Changes in waveform strength.',
+        'Standard Deviation - Changes in amplitude variability, so may track with StdDev.',
+        'Kurtosis - A change from background-like behavior to impulsive signal behavior.'
     ]
 
-    title = f'Stats. Window of {2 * halfwindow} samples every {step} samples. {lowvalue}hz to {highvalue}hz.'
-    plot(spectrumdata, ylabels, df, 'stats_seven_day', title)
+    # title = f'Stats. Window of {2 * halfwindow} samples every {step} samples. {lowvalue}hz to {highvalue}hz.'
+    title = f'Stats. Window of {2 * halfwindow} samples every {step} samples. Full Spectrum.'
+    plot(spectrumdata, plotlabels, df, 'stats_seven_day')
     # # plot(spectrumdata_1, df, 'stats_one_day', title)
     #
     # #
     # # # Scatterplots
-    plot_scatter(data_mean, data_skw_3rd, filename='sctr_7_mean_skw3rd', title='x: mean, y: skw-3')
+    plot_scatter(data_stdev, data_rms, filename='sctr_7_stdv_rms', title='x: Std Dev, y: RMS')
     # plot_scatter(temp, data_mean, filename='sctr_7_tlt_temp', title='x: Temp, y: Tilt')
     # plot_scatter(temp, press, filename='sctr_7_tmp_prs', title='x: Temp, y: Pressure')
-    plot_scatter(spectral_entropy, data_stdev, filename='sctr_7_ent_std', title='x: Spectral Entropy, y: StdDev')
+    # plot_scatter(spectral_entropy, data_stdev, filename='sctr_7_ent_std', title='x: Spectral Entropy, y: StdDev')
     # plot_scatter(spectral_entropy, temp, filename='sctr_7_ent_tmp', title='x: Spectral Entropy, y: Temperature')
 
     # =========================================================
