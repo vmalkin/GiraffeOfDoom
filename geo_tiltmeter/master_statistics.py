@@ -295,16 +295,14 @@ if __name__ == '__main__':
     # # # Scatterplots
     plot_scatter(data_skw_p, data_skw_3rd, filename='sctr_7_skw_skw', title='x: skw-p, y: skw-3')
     plot_scatter(temp, data_mean, filename='sctr_7_tlt_temp', title='x: Temp, y: Tilt')
-    # # plot_scatter(temperature_data, pressure_data, filename='sctr_7_tmp_prs', title='x: Temp, y: Pressure')
-    # # plot_scatter(spectral_entropy_data, stddev_data, filename='sctr_7_ent_std', title='x: Spectral Entropy, y: StdDev')
-    # # plot_scatter(spectral_entropy_data, skews_data, filename='sctr_7_ent_skw', title='x: Spectral Entropy, y: Skew')
-    # #
-    # #
-    #
-    # # # =========================================================
-    # # # Some stats on processing time.
-    # # end = time.time()
-    # # elapsed_time = end - start
-    # # print(f"\n")
-    # # print(f"Elapsed time: {elapsed_time / 60:.2f} minutes.")
-    # # print(f'\n*** END Plotter ***')
+    plot_scatter(temp, press, filename='sctr_7_tmp_prs', title='x: Temp, y: Pressure')
+    plot_scatter(spectral_entropy, data_stdev, filename='sctr_7_ent_std', title='x: Spectral Entropy, y: StdDev')
+    plot_scatter(spectral_entropy, data_skw_p, filename='sctr_7_ent_skw', title='x: Spectral Entropy, y: Skew')
+
+    # =========================================================
+    # Some stats on processing time.
+    end = time.time()
+    elapsed_time = end - start
+    print(f"\n")
+    print(f"Elapsed time: {elapsed_time / 60:.2f} minutes.")
+    print(f'\n*** END Plotter ***')
