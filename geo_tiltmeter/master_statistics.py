@@ -87,7 +87,7 @@ def plot_scatter(x_data, y_data, filename, title):
     plt.close()
 
 
-def plot_sta(stadata, staposix, dateformat):
+def plot_sta(stadata, staposix, dateformat, title):
     plt.style.use(plotstyle)
     fig, ax = plt.subplots(layout="constrained", figsize=(16, 4), dpi=250)
     my_fmt = mdates.DateFormatter(dateformat)
@@ -98,6 +98,7 @@ def plot_sta(stadata, staposix, dateformat):
     ax.xaxis.set_minor_locator(AutoMinorLocator(6))
     ax.yaxis.set_minor_locator(AutoMinorLocator(1))
     ax.xaxis.set_major_formatter(my_fmt)
+    fig.suptitle(title)
     # ax.set_ylim([0, 100000])
     savefile = k.dir_saves['images'] + os.sep + 'stalta.png'
     plt.savefig(savefile)
@@ -273,8 +274,9 @@ if __name__ == '__main__':
     plot(spectrumdata, plotlabels, df, 'stats_seven_day', title)
 
     # If we have at least 2 days of data, we can start generating the daily stats plot
-    chop = int(86400 / aggregate_step)
-    if len(sanitised_list) > (2 * 86400):
+    chop = int(86400 * k.datapersecond / aggregate_step)
+    print(f'One day plot chop: {len(utcobjects)} {chop}')
+    if len(sanitised_list) > (2 * 86400 * k.datapersecond):
         utcobjects_1 = utcobjects[-chop:]
         data_mean_1 = data_mean[-chop:]
         temp_1 = temp[-chop:]
@@ -301,7 +303,12 @@ if __name__ == '__main__':
     for item in posix_data:
         px = tim = datetime.fromtimestamp(item, tz=timezone.utc)
         stapsx.append(px)
-    plot_sta(stalta_data[2], stapsx, df)
+    statitle = 'Seven Day STA / LTA'
+    plot_sta(stalta_data[2], stapsx, df, statitle)
+    sta_1 = stalta_data[2][-86400*k.datapersecond:]
+    stap_1 = stapsx[-86400*k.datapersecond:]
+    statitle = 'One Day STA / LTA'
+    plot_sta(stalta_data[2], stapsx, df, statitle)
 
     # =========================================================
     # Scatterplots
