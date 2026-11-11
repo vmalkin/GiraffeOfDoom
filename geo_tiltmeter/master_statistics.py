@@ -297,7 +297,7 @@ if __name__ == '__main__':
     plot_scatter(temp, data_mean, filename='sctr_7_tlt_temp', title='x: Temp, y: Tilt')
     plot_scatter(temp, press, filename='sctr_7_tmp_prs', title='x: Temp, y: Pressure')
     plot_scatter(spectral_entropy, data_stdev, filename='sctr_7_ent_std', title='x: Spectral Entropy, y: StdDev')
-    plot_scatter(spectral_entropy, data_skw_p, filename='sctr_7_ent_skw', title='x: Spectral Entropy, y: Skew')
+    plot_scatter(spectral_entropy, temp, filename='sctr_7_ent_tmp', title='x: Spectral Entropy, y: Temperature')
 
     # =========================================================
     # Some stats on processing time.
