@@ -272,7 +272,7 @@ if __name__ == '__main__':
     # title = f'Stats. Window of {2 * halfwindow} samples every {step} samples. {lowvalue}hz to {highvalue}hz.'
     title = f'Stats. Window of {2 * aggregate_halfwindow} samples every {aggregate_step} samples. Full Spectrum.'
     plot(spectrumdata, plotlabels, df, 'stats_seven_day', title)
-
+    #
     # If we have at least 2 days of data, we can start generating the daily stats plot
     chop = int(86400 * k.datapersecond / aggregate_step)
     print(f'One day plot chop: {len(utcobjects)} {chop}')
@@ -284,7 +284,7 @@ if __name__ == '__main__':
         data_rms_1 = data_rms[-chop:]
         data_stdev_1 = data_stdev[-chop:]
         data_kurtosis_1= data_kurtosis[-chop:]
-
+        #
         spectrumdata_1 = [
             utcobjects_1,
             data_mean_1,
@@ -305,10 +305,11 @@ if __name__ == '__main__':
         stapsx.append(px)
     statitle = 'Seven Day STA / LTA'
     plot_sta(stalta_data[2], stapsx, df, statitle)
+    #
     sta_1 = stalta_data[2][-86400*k.datapersecond:]
     stap_1 = stapsx[-86400*k.datapersecond:]
     statitle = 'One Day STA / LTA'
-    plot_sta(stalta_data[2], stapsx, df, statitle)
+    plot_sta(sta_1, stap_1, df, statitle)
 
     # =========================================================
     # Scatterplots
