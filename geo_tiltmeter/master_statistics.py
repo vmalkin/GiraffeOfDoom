@@ -296,9 +296,6 @@ if __name__ == '__main__':
     # =========================================================
     # STA over LTA plot
     stalta_data = sta_lta(filtered_data)
-    for item in stalta_data:
-        print(len(item))
-    print(len(posix_data))
     stapsx = []
     for item in posix_data:
         px = tim = datetime.fromtimestamp(item, tz=timezone.utc)
