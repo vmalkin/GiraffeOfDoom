@@ -76,7 +76,7 @@ def plot(df,
     deltpressure_clr = '#56566f'
     axsec.plot(utctimes, deltapressure, c=deltpressure_clr, linewidth=1)
     axsec.set_ylabel('Δ pressure', color=deltpressure_clr)
-    axsec.set_ylim([-10, 10])
+    # axsec.set_ylim([-10, 10])
     axsec.grid(visible=False)
 
     ax[2].set_ylabel("Barometer. HPa.", color=ink_colour[2])

@@ -32,19 +32,19 @@ def plot_dual_hourly(
     ):
 
     plt.style.use(plotstyle)
-    fig, ax = plt.subplots(2, layout="constrained", figsize=(16, 8), dpi=250)
+    fig, ax = plt.subplots(1, layout="constrained", figsize=(16, 8), dpi=250)
     # utcdates should be datetime objects, not POSIX floats
-    ax[0].plot(utctimes, data, c=ink_colour[0], linewidth=1)
-    ax[0].set_ylabel("Tiltmeter. Arbitrary Units.", color=ink_colour[0])
-    ax[0].set_ylim(ddminmax)
+    ax.plot(utctimes, data, c=ink_colour[0], linewidth=1)
+    ax.set_ylabel("Tiltmeter. Arbitrary Units.", color=ink_colour[0])
+    ax.set_ylim(ddminmax)
     my_fmt = mdates.DateFormatter(df)
-    ax[0].xaxis.set_major_formatter(my_fmt)
+    ax.xaxis.set_major_formatter(my_fmt)
     # Major grid
-    ax[0].grid(which='major', linestyle=':', color='black', alpha=1)
-    ax[0].grid(which='minor', linestyle=':', color='black',alpha=0.5)
+    ax.grid(which='major', linestyle=':', color='black', alpha=1)
+    ax.grid(which='minor', linestyle=':', color='black',alpha=0.5)
     # Minor ticks and grid
-    ax[0].xaxis.set_minor_locator(AutoMinorLocator(5))
-    ax[0].yaxis.set_minor_locator(AutoMinorLocator(1))
+    ax.xaxis.set_minor_locator(AutoMinorLocator(5))
+    ax.yaxis.set_minor_locator(AutoMinorLocator(1))
 
     # # ax[1] = ax1.twinx()
     # ax[1].plot(utctimes, data_dx, c=ink_colour[1], linewidth=1)
@@ -115,7 +115,7 @@ def main(utcobj, data):
     sz_avg = np.nanmean(data)
     # # Use the RMS for the margin
     # margin = np.sqrt(np.mean(np.square(data))) * 4
-    margin = np.std(data) * 3
+    margin = np.std(data) * 8
     ddminmax = [sz_avg - margin, sz_avg + margin]
 
     # dx_avg = np.nanmean(dxdt)
