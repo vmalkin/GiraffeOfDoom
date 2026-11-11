@@ -2,7 +2,6 @@ import standard_stuff
 import plotter_spectrum_quick
 import multiprc_dual
 import plotter_current_day
-import multiprc_fft
 import time
 import class_aggregator
 import os
@@ -177,7 +176,7 @@ if __name__ == "__main__":
         to = item.return_utc_timeobject(item.get_avg_posix())
         data.append(dd)
         utctimes.append(to)
-    # use a 4-pole butterworth filter to get the seismic signals
+    # use a 4-pole butterworth filter to get the low seismic signals
     sos = butter(
         4,
         [0.0001, 0.3],
