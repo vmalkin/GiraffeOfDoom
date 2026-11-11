@@ -32,7 +32,7 @@ def plot_dual_hourly(
     ):
 
     plt.style.use(plotstyle)
-    fig, ax = plt.subplots(1, layout="constrained", figsize=(16, 8), dpi=250)
+    fig, ax = plt.subplots(1, layout="constrained", figsize=(16, 4), dpi=250)
     # utcdates should be datetime objects, not POSIX floats
     ax.plot(utctimes, data, c=ink_colour[0], linewidth=1)
     ax.set_ylabel("Tiltmeter. Arbitrary Units.", color=ink_colour[0])
