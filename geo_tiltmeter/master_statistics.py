@@ -58,13 +58,13 @@ def colour_list(size):
     return returnlist
 
 
-def marker_list(size):
-    returnlist = []
-    m = ["$0$","$1$","$2$","$3$","$4$","$5$","$6$","$7$", "$8$","$9$"]
-    for i in range(0, size):
-        j = int((i / size) * 10)
-        returnlist.append(m[j])
-    return returnlist
+# def marker_list(size):
+#     returnlist = []
+#     m = ["$0$","$1$","$2$","$3$","$4$","$5$","$6$","$7$", "$8$","$9$"]
+#     for i in range(0, size):
+#         j = int((i / size) * 10)
+#         returnlist.append(m[j])
+#     return returnlist
 
 
 def plot_scatter(x_data, y_data, filename, title):
@@ -73,7 +73,7 @@ def plot_scatter(x_data, y_data, filename, title):
     plt.style.use(plotstyle)
     fig, ax = plt.subplots(nrows=2, height_ratios=[10, 1], figsize=(10, 11))
     colours = colour_list(len(x_data))
-    markers = marker_list(len(x_data))
+    # markers = marker_list(len(x_data))
     ax[0].scatter(x_data, y_data, c=colours, marker='o', s=20, linewidth=1, alpha=0.7)
     ax[0].set_title(title)
     # plt.xlabel("UTC Datetime.")
@@ -104,7 +104,7 @@ def plot_sta(stadata, staposix, dateformat):
     plt.close()
 
 
-def plot(spectrum_subarrays, plotlabels, dateformat, filename):
+def plot(spectrum_subarrays, plotlabels, dateformat, filename, title):
     plt.style.use(plotstyle)
     plotrows = len(spectrum_subarrays) - 1
     fig, ax = plt.subplots(plotrows, layout="constrained", figsize=(16, 32), dpi=250, sharex=False)
@@ -122,6 +122,7 @@ def plot(spectrum_subarrays, plotlabels, dateformat, filename):
         ax[i - 1].yaxis.set_minor_locator(AutoMinorLocator(1))
         ax[i - 1].xaxis.set_major_formatter(my_fmt)
         ax[i - 1].set_title(plottitle)
+    fig.suptitle(title)
     savefile = k.dir_saves['images'] + os.sep + filename + '.png'
     plt.savefig(savefile)
     plt.close()
@@ -302,8 +303,27 @@ if __name__ == '__main__':
     # Statistical plots
     # title = f'Stats. Window of {2 * halfwindow} samples every {step} samples. {lowvalue}hz to {highvalue}hz.'
     title = f'Stats. Window of {2 * halfwindow} samples every {step} samples. Full Spectrum.'
-    plot(spectrumdata, plotlabels, df, 'stats_seven_day')
-    # # plot(spectrumdata_1, df, 'stats_one_day', title)
+    plot(spectrumdata, plotlabels, df, 'stats_seven_day', title)
+
+    if len(utcobjects) > 2 * 86400:
+        utcobjects_1 = utcobjects[-86400:]
+        data_mean_1 = data_mean[-86400:]
+        temp_1 = temp[-86400:]
+        press_1 = press[-86400:]
+        data_rms_1 = data_rms[-86400:]
+        data_stdev_1 = data_stdev[-86400:]
+        data_kurtosis_1= data_kurtosis[-86400:]
+
+        spectrumdata_1 = [
+            utcobjects_1,
+            data_mean_1,
+            temp_1,
+            press_1,
+            data_rms_1,
+            data_stdev_1,
+            data_kurtosis_1
+        ]
+        plot(spectrumdata_1, plotlabels, df, 'stats_one_day', title)
 
     # =========================================================
     # STA over LTA plot
