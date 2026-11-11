@@ -304,7 +304,7 @@ if __name__ == '__main__':
         px = tim = datetime.fromtimestamp(item, tz=timezone.utc)
         stapsx.append(px)
     statitle = 'Seven Day STA / LTA'
-    plot_sta(stalta_data[2], stapsx, df, statitle, 'stalta_1.png')
+    plot_sta(stalta_data[2], stapsx, df, statitle, 'stalta_7.png')
     #
     sta_1 = stalta_data[2][-86400*k.datapersecond:]
     stap_1 = stapsx[-86400*k.datapersecond:]
