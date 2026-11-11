@@ -68,43 +68,56 @@ if __name__ == "__main__":
     # [utc_object_time, seismic_data, temperature_data, pressure_data]
     print(f'*** BEGIN Plotter ***\n')
     one_day_slice_interval = -1 * (86400 * k.datapersecond) * 1
-    # two_day_slice_interval = -1 * (86400 * k.datapersecond) * 2
     one_day_slice = sanitised_list[one_day_slice_interval:]
-    # two_day_slice = sanitised_list[two_day_slice_interval:]
 
     # =========================================================
     # Create Spectrogram
-    spectrumdata = class_aggregator.aggregate_data(0,1, one_day_slice, mode='basic')
-    print(f'Spectrum data created')
-    utctimes = spectrumdata[0][2]
-    data = spectrumdata[1][2]
-    plotter_spectrum_quick.wrapper(utctimes, data)
+    print(f'*** Spectrograms')
+    spectrumdata = class_aggregator.basic_aggregated_list(one_day_slice,0)
+    utctimes = []
+    data = []
+    for item in spectrumdata:
+        dd = item.get_data_avg(item.data_seismo)
+        to = item.return_utc_timeobject(item.get_avg_posix())
+        data.append(dd)
+        utctimes.append(to)
+    frq = 10
+    plotter_spectrum_quick.wrapper(
+        utc=utctimes,
+        data=data,
+        fs=frq,
+        nfft=8192,
+        fmin=10 ** -3,
+        fmax=5 * 10 ** 0,
+        title="Quick spectrum",
+        savefile="spec_quick.png"
+    )
 
     # =========================================================
     # One Day Plotter
+    print(f'*** One-day plot.')
     hlfwindow = k.datapersecond * 30
-    one_day_data = class_aggregator.aggregate_data(hlfwindow,hlfwindow, one_day_slice, mode='basic')
-    # Get tilt, temperature and pressure data.
-    utctimes = one_day_data[0][2]
-    data = one_day_data[1][2]
-    temperature = one_day_data[2][2]
-    pressure = one_day_data[3][2]
+    spectrumdata = class_aggregator.basic_aggregated_list(one_day_slice,hlfwindow)
+    utctimes = []
+    data = []
+    temperature = []
+    pressure = []
+    for item in spectrumdata:
+        dd = item.get_data_avg(item.data_seismo)
+        tt = item.get_data_avg(item.data_temperature)
+        pp = item.get_data_avg(item.data_pressure)
+        to = item.return_utc_timeobject(item.get_avg_posix())
+        data.append(dd)
+        temperature.append(tt)
+        pressure.append(pp)
+        utctimes.append(to)
 
     deltapressure = []
     for i in range(1, len(pressure)):
         d = pressure[i] - pressure[i - 1]
         deltapressure.append(d)
     deltapressure.append(d)
-    # # use a 4-pole butterworth filter to get the seismic signals
-    # sos = butter(
-    #     4,
-    #     [0.0001, 0.3],
-    #     btype='bandpass',
-    #     fs=10,
-    #     output='sos'
-    # )
-    # filtered = sosfiltfilt(sos, data)
-    print(f'{len(utctimes)} {len(data)} {len(temperature)} {len(pressure)} \n')
+
     plotter_current_day.wrapper(
         utctimes=utctimes,
         data=data,
@@ -117,29 +130,38 @@ if __name__ == "__main__":
 
     # =========================================================
     # Seven Day Plotter
-    hlfwindow = k.datapersecond * 30
-    seven_day_data = class_aggregator.aggregate_data(hlfwindow,hlfwindow, sanitised_list, mode='basic')
-    # Get tilt, temperature and pressure data.
-    utctimes = seven_day_data[0][2]
-    data = seven_day_data[1][2]
-    temperature = seven_day_data[2][2]
-    pressure = seven_day_data[3][2]
+    print(f'*** Seven-day plot.')
+    hlfwindow = 5 * 60 * k.datapersecond
+    spectrumdata = class_aggregator.basic_aggregated_list(sanitised_list, hlfwindow)
+    utctimes = []
+    data = []
+    temperature = []
+    pressure = []
+    for item in spectrumdata:
+        dd = item.get_data_avg(item.data_seismo)
+        tt = item.get_data_avg(item.data_temperature)
+        pp = item.get_data_avg(item.data_pressure)
+        to = item.return_utc_timeobject(item.get_avg_posix())
+        data.append(dd)
+        temperature.append(tt)
+        pressure.append(pp)
+        utctimes.append(to)
 
     deltapressure = []
     for i in range(1, len(pressure)):
         d = pressure[i] - pressure[i - 1]
         deltapressure.append(d)
-    deltapressure.insert(0, deltapressure[1])
+    deltapressure.append(d)
 
-    # Smooth the data
-    smoothinghalfwindow = 2
-    data = standard_stuff.filter_average(data, smoothinghalfwindow)
-    temperature = standard_stuff.filter_average(temperature, smoothinghalfwindow)
-    pressure = standard_stuff.filter_average(pressure, smoothinghalfwindow)
-    deltapressure = standard_stuff.filter_average(deltapressure, smoothinghalfwindow)
-    utctimes = utctimes[smoothinghalfwindow:-smoothinghalfwindow]
-    #
-    print(f'{len(utctimes)} {len(data)} {len(temperature)} {len(pressure)} \n')
+    # # Smooth the data
+    # smoothinghalfwindow = 2
+    # data = standard_stuff.filter_average(data, smoothinghalfwindow)
+    # temperature = standard_stuff.filter_average(temperature, smoothinghalfwindow)
+    # pressure = standard_stuff.filter_average(pressure, smoothinghalfwindow)
+    # deltapressure = standard_stuff.filter_average(deltapressure, smoothinghalfwindow)
+    # utctimes = utctimes[smoothinghalfwindow:-smoothinghalfwindow]
+    # #
+    # print(f'{len(utctimes)} {len(data)} {len(temperature)} {len(pressure)} \n')
     plotter_current_day.wrapper(
         utctimes=utctimes,
         data=data,
@@ -149,22 +171,22 @@ if __name__ == "__main__":
         title='Seven Day Plot',
         filename='seven_day.png'
     )
-
-    # =========================================================
-    # Basic seismic curve.
-    one_day_data = class_aggregator.aggregate_data(0,1, one_day_slice, mode='basic')
-    utctimes = one_day_data[0][2]
-    data = one_day_data[1][2]
-    # use a 4-pole butterworth filter to get the seismic signals
-    sos = butter(
-        4,
-        [0.0001, 0.3],
-        btype='bandpass',
-        fs=k.datapersecond,
-        output='sos'
-    )
-    filtered = sosfiltfilt(sos, data)
-    multiprc_dual.main(utctimes, filtered)
+    #
+    # # =========================================================
+    # # Basic seismic curve.
+    # one_day_data = class_aggregator.aggregate_data(0,1, one_day_slice, mode='basic')
+    # utctimes = one_day_data[0][2]
+    # data = one_day_data[1][2]
+    # # use a 4-pole butterworth filter to get the seismic signals
+    # sos = butter(
+    #     4,
+    #     [0.0001, 0.3],
+    #     btype='bandpass',
+    #     fs=k.datapersecond,
+    #     output='sos'
+    # )
+    # filtered = sosfiltfilt(sos, data)
+    # multiprc_dual.main(utctimes, filtered)
 
     # =========================================================
     # Some stats on processing time.

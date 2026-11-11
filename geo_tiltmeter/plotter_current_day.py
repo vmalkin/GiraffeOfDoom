@@ -76,7 +76,7 @@ def plot(df,
     deltpressure_clr = '#56566f'
     axsec.plot(utctimes, deltapressure, c=deltpressure_clr, linewidth=1)
     axsec.set_ylabel('Δ pressure', color=deltpressure_clr)
-    axsec.set_ylim([-10, 10])
+    axsec.set_ylim([-0.2, 0.2])
     axsec.grid(visible=False)
 
     ax[2].set_ylabel("Barometer. HPa.", color=ink_colour[2])
@@ -101,11 +101,9 @@ def wrapper(utctimes, data, temperature, pressure, deltapressure, title, filenam
     # plots tilt, temp and pressure in a single graph.
     # Data is UTC time objects and flat data.
     # There may be gaps
-    print(f"*** Tiltmeter plot: {filename}")
     ticks = 20
     df = "%b %d \n%Hhr"
     savefolder = k.dir_saves['images'] + os.sep + filename
-
     plot(df,
          utctimes,
          data,

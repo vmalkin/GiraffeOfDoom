@@ -1,5 +1,3 @@
-# from datetime import timezone, datetime
-# import class_aggregator as aggregator
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 from matplotlib.ticker import AutoMinorLocator
@@ -12,7 +10,6 @@ import os
 
 def plot_spectrum_scipy(
     data,
-    deltap,
     datetimes,
     fs,
     nfft=None,
@@ -33,8 +30,6 @@ def plot_spectrum_scipy(
     ----------
     data : 1D array
         Time series data (e.g. pressure or delta pressure).
-    datap : 1D array
-        Time series data delta pressure
     datetimes : array-like
         Datetime objects corresponding to `data`.
     fs : float
@@ -78,7 +73,7 @@ def plot_spectrum_scipy(
 
     # # --- Diurnal band extraction ---
     f0 = 1.0 / (24 * 3600)
-    band = (freqs >= 0.9 * f0) & (freqs <= 1.1 * f0)
+    # band = (freqs >= 0.9 * f0) & (freqs <= 1.1 * f0)
     #
     # diurnal_power = np.trapezoid(Sxx[band, :], freqs[band], axis=0)
     # diurnal_power_db = 10 * np.log10(diurnal_power + np.finfo(float).eps)
@@ -142,71 +137,21 @@ def plot_spectrum_scipy(
     plt.close(fig)
 
 
-def get_delta_p(data, halfwindow):
-    nullvalue = np.nan
-    returnarray = []
-    end_index = len(data) - halfwindow
-    # we want to return an array the same size as the input array. We pad the beginning and end with
-    # null values. The array is split up thus:
-    # [half window at start] <-> [data we work on] <-> [half window at end]
-    # IF we were doing a running avg for instance, this would give us a window centred on our chosen data. THis is
-    # preferred
-    if len(data) > halfwindow:
-        for i in range(0, len(data)):
-            if halfwindow < i < end_index:
-                window_data = data[i - halfwindow: i + halfwindow]
-                j = window_data[-1] - window_data[0]
-                j = round(j, 3)
-                returnarray.append(j)
-            else:
-                returnarray.append(nullvalue)
-    else:
-        for _ in data:
-            returnarray.append(nullvalue)
-    return returnarray
-
-
-def wrapper(utc, data):
+def wrapper(utc, data, fs, nfft, fmin, fmax, title, savefile):
     #  spectrographic analysis and filtering improved with ChatGPT
-    print("*** Tilt Spectrogram")
-    # d = []
-    # for i in range(0, len(data)):
-    #     try:
-    #         j = float(data[i])
-    #         d.append(j)
-    #     except TypeError:
-    #         print(data[i])
-    # print(f'Length of data: {len(d)}')
     data = detrend(data, type='linear')
-
-    halfwindow = 60 * 30
-    deltapressure = get_delta_p(data, halfwindow)
-    print(f'{len(data)} {len(deltapressure)}')
-    df = "%d %H:%M"
-    title = "Spectrogram of tiltmeter"
-
+    title = title
     savefolder = k.dir_saves['images']
-    savefile = savefolder + os.sep + "spectrum_quick.png"
-
-    # nfft=16384
-    # nfft=32768
-    # # nfft = 65536,
-    # fmin = 10 ** -7,
-    # fmax = 10 ** -1.8,
-    # vmin = -50,
-    # vmax = 20,
-    # fmin = 10 ** -5,
-    # fmax = 10 ** 0.39,
+    savefile = savefolder + os.sep + savefile
 
     plot_spectrum_scipy(
         data,
-        deltap=deltapressure,
         datetimes=utc,
-        fs=k.datapersecond,
-        nfft=8192,
+        fs = fs,
+        nfft=nfft,
         overlap_frac=0.75,
-        fmin=10 ** -3,
-        fmax=5 * 10 ** 0,
+        fmin=fmin,
+        fmax=fmax,
         vmin = -7,
         vmax = 22,
         datetimeformat="%m %d\n%H:%M",

@@ -1,6 +1,6 @@
 import numpy as np
 from scipy.stats import kurtosis, skew
-from scipy.signal import welch, butter, sosfiltfilt
+from scipy.signal import welch, butter, sosfiltfilt, detrend
 import constants as k
 from datetime import datetime, timezone
 
@@ -86,3 +86,24 @@ class Aggregator:
         # 5. Normalize
         max_entropy = np.log2(len(psd_norm))
         return shannon_entropy / max_entropy
+
+
+# a wee helper function to use the above class to decimate data and return it
+def basic_aggregated_list(data, halfwindow):
+    data = np.array(data)
+    posix_data = data[:, 0]
+    seis_data = data[:, 1]
+    temp_data = data[:, 2]
+    pressure_data = data[:, 3]
+    # detrend the seismic data
+    seis_data = detrend(seis_data, type='linear')
+    aggregated_array = []
+    for i in range(halfwindow, len(data) - halfwindow):
+        date_start = posix_data[i - halfwindow]
+        date_end = posix_data[i + halfwindow]
+        d = Aggregator(date_start, date_end)
+        d.data_seismo = seis_data[i - halfwindow: i + halfwindow + 1]
+        d.data_pressure = pressure_data[i - halfwindow: i + halfwindow + 1]
+        d.data_temperature = temp_data[i - halfwindow: i + halfwindow + 1]
+        aggregated_array.append(d)
+    return aggregated_array

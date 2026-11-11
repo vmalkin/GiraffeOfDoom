@@ -1,5 +1,5 @@
 from scipy.stats import pearsonr
-from scipy.signal import welch, butter, sosfiltfilt
+from scipy.signal import welch, butter, sosfiltfilt, detrend
 import standard_stuff
 import time
 import class_aggregator
@@ -165,8 +165,8 @@ if __name__ == '__main__':
     seis_data = sanitised_list[:, 1]
     temp_data = sanitised_list[:, 2]
     pressure_data = sanitised_list[:, 3]
-    # demean the seismic data
-    seis_data = seis_data - np.mean(seis_data)
+    # detrend the seismic data
+    seis_data = detrend(seis_data, type='linear')
 
     # use a 4-pole butterworth filter to get low frequency seismic signals
     lowvalue = 0.0001
