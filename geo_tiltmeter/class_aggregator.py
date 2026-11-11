@@ -89,7 +89,8 @@ class Aggregator:
 
 
 # a wee helper function to use the above class to decimate data and return it
-def basic_aggregated_list(data, halfwindow):
+def basic_aggregated_list(data, halfwindow, step):
+    print(f'... split out data.')
     data = np.array(data)
     posix_data = data[:, 0]
     seis_data = data[:, 1]
@@ -98,7 +99,10 @@ def basic_aggregated_list(data, halfwindow):
     # detrend the seismic data
     seis_data = detrend(seis_data, type='linear')
     aggregated_array = []
-    for i in range(halfwindow, len(data) - halfwindow):
+    print(f'... create aggregated array.')
+    for i in range(halfwindow, len(data) - halfwindow, step):
+        if i % 50000 == 0:
+            print(f'... {i} / {len(data)}')
         date_start = posix_data[i - halfwindow]
         date_end = posix_data[i + halfwindow]
         d = Aggregator(date_start, date_end)
@@ -106,4 +110,5 @@ def basic_aggregated_list(data, halfwindow):
         d.data_pressure = pressure_data[i - halfwindow: i + halfwindow + 1]
         d.data_temperature = temp_data[i - halfwindow: i + halfwindow + 1]
         aggregated_array.append(d)
+    print(f'... Aggregation finished.')
     return aggregated_array

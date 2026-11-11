@@ -73,7 +73,7 @@ if __name__ == "__main__":
     # =========================================================
     # Create Spectrogram
     print(f'*** Spectrograms')
-    spectrumdata = class_aggregator.basic_aggregated_list(one_day_slice,0)
+    spectrumdata = class_aggregator.basic_aggregated_list(one_day_slice,halfwindow=0, step=1)
     utctimes = []
     data = []
     for item in spectrumdata:
@@ -97,7 +97,8 @@ if __name__ == "__main__":
     # One Day Plotter
     print(f'*** One-day plot.')
     hlfwindow = k.datapersecond * 30
-    spectrumdata = class_aggregator.basic_aggregated_list(one_day_slice,hlfwindow)
+    step = hlfwindow * 2
+    spectrumdata = class_aggregator.basic_aggregated_list(one_day_slice,hlfwindow, step)
     utctimes = []
     data = []
     temperature = []
@@ -132,36 +133,29 @@ if __name__ == "__main__":
     # Seven Day Plotter
     print(f'*** Seven-day plot.')
     hlfwindow = 5 * 60 * k.datapersecond
-    spectrumdata = class_aggregator.basic_aggregated_list(sanitised_list, hlfwindow)
+    step = hlfwindow * 2
+    spectrumdata = class_aggregator.basic_aggregated_list(sanitised_list, hlfwindow, step)
     utctimes = []
     data = []
     temperature = []
     pressure = []
+    print(f'... Parse 7-day data')
     for item in spectrumdata:
         dd = item.get_data_avg(item.data_seismo)
-        tt = item.get_data_avg(item.data_temperature)
-        pp = item.get_data_avg(item.data_pressure)
+        tt = item.get_median(item.data_temperature)
+        pp = item.get_median(item.data_pressure)
         to = item.return_utc_timeobject(item.get_avg_posix())
         data.append(dd)
         temperature.append(tt)
         pressure.append(pp)
         utctimes.append(to)
-
+    print(f'... Calculate dP')
     deltapressure = []
     for i in range(1, len(pressure)):
         d = pressure[i] - pressure[i - 1]
         deltapressure.append(d)
     deltapressure.append(d)
-
-    # # Smooth the data
-    # smoothinghalfwindow = 2
-    # data = standard_stuff.filter_average(data, smoothinghalfwindow)
-    # temperature = standard_stuff.filter_average(temperature, smoothinghalfwindow)
-    # pressure = standard_stuff.filter_average(pressure, smoothinghalfwindow)
-    # deltapressure = standard_stuff.filter_average(deltapressure, smoothinghalfwindow)
-    # utctimes = utctimes[smoothinghalfwindow:-smoothinghalfwindow]
-    # #
-    # print(f'{len(utctimes)} {len(data)} {len(temperature)} {len(pressure)} \n')
+    print(f'... Plt 7-day.')
     plotter_current_day.wrapper(
         utctimes=utctimes,
         data=data,
@@ -171,22 +165,28 @@ if __name__ == "__main__":
         title='Seven Day Plot',
         filename='seven_day.png'
     )
-    #
-    # # =========================================================
-    # # Basic seismic curve.
-    # one_day_data = class_aggregator.aggregate_data(0,1, one_day_slice, mode='basic')
-    # utctimes = one_day_data[0][2]
-    # data = one_day_data[1][2]
-    # # use a 4-pole butterworth filter to get the seismic signals
-    # sos = butter(
-    #     4,
-    #     [0.0001, 0.3],
-    #     btype='bandpass',
-    #     fs=k.datapersecond,
-    #     output='sos'
-    # )
-    # filtered = sosfiltfilt(sos, data)
-    # multiprc_dual.main(utctimes, filtered)
+
+    # =========================================================
+    # Basic seismic curve.
+    print(f'*** Basic seismic.')
+    spectrumdata = class_aggregator.basic_aggregated_list(one_day_slice,halfwindow=0, step=1)
+    utctimes = []
+    data = []
+    for item in spectrumdata:
+        dd = item.get_data_avg(item.data_seismo)
+        to = item.return_utc_timeobject(item.get_avg_posix())
+        data.append(dd)
+        utctimes.append(to)
+    # use a 4-pole butterworth filter to get the seismic signals
+    sos = butter(
+        4,
+        [0.0001, 0.3],
+        btype='bandpass',
+        fs=k.datapersecond,
+        output='sos'
+    )
+    filtered = sosfiltfilt(sos, data)
+    multiprc_dual.main(utctimes, filtered)
 
     # =========================================================
     # Some stats on processing time.
