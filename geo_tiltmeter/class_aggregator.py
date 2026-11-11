@@ -73,7 +73,7 @@ class Aggregator:
 
     def get_spectral_entropy(self, dataset):
         # 2. Compute PSD with high frequency resolution
-        nperseg = 512
+        nperseg = 512*1
         frequencies, psd = welch(dataset, fs=k.datapersecond, nperseg=nperseg)
 
         # 3. Create probability distribution

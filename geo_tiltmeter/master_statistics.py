@@ -168,7 +168,7 @@ if __name__ == '__main__':
     # detrend the seismic data
     seis_data = detrend(seis_data, type='linear')
 
-    # use a 4-pole butterworth filter to get low frequency seismic signals
+    # # use a 4-pole butterworth filter to get low frequency seismic signals
     lowvalue = 0.0001
     highvalue = 0.3
     sos = butter(
@@ -179,6 +179,7 @@ if __name__ == '__main__':
         output='sos'
     )
     filtered_data = sosfiltfilt(sos, seis_data)
+    # filtered_data = seis_data
     # The butterworth filter DOES have an end-effect. We are going to trim this and shorted all other data
     # so it's the same length
     trimvalue = 4 * 60 * 60 * k.datapersecond
@@ -187,21 +188,21 @@ if __name__ == '__main__':
     temp_data = temp_data[trimvalue:-trimvalue]
     pressure_data = pressure_data[trimvalue:-trimvalue]
 
-    # Create the sta/lta plot at this point. Use squared amplitude
-    stalta = []
-    stapsx = []
-    halfw_sta = 300 * k.datapersecond
-    halfw_lta = 3000 * k.datapersecond
-    for i in range(halfw_lta, len(filtered_data) - halfw_lta):
-        sta = filtered_data[i-halfw_sta:i+halfw_sta]
-        lta = filtered_data[i-halfw_lta:i+halfw_lta]
-        s = np.mean(sta)
-        l = np.mean(lta)
-        d =  s / l
-        stalta.append(d)
-        tim = datetime.fromtimestamp(posix_data[i], tz=timezone.utc)
-        stapsx.append(tim)
-    plot_sta(stalta, stapsx, df)
+    # # Create the sta/lta plot at this point. Use squared amplitude
+    # stalta = []
+    # stapsx = []
+    # halfw_sta = 300 * k.datapersecond
+    # halfw_lta = 3000 * k.datapersecond
+    # for i in range(halfw_lta, len(filtered_data) - halfw_lta):
+    #     sta = filtered_data[i-halfw_sta:i+halfw_sta]
+    #     lta = filtered_data[i-halfw_lta:i+halfw_lta]
+    #     s = np.mean(sta)
+    #     l = np.mean(lta)
+    #     d =  s / l
+    #     stalta.append(d)
+    #     tim = datetime.fromtimestamp(posix_data[i], tz=timezone.utc)
+    #     stapsx.append(tim)
+    # plot_sta(stalta, stapsx, df)
 
     # CREATE aggregated data
     # [utc_object_time, seismic_data, temperature_data, pressure_data]
@@ -293,11 +294,11 @@ if __name__ == '__main__':
     #
     # #
     # # # Scatterplots
-    plot_scatter(data_skw_p, data_skw_3rd, filename='sctr_7_skw_skw', title='x: skw-p, y: skw-3')
-    plot_scatter(temp, data_mean, filename='sctr_7_tlt_temp', title='x: Temp, y: Tilt')
-    plot_scatter(temp, press, filename='sctr_7_tmp_prs', title='x: Temp, y: Pressure')
+    plot_scatter(data_mean, data_skw_3rd, filename='sctr_7_mean_skw3rd', title='x: mean, y: skw-3')
+    # plot_scatter(temp, data_mean, filename='sctr_7_tlt_temp', title='x: Temp, y: Tilt')
+    # plot_scatter(temp, press, filename='sctr_7_tmp_prs', title='x: Temp, y: Pressure')
     plot_scatter(spectral_entropy, data_stdev, filename='sctr_7_ent_std', title='x: Spectral Entropy, y: StdDev')
-    plot_scatter(spectral_entropy, temp, filename='sctr_7_ent_tmp', title='x: Spectral Entropy, y: Temperature')
+    # plot_scatter(spectral_entropy, temp, filename='sctr_7_ent_tmp', title='x: Spectral Entropy, y: Temperature')
 
     # =========================================================
     # Some stats on processing time.
