@@ -182,30 +182,12 @@ if __name__ == '__main__':
     pressure_data = sanitised_list[:, 3]
     # detrend the seismic data
     seis_data = detrend(seis_data, type='linear')
-
-    # # # use a 4-pole butterworth filter to get low frequency seismic signals
-    # lowvalue = 0.0001
-    # highvalue = 0.3
-    # sos = butter(
-    #     4,
-    #     [lowvalue, highvalue],
-    #     btype='bandpass',
-    #     fs=k.datapersecond,
-    #     output='sos'
-    # )
-    # filtered_data = sosfiltfilt(sos, seis_data)
+    # we had used a butterworth filter here
     filtered_data = seis_data
-    # The butterworth filter DOES have an end-effect. We are going to trim this and shorted all other data
-    # so it's the same length
-    # trimvalue = 4 * 60 * 60 * k.datapersecond
-    # filtered_data = filtered_data[trimvalue:-trimvalue]
-    # posix_data = posix_data[trimvalue:-trimvalue]
-    # temp_data = temp_data[trimvalue:-trimvalue]
-    # pressure_data = pressure_data[trimvalue:-trimvalue]
 
-    # Create the sta/lta plot at this point. Use squared amplitude
-
+    # =========================================================
     # CREATE aggregated data
+    # Our stats are based on what is happening along a window
     # [utc_object_time, seismic_data, temperature_data, pressure_data]
     print(f'*** BEGIN Plotter ***\n')
     start = time.time()
@@ -244,16 +226,6 @@ if __name__ == '__main__':
         dmn = item.get_rms(item.data_seismo)
         data_rms.append(dmn)
 
-    # data_skw_p = []
-    # for item in aggregate_array:
-    #     d = item.get_skew_parsons(item.data_seismo)
-    #     data_skw_p.append(d)
-
-    # data_skw_3rd = []
-    # for item in aggregate_array:
-    #     d = item.get_skew_3rdCM(item.data_seismo)
-    #     data_skw_3rd.append(d)
-
     data_stdev = []
     for item in aggregate_array:
         d = item.get_stddev(item.data_seismo)
@@ -263,11 +235,6 @@ if __name__ == '__main__':
     for item in aggregate_array:
         d = item.get_kurtosis(item.data_seismo)
         data_kurtosis.append(d)
-
-    # spectral_entropy = []
-    # for item in aggregate_array:
-    #     d = item.get_spectral_entropy(item.data_seismo)
-    #     spectral_entropy.append(d)
 
     temp = []
     for item in aggregate_array:
@@ -305,7 +272,8 @@ if __name__ == '__main__':
     title = f'Stats. Window of {2 * halfwindow} samples every {step} samples. Full Spectrum.'
     plot(spectrumdata, plotlabels, df, 'stats_seven_day', title)
 
-    if len(utcobjects) > 2 * 86400:
+    # If we hgave at least 2 days of data, we can start generating the daily stats plot
+    if len(sanitised_list) > 2 * 86400:
         utcobjects_1 = utcobjects[-86400:]
         data_mean_1 = data_mean[-86400:]
         temp_1 = temp[-86400:]
