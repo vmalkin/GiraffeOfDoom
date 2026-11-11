@@ -193,18 +193,18 @@ if __name__ == '__main__':
     start = time.time()
 
     # window of 10 minutes
-    halfwindow = 5 * 60 * k.datapersecond
+    aggregate_halfwindow = 5 * 60 * k.datapersecond
     # in 5 minutes steps
-    step = 5 * 60 * k.datapersecond
+    aggregate_step = 5 * 60 * k.datapersecond
 
     aggregate_array = []
-    for i in range(halfwindow, len(filtered_data) - halfwindow, step):
-        date_start = posix_data[i - halfwindow]
-        date_end = posix_data[i + halfwindow]
+    for i in range(aggregate_halfwindow, len(filtered_data) - aggregate_halfwindow, aggregate_step):
+        date_start = posix_data[i - aggregate_halfwindow]
+        date_end = posix_data[i + aggregate_halfwindow]
         d = class_aggregator.Aggregator(date_start, date_end)
-        d.data_seismo = filtered_data[i - halfwindow: i + halfwindow + 1]
-        d.data_pressure = pressure_data[i - halfwindow: i + halfwindow + 1]
-        d.data_temperature = temp_data[i - halfwindow: i + halfwindow + 1]
+        d.data_seismo = filtered_data[i - aggregate_halfwindow: i + aggregate_halfwindow + 1]
+        d.data_pressure = pressure_data[i - aggregate_halfwindow: i + aggregate_halfwindow + 1]
+        d.data_temperature = temp_data[i - aggregate_halfwindow: i + aggregate_halfwindow + 1]
         aggregate_array.append(d)
 
     # We now have an array of data objects with our total data windowed at set intervals.
@@ -269,18 +269,19 @@ if __name__ == '__main__':
     # =========================================================
     # Statistical plots
     # title = f'Stats. Window of {2 * halfwindow} samples every {step} samples. {lowvalue}hz to {highvalue}hz.'
-    title = f'Stats. Window of {2 * halfwindow} samples every {step} samples. Full Spectrum.'
+    title = f'Stats. Window of {2 * aggregate_halfwindow} samples every {aggregate_step} samples. Full Spectrum.'
     plot(spectrumdata, plotlabels, df, 'stats_seven_day', title)
 
-    # If we hgave at least 2 days of data, we can start generating the daily stats plot
-    if len(sanitised_list) > 2 * 86400:
-        utcobjects_1 = utcobjects[-86400:]
-        data_mean_1 = data_mean[-86400:]
-        temp_1 = temp[-86400:]
-        press_1 = press[-86400:]
-        data_rms_1 = data_rms[-86400:]
-        data_stdev_1 = data_stdev[-86400:]
-        data_kurtosis_1= data_kurtosis[-86400:]
+    # If we have at least 2 days of data, we can start generating the daily stats plot
+    chop = int(86400 / aggregate_step)
+    if len(sanitised_list) > (2 * 86400):
+        utcobjects_1 = utcobjects[-chop:]
+        data_mean_1 = data_mean[-chop:]
+        temp_1 = temp[-chop:]
+        press_1 = press[-chop:]
+        data_rms_1 = data_rms[-chop:]
+        data_stdev_1 = data_stdev[-chop:]
+        data_kurtosis_1= data_kurtosis[-chop:]
 
         spectrumdata_1 = [
             utcobjects_1,
