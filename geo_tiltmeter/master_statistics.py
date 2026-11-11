@@ -287,7 +287,7 @@ if __name__ == '__main__':
     # #
     # # # Scatterplots
     plot_scatter(data_stdev, data_rms, filename='sctr_7_stdv_rms', title='x: Std Dev, y: RMS')
-    # plot_scatter(temp, data_mean, filename='sctr_7_tlt_temp', title='x: Temp, y: Tilt')
+    plot_scatter(data_rms, data_kurtosis, filename='sctr_7_rms_kurt', title='x: RMS, y: Kurtosis')
     # plot_scatter(temp, press, filename='sctr_7_tmp_prs', title='x: Temp, y: Pressure')
     # plot_scatter(spectral_entropy, data_stdev, filename='sctr_7_ent_std', title='x: Spectral Entropy, y: StdDev')
     # plot_scatter(spectral_entropy, temp, filename='sctr_7_ent_tmp', title='x: Spectral Entropy, y: Temperature')
