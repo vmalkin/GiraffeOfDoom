@@ -58,8 +58,8 @@ class SavedataThread(Thread):
                     print(f"!!! Data is malformed: {item}. Didn't parse.")
 
             # Save to database.
-            # mgr_database.db_data_add(parseddata)
-            # Save to gzip CSV file.
+            # Save to CSV file. Print first value of parsed data as quick diagnostic of information
+            print(parseddata[0])
             mgr_csvfile.csv_save(parseddata)
             # elapsed time for thread processing.
             timer_stop = time.time()
@@ -124,7 +124,7 @@ if __name__ == "__main__":
         print("!!! Unable to start save data thread")
 
     # Read sensor data and add to buffer
-    # We need an exit that GRACEFULLY flushes the contents of the buffer to the DB.
+    # We need an exit that GRACEFULLY flushes the contents of the buffer to the DB. THis is not it!
     while True:
         line = com.data_recieve()
         # 1776586101.8807535, 19.27,98792.61
