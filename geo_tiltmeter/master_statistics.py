@@ -304,7 +304,7 @@ if __name__ == '__main__':
 
     # =========================================================
     # STA over LTA plot
-    stalta_data = sta_lta(filtered_data, k.datapersecond, 1.4, 2)
+    stalta_data = sta_lta(filtered_data, k.datapersecond, 2, 30)
     stapsx = []
     for item in posix_data:
         px = tim = datetime.fromtimestamp(item, tz=timezone.utc)
