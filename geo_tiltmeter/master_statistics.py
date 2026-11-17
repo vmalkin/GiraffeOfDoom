@@ -200,10 +200,9 @@ if __name__ == '__main__':
     start = time.time()
 
     # window of 10 minutes
-    aggregate_halfwindow = 5 * 60 * k.datapersecond
+    aggregate_halfwindow = 30 * k.datapersecond
     # # in 5 minutes steps
-    # aggregate_step = 10 * k.datapersecond
-    # in separate bins of 2 x the halfwindow
+    # aggregate_step = aggregate_halfwindow
     aggregate_step = 2 * aggregate_halfwindow
 
     aggregate_array = []
@@ -275,10 +274,10 @@ if __name__ == '__main__':
         data_mean,
         temp,
         press,
-        data_rms,
         data_3cm,
         data_skew_3rdCM,
         data_skew_parsons,
+        data_rms,
         data_stdev,
         data_kurtosis
     ]
@@ -288,10 +287,10 @@ if __name__ == '__main__':
         'Mean of tilt data.',
         'Room temperature.',
         'Room pressure.',
-        'RMS - Changes in waveform strength.',
         'Third Central Moment.',
         'Skew of 3rd Central Moment.',
-        'Skew - Parsons.',
+        'Pearsons second coefficient of skewness.',
+        'RMS - Changes in waveform strength.',
         'Standard Deviation - Changes in amplitude variability, so may track with StdDev.',
         'Kurtosis - A change from background-like behavior to impulsive signal behavior.'
     ]
@@ -322,10 +321,10 @@ if __name__ == '__main__':
             data_mean_1,
             temp_1,
             press_1,
-            data_rms_1,
             data_3cm_1,
             data_skew_3rdCM_1,
             data_skew_parsons_1,
+            data_rms_1,
             data_stdev_1,
             data_kurtosis_1
         ]
@@ -354,8 +353,8 @@ if __name__ == '__main__':
     # plot_scatter(temp, data_rms, filename='diag_tmp_prs', title='x: Temp, y: RMS')
     # plot_scatter(temp, data_stdev, filename='diag_tmp_stdv', title='x: Temp, y: Std Dev')
     # plot_scatter(temp, data_kurtosis, filename='diag_tmp_krt', title='x: Temp, y: Kurtosis')
-    # plot_scatter(press, data_rms, filename='diag_prs_prs', title='x: Pressure, y: RMS')
-    # plot_scatter(press, data_stdev, filename='diag_prs_stdv', title='x: Pressure, y: Std Dev')
+    plot_scatter(press, data_rms, filename='diag_prs_prs', title='x: Pressure, y: RMS')
+    plot_scatter(press, data_stdev, filename='diag_prs_stdv', title='x: Pressure, y: Std Dev')
     # plot_scatter(press, data_kurtosis, filename='diag_prs_krt', title='x: Pressure, y: Kurtosis')
 
     # =========================================================
