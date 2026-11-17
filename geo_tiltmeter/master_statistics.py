@@ -181,7 +181,6 @@ if __name__ == '__main__':
         else:
             sanitised_list.append(item)
 
-    # We want to use low-frequency data under the assumption that above about 1hz, most of the noise is manmade.
     sanitised_list = np.array(sanitised_list)
     posix_data = sanitised_list[:, 0]
     seis_data = sanitised_list[:, 1]
@@ -189,6 +188,7 @@ if __name__ == '__main__':
     pressure_data = sanitised_list[:, 3]
     # detrend the seismic data
     seis_data = detrend(seis_data, type='linear')
+    # We want to use low-frequency data under the assumption that above about 1hz, most of the noise is manmade.
     # we had used a butterworth filter here
     filtered_data = seis_data
 
@@ -201,8 +201,10 @@ if __name__ == '__main__':
 
     # window of 10 minutes
     aggregate_halfwindow = 5 * 60 * k.datapersecond
-    # in 5 minutes steps
-    aggregate_step = 5 * 60 * k.datapersecond
+    # # in 5 minutes steps
+    # aggregate_step = 10 * k.datapersecond
+    # in separate bins of 2 x the halfwindow
+    aggregate_step = 2 * aggregate_halfwindow
 
     aggregate_array = []
     for i in range(aggregate_halfwindow, len(filtered_data) - aggregate_halfwindow, aggregate_step):
@@ -233,6 +235,21 @@ if __name__ == '__main__':
         dmn = item.get_rms(item.data_seismo)
         data_rms.append(dmn)
 
+    data_3cm = []
+    for item in aggregate_array:
+        cm3 = item.third_central_moment(item.data_seismo)
+        data_3cm.append(cm3)
+
+    data_skew_parsons = []
+    for item in aggregate_array:
+        skp = item.get_skew_parsons(item.data_seismo)
+        data_skew_parsons.append(skp)
+
+    data_skew_3rdCM = []
+    for item in aggregate_array:
+        sk3cm = item.get_skew_3rdCM(item.data_seismo)
+        data_skew_3rdCM.append(sk3cm)
+
     data_stdev = []
     for item in aggregate_array:
         d = item.get_stddev(item.data_seismo)
@@ -259,6 +276,9 @@ if __name__ == '__main__':
         temp,
         press,
         data_rms,
+        data_3cm,
+        data_skew_3rdCM,
+        data_skew_parsons,
         data_stdev,
         data_kurtosis
     ]
@@ -269,6 +289,9 @@ if __name__ == '__main__':
         'Room temperature.',
         'Room pressure.',
         'RMS - Changes in waveform strength.',
+        'Third Central Moment.',
+        'Skew of 3rd Central Moment.',
+        'Skew - Parsons.',
         'Standard Deviation - Changes in amplitude variability, so may track with StdDev.',
         'Kurtosis - A change from background-like behavior to impulsive signal behavior.'
     ]
@@ -288,6 +311,9 @@ if __name__ == '__main__':
         temp_1 = temp[-chop:]
         press_1 = press[-chop:]
         data_rms_1 = data_rms[-chop:]
+        data_3cm_1 = data_3cm[-chop:]
+        data_skew_3rdCM_1 = data_skew_3rdCM[-chop:]
+        data_skew_parsons_1 = data_skew_parsons[-chop:]
         data_stdev_1 = data_stdev[-chop:]
         data_kurtosis_1= data_kurtosis[-chop:]
         #
@@ -297,6 +323,9 @@ if __name__ == '__main__':
             temp_1,
             press_1,
             data_rms_1,
+            data_3cm_1,
+            data_skew_3rdCM_1,
+            data_skew_parsons_1,
             data_stdev_1,
             data_kurtosis_1
         ]
@@ -317,16 +346,17 @@ if __name__ == '__main__':
     statitle = 'One Day STA / LTA'
     plot_sta(sta_1, stap_1, df, statitle, 'stalta_1.png')
 
-    # =========================================================
-    # Scatterplots
-    plot_scatter(data_stdev, data_rms, filename='sctr_7_stdv_rms', title='x: Std Dev, y: RMS')
-    plot_scatter(data_rms, data_kurtosis, filename='sctr_7_rms_kurt', title='x: RMS, y: Kurtosis')
-    plot_scatter(temp, data_rms, filename='diag_tmp_prs', title='x: Temp, y: RMS')
-    plot_scatter(temp, data_stdev, filename='diag_tmp_stdv', title='x: Temp, y: Std Dev')
-    plot_scatter(temp, data_kurtosis, filename='diag_tmp_krt', title='x: Temp, y: Kurtosis')
-    plot_scatter(press, data_rms, filename='diag_prs_prs', title='x: Pressure, y: RMS')
-    plot_scatter(press, data_stdev, filename='diag_prs_stdv', title='x: Pressure, y: Std Dev')
-    plot_scatter(press, data_kurtosis, filename='diag_prs_krt', title='x: Pressure, y: Kurtosis')
+    # # =========================================================
+    # # Scatterplots
+    # plot_scatter(data_stdev, data_rms, filename='sctr_7_stdv_rms', title='x: Std Dev, y: RMS')
+    # plot_scatter(data_rms, data_kurtosis, filename='sctr_7_rms_kurt', title='x: RMS, y: Kurtosis')
+    # plot_scatter(temp, data_mean, filename='sctr_7_temp_mean', title='x: Temperature, y: Mean')
+    # plot_scatter(temp, data_rms, filename='diag_tmp_prs', title='x: Temp, y: RMS')
+    # plot_scatter(temp, data_stdev, filename='diag_tmp_stdv', title='x: Temp, y: Std Dev')
+    # plot_scatter(temp, data_kurtosis, filename='diag_tmp_krt', title='x: Temp, y: Kurtosis')
+    # plot_scatter(press, data_rms, filename='diag_prs_prs', title='x: Pressure, y: RMS')
+    # plot_scatter(press, data_stdev, filename='diag_prs_stdv', title='x: Pressure, y: Std Dev')
+    # plot_scatter(press, data_kurtosis, filename='diag_prs_krt', title='x: Pressure, y: Kurtosis')
 
     # =========================================================
     # Some stats on processing time.
