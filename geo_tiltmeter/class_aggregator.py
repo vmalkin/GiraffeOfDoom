@@ -32,9 +32,9 @@ class Aggregator:
         tim = datetime.fromtimestamp(psx, tz=timezone.utc)
         return tim
 
-    # def third_central_moment(self, dataset):
-    #     m3 = np.mean((dataset - np.mean(dataset)) ** 3)
-    #     return m3
+    def third_central_moment(self, dataset):
+        m3 = np.mean((dataset - np.mean(dataset)) ** 3)
+        return m3
 
     def get_stddev(self, dataset):
         sd = np.std(dataset)
@@ -52,21 +52,21 @@ class Aggregator:
         rms = np.sqrt(np.mean(np.square(dataset)))
         return rms
 
-    # def get_skew_parsons(self, dataset):
-    #     # Pearson's second coefficient of skewness
-    #     mn = np.mean(dataset)
-    #     md = np.median(dataset)
-    #     sd = np.std(dataset)
-    #     if sd != 0:
-    #         skewness = (mn - md) / sd
-    #     else:
-    #         skewness = 0
-    #     return skewness
+    def get_skew_parsons(self, dataset):
+        # Pearson's second coefficient of skewness
+        mn = np.mean(dataset)
+        md = np.median(dataset)
+        sd = np.std(dataset)
+        if sd != 0:
+            skewness = (mn - md) / sd
+        else:
+            skewness = 0
+        return skewness
 
-    # def get_skew_3rdCM(self, dataset):
-    #     # Skew using 3rd central moment
-    #     skewness = skew(dataset, bias=False)
-    #     return skewness
+    def get_skew_3rdCM(self, dataset):
+        # Skew using 3rd central moment
+        skewness = skew(dataset, bias=False)
+        return skewness
 
     def get_kurtosis(self, dataset):
         # 0: Equivalent kurtosis to a Gaussian distribution
@@ -100,8 +100,8 @@ def basic_aggregated_list(data, halfwindow, step):
     seis_data = data[:, 1]
     temp_data = data[:, 2]
     pressure_data = data[:, 3]
-    # detrend the seismic data
-    seis_data = detrend(seis_data, type='linear')
+    # # detrend the seismic data
+    # seis_data = detrend(seis_data, type='linear')
     aggregated_array = []
     print(f'... create aggregated array.')
     for i in range(halfwindow, len(data) - halfwindow, step):
