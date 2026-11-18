@@ -11,33 +11,17 @@ import constants as k
 import class_aggregator
 
 
-
-def plot_autocorrelation(autocdata, tickinterval, plotcolour, plottitle, legend, savefile):
+def plot_autocorrelation(autocdata, tickinterval, plottitle, legend, savefile):
     plt.style.use('bmh')
     fig, ax = plt.subplots(layout="constrained", figsize=(19, 6), dpi=140)
-    plotcolours = ["#003049", "#d62828", "#f77f00"]
+    # plotcolours = ["#003049", "#d62828", "#f77f00"]
+    plotcolours = ['#00202e', '#2c4875', '#8a508f', '#bc5090', '#ff6361', '#ff8531', '#ffa600', '#80d353', '#609f3f', '#406a2a']
     for i in range(0, len(autocdata)):
-        ax.plot(autocdata[i], c=plotcolours[i], linewidth=2)
+        ax.plot(autocdata[i], c=plotcolours[i], linewidth=1)
 
     ax.xaxis.set_major_locator(plt.MultipleLocator(tickinterval))
-    # ax.set_ylim([-0.02, 0.02])
+    # ax.set_xlim([0, int(len(autocdata[0] / 2))])
     plt.legend(legend, loc='lower center')
-    plt.setp(ax.get_xticklabels(), rotation=90)  # safer than plt.xticks
-    plot_title = plottitle + " - " + standard_stuff.posix2utc(time.time(), '%Y-%m-%d %H:%M')
-    ax.set_title(plot_title)
-    plt.tight_layout()
-    plt.savefig(savefile)
-    plt.close()
-
-
-def plot_singledata(dateformatstring, dateobjects, singledataarray, tickinterval, plotcolour, plottitle, savefile):
-    plt.style.use('bmh')
-    fig, ax = plt.subplots(layout="constrained", figsize=(19, 6), dpi=140)
-    ax.plot(dateobjects, singledataarray, c=plotcolour, linewidth=1)
-
-    # Use proper date formatter + locator
-    ax.xaxis.set_major_formatter(mdates.DateFormatter(dateformatstring))
-    ax.xaxis.set_major_locator(mdates.MinuteLocator(interval=tickinterval))
     plt.setp(ax.get_xticklabels(), rotation=90)  # safer than plt.xticks
     plot_title = plottitle + " - " + standard_stuff.posix2utc(time.time(), '%Y-%m-%d %H:%M')
     ax.set_title(plot_title)
@@ -132,19 +116,18 @@ if __name__ == "__main__":
         sg_plots.append(residuals)
 
     title = f"Autocorrelation Residuals - Savitzky-Golay filter. Window Lengths = {windows}. Polyorder = {polyo}"
-    savefile = f"residuals.png"
+    savefile = savefolder = k.dir_saves['images'] + os.sep + "residuals.png"
     plot_autocorrelation(autocdata=sg_plots,
-                         tickinterval=24,
-                         plotcolour=(0.5, 0.2, 0.5),
+                         tickinterval=60*24,
                          plottitle=title,
                          legend=windows,
                          savefile=savefile)
 
+    savefile = savefolder = k.dir_saves['images'] + os.sep + "autocorrelation.png"
     plot_autocorrelation(autocdata=autocorr,
-                         tickinterval=24,
-                         plotcolour=(0.1, 0.2, 0.5),
+                         tickinterval=60*24,
                          plottitle='Autocorrelation',
                          legend=["Series"],
-                         savefile='autocorrelation.png')
+                         savefile=savefile)
 
     print(f"*** Autocorrelation completed.")
