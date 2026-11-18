@@ -107,7 +107,7 @@ if __name__ == "__main__":
     autocorr.append(ac)
 
     # Compute residuals using a Savitzky Golay Filter. Window length must be odd number.
-    windows = [61, 81, 101]
+    windows = [61, 81, 101, 241]
     polyo = 3
     sg_plots = []
     for i in range(0, len(windows)):
