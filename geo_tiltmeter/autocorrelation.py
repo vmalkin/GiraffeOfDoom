@@ -8,6 +8,7 @@ import numpy as np
 from scipy.signal import savgol_filter, detrend
 import os
 import constants as k
+import class_aggregator
 
 
 
@@ -80,24 +81,42 @@ if __name__ == "__main__":
         else:
             sanitised_list.append(item)
 
-    sanitised_list = np.array(sanitised_list)
-    posix_data = sanitised_list[:, 0]
-    seis_data = sanitised_list[:, 1]
-    temp_data = sanitised_list[:, 2]
-    pressure_data = sanitised_list[:, 3]
-    # detrend the seismic data
-    seis_data = detrend(seis_data, type='linear')
+    # sanitised_list = np.array(sanitised_list)
+    # posix_data = sanitised_list[:, 0]
+    # seis_data = sanitised_list[:, 1]
+    # temp_data = sanitised_list[:, 2]
+    # pressure_data = sanitised_list[:, 3]
+    # # detrend the seismic data
+    # seis_data = detrend(seis_data, type='linear')
+
+    # decimate to clean bins, no overlap, of 1 minutes
+    halfwindow = 30 * k.datapersecond
+    step = halfwindow * 2
+    spectrumdata = class_aggregator.basic_aggregated_list(sanitised_list,halfwindow, step)
+    # utctimes = []
+    data = []
+    # temperature = []
+    # pressure = []
+    for item in spectrumdata:
+        dd = item.get_data_avg(item.data_seismo)
+        # tt = item.get_data_avg(item.data_temperature)
+        # pp = item.get_data_avg(item.data_pressure)
+        # to = item.return_utc_timeobject(item.get_avg_posix())
+        data.append(dd)
+        # temperature.append(tt)
+        # pressure.append(pp)
+        # utctimes.append(to)
 
     # Compute autocorrelation
     # https://www.scicoding.com/4-ways-of-calculating-autocorrelation-in-python/
     # Mean
-    mean = np.mean(seis_data)
+    mean = np.mean(data)
 
     # Variance
-    var = np.var(seis_data)
+    var = np.var(data)
 
     # Normalized data
-    decimated_data = seis_data - mean
+    decimated_data = data - mean
     ac = np.correlate(decimated_data, decimated_data, mode='full')[len(decimated_data)-1:]
     ac = ac / var / len(decimated_data)
     autocorr = []
