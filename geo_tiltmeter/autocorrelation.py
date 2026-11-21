@@ -13,18 +13,25 @@ import class_aggregator
 
 def plot_autocorrelation(autocdata, tickinterval, plottitle, legend, savefile):
     plt.style.use('bmh')
-    fig, ax = plt.subplots(layout="constrained", figsize=(19, 6), dpi=140)
-    # plotcolours = ["#003049", "#d62828", "#f77f00"]
-    plotcolours = ['#00202e', '#2c4875', '#8a508f', '#bc5090', '#ff6361', '#ff8531', '#ffa600', '#80d353', '#609f3f', '#406a2a']
-    for i in range(0, len(autocdata)):
-        ax.plot(autocdata[i], c=plotcolours[i], linewidth=1)
+    # fig, ax = plt.subplots(layout="constrained", figsize=(19, 6), dpi=140)
+    plotrows = len(autocdata)
+    fsize = (19, plotrows * 6)
+    fig, ax = plt.subplots(plotrows, figsize=fsize, dpi=140, sharex=False)
 
-    ax.xaxis.set_major_locator(plt.MultipleLocator(tickinterval))
-    # ax.set_xlim([0, int(len(autocdata[0] / 2))])
-    plt.legend(legend, loc='lower center')
-    plt.setp(ax.get_xticklabels(), rotation=90)  # safer than plt.xticks
+    plotcolours = ['#00202e', '#2c4875', '#8a508f', '#bc5090', '#ff6361', '#ff8531', '#ffa600', '#80d353', '#609f3f', '#406a2a']
+    stdv = np.std(autocdata[0])
+    mn = np.mean(autocdata[0])
+    margin = stdv + (mn * 32)
+    for i in range(0, len(autocdata)):
+        ax[i].plot(autocdata[i], c=plotcolours[i], linewidth=1)
+        # ax.set_ylim(0, 0 + margin)
+        # ax.set_xlim(0, 11520)
+        ax[i].xaxis.set_major_locator(plt.MultipleLocator(tickinterval))
+        # ax.set_xlim([0, int(len(autocdata[0] / 2))])
+    plt.legend(legend, loc='upper center')
+    plt.setp(ax[0].get_xticklabels(), rotation=90)  # safer than plt.xticks
     plot_title = plottitle + " - " + standard_stuff.posix2utc(time.time(), '%Y-%m-%d %H:%M')
-    ax.set_title(plot_title)
+    fig.suptitle(plot_title)
     plt.tight_layout()
     plt.savefig(savefile)
     plt.close()
@@ -112,7 +119,7 @@ if __name__ == "__main__":
     sg_plots = []
     for i in range(0, len(windows)):
         smoothed = savgol_filter(autocorr[0], window_length=windows[i], polyorder=polyo)
-        residuals = autocorr[0] - smoothed
+        residuals = np.sqrt((autocorr[0] - smoothed) ** 2)
         sg_plots.append(residuals)
 
     title = f"Autocorrelation Residuals - Savitzky-Golay filter. Window Lengths = {windows}. Polyorder = {polyo}"
